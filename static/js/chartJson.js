@@ -1,0 +1,350 @@
+var morenData = {
+    pie: {
+        "columns": [
+            "告警级别",
+            "数量"
+        ],
+        "rows": [
+            {
+                "告警级别": "致命",
+                "数量": 233
+            },
+            {
+                "告警级别": "严重",
+                "数量": 123
+            },
+            {
+                "告警级别": "警告",
+                "数量": 23
+            },
+            {
+                "告警级别": "一般",
+                "数量": 155
+            },
+            {
+                "告警级别": "次要",
+                "数量": 103
+            },
+            {
+                "告警级别": "通知",
+                "数量": 123
+            }
+        ]
+    },
+    line: {
+        "columns": [
+            "资源",
+            "CPU利用率",
+            "内存利用率",
+            "健康度"
+        ],
+        "rows": [
+            {
+                "资源": "192.168.2.32",
+                "CPU利用率": 80,
+                "内存利用率": 90,
+                "健康度": 80
+            },
+            {
+                "资源": "192.168.2.132",
+                "CPU利用率": 60,
+                "内存利用率": 20,
+                "健康度": 70
+            },
+            {
+                "资源": "192.168.2.62",
+                "CPU利用率": 10,
+                "内存利用率": 60,
+                "健康度": 80
+            },
+            {
+                "资源": "192.168.2.200",
+                "CPU利用率": 90,
+                "内存利用率": 30,
+                "健康度": 40
+            },
+            {
+                "资源": "192.168.2.72",
+                "CPU利用率": 50,
+                "内存利用率": 60,
+                "健康度": 70
+            },
+            {
+                "资源": "192.168.2.190",
+                "CPU利用率": 45,
+                "内存利用率": 76,
+                "健康度": 67
+            }
+        ]
+    },
+    time: {
+        "columns": ['日期', '指标值'],
+        "unit": '%',
+        "rows": [
+            { '日期': '2018-01-01', '指标值': 60 },
+            { '日期': '2018-01-02', '指标值': 70 },
+            { '日期': '2018-01-03', '指标值': 80 },
+            { '日期': '2018-01-05', '指标值': 90 },
+            { '日期': '2018-01-06', '指标值': 82 },
+            { '日期': '2018-01-07', '指标值': 66 }
+        ]
+    },
+    guage: {
+        "columns": [
+            "type",
+            "value"
+        ],
+        "rows": [
+            {
+                "type": "CPU利用率",
+                "value": 60
+            }
+        ]
+    },
+    table: {
+        "columns": [
+            "IP",
+            "日期",
+            "CPU利用率",
+            "内存利用率"
+        ],
+        "rows": [
+            {
+                "IP": "192.168.1.1",
+                "日期": "1/1",
+                "CPU利用率": 1193,
+                "内存利用率": 1013
+            },
+            {
+                "IP": "192.168.1.2",
+                "日期": "1/2",
+                "CPU利用率": 1293,
+                "内存利用率": 1023
+            },
+            {
+                "IP": "192.168.1.3",
+                "日期": "1/3",
+                "CPU利用率": 1393,
+                "内存利用率": 1033
+            },
+            {
+                "IP": "192.168.1.4",
+                "日期": "1/4",
+                "CPU利用率": 1493,
+                "内存利用率": 1043
+            },
+            {
+                "IP": "192.168.1.5",
+                "日期": "1/5",
+                "CPU利用率": 1593,
+                "内存利用率": 1053
+            },
+            {
+                "IP": "192.168.1.6",
+                "日期": "1/6",
+                "CPU利用率": 1693,
+                "内存利用率": 1063
+            }
+        ]
+    },
+    single: {
+        name: '繁忙度',
+        unit: '%',
+        value: 60
+    }
+}
+var compsArr = [{
+    text: '饼图',
+    imgClass: 'icon-n-pie',
+    chartType: 've-pie',
+    chartData: morenData.pie
+},
+{
+    text: '南丁格尔图',
+    imgClass: 'icon-n-ndge',
+    chartType: 've-pie',
+    chartData: morenData.pie,
+    roseType: 'area' //与饼图的区别
+},
+{
+    text: '环形图',
+    imgClass: 'icon-n-ring',
+    chartType: 've-ring',
+    chartData: morenData.pie
+},
+{
+    text: '目标占比图',
+    width: 200,
+    height: 200,
+    imgClass: 'icon-n-percent',
+    chartType: 've-gauge',
+    subType: 'progress',
+    ctLegendShow: false,
+    chartData: morenData.single
+},
+{
+    text: '柱状图',
+    imgClass: 'icon-n-histogram',
+    chartType: 've-histogram',
+    chartData: morenData.pie,
+},
+{
+    text: '分组柱图',
+    imgClass: 'icon-n-grouphistogram',
+    chartType: 've-histogram',
+    subType: 'groupHistogram',
+    chartData: morenData.line,
+},
+/*{
+    text:'山峰柱状图',
+    imgClass:'icon-n-histogram',
+    chartType:'ve-histogram',
+    subType:'pictorialBar',
+    secondType: 'peakBar',
+    width:300,
+    height:300,
+    chartData:morenData.pie
+},
+{
+    text:'象形柱状图',
+    imgClass:'icon-n-histogram',
+    chartType:'ve-histogram',
+    subType:'pictorialBar',
+    secondType: 'symbolBar',
+    width:300,
+    height:300,
+    chartData:morenData.pie,
+    symbolImg: ''
+},*/
+/*{
+    text:'漏斗图',
+    imgClass:'icon-n-histogram',
+    chartType:'ve-funnel',
+    chartData:morenData.pie,
+},*/
+/*{
+    text:'弧形柱图',
+    imgClass:'icon-n-bar',
+    chartType:'ve-bar',
+    subType:'category',
+    chartData:morenData.pie
+},*/
+{
+    text: '条形图',
+    imgClass: 'icon-n-bar',
+    chartType: 've-bar',
+    chartData: morenData.pie
+},
+{
+    text: '曲线图',
+    imgClass: 'icon-n-line',
+    chartType: 've-line',
+    chartData: morenData.time,
+    lineArea: false, //是否为区域图
+    showPoint: false, //是否标点
+},
+{
+    text: '雷达图',
+    imgClass: 'icon-n-radar',
+    chartType: 've-radar',
+    width: 500,
+    height: 380,
+    chartData: morenData.line,
+},
+{
+    text: '仪表盘',
+    imgClass: 'icon-n-gauge',
+    chartType: 've-gauge',
+    ctLegendShow: false,
+    chartData: morenData.single
+},
+{
+    text: '表格',
+    imgClass: 'icon-n-table',
+    chartType: 'table',
+    hdBgClr: '#1c2132',
+    bgClr: '',
+    clr: '#919cc1',
+    bdClr: '#c2c6d7',
+    chartData: morenData.table
+},
+{
+    text: '文本框',
+    imgClass: 'icon-n-text',
+    chartType: 'text',
+    width: 200,
+    height: 50,
+    bdpx: 0,
+    bgClr: '',
+    clr: '#666f8b',
+    bdClr: '#3d445a',
+    ctName: '请输入文本框内容'
+},
+/*{
+    text:'跑马灯',
+    imgClass:'icon-n-text',
+    chartType:'marquee',
+    width:200,
+    height:50,
+    bdpx:0,
+    bgClr:'',
+    clr:'#c2c6d7',
+    bdClr:'',
+    ctName: '跑马灯'
+},*/
+{
+    text: '进度条',
+    imgClass: 'icon-n-progress',
+    chartType: 'progress',
+    width: 300,
+    height: 50,
+    bgClr: '#33394b',
+    barClr: '#1fc3ce',
+    clr: '#1fc3ce',
+    chartData: morenData.single
+},
+{
+    text: '数字翻牌器',
+    imgClass: 'icon-n-doubler',
+    chartType: 'doubler',
+    fontSize: 36,
+    bgClr: '',
+    bdClr: '#0c527c',
+    clr: '#25aff8',
+    width: 300,
+    height: 90,
+    chartData: morenData.single
+},
+{
+    text: '拓扑',
+    imgClass: 'icon-n-topo',
+    chartType: 'topo',
+    width: 300,
+    height: 300,
+    tpId: '',
+    chartData: {}
+},
+{
+    text: '图片',
+    imgClass: 'icon-n-exportPicture',
+    chartType: 'image',
+    width: 300,
+    height: 300,
+    imgSrc: '',
+    chartData: {}
+},
+{
+    text: '边框',
+    imgClass: 'icon-n-rect',
+    chartType: 'border',
+    width: 300,
+    height: 300,
+    bdpx: 0,
+    bgClr: 'rgba(17, 22, 35, 0.38)',
+    bdClr: ''
+}
+
+];
+
+// export default morenData;
+export default compsArr
