@@ -23,12 +23,14 @@
     <!-- <v-marquee v-else-if="item.chartType=='marquee'" :item="item" ref="childtext" :disabled="editable"></v-marquee> -->
     <Border v-else-if="item.chartType=='border'"
             :item="item"></Border>
-    <!-- <v-table v-else-if="item.chartType=='table'" :item="item"></v-table> -->
+    <Vtable v-else-if="item.chartType=='table'"
+            :item="item"></Vtable>
     <Vprogress v-else-if="item.chartType=='progress'"
                :item="item"></Vprogress>
     <Doubler v-else-if="item.chartType=='doubler'"
              :item="item"></Doubler>
-    <!-- <v-topo v-else-if="item.chartType=='topo'" :item="item"></v-topo> -->
+    <Topo v-else-if="item.chartType=='topo'"
+          :item="item"></Topo>
     <Vimg v-else-if="item.chartType=='image'"
           :item="item"></Vimg>
     <Vchart v-else
@@ -43,11 +45,13 @@ import Vimg from './Vimg'
 import Doubler from './Doubler'
 import Border from './Border'
 import Vchart from './Vchart'
+import Vtable from './Vtable'
+import Topo from './Topo'
 
 export default {
   name: 'dragBox',
   props: ['item', 'editable', 'index'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo },
   data () {
     return {
 

@@ -1,28 +1,28 @@
 <template>
-  <div id="editHome-modal"
-       class="modal moniModal nofooter"
+  <!-- class="wrap moniwrap nofooter" -->
+  <div id="editHome-wrap"
        tabindex="-1"
        style="padding: 10px">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <button type="button"
-                  data-dismiss="modal"
-                  class="close"
-                  @click="exitModal">
-          </button> -->
-          <!-- <h4 class="modal-title">
-            <span class="pre-page"
-                  data-dismiss="modal"
-                  @click="exitModal">大屏展示></span><span class="now-page">编辑</span>
-          </h4> -->
-        </div>
-        <div class="modal-body flex flex-vertical">
+
+    <AddPage :showModal="addPage"
+             @hideModal="hideModal"></AddPage>
+    <PageSetting :showModal="pageSetting"
+                 @hideModal="hideSetting"></PageSetting>
+    <!-- <SettingPage></SettingPage> -->
+    <PreView :showModal="viewPage"
+             :viewId="viewId"
+             :pageData="pageData"
+             @hidePreview="hidePreview"></PreView>
+    <div class="wrap-dialog">
+      <div class="wrap-content">
+        <div class="wrap-body flex flex-vertical">
           <div class="searchForm">
             <button type="button"
                     @click="add">新增页面</button>
             <button type="button"
                     @click="openSetting">设置</button>
+            <button type="button"
+                    @click="backHome">返回</button>
           </div>
           <div id="pagesBox"
                class="auto flex flex-wrap flex-1">
@@ -32,7 +32,10 @@
                  @mouseenter="showHover(index)"
                  @mouseleave="cancleHover">
               <img class="page-img"
-                   :src="'/api' + item.viewImage" />
+                   v-if="item.viewImage"
+                   :src="baseUrl + item.viewImage" />
+              <img class="page-img"
+                   v-else />
               <div class="operates"
                    v-show="hoverIndex === index">
                 <a class="opera-item"
@@ -73,18 +76,33 @@
 
 <script>
 import qs from 'qs'
+import AddPage from './AddPage'
+import PageSetting from './PageSetting'
+import SettingPage from './SettingPage'
+import PreView from './../PreView/PreView'
+import { gbs } from '@/config/settings'
 export default {
   name: 'editPage',
+  components: { AddPage, SettingPage, PreView, PageSetting },
   data () {
     return {
+      baseUrl: gbs.host,
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
+      addPage: false, // 新增页面
+      pageSetting: false, // 设置
+      viewPage: false, // 预览
+      pageData: '', // 预览的page内容
+      viewId: -1, // 预览的id
       editName: ''
     }
   },
 
   methods: {
+    backHome () {
+      this.$router.push('/')
+    },
     search () {
       this.axios.get('home/homePage/noConf').then((res) => {
         if (res.success) {
@@ -94,20 +112,34 @@ export default {
         }
       })
     },
+    hideModal (data) {
+      this.addPage = false
+      if (data.ifAdd) {
+        this.search()
+      }
+    },
+    hideSetting (data) {
+      this.pageSetting = false
+      if (data.ifSort) {
+        this.search()
+      }
+    },
     openSetting () {
-      $.comps.homeCarouselConf.open({
+      this.pageSetting = true
+      /* $.comps.homeCarouselConf.open({
         callback: function () {
           // cTthis.search()
         }
-      })
+      }) */
     },
     add () {
-      var _this = this
+      this.addPage = true
+      /* var _this = this
       $.comps.addHome.open({
         callback: function (res) {
           _this.edit(res)
         }
-      })
+      }) */
     },
     copy (item) {
       this.axios.get('home/homePage/copy/' + item.id).then((res) => {
@@ -117,30 +149,22 @@ export default {
           // tooltip("", res.msg, "error");
         }
       })
-      // $.api.home.copyPage({
-      //   id: item.id,
-      //   callback: function () {
-      //     cTthis.search();
-      //     tooltip("", "操作成功！", "success");
-      //   }
-      // })
     },
     pev (item) {
-      $.comps.mainPreview.open({
-        id: item.id
-      })
+      this.viewId = item.id
+      this.viewPage = true
+    },
+    // 关闭预览弹窗
+    hidePreview () {
+      this.viewPage = false
     },
     edit (item) {
-      this.$router.push({ name: 'edit',
+      this.$router.push({
+        name: 'edit',
         params: {
           id: item.id
-        } })
-      // $.comps.editMain.open({
-      //   data: item,
-      //   callback: function () {
-      //     cTthis.search();
-      //   }
-      // })
+        }
+      })
     },
     del (item) {
       this.axios.delete('home/homePage/deleteById/' + item.id).then((res) => {
@@ -209,7 +233,7 @@ export default {
     cancleHover () {
       this.hoverIndex = -1
     },
-    exitModal () {
+    exitwrap () {
       // typeof cTthis.pram.exitCb === 'function' && cTthis.pram.exitCb()
     }
   },

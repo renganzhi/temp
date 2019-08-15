@@ -111,7 +111,6 @@ export default {
       //     return []
       // }
       var d = this.item.chartData
-
       // if (!_.isObject(d) && !_.isArray(d)) {
       //   this.empty = true
       //   return {}
@@ -236,8 +235,6 @@ export default {
       }
     },
     setGaugeColor: function (type, newV) {
-      // console.log(type)
-      // console.log(newV)
       if (Array.isArray(newV[0])) {
         this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = new echarts.graphic.LinearGradient(1, 0, 0, 0, [{ offset: 0, color: newV[0][0] }, { offset: 1, color: newV[0][1] }])
         this.settings.seriesMap[type].detail.color = newV[0][0]
@@ -714,10 +711,15 @@ export default {
     var _echarts = $(this.$el).find('div')[0]
     var instance = $(_echarts).attr('_echarts_instance_')
     if (instance) {
-      // var chart = echarts.getInstanceById(instance)
-      console.log(instance)
-      // chart.dispose()
+      // var chart = echarts.getInstanceById(instance) // 不知道什么原因，这里获取不到对象，后续需要解决
+      // chart.dispose() 销毁
     }
   }
 }
 </script>
+<style>
+.v-charts-data-empty {
+  position: absolute !important;
+  top: 0px !important;
+}
+</style>

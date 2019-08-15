@@ -2,7 +2,6 @@
   <select>
     <option v-if="!obj.notNull"
             value="">-不限-</option>
-    <!-- <option value="">{{obj}}</option> -->
     <option v-for="(subv,index) in obj.data"
             :value="subv.value"
             :key="index">{{subv.name}}</option>

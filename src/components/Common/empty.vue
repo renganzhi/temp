@@ -1,6 +1,6 @@
 <template>
   <div>
-    111
+    这里是暂存的一个空组件模板
   </div>
 </template>
 <script>

@@ -28,6 +28,8 @@ module.exports = {
   globals: {
     echarts: true,
     colorSpectrum: true,
-    _: true // lodash
+    ActiveXObject: true,
+    _: true, // lodash
+    MainTp: true
   }
 }

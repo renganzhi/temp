@@ -1,15 +1,19 @@
 <template>
-  <div id="mainEdit-modal" class="modal moniModal nofooter">
-    <!-- <div class="modal-dialog"> -->
-        <div class="modal-content" @click.ctrl="bindCtrl">
-            <div class="modal-header">
+  <div id="mainEdit-edit" tabindex="-1" class="edit in moniModal nofooter">
+    <PreView :showModal="viewPage"
+             :pageData="pageData"
+             @hidePreview="hidePreview"></PreView>
+     <!-- class="edit moniModal nofooter" -->
+    <!-- <div class="edit-dialog"> -->
+        <div class="edit-content" @click.ctrl="bindCtrl">
+            <div class="edit-header">
               <a class="fr simoLink icon-n-withdraw edit-opt" @click="back">返回</a>
                 <a class="fr simoLink icon-n-preview edit-opt" @click="preview">预览</a>
                 <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
                 <a class="fr icon-n-save simoLink edit-opt" @click="saveConf">保存</a>
-                <h4 class="modal-title">{{pageName}}</h4>
+                <h4 class="edit-title">{{pageName}}</h4>
             </div>
-            <div class="modal-body flex" @click="hideContext">
+            <div class="edit-body flex" @click="hideContext">
               <!--  <div class="m-contain full-height">-->
                     <!--右键-->
                     <ul class="menu-list" style="width: 156px;" ref="contextMenu">
@@ -295,7 +299,7 @@
                             </div>
                         </div>
                     </div>
-               <!-- </div>-->
+               <!-- </div> -->
             </div>
         </div>
     <!-- </div> -->
@@ -307,7 +311,7 @@ export default EditJs
 
 </script>
 <style scoped>
-#mainEdit-modal {
+#mainEdit-edit {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -315,26 +319,26 @@ export default EditJs
   left: -4px;
   /* z-index: 10052 !important;*/
 }
-#mainEdit-modal .modal-content{
+#mainEdit-edit .edit-content{
   height: 100%;
 }
 
-#mainEdit-modal .modal-header {
+#mainEdit-edit .edit-header {
   height: 50px;
 }
 
-#mainEdit-modal .modal-header .simoLink {
+#mainEdit-edit .edit-header .simoLink {
   line-height: 36px;
   font-size: 14px;
   margin-right: 15px;
 }
 
-#mainEdit-modal .modal-title {
+#mainEdit-edit .edit-title {
   line-height: 30px;
   text-indent: 10px;
 }
 
-#mainEdit-modal .modal-body {
+#mainEdit-edit .edit-body {
   padding: 0;
   overflow: hidden;
   height: calc(100% - 50px);
@@ -368,7 +372,7 @@ export default EditJs
   background: #141929;
 }
 
-#mainEdit-modal .m-right .active {
+#mainEdit-edit .m-right .active {
   background: #1b2031;
   color: #0088cc;
 }
@@ -380,11 +384,11 @@ export default EditJs
   margin-bottom: 20px;
 }
 
-#mainEdit-modal .noSlected .m-tabMain {
+#mainEdit-edit .noSlected .m-tabMain {
   display: none;
 }
 
-#mainEdit-modal .noSlected .m-tab {
+#mainEdit-edit .noSlected .m-tab {
   background: #1b2031 !important;
   font-size: 13px;
 }
@@ -393,7 +397,7 @@ export default EditJs
   position: relative;
 }
 
-#mainEdit-modal .content-side .cs-item {
+#mainEdit-edit .content-side .cs-item {
   font-size: 12px;
   width: 90px;
   height: 90px;
@@ -406,22 +410,22 @@ export default EditJs
   text-align: center;
   position: relative;
 }
-#mainEdit-modal .content-side .cs-item:nth-child(2),
-#mainEdit-modal .content-side .cs-item:nth-child(1) {
+#mainEdit-edit .content-side .cs-item:nth-child(2),
+#mainEdit-edit .content-side .cs-item:nth-child(1) {
   border-top: solid 1px #3d445a !important;
 }
-#mainEdit-modal .content-side .cs-item:hover {
+#mainEdit-edit .content-side .cs-item:hover {
   border: 1px solid #0088cc !important;
   z-index: 999;
 }
-#mainEdit-modal .content-side .cs-item:before {
+#mainEdit-edit .content-side .cs-item:before {
   font-size: 30px;
   margin-left: -12px;
 }
-#mainEdit-modal .content-side .cs-item:nth-child(2n) {
+#mainEdit-edit .content-side .cs-item:nth-child(2n) {
   left: -1px;
 }
-#mainEdit-modal .content-side .cs-item:nth-child(4n),
+#mainEdit-edit .content-side .cs-item:nth-child(4n),
 .content-side .cs-item:nth-child(4n-1) {
   top: -1px;
 }
@@ -452,7 +456,7 @@ export default EditJs
   width: 200px !important;
 }
 
-#mainEdit-modal .confData {
+#mainEdit-edit .confData {
   width: 270px !important;
   height: 200px !important;
   overflow: auto;
@@ -464,7 +468,7 @@ export default EditJs
   color: #fff;
 }
 
-#mainEdit-modal .vdr.active:before {
+#mainEdit-edit .vdr.active:before {
   content: "";
   width: 100%;
   height: 100%;
@@ -474,7 +478,7 @@ export default EditJs
   box-sizing: border-box;
   outline: 1px dashed #0088cc;
 }
-#mainEdit-modal .vdr-stick {
+#mainEdit-edit .vdr-stick {
   box-sizing: border-box;
   position: absolute;
   font-size: 1px;
@@ -483,11 +487,11 @@ export default EditJs
   box-shadow: 0 0 2px #bbb;
   border-radius: 50%;
 }
-#mainEdit-modal .inactive .vdr-stick {
+#mainEdit-edit .inactive .vdr-stick {
   display: none;
 }
 
-#mainEdit-modal .menu-list {
+#mainEdit-edit .menu-list {
   display: none;
   position: fixed;
   z-index: 99999999;
@@ -503,16 +507,16 @@ export default EditJs
   -webkit-box-shadow: 4px 4px 12px rgba(17, 33, 50, 0.5);
   box-shadow: 4px 4px 12px rgba(17, 33, 50, 0.5);
 }
-#mainEdit-modal input::-webkit-outer-spin-button,
-#mainEdit-modal input::-webkit-inner-spin-button {
+#mainEdit-edit input::-webkit-outer-spin-button,
+#mainEdit-edit input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-#mainEdit-modal input[type="number"] {
+#mainEdit-edit input[type="number"] {
   -moz-appearance: textfield;
 }
 
-#mainEdit-modal .colorOrder {
+#mainEdit-edit .colorOrder {
   width: 20px;
   text-align: center;
   display: inline-block;
@@ -532,18 +536,18 @@ export default EditJs
   box-sizing: border-box;
   padding-left: 16px;
 }
-#mainEdit-modal .colorsConf [class^="icon-n-"] {
+#mainEdit-edit .colorsConf [class^="icon-n-"] {
   margin: 0 1px;
   cursor: pointer;
 }
-#mainEdit-modal .colorsConf .icon-n-up {
+#mainEdit-edit .colorsConf .icon-n-up {
   margin-left: 4px;
 }
-#mainEdit-modal .colorsConf .icon-n-add {
+#mainEdit-edit .colorsConf .icon-n-add {
   float: right;
   margin-right: 2px;
 }
-#mainEdit-modal .sp-replacer {
+#mainEdit-edit .sp-replacer {
   width: 100% !important;
 }
 .sp-preview {
@@ -552,18 +556,18 @@ export default EditJs
 .table thead {
   background: none;
 }
-#mainEdit-modal.moniModal button.close {
+#mainEdit-edit.moniModal button.close {
   font-weight: 400;
   margin-right: 14px;
 }
-#mainEdit-modal .edit-opt {
+#mainEdit-edit .edit-opt {
   font-size: 12px !important;
   color: #c2c6d7;
 }
-#mainEdit-modal .edit-opt:hover {
+#mainEdit-edit .edit-opt:hover {
   color: #0088cc;
 }
-#mainEdit-modal .newDrag2 .comp-item {
+#mainEdit-edit .newDrag2 .comp-item {
   float: left;
   position: absolute;
 }

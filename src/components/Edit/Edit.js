@@ -2,18 +2,21 @@ import compsArr from '#/js/chartJson'
 import DragBox from './../Common/DragBox'
 import Select2 from './../Common/Select2'
 import Vcolor from './../Common/Vcolor'
-import { baseData } from '@/config/settings'
+import PreView from './../PreView/PreView'
+import { baseData, gbs } from '@/config/settings'
 import html2canvas from 'html2canvas'
 import qs from 'qs'
 import lodash from 'lodash'
 
 export default {
   name: 'edit',
-  components: { DragBox, Select2, Vcolor },
+  components: { DragBox, Select2, Vcolor, PreView },
   props: [],
   data: function () {
     return {
       pageId: 0,
+      viewPage: false,
+      pageData: '',
       compsArr: compsArr,
       isFlase: false,
       editable: true, // 操作flag,编辑为true,查看为false
@@ -237,9 +240,10 @@ export default {
       this.combinList[this.combinList.length - 1].child = arr.concat()
       this.removeItem()
     },
-    // 组合的元件从chartNum中删除
     removeItem: function () {
-      var i = 0, tempArr = this.chooseIndexs.sort()
+      // 组合的元件从chartNum中删除
+      var i = 0
+      var tempArr = this.chooseIndexs.sort()
       tempArr.forEach(item => {
         // this.chartNum.splice(item, 1, {});
         this.chartNum.splice(item - i, 1)
@@ -324,179 +328,6 @@ export default {
       })
     },
     // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
-    _chgUrl (flag) {
-      var _this = this
-      var chainP = this.syst.chainParams = {} // 将需要联动的字段缓存
-      var index = -1
-
-      if (typeof flag === 'boolean') {
-        var selectedP = this.syst.curConf.params = $.extend(true, {}, this.selectedItem.params)
-        index = _.findIndex(this.syst.urlSel, function (o) {
-          return (o.url === _this.selectedItem.url)
-        })
-      } else {
-        var selectedP = this.syst.curConf.params = {}
-      }
-
-      var first = $.isEmptyObject(selectedP)
-      if (index === -1) {
-        if (this.selectedItem.url || typeof flag !== 'boolean') {
-          index = this.$refs.urlSel.selectedIndex === -1 ? 0 : this.$refs.urlSel.selectedIndex
-        } else {
-          index = 0
-        }
-      }
-      var urlsel = this.syst.urlSel[index]
-      this.syst.curConf.url = urlsel.url
-      this.syst.curConf.method = urlsel.method
-
-      this.syst.curUrl = []
-      // this.$nextTick(function () {
-      // var api = _this.syst.curUrl = urlsel.params; 原本的
-      var api = urlsel.params
-      $.each(api, async function (i, d) {
-        if (d.dataType === 'remote') { // 需要通过请求拿数据
-          var postData = {}
-          if (d.params) {
-            $.each(d.params, function (j, o) {
-              postData[o] = selectedP[o] || ''
-            })
-            chainP[d.key] = d
-          }
-          // $.ajax({
-          //     url: d.dataUrl,
-          //     async: false,
-          //     data:postData,
-          //     type:d.method || 'get',
-          //     success: function (data) {
-          //         d.data = data.obj || [];
-          //         $.isEmptyObject(selectedP) && _this.setFirstV(d);
-          //     }
-          // })
-          await _this.axios({
-            method: d.method || 'get',
-            url: d.dataUrl,
-            data: postData
-          }).then((data) => {
-            d.data = data.obj || [] // 这里赋的值
-            console.log('赋值')
-            $.isEmptyObject(selectedP) && _this.setFirstV(d)
-          })
-          /* var data = await _this.axios({
-            method: d.method || 'get',
-            url: d.dataUrl,
-            data: postData
-          })
-          d.data = data.obj || [] // 这里赋的值
-          console.log('赋值')
-          $.isEmptyObject(selectedP) && _this.setFirstV(d) */
-        }
-        first && _this.setFirstV(d)
-        console.log('---------api after------------')
-        console.log(api)
-        if (i === api.length - 1) {
-          _this.syst.curUrl = api
-        }
-      })
-      // console.log('---------api after------------');
-      // console.log(api[0].data);
-      /*         for (let i = 0, len = api.length; i < len; i++) {
-                if (api[i].dataType === 'remote') { // 需要通过请求拿数据
-                  var postData = {}
-                  if (api[i].params) {
-                    $.each(api[i].params, function (j, o) {
-                      postData[o] = selectedP[o] || ''
-                    })
-                    chainP[api[i].key] = api[i]
-                  }
-                  await _this.axios({
-                    method: api[i].method || 'get',
-                    url: api[i].dataUrl,
-                    data: postData
-                  }).then((data) => {
-                    api[i].data = data.obj || [] // 这里赋的值
-                    console.log('赋值')
-                    $.isEmptyObject(selectedP) && _this.setFirstV(api[i])
-                  })
-                }
-              } */
-      // _this.syst.curUrl = api
-      // }) 
-      // nextTick
-    },
-    chgUrl1 (flag) {
-      var _this = this
-      var chainP = this.syst.chainParams = {} // 将需要联动的字段缓存
-      var index = -1
-
-      if (typeof flag === 'boolean') {
-        var selectedP = this.syst.curConf.params = $.extend(true, {}, this.selectedItem.params)
-        index = _.findIndex(this.syst.urlSel, function (o) {
-          return (o.url === _this.selectedItem.url)
-        })
-      } else {
-        var selectedP = this.syst.curConf.params = {}
-      }
-
-      var first = $.isEmptyObject(selectedP)
-      if (index === -1) {
-        if (this.selectedItem.url || typeof flag !== 'boolean') {
-          index = this.$refs.urlSel.selectedIndex === -1 ? 0 : this.$refs.urlSel.selectedIndex
-        } else {
-          index = 0
-        }
-      }
-      var urlsel = this.syst.urlSel[index]
-      this.syst.curConf.url = urlsel.url
-      this.syst.curConf.method = urlsel.method
-
-      this.syst.curUrl = []
-      this.$nextTick(async function () {
-        // var api = _this.syst.curUrl = urlsel.params; // 原本的
-        var api = urlsel.params
-        console.log('---------api before------------')
-        console.log(api);
-
-        let posts = await function () {
-          let reqList = []
-          for (let i = 0, len = api.length; i < len; i++) {
-            if (api[i].dataType === 'remote') { // 需要通过请求拿数据
-              var postData = {}
-              if (api[i].params) {
-                $.each(api[i].params, function (j, o) {
-                  postData[o] = selectedP[o] || ''
-                })
-                chainP[api[i].key] = api[i]
-              }
-              var req = _this.axios({
-                method: api[i].method || 'get',
-                url: api[i].dataUrl,
-                data: postData
-              })
-              reqList.push(req)
-            }
-          }
-          return axios.all(reqList).then(axios.spread(function (...resList) {
-            return resList // 拿到所有data数据
-          }))
-        }
-        let _d = 0
-        for (let i = 0, len = api.length; i < len; i++) {
-
-          if (api[i].dataType === 'remote') { // 需要通过请求拿数据
-            api[i].data = posts[_d].obj || [] // 这里赋的值
-            _d++
-            $.isEmptyObject(selectedP) && _this.setFirstV(api[i])
-          }
-          first && _this.setFirstV(api[i])
-        }
-        _this.syst.curUrl = api
-        console.log('---------api after------------')
-        console.log(api)
-      })
-      // nextTick
-    },
-    // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
     chgUrl (flag) {
       var _this = this
       var chainP = this.syst.chainParams = {} // 将需要联动的字段缓存
@@ -508,25 +339,25 @@ export default {
           return (o.url === _this.selectedItem.url)
         })
       } else {
-        var selectedP = this.syst.curConf.params = {}
+        selectedP = this.syst.curConf.params = {}
       }
 
       var first = $.isEmptyObject(selectedP)
 
       if (index === -1) {
         if (this.selectedItem.url || typeof flag !== 'boolean') {
-          index = this.$refs.urlSel.selectedIndex === -1 ? 0 : this.$refs.urlSel.selectedIndex;
+          index = this.$refs.urlSel.selectedIndex === -1 ? 0 : this.$refs.urlSel.selectedIndex
         } else {
           index = 0
         }
       }
       var urlsel = this.syst.urlSel[index]
       this.syst.curConf.url = urlsel.url
-      this.syst.curConf.method = urlsel.method;
+      this.syst.curConf.method = urlsel.method
 
       this.syst.curUrl = []
       this.$nextTick(function () {
-        var api = _this.syst.curUrl = urlsel.params;
+        var api = _this.syst.curUrl = urlsel.params
         $.each(api, function (i, d) {
           if (d.dataType === 'remote') { // 需要通过请求拿数据
             var postData = {}
@@ -537,7 +368,7 @@ export default {
               chainP[d.key] = d
             }
             $.ajax({
-              url: '/api' + d.dataUrl,
+              url: gbs.host + d.dataUrl,
               async: false,
               data: postData,
               type: d.method || 'get',
@@ -606,26 +437,27 @@ export default {
       $.each(param, function (i, d) {
         datas[i] = $.isArray(d) ? d.join(',') : d
       })
-      /* $.ajax({
-        url: curConf.url,
+      $.ajax({
+        url: gbs.host + curConf.url,
         data: datas,
         type: curConf.method,
         success: function (data) {
-          data.obj = data.obj || {};
+          data.obj = data.obj || {}
           if (data.obj.colors) {
-            _this.selectedItem.ctColors = data.obj.colors;
-            _this.selectedItem.colorType = 'defalut';
+            _this.selectedItem.ctColors = data.obj.colors
+            _this.selectedItem.colorType = 'defalut'
           }
-          _this.selectedItem.chartData = data.obj;
-          _this.selectedItem.url = curConf.url;
-          _this.selectedItem.method = curConf.method;
-          _this.selectedItem.params = param;
+          _this.selectedItem.chartData = data.obj
+          _this.selectedItem.url = curConf.url
+          _this.selectedItem.method = curConf.method
+          _this.selectedItem.params = param
         }
-      }); */
-      this.axios({
+      })
+      /* this.axios({
         method: curConf.method,
         url: curConf.url,
-        data: datas
+        data: qs.stringify(datas),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then((data) => {
         data.obj = data.obj || {}
         if (data.obj.colors) {
@@ -636,7 +468,7 @@ export default {
         _this.selectedItem.url = curConf.url
         _this.selectedItem.method = curConf.method
         _this.selectedItem.params = param
-      })
+      }) */
     },
     saveTopoConf: function (param) { // 拓扑与其他组件不同，需要特殊处理
       this.selectedItem.tpId = param.topoId
@@ -668,16 +500,16 @@ export default {
       var cThis = this
       cThis.selectedItem.slted = false
       var canvas2 = document.createElement('canvas')
-      var _canvas = document.querySelector('#mainEdit-modal .m-main>div')
-      // _canvas.style.background = _this.$modal.find('.modal-content').css('background');
-      // _canvas.style.background = $('#mainEdit-modal').find('.modal-content').css('background');
+      var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
+      // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
+      // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
       _canvas.style.background = $('body').css('background')
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
       canvas2.width = baseData.home.w
       canvas2.height = baseData.home.h
       canvas2.getContext('2d')
-      $('#mainEdit-modal .main_topo').find('svg').css('opacity', 0)
-      $('#mainEdit-modal .main_topo').append($('<img>').addClass('monitp').attr('src', 'resources/img/topo/tpstander.png').css({
+      $('#mainEdit-edit .main_topo').find('svg').css('opacity', 0)
+      $('#mainEdit-edit .main_topo').append($('<img>').addClass('monitp').attr('src', 'resources/img/topo/tpstander.png').css({
         width: '100%',
         height: '100%',
         position: 'absolute',
@@ -691,11 +523,11 @@ export default {
         canvas: canvas2,
         onclone: function (doc) {
           // 提前还原拓扑
-          $('#mainEdit-modal .main_topo').find('svg').css('opacity', 1)
-          $('#mainEdit-modal .monitp').remove()
+          $('#mainEdit-edit .main_topo').find('svg').css('opacity', 1)
+          $('#mainEdit-edit .monitp').remove()
         }
       }).then(function (canvas) {
-        // $('#mainEdit-modal .monitp').remove()
+        // $('#mainEdit-edit .monitp').remove()
         document.body.appendChild(canvas)
         var dataUrl = canvas.toDataURL('image/png')
         var arr = dataUrl.split(',')
@@ -749,7 +581,7 @@ export default {
     },
     uploadFile: function (formData, cb) {
       $.ajax({
-        url: '/api/mc/home/file/upload',
+        url: gbs.host + '/mc/home/file/upload',
         type: 'post',
         data: formData,
         async: false,
@@ -768,13 +600,18 @@ export default {
       })
     },
     preview: function () { // 预览
-      if (!(!this.widthVali.isShowError && !this.heightVali.isShowError && !this.xVali.isShowError && !this.yVali.isShowError)) {
-        // tooltip('', '请填写正确的配置信息', 'info')
-        return
-      }
-      $.comps.mainPreview.open({
-        conf: this.chartNum
-      })
+      // if (!(!this.widthVali.isShowError && !this.heightVali.isShowError && !this.xVali.isShowError && !this.yVali.isShowError)) {
+      //   // tooltip('', '请填写正确的配置信息', 'info')
+      //   return
+      // }
+      this.pageData = this.chartNum
+      this.viewPage = true
+      // $.comps.mainPreview.open({
+      //   conf: this.chartNum
+      // })
+    },
+    hidePreview: function () {
+      this.viewPage = false
     },
     back: function () {
       this.$router.push('editPage')
@@ -783,7 +620,7 @@ export default {
       //   msg: '确认离开当前页吗？未保存数据将会丢失！',
       //   callBack: function (state) {
       //     if (state === 1) { // 确定
-      //       _this.$modal.modal('hide');
+      //       _this.$edit.edit('hide');
       //       typeof _this.params.callback === 'function' && _this.params.callback();
       //     }
       //   }
@@ -863,9 +700,9 @@ export default {
       formData.append('uploaded_file', e.target.files[0])
       this.uploadFile(formData, function (data) {
         if (_this.selectedItem.chartType === 'image') {
-          _this.selectedItem.imgSrc = '/api' + '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id // 注意： 这里添加的/api可能导致bug
+          _this.selectedItem.imgSrc = '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         } else if (_this.selectedItem.subType === 'pictorialBar') {
-          _this.selectedItem.symbolImg = '/api' + '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.selectedItem.symbolImg = '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         }
       })
       e.target.value = ''

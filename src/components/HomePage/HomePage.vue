@@ -45,6 +45,7 @@
 <script>
 import { baseData } from '@/config/settings'
 import DragBox from './../Common/DragBox'
+import Public from '#/js/public'
 export default {
   name: 'HomePage',
   components: { DragBox },
@@ -123,18 +124,18 @@ export default {
       // });
     },
     fullScreen: function () { // 切换全屏
-      // var ct = this
-      // Public.checkFull() ? this.exitFull() : this.full()
-      this.isFullScreen ? this.exitFull() : this.full()
+      var ct = this
+      Public.checkFull() ? this.exitFull() : this.full()
+      // this.isFullScreen ? this.exitFull() : this.full()
       $(window).on('resize.home', function () {
-        // ! Public.checkFull() && ct.exitFull()
+        !Public.checkFull() && ct.exitFull()
       })
     },
     exitFull: function () { // 退出全屏
       $('#home-html').css('background', 'transparent')
       this.stopTimer()
       this.isFullScreen = false
-      // Public.exitFullScreen()
+      Public.exitFullScreen()
       $(window).off('resize.home')
     },
     full: function () { // 全屏
@@ -142,7 +143,7 @@ export default {
       //   target: '#home-html'
       // })
       $('#home-html').css('background', $('body').css('background'))
-      // Public.bigScreenfullScreen($('#home-html').get(0))
+      Public.bigScreenfullScreen($('#home-html').get(0))
       this.isFullScreen = true
       this.interTimer()
     },
@@ -161,7 +162,6 @@ export default {
       this.timeFn()
       this.isFullScreen && this.interTimer()
     },
-
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.pageIndex++
@@ -180,8 +180,7 @@ export default {
       this.timer = setTimeout(function test () {
         ct.timeFn()
         ct.timer = setTimeout(test, ct.intervalTime * 1000)
-      }, this.intervalTime * 1000)
-      console.log(this.timer)
+      }, ct.intervalTime * 1000)
     },
 
     /* 刷新页面相关 */
@@ -225,8 +224,11 @@ export default {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
-          // d.chartData = []; 置为空了会触发v-chart内部的watch
-          ct.axios.get(d.url, { params: d.params }).then((res) => {
+          ct.axios({
+            method: d.method || 'get',
+            url: d.url,
+            data: d.params
+          }).then((res) => {
             res.obj = res.obj || []
             if (res.obj.colors) {
               d.ctColors = res.obj.colors
@@ -256,7 +258,6 @@ export default {
       // var $el = $(this.$el);
       // var $el = document.getElementById('home-html');
       var $el = $('#home-html')
-      console.log($el)
       var w = $el.width()
       var h = $el.height()
       var scaleX = w / baseData.home.w
@@ -274,7 +275,7 @@ export default {
     clearPage: function () { // 离开主页清定时器
       this.stopTimer()
       this.stopRefreshTimer()
-      // _this.vue.$destroy();
+      this.$destroy()
     }
   },
   destroyed () {
@@ -283,9 +284,9 @@ export default {
   mounted: function () {
     this.getPageData()
     // titleShow('top', $('#home-html'));
-    // $(window).off('resize.homescale').on('resize.homescale', () => {
-    //   this.setScale();
-    // })
+    $(window).off('resize.homescale').on('resize.homescale', () => {
+      this.setScale()
+    })
   },
   watch: {
     nowPage: function (newV) {
