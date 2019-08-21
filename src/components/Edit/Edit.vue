@@ -1,5 +1,5 @@
 <template>
-  <div id="mainEdit-edit" tabindex="-1" class="edit in moniModal nofooter">
+  <div id="mainEdit-edit" class="edit in moniModal nofooter">
     <PreView :showModal="viewPage"
              :pageData="pageData"
              @hidePreview="hidePreview"></PreView>
@@ -17,31 +17,111 @@
               <!--  <div class="m-contain full-height">-->
                     <!--右键-->
                     <ul class="menu-list" style="width: 156px;" ref="contextMenu">
-                        <li class="context-menu-item context-menu-visible" @click="del"><span>删除</span></li>
-                        <li class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
-                        <li class="context-menu-item context-menu-visible" @click="itemSplit"><span>拆分</span></li>
+                      <li class="context-menu-item context-menu-visible" @click="copy"><span>复制</span></li>
+                      <li class="context-menu-item context-menu-visible" @click="del"><span>删除</span></li>
+                      <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
+                      <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="upward"><span>上移</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="downward"><span>下移</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toTop"><span>置顶</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toBottom"><span>置底</span></li>
                     </ul>
 
                     <div class="m-left content-side flex">
-                        <div class="cs-item" :key="key" v-for="(value,key) in compsArr" :class="value.imgClass"
-                            @click="initChart(value)">
-                            {{value.text}}</div>
+                      <div class="cs-item" :key="key" v-for="(value,key) in compsArr" :class="value.imgClass"
+                          @click="initChart(value)">
+                          {{value.text}}</div>
                     </div>
                     <div class="m-main flex-1 auto">
-                        <div id="chooseWrap" style="height:1080px;width:1920px;"  @click.self="cancelSelected($event)">
+                      <div class="paint-bg" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')'}">
+                        <div class="paint" :style="paintStyle"></div>
+                        <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
+                        <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
                             <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
                             </DragBox>
-                            <!-- <v-compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @selected="selected" @context="context"></v-compose> -->
+                            <!-- <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @selected="selected" @context="context"></Compose> -->
                         </div>
+                      </div>
                     </div>
+
+                    <div class="scaleBox">
+                      <span>缩放比例</span>
+                      <Slider :min="20" :max="200" v-model="paintObj.scale"></Slider>
+                    </div>
+
                     <div class="m-right full-height flex flex-vertical" :class="{noSlected:!selectedItem.chartType}" >
-                        <div>
+                        <div class="base-item">
                             <div class="m-tab" :class="{active:showStyleTab}" @click="showStyleTab=true">样式</div>
                             <div class="m-tab" :class="{active:!showStyleTab}" @click="showStyleTab=false">数据</div>
                         </div>
+                        <div class="paintWrap full-height flex-1">
+                          <div class="full-height m-style">
+                            <div class="e-base">
+                              <div class="m-gap form-group set-map">画布设置</div>
+                              <div class="form-group" style="height: 30px;">
+                                <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label>
+                                <div class="fl">
+                                    <label>宽</label>
+                                    <input class="w-70" type="number" v-model="paintObj.width">
+                                    <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
+                                </div>
+                                <div class="fr">
+                                    <label>高</label>
+                                    <input class="w-70" type="number" v-model="paintObj.height">
+                                    <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>背景色</label>
+                                <div class="color-w70">
+                                    <Vcolor :data="paintObj.bgColor" :key="11" type="bgClr" @getdata="getPaintCl"></Vcolor>
+                                </div>
+                              </div>
+                              <div class="form-group" style="height: 200px;">
+                                <label>背景图片</label>
+                                <div class="fl">
+                                  <div v-if="paintObj.bgImg" @click="paintObj.bgImg = ''" class="chooseBgImg">
+                                    <i class="icon-n-delete" style="color: #7d8eb9;"></i><br>删除图片
+                                  </div>
+                                  <div v-else class="chooseBgImg">
+                                    <i class="icon-n-exportPicture"></i><br>点击选择图片
+                                    <input type="file" class="uploadBg" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
+                                  </div>
+                                  <input type="radio" name="bgType" value='1' v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
+                                  <input type="radio" name="bgType" value='2' v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
+                                  <input type="radio" name="bgType" value='3' v-model="paintObj.bgStyle">全屏铺满</input>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>透明度</label>
+                                <div class="fl" style="width: 200px; margin-top: -3px;">
+                                  <Slider v-model="paintObj.opacity" :min="0" :max="1" :step="0.01"></Slider>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>重置</label>
+                                <div class="fl">
+                                  <button class="reset" @click="resetPaint">恢复默认</button>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>显示网格</label>
+                                <div class="fl">
+                                  <div :class="{'u-switch': true, 'u-switch-on': paintObj.showGrid, 'u-switch-off': !paintObj.showGrid}" @click="paintObj.showGrid = !paintObj.showGrid"><div></div></div>
+                                </div>
+                              </div>
+                              <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
+                                <label>缩放比例</label>
+                                <div class="fl" style="width: 200px; margin-top: -3px;">
+                                  <Slider :min="20" :max="200" v-model="paintObj.scale"></Slider>
+                                </div>
+                              </div> -->
+                            </div>
+                          </div>
+                        </div>
                         <div class="m-tabMain full-height flex-1">
                             <div v-show="showStyleTab" class="full-height m-style">
-                                <div class="e-name" v-if="selectedItem.chartType=='text'">
+                                <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
                                     <div class="form-group">
                                         <input v-model="selectedItem.ctName">
                                     </div>
@@ -93,7 +173,7 @@
                                 </div>
 
                                 <!--表格\文本框配置-->
-                                <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border'">
+                                <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
                                     <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                         <label>表头背景色</label>
                                         <div class="color-w200">
@@ -101,31 +181,31 @@
                                         </div>
                                         <!-- <input type="color" v-model="selectedItem.hdBgClr"/> -->
                                     </div>
-                                    <div class="form-group cols2">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
                                         <label>填充色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
                                         <!-- <input type="color" v-model="selectedItem.bgClr"/> -->
                                         </div>
                                     </div>
-                                    <div class="form-group cols2">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
                                         <label>边框色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bdClr" :key="3" type="bdClr" @getdata="getColor"></Vcolor>
                                         </div>
                                         <!-- <input type="color" v-model="selectedItem.bdClr"/> -->
                                     </div>
-                                    <div class="form-group cols2">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
                                         <label>线宽</label>
                                         <select v-model="selectedItem.bdpx">
                                             <option value="0">{{0}}</option>
                                             <option v-for="item in 10" :key="item" :value="item">{{item}}</option>
                                         </select>
                                     </div>
-                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='border'">
+                                    <div class="form-group cols2" v-show="selectedItem.chartType!=='border'">
                                         <label>字号</label>
                                         <select v-model="selectedItem.fontSize">
-                                            <option v-for="(item, index) in defaultFontSize" :key="index">{{item}}</option>
+                                            <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
                                         </select>
                                     </div>
                                     <div class="form-group cols2" v-if="selectedItem.chartType!=='border'">
@@ -135,7 +215,15 @@
                                         </div>
                                         <!-- <input type="color" v-model="selectedItem.clr"/> -->
                                     </div>
-
+                                    <div class="form-group cols2" v-if="selectedItem.chartType=='time'">
+                                      <label>时间格式</label>
+                                      <select v-model="selectedItem.timeType">
+                                        <option value="1">时分秒</option>
+                                        <option value="2">年月日</option>
+                                        <option value="3">年月日+时分</option>
+                                        <option value="4">年月日+时分秒</option>
+                                      </select>
+                                    </div>
                                 </div>
 
                                 <!--进度条-->
@@ -265,7 +353,7 @@
                                         <input type="file" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
                                     </div>
                                 </div>
-                                <div  v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='border')">
+                                <div  v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border')">
                                     <div class="form-group cols2">
                                         <label>数据来源</label>
                                         <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
@@ -301,6 +389,12 @@
                     </div>
                <!-- </div> -->
             </div>
+            <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
+              <label>缩放比例</label>
+              <div class="fl" style="width: 200px; margin-top: -3px;">
+                <Slider :min="20" :max="200" v-model="paintObj.scale"></Slider>
+              </div>
+            </div> -->
         </div>
     <!-- </div> -->
 </div>
@@ -312,7 +406,8 @@ export default EditJs
 </script>
 <style scoped>
 #mainEdit-edit {
-  position: fixed;
+  /* position: fixed; */
+  position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
@@ -324,7 +419,9 @@ export default EditJs
 }
 
 #mainEdit-edit .edit-header {
-  height: 50px;
+  /* height: 50px; */
+  height: 38px;
+  border-bottom: 1px solid #383f54;
 }
 
 #mainEdit-edit .edit-header .simoLink {
@@ -334,14 +431,15 @@ export default EditJs
 }
 
 #mainEdit-edit .edit-title {
-  line-height: 30px;
+  line-height: 36px;
   text-indent: 10px;
+  font-size: 14px;
 }
 
 #mainEdit-edit .edit-body {
   padding: 0;
   overflow: hidden;
-  height: calc(100% - 50px);
+  height: calc(100% - 38px);
 }
 
 .m-left {
@@ -361,6 +459,7 @@ export default EditJs
   background: #1b2031;
   height: 100%;
   z-index: 100;
+  border-left: 2px solid #33394b;
 }
 
 .m-tab {
@@ -376,14 +475,61 @@ export default EditJs
   background: #1b2031;
   color: #0088cc;
 }
-
-.m-tabMain {
+.paint-bg {
+    width: 1920px;
+    height: 1080px;
+    background-size: 100% 100%;
+    transform-origin: top left;
+    transform: scale(1);
+    overflow: hidden;
+    /* width: 100%;
+    height: 100%;
+    position: relative;
+    top: -100%;
+    left: 0;
+    overflow: scroll; */
+    /* background-image: url(http://localhost:9999/mc/home/getImg/false/31); */
+}
+.paint{
+  /* background:#000e15; */
+  /* background: #272c3b; */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* background: url(http://localhost:9999/mc/home/getImg/false/31); */
+  opacity: 0.7;
+}
+.m-tabMain, .paintWrap {
   padding: 15px;
   background: #1b2031;
   overflow: auto;
   margin-bottom: 20px;
 }
-
+.paintWrap .fl {
+  margin-top: 0px;
+}
+.paintWrap input[type='radio'] {
+  margin-right: 26px;
+  margin-top: 25px;
+}
+.paintWrap .form-group{
+  clear: both;
+  height: 30px;
+}
+.paintWrap .form-group > label {
+  width: 48px;
+  float: left;
+  margin-right: 10px !important;
+}
+.paintWrap .form-group .reset, .reset:hover {
+  color: #0088cc;
+  border: 1px solid #0088cc;
+  background: transparent;
+  margin-top: -5px;
+  border-radius: 5px;
+}
 #mainEdit-edit .noSlected .m-tabMain {
   display: none;
 }
@@ -393,8 +539,58 @@ export default EditJs
   font-size: 13px;
 }
 
+#mainEdit-edit .paintWrap {
+  display: none;
+}
+
+#mainEdit-edit .noSlected .paintWrap {
+  display: block;
+}
+
+#mainEdit-edit .base-item {
+  display: block;
+}
+
+#mainEdit-edit .noSlected .base-item {
+  display: none;
+}
+
 .m-main {
   position: relative;
+  /* overflow: hidden; */
+  /* padding: 10px; */
+  /* background: #1b2031; */
+}
+.scaleBox{
+  position: fixed;
+  bottom: 10px;
+  right: 320px;
+  z-index: 999;
+  width: 200px;
+}
+.scaleBox span{
+    position: relative;
+    top: 20px;
+    left: -60px;
+}
+
+#chooseWrap {
+  /* height: 1080px;
+  width: 1920px; */
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat;
+  position: relative;
+    /* background: url('./../../assets/bg.png'); */
+    /* max-height: 1080px;
+    max-width: 1920px;
+    height: 96%;
+    background: #222527;
+    position: relative; */
+}
+
+.gridBg{
+  background: url('./../../assets/bg.png');
 }
 
 #mainEdit-edit .content-side .cs-item {
@@ -429,6 +625,9 @@ export default EditJs
 .content-side .cs-item:nth-child(4n-1) {
   top: -1px;
 }
+.w-70{
+  width: 70px !important;
+}
 .w-90 {
   width: 90px !important;
 }
@@ -453,7 +652,7 @@ export default EditJs
 
 .cols2 select,
 .cols2 input {
-  width: 200px !important;
+  width: 195px !important;
 }
 
 #mainEdit-edit .confData {
@@ -466,6 +665,12 @@ export default EditJs
 
 .m-gap {
   color: #fff;
+}
+.set-map{
+  text-align: center;
+  color: #0088cc;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 #mainEdit-edit .vdr.active:before {
@@ -507,6 +712,11 @@ export default EditJs
   -webkit-box-shadow: 4px 4px 12px rgba(17, 33, 50, 0.5);
   box-shadow: 4px 4px 12px rgba(17, 33, 50, 0.5);
 }
+.menu-list li{
+  height: 30px;
+  line-height: 30px;
+  padding: 0 12px;
+}
 #mainEdit-edit input::-webkit-outer-spin-button,
 #mainEdit-edit input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -522,9 +732,9 @@ export default EditJs
   display: inline-block;
 }
 .color-w200 {
-  width: 200px;
+  width: 195px;
   float: right;
-  margin-right: 5px;
+  margin-right: 7px;
 }
 .color-w70 {
   display: inline-block;
@@ -567,10 +777,6 @@ export default EditJs
 #mainEdit-edit .edit-opt:hover {
   color: #0088cc;
 }
-#mainEdit-edit .newDrag2 .comp-item {
-  float: left;
-  position: absolute;
-}
 /* 框选区域样式 */
 #bottom {
   position: absolute;
@@ -589,5 +795,43 @@ export default EditJs
   height: 0;
   /* filter:alpha(opacity: 10); */
   opacity: 0.3;
+}
+
+.chooseBgImg {
+  width: 170px;
+  height: 120px;
+  background: #272c3b;
+  text-align: center;
+  color: #7d8eb9 !important;
+  position: relative;
+}
+.chooseBgImg i {
+  font-size: 66px;
+  line-height: 1.4;
+}
+.chooseBgImg .uploadBg {
+    width: 170px;
+    height: 120px !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none !important;
+    opacity: 0;
+}
+/* slider */
+.el-slider__runway {
+  height: 40x;
+  border-radius: 2px;
+  margin: 10px 0;
+}
+.el-slider__bar {
+  height: 40x;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  background-color: #7d8eb9 !important;
+}
+.el-slider__button {
+  border: 1px solid gray;
+  background-color: #7d8eb9;
 }
 </style>

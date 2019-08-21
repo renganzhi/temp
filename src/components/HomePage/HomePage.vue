@@ -24,9 +24,16 @@
         <span @click="fullScreen"
               class="ring-icon"
               :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+
       </div>
       <div class="fr btn-box"
            v-show="pageSize>1">
+        <!-- <el-tooltip class="item"
+                    effect="dark"
+                    content="Right Top 提示文字"
+                    placement="right-start">
+          2123123
+        </el-tooltip> -->
         <span @click="prev"
               class="ring-icon"
               :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
@@ -46,9 +53,10 @@
 import { baseData } from '@/config/settings'
 import DragBox from './../Common/DragBox'
 import Public from '#/js/public'
+import { Notification } from 'element-ui'
 export default {
   name: 'HomePage',
-  components: { DragBox },
+  components: { DragBox, Notification },
   data () {
     return {
       isFullScreen: false,
@@ -256,7 +264,7 @@ export default {
     /* 缩放 */
     setScale: function () {
       // var $el = $(this.$el);
-      // var $el = document.getElementById('home-html');
+      // var $el = document.getElementById('home-html')
       var $el = $('#home-html')
       var w = $el.width()
       var h = $el.height()
@@ -264,7 +272,7 @@ export default {
       var scaleY = h / baseData.home.h
       var scale = Math.min(scaleX, scaleY)
       var mrg = 0
-      if (scaleX < 1) {
+      if (scaleX <= 1) {
         mrg = [0, (w - baseData.home.w * scale) / 2 + 'px'].join(' ')
       }
       $el.find('.pagebox').css({
@@ -283,7 +291,13 @@ export default {
   },
   mounted: function () {
     this.getPageData()
+    Notification({
+      message: '鼠标移动到左/右下角对大屏操作',
+      position: 'bottom-right',
+      customClass: 'toast toast-info'
+    })
     // titleShow('top', $('#home-html'));
+    // $('#home-html').tooltip()
     $(window).off('resize.homescale').on('resize.homescale', () => {
       this.setScale()
     })

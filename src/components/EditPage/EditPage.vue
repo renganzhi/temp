@@ -1,9 +1,7 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
   <div id="editHome-wrap"
-       tabindex="-1"
        style="padding: 10px">
-
     <AddPage :showModal="addPage"
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
@@ -13,6 +11,10 @@
              :viewId="viewId"
              :pageData="pageData"
              @hidePreview="hidePreview"></PreView>
+    <Confirm :showModal="showDelModal"
+             :message="'删除操作不可恢复，是否继续？'"
+             :okText="'是'"
+             @hideModal="sureDel"></Confirm>
     <div class="wrap-dialog">
       <div class="wrap-content">
         <div class="wrap-body flex flex-vertical">
@@ -78,18 +80,21 @@
 import qs from 'qs'
 import AddPage from './AddPage'
 import PageSetting from './PageSetting'
-import SettingPage from './SettingPage'
 import PreView from './../PreView/PreView'
 import { gbs } from '@/config/settings'
+import Confirm from './../Common/Confirm'
+import { Notification } from 'element-ui'
 export default {
   name: 'editPage',
-  components: { AddPage, SettingPage, PreView, PageSetting },
+  components: { AddPage, PreView, PageSetting, Confirm, Notification },
   data () {
     return {
       baseUrl: gbs.host,
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
+      showDelModal: false, // 确认删除
+      delId: -1,
       addPage: false, // 新增页面
       pageSetting: false, // 设置
       viewPage: false, // 预览
@@ -108,7 +113,12 @@ export default {
         if (res.success) {
           this.pageList = res.obj
         } else {
-          // tooltip("", res.msg, "error");
+          // tooltip('', res.msg, 'error')
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -147,6 +157,11 @@ export default {
           this.search()
         } else {
           // tooltip("", res.msg, "error");
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -167,13 +182,8 @@ export default {
       })
     },
     del (item) {
-      this.axios.delete('home/homePage/deleteById/' + item.id).then((res) => {
-        if (res.success) {
-          this.search()
-        } else {
-          // tooltip("", res.msg, "error");
-        }
-      })
+      this.showDelModal = true
+      this.delId = item.id
       // $.api.view.confirm({
       //   showCancel: false,
       //   showNo: true,
@@ -190,6 +200,23 @@ export default {
       //     }
       //   }
       // });
+    },
+    sureDel (data) {
+      this.showDelModal = false
+      if (data && data.sure === '1') {
+        this.axios.delete('home/homePage/deleteById/' + this.delId).then((res) => {
+          if (res.success) {
+            this.search()
+          } else {
+            // tooltip("", res.msg, "error");
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          }
+        })
+      }
     },
     changeEdit (index) {
       this.editName = this.pageList[index].name
@@ -220,6 +247,11 @@ export default {
         this.axios.post('home/homePage/edit', qs.stringify(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
           .then((res) => {
             item.name = this.editName
+            Notification({
+              message: '操作成功！',
+              position: 'bottom-right',
+              customClass: 'toast toast-success'
+            })
           })
       }
       this.editIndex = -1

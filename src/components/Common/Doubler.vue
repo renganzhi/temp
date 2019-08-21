@@ -1,5 +1,5 @@
 <template>
-  <div style="text-align: center;height: 100%;overflow: hidden">
+  <div style="text-align: center; height: 100%; overflow: hidden">
     <div>
       <span v-for="(num,index) in numArr"
             :key="index"

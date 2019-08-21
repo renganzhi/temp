@@ -9,9 +9,14 @@ import VueAxios from 'vue-axios'
 import VCharts from 'v-charts'
 import axios from './../config/axios-init'
 import '#/icon/iconfont.css'
+import '#/font/asn/icon.css'
+// import { Slider, Notification, Tooltip, Dialog } from 'element-ui'
+// import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(VueAxios, axios)
 Vue.use(VCharts)
+// Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

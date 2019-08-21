@@ -5,6 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
+import levelMapName from './enum'
 function Topology (opt, topoId) {
     this.defaultConfig = {
         width : 64,
@@ -68,31 +69,57 @@ function addUnit(value, unit, index) {
                 return '--'
             }
     }
-
-    function duringTime(t, unit) {
-        var arr = ['天', '时', '分', '秒', '厘秒', '毫秒'];
-        var gap = [24, 60, 60, 100, 1000];
-        var time = [null, null, null, null, null];
-        unit = unit || '秒';
-        var index = arr.indexOf(unit);
-        if (t === 0) {
-            return t + unit;
-        }
-        for (var i = index; i >= 0; i--) {
-            if (t <= 0) {
-                break;
-            }
-            if (i == 0) {
-                time[0] = t + arr[i];
-                break;
-            }
-            time[i] = t % gap[i - 1] + arr[i];
-            t = Math.floor(t / gap[i - 1]);
-        }
-
-        return time.join('');
-    }
 }
+
+
+    // 保留两位小数，byte 转换 成其他
+    function bytesToSize(bytes, index) {
+        if(bytes === 'undefined' || bytes === 'NaN' || bytes === 'null' || bytes === false){
+            return '--';
+        }
+    
+        if(Number(bytes) !== 0  && !Number(bytes)) {
+            return bytes;
+        }
+        bytes = Number(bytes);
+        var sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        if(bytes >0) {
+            var k = 1024;
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            if(i < 0) {
+                return bytes.toFixed(2) + ' ' + sizes[index || 0];
+            }
+            return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[index ? i + index : i];
+        }else if(bytes === 0){
+            return '0 '+ sizes[index || 0];
+        }else{
+            return bytes;
+        }
+    }
+    
+        function duringTime(t, unit) {
+            var arr = ['天', '时', '分', '秒', '厘秒', '毫秒'];
+            var gap = [24, 60, 60, 100, 1000];
+            var time = [null, null, null, null, null];
+            unit = unit || '秒';
+            var index = arr.indexOf(unit);
+            if (t === 0) {
+                return t + unit;
+            }
+            for (var i = index; i >= 0; i--) {
+                if (t <= 0) {
+                    break;
+                }
+                if (i == 0) {
+                    time[0] = t + arr[i];
+                    break;
+                }
+                time[i] = t % gap[i - 1] + arr[i];
+                t = Math.floor(t / gap[i - 1]);
+            }
+    
+            return time.join('');
+        }
 
 Topology.prototype = {
     constructor : Topology,
@@ -764,7 +791,7 @@ Topology.prototype = {
             }
             $
                     .ajax({
-                        url : "/monitor/ne/view/" + d.neId,
+                        url : gbs.host + "/monitor/ne/view/" + d.neId,
                         dataType : "json",
                         data : {
                             indicatorNames : indicatorNames.length > 0
@@ -1369,7 +1396,7 @@ Topology.prototype = {
     },
     setNodeImg : function(d) {
         if(d.iconId) {
-            return '/monitor/topo/getIcon/' + d.iconId + '/' + (d.runStatus || 'Loading');
+            return gbs.host + '/monitor/topo/getIcon/' + d.iconId + '/' + (d.runStatus || 'Loading');
         }
     },
     updateNodeText : function(selection) {

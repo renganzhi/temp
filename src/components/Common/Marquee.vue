@@ -1,16 +1,12 @@
 <template>
-  <div>
-    这里是暂存的一个空组件模板
-
-    <!-- <template>
-  <div class="wrap"
-       :key="item.id + marqueeKey"
+  <!-- :key="item.id + marqueeKey" -->
+  <div class="text-wrap"
        :style="wrapStyle">
-    <div :style="boxStyle">
+    <div class="test"
+         :style="boxStyle">
       <textarea ref="marqueeText"
                 :style="textStyle"
                 v-model="item.ctName"
-                @blur="remove"
                 :disabled="dis"
                 @keydown="checkEnter"></textarea>
     </div>
@@ -28,6 +24,7 @@ export default {
     return {
       intervalId: 0,
       marqueeKey: new Date().getTime(),
+      speed: 10,
       distance: 0,
       offsetWidth: 0, // 内容改变之后与原始长度的偏移量
       textWidth: 0 // 字体长度
@@ -38,10 +35,14 @@ export default {
       this.stopmove()
       this.$refs.marqueeText.focus()
     },
+    initMove () {
+      this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
+      this.speed = parseInt((this.textWidth + this.item.width) / 60)
+    },
     // 该方法在大屏展示时，因为缩放的原因所以会有问题
     move () {
       // 获取文字text的计算后宽度 由于overflow的存在，直接获取不到，需要独立的div计算
-      this.textWidth = this.$refs.hideText.getBoundingClientRect().width
+      this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20
       this.distance = 0 // 位移距离
       this.stopmove()
       // 设置位移
@@ -91,8 +92,11 @@ export default {
     },
     boxStyle: function () {
       return {
-        width: '1000%',
-        transform: 'translateX(' + this.distance + 'px)'
+        width: this.textWidth + 'px',
+        animation: 'textMove linear ' + this.speed + 's infinite',
+        position: 'relative',
+        left: '100%'
+        // transform: 'translateX(' + this.distance + 'px)'
       }
     },
     wrapStyle: function () {
@@ -100,6 +104,7 @@ export default {
         width: this.item.width + 'px !important',
         height: this.item.height + 'px !important',
         overflow: 'hidden',
+        display: 'block',
         backgroundColor: this.item.bgClr + ' !important',
         border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important',
         boxSizing: 'border-box'
@@ -107,7 +112,7 @@ export default {
     },
     textStyle: function () {
       return {
-        //    width:this.item.width+'px !important',
+        width: this.textWidth + 20 + 'px !important',
         //    height:this.item.height+'px !important',
         color: this.item.clr + ' !important',
         border: 'none !important',
@@ -123,40 +128,48 @@ export default {
         whiteSpace: 'nowrap',
         float: 'left',
         opacity: 0
+        // opacity: 1,
+        // zIndex: 1000,
+        // position: 'absolute'
       }
     }
   },
   watch: {
+    textWidth: function () {
+      this.$nextTick(() => {
+        this.speed = parseInt((this.textWidth + this.item.width) / 60)
+      })
+    },
     'item.fontSize': function () {
       this.$nextTick(() => {
-        this.textWidth = this.$refs.hideText.getBoundingClientRect().width
+        this.initMove()
       })
     },
     'item.ctName': function (newV, oldV) {
       this.$nextTick(() => {
-        this.textWidth = this.$refs.hideText.getBoundingClientRect().width
+        this.initMove()
       })
     }
   },
   mounted: function () {
-    this.move()
+    // this.move()
+    this.initMove()
   },
   beforeDestroy: function () {
     this.stopmove()
   }
 }
-</script> -->
+</script>
 
-  </div>
-</template>
-<script>
-export default {
-  name: 'name',
-  props: [],
-  data () {
-    return {
-
-    }
+<style>
+@keyframes textMove {
+  from {
+    left: 100%;
+    transform: translateX(0);
+  }
+  to {
+    left: 0px;
+    transform: translateX(-100%);
   }
 }
-</script>
+</style>

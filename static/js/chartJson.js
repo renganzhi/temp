@@ -70,15 +70,39 @@ var morenData = {
     ]
   },
   time: {
-    columns: ['日期', '指标值'],
+    columns: ['日期', 'CPU核心利用率', 'CPU平均利用率'],
     unit: '%',
     rows: [
-      { 日期: '2018-01-01', 指标值: 60 },
-      { 日期: '2018-01-02', 指标值: 70 },
-      { 日期: '2018-01-03', 指标值: 80 },
-      { 日期: '2018-01-05', 指标值: 90 },
-      { 日期: '2018-01-06', 指标值: 82 },
-      { 日期: '2018-01-07', 指标值: 66 }
+      {
+        日期: '2018-01-01',
+        CPU核心利用率: 15,
+        CPU平均利用率: 15
+      },
+      {
+        日期: '2018-01-02',
+        CPU核心利用率: 80,
+        CPU平均利用率: 50
+      },
+      {
+        日期: '2018-01-03',
+        CPU核心利用率: 40,
+        CPU平均利用率: 6
+      },
+      {
+        日期: '2018-01-05',
+        CPU核心利用率: 45,
+        CPU平均利用率: 70
+      },
+      {
+        日期: '2018-01-06',
+        CPU核心利用率: 10,
+        CPU平均利用率: 40
+      },
+      {
+        日期: '2018-01-07',
+        CPU核心利用率: 95,
+        CPU平均利用率: 50
+      }
     ]
   },
   guage: {
@@ -169,6 +193,7 @@ var compsArr = [
   },
   {
     text: '柱状图',
+    colorful: false,
     imgClass: 'icon-n-histogram',
     chartType: 've-histogram',
     chartData: morenData.pie
@@ -251,6 +276,7 @@ var compsArr = [
     bgClr: '',
     clr: '#919cc1',
     bdClr: '#c2c6d7',
+    bdpx: 0,
     chartData: morenData.table
   },
   {
@@ -265,18 +291,18 @@ var compsArr = [
     bdClr: '#3d445a',
     ctName: '请输入文本框内容'
   },
-  /* {
-    text:'跑马灯',
-    imgClass:'icon-n-text',
-    chartType:'marquee',
-    width:200,
-    height:50,
-    bdpx:0,
-    bgClr:'',
-    clr:'#c2c6d7',
-    bdClr:'',
-    ctName: '跑马灯'
-}, */
+  {
+    text: '跑马灯',
+    imgClass: 'icon-n-text',
+    chartType: 'marquee',
+    width: 200,
+    height: 50,
+    bdpx: 0,
+    bgClr: '',
+    clr: '#c2c6d7',
+    bdClr: '',
+    ctName: '这是一个跑马灯的演示demo，双击可对文案进行编辑'
+  },
   {
     text: '进度条',
     imgClass: 'icon-n-progress',
@@ -324,9 +350,20 @@ var compsArr = [
     chartType: 'border',
     width: 300,
     height: 300,
-    bdpx: 0,
-    bgClr: 'rgba(17, 22, 35, 0.38)',
-    bdClr: ''
+    bdpx: 1,
+    bgClr: 'rgba(255, 255, 255, 0.02)',
+    bdClr: '#175278'
+  },
+  {
+    text: '时间器',
+    imgClass: 'icon-n-doubler',
+    chartType: 'time',
+    width: 200,
+    height: 50,
+    fontSize: 12,
+    clr: '#666f8b',
+    timeFrom: 'local',
+    timeType: '1'
   }
 ]
 

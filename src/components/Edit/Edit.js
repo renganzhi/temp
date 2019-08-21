@@ -1,20 +1,24 @@
 import compsArr from '#/js/chartJson'
 import DragBox from './../Common/DragBox'
+import Compose from './../Common/Compose'
 import Select2 from './../Common/Select2'
 import Vcolor from './../Common/Vcolor'
 import PreView from './../PreView/PreView'
 import { baseData, gbs } from '@/config/settings'
-import html2canvas from 'html2canvas'
+import { Slider, Notification } from 'element-ui'
+// import html2canvas from 'html2canvas' // 图片的层级总是要高一些
 import qs from 'qs'
 import lodash from 'lodash'
 
 export default {
   name: 'edit',
-  components: { DragBox, Select2, Vcolor, PreView },
+  components: { DragBox, Compose, Select2, Vcolor, PreView, Slider },
   props: [],
   data: function () {
     return {
       pageId: 0,
+      value2: 0.5,
+      oldCheckId: '', // 优化每次选中都会触发请求接口，仅在切换元件时才请求
       viewPage: false,
       pageData: '',
       compsArr: compsArr,
@@ -27,19 +31,63 @@ export default {
       selectedItem: {},
       selectedIndex: null,
       chartNum: [],
+      miniW: 10,
+      minIndex: 500, // 当前最低层级
+      maxIndex: 500, // 当前最高层级
+      paintObj: {
+        width: 1920,
+        height: 1080,
+        bgColor: '',
+        bgImg: '',
+        scale: 100,
+        bgStyle: '3', // 背景图铺满方式
+        opacity: 1,
+        showGrid: true // 显示网格
+      },
       ceditable: true, // 组合
       combinList: [], // 组合的数组
       chooseItems: [], // ctrl选中的元件
-      chooseIndexs: [], // ctrl选中的元件在chartNum中的序号
+      chooseIndexs: [], // ctrl选中的单个元件在chartNum中的序号
+      chooseCompIndexs: [], // ctrl选中的组合元件的序号
       onCtrl: false, // 是否按住ctrl
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
-      defalutColors: ['#37a2da', '#32c5e9', '#67e0e3', '#9fe6b8', '#ffdb5c', '#ff9f7f', '#fb7293', '#e062ae', '#e690d1', '#e7bcf3', '#9d96f5', '#8378ea', '#96bfff'],
-      defGradColors: ['#37a2da', '#32c5e9', '#67e0e3', '#9fe6b8', '#ffdb5c', '#ff9f7f', '#fb7293', '#e062ae', '#e690d1', '#e7bcf3', '#9d96f5', '#8378ea', '#96bfff'],
-      syst: { // 系统数据
+      defalutColors: [
+        '#37a2da',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c',
+        '#ff9f7f',
+        '#fb7293',
+        '#e062ae',
+        '#e690d1',
+        '#e7bcf3',
+        '#9d96f5',
+        '#8378ea',
+        '#96bfff'
+      ],
+      defGradColors: [
+        '#37a2da',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c',
+        '#ff9f7f',
+        '#fb7293',
+        '#e062ae',
+        '#e690d1',
+        '#e7bcf3',
+        '#9d96f5',
+        '#8378ea',
+        '#96bfff'
+      ],
+      syst: {
+        // 系统数据
         urlSel: [], // 接口下拉列表，根据不同的图形类型有不同的接口
         curUrl: [], // 缓存当前选中的接口params中需要配置的数据
-        curConf: { // 缓存当前配置的系统数据，用于请求数据
+        curConf: {
+          // 缓存当前配置的系统数据，用于请求数据
           url: '',
           params: {} // 请求发送给后端的数据
         },
@@ -70,15 +118,43 @@ export default {
     }
   },
   computed: {
-    isEcharts: function () {
-      return this.selectedItem.chartType && this.selectedItem.chartType.indexOf('ve-') !== -1
+    paintStyle: function () {
+      var type = this.paintObj.bgStyle
+      if (type === '1') {
+        var backgroundSize = '100% auto'
+      } else if (type === '2') {
+        backgroundSize = 'auto 100%'
+      } else {
+        backgroundSize = '100% 100%'
+      }
+      return {
+        backgroundImage: this.paintObj.bgImg
+          ? 'url(' + gbs.host + this.paintObj.bgImg + ')'
+          : '',
+        backgroundColor: this.paintObj.bgColor,
+        backgroundSize: backgroundSize,
+        opacity: this.paintObj.opacity
+      }
     },
-    showLengendConf: function () { // 对部分
+    isEcharts: function () {
+      return (
+        this.selectedItem.chartType &&
+        this.selectedItem.chartType.indexOf('ve-') !== -1
+      )
+    },
+    showLengendConf: function () {
+      // 对部分
       var type = this.selectedItem.chartType
       return type !== 've-gauge'
     },
-    alertLevel: function () { // 告警的接口需要展示系统配置的告警色，当数据为系统数据时，颜色不可以修改
-      if (this.selectedItem && this.selectedItem.chartData && this.selectedItem.chartData.colors && this.selectedItem.ctDataSource === 'system') {
+    alertLevel: function () {
+      // 告警的接口需要展示系统配置的告警色，当数据为系统数据时，颜色不可以修改
+      if (
+        this.selectedItem &&
+        this.selectedItem.chartData &&
+        this.selectedItem.chartData.colors &&
+        this.selectedItem.ctDataSource === 'system'
+      ) {
         return false
       }
       return true
@@ -88,9 +164,19 @@ export default {
     gerPageConf (id) {
       // 获取当前页的配置
       // home/homePage/getById
-      this.axios.get(`home/homePage/getById/${id}`).then((res) => {
+      this.axios.get(`home/homePage/getById/${id}`).then(res => {
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
+          this.pageName = res.obj.name
+          let tempNum = this.chartNum
+          for (let i = 0, len = tempNum.length; i < len; i++) {
+            tempNum[i].zIndex > this.maxIndex
+              ? (this.maxIndex = tempNum[i].zIndex)
+              : ''
+            tempNum[i].zIndex < this.minIndex
+              ? (this.minIndex = tempNum[i].zIndex)
+              : ''
+          }
         } else {
           this.chartNum = []
         }
@@ -98,23 +184,28 @@ export default {
     },
     initChart (value) {
       this.showStyleTab = true
-      var obj = $.extend(true, {}, {
-        id: new Date().getTime(),
-        ctName: value.text,
-        ctLegendShow: 'true',
-        x: 400,
-        y: 100,
-        width: 350,
-        height: 350,
-        colorType: 'defalut',
-        ctColors: this.defalutColors.concat(),
-        ctDataSource: 'static', // 数据来源system\static，默认static
-        url: '', // 请求接口
-        params: {}, // 请求接口参数
-        bdpx: 1, // 边框线宽
-        fontSize: 12, // 字号
-        lineArea: false // 折线是否为区域
-      }, value)
+      var obj = $.extend(
+        true,
+        {},
+        {
+          id: new Date().getTime(),
+          ctName: value.text,
+          ctLegendShow: 'true',
+          x: 400,
+          y: 100,
+          width: 350,
+          height: 350,
+          colorType: 'defalut',
+          ctColors: this.defalutColors.concat(),
+          ctDataSource: 'static', // 数据来源system\static，默认static
+          url: '', // 请求接口
+          params: {}, // 请求接口参数
+          bdpx: 1, // 边框线宽
+          fontSize: 12, // 字号
+          lineArea: false // 折线是否为区域
+        },
+        value
+      )
 
       delete obj.className
       delete obj.text
@@ -152,7 +243,13 @@ export default {
     fullScreen: function () {
       // Public.bigScreenfullScreen($('#home-html').get(0));
     },
-    cancelSelected (event) { // 取消其他selected
+    clickPaint (event) {
+      if (!window.event.ctrlKey) {
+        this.cancelSelected(event)
+      }
+    },
+    cancelSelected (event) {
+      // 取消其他selected
       $.each(this.chartNum, function (i, d) {
         d.slted = false
       })
@@ -164,43 +261,59 @@ export default {
       }
       this.chooseItems = []
       this.chooseIndexs = []
-      this.onCtrl = false
+      this.chooseCompIndexs = []
+      // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
-      if (!this.onCtrl) {
+      // console.log(window.event.ctrlKey)
+      // console.log(ev)
+      if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
       item.slted = this.editable && true
       this.selectedItem = item
       this.testObj = JSON.parse(JSON.stringify(item))
-      if (ev === 'down' && item.ctDataSource === 'system') {
-        this.getUrlByType(true)
+      if (type === 'compose') {
+        this.combinList[i].slted = this.editable && true
+        if (this.chooseCompIndexs.indexOf(i) === -1) {
+          this.chooseCompIndexs.push(i)
+          // this.chooseItems.push(this.chartNum[i])
+        }
+      } else {
+        if (this.chooseIndexs.indexOf(i) === -1) {
+          this.chooseIndexs.push(i)
+          this.chooseItems.push(this.chartNum[i])
+        }
+      }
+      if (this.oldCheckId !== item.id) {
+        // 切换选中的元件
+        this.oldCheckId = item.id
+        if (ev === 'down' && item.ctDataSource === 'system') {
+          this.getUrlByType(true)
+        }
       }
       this.$nextTick(function () {
         // titleShow('bottom', $('.m-right'));
       })
-      if (this.chooseIndexs.indexOf(i) === -1) {
-        this.chooseIndexs.push(i)
-        this.chooseItems.push(this.chartNum[i])
-      }
-      if (type === 'compose') {
-        this.combinList[i].slted = this.editable && true
-      }
     },
     bindCtrl: function () {
       console.log('按住ctrl键')
-      this.onCtrl = true // 按住ctrl键
+      // this.onCtrl = true // 按住ctrl键
     },
     addToCompose: function () {
-      // console.log(this.chooseItems);
+      // console.log(this.chooseItems)
       this.compose(this.chooseItems)
     },
-    // 元件组合 有待调整，也许会用于支持组合之后的再组合
+    // 单层元件组合 有待调整，也许会用于支持组合之后的再组合
     compose: function (arr) {
-      var leftIndex = 0, _left = arr[0].x
-      var rightIndex = 0, _right = arr[0].x + arr[0].width
-      var topIndex = 0, _top = arr[0].y
-      var bottomIndex = 0, _bottom = arr[0].y + arr[0].height
+      var leftIndex = 0,
+        _left = arr[0].x
+      var rightIndex = 0,
+        _right = arr[0].x + arr[0].width
+      var topIndex = 0,
+        _top = arr[0].y
+      var bottomIndex = 0,
+        _bottom = arr[0].y + arr[0].height
       // 获取合并之后的组件的范围
       for (var i = 1, len = arr.length; i < len; i++) {
         if (arr[i].x < _left) {
@@ -225,16 +338,21 @@ export default {
         arr[i].left = arr[i].x - _left
         arr[i].top = arr[i].y - _top
       }
-      var newObj = $.extend(true, {}, {
-        id: new Date().getTime(),
-        ctLegendShow: 'true',
-        x: _left,
-        y: _top,
-        width: _right - _left,
-        height: _bottom - _top,
-        // slted: false,
-        child: []
-      }, {})
+      var newObj = $.extend(
+        true,
+        {},
+        {
+          id: new Date().getTime(),
+          ctLegendShow: 'true',
+          x: _left,
+          y: _top,
+          width: _right - _left,
+          height: _bottom - _top,
+          // slted: false,
+          child: []
+        },
+        {}
+      )
       newObj.slted = false
       this.combinList.push(newObj)
       this.combinList[this.combinList.length - 1].child = arr.concat()
@@ -261,18 +379,58 @@ export default {
       })
       this.combinList.splice(index, 1)
     },
+    // 下移
+    downward: function () {
+      // this.selectedItem.zIndex -= 1
+      var z = this.selectedItem.zIndex || 500
+      this.$set(this.selectedItem, 'zIndex', z - 1)
+      if (z - 1 < this.minIndex) {
+        this.minIndex = z - 1
+      }
+    },
+    // 上移
+    upward: function () {
+      // this.selectedItem.zIndex += 1
+      var z = this.selectedItem.zIndex || 500
+      this.$set(this.selectedItem, 'zIndex', z + 1)
+      if (z + 1 > this.maxIndex) {
+        this.maxIndex = z + 1
+      }
+    },
+    toBottom: function () {
+      this.minIndex--
+      this.$set(this.selectedItem, 'zIndex', this.minIndex)
+    },
+    toTop: function () {
+      this.maxIndex++
+      this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+    },
     resized: function (item) {
       this.testObj.width = item.width
       this.testObj.height = item.height
       this.testObj.x = item.left
       this.testObj.y = item.top
     },
-    addColor () { // 添加颜色
+    resetPaint () {
+      this.paintObj.bgColor = ''
+      this.paintObj.bgImg = ''
+      this.paintObj.bgStyle = '3'
+      this.paintObj.opacity = 1
+      this.paintObj.showGrid = true
+    },
+    addColor () {
+      // 添加颜色
       this.selectedItem.ctColors.push(['#c23531', '#c23531'])
     },
-    delColor (index) { // 删除自定义颜色
+    delColor (index) {
+      // 删除自定义颜色
       if (this.selectedItem.ctColors.length === 1) {
         // // tooltip('', '至少配置一种颜色', 'info');
+        Notification({
+          message: '至少配置一种颜色',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       this.selectedItem.ctColors.splice(index, 1)
@@ -289,10 +447,14 @@ export default {
         this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
       }
     },
-    chgDataSource: function ($event, flag) { // 改变数据来源
-      $event && this.selectedItem.ctDataSource === 'system' && this.getUrlByType()
+    chgDataSource: function ($event, flag) {
+      // 改变数据来源
+      $event &&
+        this.selectedItem.ctDataSource === 'system' &&
+        this.getUrlByType()
     },
-    dealTypeStr: function () { // 根据需求传值给后端对应的接口
+    dealTypeStr: function () {
+      // 根据需求传值给后端对应的接口
       var type = this.selectedItem.chartType
       if (type.indexOf('ve-') !== -1) {
         if (type === 've-gauge') {
@@ -304,39 +466,52 @@ export default {
       }
       return type
     },
-    async getUrlByType (flag) { // 根据选中图标类型获取可以配置的接口
+    getUrlByType (flag) {
+      // 根据选中图标类型获取可以配置的接口
       var _this = this
-      // $.ajax({
-      //   url: 'home/getUrl',
-      //   data: {
-      //     typeStr: this.dealTypeStr(),
-      //   },
-      //   async: false,
-      //   success: function (data) {
-      //     _this.$set(_this.syst, 'urlSel', data.obj || []);
-      //     _this.$nextTick(function () {
-      //       _this.syst.urlSel.length && _this.chgUrl(flag);
-      //     })
-      //   }
-      // });
-      var _type = this.dealTypeStr()
-      await this.axios.get('home/getUrl?typeStr=' + _type).then((data) => {
-        this.$set(this.syst, 'urlSel', data.obj || [])
-        this.$nextTick(function () {
-          _this.syst.urlSel.length && _this.chgUrl(flag)
-        })
+      $.ajax({
+        url: gbs.host + 'home/getUrl',
+        data: {
+          typeStr: this.dealTypeStr()
+        },
+        async: false,
+        success: function (data) {
+          _this.$set(_this.syst, 'urlSel', data.obj || [])
+          _this.$nextTick(function () {
+            _this.syst.urlSel.length && _this.chgUrl(flag)
+          })
+        },
+        error: function () {
+          Notification({
+            message: '连接错误！',
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
+        }
       })
+      // 这个接口不想出现弹出层所以用ajax
+      // var _type = this.dealTypeStr()
+      // await this.axios.get('home/getUrl?typeStr=' + _type).then((data) => {
+      //   this.$set(this.syst, 'urlSel', data.obj || [])
+      //   this.$nextTick(function () {
+      //     _this.syst.urlSel.length && _this.chgUrl(flag)
+      //   })
+      // })
     },
     // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
     chgUrl (flag) {
       var _this = this
-      var chainP = this.syst.chainParams = {} // 将需要联动的字段缓存
+      var chainP = (this.syst.chainParams = {}) // 将需要联动的字段缓存
       var index = -1
 
       if (typeof flag === 'boolean') {
-        var selectedP = this.syst.curConf.params = $.extend(true, {}, this.selectedItem.params)
+        var selectedP = (this.syst.curConf.params = $.extend(
+          true,
+          {},
+          this.selectedItem.params
+        ))
         index = _.findIndex(this.syst.urlSel, function (o) {
-          return (o.url === _this.selectedItem.url)
+          return o.url === _this.selectedItem.url
         })
       } else {
         selectedP = this.syst.curConf.params = {}
@@ -346,7 +521,10 @@ export default {
 
       if (index === -1) {
         if (this.selectedItem.url || typeof flag !== 'boolean') {
-          index = this.$refs.urlSel.selectedIndex === -1 ? 0 : this.$refs.urlSel.selectedIndex
+          index =
+            this.$refs.urlSel.selectedIndex === -1
+              ? 0
+              : this.$refs.urlSel.selectedIndex
         } else {
           index = 0
         }
@@ -357,9 +535,10 @@ export default {
 
       this.syst.curUrl = []
       this.$nextTick(function () {
-        var api = _this.syst.curUrl = urlsel.params
+        var api = (_this.syst.curUrl = urlsel.params)
         $.each(api, function (i, d) {
-          if (d.dataType === 'remote') { // 需要通过请求拿数据
+          if (d.dataType === 'remote') {
+            // 需要通过请求拿数据
             var postData = {}
             if (d.params) {
               $.each(d.params, function (j, o) {
@@ -375,6 +554,13 @@ export default {
               success: function (data) {
                 d.data = data.obj || []
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
+              },
+              error: function () {
+                Notification({
+                  message: '连接错误！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
               }
             })
           }
@@ -384,9 +570,12 @@ export default {
       })
     },
     setFirstV: function (d) {
-      this.syst.curConf.params[d.key] = !d.notNull ? null : ((d.data.length && d.data[0].value) || null)
+      this.syst.curConf.params[d.key] = !d.notNull
+        ? null
+        : (d.data.length && d.data[0].value) || null
     },
-    chgSelects (v) { // 需要判断是否有改变联动下拉框的值，需要重新请求
+    chgSelects (v) {
+      // 需要判断是否有改变联动下拉框的值，需要重新请求
       var _this = this
       var cur = this.syst.curConf.params
       var chaip = this.syst.chainParams
@@ -395,10 +584,13 @@ export default {
         var index = d.params.indexOf(v.key)
         if (index !== -1) {
           var flag = false
-          var grp = $('#mainSystemConf').find('[name="' + i + '"]').closest('.form-group')
+          var grp = $('#mainSystemConf')
+            .find('[name="' + i + '"]')
+            .closest('.form-group')
           $.each(d.params, function (j, o) {
             postData[o] = cur[o]
-            if (chaip[o] && chaip[o].params && v.key !== chaip[o].key) { // 避免重复请求
+            if (chaip[o] && chaip[o].params && v.key !== chaip[o].key) {
+              // 避免重复请求
               flag = chaip[o].params.indexOf(v.key) !== -1
             }
           })
@@ -416,7 +608,7 @@ export default {
               //  console.log(v.key,d.dataUrl,postData);
             }
           }) */
-          await _this.axios.get(d.dataUrl, { params: postData }).then((data) => {
+          await _this.axios.get(d.dataUrl, { params: postData }).then(data => {
             data.obj = data.obj || []
             d.data.splice(0, d.data.length)
             d.data = data.obj
@@ -425,7 +617,8 @@ export default {
         }
       })
     },
-    getUrlData () { // 根据接口获取数据更新图表
+    getUrlData () {
+      // 根据接口获取数据更新图表
       var _this = this
       var curConf = this.syst.curConf
       var param = curConf.params
@@ -451,6 +644,13 @@ export default {
           _this.selectedItem.url = curConf.url
           _this.selectedItem.method = curConf.method
           _this.selectedItem.params = param
+        },
+        error: function () {
+          Notification({
+            message: '连接错误！',
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
       /* this.axios({
@@ -470,7 +670,8 @@ export default {
         _this.selectedItem.params = param
       }) */
     },
-    saveTopoConf: function (param) { // 拓扑与其他组件不同，需要特殊处理
+    saveTopoConf: function (param) {
+      // 拓扑与其他组件不同，需要特殊处理
       this.selectedItem.tpId = param.topoId
     },
     dataChange () {
@@ -485,22 +686,46 @@ export default {
             this.selectedItem.chartData = $.api.utils.json.format(textData)
           } catch (err) {
             // tooltip('', '请输入正确的JSON格式的数据', 'info')
+            Notification({
+              message: '请输入正确的JSON格式的数据',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
           }
         } else {
           // tooltip('', '请输入正确的JSON格式的数据', 'info')
+          Notification({
+            message: '请输入正确的JSON格式的数据',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
         }
       }
     },
-    saveConf: function (event, cb) { // 保存
-      if (!(!this.widthVali.isShowError && !this.heightVali.isShowError && !this.xVali.isShowError && !this.yVali.isShowError)) {
+    saveConf: function (event, cb) {
+      // 保存
+      if (
+        !(
+          !this.widthVali.isShowError &&
+          !this.heightVali.isShowError &&
+          !this.xVali.isShowError &&
+          !this.yVali.isShowError
+        )
+      ) {
         // tooltip('', '请填写正确的配置信息', 'info')
+        Notification({
+          message: '请填写正确的配置信息',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       $('#screen').show()
       var cThis = this
       cThis.selectedItem.slted = false
       var canvas2 = document.createElement('canvas')
-      var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
+      // var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
+      var _canvas = document.querySelector('.m-main #chooseWrap')
       // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
       // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
       _canvas.style.background = $('body').css('background')
@@ -508,13 +733,20 @@ export default {
       canvas2.width = baseData.home.w
       canvas2.height = baseData.home.h
       canvas2.getContext('2d')
-      $('#mainEdit-edit .main_topo').find('svg').css('opacity', 0)
-      $('#mainEdit-edit .main_topo').append($('<img>').addClass('monitp').attr('src', 'resources/img/topo/tpstander.png').css({
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        'left': 0
-      }))
+      $('#mainEdit-edit .main_topo')
+        .find('svg')
+        .css('opacity', 0)
+      $('#mainEdit-edit .main_topo').append(
+        $('<img>')
+          .addClass('monitp')
+          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            left: 0
+          })
+      )
       html2canvas(_canvas, {
         width: baseData.home.w,
         height: baseData.home.h,
@@ -523,7 +755,9 @@ export default {
         canvas: canvas2,
         onclone: function (doc) {
           // 提前还原拓扑
-          $('#mainEdit-edit .main_topo').find('svg').css('opacity', 1)
+          $('#mainEdit-edit .main_topo')
+            .find('svg')
+            .css('opacity', 1)
           $('#mainEdit-edit .monitp').remove()
         }
       }).then(function (canvas) {
@@ -540,7 +774,7 @@ export default {
         while (n--) {
           u8arr[n] = bstr.charCodeAt(n)
         }
-        var file = new File([u8arr], `${filename}.${suffix}`, {type: mime})
+        var file = new File([u8arr], `${filename}.${suffix}`, { type: mime })
         var formdata = new FormData()
         formdata.append('uploaded_file', file)
         canvas.remove()
@@ -548,19 +782,30 @@ export default {
           var _data = {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
-            viewImage: '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            paintConf: 'test',
+            viewImage:
+              '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
-          cThis.axios({
-            method: 'post',
-            url: 'home/homePage',
-            data: qs.stringify(_data),
-            headers: { 'content-type': 'application/x-www-form-urlencoded' }
-          }).then((res) => {
-            canvas.remove() // 这里是作为回调函数，canvas没有传过去
-            _canvas.style.background = 'transparent'
-            // $('#screen').hide()
-            typeof cb === 'function' && cb()
-          })
+          cThis
+            .axios({
+              method: 'post',
+              url: 'home/homePage',
+              data: qs.stringify(_data),
+              headers: { 'content-type': 'application/x-www-form-urlencoded' }
+            })
+            .then(res => {
+              canvas.remove() // 这里是作为回调函数，canvas没有传过去
+              _canvas.style.background = 'transparent'
+              // $('#screen').hide()
+              typeof cb === 'function' && cb()
+              if (res.success) {
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
+              }
+            })
         })
         /* var _data = {
           id: cThis.pageId,
@@ -595,15 +840,33 @@ export default {
           } else {
             // $("#screen").hide()
             // tooltip('', data.msg, 'error')
+            Notification({
+              message: data.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         }
       })
     },
-    preview: function () { // 预览
-      // if (!(!this.widthVali.isShowError && !this.heightVali.isShowError && !this.xVali.isShowError && !this.yVali.isShowError)) {
-      //   // tooltip('', '请填写正确的配置信息', 'info')
-      //   return
-      // }
+    preview: function () {
+      // 预览
+      if (
+        !(
+          !this.widthVali.isShowError &&
+          !this.heightVali.isShowError &&
+          !this.xVali.isShowError &&
+          !this.yVali.isShowError
+        )
+      ) {
+        // tooltip('', '请填写正确的配置信息', 'info')
+        Notification({
+          message: '请填写正确的配置信息',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+        return
+      }
       this.pageData = this.chartNum
       this.viewPage = true
       // $.comps.mainPreview.open({
@@ -631,19 +894,23 @@ export default {
       // if (type !=='compose') {
 
       // }
-      $(this.$refs.contextMenu).css({
-        left: ev.pageX,
-        top: ev.pageY
-      }).toggle(true)
+      $(this.$refs.contextMenu)
+        .css({
+          left: ev.pageX,
+          top: ev.pageY
+        })
+        .toggle(true)
       this.selectedIndex = index
     },
     // 组合右键 可以和上面公用一个方法
     composeMenu: function (index, ev) {
       // console.log(ev);
-      $(this.$refs.contextMenu).css({
-        left: ev.pageX,
-        top: ev.pageY
-      }).toggle(true)
+      $(this.$refs.contextMenu)
+        .css({
+          left: ev.pageX,
+          top: ev.pageY
+        })
+        .toggle(true)
       this.selectedIndex = -1
       this.cancelSelected()
     },
@@ -679,10 +946,66 @@ export default {
       }
     },
     del: function () {
-      this.chartNum.splice(this.selectedIndex, 1)
+      if (this.chooseIndexs.length > 0) {
+        this.deleteOne('item', this.chooseIndexs)
+        this.chooseIndexs = []
+      }
+      if (this.chooseCompIndexs.length > 0) {
+        this.deleteOne('compose', this.chooseCompIndexs)
+        this.chooseCompIndexs = []
+      }
       this.selectedItem = {}
       this.selectedIndex = null
-      // this.hideContext();
+    },
+    deleteOne: function (type, tempArr) {
+      var i = 0
+      tempArr = tempArr.sort()
+      if (type === 'item') {
+        var _type = 'chartNum'
+      } else {
+        _type = 'combinList'
+      }
+      tempArr.forEach(item => {
+        this[_type].splice(item - i, 1)
+        i++
+      })
+    },
+    /* delOne: function () {
+      if (this.selectedItem.hasOwnProperty('chartType')) {
+        // 非组合元件
+        this.chartNum.splice(this.selectedIndex, 1)
+      } else {
+        this.combinList.splice(this.selectedIndex, 1)
+      }
+      this.selectedItem = {}
+      this.selectedIndex = null
+    }, */
+    copy: function () {
+      if (this.chooseIndexs.length > 0) {
+        this.copyOne('item', this.chooseIndexs)
+        this.chooseIndexs = []
+      }
+      if (this.chooseCompIndexs.length > 0) {
+        this.copyOne('compose', this.chooseCompIndexs)
+        this.chooseCompIndexs = []
+      }
+    },
+    copyOne: function (type, arr) {
+      // 单个元件的复制操作
+      if (type === 'item') {
+        var _type = 'chartNum'
+      } else {
+        _type = 'combinList'
+      }
+      for (let i = 0, len = arr.length; i < len; i++) {
+        this[_type][arr[i]].slted = false
+        let tempItem = JSON.parse(JSON.stringify(this[_type][arr[i]]))
+        tempItem.x += 20
+        tempItem.y += 20
+        tempItem.id = new Date().getTime() + parseInt(Math.random() * 100)
+        // console.log(tempItem.id)
+        this[_type].push(tempItem)
+      }
     },
     hideContext: function () {
       $(this.$refs.contextMenu).toggle(false)
@@ -693,19 +1016,37 @@ export default {
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
-        return // tooltip('', '上传的文件不能大于15MB', 'info')
+        // return // tooltip('', '上传的文件不能大于15MB', 'info')
+        Notification({
+          message: '上传的文件不能大于15MB',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+        return
       }
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
       this.uploadFile(formData, function (data) {
+        if (!_this.selectedItem.chartType) {
+          // 上传画布图片
+          _this.paintObj.bgImg =
+            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          return
+        }
         if (_this.selectedItem.chartType === 'image') {
-          _this.selectedItem.imgSrc = '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.selectedItem.imgSrc =
+            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         } else if (_this.selectedItem.subType === 'pictorialBar') {
-          _this.selectedItem.symbolImg = '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.selectedItem.symbolImg =
+            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         }
       })
       e.target.value = ''
+    },
+    getPaintCl (data) {
+      // console.log(data.color)
+      this.paintObj.bgColor = data.color
     },
     getColor (data) {
       if (data.type !== undefined) {
@@ -736,36 +1077,47 @@ export default {
       }
     },
     testObjChange (direct, newValue) {
-      var defData = 0, isWidth = direct === 'width', valiType = direct + 'Vali'
+      var defData = 0,
+        isWidth = direct == 'width',
+        valiType = direct + 'Vali'
       defData = isWidth ? baseData.home.w : baseData.home.h
-      if (newValue < 50 || newValue > defData) {
+      if (newValue < this.miniW || newValue > defData) {
         this[valiType].isShowError = true
-        this[valiType].errorMsg = isWidth ? '宽度范围为50-' + defData : '高度范围为50-' + defData
+        this[valiType].errorMsg = isWidth
+          ? '宽度范围为' + this.miniW + '-' + defData
+          : '高度范围为' + this.miniW + '-' + defData
       } else {
         this[valiType].isShowError = false
         this.selectedItem[direct] = newValue
       }
       // not Number
-      if (Number(newValue) < 50) {
-        this.selectedItem[direct] = 50
+      if (Number(newValue) < this.miniW) {
+        this.selectedItem[direct] = this.miniW
       } else {
         this.selectedItem[direct] = Number(this.selectedItem[direct])
       }
     },
     testObjPosChange (position, newValue) {
-      var defData = 0, selectData = 0, isX = position === 'x', valiType = position + 'Vali'
+      var defData = 0,
+        selectData = 0,
+        isX = position === 'x',
+        valiType = position + 'Vali'
       defData = isX ? baseData.home.w : baseData.home.h
       selectData = isX ? this.selectedItem.width : this.selectedItem.height
       if (selectData > defData) {
         this[valiType].isShowError = true
-        this[valiType].errorMsg = isX ? '横轴位置范围为0-' + (defData) : '纵轴位置范围为0-' + (defData)
+        this[valiType].errorMsg = isX
+          ? '横轴位置范围为0-' + defData
+          : '纵轴位置范围为0-' + defData
         if (newValue > defData) {
           this.testObj[position] = defData
         }
       } else {
         if (newValue < 0 || newValue > defData - selectData) {
           this[valiType].isShowError = true
-          this[valiType].errorMsg = isX ? '横轴位置范围为0-' + (defData - selectData) : '纵轴位置范围为0-' + (defData - selectData)
+          this[valiType].errorMsg = isX
+            ? '横轴位置范围为0-' + (defData - selectData)
+            : '纵轴位置范围为0-' + (defData - selectData)
           if (newValue > defData - selectData) {
             this.testObj[position] = defData - selectData
           }
@@ -798,6 +1150,12 @@ export default {
     this.gerPageConf(id)
   },
   mounted: function () {
+    Notification({
+      message: '连接错误！',
+      position: 'bottom-right',
+      customClass: 'toast toast-error',
+      duration: 0
+    })
     // this.gerPageConf();
     // this.$nextTick(() => {
     //   this.chooseMap();

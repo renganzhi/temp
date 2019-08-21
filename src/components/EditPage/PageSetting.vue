@@ -123,9 +123,11 @@
 </template>
 <script>
 import qs from 'qs'
+import { Notification } from 'element-ui'
 export default {
   name: 'pageSetting',
   props: ['showModal'],
+  components: { Notification },
   data () {
     return {
       changeSort: false,
@@ -180,6 +182,11 @@ export default {
           this.tableData = datas
         } else {
           // tooltip("", data.msg, "error");
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -274,6 +281,11 @@ export default {
           $('#homeSetting-modal').modal('hide')
         } else {
           // tooltip('', res.msg, 'error')
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     }
@@ -285,6 +297,10 @@ export default {
         $('#homeSetting-modal').modal('show')
       }
     }
+  },
+  beforeDestroy: function () {
+    $('#homeSetting-modal').modal('hide')
+    $('.modal-backdrop').remove()
   }
 }
 </script>

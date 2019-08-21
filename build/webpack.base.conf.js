@@ -53,6 +53,10 @@ module.exports = {
   module: {
     rules: [
       // ...(config.dev.useEslint ? [createLintingRule()] : []), 控制台打印eslint报错信息
+      // {
+      //   test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+      //   loader: 'file-loader'
+      // },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

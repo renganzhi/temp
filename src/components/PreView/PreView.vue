@@ -1,6 +1,7 @@
 <template>
   <div id="mainPreview-modal"
-       class="modal">
+       class="modal"
+       style="overflow: hidden;">
     <div class="modal-dialog modal-lg"
          role="document">
       <div class="modal-content">
@@ -33,10 +34,12 @@
 <script>
 import { baseData } from '@/config/settings'
 import DragBox from './../Common/DragBox'
+import Compose from './../Common/Compose'
+import { Notification } from 'element-ui'
 export default {
   name: 'preView',
   props: ['showModal', 'viewId', 'pageData'],
-  components: { DragBox },
+  components: { DragBox, Compose, Notification },
   data () {
     return {
       editable: false,
@@ -73,6 +76,11 @@ export default {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
           } else {
             // tooltip("", data.msg, "error")
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         })
       } else {

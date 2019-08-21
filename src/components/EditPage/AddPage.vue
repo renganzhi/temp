@@ -3,7 +3,6 @@
     <!-- <div class="modal-backdrop in modal-stack"></div> -->
     <div id="addHomePage-modal"
          class="modal in"
-         tabindex="-1"
          role="dialog"
          aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -62,10 +61,12 @@
 </template>
 <script>
 import { gbs } from '@/config/settings'
+import { Notification } from 'element-ui'
 import qs from 'qs'
 export default {
   name: 'addPage',
   props: ['showModal'],
+  components: { Notification },
   data () {
     return {
       name: '',
@@ -125,14 +126,28 @@ export default {
           this.addOne = true
           $('#addHomePage-modal').modal('hide')
           // tooltip('', '操作成功！', 'success')
+          Notification({
+            message: '操作成功！',
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
         } else {
           // tooltip("", data.msg, "error");
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
     choosePage (id) {
       this.temId = id
     }
+  },
+  beforeDestroy: function () {
+    $('#addHomePage-modal').modal('hide')
+    $('.modal-backdrop').remove()
   }
 }
 </script>

@@ -29,6 +29,7 @@ module.exports = {
     echarts: true,
     colorSpectrum: true,
     ActiveXObject: true,
+    html2canvas: true,
     _: true, // lodash
     MainTp: true
   }
