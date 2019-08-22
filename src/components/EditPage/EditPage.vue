@@ -272,6 +272,12 @@ export default {
   mounted: function () {
     this.search()
   },
+  beforeDestroy: function () {
+    $('.modal-backdrop').remove()
+    $('body').removeClass().removeAttr('style')
+    // document.body.calss = ''
+    // document.body.style = ''
+  },
   destoryed: function () {
 
   }

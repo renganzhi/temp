@@ -1,50 +1,67 @@
 <template>
-  <div id="home-html"
-       class="flex flex-vertical full-height full-width">
-    <div class="portlet light bordered flex-1"
-         id="mainbox">
-      <div class="full-height pagebox">
-        <DragBox v-for="(item,index) in nowPage"
-                 :index="index"
-                 :item="item"
-                 :editable="editable"
-                 :key="(pageIndex+index)"></DragBox>
+  <div class="flex flex-vertical"
+       id="page_container">
+    <div id="home-html"
+         class="flex flex-vertical full-height full-width">
+      <div class="portlet light bordered flex-1"
+           id="mainbox">
+        <div class="full-height pagebox">
+          <DragBox v-for="(item,index) in nowPage"
+                   :index="index"
+                   :item="item"
+                   :editable="editable"
+                   :key="(pageIndex+index)"></DragBox>
+        </div>
       </div>
-    </div>
-    <div class="btm-tools"
-         :class="isFullScreen?'full':''">
-      <div class="fl btn-box">
-        <span @click="editPage"
-              class="ring-icon"
-              title="编辑"
-              v-show="!isFullScreen"><i class="icon-n-set"></i></span>
-        <span @click="refresh"
-              class="ring-icon"
-              :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
-        <span @click="fullScreen"
-              class="ring-icon"
-              :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+      <div class="btm-tools"
+           :class="isFullScreen?'full':''">
+        <div class="fl btn-box">
+          <span @click="editPage"
+                class="ring-icon"
+                title="编辑"
+                v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+          <span @click="refresh"
+                class="ring-icon"
+                :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+          <span @click="fullScreen"
+                class="ring-icon"
+                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
 
-      </div>
-      <div class="fr btn-box"
-           v-show="pageSize>1">
-        <!-- <el-tooltip class="item"
+        </div>
+        <div class="fr btn-box"
+             v-show="pageSize>1">
+          <!-- <el-tooltip class="item"
                     effect="dark"
                     content="Right Top 提示文字"
                     placement="right-start">
           2123123
         </el-tooltip> -->
-        <span @click="prev"
-              class="ring-icon"
-              :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
-        <span @click="togglePlay"
-              class="ring-icon"
-              :title="!timer ? '开启轮播' : '暂停轮播'"
-              v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-        <span @click="next"
-              class="ring-icon"
-              :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+          <span @click="prev"
+                class="ring-icon"
+                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+          <span @click="togglePlay"
+                class="ring-icon"
+                :title="!timer ? '开启轮播' : '暂停轮播'"
+                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+          <span @click="next"
+                class="ring-icon"
+                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+        </div>
       </div>
+
+      <div role="alert"
+           v-if="showTip"
+           class="el-notification toast toast-info right"
+           style="bottom: 16px; z-index: 2001;">
+        <div class="el-notification__group">
+          <h2 class="el-notification__title"></h2>
+          <div class="el-notification__content">
+            <p>鼠标移动到左/右下角对大屏操作</p>
+          </div>
+          <div class="el-notification__closeBtn el-icon-close"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -61,6 +78,7 @@ export default {
     return {
       isFullScreen: false,
       editable: false,
+      showTip: false, // 全屏的提示信息
       pageList: [],
       nowPage: [],
       pageSize: 0,
@@ -150,6 +168,10 @@ export default {
       // tooltip('', '鼠标移动到左/右下角对大屏操作', 'info', {
       //   target: '#home-html'
       // })
+      this.showTip = true
+      setTimeout(() => {
+        this.showTip = false
+      }, 3500)
       $('#home-html').css('background', $('body').css('background'))
       Public.bigScreenfullScreen($('#home-html').get(0))
       this.isFullScreen = true
@@ -291,11 +313,6 @@ export default {
   },
   mounted: function () {
     this.getPageData()
-    Notification({
-      message: '鼠标移动到左/右下角对大屏操作',
-      position: 'bottom-right',
-      customClass: 'toast toast-info'
-    })
     // titleShow('top', $('#home-html'));
     // $('#home-html').tooltip()
     $(window).off('resize.homescale').on('resize.homescale', () => {

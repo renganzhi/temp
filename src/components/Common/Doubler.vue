@@ -5,7 +5,8 @@
             :key="index"
             :style="numCardValue">{{num}}</span>
     </div>
-    <div style="margin-top: 14px;color: #828bac;font-size: 12px;">{{item.chartData.name}}{{ comUnit}}</div>
+    <div v-show="showTitle"
+         style="margin-top: 14px;color: #828bac;font-size: 12px;">{{item.chartData.name}}{{ comUnit}}</div>
   </div>
 </template>
 <script>
@@ -14,10 +15,13 @@ export default {
   props: ['item'],
   data () {
     return {
-      showOver: false
+      showOver: true
     }
   },
   computed: {
+    showTitle: function () {
+      return this.item.ctLegendShow === 'true'
+    },
     comUnit: function () {
       var unit = this.item.chartData.unit
       return unit === '' ? '' : ('(' + unit + ')')

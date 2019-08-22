@@ -501,6 +501,7 @@ modal
 
 .modal.in .modal-dialog {
     position: relative;
+    margin: 0 auto !important;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -670,19 +671,19 @@ body.page-sidebar-closed > .moniModal.modal {
 
 /* slider */
 .el-slider__runway {
-    height: 4px;
-    border-radius: 2px;
-    margin: 10px 0;
+    height: 4px !important;
+    border-radius: 2px !important;
+    margin: 10px 0 !important;
 }
 .el-slider__bar {
-    height: 4px;
+    height: 4px !important;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     background-color: #7d8eb9 !important;
 }
 .el-slider__button {
-    border: 1px solid gray;
-    background-color: #7d8eb9;
+    border: 1px solid gray !important;
+    background-color: #7d8eb9 !important;
 }
 @keyframes textMove {
     from {

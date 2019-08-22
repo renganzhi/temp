@@ -30,6 +30,7 @@ module.exports = {
     colorSpectrum: true,
     ActiveXObject: true,
     html2canvas: true,
+    Math: true,
     _: true, // lodash
     MainTp: true
   }

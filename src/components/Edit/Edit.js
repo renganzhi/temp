@@ -114,7 +114,9 @@ export default {
       yVali: {
         isShowError: false,
         errorMsg: ''
-      }
+      },
+      proHeightErr: false,
+      radiusErr: false
     }
   },
   computed: {
@@ -161,6 +163,31 @@ export default {
     }
   },
   methods: {
+    changeProHeight () {
+      // 改变进度条的高度
+      var proHeight = Math.floor(this.selectedItem.proHeight)
+      if (isNaN(proHeight) || proHeight < 0) {
+        this.selectedItem.proHeight = ''
+        this.proHeightErr = true
+      }
+      if (proHeight >= 8 && proHeight <= 24) {
+        this.proHeightErr = false
+      } else {
+        this.proHeightErr = true
+      }
+      this.changeRadius()
+    },
+    changeRadius () {
+      var radius = Math.floor(this.selectedItem.radius)
+      if (isNaN(radius) || radius < 0) {
+        this.radiusErr = true
+      }
+      if (radius >= 0 && radius <= Math.ceil(this.selectedItem.proHeight / 2)) {
+        this.radiusErr = false
+      } else {
+        this.radiusErr = true
+      }
+    },
     gerPageConf (id) {
       // 获取当前页的配置
       // home/homePage/getById
@@ -709,7 +736,7 @@ export default {
           !this.widthVali.isShowError &&
           !this.heightVali.isShowError &&
           !this.xVali.isShowError &&
-          !this.yVali.isShowError
+          !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr
         )
       ) {
         // tooltip('', '请填写正确的配置信息', 'info')
@@ -725,13 +752,18 @@ export default {
       cThis.selectedItem.slted = false
       var canvas2 = document.createElement('canvas')
       // var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
-      var _canvas = document.querySelector('.m-main #chooseWrap')
+      // var _canvas = document.querySelector('.m-main #chooseWrap')
+      var _canvas = document.querySelector('.m-main .paint-bg')
       // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
       // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
       _canvas.style.background = $('body').css('background')
+      // document.querySelector('.m-main #chooseWrap').style.background = $('body').css('background')
+
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
-      canvas2.width = baseData.home.w
-      canvas2.height = baseData.home.h
+      // canvas2.width = baseData.home.w
+      // canvas2.height = baseData.home.h
+      canvas2.width = baseData.home.w * (this.paintObj.scale / 100)
+      canvas2.height = baseData.home.h * (this.paintObj.scale / 100)
       canvas2.getContext('2d')
       $('#mainEdit-edit .main_topo')
         .find('svg')
@@ -748,8 +780,8 @@ export default {
           })
       )
       html2canvas(_canvas, {
-        width: baseData.home.w,
-        height: baseData.home.h,
+        width: baseData.home.w * (cThis.paintObj.scale / 100),
+        height: baseData.home.h * (cThis.paintObj.scale / 100),
         logging: false,
         scale: 0.4,
         canvas: canvas2,
@@ -1145,20 +1177,15 @@ export default {
     }
   },
   beforeMount: function () {
-    var id = this.$route.params.id
+    var id = this.$route.params.id || sessionStorage.getItem('pageId')
     this.pageId = id
     this.gerPageConf(id)
+    sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
-    Notification({
-      message: '连接错误！',
-      position: 'bottom-right',
-      customClass: 'toast toast-error',
-      duration: 0
-    })
     // this.gerPageConf();
     // this.$nextTick(() => {
-    //   this.chooseMap();
+    //   this.chooseMap()
     // })
   },
   destoryed: function () {

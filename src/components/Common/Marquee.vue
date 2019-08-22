@@ -1,13 +1,15 @@
 <template>
   <!-- :key="item.id + marqueeKey" -->
   <div class="text-wrap"
+       :key="item.id + marqueeKey"
        :style="wrapStyle">
-    <div class="test"
+    <div class="text"
          :style="boxStyle">
       <textarea ref="marqueeText"
                 :style="textStyle"
                 v-model="item.ctName"
                 :disabled="dis"
+                @blur="initMove"
                 @keydown="checkEnter"></textarea>
     </div>
     <div @keydown="checkEnter"
@@ -23,8 +25,9 @@ export default {
   data () {
     return {
       intervalId: 0,
-      marqueeKey: new Date().getTime(),
+      marqueeKey: new Date().getTime() + Math.random() * 1000,
       speed: 10,
+      stop: false,
       distance: 0,
       offsetWidth: 0, // 内容改变之后与原始长度的偏移量
       textWidth: 0 // 字体长度
@@ -32,12 +35,18 @@ export default {
   },
   methods: {
     getMessage (vtextarea) {
-      this.stopmove()
-      this.$refs.marqueeText.focus()
+      // this.stopmove()
+      this.stop = true
+      this.$nextTick(() => {
+        this.$refs.marqueeText.focus()
+      })
     },
     initMove () {
+      // this.stop = false
       this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
       this.speed = parseInt((this.textWidth + this.item.width) / 60)
+      this.stop = false
+      this.marqueeKey = new Date().getTime() + Math.random() * 1000
     },
     // 该方法在大屏展示时，因为缩放的原因所以会有问题
     move () {
@@ -71,7 +80,6 @@ export default {
     },
     stopmove () {
       this.intervalId && clearTimeout(this.intervalId)
-      // this.intervalId && clearInterval(this.intervalId)
     },
     checkEnter (e) {
       // 禁止换行
@@ -93,9 +101,9 @@ export default {
     boxStyle: function () {
       return {
         width: this.textWidth + 'px',
-        animation: 'textMove linear ' + this.speed + 's infinite',
-        position: 'relative',
-        left: '100%'
+        animation: this.stop ? '' : 'textMove linear ' + this.speed + 's infinite',
+        position: 'relative'
+        // left: '100%'
         // transform: 'translateX(' + this.distance + 'px)'
       }
     },
@@ -136,6 +144,7 @@ export default {
   },
   watch: {
     textWidth: function () {
+      if (this.stop) return
       this.$nextTick(() => {
         this.speed = parseInt((this.textWidth + this.item.width) / 60)
       })
@@ -146,6 +155,7 @@ export default {
       })
     },
     'item.ctName': function (newV, oldV) {
+      if (this.stop) return
       this.$nextTick(() => {
         this.initMove()
       })
@@ -156,7 +166,7 @@ export default {
     this.initMove()
   },
   beforeDestroy: function () {
-    this.stopmove()
+    // this.stopmove()
   }
 }
 </script>

@@ -163,13 +163,13 @@
                                             <option value="true">区域图</option>
                                         </select>
                                     </div>
-                                    <!-- <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
                                         <label>是否标点</label>
                                         <select v-model="selectedItem.showPoint">
-                                            <option value="true">是</option>
                                             <option value="false">否</option>
+                                            <option value="true">是</option>
                                         </select>
-                                    </div> -->
+                                    </div>
                                 </div>
 
                                 <!--表格\文本框配置-->
@@ -255,6 +255,16 @@
                                             <option v-for="(item, index) in defaultFontSize" :key="index">{{item}}</option>
                                         </select>
                                     </div>
+                                    <div class="form-group cols2" style="margin-bottom: 30px">
+                                        <label>高度</label>
+                                        <input class="color-w200" type="number" placeholder="高度范围为8-24" @input="changeProHeight" v-model="selectedItem.proHeight">
+                                        <label class="error" v-show="proHeightErr" style="margin-left: 15px; margin-top: 25px; width: auto;">高度范围为8-24</label>
+                                    </div>
+                                    <div class="form-group cols2">
+                                        <label>圆角</label>
+                                        <input class="color-w200" type="number" placeholder="圆角最大值为高度的一半" @input="changeRadius" v-model="selectedItem.radius">
+                                        <label class="error" v-show="radiusErr" style="margin-left: 15px; margin-top: 25px; width: auto;">圆角的最大值为{{Math.ceil(this.selectedItem.proHeight / 2)}}</label>
+                                    </div>
                                 </div>
 
                                 <!--数字翻牌器-->
@@ -285,6 +295,13 @@
                                             <Vcolor :data="selectedItem.clr" :key="10" type="clr" @getdata="getColor"></Vcolor>
                                         </div>
                                         <!-- <input type="color" v-model="selectedItem.clr"/> -->
+                                    </div>
+                                    <div class="form-group cols2">
+                                        <label>图例可见性</label>
+                                        <select v-model="selectedItem.ctLegendShow">
+                                            <option value="true">显示</option>
+                                            <option value="false">隐藏</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -459,7 +476,7 @@ export default EditJs
   background: #1b2031;
   height: 100%;
   z-index: 100;
-  border-left: 2px solid #33394b;
+  /* border-left: 2px solid #33394b; */
 }
 
 .m-tab {
@@ -482,23 +499,13 @@ export default EditJs
     transform-origin: top left;
     transform: scale(1);
     overflow: hidden;
-    /* width: 100%;
-    height: 100%;
-    position: relative;
-    top: -100%;
-    left: 0;
-    overflow: scroll; */
-    /* background-image: url(http://localhost:9999/mc/home/getImg/false/31); */
 }
 .paint{
-  /* background:#000e15; */
-  /* background: #272c3b; */
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  /* background: url(http://localhost:9999/mc/home/getImg/false/31); */
   opacity: 0.7;
 }
 .m-tabMain, .paintWrap {
@@ -557,9 +564,6 @@ export default EditJs
 
 .m-main {
   position: relative;
-  /* overflow: hidden; */
-  /* padding: 10px; */
-  /* background: #1b2031; */
 }
 .scaleBox{
   position: fixed;
@@ -581,12 +585,6 @@ export default EditJs
   height: 100%;
   background-repeat: repeat;
   position: relative;
-    /* background: url('./../../assets/bg.png'); */
-    /* max-height: 1080px;
-    max-width: 1920px;
-    height: 96%;
-    background: #222527;
-    position: relative; */
 }
 
 .gridBg{
@@ -648,6 +646,7 @@ export default EditJs
 .cols2 label {
   display: inline-block;
   width: 62px;
+  line-height: 28px;
 }
 
 .cols2 select,
@@ -734,13 +733,16 @@ export default EditJs
 .color-w200 {
   width: 195px;
   float: right;
-  margin-right: 7px;
+  margin-right: 9px;
 }
 .color-w70 {
   display: inline-block;
   width: 70px;
   margin-left: 5px;
   /* text-align: center; */
+}
+.color-w70 input{
+  width: 70px;
 }
 .color-w70.text {
   box-sizing: border-box;

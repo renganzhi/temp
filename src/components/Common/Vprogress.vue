@@ -28,20 +28,23 @@ export default {
     barBoxStyle: function () {
       return {
         width: '100%',
-        height: '16px',
+        // height: '16px',
+        height: this.item.proHeight + 'px',
         backgroundColor: this.item.bgClr,
         position: 'relative',
-        borderRadius: '10px',
+        // borderRadius: '10px',
+        borderRadius: this.item.radius + 'px',
         overflow: 'hidden'
       }
     },
     barStyle: function () {
       return {
         width: this.persent + '%',
-        height: '100%',
+        // height: '100%',
+        height: this.item.proHeight + 'px',
         backgroundColor: this.item.barClr,
         position: 'relative',
-        borderRadius: '10px',
+        borderRadius: this.item.radius + 'px',
         left: 0,
         top: 0
       }
@@ -55,6 +58,21 @@ export default {
       }
       return value
     }
+  },
+  watch: {
+    // 'item.proHeight': function (newV) {
+    //   if (newV < 8 && newV !== '') {
+    //     this.item.proHeight = 8
+    //   }
+    //   if (newV > 24) {
+    //     this.item.proHeight = 24
+    //   }
+    // },
+    // 'item.radius': function (newV) {
+    //   if (newV > parseInt(this.item.proHeight / 2)) {
+    //     this.item.radius = parseInt(this.item.proHeight / 2)
+    //   }
+    // }
   }
 }
 </script>

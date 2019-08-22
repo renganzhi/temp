@@ -312,7 +312,9 @@ var compsArr = [
     bgClr: '#33394b',
     barClr: '#1fc3ce',
     clr: '#1fc3ce',
-    chartData: morenData.single
+    chartData: morenData.single,
+    proHeight: 16,
+    radius: 8
   },
   {
     text: '数字翻牌器',
@@ -324,6 +326,7 @@ var compsArr = [
     clr: '#25aff8',
     width: 300,
     height: 90,
+    ctLegendShow: 'true',
     chartData: morenData.single
   },
   {

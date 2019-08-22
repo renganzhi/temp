@@ -1,12 +1,13 @@
 <template>
   <component :is="item.chartType"
-             v-if="initOption"
              :data="dealChartData"
              :width="comWidth"
+             v-if="initOption"
              :init-options="initOption"
              :height="comHeight"
              :settings="settings"
              :extend="extend"
+             :key="keyId"
              :judge-width="true">
     <div class="v-charts-data-empty"
          v-if="empty"
@@ -50,6 +51,7 @@ export default {
       }
       obj = {
         empty: false,
+        keyId: new Date().getTime() + Math.random() * 1000,
         initOption: { renderer: 'svg' },
         settings: {
           yAxisType: [0]
@@ -66,6 +68,9 @@ export default {
               fontSize: 14
             }
           },
+          // label: {
+          //   show: this.item.showPoint === 'true'
+          // },
           legend: {
             // orient : 'vertical', //横向、纵向
             x: 'center',
@@ -154,6 +159,7 @@ export default {
     },
     'item.showPoint': function (newV, oldValue) {
       this.extend.label.show = newV === 'true'
+      this.keyId = new Date().getTime() // 强制更新视图
     },
     'item.ctColors': function (newV) {
       if (this.item.chartType === 've-gauge') {
@@ -354,9 +360,7 @@ export default {
           // obj.settings.xAxisType = 'time'
           obj.extend = $.extend(obj.extend, {
             label: {
-              type: 'line',
-              show: _this.item.showPoint === 'true',
-              position: 'top'
+              show: _this.item.showPoint === 'true'
             },
             yAxis: {
               type: 'value',
