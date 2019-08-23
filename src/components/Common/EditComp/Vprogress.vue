@@ -73,6 +73,8 @@ export default {
     //     this.item.radius = parseInt(this.item.proHeight / 2)
     //   }
     // }
+  },
+  destoryed: function () {
   }
 }
 </script>

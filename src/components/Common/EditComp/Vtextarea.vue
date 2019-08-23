@@ -1,7 +1,7 @@
 <template>
-    <textarea :style="textStyle"
-              v-model="item.ctName"
-              :disabled="dis"></textarea>
+  <textarea :style="textStyle"
+            v-model="item.ctName"
+            :disabled="dis"></textarea>
 </template>
 <script>
 export default {
@@ -31,6 +31,8 @@ export default {
         fontSize: this.item.fontSize + 'px !important'
       }
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

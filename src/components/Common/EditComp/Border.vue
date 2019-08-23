@@ -19,6 +19,8 @@ export default {
         border: this.item.bdpx + 'px solid ' + this.item.bdClr
       }
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

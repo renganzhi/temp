@@ -1,13 +1,16 @@
 <template>
+  <!-- :z="item.zIndex || 500" -->
   <DragResize class="newDrag2 newDrag3"
-              :isDraggable="true"
+              :isDraggable="editable"
               :active="editable && list.slted"
               :isActive="editable && list.slted"
+              :preventActiveBehavior="!editable"
               :key="list.id"
               :w="Number(list.width)"
               :h="Number(list.height)"
               :x="Number(list.x)"
               :y="Number(list.y)"
+              :z="list.zIndex || 500"
               :item="list"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
@@ -49,17 +52,28 @@
   </DragResize>
 </template>
 <script>
-import DragResize from './DragResize' // drag拖拽组件
-import Vtextarea from './Vtextarea' // 文本
-import Vprogress from './Vprogress' // 进度条
-import Vimg from './Vimg'
-import Doubler from './Doubler' // 数字翻牌器
-import Border from './Border' // 边框
-import Vchart from './Vchart'
-import Vtable from './Vtable' // 表格
-import Topo from './Topo' // 拓扑
-import Marquee from './Marquee' // 跑马灯
-import Vtime from './Vtime' // 时间器
+// import DragResize from './DragResize' // drag拖拽组件
+// import Vtextarea from './Vtextarea' // 文本
+// import Vprogress from './Vprogress' // 进度条
+// import Vimg from './Vimg'
+// import Doubler from './Doubler' // 数字翻牌器
+// import Border from './Border' // 边框
+// import Vchart from './Vchart'
+// import Vtable from './Vtable' // 表格
+// import Topo from './Topo' // 拓扑
+// import Marquee from './Marquee' // 跑马灯
+// import Vtime from './Vtime' // 时间器
+import DragResize from './EditComp/DragResize' // drag拖拽组件
+import Vtextarea from './EditComp/Vtextarea' // 文本
+import Vprogress from './EditComp/Vprogress' // 进度条
+import Vimg from './EditComp/Vimg'
+import Doubler from './EditComp/Doubler' // 数字翻牌器
+import Border from './EditComp/Border' // 边框
+import Vchart from './EditComp/Vchart'
+import Vtable from './EditComp/Vtable' // 表格
+import Topo from './EditComp/Topo' // 拓扑
+import Marquee from './EditComp/Marquee' // 跑马灯
+import Vtime from './EditComp/Vtime' // 时间器
 
 export default {
   name: 'compose',
@@ -128,7 +142,8 @@ export default {
     this.oldHeight = this.list.height
   },
   beforeDestroy () {
-
+  },
+  destoryed: function () {
   }
 }
 </script>

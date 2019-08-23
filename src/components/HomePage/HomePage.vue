@@ -331,6 +331,8 @@ export default {
       this.refreshFn(newV)
       this.initRefreshTimer()
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

@@ -301,6 +301,8 @@ export default {
   beforeDestroy: function () {
     $('#homeSetting-modal').modal('hide')
     $('.modal-backdrop').remove()
+  },
+  destoryed: function () {
   }
 }
 </script>

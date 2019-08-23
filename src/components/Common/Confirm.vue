@@ -78,6 +78,8 @@ export default {
   beforeDestroy: function () {
     $('#alert-modal').modal('hide')
     $('.modal-backdrop').remove()
+  },
+  destoryed: function () {
   }
 }
 </script>

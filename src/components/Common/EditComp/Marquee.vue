@@ -167,6 +167,8 @@ export default {
   },
   beforeDestroy: function () {
     // this.stopmove()
+  },
+  destoryed: function () {
   }
 }
 </script>

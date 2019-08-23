@@ -33,6 +33,8 @@ export default {
         overflow: 'hidden'
       }
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

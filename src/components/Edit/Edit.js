@@ -21,6 +21,7 @@ export default {
       oldCheckId: '', // 优化每次选中都会触发请求接口，仅在切换元件时才请求
       viewPage: false,
       pageData: '',
+      composeData: '',
       compsArr: compsArr,
       isFlase: false,
       editable: true, // 操作flag,编辑为true,查看为false
@@ -116,7 +117,14 @@ export default {
         errorMsg: ''
       },
       proHeightErr: false,
-      radiusErr: false
+      radiusErr: false,
+      selectArea: {
+        choose: false,
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0
+      }
     }
   },
   computed: {
@@ -274,6 +282,14 @@ export default {
       if (!window.event.ctrlKey) {
         this.cancelSelected(event)
       }
+      if ($('.tempDiv').length > 0) {
+        if (this.selectArea.choose) {
+          this.selectArea.choose = false
+          $('.tempDiv').remove()
+        } else {
+          this.selectArea.choose = true
+        }
+      }
     },
     cancelSelected (event) {
       // 取消其他selected
@@ -341,6 +357,7 @@ export default {
         _top = arr[0].y
       var bottomIndex = 0,
         _bottom = arr[0].y + arr[0].height
+      var _index = 500
       // 获取合并之后的组件的范围
       for (var i = 1, len = arr.length; i < len; i++) {
         if (arr[i].x < _left) {
@@ -359,6 +376,9 @@ export default {
           _bottom = arr[i].y + arr[i].height
           bottomIndex = i
         }
+        if(arr[i].zIndex && arr[i].zIndex < _index) {
+          _index = arr[i].zIndex
+        }
       }
       // 为每一个内部组件重新计算相对位置
       for (var i = 0, len = arr.length; i < len; i++) {
@@ -375,6 +395,7 @@ export default {
           y: _top,
           width: _right - _left,
           height: _bottom - _top,
+          zIndex: _index,
           // slted: false,
           child: []
         },
@@ -383,7 +404,13 @@ export default {
       newObj.slted = false
       this.combinList.push(newObj)
       this.combinList[this.combinList.length - 1].child = arr.concat()
+      // console.log(this.combinList)
       this.removeItem()
+      this.chooseCompIndexs = []
+      if (this.selectArea.choose) {
+        this.selectArea.choose = false
+        $('.tempDiv').remove()
+      }
     },
     removeItem: function () {
       // 组合的元件从chartNum中删除
@@ -397,11 +424,13 @@ export default {
       this.chooseIndexs = []
       this.chooseItems = []
     },
-    // 拆分
+    // 取消组合
     itemSplit: function () {
       var index = this.selectedIndex
       var tempArr = this.combinList[index].child
       tempArr.forEach(item => {
+        item.x = item.left + this.combinList[index].x
+        item.y = item.top + this.combinList[index].y
         this.chartNum.push(item)
       })
       this.combinList.splice(index, 1)
@@ -607,7 +636,7 @@ export default {
       var cur = this.syst.curConf.params
       var chaip = this.syst.chainParams
       var postData = {}
-      $.each(chaip, async function (i, d) {
+      $.each(chaip, function (i, d) {
         var index = d.params.indexOf(v.key)
         if (index !== -1) {
           var flag = false
@@ -624,22 +653,22 @@ export default {
           if (flag) {
             return false
           }
-          /* $.ajax({
-            url: d.dataUrl,
+          $.ajax({
+            url: gbs.host + d.dataUrl,
             async: false,
             data: postData,
             success: function (data) {
-              data.obj = data.obj || [];
-              d.data.splice(0, d.data.length);
-              d.data = data.obj;
+              data.obj = data.obj || []
+              d.data.splice(0, d.data.length)
+              d.data = data.obj
               //  console.log(v.key,d.dataUrl,postData);
             }
-          }) */
-          await _this.axios.get(d.dataUrl, { params: postData }).then(data => {
+          })
+          /*  await _this.axios.get(d.dataUrl, { params: postData }).then(data => {
             data.obj = data.obj || []
             d.data.splice(0, d.data.length)
             d.data = data.obj
-          })
+          }) */
           _this.$set(_this.syst.curUrl, grp.index(), $.extend(true, {}, d))
         }
       })
@@ -899,7 +928,8 @@ export default {
         })
         return
       }
-      this.pageData = this.chartNum
+      this.pageData = JSON.stringify(this.chartNum)
+      this.composeData = JSON.stringify(this.combinList)
       this.viewPage = true
       // $.comps.mainPreview.open({
       //   conf: this.chartNum
@@ -948,33 +978,135 @@ export default {
     },
     // 框选
     chooseMap: function () {
+      var _this = this
       console.log('注册框选事件')
       var stateBar = document.getElementById('chooseWrap')
-      //                        var posLeft = stateBar.clientLeft;
-      //                        var posTop = stateBar.clientTop;
-      var posLeft = 210
-      var posTop = 50
-      document.onmousedown = function (e) {
+      // var posLeft = stateBar.clientLeft
+      // var posTop = stateBar.clientTop
+      var posLeft = 210 // 左侧宽度
+      var posTop = 38 // 顶部banner的高度
+      stateBar.addEventListener('mousedown', _this.userChoose)
+    /*     var _this = this
+      console.log('注册框选事件')
+      var stateBar = document.getElementById('chooseWrap')
+      var wrap = document.getElementsByClassName('m-main')[0]
+      var posLeft = stateBar.clientLeft
+      var posTop = stateBar.clientTop
+      // var posLeft = 210 // 左侧宽度
+      // var posTop = 38 // 顶部banner的高度
+      stateBar.addEventListener('mousedown', function (e) {
+        _this.cancelSelected()
         var posx = e.clientX - posLeft
         var posy = e.clientY - posTop
         var div = document.createElement('div')
         div.className = 'tempDiv'
         div.style.left = e.clientX - posLeft + 'px'
         div.style.top = e.clientY - posTop + 'px'
-        // console.log(div);
-        stateBar.appendChild(div)
-        document.onmousemove = function (ev) {
+        stateBar.onmousemove = function (ev) {
+          if ($('.tempDiv').length > 0) {
+            $('.tempDiv').remove()
+          }
+          stateBar.appendChild(div)
+          _this.selectArea.choose = false
           div.style.left = Math.min(ev.clientX - posLeft, posx) + 'px'
           div.style.top = Math.min(ev.clientY - posTop, posy) + 'px'
           div.style.width = Math.abs(posx - (ev.clientX - posLeft)) + 'px'
           div.style.height = Math.abs(posy - (ev.clientY - posTop)) + 'px'
-          // console.log('MouseX: ' + ev.clientX - posLeft + '<br/>MouseY: ' + ev.clientY - posTop);
+          // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
         }
-        document.onmouseup = function () {
-          div.parentNode.removeChild(div)
-          document.onmousemove = null
-          document.onmouseup = null
+        stateBar.onmouseup = function () {
+          // div.parentNode.removeChild(div)
+          div.addEventListener('contextmenu', function (ee) {
+            _this.getChooseItems(div.style.left, div.style.top, div.style.width, div.style.height)
+            $(_this.$refs.contextMenu)
+              .css({
+                left: ee.pageX,
+                top: ee.pageY
+              })
+              .toggle(true)
+            ee.preventDefault()
+          })
+          stateBar.onmousemove = null
+          stateBar.onmouseup = null
         }
+      }, false) */
+    },
+    getChooseItems: function (left, top, width, height) {
+      var bottom = top + height
+      var right = left + width
+      this.chooseIndexs = []
+      this.chooseItems = [] // 选中的单个元件集合
+      this.chooseCompIndexs = [] // 选中的组合元件集合
+      this.chartNum.forEach((item, index) => {
+        if (this.itemInChoose(left, right, top, bottom, item)) {
+          this.chooseIndexs.push(index)
+          this.chooseItems.push(item)
+        }
+      })
+      this.combinList.forEach((item, index) => {
+        if (this.itemInChoose(left, right, top, bottom, item)) {
+          this.chooseCompIndexs.push(index)
+        }
+      })
+      // console.log(this.chooseIndexs)
+      // console.log(this.chooseCompIndexs)
+    },
+    itemInChoose: function (left, right, top, bottom, item) {
+      // console.log(left, right, top, bottom)
+      // 判断是否在框选区域内
+      if (item.x < left || item.y < top || item.x + item.width > right || item.y + item.height > bottom) {
+        return false
+      }
+      return true
+    },
+    userChoose: function (e) {
+      var _this = this
+      var stateBar = document.getElementById('chooseWrap')
+      // _this.cancelSelected()
+      e = e || window.event
+      // 获取鼠标在整个页面的位置
+      var posx = e.offsetX
+      var posy = e.offsetY
+      var div = document.createElement('div')
+      div.className = 'tempDiv'
+      div.style.left = posx + 'px'
+      div.style.top = posy + 'px'
+
+      stateBar.onmousemove = function (ev) {
+        if ($('.tempDiv').length > 0) {
+          $('.tempDiv').remove()
+        }
+        // stateBar.appendChild(div)
+        // _this.selectArea.choose = false
+        ev = ev || window.event
+        // 获取盒子在整个页面的位置
+        var clientX = ev.offsetX
+        var clientY = ev.offsetY
+
+        div.style.left = Math.min(clientX, posx) + 'px'
+        div.style.top = Math.min(clientY, posy) + 'px'
+        div.style.width = Math.abs(posx - clientX) + 'px'
+        div.style.height = Math.abs(posy - clientY) + 'px'
+        if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
+          stateBar.appendChild(div)
+          _this.selectArea.choose = false
+        }
+        // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
+      }
+      stateBar.onmouseup = function () {
+        // div.parentNode.removeChild(div)
+        div.addEventListener('contextmenu', function (ee) {
+          _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
+          $(_this.$refs.contextMenu)
+            .css({
+              left: ee.pageX,
+              top: ee.pageY
+            })
+            .toggle(true)
+          ee.preventDefault()
+        })
+        stateBar.onmousemove = null
+        stateBar.onmouseup = null
       }
     },
     del: function () {
@@ -988,6 +1120,11 @@ export default {
       }
       this.selectedItem = {}
       this.selectedIndex = null
+
+      if (this.selectArea.choose) {
+        this.selectArea.choose = false
+        $('.tempDiv').remove()
+      }
     },
     deleteOne: function (type, tempArr) {
       var i = 0
@@ -1020,6 +1157,10 @@ export default {
       if (this.chooseCompIndexs.length > 0) {
         this.copyOne('compose', this.chooseCompIndexs)
         this.chooseCompIndexs = []
+      }
+      if (this.selectArea.choose) {
+        this.selectArea.choose = false
+        $('.tempDiv').remove()
       }
     },
     copyOne: function (type, arr) {
@@ -1183,10 +1324,19 @@ export default {
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
+    this.chooseMap()
     // this.gerPageConf();
     // this.$nextTick(() => {
     //   this.chooseMap()
     // })
+  },
+  beforeDestroy: function () {
+    $('.tempDiv').remove() // 绑定的事件也会移除
+    var stateBar = document.getElementById('chooseWrap')
+    // var stateBar = $('#chooseWrap')
+    console.log(document)
+    console.log(stateBar)
+    // stateBar.removeEventListener('mousedown', this.userChoose)
   },
   destoryed: function () {
     // $.comps.editHome = null;

@@ -61,9 +61,6 @@ export default {
   mounted: function () {
     this.initTp()
   },
-  beforeDestroy () {
-    this.clearTp()
-  },
   watch: {
     'item.tpId': function () {
       this.clearTp()
@@ -72,6 +69,11 @@ export default {
     'item.time': function () { // 为了刷新能及时更新
       this.initTp()
     }
+  },
+  beforeDestroy () {
+    this.clearTp()
+  },
+  destoryed: function () {
   }
 }
 </script>

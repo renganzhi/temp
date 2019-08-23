@@ -148,6 +148,8 @@ export default {
   beforeDestroy: function () {
     $('#addHomePage-modal').modal('hide')
     $('.modal-backdrop').remove()
+  },
+  destoryed: function () {
   }
 }
 </script>

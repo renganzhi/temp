@@ -718,6 +718,8 @@ export default {
       // var chart = echarts.getInstanceById(instance) // 不知道什么原因，这里获取不到对象，后续需要解决
       // chart.dispose() 销毁
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

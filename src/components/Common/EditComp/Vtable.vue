@@ -81,6 +81,17 @@ export default {
   destroyed: function () {
     // $(this.$el).find('[title]').tooltip('destroy')
     // this.$destroy(true)
+  },
+  destoryed: function () {
   }
 }
 </script>
+<style>
+.home-table .table tr,
+.home-table .table td,
+.home-table .table th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

@@ -35,14 +35,6 @@ body {
   height: 100%;
   margin: 0px;
 }
-/* * {
-  box-sizing: border-box;
-} */
-
-/* @font-face {
-  font-family: "asn";
-  src: url("./../static/font/asn/asn.ttf"), url("./../static/font/asn/asn.eot");
-} */
 .sp-replacer {
   width: 100% !important;
   display: flex;
@@ -62,8 +54,25 @@ body {
 }
 #app {
   height: 100%;
-  /* font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; */
+}
+/* 框选区域样式 */
+#bottom {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 40px;
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+}
+.tempDiv {
+  border: 1px dashed blue;
+  background: #5a72f8;
+  position: absolute;
+  z-index: 999999;
+  /* width: 0;
+  height: 0; */
+  /* filter:alpha(opacity: 10); */
+  opacity: 0.3;
 }
 </style>

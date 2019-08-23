@@ -1,7 +1,9 @@
 <template>
+             <!-- :composeData="composeData" -->
   <div id="mainEdit-edit" class="edit in moniModal nofooter">
     <PreView :showModal="viewPage"
              :pageData="pageData"
+             :composeData="composeData"
              @hidePreview="hidePreview"></PreView>
      <!-- class="edit moniModal nofooter" -->
     <!-- <div class="edit-dialog"> -->
@@ -19,8 +21,10 @@
                     <ul class="menu-list" style="width: 156px;" ref="contextMenu">
                       <li class="context-menu-item context-menu-visible" @click="copy"><span>复制</span></li>
                       <li class="context-menu-item context-menu-visible" @click="del"><span>删除</span></li>
-                      <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
+                      <li v-show="chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li>
+                      <!-- <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
+                      <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li> -->
                       <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="upward"><span>上移</span></li>
                       <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="downward"><span>下移</span></li>
                       <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toTop"><span>置顶</span></li>
@@ -39,7 +43,7 @@
                         <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
                             <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
                             </DragBox>
-                            <!-- <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @selected="selected" @context="context"></Compose> -->
+                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @selected="selected" @context="context"></Compose>
                         </div>
                       </div>
                     </div>
@@ -419,7 +423,6 @@
 <script>
 import EditJs from './Edit.js'
 export default EditJs
-
 </script>
 <style scoped>
 #mainEdit-edit {
@@ -779,26 +782,6 @@ export default EditJs
 #mainEdit-edit .edit-opt:hover {
   color: #0088cc;
 }
-/* 框选区域样式 */
-#bottom {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  height: 40px;
-  border: 1px solid #000;
-  background: #000;
-  color: #fff;
-}
-.tempDiv {
-  border: 1px dashed blue;
-  background: #5a72f8;
-  position: absolute;
-  width: 0;
-  height: 0;
-  /* filter:alpha(opacity: 10); */
-  opacity: 0.3;
-}
-
 .chooseBgImg {
   width: 170px;
   height: 120px;

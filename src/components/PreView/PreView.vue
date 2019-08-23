@@ -25,6 +25,11 @@
                      :item="item"
                      :editable="editable"
                      :key="index"></DragBox>
+            <Compose v-for="(list, index1) in combinList"
+                     :index="index1"
+                     :key="list.id"
+                     :list="list"
+                     :editable="editable"></Compose>
           </div>
         </div>
       </div>
@@ -38,12 +43,13 @@ import Compose from './../Common/Compose'
 import { Notification } from 'element-ui'
 export default {
   name: 'preView',
-  props: ['showModal', 'viewId', 'pageData'],
+  props: ['showModal', 'viewId', 'pageData', 'composeData'],
   components: { DragBox, Compose, Notification },
   data () {
     return {
       editable: false,
-      pageList: []
+      pageList: [],
+      combinList: []
     }
   },
   mounted: function () {
@@ -84,7 +90,8 @@ export default {
           }
         })
       } else {
-        this.pageList = this.pageData
+        this.pageList = JSON.parse(this.pageData) || []
+        this.combinList = JSON.parse(this.composeData) || []
       }
     }
   },
@@ -94,6 +101,8 @@ export default {
       if (newV) $('#mainPreview-modal').modal('show')
       this.setScale()
     }
+  },
+  destoryed: function () {
   }
 }
 </script>

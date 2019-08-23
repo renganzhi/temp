@@ -58,7 +58,8 @@ export default {
         backgroundColor: this.item.bgClr
       }
     }
-
+  },
+  destoryed: function () {
   }
 }
 </script>
