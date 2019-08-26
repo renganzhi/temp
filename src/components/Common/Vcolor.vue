@@ -5,6 +5,7 @@
          name="color">
 </template>
 <script>
+import colorSpectrum from '#/js/colorSpectrum.js'
 export default {
   name: 'vcolor',
   props: ['data', 'type', 'index'],

@@ -83,8 +83,8 @@ export default {
     return {
       oldWidth: 0,
       oldHeight: 0,
-      sacleX: 1,
-      sacleY: 1
+      // sacleX: 1,
+      // sacleY: 1
     }
   },
   computed: {
@@ -97,7 +97,7 @@ export default {
         left: 0,
         float: 'left',
         transformOrigin: 'left top',
-        transform: 'scale(' + this.sacleX + ', ' + this.sacleY + ')'
+        transform: 'scale(' + this.list.sacleX + ', ' + this.list.sacleY + ')'
       }
     }
   },
@@ -110,11 +110,10 @@ export default {
     resizing (list, attr) {
       list.width = attr.width
       list.height = attr.height
-      console.log(list)
       var sacleX = attr.width / this.oldWidth
-      this.sacleX = Number(sacleX.toFixed(5))
+      this.list.sacleX = Number(sacleX.toFixed(5))
       var sacleY = attr.height / this.oldHeight
-      this.sacleY = Number(sacleY.toFixed(5))
+      this.list.sacleY = Number(sacleY.toFixed(5))
     },
     bodyDown (item, attr) { // 点击
       this.$emit('selected', item, 'down', 'compose', this.index)
@@ -122,7 +121,7 @@ export default {
     bodymove (item, attr) {
       item.x = attr.left
       item.y = attr.top
-      this.$emit('selected', item, 'move', 'compose', this.index)
+      // this.$emit('selected', item, 'move', 'compose', this.index)
     },
     vdbclick () { // 双击
       // if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {

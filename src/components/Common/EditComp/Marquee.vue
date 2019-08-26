@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       intervalId: 0,
-      marqueeKey: new Date().getTime() + Math.random() * 1000,
+      marqueeKey: new Date().getTime() + Math.random() * 10000,
       speed: 10,
       stop: false,
       distance: 0,
@@ -44,9 +44,18 @@ export default {
     initMove () {
       // this.stop = false
       this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
+      var _transform = $(this.$el).parents('.full-height').css('transform')
+      if (_transform) {
+        var _temp = _transform.split(',')[0]
+        var _scaleX = _temp.split('.')[1]
+        if (_scaleX) {
+          _scaleX = Number('0.' + _scaleX)
+          this.textWidth = this.textWidth / _scaleX
+        }
+      }
       this.speed = parseInt((this.textWidth + this.item.width) / 60)
       this.stop = false
-      this.marqueeKey = new Date().getTime() + Math.random() * 1000
+      this.marqueeKey = new Date().getTime() + Math.random() * 10000
     },
     // 该方法在大屏展示时，因为缩放的原因所以会有问题
     move () {

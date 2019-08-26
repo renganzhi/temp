@@ -77,7 +77,7 @@ export default {
     bodymove (item, attr) {
       item.x = attr.left
       item.y = attr.top
-      this.$emit('selected', item, 'move', 'item', this.index)
+      // this.$emit('selected', item, 'move', 'item', this.index)
     },
     vdbclick () { // 双击
       if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <div class="modal-backdrop in modal-stack"></div> -->
     <div id="addHomePage-modal"
          class="modal in"
          role="dialog"
@@ -20,8 +19,13 @@
                 <label class="page-lable required-label">页面名称</label>
                 <div class="page-lable-content">
                   <input type="text"
+                         :style="{'border': showErr ? '1px solid red !important' : ''}"
+                         @input="changeName"
                          v-model="name"
                          name="name" />
+                  <label class="error"
+                         v-show="showErr"
+                         style="margin-left: 10px;margin-top: 8px;">{{errMsg}}</label>
                 </div>
               </div>
               <div class="form-group"
@@ -72,6 +76,8 @@ export default {
       name: '',
       baseUrl: gbs.host,
       addOne: false,
+      errMsg: '必填项',
+      showErr: false,
       tems: [],
       temId: ''
     }
@@ -98,6 +104,22 @@ export default {
     }
   },
   methods: {
+    changeName () {
+      if (!this.name) {
+        this.errMsg = '必填项'
+        this.showErr = true
+        return
+      } else {
+        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]");
+        var flag = (!str.test(this.name)) && !/\s/.test(this.name)
+        if (!flag) {
+          this.errMsg = '不能含有特殊字符'
+          this.showErr = true
+          return
+        }
+      }
+      this.showErr = false
+    },
     getTemps () {
       // this.tems.splice(0, this.tems.length)
       this.axios.get('/home/template/list').then((res) => {
@@ -109,9 +131,8 @@ export default {
     },
     save () {
       // 校验名称
-      // if (!_this.validator.form()) {
-      //   return
-      // }
+      this.changeName()
+      if (this.showErr) return
       var data = {
         name: this.name,
         templateId: this.temId

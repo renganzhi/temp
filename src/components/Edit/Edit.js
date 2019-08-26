@@ -309,26 +309,45 @@ export default {
     },
     selected: function (item, ev, type, i) {
       // console.log(window.event.ctrlKey)
-      // console.log(ev)
+      console.log('selected')
       if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
-      item.slted = this.editable && true
-      this.selectedItem = item
-      this.testObj = JSON.parse(JSON.stringify(item))
-      if (type === 'compose') {
-        this.combinList[i].slted = this.editable && true
-        if (this.chooseCompIndexs.indexOf(i) === -1) {
-          this.chooseCompIndexs.push(i)
-          // this.chooseItems.push(this.chartNum[i])
+      if(window.event.ctrlKey && item.slted) {
+        // 取消选中
+        item.slted = this.editable && false
+        if (type === 'compose') {
+          this.combinList[i].slted = this.editable && false
+          var _id = this.chooseCompIndexs.indexOf(i)
+          if (_id !== -1) {
+            this.chooseCompIndexs.splice(_id, 1)
+          }
+        } else {
+          var _id = this.chooseIndexs.indexOf(i)
+          if (_id !== -1) {
+            this.chooseIndexs.splice(_id, 1)
+            // this.chooseItems.push(this.chartNum[i])
+          }
         }
+        return
       } else {
-        if (this.chooseIndexs.indexOf(i) === -1) {
-          this.chooseIndexs.push(i)
-          this.chooseItems.push(this.chartNum[i])
+        item.slted = this.editable && true
+        this.selectedItem = item
+        this.testObj = JSON.parse(JSON.stringify(item))
+        if (type === 'compose') {
+          this.combinList[i].slted = this.editable && true
+          if (this.chooseCompIndexs.indexOf(i) === -1) {
+            this.chooseCompIndexs.push(i)
+          }
+        } else {
+          if (this.chooseIndexs.indexOf(i) === -1) {
+            this.chooseIndexs.push(i)
+            // this.chooseItems.push(this.chartNum[i])
+          }
         }
       }
-      if (this.oldCheckId !== item.id) {
+      
+      if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
         this.oldCheckId = item.id
         if (ev === 'down' && item.ctDataSource === 'system') {
@@ -344,8 +363,9 @@ export default {
       // this.onCtrl = true // 按住ctrl键
     },
     addToCompose: function () {
-      // console.log(this.chooseItems)
-      this.compose(this.chooseItems)
+      // this.compose(this.chooseItems)
+      var itemArr = this.indexToItem()
+      this.compose(itemArr)
     },
     // 单层元件组合 有待调整，也许会用于支持组合之后的再组合
     compose: function (arr) {
@@ -389,13 +409,15 @@ export default {
         true,
         {},
         {
-          id: new Date().getTime(),
+          id: new Date().getTime() + parseInt(Math.random() * 10000),
           ctLegendShow: 'true',
           x: _left,
           y: _top,
           width: _right - _left,
           height: _bottom - _top,
           zIndex: _index,
+          sacleX: 1,
+          sacleY: 1,
           // slted: false,
           child: []
         },
@@ -429,8 +451,13 @@ export default {
       var index = this.selectedIndex
       var tempArr = this.combinList[index].child
       tempArr.forEach(item => {
+        // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
+        // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
         item.x = item.left + this.combinList[index].x
         item.y = item.top + this.combinList[index].y
+        item.width = parseInt(item.width * this.combinList[index].sacleX)
+        item.height = parseInt(item.height * this.combinList[index].sacleY)
+        item.slted = false
         this.chartNum.push(item)
       })
       this.combinList.splice(index, 1)
@@ -460,6 +487,50 @@ export default {
     toTop: function () {
       this.maxIndex++
       this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+    },
+    // 通过chooseIndex 获取 选中的元件集合
+    indexToItem: function () {
+      var arr = this.chooseIndexs, itemArr = []
+      for (var i = 0, len = arr.length; i < len; i++) {
+        itemArr.push(this.chartNum[arr[i]])
+      }
+      return itemArr
+    },
+    // 左对齐
+    alignLeft: function () {
+      var itemArr = this.indexToItem()
+      var minLeftItem = _.minBy(itemArr, function (item) { return item.x })
+      var minLeft = minLeftItem.x
+      for(let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].x = minLeft
+      }
+    },
+    // 右对齐
+    alignRight: function () {
+      var itemArr = this.indexToItem()
+      var maxLeftItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
+      var maxLeft = maxLeftItem.x + maxLeftItem.width
+      for(let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].x = maxLeft - itemArr[i].width
+      }
+    },
+    // 上对齐
+    alignTop: function () {
+      var itemArr = this.indexToItem()
+      var minTopItem = _.minBy(itemArr, function (item) { return item.y })
+      var minTop = minTopItem.y
+      for(let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].y = minTop
+      }
+    },
+    // 下对齐
+    alignBottom: function () {
+      var itemArr = this.indexToItem()
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
+      var maxBottom = maxBottomItem.y + maxBottomItem.height
+      for(let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].y = maxBottom - itemArr[i].height
+      }
     },
     resized: function (item) {
       this.testObj.width = item.width
@@ -1073,9 +1144,6 @@ export default {
       div.style.top = posy + 'px'
 
       stateBar.onmousemove = function (ev) {
-        if ($('.tempDiv').length > 0) {
-          $('.tempDiv').remove()
-        }
         // stateBar.appendChild(div)
         // _this.selectArea.choose = false
         ev = ev || window.event
@@ -1087,14 +1155,19 @@ export default {
         div.style.top = Math.min(clientY, posy) + 'px'
         div.style.width = Math.abs(posx - clientX) + 'px'
         div.style.height = Math.abs(posy - clientY) + 'px'
+        console.log('mouseover')
         if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
           stateBar.appendChild(div)
+          if ($('.tempDiv').length > 1) {
+            $('.tempDiv').eq(0).remove()
+          }
           _this.selectArea.choose = false
         }
         // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
       }
       stateBar.onmouseup = function () {
         // div.parentNode.removeChild(div)
+        console.log('mouseup')
         div.addEventListener('contextmenu', function (ee) {
           _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
           $(_this.$refs.contextMenu)
@@ -1110,6 +1183,9 @@ export default {
       }
     },
     del: function () {
+      if (this.chooseIndexs.length === 0 && this.chooseCompIndexs.length === 0) {
+        return
+      }
       if (this.chooseIndexs.length > 0) {
         this.deleteOne('item', this.chooseIndexs)
         this.chooseIndexs = []
@@ -1175,7 +1251,7 @@ export default {
         let tempItem = JSON.parse(JSON.stringify(this[_type][arr[i]]))
         tempItem.x += 20
         tempItem.y += 20
-        tempItem.id = new Date().getTime() + parseInt(Math.random() * 100)
+        tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
         // console.log(tempItem.id)
         this[_type].push(tempItem)
       }

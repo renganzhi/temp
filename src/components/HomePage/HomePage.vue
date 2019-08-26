@@ -16,7 +16,7 @@
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
         <div class="fl btn-box">
-          <span @click="editPage"
+          <!-- <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
@@ -25,27 +25,50 @@
                 :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
           <span @click="fullScreen"
                 class="ring-icon"
-                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-
+                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span> -->
+          <el-tooltip placement="top"
+                      v-show="!isFullScreen">
+            <div slot="content">编辑</div>
+            <span @click="editPage"
+                  class="ring-icon"><i class="icon-n-set"></i></span>
+          </el-tooltip>
+          <el-tooltip placement="top">
+            <div slot="content">刷新</div>
+            <span @click="refresh"
+                  class="ring-icon"
+                  :title="isFullScreen ? '刷新' : ''"><i class="icon-n-freshen"></i></span>
+          </el-tooltip>
+          <el-tooltip placement="top">
+            <div slot="content">全屏</div>
+            <span @click="fullScreen"
+                  class="ring-icon"
+                  :title="isFullScreen ? '退出全屏' : ''"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+          </el-tooltip>
         </div>
         <div class="fr btn-box"
              v-show="pageSize>1">
-          <!-- <el-tooltip class="item"
-                    effect="dark"
-                    content="Right Top 提示文字"
-                    placement="right-start">
-          2123123
-        </el-tooltip> -->
-          <span @click="prev"
+          <el-tooltip placement="top">
+            <div slot="content">上一页</div>
+            <span @click="prev"
+                  :title="isFullScreen ? '上一页' : ''"
+                  class="ring-icon"><i class="icon-n-prev"></i></span>
+          </el-tooltip>
+          <!-- <span @click="prev"
                 class="ring-icon"
-                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span> -->
           <span @click="togglePlay"
                 class="ring-icon"
                 :title="!timer ? '开启轮播' : '暂停轮播'"
                 v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-          <span @click="next"
+          <el-tooltip placement="top">
+            <div slot="content">下一页 </div>
+            <span @click="next"
+                  class="ring-icon"
+                  :title="isFullScreen ? '下一页' : ''"><i class="icon-n-next"></i></span>
+          </el-tooltip>
+          <!-- <span @click="next"
                 class="ring-icon"
-                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span> -->
         </div>
       </div>
 
@@ -67,7 +90,7 @@
 </template>
 
 <script>
-import { baseData } from '@/config/settings'
+import { baseData, gbs } from '@/config/settings'
 import DragBox from './../Common/DragBox'
 import Public from '#/js/public'
 import { Notification } from 'element-ui'
@@ -254,30 +277,26 @@ export default {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
-          ct.axios({
-            method: d.method || 'get',
-            url: d.url,
-            data: d.params
-          }).then((res) => {
-            res.obj = res.obj || []
-            if (res.obj.colors) {
-              d.ctColors = res.obj.colors
+          $.ajax({
+            url: gbs.host + d.url,
+            data: d.params,
+            type: d.method || 'get',
+            ascyn: false,
+            success: function (res) {
+              res.obj = res.obj || [];
+              if (res.obj.colors) {
+                d.ctColors = res.obj.colors;
+              }
+              d.chartData = res.obj;
+            },
+            error: function () {
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
             }
-            d.chartData = res.obj
           })
-          // $.ajax({
-          //   url: d.url,
-          //   data: d.params,
-          //   type: d.method || 'get',
-          //   ascyn: false,
-          //   success: function (res) {
-          //     res.obj = res.obj || [];
-          //     if (res.obj.colors) {
-          //       d.ctColors = res.obj.colors;
-          //     }
-          //     d.chartData = res.obj;
-          //   }
-          // })
         }
       })
       ct.setScale()

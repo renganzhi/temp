@@ -51,7 +51,7 @@ export default {
       }
       obj = {
         empty: false,
-        keyId: new Date().getTime() + Math.random() * 1000,
+        keyId: new Date().getTime() + Math.random() * 10000,
         initOption: { renderer: 'svg' },
         settings: {
           yAxisType: [0]

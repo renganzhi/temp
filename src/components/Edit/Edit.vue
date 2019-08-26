@@ -116,7 +116,7 @@
                               </div>
                               <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
                                 <label>缩放比例</label>
-                                <div class="fl" style="width: 200px; margin-top: -3px;">
+                                <div class="fl" style="width: 200px; margin-top: -3px;">#mainEdit-edit
                                   <Slider :min="20" :max="200" v-model="paintObj.scale"></Slider>
                                 </div>
                               </div> -->
@@ -426,8 +426,8 @@ export default EditJs
 </script>
 <style scoped>
 #mainEdit-edit {
-  /* position: fixed; */
-  position: absolute;
+  position: fixed;
+  /* position: absolute; */
   top: 0;
   bottom: 0;
   right: 0;
@@ -454,6 +454,7 @@ export default EditJs
   line-height: 36px;
   text-indent: 10px;
   font-size: 14px;
+  background: #1b2031;
 }
 
 #mainEdit-edit .edit-body {
@@ -818,5 +819,13 @@ export default EditJs
 .el-slider__button {
   border: 1px solid gray;
   background-color: #7d8eb9;
+}
+.m-main::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+}
+/* .m-main::-webkit-scrollbar-track, */
+.m-main::-webkit-scrollbar-thumb {
+  border-radius: 6px !important;
 }
 </style>

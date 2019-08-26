@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { Notification } from 'element-ui'
-// axios.defaults.baseURL = 'http://localhost:9999' // 配置axios请求的地址
-axios.defaults.baseURL = '/api' // 配置axios请求的地址
+import { gbs } from '@/config/settings'
+// axios.defaults.baseURL = '/api' // 配置axios请求的地址
+axios.defaults.baseURL = gbs.host // 配置axios请求的地址
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8'
 axios.defaults.crossDomain = true
 axios.defaults.withCredentials = true // 设置cross跨域 并设置访问权限 允许跨域携带cookie信息
@@ -28,7 +29,7 @@ axios.interceptors.response.use(
   error => {
     $('#screen').hide()
     Notification({
-      message: res.data.msg || '连接错误！',
+      message: '连接错误！',
       position: 'bottom-right',
       customClass: 'toast toast-error'
     })
