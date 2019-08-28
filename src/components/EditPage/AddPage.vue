@@ -1,6 +1,7 @@
 <template>
   <div>
     <div id="addHomePage-modal"
+         style="z-index: 20100"
          class="modal in"
          role="dialog"
          aria-hidden="true">

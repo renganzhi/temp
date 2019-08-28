@@ -1,7 +1,8 @@
 <template>
   <div id="mainPreview-modal"
        class="modal"
-       style="overflow: hidden;">
+       style="overflow: hidden; z-index: 200100;">
+    <!-- z-index: 20099 -->
     <div class="modal-dialog modal-lg"
          role="document">
       <div class="modal-content">

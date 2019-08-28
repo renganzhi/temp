@@ -8,26 +8,26 @@ import Edit from '@/components/Edit/Edit.vue'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'HomePage',
-      component: HomePage
-    },
+  // mode: 'history',
+  routes: [{
+    path: '/',
+    name: 'HomePage',
+    component: HomePage
+  },
     // {
     //   path: '/home',
     //   name: 'Home',
     //   component: Home
     // },
-    {
-      path: '/editPage',
-      name: 'EditPage',
-      component: EditPage
-    },
-    {
-      path: '/edit',
-      name: 'edit',
-      component: Edit
-    }
+  {
+    path: '/editPage',
+    name: 'EditPage',
+    component: EditPage
+  },
+  {
+    path: '/edit',
+    name: 'edit',
+    component: Edit
+  }
   ]
 })

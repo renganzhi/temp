@@ -4,6 +4,7 @@ import Compose from './../Common/Compose'
 import Select2 from './../Common/Select2'
 import Vcolor from './../Common/Vcolor'
 import PreView from './../PreView/PreView'
+import Confirm from './../Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
@@ -12,7 +13,7 @@ import lodash from 'lodash'
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, PreView, Slider },
+  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider },
   props: [],
   data: function () {
     return {
@@ -51,6 +52,7 @@ export default {
       chooseIndexs: [], // ctrl选中的单个元件在chartNum中的序号
       chooseCompIndexs: [], // ctrl选中的组合元件的序号
       onCtrl: false, // 是否按住ctrl
+      showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
       defalutColors: [
@@ -97,6 +99,10 @@ export default {
       dataApi: [], // 选择接口数据
       currApi: {}, // 当前选中api
       dataInps: [],
+      minXItem: {
+        x: 1920,
+        y: 1080
+      }, // 多选情况下X值最小的元素
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
@@ -120,7 +126,7 @@ export default {
       radiusErr: false,
       selectArea: {
         choose: false,
-        left: 0,
+        left: 0, // 以下字段暂未使用，后续变更为一个字段
         top: 0,
         width: 0,
         height: 0
@@ -174,27 +180,53 @@ export default {
     changeProHeight () {
       // 改变进度条的高度
       var proHeight = Math.floor(this.selectedItem.proHeight)
+      this.selectedItem.proHeight = proHeight
       if (isNaN(proHeight) || proHeight < 0) {
         this.selectedItem.proHeight = ''
         this.proHeightErr = true
       }
       if (proHeight >= 8 && proHeight <= 24) {
         this.proHeightErr = false
+      } else if (proHeight > 24) {
+        this.selectedItem.proHeight = 24
+        this.proHeightErr = false
       } else {
         this.proHeightErr = true
       }
-      this.changeRadius()
+      // this.changeRadius()
+      this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
     },
     changeRadius () {
+      // var reg = /[e\.-]/
       var radius = Math.floor(this.selectedItem.radius)
+      this.selectedItem.radius = radius
       if (isNaN(radius) || radius < 0) {
-        this.radiusErr = true
+        // this.radiusErr = true
+        this.selectedItem.radius = ''
       }
       if (radius >= 0 && radius <= Math.ceil(this.selectedItem.proHeight / 2)) {
         this.radiusErr = false
       } else {
-        this.radiusErr = true
+        // this.radiusErr = true
+        this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
       }
+    },
+    colorToAll (color) {
+      var _colors = this.selectedItem.ctColors
+      this.chartNum.forEach((item) => {
+        if (item.chartType.indexOf('ve-') !== -1) {
+          if (
+            item.chartData &&
+            item.chartData.colors &&
+            item.ctDataSource === 'system'
+          ) {
+            // 接口返回的系统默认颜色不做修改
+          } else {
+            item.ctColors = JSON.parse(JSON.stringify(_colors))
+            item.colorType = 'custom'
+          }
+        }
+      })
     },
     gerPageConf (id) {
       // 获取当前页的配置
@@ -313,7 +345,7 @@ export default {
       if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
-      if(window.event.ctrlKey && item.slted) {
+      if (window.event.ctrlKey && item.slted) {
         // 取消选中
         item.slted = this.editable && false
         if (type === 'compose') {
@@ -329,6 +361,8 @@ export default {
             // this.chooseItems.push(this.chartNum[i])
           }
         }
+        // 更新多选情况下的x，y
+        this.updateMinXitem()
         return
       } else {
         item.slted = this.editable && true
@@ -345,8 +379,11 @@ export default {
             // this.chooseItems.push(this.chartNum[i])
           }
         }
+        // 设置多选情况下的x，y
+        if (item.x < this.minXItem.x) {
+          this.minXItem = item
+        }
       }
-      
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
         this.oldCheckId = item.id
@@ -358,13 +395,33 @@ export default {
         // titleShow('bottom', $('.m-right'));
       })
     },
+    updateMinXitem: function () {
+      var _this = this
+      var minIndex = _.minBy(this.chooseIndexs, function (i) { return _this.chartNum[i].x })
+      var minCompIndex = _.minBy(this.chooseCompIndexs, function (i) { return _this.combinList[i].x })
+      if (minCompIndex === undefined) {
+        this.minXItem = this.chartNum[minIndex]
+        return
+      }
+      if (minIndex === undefined) {
+        this.minXItem = this.combinList[minCompIndex]
+        return
+      }
+      if (this.chartNum[minIndex].x < this.combinList[minCompIndex].x) {
+        this.minXItem = this.chartNum[minIndex]
+        return
+      } else {
+        this.minXItem = this.combinList[minCompIndex]
+        return
+      }
+    },
     bindCtrl: function () {
       console.log('按住ctrl键')
       // this.onCtrl = true // 按住ctrl键
     },
     addToCompose: function () {
       // this.compose(this.chooseItems)
-      var itemArr = this.indexToItem()
+      var itemArr = this.indexToItem(1) // 只要单个元件，不要元件组
       this.compose(itemArr)
     },
     // 单层元件组合 有待调整，也许会用于支持组合之后的再组合
@@ -396,7 +453,7 @@ export default {
           _bottom = arr[i].y + arr[i].height
           bottomIndex = i
         }
-        if(arr[i].zIndex && arr[i].zIndex < _index) {
+        if (arr[i].zIndex && arr[i].zIndex < _index) {
           _index = arr[i].zIndex
         }
       }
@@ -404,6 +461,9 @@ export default {
       for (var i = 0, len = arr.length; i < len; i++) {
         arr[i].left = arr[i].x - _left
         arr[i].top = arr[i].y - _top
+
+        // arr[i].x = arr[i].x - _left
+        // arr[i].y = arr[i].y - _top
       }
       var newObj = $.extend(
         true,
@@ -464,7 +524,6 @@ export default {
     },
     // 下移
     downward: function () {
-      // this.selectedItem.zIndex -= 1
       var z = this.selectedItem.zIndex || 500
       this.$set(this.selectedItem, 'zIndex', z - 1)
       if (z - 1 < this.minIndex) {
@@ -473,7 +532,6 @@ export default {
     },
     // 上移
     upward: function () {
-      // this.selectedItem.zIndex += 1
       var z = this.selectedItem.zIndex || 500
       this.$set(this.selectedItem, 'zIndex', z + 1)
       if (z + 1 > this.maxIndex) {
@@ -489,10 +547,17 @@ export default {
       this.$set(this.selectedItem, 'zIndex', this.maxIndex)
     },
     // 通过chooseIndex 获取 选中的元件集合
-    indexToItem: function () {
-      var arr = this.chooseIndexs, itemArr = []
+    indexToItem: function (type) {
+      var arr = this.chooseIndexs
+      var itemArr = []
       for (var i = 0, len = arr.length; i < len; i++) {
         itemArr.push(this.chartNum[arr[i]])
+      }
+      if (type !== 1) {
+        var cArr = this.chooseCompIndexs
+        for (var j = 0, _len = cArr.length; j < _len; j++) {
+          itemArr.push(this.combinList[cArr[j]])
+        }
       }
       return itemArr
     },
@@ -501,17 +566,17 @@ export default {
       var itemArr = this.indexToItem()
       var minLeftItem = _.minBy(itemArr, function (item) { return item.x })
       var minLeft = minLeftItem.x
-      for(let i = 0, len = itemArr.length; i < len; i++) {
+      for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].x = minLeft
       }
     },
     // 右对齐
     alignRight: function () {
       var itemArr = this.indexToItem()
-      var maxLeftItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
-      var maxLeft = maxLeftItem.x + maxLeftItem.width
-      for(let i = 0, len = itemArr.length; i < len; i++) {
-        itemArr[i].x = maxLeft - itemArr[i].width
+      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
+      var maxRight = maxRightItem.x + maxRightItem.width
+      for (let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].x = maxRight - itemArr[i].width
       }
     },
     // 上对齐
@@ -519,7 +584,7 @@ export default {
       var itemArr = this.indexToItem()
       var minTopItem = _.minBy(itemArr, function (item) { return item.y })
       var minTop = minTopItem.y
-      for(let i = 0, len = itemArr.length; i < len; i++) {
+      for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].y = minTop
       }
     },
@@ -528,8 +593,78 @@ export default {
       var itemArr = this.indexToItem()
       var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
       var maxBottom = maxBottomItem.y + maxBottomItem.height
-      for(let i = 0, len = itemArr.length; i < len; i++) {
+      for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].y = maxBottom - itemArr[i].height
+      }
+    },
+    // 左右居中对齐
+    textCenter: function () {
+      // 同一中心纵轴
+      var itemArr = this.indexToItem()
+      var minLeftItem = _.minBy(itemArr, function (item) { return item.x }) // 左边界
+      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
+      var maxRight = maxRightItem.x + maxRightItem.width // 右边界
+      var mindItem = (maxRight - minLeftItem.x) / 2 + minLeftItem.x
+      for (let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].x = parseInt(mindItem - itemArr[i].width / 2)
+      }
+    },
+    // 垂直居中对齐
+    alignCenter: function () {
+      // 同一中心横轴
+      var itemArr = this.indexToItem()
+      var minTopItem = _.minBy(itemArr, function (item) { return item.y }) // 上边界
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
+      var maxBottom = maxBottomItem.y + maxBottomItem.height // 下边界
+      var mindItem = (maxBottom - minTopItem.y) / 2 + minTopItem.y
+      for (let i = 0, len = itemArr.length; i < len; i++) {
+        itemArr[i].y = parseInt(mindItem - itemArr[i].height / 2)
+      }
+    },
+    // 水平分布
+    levelDist: function () {
+      var itemArr = this.indexToItem()
+      if (itemArr.length <= 2) return // 至少三个元件才执行函数
+      var minLeftItem = _.minBy(itemArr, function (item) { return item.x }) // 左边界
+      var minLeft = minLeftItem.x
+      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
+      var maxRight = maxRightItem.x + maxRightItem.width // 右边界
+      var gapWidth = maxRight - minLeft // 水平分布区域的间距
+      var allItemWid = _.sumBy(itemArr, function (item) { return item.width })
+      var gap = parseInt((gapWidth - allItemWid) / (itemArr.length - 1))
+      itemArr.sort(function (a, b) {
+        var pre = a.x + a.width
+        var next = b.x + b.width
+        if (a.x === minLeft) {
+          pre = 0 // 设置最小，则x最小的在第一个位置
+        }
+        return pre - next
+      })
+      for (let i = 1, len = itemArr.length; i < len - 1; i++) {
+        itemArr[i].x = parseInt(itemArr[i - 1].x + itemArr[i - 1].width + gap)
+      }
+    },
+    // 垂直分布
+    verticalDist: function () {
+      var itemArr = this.indexToItem()
+      if (itemArr.length <= 2) return // 至少三个元件才执行函数
+      var minTopItem = _.minBy(itemArr, function (item) { return item.y }) // 上边界
+      var minTop = minTopItem.y
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
+      var maxBottom = maxBottomItem.y + maxBottomItem.height // 右边界
+      var gapWidth = maxBottom - minTop // 垂直分布区域的间距
+      var allItemWid = _.sumBy(itemArr, function (item) { return item.height })
+      var gap = parseInt((gapWidth - allItemWid) / (itemArr.length - 1))
+      itemArr.sort(function (a, b) {
+        var pre = a.y + a.height
+        var next = b.y + b.height
+        if (a.y === minTop) {
+          pre = 0 // 设置最小，则x最小的在第一个位置
+        }
+        return pre - next
+      })
+      for (let i = 1, len = itemArr.length; i < len - 1; i++) {
+        itemArr[i].y = parseInt(itemArr[i - 1].y + itemArr[i - 1].height + gap)
       }
     },
     resized: function (item) {
@@ -616,7 +751,7 @@ export default {
           })
         }
       })
-      // 这个接口不想出现弹出层所以用ajax
+      // 这个接口不用弹出层所以用ajax
       // var _type = this.dealTypeStr()
       // await this.axios.get('home/getUrl?typeStr=' + _type).then((data) => {
       //   this.$set(this.syst, 'urlSel', data.obj || [])
@@ -1009,8 +1144,14 @@ export default {
     hidePreview: function () {
       this.viewPage = false
     },
-    back: function () {
-      this.$router.push('editPage')
+    preBack: function () {
+      this.showBackModal = true
+    },
+    back: function (data) {
+      this.showBackModal = false
+      if (data && data.sure === '1') {
+        this.$router.push('editPage')
+      }
       // $.api.view.confirm({
       //   okText: '确定',
       //   msg: '确认离开当前页吗？未保存数据将会丢失！',
@@ -1410,8 +1551,8 @@ export default {
     $('.tempDiv').remove() // 绑定的事件也会移除
     var stateBar = document.getElementById('chooseWrap')
     // var stateBar = $('#chooseWrap')
-    console.log(document)
-    console.log(stateBar)
+    // console.log(document)
+    // console.log(stateBar)
     // stateBar.removeEventListener('mousedown', this.userChoose)
   },
   destoryed: function () {

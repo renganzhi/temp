@@ -1,5 +1,6 @@
 <template>
   <div id="homeSetting-modal"
+       style="z-index: 20100"
        class="modal">
     <div class="modal-dialog modal-lg"
          role="document">

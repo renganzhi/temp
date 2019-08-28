@@ -16,7 +16,7 @@
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
         <div class="fl btn-box">
-          <!-- <span @click="editPage"
+          <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
@@ -25,8 +25,8 @@
                 :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
           <span @click="fullScreen"
                 class="ring-icon"
-                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span> -->
-          <el-tooltip placement="top"
+                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+          <!-- <el-tooltip placement="top"
                       v-show="!isFullScreen">
             <div slot="content">编辑</div>
             <span @click="editPage"
@@ -43,32 +43,32 @@
             <span @click="fullScreen"
                   class="ring-icon"
                   :title="isFullScreen ? '退出全屏' : ''"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-          </el-tooltip>
+          </el-tooltip> -->
         </div>
         <div class="fr btn-box"
              v-show="pageSize>1">
-          <el-tooltip placement="top">
+          <!-- <el-tooltip placement="top">
             <div slot="content">上一页</div>
             <span @click="prev"
                   :title="isFullScreen ? '上一页' : ''"
                   class="ring-icon"><i class="icon-n-prev"></i></span>
-          </el-tooltip>
-          <!-- <span @click="prev"
+          </el-tooltip> -->
+          <span @click="prev"
                 class="ring-icon"
-                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span> -->
+                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
           <span @click="togglePlay"
                 class="ring-icon"
                 :title="!timer ? '开启轮播' : '暂停轮播'"
                 v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-          <el-tooltip placement="top">
+          <!-- <el-tooltip placement="top">
             <div slot="content">下一页 </div>
             <span @click="next"
                   class="ring-icon"
                   :title="isFullScreen ? '下一页' : ''"><i class="icon-n-next"></i></span>
-          </el-tooltip>
-          <!-- <span @click="next"
+          </el-tooltip> -->
+          <span @click="next"
                 class="ring-icon"
-                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span> -->
+                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
         </div>
       </div>
 
@@ -283,11 +283,11 @@ export default {
             type: d.method || 'get',
             ascyn: false,
             success: function (res) {
-              res.obj = res.obj || [];
+              res.obj = res.obj || []
               if (res.obj.colors) {
-                d.ctColors = res.obj.colors;
+                d.ctColors = res.obj.colors
               }
-              d.chartData = res.obj;
+              d.chartData = res.obj
             },
             error: function () {
               Notification({
@@ -383,7 +383,7 @@ export default {
   display: none;
 }
 .newDrag {
-  z-index: 100 !important;
+  /* z-index: 100 !important; */
   opacity: 1;
   background: transparent;
 }

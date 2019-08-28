@@ -1,7 +1,7 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
   <div id="editHome-wrap"
-       style="padding: 10px">
+       style="height: 100%;padding: 10px; padding-bottom: 0px;">
     <AddPage :showModal="addPage"
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
@@ -289,7 +289,7 @@ export default {
   position: relative;
   height: 206px;
   margin: 12px;
-  width: 312px;
+  width: 310px;
   box-shadow: 1px 1px 4px 4px #191d2b;
 }
 
@@ -346,6 +346,8 @@ export default {
 
 #pagesBox {
   margin-left: -6px;
+  height: 100%;
+  overflow: auto;
 }
 
 #pagesBox form {
@@ -369,5 +371,10 @@ export default {
 
 #pagesBox .titleShow .cancle {
   color: #666f8b;
+}
+.wrap-dialog,
+.wrap-content,
+.wrap-body {
+  height: 100%;
 }
 </style>

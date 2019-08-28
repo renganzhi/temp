@@ -23,6 +23,11 @@
            v-for="(item, index) in list.child"
            :key="index"
            @contextmenu="contextItem(index)">
+        <!-- <DragBox :index="index"
+                 :item="item"
+                 :editable="editable"
+                 :key="item.id">
+        </DragBox> -->
         <Vtextarea v-if="item.chartType=='text'"
                    :item="item"
                    ref="childtext"
@@ -75,14 +80,17 @@ import Topo from './EditComp/Topo' // 拓扑
 import Marquee from './EditComp/Marquee' // 跑马灯
 import Vtime from './EditComp/Vtime' // 时间器
 
+// 测试组内编辑
+import DragBox from './DragBox'
+
 export default {
   name: 'compose',
   props: ['list', 'index', 'editable'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, DragBox },
   data () {
     return {
       oldWidth: 0,
-      oldHeight: 0,
+      oldHeight: 0
       // sacleX: 1,
       // sacleY: 1
     }
@@ -121,7 +129,7 @@ export default {
     bodymove (item, attr) {
       item.x = attr.left
       item.y = attr.top
-      // this.$emit('selected', item, 'move', 'compose', this.index)
+      this.$emit('selected', item, 'move', 'compose', this.index)
     },
     vdbclick () { // 双击
       // if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {

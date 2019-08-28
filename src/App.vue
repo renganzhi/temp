@@ -53,7 +53,14 @@ body {
   display: none;
 }
 #app {
+  width: 100%;
   height: 100%;
+  /* position: fixed;
+  z-index: 20099;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; */
 }
 /* 框选区域样式 */
 #bottom {
@@ -70,9 +77,11 @@ body {
   background: #5a72f8;
   position: absolute;
   z-index: 999999;
-  /* width: 0;
-  height: 0; */
   /* filter:alpha(opacity: 10); */
   opacity: 0.3;
+}
+
+.modal-backdrop {
+  z-index: 20099;
 }
 </style>

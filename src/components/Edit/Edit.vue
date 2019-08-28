@@ -1,15 +1,19 @@
 <template>
              <!-- :composeData="composeData" -->
   <div id="mainEdit-edit" class="edit in moniModal nofooter">
+     <!-- style="z-index: 20099" -->
     <PreView :showModal="viewPage"
              :pageData="pageData"
              :composeData="composeData"
              @hidePreview="hidePreview"></PreView>
+    <Confirm :showModal="showBackModal"
+             :message="'确认离开当前页吗？未保存数据将会丢失！'"
+             @hideModal="back"></Confirm>
      <!-- class="edit moniModal nofooter" -->
     <!-- <div class="edit-dialog"> -->
         <div class="edit-content" @click.ctrl="bindCtrl">
             <div class="edit-header">
-              <a class="fr simoLink icon-n-withdraw edit-opt" @click="back">返回</a>
+                <a class="fr simoLink icon-n-withdraw edit-opt" @click="preBack">返回</a>
                 <a class="fr simoLink icon-n-preview edit-opt" @click="preview">预览</a>
                 <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
                 <a class="fr icon-n-save simoLink edit-opt" @click="saveConf">保存</a>
@@ -54,11 +58,49 @@
                     </div>
 
                     <div class="m-right full-height flex flex-vertical" :class="{noSlected:!selectedItem.chartType}" >
-                        <div class="base-item">
+                        <div class="base-item" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
                             <div class="m-tab" :class="{active:showStyleTab}" @click="showStyleTab=true">样式</div>
                             <div class="m-tab" :class="{active:!showStyleTab}" @click="showStyleTab=false">数据</div>
                         </div>
-                        <div class="paintWrap full-height flex-1">
+                        <div class="paintWrap chooseMore full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">
+                          <div class="full-height m-style">
+                            <div class="e-base">
+                              <div class="m-gap form-group set-map">样式</div>
+                              <div class="form-group" style="height: 30px;">
+                                <!-- <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label> -->
+                                <div class="fl">
+                                    <label>X</label>
+                                    <input class="w-90" type="number" v-model="minXItem.x">
+                                    <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
+                                </div>
+                                <div class="fr">
+                                    <label>Y</label>
+                                    <input class="w-90" type="number" v-model="minXItem.y">
+                                    <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>对齐方式</label>
+                                <div class="fl">
+                                  <span @click="alignLeft"><i class="edit-item icon-n-alignLeft"></i></span>
+                                  <span @click="textCenter"><i class="edit-item icon-n-textCenter"></i></span>
+                                  <span @click="alignRight"><i class="edit-item icon-n-alignRight"></i></span>
+                                  <span @click="alignTop"><i class="edit-item icon-n-alignTop"></i></span>
+                                  <span @click="alignCenter"><i class="edit-item icon-n-alignCenter"></i></span>
+                                  <span @click="alignBottom"><i class="edit-item icon-n-alignBottom"></i></span>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>分布方式</label>
+                                <div class="fl">
+                                  <span @click="levelDist"><i class="edit-item icon-n-levelDist"></i></span>
+                                  <span @click="verticalDist"><i class="edit-item icon-n-verticalDist"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="paintWrap full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
                           <div class="full-height m-style">
                             <div class="e-base">
                               <div class="m-gap form-group set-map">画布设置</div>
@@ -123,7 +165,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="m-tabMain full-height flex-1">
+                        <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
                             <div v-show="showStyleTab" class="full-height m-style">
                                 <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
                                     <div class="form-group">
@@ -148,7 +190,7 @@
                                     </div>
                                     <div class="form-group" style="height: 30px;">
                                         <div class="fl">
-                                            <label>x</label>
+                                            <label>X</label>
                                             <input class="w-90" type="number" v-model="testObj.x">
                                             <span>px</span>
                                             <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
@@ -206,18 +248,17 @@
                                             <option v-for="item in 10" :key="item" :value="item">{{item}}</option>
                                         </select>
                                     </div>
-                                    <div class="form-group cols2" v-show="selectedItem.chartType!=='border'">
-                                        <label>字号</label>
-                                        <select v-model="selectedItem.fontSize">
-                                            <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
-                                        </select>
-                                    </div>
                                     <div class="form-group cols2" v-if="selectedItem.chartType!=='border'">
                                         <label>字体颜色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.clr" :key="4" type="clr" @getdata="getColor"></Vcolor>
                                         </div>
-                                        <!-- <input type="color" v-model="selectedItem.clr"/> -->
+                                    </div>
+                                    <div class="form-group cols2" v-show="selectedItem.chartType!=='border'">
+                                        <label>字号</label>
+                                        <select v-model="selectedItem.fontSize">
+                                            <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
+                                        </select>
                                     </div>
                                     <div class="form-group cols2" v-if="selectedItem.chartType=='time'">
                                       <label>时间格式</label>
@@ -329,30 +370,38 @@
                                     </div>
                                     <div class="form-group cols2">
                                         <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
-                                        <select v-model="selectedItem.colorType" @change="chgColorType">
+                                        <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
                                             <option value="defalut">默认</option>
                                             <option value="custom" v-show="alertLevel">系列</option>
+                                        </select>
+                                        <select v-model="selectedItem.colorful" v-show="(selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType" style="width: 80px !important; float: right;">
+                                            <option value="false">单色</option>
+                                            <option value="true">多色</option>
                                         </select>
                                     </div>
                                     <div class="colorsConf" v-if="selectedItem.colorType=='custom'">
                                         <div class="form-group">
                                             <span>序号</span>
-                                            <span class="color-w70 text">系列</span>
-                                            <span class="color-w70 text">渐变色</span>
+                                            <!-- <span class="color-w70 text">系列</span> -->
+                                            <span class="color-w70 text">颜色</span>
                                             <i class="icon-n-add" @click="addColor"></i>
                                         </div>
                                         <div class="form-group" v-for="(v,index) in selectedItem.ctColors" :key="index">
                                             <span class="colorOrder">{{index+1}}</span>
-                                            <div class="color-w70">
-                                                <Vcolor :data="selectedItem.ctColors[index][0]" :index="index" @getdata="getColorStart"></Vcolor>
+                                            <div class="gradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
+                                              <div class="color-w15">
+                                                  <Vcolor :data="selectedItem.ctColors[index][0]" :index="index" @getdata="getColorStart"></Vcolor>
+                                              </div>
+                                              <div class="color-w15" style="float: right">
+                                                  <Vcolor :data="selectedItem.ctColors[index][1]" :index="index" @getdata="getGradColor"></Vcolor>
+                                              </div>
                                             </div>
-                                            <div class="color-w70">
-                                                <Vcolor :data="selectedItem.ctColors[index][1]" :index="index" @getdata="getGradColor"></Vcolor>
-                                            </div>
+
                                             <i class="icon-n-up" @click="moveUp(index)"></i>
-                                            <i class="icon-n-down" @click="moveDown(index)"></i>
+                                            <i class="icon-n-putin" @click="moveDown(index)"></i>
                                             <i class="icon-n-deleteNew" @click="delColor(index)"></i>
                                         </div>
+                                        <button type="button" class="colorToall" @click="colorToAll">应用到已添加元件</button>
                                     </div>
                                 </div>
 
@@ -426,8 +475,8 @@ export default EditJs
 </script>
 <style scoped>
 #mainEdit-edit {
-  position: fixed;
-  /* position: absolute; */
+  /* position: fixed; */
+  position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
@@ -552,6 +601,9 @@ export default EditJs
 
 #mainEdit-edit .paintWrap {
   display: none;
+}
+#mainEdit-edit .chooseMore {
+  display: block;
 }
 
 #mainEdit-edit .noSlected .paintWrap {
@@ -733,6 +785,14 @@ export default EditJs
   width: 20px;
   text-align: center;
   display: inline-block;
+  float: left;
+}
+#mainEdit-edit .gradient {
+  width: 166px;
+  height: 10px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 3px;
 }
 .color-w200 {
   width: 195px;
@@ -750,7 +810,25 @@ export default EditJs
 }
 .color-w70.text {
   box-sizing: border-box;
-  padding-left: 16px;
+  /* padding-left: 16px; */
+  width: 156px;
+  text-align: center;
+}
+.color-w15 {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #fff;
+    overflow: hidden;
+    margin-top: -3px;
+}
+.colorToall {
+    border-radius: 5px;
+    width: 90%;
+    margin-left: 5%;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 15px;
 }
 #mainEdit-edit .colorsConf [class^="icon-n-"] {
   margin: 0 1px;
@@ -803,6 +881,10 @@ export default EditJs
     left: 0;
     border: none !important;
     opacity: 0;
+}
+.edit-item {
+  color: #62709b;
+  cursor: pointer;
 }
 /* slider */
 .el-slider__runway {

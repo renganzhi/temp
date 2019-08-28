@@ -4,7 +4,7 @@
        tabindex="-1"
        role="dialog"
        aria-hidden="true"
-       style="z-index: 10052;">
+       style="z-index: 200100;">
     <div class="modal-dialog">
       <div class="row">
         <div class="col-lg-offset-3 col-md-offset-3 col-md-7 col-lg-7">
@@ -17,7 +17,7 @@
               </h5>
             </div>
             <div class="modal-footer"
-                 style="border: 0; padding-top: 0; text-align: center;">
+                 style="border: 0; padding-top: 0; text-align: center; margin-left: 0px;">
               <button type="button"
                       @click="sure2">{{sureText}}</button>
               <span style="width: 20px; display: inline-block;"></span>

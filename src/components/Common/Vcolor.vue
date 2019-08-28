@@ -69,3 +69,24 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.colorsConf {
+  .sp-dd {
+    display: none;
+  }
+  .sp-preview {
+    margin-right: 0px;
+  }
+  .sp-replacer {
+    padding: 0px;
+    border: none;
+  }
+  .sp-replacer:hover {
+    border: none;
+  }
+  .sp-preview {
+    height: 15px;
+    border: none;
+  }
+}
+</style>

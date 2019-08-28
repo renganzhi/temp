@@ -171,6 +171,19 @@ export default {
       // this.extend.color = newV
       this.extend.color = this.getColors(newV)
     },
+    'item.colorful': function (newV) {
+      var _this = this
+      // 页面中判断了只有条形图和柱状图才会触发改变
+      if (newV === 'true') {
+        this.extend.series.itemStyle.normal.color = function (params) {
+          var colorList = _this.extend.color
+          var len = colorList.length
+          return colorList[params.dataIndex % len]
+        }
+      } else {
+        this.extend.series.itemStyle.normal.color = null
+      }
+    },
     'item.chartData': function (newV) {
       if (this.item.chartType === 've-gauge') {
         if (newV.hasOwnProperty('value') && (newV.value || newV.value === 0)) {
@@ -259,7 +272,16 @@ export default {
               type: 'bar',
               /* barWidth:'35%', */
               barGap: '20%',
-              barCategoryGap: '50%'
+              barCategoryGap: '50%',
+              itemStyle: {
+                normal: {
+                  color: _this.item.colorful && _this.item.colorful === 'true' ? function (params) {
+                    var colorList = _this.extend.color
+                    var len = colorList.length
+                    return colorList[params.dataIndex % len]
+                  } : null
+                }
+              }
             }
           })
           if (_this.item.subType === 'category') {
@@ -349,7 +371,16 @@ export default {
               series: {
                 type: 'bar',
                 barGap: '20%',
-                barCategoryGap: '50%'
+                barCategoryGap: '50%',
+                itemStyle: {
+                  normal: {
+                    color: _this.item.colorful && _this.item.colorful === 'true' ? function (params) {
+                      var colorList = _this.extend.color
+                      var len = colorList.length
+                      return colorList[params.dataIndex % len]
+                    } : null
+                  }
+                }
                 // barWidth:'35%'
               }
             })

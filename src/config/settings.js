@@ -2,8 +2,8 @@
 var settings = {
   // 这里配置一些全局变量
   gbs: {
-    // host: '/api'
-    host: ''
+    host: '/api'
+    // host: ''
   },
   baseData: {
     home: {
