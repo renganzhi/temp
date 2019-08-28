@@ -3,7 +3,6 @@ apply plugin: "eclipse"
 apply plugin: "net.saliman.properties"
 
 def buildType = System.properties.build ? System.properties.build : "app"
-
 if (buildType == "app") {
     apply plugin: "org.springframework.boot"
     apply plugin: 'io.spring.dependency-management'
@@ -19,7 +18,7 @@ sourceSets {
 		java{
 			if (buildType != "app") {
     			   println "exclude patrol conf"
-					exclude "com/uxsino/PatrolApplication.java"
+					exclude "com/uxsino/LeaderViewApplication.java"
 					exclude "com/uxsino/patrol/security/conf/*WebSecurityConfig.java"
 				}
 			}
