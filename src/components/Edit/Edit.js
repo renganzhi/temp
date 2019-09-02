@@ -7,6 +7,7 @@ import PreView from './../PreView/PreView'
 import Confirm from './../Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
+import { mapActions } from 'vuex'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
 import qs from 'qs'
 import lodash from 'lodash'
@@ -17,6 +18,8 @@ export default {
   props: [],
   data: function () {
     return {
+      allowOverflow: 20, // 允许溢出的宽高
+      fonts: baseData.fontFaces,
       pageId: 0,
       value2: 0.5,
       oldCheckId: '', // 优化每次选中都会触发请求接口，仅在切换元件时才请求
@@ -36,6 +39,10 @@ export default {
       miniW: 10,
       minIndex: 500, // 当前最低层级
       maxIndex: 500, // 当前最高层级
+      paintInput: {
+        width: 1920, // 输入的画布大小
+        height: 1080
+      },
       paintObj: {
         width: 1920,
         height: 1080,
@@ -43,7 +50,7 @@ export default {
         bgImg: '',
         scale: 100,
         bgStyle: '3', // 背景图铺满方式
-        opacity: 1,
+        opacity: 100,
         showGrid: true // 显示网格
       },
       ceditable: true, // 组合
@@ -101,7 +108,8 @@ export default {
       dataInps: [],
       minXItem: {
         x: 1920,
-        y: 1080
+        y: 1080,
+        maxX: 0
       }, // 多选情况下X值最小的元素
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
@@ -122,12 +130,16 @@ export default {
         isShowError: false,
         errorMsg: ''
       },
+      progressObj: {
+        height: 16,
+        radius: 8
+      },
       proHeightErr: false,
       radiusErr: false,
       selectArea: {
-        choose: false,
-        left: 0, // 以下字段暂未使用，后续变更为一个字段
-        top: 0,
+        choose: false, // 是否处于框选状态
+        left: 0, // 多选情况下输入框改变前的x位移
+        top: 0, // 多选情况下输入框改变前的y位移
         width: 0,
         height: 0
       }
@@ -145,11 +157,10 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + this.paintObj.bgImg + ')'
-          : '',
+          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
         backgroundColor: this.paintObj.bgColor,
         backgroundSize: backgroundSize,
-        opacity: this.paintObj.opacity
+        opacity: this.paintObj.opacity / 100
       }
     },
     isEcharts: function () {
@@ -177,38 +188,39 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'changeHomeData'
+    ]),
     changeProHeight () {
       // 改变进度条的高度
-      var proHeight = Math.floor(this.selectedItem.proHeight)
-      this.selectedItem.proHeight = proHeight
+      var proHeight = Math.floor(this.progressObj.height)
       if (isNaN(proHeight) || proHeight < 0) {
-        this.selectedItem.proHeight = ''
-        this.proHeightErr = true
+        this.progressObj.height = this.selectedItem.proHeight
       }
       if (proHeight >= 8 && proHeight <= 24) {
-        this.proHeightErr = false
+        this.selectedItem.proHeight = proHeight
       } else if (proHeight > 24) {
+        this.progressObj.height = 24
         this.selectedItem.proHeight = 24
-        this.proHeightErr = false
+      } else if (proHeight < 8) {
+        this.progressObj.height = 8
+        this.selectedItem.proHeight = 8
       } else {
-        this.proHeightErr = true
+        this.progressObj.height = this.selectedItem.proHeight
       }
-      // this.changeRadius()
       this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
+      this.progressObj.radius = this.selectedItem.radius
     },
     changeRadius () {
-      // var reg = /[e\.-]/
-      var radius = Math.floor(this.selectedItem.radius)
-      this.selectedItem.radius = radius
+      var radius = Math.floor(this.progressObj.radius)
       if (isNaN(radius) || radius < 0) {
-        // this.radiusErr = true
-        this.selectedItem.radius = ''
+        this.progressObj.radius = this.selectedItem.radius
       }
       if (radius >= 0 && radius <= Math.ceil(this.selectedItem.proHeight / 2)) {
-        this.radiusErr = false
+        this.selectedItem.radius = radius
       } else {
-        // this.radiusErr = true
-        this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
+        this.progressObj.radius = Math.ceil(this.selectedItem.proHeight / 2)
+        this.selectedItem.radius = this.progressObj.radius
       }
     },
     colorToAll (color) {
@@ -231,7 +243,7 @@ export default {
     gerPageConf (id) {
       // 获取当前页的配置
       // home/homePage/getById
-      this.axios.get(`home/homePage/getById/${id}`).then(res => {
+      this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
           this.pageName = res.obj.name
@@ -252,9 +264,7 @@ export default {
     initChart (value) {
       this.showStyleTab = true
       var obj = $.extend(
-        true,
-        {},
-        {
+        true, {}, {
           id: new Date().getTime(),
           ctName: value.text,
           ctLegendShow: 'true',
@@ -278,7 +288,7 @@ export default {
       delete obj.text
       this.cancelSelected()
       obj.slted = true
-
+      console.log(obj)
       this.chartNum.push(obj)
       this.selectedItem = obj
       this.testObj = this.selectedItem
@@ -337,11 +347,15 @@ export default {
       this.chooseItems = []
       this.chooseIndexs = []
       this.chooseCompIndexs = []
+      // console.log('取消所有选中')
+      // 初始化多选时的x，y值
+      this.minXItem.x = 1920
+      this.minXItem.y = 1080
+      this.minXItem.maxX = 0
       // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
-      // console.log(window.event.ctrlKey)
-      console.log('selected')
+      // console.log('selected')
       if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
@@ -365,8 +379,13 @@ export default {
         this.updateMinXitem()
         return
       } else {
+        // 增加选中
         item.slted = this.editable && true
         this.selectedItem = item
+        if (item.chartType === 'progress') {
+          this.progressObj.height = item.proHeight
+          this.progressObj.radius = item.radius
+        }
         this.testObj = JSON.parse(JSON.stringify(item))
         if (type === 'compose') {
           this.combinList[i].slted = this.editable && true
@@ -381,7 +400,14 @@ export default {
         }
         // 设置多选情况下的x，y
         if (item.x < this.minXItem.x) {
-          this.minXItem = item
+          // this.minXItem = item
+          this.minXItem.x = item.x
+          this.minXItem.y = item.y
+          this.selectArea.left = item.x // 不变的最小值
+          this.selectArea.top = item.y
+        }
+        if (item.x + item.width > this.minXItem.maxX) {
+          this.minXItem.maxX = item.x + item.width // 记录下最远的距离
         }
       }
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
@@ -400,23 +426,53 @@ export default {
       var minIndex = _.minBy(this.chooseIndexs, function (i) { return _this.chartNum[i].x })
       var minCompIndex = _.minBy(this.chooseCompIndexs, function (i) { return _this.combinList[i].x })
       if (minCompIndex === undefined) {
-        this.minXItem = this.chartNum[minIndex]
+        // this.minXItem = this.chartNum[minIndex]
+        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y)
         return
       }
       if (minIndex === undefined) {
-        this.minXItem = this.combinList[minCompIndex]
+        // this.minXItem = this.combinList[minCompIndex]
+        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y)
         return
       }
       if (this.chartNum[minIndex].x < this.combinList[minCompIndex].x) {
-        this.minXItem = this.chartNum[minIndex]
-        return
+        // this.minXItem = this.chartNum[minIndex]
+        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y)
       } else {
-        this.minXItem = this.combinList[minCompIndex]
-        return
+        // this.minXItem = this.combinList[minCompIndex]
+        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y)
+      }
+    },
+    changeMinXitem: function (x, y) {
+      this.minXItem.x = x
+      this.minXItem.y = y
+      this.selectArea.left = x
+      this.selectArea.top = y
+    },
+    // 多选时改变x，y位移
+    changeTarget: function (xy) {
+      var left = 'left'
+      var width = 'width'
+      if (xy === 'y') {
+        left = 'top'
+        width = 'height'
+      }
+      var allowOverflow = 50 // 可提取为可配置变量
+      if (this.minXItem[xy] < -allowOverflow || this.minXItem[xy] > this.paintObj[width] + allowOverflow) {
+        this.minXItem[xy] = this.selectArea[left]
+      } else {
+        var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][xy] += changes
+        })
+        this.chooseCompIndexs.forEach((i) => {
+          this.combinList[i][xy] += changes
+        })
+        this.selectArea[left] = this.minXItem[xy]
       }
     },
     bindCtrl: function () {
-      console.log('按住ctrl键')
+      // console.log('按住ctrl键')
       // this.onCtrl = true // 按住ctrl键
     },
     addToCompose: function () {
@@ -466,9 +522,7 @@ export default {
         // arr[i].y = arr[i].y - _top
       }
       var newObj = $.extend(
-        true,
-        {},
-        {
+        true, {}, {
           id: new Date().getTime() + parseInt(Math.random() * 10000),
           ctLegendShow: 'true',
           x: _left,
@@ -480,8 +534,7 @@ export default {
           sacleY: 1,
           // slted: false,
           child: []
-        },
-        {}
+        }, {}
       )
       newObj.slted = false
       this.combinList.push(newObj)
@@ -510,6 +563,7 @@ export default {
     itemSplit: function () {
       var index = this.selectedIndex
       var tempArr = this.combinList[index].child
+      this.chooseIndexs = []
       tempArr.forEach(item => {
         // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
         // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
@@ -517,10 +571,12 @@ export default {
         item.y = item.top + this.combinList[index].y
         item.width = parseInt(item.width * this.combinList[index].sacleX)
         item.height = parseInt(item.height * this.combinList[index].sacleY)
-        item.slted = false
+        item.slted = true
         this.chartNum.push(item)
+        this.chooseIndexs.push(this.chartNum.length - 1)
       })
       this.combinList.splice(index, 1)
+      this.chooseCompIndexs = []
     },
     // 下移
     downward: function () {
@@ -677,12 +733,13 @@ export default {
       this.paintObj.bgColor = ''
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
-      this.paintObj.opacity = 1
+      this.paintObj.opacity = 100
       this.paintObj.showGrid = true
     },
-    addColor () {
+    addColor (index) {
       // 添加颜色
-      this.selectedItem.ctColors.push(['#c23531', '#c23531'])
+      this.selectedItem.ctColors.splice(index, 0, ['#c23531', '#c23531'])
+      // this.selectedItem.ctColors.push(['#c23531', '#c23531'])
     },
     delColor (index) {
       // 删除自定义颜色
@@ -732,7 +789,7 @@ export default {
       // 根据选中图标类型获取可以配置的接口
       var _this = this
       $.ajax({
-        url: gbs.host + 'home/getUrl',
+        url: gbs.host + '/leaderview/home/getUrl',
         data: {
           typeStr: this.dealTypeStr()
         },
@@ -768,8 +825,7 @@ export default {
 
       if (typeof flag === 'boolean') {
         var selectedP = (this.syst.curConf.params = $.extend(
-          true,
-          {},
+          true, {},
           this.selectedItem.params
         ))
         index = _.findIndex(this.syst.urlSel, function (o) {
@@ -798,6 +854,7 @@ export default {
       this.syst.curUrl = []
       this.$nextTick(function () {
         var api = (_this.syst.curUrl = urlsel.params)
+        var reg = /^\//
         $.each(api, function (i, d) {
           if (d.dataType === 'remote') {
             // 需要通过请求拿数据
@@ -809,7 +866,7 @@ export default {
               chainP[d.key] = d
             }
             $.ajax({
-              url: gbs.host + d.dataUrl,
+              url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
               async: false,
               data: postData,
               type: d.method || 'get',
@@ -842,6 +899,7 @@ export default {
       var cur = this.syst.curConf.params
       var chaip = this.syst.chainParams
       var postData = {}
+      var reg = /^\//
       $.each(chaip, function (i, d) {
         var index = d.params.indexOf(v.key)
         if (index !== -1) {
@@ -860,7 +918,7 @@ export default {
             return false
           }
           $.ajax({
-            url: gbs.host + d.dataUrl,
+            url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
             async: false,
             data: postData,
             success: function (data) {
@@ -889,11 +947,12 @@ export default {
         return
       }
       var datas = {}
+      var reg = /^\//
       $.each(param, function (i, d) {
         datas[i] = $.isArray(d) ? d.join(',') : d
       })
       $.ajax({
-        url: gbs.host + curConf.url,
+        url: reg.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url,
         data: datas,
         type: curConf.method,
         success: function (data) {
@@ -915,27 +974,61 @@ export default {
           })
         }
       })
-      /* this.axios({
-        method: curConf.method,
-        url: curConf.url,
-        data: qs.stringify(datas),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      }).then((data) => {
-        data.obj = data.obj || {}
-        if (data.obj.colors) {
-          _this.selectedItem.ctColors = data.obj.colors
-          _this.selectedItem.colorType = 'defalut'
-        }
-        _this.selectedItem.chartData = data.obj
-        _this.selectedItem.url = curConf.url
-        _this.selectedItem.method = curConf.method
-        _this.selectedItem.params = param
-      }) */
     },
     saveTopoConf: function (param) {
       // 拓扑与其他组件不同，需要特殊处理
       this.selectedItem.tpId = param.topoId
     },
+    // 以下为静态数据的输入校验
+    formatJson (a) {
+      if (a === null) return null
+      if (typeof a === 'string' && (a = eval('(' + a + ')'))) {
+        return this._format(a, a, null, null, null)
+      }
+    },
+    _format: function (a, c, d, b, e) {
+      d || (d = '')
+      var isObj = typeof c === 'object' && Object.prototype.toString.call(c).toLowerCase() === '[object object]'
+      if (isObj) {
+        if (c.$ref) {
+          var g = c.$ref
+          g.indexOf('$.') === 0 && (b[e] = this._getJsonValue(a, g.substring(2)))
+          return
+        }
+        for (var f in c) {
+          b = d
+          b !== '' && (b += '.')
+          g = c[f]
+          b += f
+          this._format(a, g, b, c, f)
+        }
+      } else if (this.isArray(c)) {
+        for (f in c) {
+          b = d, g = c[f], b = b + '[' + f + ']', this._format(a, g, b, c, f)
+        }
+      }
+      return a
+    },
+    _getJsonValue: function (a, c) {
+      var d = 'randomId_' + parseInt(1E9 * Math.random()),
+        b
+      b = '' + ('function ' + d + '(root){') + ('return root.' + c + '')
+      b += '}'
+      b += ''
+      var e = document.createElement('script')
+      e.id = d
+      e.text = b
+      document.body.appendChild(e)
+      d = window[d](a)
+      e.parentNode.removeChild(e)
+      return d
+    },
+    isArray: function (a) {
+      return typeof a === 'object' && Object.prototype.toString.call(a).toLowerCase() === '[object array]'
+    },
+    // isObject: function(a) {
+    //   return 'object' === typeof a && '[object object]' === Object.prototype.toString.call(a).toLowerCase()
+    // },
     dataChange () {
       if (this.selectedItem.ctDataSource === 'system') {
         this.getUrlData()
@@ -945,7 +1038,7 @@ export default {
         // 先判断是{}类型的对象，而不是new Object
         if (reg.test(textData.trim())) {
           try {
-            this.selectedItem.chartData = $.api.utils.json.format(textData)
+            this.selectedItem.chartData = this.formatJson(textData)
           } catch (err) {
             // tooltip('', '请输入正确的JSON格式的数据', 'info')
             Notification({
@@ -966,14 +1059,11 @@ export default {
     },
     saveConf: function (event, cb) {
       // 保存
-      if (
-        !(
-          !this.widthVali.isShowError &&
-          !this.heightVali.isShowError &&
-          !this.xVali.isShowError &&
-          !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr
-        )
-      ) {
+      if (!(!this.widthVali.isShowError &&
+        !this.heightVali.isShowError &&
+        !this.xVali.isShowError &&
+        !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr
+      )) {
         // tooltip('', '请填写正确的配置信息', 'info')
         Notification({
           message: '请填写正确的配置信息',
@@ -1006,7 +1096,7 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', window.location.host + '/resources/img/topo/tpstander.png')
           .css({
             width: '100%',
             height: '100%',
@@ -1050,13 +1140,12 @@ export default {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
             paintConf: 'test',
-            viewImage:
-              '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            viewImage: '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({
               method: 'post',
-              url: 'home/homePage',
+              url: '/leaderview/home/homePage',
               data: qs.stringify(_data),
               headers: { 'content-type': 'application/x-www-form-urlencoded' }
             })
@@ -1093,7 +1182,7 @@ export default {
     },
     uploadFile: function (formData, cb) {
       $.ajax({
-        url: gbs.host + '/mc/home/file/upload',
+        url: gbs.host + '/leaderview/home/file/upload',
         type: 'post',
         data: formData,
         async: false,
@@ -1102,7 +1191,7 @@ export default {
         contentType: false,
         success: function (data) {
           if (data.success) {
-            // var _url = '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            // var _url = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
             typeof cb === 'function' && cb(data)
           } else {
             // $("#screen").hide()
@@ -1118,14 +1207,11 @@ export default {
     },
     preview: function () {
       // 预览
-      if (
-        !(
-          !this.widthVali.isShowError &&
-          !this.heightVali.isShowError &&
-          !this.xVali.isShowError &&
-          !this.yVali.isShowError
-        )
-      ) {
+      if (!(!this.widthVali.isShowError &&
+        !this.heightVali.isShowError &&
+        !this.xVali.isShowError &&
+        !this.yVali.isShowError
+      )) {
         // tooltip('', '请填写正确的配置信息', 'info')
         Notification({
           message: '请填写正确的配置信息',
@@ -1198,50 +1284,50 @@ export default {
       var posLeft = 210 // 左侧宽度
       var posTop = 38 // 顶部banner的高度
       stateBar.addEventListener('mousedown', _this.userChoose)
-    /*     var _this = this
-      console.log('注册框选事件')
-      var stateBar = document.getElementById('chooseWrap')
-      var wrap = document.getElementsByClassName('m-main')[0]
-      var posLeft = stateBar.clientLeft
-      var posTop = stateBar.clientTop
-      // var posLeft = 210 // 左侧宽度
-      // var posTop = 38 // 顶部banner的高度
-      stateBar.addEventListener('mousedown', function (e) {
-        _this.cancelSelected()
-        var posx = e.clientX - posLeft
-        var posy = e.clientY - posTop
-        var div = document.createElement('div')
-        div.className = 'tempDiv'
-        div.style.left = e.clientX - posLeft + 'px'
-        div.style.top = e.clientY - posTop + 'px'
-        stateBar.onmousemove = function (ev) {
-          if ($('.tempDiv').length > 0) {
-            $('.tempDiv').remove()
+      /*     var _this = this
+        console.log('注册框选事件')
+        var stateBar = document.getElementById('chooseWrap')
+        var wrap = document.getElementsByClassName('m-main')[0]
+        var posLeft = stateBar.clientLeft
+        var posTop = stateBar.clientTop
+        // var posLeft = 210 // 左侧宽度
+        // var posTop = 38 // 顶部banner的高度
+        stateBar.addEventListener('mousedown', function (e) {
+          _this.cancelSelected()
+          var posx = e.clientX - posLeft
+          var posy = e.clientY - posTop
+          var div = document.createElement('div')
+          div.className = 'tempDiv'
+          div.style.left = e.clientX - posLeft + 'px'
+          div.style.top = e.clientY - posTop + 'px'
+          stateBar.onmousemove = function (ev) {
+            if ($('.tempDiv').length > 0) {
+              $('.tempDiv').remove()
+            }
+            stateBar.appendChild(div)
+            _this.selectArea.choose = false
+            div.style.left = Math.min(ev.clientX - posLeft, posx) + 'px'
+            div.style.top = Math.min(ev.clientY - posTop, posy) + 'px'
+            div.style.width = Math.abs(posx - (ev.clientX - posLeft)) + 'px'
+            div.style.height = Math.abs(posy - (ev.clientY - posTop)) + 'px'
+            // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
           }
-          stateBar.appendChild(div)
-          _this.selectArea.choose = false
-          div.style.left = Math.min(ev.clientX - posLeft, posx) + 'px'
-          div.style.top = Math.min(ev.clientY - posTop, posy) + 'px'
-          div.style.width = Math.abs(posx - (ev.clientX - posLeft)) + 'px'
-          div.style.height = Math.abs(posy - (ev.clientY - posTop)) + 'px'
-          // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
-        }
-        stateBar.onmouseup = function () {
-          // div.parentNode.removeChild(div)
-          div.addEventListener('contextmenu', function (ee) {
-            _this.getChooseItems(div.style.left, div.style.top, div.style.width, div.style.height)
-            $(_this.$refs.contextMenu)
-              .css({
-                left: ee.pageX,
-                top: ee.pageY
-              })
-              .toggle(true)
-            ee.preventDefault()
-          })
-          stateBar.onmousemove = null
-          stateBar.onmouseup = null
-        }
-      }, false) */
+          stateBar.onmouseup = function () {
+            // div.parentNode.removeChild(div)
+            div.addEventListener('contextmenu', function (ee) {
+              _this.getChooseItems(div.style.left, div.style.top, div.style.width, div.style.height)
+              $(_this.$refs.contextMenu)
+                .css({
+                  left: ee.pageX,
+                  top: ee.pageY
+                })
+                .toggle(true)
+              ee.preventDefault()
+            })
+            stateBar.onmousemove = null
+            stateBar.onmouseup = null
+          }
+        }, false) */
     },
     getChooseItems: function (left, top, width, height) {
       var bottom = top + height
@@ -1296,7 +1382,7 @@ export default {
         div.style.top = Math.min(clientY, posy) + 'px'
         div.style.width = Math.abs(posx - clientX) + 'px'
         div.style.height = Math.abs(posy - clientY) + 'px'
-        console.log('mouseover')
+        // console.log('mouseover')
         if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
           stateBar.appendChild(div)
           if ($('.tempDiv').length > 1) {
@@ -1308,7 +1394,7 @@ export default {
       }
       stateBar.onmouseup = function () {
         // div.parentNode.removeChild(div)
-        console.log('mouseup')
+        // console.log('mouseup')
         div.addEventListener('contextmenu', function (ee) {
           _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
           $(_this.$refs.contextMenu)
@@ -1369,11 +1455,11 @@ export default {
     copy: function () {
       if (this.chooseIndexs.length > 0) {
         this.copyOne('item', this.chooseIndexs)
-        this.chooseIndexs = []
+        // this.chooseIndexs = []
       }
       if (this.chooseCompIndexs.length > 0) {
         this.copyOne('compose', this.chooseCompIndexs)
-        this.chooseCompIndexs = []
+        // this.chooseCompIndexs = []
       }
       if (this.selectArea.choose) {
         this.selectArea.choose = false
@@ -1387,15 +1473,24 @@ export default {
       } else {
         _type = 'combinList'
       }
+      this.chooseIndexs = []
+      this.chooseCompIndexs = []
       for (let i = 0, len = arr.length; i < len; i++) {
         this[_type][arr[i]].slted = false
         let tempItem = JSON.parse(JSON.stringify(this[_type][arr[i]]))
         tempItem.x += 20
         tempItem.y += 20
+        tempItem.slted = true // 复制的元件默认选中
         tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
         // console.log(tempItem.id)
         this[_type].push(tempItem)
+        if (type === 'item') {
+          this.chooseIndexs.push(this[_type].length - 1)
+        } else {
+          this.chooseCompIndexs.push(this[_type].length - 1)
+        }
       }
+      this.updateMinXitem()
     },
     hideContext: function () {
       $(this.$refs.contextMenu).toggle(false)
@@ -1421,21 +1516,20 @@ export default {
         if (!_this.selectedItem.chartType) {
           // 上传画布图片
           _this.paintObj.bgImg =
-            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
         if (_this.selectedItem.chartType === 'image') {
           _this.selectedItem.imgSrc =
-            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg =
-            '/mc/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         }
       })
       e.target.value = ''
     },
     getPaintCl (data) {
-      // console.log(data.color)
       this.paintObj.bgColor = data.color
     },
     getColor (data) {
@@ -1518,6 +1612,35 @@ export default {
       }
       // not Number
       this.selectedItem[position] = Number(this.selectedItem[position])
+    },
+    // 改变画布大小
+    changePaintSize (type) {
+      var key = 'width'
+      if (type === 'h') {
+        key = 'height'
+      }
+      if (this.paintInput[key] < 500 || this.paintInput[key] > 10000) {
+        this.paintInput[key] = this.paintObj[key]
+      } else {
+        this.paintObj[key] = Number(this.paintInput[key])
+      }
+      this.changeHomeData(this.paintObj)
+    },
+    // 这里来处理快捷键
+    handleKeyDown (e) {
+      var key = window.event.keyCode ? window.event.keyCode : window.event.which
+      // delete： 46
+      if (key === 46) {
+        this.del()
+        e.preventDefault() // 取消浏览器原有的操作
+      }
+    },
+    handleKeyUp (e) {
+      var key = window.event.keyCode ? window.event.keyCode : window.event.which
+      if (key === 13) {
+        // flag = true
+        e.preventDefault()
+      }
     }
   },
   watch: {
@@ -1542,6 +1665,9 @@ export default {
   },
   mounted: function () {
     this.chooseMap()
+    // 初始化paintInput
+    document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup', this.handleKeyUp)
     // this.gerPageConf();
     // this.$nextTick(() => {
     //   this.chooseMap()
@@ -1549,7 +1675,9 @@ export default {
   },
   beforeDestroy: function () {
     $('.tempDiv').remove() // 绑定的事件也会移除
-    var stateBar = document.getElementById('chooseWrap')
+    document.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keyup', this.handleKeyUp)
+    // var stateBar = document.getElementById('chooseWrap')
     // var stateBar = $('#chooseWrap')
     // console.log(document)
     // console.log(stateBar)

@@ -450,12 +450,20 @@ export default {
             tooltip: {
               trigger: 'axis',
               formatter: function (params, ticket, callback) {
-                var showHtm = ''
-                var _data = params[0]
-                var time = _data.data[0]
-                var name = _data.seriesName
-                var value = _data.data[1]
-                showHtm += time + '<br>' + name + '：' + value + (_this.item.chartData.unit || '')
+                var nameArr = []
+                var time = params[0].data[0]
+                var showHtm = time + '<br>'
+                params.forEach(element => {
+                  var name = element.seriesName
+                  if (nameArr.indexOf(name) === -1) {
+                    nameArr.push(name)
+                    var value = element.data[1]
+                    if (typeof (value) !== 'number' || value !== value) {
+                      value = '--'
+                    }
+                    showHtm += name + '：' + value + (_this.item.chartData.unit || '') + '<br>'
+                  }
+                })
                 return showHtm
               }
             }

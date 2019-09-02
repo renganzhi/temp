@@ -6,11 +6,15 @@
       <div class="portlet light bordered flex-1"
            id="mainbox">
         <div class="full-height pagebox">
-          <DragBox v-for="(item,index) in nowPage"
+          <!-- <DragBox v-for="(item,index) in nowPage"
                    :index="index"
                    :item="item"
                    :editable="editable"
-                   :key="(pageIndex+index)"></DragBox>
+                   :key="(pageIndex+index)"></DragBox> -->
+          <LookItem v-for="(item,index) in nowPage"
+                    :index="index"
+                    :item="item"
+                    :key="(pageIndex+index)"></LookItem>
         </div>
       </div>
       <div class="btm-tools"
@@ -92,11 +96,12 @@
 <script>
 import { baseData, gbs } from '@/config/settings'
 import DragBox from './../Common/DragBox'
+import LookItem from './../Common/LookItem'
 import Public from '#/js/public'
 import { Notification } from 'element-ui'
 export default {
   name: 'HomePage',
-  components: { DragBox, Notification },
+  components: { DragBox, Notification, LookItem },
   data () {
     return {
       isFullScreen: false,
@@ -141,7 +146,7 @@ export default {
   methods: {
     getPageData: function () {
       // 获取大屏配置内容
-      this.axios.get('home/homePage').then((data) => {
+      this.axios.get('/leaderview/home/homePage').then((data) => {
         if (data.success) {
           this.initPage(data.obj)
         }

@@ -18,19 +18,23 @@
           </h4>
         </div>
         <div class="modal-body"
-             style="height:560px;position: relative;">
-          <div class="full-height box"
-               style="transform-origin:0 0; -webkit-transform-origin:0 0; -moz-transform-origin:0 0; -ms-transform-origin:0 0;">
-            <DragBox v-for="(item,index) in pageList"
-                     :index="index"
-                     :item="item"
-                     :editable="editable"
-                     :key="index"></DragBox>
-            <Compose v-for="(list, index1) in combinList"
-                     :index="index1"
-                     :key="list.id"
-                     :list="list"
-                     :editable="editable"></Compose>
+             style="height:560px;position: relative;overflow: hidden;">
+          <div class="wrap">
+            <div class="paintBox"
+                 :style="paintStyle"></div>
+            <div class="full-height box"
+                 style="transform-origin:0 0; -webkit-transform-origin:0 0; -moz-transform-origin:0 0; -ms-transform-origin:0 0;">
+              <DragBox v-for="(item,index) in pageList"
+                       :index="index"
+                       :item="item"
+                       :editable="editable"
+                       :key="index"></DragBox>
+              <Compose v-for="(list, index1) in combinList"
+                       :index="index1"
+                       :key="list.id"
+                       :list="list"
+                       :editable="editable"></Compose>
+            </div>
           </div>
         </div>
       </div>
@@ -38,13 +42,14 @@
   </div>
 </template>
 <script>
-import { baseData } from '@/config/settings'
+import { baseData, gbs } from '@/config/settings'
 import DragBox from './../Common/DragBox'
 import Compose from './../Common/Compose'
 import { Notification } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   name: 'preView',
-  props: ['showModal', 'viewId', 'pageData', 'composeData'],
+  props: ['showModal', 'viewId', 'pageData', 'composeData', 'paintObj'],
   components: { DragBox, Compose, Notification },
   data () {
     return {
@@ -64,21 +69,53 @@ export default {
       // 关闭模态框时触发
       _this.$emit('hidePreview')
     })
+    // alert(this.homeData.height)
+  },
+  computed: {
+    paintStyle: function () {
+      if (!this.paintObj) return
+      var type = this.paintObj.bgStyle
+      if (type === '1') {
+        var backgroundSize = '100% auto'
+      } else if (type === '2') {
+        backgroundSize = 'auto 100%'
+      } else {
+        backgroundSize = '100% 100%'
+      }
+      return {
+        backgroundImage: this.paintObj.bgImg
+          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')'
+          : '',
+        backgroundColor: this.paintObj.bgColor,
+        backgroundSize: backgroundSize,
+        opacity: this.paintObj.opacity / 100
+      }
+    },
+    ...mapGetters([
+      'homeData'
+    ])
   },
   methods: {
     setScale () {
       var box = $('#mainPreview-modal').find('.box')
       var w = box.width()
       var h = box.height()
-      var scaleX = w / baseData.home.w
-      var scaleY = h / baseData.home.h
+      // var scaleX = w / baseData.home.w
+      // var scaleY = h / baseData.home.h
+      if (this.paintObj) {
+        var scaleX = w / this.paintObj.width
+        var scaleY = h / this.paintObj.height
+      } else {
+        scaleX = w / 1920
+        scaleY = h / 1080
+      }
       box.css({
         transform: 'scale(' + scaleX + ',' + scaleY + ')'
       })
     },
     getConf () {
       if (this.viewId) {
-        this.axios.get('/home/homePage/getById/' + this.viewId).then((res) => {
+        this.axios.get('/leaderview/home/homePage/getById/' + this.viewId).then((res) => {
           if (res.success) {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
           } else {
@@ -107,3 +144,21 @@ export default {
   }
 }
 </script>
+<style scoped>
+.wrap {
+  width: 100%;
+  height: 530px;
+  overflow: hidden;
+  position: relative;
+}
+.paintBox {
+  width: 100%;
+  height: 530px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+  /* margin: 15px 20px;
+  width: calc(100% - 40px); */
+}
+</style>

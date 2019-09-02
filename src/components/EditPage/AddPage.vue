@@ -111,7 +111,7 @@ export default {
         this.showErr = true
         return
       } else {
-        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]");
+        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
         var flag = (!str.test(this.name)) && !/\s/.test(this.name)
         if (!flag) {
           this.errMsg = '不能含有特殊字符'
@@ -123,7 +123,7 @@ export default {
     },
     getTemps () {
       // this.tems.splice(0, this.tems.length)
-      this.axios.get('/home/template/list').then((res) => {
+      this.axios.get('/leaderview/home/template/list').then((res) => {
         this.tems = res.obj
       })
       /*  this.$nextTick(function(){
@@ -140,19 +140,19 @@ export default {
       }
       this.axios({
         method: 'post',
-        url: '/home/homePage/add',
+        url: '/leaderview/home/homePage/add',
         data: qs.stringify(data),
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         if (res.success) {
           this.addOne = true
-          $('#addHomePage-modal').modal('hide')
           // tooltip('', '操作成功！', 'success')
           Notification({
             message: '操作成功！',
             position: 'bottom-right',
             customClass: 'toast toast-success'
           })
+          $('#addHomePage-modal').modal('hide')
         } else {
           // tooltip("", data.msg, "error");
           Notification({

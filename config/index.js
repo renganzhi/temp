@@ -12,7 +12,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         target: 'http://localhost:9999',
-        // target: 'http://localhost:10050',
+        // target: 'http://localhost:9999/leaderview/',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
         pathRewrite: {
           '^/api': '' // 重写
@@ -57,7 +57,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'leaderview-static',
     assetsPublicPath: '/',
 
     /**

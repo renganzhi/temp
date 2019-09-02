@@ -198,39 +198,39 @@ var compsArr = [{
   subType: 'groupHistogram',
   chartData: morenData.line
 },
-  /* {
-    text:'山峰柱状图',
-    imgClass:'icon-n-histogram',
-    chartType:'ve-histogram',
-    subType:'pictorialBar',
-    secondType: 'peakBar',
-    width:300,
-    height:300,
-    chartData:morenData.pie
+/* {
+  text:'山峰柱状图',
+  imgClass:'icon-n-histogram',
+  chartType:'ve-histogram',
+  subType:'pictorialBar',
+  secondType: 'peakBar',
+  width:300,
+  height:300,
+  chartData:morenData.pie
 },
 {
-    text:'象形柱状图',
-    imgClass:'icon-n-histogram',
-    chartType:'ve-histogram',
-    subType:'pictorialBar',
-    secondType: 'symbolBar',
-    width:300,
-    height:300,
-    chartData:morenData.pie,
-    symbolImg: ''
+  text:'象形柱状图',
+  imgClass:'icon-n-histogram',
+  chartType:'ve-histogram',
+  subType:'pictorialBar',
+  secondType: 'symbolBar',
+  width:300,
+  height:300,
+  chartData:morenData.pie,
+  symbolImg: ''
 }, */
-  /* {
-    text:'漏斗图',
-    imgClass:'icon-n-histogram',
-    chartType:'ve-funnel',
-    chartData:morenData.pie,
+/* {
+  text:'漏斗图',
+  imgClass:'icon-n-histogram',
+  chartType:'ve-funnel',
+  chartData:morenData.pie,
 }, */
-  /* {
-    text:'弧形柱图',
-    imgClass:'icon-n-bar',
-    chartType:'ve-bar',
-    subType:'category',
-    chartData:morenData.pie
+/* {
+  text:'弧形柱图',
+  imgClass:'icon-n-bar',
+  chartType:'ve-bar',
+  subType:'category',
+  chartData:morenData.pie
 }, */
 {
   text: '条形图',
@@ -357,10 +357,22 @@ var compsArr = [{
   chartType: 'time',
   width: 200,
   height: 50,
-  fontSize: 12,
+  fontSize: 18,
   clr: '#666f8b',
   timeFrom: 'local',
   timeType: '1'
+},
+{
+  text: '指标展示',
+  imgClass: 'icon-n-doubler',
+  chartType: 'number',
+  fontSize: 36,
+  fontFamily: '',
+  clr: '#25aff8',
+  width: 300,
+  height: 90,
+  ctLegendShow: 'true',
+  chartData: morenData.single
 }
 ]
 

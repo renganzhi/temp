@@ -50,6 +50,8 @@
               :item="item"></Vimg>
         <Vtime v-else-if="item.chartType=='time'"
                :item="item"></Vtime>
+        <Vnumber v-else-if="item.chartType=='number'"
+                 :item="item"></Vnumber>
         <Vchart v-else
                 :item="item"></Vchart>
       </div>
@@ -79,6 +81,7 @@ import Vtable from './EditComp/Vtable' // 表格
 import Topo from './EditComp/Topo' // 拓扑
 import Marquee from './EditComp/Marquee' // 跑马灯
 import Vtime from './EditComp/Vtime' // 时间器
+import Vnumber from './EditComp/Vnumber' // 指标展示
 
 // 测试组内编辑
 import DragBox from './DragBox'
@@ -86,7 +89,7 @@ import DragBox from './DragBox'
 export default {
   name: 'compose',
   props: ['list', 'index', 'editable'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, DragBox },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, DragBox, Vnumber },
   data () {
     return {
       oldWidth: 0,

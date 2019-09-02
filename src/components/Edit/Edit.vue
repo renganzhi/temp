@@ -5,6 +5,7 @@
     <PreView :showModal="viewPage"
              :pageData="pageData"
              :composeData="composeData"
+             :paintObj="paintObj"
              @hidePreview="hidePreview"></PreView>
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
@@ -17,7 +18,7 @@
                 <a class="fr simoLink icon-n-preview edit-opt" @click="preview">预览</a>
                 <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
                 <a class="fr icon-n-save simoLink edit-opt" @click="saveConf">保存</a>
-                <h4 class="edit-title">{{pageName}}</h4>
+                <h4 class="edit-title" @click.self="clickPaint($event)">{{pageName}}</h4>
             </div>
             <div class="edit-body flex" @click="hideContext">
               <!--  <div class="m-contain full-height">-->
@@ -25,7 +26,7 @@
                     <ul class="menu-list" style="width: 156px;" ref="contextMenu">
                       <li class="context-menu-item context-menu-visible" @click="copy"><span>复制</span></li>
                       <li class="context-menu-item context-menu-visible" @click="del"><span>删除</span></li>
-                      <li v-show="chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
+                      <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li>
                       <!-- <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li> -->
@@ -35,7 +36,7 @@
                       <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toBottom"><span>置底</span></li>
                     </ul>
 
-                    <div class="m-left content-side flex">
+                    <div class="m-left content-side flex" @click.self="clickPaint($event)">
                       <div class="cs-item" :key="key" v-for="(value,key) in compsArr" :class="value.imgClass"
                           @click="initChart(value)">
                           {{value.text}}</div>
@@ -70,12 +71,12 @@
                                 <!-- <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label> -->
                                 <div class="fl">
                                     <label>X</label>
-                                    <input class="w-90" type="number" v-model="minXItem.x">
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="minXItem.x">
                                     <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
                                 </div>
                                 <div class="fr">
                                     <label>Y</label>
-                                    <input class="w-90" type="number" v-model="minXItem.y">
+                                    <input class="w-90" type="number" @change="changeTarget('y')" v-model="minXItem.y">
                                     <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
                                 </div>
                               </div>
@@ -108,12 +109,12 @@
                                 <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label>
                                 <div class="fl">
                                     <label>宽</label>
-                                    <input class="w-70" type="number" v-model="paintObj.width">
+                                    <input class="w-70" type="number" @change="changePaintSize('w')" v-model="paintInput.width">
                                     <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
                                 </div>
                                 <div class="fr">
                                     <label>高</label>
-                                    <input class="w-70" type="number" v-model="paintObj.height">
+                                    <input class="w-70" type="number" @change="changePaintSize('h')" v-model="paintInput.height">
                                     <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
                                 </div>
                               </div>
@@ -133,15 +134,15 @@
                                     <i class="icon-n-exportPicture"></i><br>点击选择图片
                                     <input type="file" class="uploadBg" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
                                   </div>
-                                  <input type="radio" name="bgType" value='1' v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
-                                  <input type="radio" name="bgType" value='2' v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
-                                  <input type="radio" name="bgType" value='3' v-model="paintObj.bgStyle">全屏铺满</input>
+                                  <input type="radio" name="bgType" value='1' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
+                                  <input type="radio" name="bgType" value='2' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
+                                  <input type="radio" name="bgType" value='3' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">全屏铺满</input>
                                 </div>
                               </div>
                               <div class="form-group">
-                                <label>透明度</label>
-                                <div class="fl" style="width: 200px; margin-top: -3px;">
-                                  <Slider v-model="paintObj.opacity" :min="0" :max="1" :step="0.01"></Slider>
+                                <label>不透明度</label>
+                                <div class="fl" style="width: 200px; margin-top: -2px;">
+                                  <Slider v-model="paintObj.opacity" :min="0" :max="100" :step="1"></Slider>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -179,6 +180,7 @@
                                             <label>宽</label>
                                             <input class="w-90" type="number" v-model="testObj.width">
                                             <span>px</span>
+                                            <!-- <span class="input-arrow"><i class="icon-n-spreadUD"></i></span> -->
                                             <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
                                         </div>
                                         <div class="fr">
@@ -302,26 +304,26 @@
                                     </div>
                                     <div class="form-group cols2" style="margin-bottom: 30px">
                                         <label>高度</label>
-                                        <input class="color-w200" type="number" placeholder="高度范围为8-24" @input="changeProHeight" v-model="selectedItem.proHeight">
+                                        <input class="color-w200" type="number" placeholder="高度范围为8-24" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' @change="changeProHeight" v-model="progressObj.height">
                                         <label class="error" v-show="proHeightErr" style="margin-left: 15px; margin-top: 25px; width: auto;">高度范围为8-24</label>
                                     </div>
                                     <div class="form-group cols2">
                                         <label>圆角</label>
-                                        <input class="color-w200" type="number" placeholder="圆角最大值为高度的一半" @input="changeRadius" v-model="selectedItem.radius">
+                                        <input class="color-w200" type="number" placeholder="圆角最大值为高度的一半" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' @change="changeRadius" v-model="progressObj.radius">
                                         <label class="error" v-show="radiusErr" style="margin-left: 15px; margin-top: 25px; width: auto;">圆角的最大值为{{Math.ceil(this.selectedItem.proHeight / 2)}}</label>
                                     </div>
                                 </div>
 
                                 <!--数字翻牌器-->
-                                <div v-if="selectedItem.chartType=='doubler'">
-                                    <div class="form-group cols2">
+                                <div v-if="selectedItem.chartType=='doubler' || selectedItem.chartType=='number'">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType=='doubler'">
                                         <label>背景色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bgClr" :key="8" type="bgClr" @getdata="getColor"></Vcolor>
                                         </div>
                                         <!-- <input type="color" v-model="selectedItem.bgClr"/> -->
                                     </div>
-                                    <div class="form-group cols2">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType=='doubler'">
                                         <label>边框色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bdClr" :key="9" type="bdClr" @getdata="getColor"></Vcolor>
@@ -348,6 +350,17 @@
                                             <option value="false">隐藏</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div v-if="selectedItem.chartType=='number'">
+                                  <div class="m-gap form-group">字体样式</div>
+                                  <div class="form-group" style="height: 30px;">
+                                      <div v-for="(item, index) in fonts" :key="index" @click="selectedItem.fontFamily=item.fontFace" class="fl font-case" :style="{'font-family': item.fontFace}">
+                                          {{item.fontName}}
+                                      </div>
+                                      <!-- <div class="fl font-case">
+                                          字体1
+                                      </div> -->
+                                  </div>
                                 </div>
 
                                 <!--图例-->
@@ -384,7 +397,8 @@
                                             <span>序号</span>
                                             <!-- <span class="color-w70 text">系列</span> -->
                                             <span class="color-w70 text">颜色</span>
-                                            <i class="icon-n-add" @click="addColor"></i>
+                                            <span @click="colorToAll" style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
+                                            <!-- <i class="icon-n-add" @click="addColor"></i> -->
                                         </div>
                                         <div class="form-group" v-for="(v,index) in selectedItem.ctColors" :key="index">
                                             <span class="colorOrder">{{index+1}}</span>
@@ -396,12 +410,12 @@
                                                   <Vcolor :data="selectedItem.ctColors[index][1]" :index="index" @getdata="getGradColor"></Vcolor>
                                               </div>
                                             </div>
-
+                                            <i class="icon-n-add" @click="addColor(index + 1)"></i>
                                             <i class="icon-n-up" @click="moveUp(index)"></i>
                                             <i class="icon-n-putin" @click="moveDown(index)"></i>
                                             <i class="icon-n-deleteNew" @click="delColor(index)"></i>
                                         </div>
-                                        <button type="button" class="colorToall" @click="colorToAll">应用到已添加元件</button>
+                                        <!-- <button type="button" class="colorToall" @click="colorToAll">应用到已添加元件</button> -->
                                     </div>
                                 </div>
 
@@ -423,7 +437,16 @@
                                         <input type="file" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
                                     </div>
                                 </div>
-                                <div  v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border')">
+                                <div v-show="selectedItem.chartType == 'time'">
+                                    <div class="form-group cols2">
+                                        <label>取值来源</label>
+                                        <select>
+                                            <option value="local">本机</option>
+                                            <!-- <option value="system">服务器</option> -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div  v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time')">
                                     <div class="form-group cols2">
                                         <label>数据来源</label>
                                         <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
@@ -473,7 +496,7 @@
 import EditJs from './Edit.js'
 export default EditJs
 </script>
-<style scoped>
+<style scoped lang="scss">
 #mainEdit-edit {
   /* position: fixed; */
   position: absolute;
@@ -531,7 +554,15 @@ export default EditJs
   z-index: 100;
   /* border-left: 2px solid #33394b; */
 }
-
+.font-case {
+  width: 40%;
+  height: 40px;
+  line-height: 40px;
+  margin-right: 10%;
+  border: 1px solid #0088cc;
+  text-align: center;
+  cursor: pointer;
+}
 .m-tab {
   display: inline-block;
   width: 49%;
@@ -623,15 +654,19 @@ export default EditJs
 }
 .scaleBox{
   position: fixed;
-  bottom: 10px;
-  right: 320px;
+  top: -10px;
   z-index: 999;
   width: 200px;
+  left: 50%;
+  margin-left: -80px;
+  .el-slider__runway, .el-slider__bar{
+    height: 2px !important;
+  }
 }
 .scaleBox span{
-    position: relative;
-    top: 20px;
-    left: -60px;
+  position: relative;
+  top: 20px;
+  left: -60px;
 }
 
 #chooseWrap {
@@ -721,6 +756,18 @@ export default EditJs
 .m-gap {
   color: #fff;
 }
+.input-arrow i{
+  font-size: 12px;
+}
+.input-arrow{
+  position: relative;
+  left: -35px;
+  bottom: -6px;
+  color: #7d8eb9;
+}
+.input-arrow:hover {
+  color: #ffffff;
+}
 .set-map{
   text-align: center;
   color: #0088cc;
@@ -788,7 +835,7 @@ export default EditJs
   float: left;
 }
 #mainEdit-edit .gradient {
-  width: 166px;
+  width: 142px;
   height: 10px;
   float: left;
   margin-left: 10px;
@@ -803,15 +850,13 @@ export default EditJs
   display: inline-block;
   width: 70px;
   margin-left: 5px;
-  /* text-align: center; */
 }
 .color-w70 input{
   width: 70px;
 }
 .color-w70.text {
   box-sizing: border-box;
-  /* padding-left: 16px; */
-  width: 156px;
+  width: 132px;
   text-align: center;
 }
 .color-w15 {

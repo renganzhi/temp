@@ -671,12 +671,12 @@ body.page-sidebar-closed > .moniModal.modal {
 
 /* slider */
 .el-slider__runway {
-    height: 4px !important;
+    height: 2px !important;
     border-radius: 2px !important;
     margin: 10px 0 !important;
 }
 .el-slider__bar {
-    height: 4px !important;
+    height: 2px !important;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     background-color: #7d8eb9 !important;
@@ -738,4 +738,11 @@ body.page-sidebar-closed > .moniModal.modal {
     color: #fff !important;
     font-size: 12px !important;
     padding-left: 25px;
+}
+.el-slider__button{
+    width: 12px !important;
+    height: 12px !important;
+}
+.el-slider__button-wrapper {
+    top: -17px !important;
 }

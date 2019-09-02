@@ -89,7 +89,7 @@ export default {
   components: { AddPage, PreView, PageSetting, Confirm, Notification },
   data () {
     return {
-      baseUrl: gbs.host,
+      baseUrl: gbs.host + '/leaderview',
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
@@ -109,7 +109,7 @@ export default {
       this.$router.push('/')
     },
     search () {
-      this.axios.get('home/homePage/noConf').then((res) => {
+      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
         if (res.success) {
           this.pageList = res.obj
         } else {
@@ -152,7 +152,7 @@ export default {
       }) */
     },
     copy (item) {
-      this.axios.get('home/homePage/copy/' + item.id).then((res) => {
+      this.axios.get('/leaderview/home/homePage/copy/' + item.id).then((res) => {
         if (res.success) {
           this.search()
         } else {
@@ -204,7 +204,7 @@ export default {
     sureDel (data) {
       this.showDelModal = false
       if (data && data.sure === '1') {
-        this.axios.delete('home/homePage/deleteById/' + this.delId).then((res) => {
+        this.axios.delete('/leaderview/home/homePage/deleteById/' + this.delId).then((res) => {
           if (res.success) {
             this.search()
           } else {
@@ -244,7 +244,7 @@ export default {
       // }
       if (this.editName !== '') {
         var data = { 'name': this.editName, 'id': item.id }
-        this.axios.post('home/homePage/edit', qs.stringify(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        this.axios.post('/leaderview/home/homePage/edit', qs.stringify(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
           .then((res) => {
             item.name = this.editName
             Notification({

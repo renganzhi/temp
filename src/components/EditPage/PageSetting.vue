@@ -173,9 +173,9 @@ export default {
   methods: {
     getTableData () {
       // 获取表格数据
-      this.axios.get('/home/getCarouselTimeConf').then((data) => {
+      this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
+        var res = data.obj
         if (data.success) {
-          var res = data.obj
           this.intervalTime = res.intervalTime || '10'
           this.specialEffects = res.specialEffects || '1'
           this.refreshTime = res.refreshTime || 3
@@ -273,12 +273,17 @@ export default {
       }
       this.axios({
         method: 'post',
-        url: '/home/carousel/conf',
+        url: '/leaderview/home/carousel/conf',
         data: qs.stringify(datas),
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         if (res.success) {
           this.changeSort = true
+          Notification({
+            message: '操作成功！',
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
           $('#homeSetting-modal').modal('hide')
         } else {
           // tooltip('', res.msg, 'error')
