@@ -48,7 +48,7 @@
                         <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
                             <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
                             </DragBox>
-                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @selected="selected" @context="context"></Compose>
+                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @resized="resized" @selected="selected" @context="context"></Compose>
                         </div>
                       </div>
                     </div>
@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="m-right full-height flex flex-vertical" :class="{noSlected:!selectedItem.chartType}" >
-                        <div class="base-item" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
+                        <div class="base-item" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                             <div class="m-tab" :class="{active:showStyleTab}" @click="showStyleTab=true">样式</div>
                             <div class="m-tab" :class="{active:!showStyleTab}" @click="showStyleTab=false">数据</div>
                         </div>
@@ -101,7 +101,39 @@
                             </div>
                           </div>
                         </div>
-                        <div class="paintWrap full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
+
+                        <div class="paintWrap chooseMore full-height flex-1" v-show="chooseIndexs.length === 0 && chooseCompIndexs.length === 1">
+                          <div class="full-height m-style">
+                            <div class="e-base">
+                              <div class="m-gap form-group set-map">样式</div>
+                              <div class="form-group" style="height: 30px;">
+                                <div class="fl">
+                                    <label>X</label>
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.x">
+                                    <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
+                                </div>
+                                <div class="fr">
+                                    <label>Y</label>
+                                    <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.y">
+                                    <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
+                                </div>
+                              </div>
+                              <div class="form-group" style="height: 30px;">
+                                <div class="fl">
+                                    <label>宽</label>
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.width">
+                                    <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
+                                </div>
+                                <div class="fr">
+                                    <label>高</label>
+                                    <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.height">
+                                    <label class="error" v-if="heightVali.isShowError" style="right: 8px; margin-top: 5px;">{{heightVali.errorMsg}}</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="paintWrap full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length < 1">
                           <div class="full-height m-style">
                             <div class="e-base">
                               <div class="m-gap form-group set-map">画布设置</div>
@@ -166,7 +198,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length <= 1">
+                        <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                             <div v-show="showStyleTab" class="full-height m-style">
                                 <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
                                     <div class="form-group">
@@ -201,7 +233,7 @@
                                             <label>Y</label>
                                             <input class="w-90" type="number" v-model="testObj.y">
                                             <span>px</span>
-                                            <label class="error" v-if="yVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{yVali.errorMsg}}</label>
+                                            <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                                         </div>
                                     </div>
                                     <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">

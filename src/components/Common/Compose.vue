@@ -115,6 +115,12 @@ export default {
   watch: {
     'list.width': function (newV, oldV) {
       // this.oldWidth += newV - oldV
+      var sacleX = newV / this.oldWidth
+      this.list.sacleX = Number(sacleX.toFixed(5))
+    },
+    'list.height': function (newV, oldV) {
+      var sacleY = newV / this.oldHeight
+      this.list.sacleY = Number(sacleY.toFixed(5))
     }
   },
   methods: {
@@ -125,6 +131,7 @@ export default {
       this.list.sacleX = Number(sacleX.toFixed(5))
       var sacleY = attr.height / this.oldHeight
       this.list.sacleY = Number(sacleY.toFixed(5))
+      this.$emit('resized', attr)
     },
     bodyDown (item, attr) { // 点击
       this.$emit('selected', item, 'down', 'compose', this.index)

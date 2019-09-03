@@ -18,7 +18,8 @@ export default {
   },
   computed: {
     numStr: function () {
-      var num = this.item.chartData.value.toString()
+      var num = Math.floor(this.item.chartData.value * 100) / 100
+      num = num.toString()
       if (!num) {
         return null
       }

@@ -19,6 +19,7 @@
   </div>
 </template>
 <script>
+const overflowPx = 20 // 可溢出范围
 const stickSize = 6
 const styleMapping = {
   y: {
@@ -344,14 +345,14 @@ export default {
       const parentHeight = this.parentHeight
 
       return {
-        minLeft: 0,
-        maxLeft: parentWidth - this.width,
-        minRight: 0,
-        maxRight: parentWidth - this.width,
-        minTop: 0,
-        maxTop: parentHeight - this.height,
-        minBottom: 0,
-        maxBottom: parentHeight - this.height
+        minLeft: -overflowPx,
+        maxLeft: parentWidth - this.width + overflowPx,
+        minRight: -overflowPx,
+        maxRight: parentWidth - this.width + overflowPx,
+        minTop: -overflowPx,
+        maxTop: parentHeight - this.height + overflowPx,
+        minBottom: -overflowPx,
+        maxBottom: parentHeight - this.height + overflowPx
       }
     },
 

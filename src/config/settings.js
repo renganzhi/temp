@@ -1,12 +1,13 @@
-// var env = process.env
+var env = process.env.NODE_ENV
 var settings = {
   // 这里配置一些全局变量
   gbs: {
-    // host: '/api'
-    host: 'http://' + window.location.host // 打包的前缀
+    host: env === 'development' ? '/api' : 'http://' + window.location.host
+    // host: 'http://' + window.location.host // 打包的前缀
     // host: 'http://localhost:9999/leaderview'
   },
   baseData: {
+    allowOverflow: 20, // 允许超出画布的范围
     home: {
       // 主页大屏的默认配置
       w: 1920,

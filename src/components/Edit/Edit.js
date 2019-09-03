@@ -109,7 +109,8 @@ export default {
       minXItem: {
         x: 1920,
         y: 1080,
-        maxX: 0
+        maxX: 0,
+        maxY: 0
       }, // 多选情况下X值最小的元素
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
@@ -352,6 +353,7 @@ export default {
       this.minXItem.x = 1920
       this.minXItem.y = 1080
       this.minXItem.maxX = 0
+      this.minXItem.maxY = 0
       // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
@@ -369,7 +371,7 @@ export default {
             this.chooseCompIndexs.splice(_id, 1)
           }
         } else {
-          var _id = this.chooseIndexs.indexOf(i)
+          _id = this.chooseIndexs.indexOf(i)
           if (_id !== -1) {
             this.chooseIndexs.splice(_id, 1)
             // this.chooseItems.push(this.chartNum[i])
@@ -407,7 +409,10 @@ export default {
           this.selectArea.top = item.y
         }
         if (item.x + item.width > this.minXItem.maxX) {
-          this.minXItem.maxX = item.x + item.width // 记录下最远的距离
+          this.minXItem.maxX = item.x // 最远元素的x
+        }
+        if (item.y + item.height > this.minXItem.maxY) {
+          this.minXItem.maxY = item.y // 最远元素的y
         }
       }
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
@@ -453,23 +458,28 @@ export default {
     changeTarget: function (xy) {
       var left = 'left'
       var width = 'width'
+      var maxX = 'maxX'
       if (xy === 'y') {
         left = 'top'
         width = 'height'
+        maxX = 'maxY'
       }
-      var allowOverflow = 50 // 可提取为可配置变量
-      if (this.minXItem[xy] < -allowOverflow || this.minXItem[xy] > this.paintObj[width] + allowOverflow) {
-        this.minXItem[xy] = this.selectArea[left]
-      } else {
-        var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
-        this.chooseIndexs.forEach((i) => {
-          this.chartNum[i][xy] += changes
-        })
-        this.chooseCompIndexs.forEach((i) => {
-          this.combinList[i][xy] += changes
-        })
-        this.selectArea[left] = this.minXItem[xy]
+      var allowOverflow = baseData.allowOverflow // 可提取为可配置变量
+      if (this.minXItem[xy] < -allowOverflow) {
+        // this.minXItem[xy] = this.selectArea[left] // 恢复原值
+        this.minXItem[xy] = -allowOverflow
       }
+      if (this.minXItem[xy] > this.paintObj[width] - this.minXItem[maxX] + allowOverflow) {
+        this.minXItem[xy] = this.paintObj[width] - this.minXItem[maxX] + allowOverflow
+      }
+      var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
+      this.chooseIndexs.forEach((i) => {
+        this.chartNum[i][xy] += changes
+      })
+      this.chooseCompIndexs.forEach((i) => {
+        this.combinList[i][xy] += changes
+      })
+      this.selectArea[left] = this.minXItem[xy]
     },
     bindCtrl: function () {
       // console.log('按住ctrl键')
@@ -536,12 +546,14 @@ export default {
           child: []
         }, {}
       )
-      newObj.slted = false
+      newObj.slted = true
       this.combinList.push(newObj)
       this.combinList[this.combinList.length - 1].child = arr.concat()
       // console.log(this.combinList)
       this.removeItem()
-      this.chooseCompIndexs = []
+
+      this.selectedItem = this.combinList[this.combinList.length - 1]
+      this.chooseCompIndexs = [this.combinList.length - 1] // 设置右边的值
       if (this.selectArea.choose) {
         this.selectArea.choose = false
         $('.tempDiv').remove()
@@ -1582,6 +1594,7 @@ export default {
       }
     },
     testObjPosChange (position, newValue) {
+      var allowOverflow = baseData.allowOverflow
       var defData = 0,
         selectData = 0,
         isX = position === 'x',
@@ -1597,13 +1610,13 @@ export default {
           this.testObj[position] = defData
         }
       } else {
-        if (newValue < 0 || newValue > defData - selectData) {
+        if (newValue < -allowOverflow || newValue > defData - selectData + allowOverflow) {
           this[valiType].isShowError = true
           this[valiType].errorMsg = isX
-            ? '横轴位置范围为0-' + (defData - selectData)
-            : '纵轴位置范围为0-' + (defData - selectData)
-          if (newValue > defData - selectData) {
-            this.testObj[position] = defData - selectData
+            ? '横轴位置范围为' + -allowOverflow + '~' + (defData - selectData + allowOverflow)
+            : '纵轴位置范围为' + -allowOverflow + '~' + (defData - selectData + allowOverflow)
+          if (newValue > defData - selectData + allowOverflow) {
+            this.testObj[position] = defData - selectData + allowOverflow
           }
         } else {
           this[valiType].isShowError = false
