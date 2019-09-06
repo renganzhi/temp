@@ -19,7 +19,7 @@ sourceSets {
 			if (buildType != "app") {
     			   println "exclude patrol conf"
 					exclude "com/uxsino/LeaderViewApplication.java"
-					exclude "com/uxsino/patrol/security/conf/*WebSecurityConfig.java"
+					exclude "com/uxsino/leaderview/security/conf/*WebSecurityConfig.java"
 				}
 			}
 	}
