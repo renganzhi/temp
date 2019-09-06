@@ -1,14 +1,10 @@
 <template>
-  <!-- :preventActiveBehavior="chooseChild && !editable" -->
-  <!-- :isActive="editable && list.slted" -->
-  <!-- :isResizable="!chooseChild" -->
+  <!-- :z="item.zIndex || 500" -->
   <DragResize class="newDrag2 newDrag3"
               :isDraggable="editable"
-              :isResizable="!chooseChild"
               :active="editable && list.slted"
               :isActive="editable && list.slted"
               :preventActiveBehavior="!editable"
-              :hasChild="true"
               :key="list.id"
               :w="Number(list.width)"
               :h="Number(list.height)"
@@ -16,34 +12,64 @@
               :y="Number(list.y)"
               :z="list.zIndex || 500"
               :item="list"
-              @vdbclick="vdbclick"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
               @resizing="resizing"
               @contextMenu="contextMenu">
-    <!-- :style="{'left': item.left + 'px', 'top': item.top + 'px', 'width': item.width + 'px'}" -->
-    <!-- <div class="comp-item2"
-         v-for="(item, _index) in list.child"
-         :key="_index + Math.random()*100000"
-         @contextmenu="contextItem(_index)"> -->
     <div class="dragwrap"
          :style="wrapStyle">
-      <!-- :editable="false" -->
-      <InsideDrag v-for="(item,_index) in list.child"
-                  :index="_index"
-                  :item="item"
-                  @childChoose="childChoose"
-                  @childResize="childResize"
-                  @selected="selected"
-                  @resized="resized"
-                  @context="context"
-                  @contextmenu="contextItem(_index)"
-                  :key="item.id">
-      </InsideDrag>
+      <div class="comp-item"
+           :style="{'left': item.left + 'px', 'top': item.top + 'px', 'width': item.width + 'px'}"
+           v-for="(item, index) in list.child"
+           :key="index"
+           @contextmenu="contextItem(index)">
+        <!-- <DragBox :index="index"
+                 :item="item"
+                 :editable="editable"
+                 :key="item.id">
+        </DragBox> -->
+        <Vtextarea v-if="item.chartType=='text'"
+                   :item="item"
+                   ref="childtext"
+                   :disabled="editable"></Vtextarea>
+        <Marquee v-else-if="item.chartType=='marquee'"
+                 :item="item"
+                 ref="childtext"
+                 :disabled="editable"></Marquee>
+        <Border v-else-if="item.chartType=='border'"
+                :item="item"></Border>
+        <Vtable v-else-if="item.chartType=='table'"
+                :item="item"></Vtable>
+        <Vprogress v-else-if="item.chartType=='progress'"
+                   :item="item"></Vprogress>
+        <Doubler v-else-if="item.chartType=='doubler'"
+                 :item="item"></Doubler>
+        <Topo v-else-if="item.chartType=='topo'"
+              :item="item"></Topo>
+        <Vimg v-else-if="item.chartType=='image'"
+              :item="item"></Vimg>
+        <Vtime v-else-if="item.chartType=='time'"
+               :item="item"></Vtime>
+        <Vnumber v-else-if="item.chartType=='number'"
+                 :item="item"></Vnumber>
+        <Vchart v-else
+                :item="item"></Vchart>
+      </div>
     </div>
   </DragResize>
 </template>
 <script>
+// import DragResize from './DragResize' // drag拖拽组件
+// import Vtextarea from './Vtextarea' // 文本
+// import Vprogress from './Vprogress' // 进度条
+// import Vimg from './Vimg'
+// import Doubler from './Doubler' // 数字翻牌器
+// import Border from './Border' // 边框
+// import Vchart from './Vchart'
+// import Vtable from './Vtable' // 表格
+// import Topo from './Topo' // 拓扑
+// import Marquee from './Marquee' // 跑马灯
+// import Vtime from './Vtime' // 时间器
 import DragResize from './EditComp/DragResize' // drag拖拽组件
 import Vtextarea from './EditComp/Vtextarea' // 文本
 import Vprogress from './EditComp/Vprogress' // 进度条
@@ -58,15 +84,14 @@ import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
 
 // 测试组内编辑
-import InsideDrag from './InsideDrag'
+import DragBox from './DragBox'
 
 export default {
   name: 'compose',
   props: ['list', 'index', 'editable'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, InsideDrag, Vnumber },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, DragBox, Vnumber },
   data () {
     return {
-      chooseChild: false,
       oldWidth: 0,
       oldHeight: 0
       // sacleX: 1,
@@ -96,12 +121,6 @@ export default {
     'list.height': function (newV, oldV) {
       var sacleY = newV / this.oldHeight
       this.list.sacleY = Number(sacleY.toFixed(5))
-    },
-    'list.slted': function (newV) {
-      if (newV === 'false' || !newV) {
-        this.cancleChildSlted()
-      }
-      console.log('list.slted: ' + newV)
     }
   },
   methods: {
@@ -114,44 +133,15 @@ export default {
       this.list.sacleY = Number(sacleY.toFixed(5))
       this.$emit('resized', attr)
     },
-    childResize (attr) {
-      this.$emit('childResize', attr)
-    },
-    selected (item, ev, type, i) {
-      // console.log(item)
-      // console.log(i)
-    },
-    resized (item) {
-    },
     bodyDown (item, attr) { // 点击
-      this.cancleChildSlted()
-      this.chooseChild = false
       this.$emit('selected', item, 'down', 'compose', this.index)
-    },
-    childChoose (id) {
-      this.chooseChild = true
-      this.cancleChildSlted()
-      this.list.child[id].slted = true
-      this.$emit('childSelect', this.list.child[id], id, this.index)
-    },
-    cancleChildSlted () {
-      // 取消所有子元件的选中状态
-      // if (id === -1) {
-      //   this.chooseChild = false
-      // }
-      for (let i = 0, len = this.list.child.length; i < len; i++) {
-        this.list.child[i].slted = false
-      }
     },
     bodymove (item, attr) {
       item.x = attr.left
       item.y = attr.top
       this.$emit('selected', item, 'move', 'compose', this.index)
     },
-    vdbclick (e) { // 双击
-      // e.stopPropagation()
-      // 内部元件双击，父级也获取焦点
-      // this.list.child.slted = true
+    vdbclick () { // 双击
       // if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {
       //   this.$refs.childtext.getMessage(this.$refs.childtext)
       // }
@@ -159,9 +149,6 @@ export default {
     contextMenu (item, ev) {
       this.$emit('selected', item, 'context', 'compose', this.index)
       this.$emit('context', this.index, ev, 'compose')
-    },
-    context (index, ev) {
-      console.log('右键内部元件：' + index)
     },
     contextItem (index) {
       console.log('右键内部元件：' + index)

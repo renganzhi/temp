@@ -1,5 +1,6 @@
 <template>
-  <div :style="timeStyle">{{showTime}}</div>
+  <div class="timeFont"
+       :style="timeStyle">{{showTime}}</div>
 </template>
 <script>
 let moment = require('moment')
@@ -35,7 +36,7 @@ export default {
     initTime (type) {
       switch (type) {
         case '1': // 时分秒
-          this.showTime = moment().format('HH: mm: ss')
+          this.showTime = moment().format('HH:mm:ss')
           this.refreshTime = 1
           break
         case '2':
@@ -43,11 +44,11 @@ export default {
           this.refreshTime = 60 * 60 // 这种需要确定一下精确度
           break
         case '3':
-          this.showTime = moment().format('YYYY-MM-DD HH: mm')
+          this.showTime = moment().format('YYYY-MM-DD HH:mm')
           this.refreshTime = 10 // 存在10s内的误差
           break
         case '4':
-          this.showTime = moment().format('YYYY-MM-DD HH: mm: ss')
+          this.showTime = moment().format('YYYY-MM-DD HH:mm:ss')
           this.refreshTime = 1
           break
       }
@@ -65,3 +66,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.timeFont {
+  font-family: "timeFont";
+}
+</style>

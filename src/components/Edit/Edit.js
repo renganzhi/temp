@@ -19,7 +19,10 @@ export default {
   data: function () {
     return {
       allowOverflow: 20, // 允许溢出的宽高
-      fonts: baseData.fontFaces,
+      childResize: false, // 当前选中的是不是组合内部的元件
+      parentId: 0, // 当前选中组合内部的元件的父级元件的序号
+      // fonts: baseData.fontFaces,
+      settingData: baseData,
       pageId: 0,
       value2: 0.5,
       oldCheckId: '', // 优化每次选中都会触发请求接口，仅在切换元件时才请求
@@ -78,19 +81,14 @@ export default {
         '#96bfff'
       ],
       defGradColors: [
-        '#37a2da',
-        '#32c5e9',
-        '#67e0e3',
-        '#9fe6b8',
-        '#ffdb5c',
-        '#ff9f7f',
-        '#fb7293',
-        '#e062ae',
-        '#e690d1',
-        '#e7bcf3',
-        '#9d96f5',
-        '#8378ea',
-        '#96bfff'
+        ['#3bb9f7', '#0573bf'],
+        ['#97eee6', '#1bbcae'],
+        ['#f97d62', '#db4222'],
+        ['#9c6af8', '#7537d0'],
+        ['#f56391', '#f31d53'],
+        ['#ffdf91', '#eeb01b'],
+        ['#5c84e7', '#144fe5'],
+        ['#85f8c0', '#62dc26']
       ],
       syst: {
         // 系统数据
@@ -193,7 +191,7 @@ export default {
       'changeHomeData'
     ]),
     changeProHeight () {
-      // 改变进度条的高度
+      // 改变进度条元件的高度
       var proHeight = Math.floor(this.progressObj.height)
       if (isNaN(proHeight) || proHeight < 0) {
         this.progressObj.height = this.selectedItem.proHeight
@@ -212,6 +210,7 @@ export default {
       this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
       this.progressObj.radius = this.selectedItem.radius
     },
+    // 改变进度条元件的圆角
     changeRadius () {
       var radius = Math.floor(this.progressObj.radius)
       if (isNaN(radius) || radius < 0) {
@@ -241,8 +240,8 @@ export default {
         }
       })
     },
+    // 获取当前页的配置
     gerPageConf (id) {
-      // 获取当前页的配置
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         if (res.obj.viewConf) {
@@ -289,10 +288,10 @@ export default {
       delete obj.text
       this.cancelSelected()
       obj.slted = true
-      console.log(obj)
       this.chartNum.push(obj)
       this.selectedItem = obj
       this.testObj = this.selectedItem
+      this.chooseIndexs = [this.chartNum.length - 1]
       this.$nextTick(function () {
         // titleShow('bottom', $('.m-right'));
       })
@@ -303,10 +302,12 @@ export default {
         this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
       } else {
         this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-        var newColors = this.setDefColor()
+        // var newColors = this.setDefColor()
+        var newColors = JSON.parse(JSON.stringify(this.defGradColors))
         this.$set(this.selectedItem, 'ctColors', newColors)
       }
     },
+    // 旧的系列色赋值
     setDefColor: function () {
       var colorArr = []
       for (var i = 0; i < this.defalutColors.length; i++) {
@@ -314,12 +315,6 @@ export default {
         colorArr.push(temp)
       }
       return colorArr
-    },
-    editPage: function () {
-      // $.comps.editHome.open();
-    },
-    fullScreen: function () {
-      // Public.bigScreenfullScreen($('#home-html').get(0));
     },
     clickPaint (event) {
       if (!window.event.ctrlKey) {
@@ -354,10 +349,16 @@ export default {
       this.minXItem.y = 1080
       this.minXItem.maxX = 0
       this.minXItem.maxY = 0
+      this.childResize = false // 暂且保留
       // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
-      // console.log('selected')
+      console.log('selected')
+      if (this.childResize && ev === 'context') {
+        // 内部元件的右键
+        return
+      }
+      this.childResize = false
       if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
@@ -425,6 +426,22 @@ export default {
       this.$nextTick(function () {
         // titleShow('bottom', $('.m-right'));
       })
+    },
+    // 组合内的元件选中
+    childSelect (item, childId, index) {
+      console.log('双击选中内部元件')
+      console.log(index)
+      this.selectedItem = item
+      if (item.chartType === 'progress') {
+        this.progressObj.height = item.proHeight
+        this.progressObj.radius = item.radius
+      }
+      this.testObj = JSON.parse(JSON.stringify(item))
+      this.chooseIndexs = [childId]
+      // this.parentId = this.chooseCompIndexs[0] // 父级元件的序号
+      this.parentId = index // 父级元件的序号
+      this.chooseCompIndexs = []
+      this.childResize = true
     },
     updateMinXitem: function () {
       var _this = this
@@ -525,11 +542,12 @@ export default {
       }
       // 为每一个内部组件重新计算相对位置
       for (var i = 0, len = arr.length; i < len; i++) {
-        arr[i].left = arr[i].x - _left
-        arr[i].top = arr[i].y - _top
+        // arr[i].left = arr[i].x - _left
+        // arr[i].top = arr[i].y - _top
 
-        // arr[i].x = arr[i].x - _left
-        // arr[i].y = arr[i].y - _top
+        arr[i].x = arr[i].x - _left
+        arr[i].y = arr[i].y - _top
+        arr[i].slted = false
       }
       var newObj = $.extend(
         true, {}, {
@@ -579,8 +597,11 @@ export default {
       tempArr.forEach(item => {
         // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
         // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
-        item.x = item.left + this.combinList[index].x
-        item.y = item.top + this.combinList[index].y
+        item.x = item.x + this.combinList[index].x
+        item.y = item.y + this.combinList[index].y
+        item.id = item.id + parseInt(Math.random() * 1000) // 复制的元素id一样
+        // item.x = item.left + this.combinList[index].x
+        // item.y = item.top + this.combinList[index].y
         item.width = parseInt(item.width * this.combinList[index].sacleX)
         item.height = parseInt(item.height * this.combinList[index].sacleY)
         item.slted = true
@@ -740,6 +761,7 @@ export default {
       this.testObj.height = item.height
       this.testObj.x = item.left
       this.testObj.y = item.top
+      // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
     resetPaint () {
       this.paintObj.bgColor = ''
@@ -1091,6 +1113,7 @@ export default {
       // var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
       // var _canvas = document.querySelector('.m-main #chooseWrap')
       var _canvas = document.querySelector('.m-main .paint-bg')
+      $('#chooseWrap').removeClass('gridBg')
       // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
       // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
       _canvas.style.background = $('body').css('background')
@@ -1099,8 +1122,8 @@ export default {
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
       // canvas2.width = baseData.home.w
       // canvas2.height = baseData.home.h
-      canvas2.width = baseData.home.w * (this.paintObj.scale / 100)
-      canvas2.height = baseData.home.h * (this.paintObj.scale / 100)
+      canvas2.width = this.paintObj.width * (this.paintObj.scale / 100)
+      canvas2.height = this.paintObj.height * (this.paintObj.scale / 100)
       canvas2.getContext('2d')
       $('#mainEdit-edit .main_topo')
         .find('svg')
@@ -1117,8 +1140,8 @@ export default {
           })
       )
       html2canvas(_canvas, {
-        width: baseData.home.w * (cThis.paintObj.scale / 100),
-        height: baseData.home.h * (cThis.paintObj.scale / 100),
+        width: this.paintObj.width * (cThis.paintObj.scale / 100),
+        height: this.paintObj.height * (cThis.paintObj.scale / 100),
         logging: false,
         scale: 0.4,
         canvas: canvas2,
@@ -1164,6 +1187,9 @@ export default {
             .then(res => {
               canvas.remove() // 这里是作为回调函数，canvas没有传过去
               _canvas.style.background = 'transparent'
+              if (cThis.paintObj.showGrid) {
+                $('#chooseWrap').addClass('gridBg')
+              }
               // $('#screen').hide()
               typeof cb === 'function' && cb()
               if (res.success) {
@@ -1261,11 +1287,14 @@ export default {
       //   }
       // })
     },
-    /* 右键 */
+    /* 统一右键 */
     context: function (index, ev, type) {
       // if (type !=='compose') {
 
       // }
+      console.log(this.chooseIndexs)
+      console.log(this.chooseCompIndexs)
+      console.log('childResize:' + this.childResize)
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
@@ -1274,7 +1303,7 @@ export default {
         .toggle(true)
       this.selectedIndex = index
     },
-    // 组合右键 可以和上面公用一个方法
+    // 组合右键 未使用该方法
     composeMenu: function (index, ev) {
       // console.log(ev);
       $(this.$refs.contextMenu)
@@ -1358,8 +1387,6 @@ export default {
           this.chooseCompIndexs.push(index)
         }
       })
-      // console.log(this.chooseIndexs)
-      // console.log(this.chooseCompIndexs)
     },
     itemInChoose: function (left, right, top, bottom, item) {
       // console.log(left, right, top, bottom)
@@ -1467,11 +1494,9 @@ export default {
     copy: function () {
       if (this.chooseIndexs.length > 0) {
         this.copyOne('item', this.chooseIndexs)
-        // this.chooseIndexs = []
       }
       if (this.chooseCompIndexs.length > 0) {
         this.copyOne('compose', this.chooseCompIndexs)
-        // this.chooseCompIndexs = []
       }
       if (this.selectArea.choose) {
         this.selectArea.choose = false
@@ -1482,11 +1507,11 @@ export default {
       // 单个元件的复制操作
       if (type === 'item') {
         var _type = 'chartNum'
+        this.chooseIndexs = []
       } else {
         _type = 'combinList'
+        this.chooseCompIndexs = []
       }
-      this.chooseIndexs = []
-      this.chooseCompIndexs = []
       for (let i = 0, len = arr.length; i < len; i++) {
         this[_type][arr[i]].slted = false
         let tempItem = JSON.parse(JSON.stringify(this[_type][arr[i]]))
@@ -1594,13 +1619,18 @@ export default {
       }
     },
     testObjPosChange (position, newValue) {
-      var allowOverflow = baseData.allowOverflow
-      var defData = 0,
-        selectData = 0,
-        isX = position === 'x',
-        valiType = position + 'Vali'
-      defData = isX ? baseData.home.w : baseData.home.h
-      selectData = isX ? this.selectedItem.width : this.selectedItem.height
+      var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
+      var defData = 0
+      var selectData = 0
+      var isX = position === 'x'
+      var valiType = position + 'Vali'
+      if (this.childResize) {
+        var compId = this.parentId
+        defData = isX ? this.combinList[compId].width : this.combinList[compId].height // 父元素
+      } else {
+        defData = isX ? baseData.home.w : baseData.home.h // 画布的宽高
+      }
+      selectData = isX ? this.selectedItem.width : this.selectedItem.height // 选中元素的宽高
       if (selectData > defData) {
         this[valiType].isShowError = true
         this[valiType].errorMsg = isX
@@ -1610,13 +1640,14 @@ export default {
           this.testObj[position] = defData
         }
       } else {
-        if (newValue < -allowOverflow || newValue > defData - selectData + allowOverflow) {
+        var limitValue = defData - selectData + allowOverflow // 可设置的最大值
+        if (newValue < -allowOverflow || newValue > limitValue) {
           this[valiType].isShowError = true
           this[valiType].errorMsg = isX
-            ? '横轴位置范围为' + -allowOverflow + '~' + (defData - selectData + allowOverflow)
-            : '纵轴位置范围为' + -allowOverflow + '~' + (defData - selectData + allowOverflow)
-          if (newValue > defData - selectData + allowOverflow) {
-            this.testObj[position] = defData - selectData + allowOverflow
+            ? '横轴位置范围为' + -allowOverflow + '~' + (limitValue)
+            : '纵轴位置范围为' + -allowOverflow + '~' + (limitValue)
+          if (newValue > limitValue) {
+            this.testObj[position] = limitValue
           }
         } else {
           this[valiType].isShowError = false

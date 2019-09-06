@@ -153,6 +153,26 @@ var morenData = {
     name: '繁忙度',
     unit: '%',
     value: 60
+  },
+  map: {
+    position: 'province/sichuan',
+    columns: ['位置', '资源', '告警'],
+    rows: [
+      { '位置': '四川', '资源': 1, '告警': 1 },
+      { '位置': '吉林', '资源': 10, '告警': 10 },
+      { '位置': '北京', '资源': 100, '告警': 100 },
+      { '位置': '广东', '资源': 500, '告警': 500 },
+      { '位置': '上海', '资源': 1000, '告警': 1000 },
+      { '位置': '浙江', '资源': 10000, '告警': 10000 }
+    ]
+    // rows: [
+    //   { '位置': '成都市', '资源': 1, '告警': 1 },
+    //   { '位置': '眉山市', '资源': 10, '告警': 10 },
+    //   { '位置': '南充市', '资源': 100, '告警': 100 },
+    //   { '位置': '绵阳市', '资源': 500, '告警': 500 },
+    //   { '位置': '阿坝藏族羌族自治州', '资源': 1000, '告警': 5000 },
+    //   { '位置': '达州市', '资源': 10000, '告警': 10000 }
+    // ]
   }
 }
 var compsArr = [{
@@ -345,6 +365,8 @@ var compsArr = [{
   text: '边框',
   imgClass: 'icon-n-rect',
   chartType: 'border',
+  borderType: 'simple', // 内置stable, 简单simple
+  imgSrc: '',
   width: 300,
   height: 300,
   bdpx: 1,
@@ -367,12 +389,30 @@ var compsArr = [{
   imgClass: 'icon-n-doubler',
   chartType: 'number',
   fontSize: 36,
-  fontFamily: '',
+  fontFamily: 'number1',
   clr: '#25aff8',
   width: 300,
   height: 90,
   ctLegendShow: 'true',
   chartData: morenData.single
+},
+{
+  text: '区域分布图',
+  imgClass: 'icon-n-radar',
+  chartType: 've-map',
+  width: 500,
+  height: 300,
+  chartData: morenData.map
+},
+{
+  text: '地图实时图',
+  imgClass: 'icon-n-radar',
+  // chartType: 've-scatter',
+  chartType: 've-map',
+  secondType: 'scatter', // 散点图
+  width: 500,
+  height: 300,
+  chartData: morenData.map
 }
 ]
 

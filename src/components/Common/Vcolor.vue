@@ -85,7 +85,7 @@ export default {
     border: none;
   }
   .sp-preview {
-    height: 15px;
+    height: 10px;
     border: none;
   }
 }

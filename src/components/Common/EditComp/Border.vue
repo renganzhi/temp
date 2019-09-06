@@ -1,5 +1,9 @@
 <template>
-  <div :style="boxStyle"></div>
+  <div v-if="item.borderType==='simple'"
+       :style="boxStyle"></div>
+  <img v-else
+       :src="item.imgSrc"
+       style="width: 100%; max-height: 100%" />
 </template>
 <script>
 export default {
@@ -17,6 +21,16 @@ export default {
         height: this.item.height + 'px',
         backgroundColor: this.item.bgClr,
         border: this.item.bdpx + 'px solid ' + this.item.bdClr
+      }
+    }
+  },
+  watch: {
+    'item.imgSrc': function (newV) {
+      // console.log(newV)
+    },
+    'item.borderType': function (newV) {
+      if (newV === 'simple') {
+        this.item.imgSrc = ''
       }
     }
   },

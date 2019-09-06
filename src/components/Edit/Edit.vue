@@ -24,8 +24,8 @@
               <!--  <div class="m-contain full-height">-->
                     <!--右键-->
                     <ul class="menu-list" style="width: 156px;" ref="contextMenu">
-                      <li class="context-menu-item context-menu-visible" @click="copy"><span>复制</span></li>
-                      <li class="context-menu-item context-menu-visible" @click="del"><span>删除</span></li>
+                      <li class="context-menu-item context-menu-visible" v-show="!childResize" @click="copy"><span>复制</span></li>
+                      <li class="context-menu-item context-menu-visible" v-show="!childResize" @click="del"><span>删除</span></li>
                       <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li>
                       <!-- <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
@@ -48,7 +48,7 @@
                         <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
                             <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
                             </DragBox>
-                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @resized="resized" @selected="selected" @context="context"></Compose>
+                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
                         </div>
                       </div>
                     </div>
@@ -108,18 +108,6 @@
                               <div class="m-gap form-group set-map">样式</div>
                               <div class="form-group" style="height: 30px;">
                                 <div class="fl">
-                                    <label>X</label>
-                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.x">
-                                    <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
-                                </div>
-                                <div class="fr">
-                                    <label>Y</label>
-                                    <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.y">
-                                    <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
-                                </div>
-                              </div>
-                              <div class="form-group" style="height: 30px;">
-                                <div class="fl">
                                     <label>宽</label>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.width">
                                     <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
@@ -128,6 +116,18 @@
                                     <label>高</label>
                                     <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.height">
                                     <label class="error" v-if="heightVali.isShowError" style="right: 8px; margin-top: 5px;">{{heightVali.errorMsg}}</label>
+                                </div>
+                              </div>
+                              <div class="form-group" style="height: 30px;">
+                                <div class="fl">
+                                    <label>X</label>
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.x">
+                                    <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
+                                </div>
+                                <div class="fr">
+                                    <label>Y</label>
+                                    <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.y">
+                                    <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                                 </div>
                               </div>
                             </div>
@@ -259,23 +259,46 @@
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
                                         </div>
-                                        <!-- <input type="color" v-model="selectedItem.hdBgClr"/> -->
                                     </div>
-                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
+                                        <label>边框类型</label>
+                                        <select v-model="selectedItem.borderType">
+                                            <option value="simple">简单边框</option>
+                                            <option value="stable">内置边框</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="selectedItem.chartType=='border' && selectedItem.borderType=='stable'">
+                                      <label>卡片背景</label><br><br>
+                                      <div class="form-group">
+                                        <div v-for="(item, index) in settingData.cardCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'card-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+                                            <img :src="item.mini"/>
+                                            <!-- <img :src="'../../assets/cardMini' + index +'.png'"/> -->
+                                        </div>
+                                      </div>
+                                      <label style="display: block; clear: both;">标题栏背景</label><br>
+                                      <div class="form-group">
+                                        <div v-for="(item, index) in settingData.titleCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+                                            <img :src="item.mini"/>
+                                        </div>
+                                        <!-- <div class="fl font-case">
+                                            <img src='../../assets/titleMini2.png'/>
+                                        </div> -->
+                                    </div>
+                                    </div>
+
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                         <label>填充色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
-                                        <!-- <input type="color" v-model="selectedItem.bgClr"/> -->
                                         </div>
                                     </div>
-                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                         <label>边框色</label>
                                         <div class="color-w200">
                                             <Vcolor :data="selectedItem.bdClr" :key="3" type="bdClr" @getdata="getColor"></Vcolor>
                                         </div>
-                                        <!-- <input type="color" v-model="selectedItem.bdClr"/> -->
                                     </div>
-                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time'">
+                                    <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                         <label>线宽</label>
                                         <select v-model="selectedItem.bdpx">
                                             <option value="0">{{0}}</option>
@@ -386,12 +409,9 @@
                                 <div v-if="selectedItem.chartType=='number'">
                                   <div class="m-gap form-group">字体样式</div>
                                   <div class="form-group" style="height: 30px;">
-                                      <div v-for="(item, index) in fonts" :key="index" @click="selectedItem.fontFamily=item.fontFace" class="fl font-case" :style="{'font-family': item.fontFace}">
+                                      <div v-for="(item, index) in settingData.fontFaces" :key="index" @click="selectedItem.fontFamily=item.fontFace" :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===item.fontFace}" :style="{'font-family': item.fontFace}">
                                           {{item.fontName}}
                                       </div>
-                                      <!-- <div class="fl font-case">
-                                          字体1
-                                      </div> -->
                                   </div>
                                 </div>
 
@@ -503,8 +523,47 @@
                                         </div>
                                        <!-- <button @click="getUrlData">请求数据</button>-->
                                     </div>
-                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system'">
+                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 've-map'">
                                         <div ref="textarea" class="confData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                    </div>
+                                    <div v-show="selectedItem.chartType === 've-map'">
+                                      <div class="form-group cols2">
+                                        <label>展示范围</label>
+                                        <select>
+                                            <option value="local">国家级</option>
+                                            <option value="local">省级</option>
+                                            <option value="local">地市级</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                        <label>省</label>
+                                        <select>
+                                            <option value="local">四川省</option>
+                                            <option value="local">云南省</option>
+                                            <option value="local">东北省</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                        <label>市</label>
+                                        <select>
+                                            <option value="local">成都市</option>
+                                            <option value="local">绵阳市</option>
+                                            <option value="local">眉山市</option>
+                                        </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                        <label>数据设置</label>
+                                        <div class="setMapData">
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                        </div>
+                                      </div>
                                     </div>
                                     <button @click="dataChange">更新视图</button>
 
@@ -587,13 +646,32 @@ export default EditJs
   /* border-left: 2px solid #33394b; */
 }
 .font-case {
-  width: 40%;
-  height: 40px;
-  line-height: 40px;
-  margin-right: 10%;
-  border: 1px solid #0088cc;
-  text-align: center;
-  cursor: pointer;
+    // width: 45%;
+    width: 126px;
+    height: 44px;
+    line-height: 44px;
+    border: solid 1px #3d445a;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-right: 0px;
+    &:nth-child(odd) {
+      margin-right: 10px;
+    }
+    &:hover {
+      border: 1px solid #0088cc;
+    }
+    &.act {
+      border: 1px solid #0088cc;
+    }
+}
+.card-case {
+  height: 70px;
+  padding-top: 10px;
+  & img {
+    width: 106px;
+    height: 50px;
+  }
 }
 .m-tab {
   display: inline-block;
@@ -746,35 +824,50 @@ export default EditJs
 .content-side .cs-item:nth-child(4n-1) {
   top: -1px;
 }
-.w-70{
-  width: 70px !important;
+.form-group{
+  .w-70{
+    width: 70px !important;
+  }
+  .w-90 {
+    width: 90px !important;
+  }
+  .w-100 {
+    width: 100px !important;
+  }
+  .w-200 {
+    width: 200px;
+  }
 }
-.w-90 {
-  width: 90px !important;
+.setMapData {
+  height: 180px;
+  overflow: auto;
+  span{
+    margin-right: 6px;
+  }
+  .area-item {
+    margin-bottom: 8px;
+    padding-left: 12px;
+    input{
+      height: 22px !important;
+    }
+  }
 }
-.w-100 {
-  width: 100px !important;
-}
-
-.w-200 {
-  width: 200px;
-}
-
 .e-base label {
   margin-right: 4px;
   display: inline-block;
   min-width: 14px;
 }
 
-.cols2 label {
-  display: inline-block;
-  width: 62px;
-  line-height: 28px;
-}
-
-.cols2 select,
-.cols2 input {
-  width: 195px !important;
+.cols2 {
+  label {
+    display: inline-block;
+    width: 62px;
+    line-height: 28px;
+  }
+  select,
+    input {
+    width: 195px !important;
+  }
 }
 
 #mainEdit-edit .confData {
@@ -893,11 +986,13 @@ export default EditJs
 }
 .color-w15 {
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    border: 1px solid #fff;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #cad6dd;
     overflow: hidden;
     margin-top: -3px;
+    padding: 2px;
+    background: #1b2031;
 }
 .colorToall {
     border-radius: 5px;

@@ -1,10 +1,13 @@
 <template>
+  <!-- :active="item.slted"
+              :isActive="item.slted" -->
+  <!-- @bodyUp="bodyUp" -->
   <DragResize class="newDrag"
-              :isDraggable="editable"
+              :isDraggable="item.slted"
+              :insideFlag="true"
               :id="'p_drag'+index"
-              :active="editable && item.slted"
-              :isActive="editable && item.slted"
-              :preventActiveBehavior="!editable"
+              :isActive="item.slted"
+              :preventActiveBehavior="!item.slted"
               :key="item.id"
               :w="Number(item.width)"
               :h="Number(item.height)"
@@ -12,6 +15,7 @@
               :y="Number(item.y)"
               :z="item.zIndex || 500"
               :item="item"
+              @childResize="childResize"
               @resizing="resizing"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
@@ -60,8 +64,8 @@ import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
 
 export default {
-  name: 'dragBox',
-  props: ['item', 'editable', 'index'],
+  name: 'insideDrag',
+  props: ['item', 'editable', 'index', 'parentIndex'],
   components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber },
   data () {
     return {
@@ -74,18 +78,27 @@ export default {
       item.height = attr.height
       this.$emit('resized', attr)
     },
+    // 子组件改变位置或大小
+    childResize (attr) {
+      this.$emit('childResize', attr)
+    },
     bodyDown (item, attr) { // 点击
-      // this.$emit('selected', item, 'down', 'item', this.index)
+      this.$emit('selected', item, 'down', 'item', this.index)
     },
     bodymove (item, attr) {
       item.x = attr.left
       item.y = attr.top
       this.$emit('selected', item, 'move', 'item', this.index)
     },
+    bodyUp () {
+      this.item.slted = false
+    },
     vdbclick () { // 双击
-      if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {
-        this.$refs.childtext.getMessage(this.$refs.childtext)
-      }
+      this.$emit('childChoose', this.index)
+      this.item.slted = true
+      // if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {
+      //   this.$refs.childtext.getMessage(this.$refs.childtext)
+      // }
     },
     contextMenu (item, ev) {
       this.$emit('selected', item, 'context', 'item', this.index)

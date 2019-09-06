@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-const overflowPx = 20 // 可溢出范围
+// var overflowPx = 20 // 可溢出范围
 const stickSize = 6
 const styleMapping = {
   y: {
@@ -37,6 +37,12 @@ const styleMapping = {
 export default {
   name: 'dragResize',
   props: {
+    insideFlag: { // 是否是组合内的元件
+      type: Boolean, default: false
+    },
+    hasChild: {
+      type: Boolean, default: false // 内部是否还有拖拽组件
+    },
     parentScaleX: {
       type: Number, default: 1
     },
@@ -108,14 +114,14 @@ export default {
     },
     minw: {
       type: Number,
-      default: 50,
+      default: 10,
       validator: function (val) {
         return val > 0
       }
     },
     minh: {
       type: Number,
-      default: 50,
+      default: 10,
       validator: function (val) {
         return val > 0
       }
@@ -289,11 +295,16 @@ export default {
       }
     },
     dbClick: function (ev) {
-      this.active = false
+      console.log('内部双击')
+      if (this.hasChild || this.insideFlag) {
+        this.active = true
+      } else {
+        this.active = false
+      }
       this.$emit('dbclick')
     },
     contextMenu: function (ev) {
-      // this.active = false;
+      // this.active = false
       this.$emit('contextMenu', this.item, ev)
     },
     bodyDown: function (ev) { // debugger
@@ -343,7 +354,7 @@ export default {
     calcDragLimitation () {
       const parentWidth = this.parentWidth
       const parentHeight = this.parentHeight
-
+      var overflowPx = this.insideFlag ? 0 : 20
       return {
         minLeft: -overflowPx,
         maxLeft: parentWidth - this.width + overflowPx,
@@ -405,6 +416,9 @@ export default {
       this.rawLeft = newLeft
       this.rawRight = newRight
       this.$emit('bodymove', this.item, this.rect)
+      if (this.insideFlag) {
+        this.$emit('childResize', this.rect)
+      }
       // this.$emit('dragidex', this.rect); //  多加一个传值，告诉父组件，当前事件位于哪一个上面
       //  this.$emit('sigleindex', this.rect); //  单个时监听，判断当前修改的是哪一个
       //  this.$emit('dragging', this.rect);
@@ -592,6 +606,9 @@ export default {
       // this.$emit('sigleindex', this.rect); //  单个时监听，判断当前修改的是哪一个
       //     debugger
       this.$emit('resizing', this.item, this.rect)
+      if (this.insideFlag) {
+        this.$emit('childResize', this.rect)
+      }
     },
 
     stickUp () {

@@ -13,14 +13,51 @@ var settings = {
       w: 1920,
       h: 1080
     },
+    // 指标器的可选字体
     fontFaces: [
+      // {
+      //   fontFace: 'SourceHanSansCN-Regular',
+      //   fontName: '0123456789'
+      // },
       {
-        fontFace: 'SourceHanSansCN-Regular',
-        fontName: '标准字体'
+        fontFace: 'number1',
+        fontName: '0123456789'
       },
       {
-        fontFace: 'asn',
-        fontName: '样式1'
+        fontFace: 'number2',
+        fontName: '0123456789'
+      },
+      {
+        fontFace: 'number3',
+        fontName: '0123456789'
+      },
+      {
+        fontFace: 'number4',
+        fontName: '0123456789'
+      }
+    ],
+    cardCase: [
+      {
+        mini: require('./../assets/cardMini1.png'),
+        imgSrc: require('./../assets/cardBg1.png')
+      },
+      {
+        mini: require('./../assets/cardMini2.png'),
+        imgSrc: require('./../assets/cardBg2.png')
+      },
+      {
+        mini: require('./../assets/cardMini3.png'),
+        imgSrc: require('./../assets/cardBg3.png')
+      }
+    ],
+    titleCase: [
+      {
+        mini: require('./../assets/titleMini1.png'),
+        imgSrc: require('./../assets/titleBg1.png')
+      },
+      {
+        mini: require('./../assets/titleMini2.png'),
+        imgSrc: require('./../assets/titleBg2.png')
       }
     ]
   }
