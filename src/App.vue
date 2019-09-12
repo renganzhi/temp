@@ -22,7 +22,7 @@ export default {
   name: 'App',
   data: function () {
     return {
-
+      bodyClass: ''
     }
   }
 }
@@ -47,6 +47,7 @@ body {
   height: 100%;
   position: fixed;
   top: 0;
+  left: 0px;
   bottom: 0;
   z-index: 20100;
   background: rgba(0, 0, 0, 0.5);
@@ -55,12 +56,6 @@ body {
 #app {
   width: 100%;
   height: 100%;
-  /* position: fixed;
-  z-index: 20099;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0; */
 }
 /* 框选区域样式 */
 #bottom {

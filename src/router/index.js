@@ -14,18 +14,18 @@ export default new Router({
     name: 'HomePage',
     component: HomePage
   },
-    // {
-    //   path: '/home',
-    //   name: 'Home',
-    //   component: Home
-    // },
+  // {
+  //   path: '/home',
+  //   name: 'Home',
+  //   component: Home
+  // },
   {
     path: '/editPage',
     name: 'EditPage',
     component: EditPage
   },
   {
-    path: '/edit',
+    path: '/edit/:id',
     name: 'edit',
     component: Edit
   }

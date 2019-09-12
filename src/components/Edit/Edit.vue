@@ -1,6 +1,7 @@
 <template>
              <!-- :composeData="composeData" -->
-  <div id="mainEdit-edit" class="edit in moniModal nofooter">
+            <!-- moniModal edit in nofooter -->
+  <div id="mainEdit-edit" class="editPage">
      <!-- style="z-index: 20099" -->
     <PreView :showModal="viewPage"
              :pageData="pageData"
@@ -69,14 +70,18 @@
                               <div class="m-gap form-group set-map">样式</div>
                               <div class="form-group" style="height: 30px;">
                                 <!-- <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label> -->
-                                <div class="fl">
+                                <div class="fl" style="position: relative;">
                                     <label>X</label>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="minXItem.x">
+                                    <!-- <span @click="minXItem.x--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="minXItem.x++" class="input-arrow"><i class="icon-n-arrowUp"></i></span> -->
                                     <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
                                 </div>
-                                <div class="fr">
+                                <div class="fr" style="position: relative;">
                                     <label>Y</label>
                                     <input class="w-90" type="number" @change="changeTarget('y')" v-model="minXItem.y">
+                                    <!-- <span @click="minXItem.y--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="minXItem.y++" class="input-arrow"><i class="icon-n-arrowUp"></i></span> -->
                                     <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
                                 </div>
                               </div>
@@ -107,26 +112,34 @@
                             <div class="e-base">
                               <div class="m-gap form-group set-map">样式</div>
                               <div class="form-group" style="height: 30px;">
-                                <div class="fl">
+                                <div class="fl" style="position: relative;">
                                     <label>宽</label>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.width">
+                                    <span @click="testObj.width--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="testObj.width++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
                                 </div>
-                                <div class="fr">
+                                <div class="fr" style="position: relative;">
                                     <label>高</label>
                                     <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.height">
+                                    <span @click="testObj.height--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="testObj.height++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <label class="error" v-if="heightVali.isShowError" style="right: 8px; margin-top: 5px;">{{heightVali.errorMsg}}</label>
                                 </div>
                               </div>
                               <div class="form-group" style="height: 30px;">
-                                <div class="fl">
+                                <div class="fl" style="position: relative;">
                                     <label>X</label>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.x">
+                                    <span @click="testObj.x--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="testObj.x++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
                                 </div>
-                                <div class="fr">
+                                <div class="fr" style="position: relative;">
                                     <label>Y</label>
                                     <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.y">
+                                    <span @click="testObj.y--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="testObj.y++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                                 </div>
                               </div>
@@ -135,18 +148,22 @@
                         </div>
                         <div class="paintWrap full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length < 1">
                           <div class="full-height m-style">
-                            <div class="e-base">
+                            <div class="e-base map-base">
                               <div class="m-gap form-group set-map">画布设置</div>
                               <div class="form-group" style="height: 30px;">
                                 <label class="fl" style="line-height: 25px; display: inline-block;">屏幕大小</label>
-                                <div class="fl">
+                                <div class="fl" style="position: relative;">
                                     <label>宽</label>
                                     <input class="w-70" type="number" @change="changePaintSize('w')" v-model="paintInput.width">
+                                    <span @click="paintInput.width--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="paintInput.width++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
                                 </div>
-                                <div class="fr">
+                                <div class="fr" style="position: relative;">
                                     <label>高</label>
                                     <input class="w-70" type="number" @change="changePaintSize('h')" v-model="paintInput.height">
+                                    <span @click="paintInput.height--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="paintInput.height++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
                                 </div>
                               </div>
@@ -208,31 +225,38 @@
                                 <div class="e-base">
                                     <div class="m-gap form-group">基础属性</div>
                                     <div class="form-group" style="height: 30px;">
-                                        <div class="fl">
+                                        <div class="fl" style="position: relative;">
                                             <label>宽</label>
                                             <input class="w-90" type="number" v-model="testObj.width">
                                             <span>px</span>
-                                            <!-- <span class="input-arrow"><i class="icon-n-spreadUD"></i></span> -->
+                                            <span @click="testObj.width++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                            <span @click="testObj.width--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                             <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
                                         </div>
-                                        <div class="fr">
+                                        <div class="fr" style="position: relative;">
                                             <label>高</label>
                                             <input class="w-90" type="number" v-model="testObj.height">
                                             <span>px</span>
+                                            <span @click="testObj.height++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                            <span @click="testObj.height--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                             <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label>
                                         </div>
                                     </div>
                                     <div class="form-group" style="height: 30px;">
-                                        <div class="fl">
+                                        <div class="fl" style="position: relative;">
                                             <label>X</label>
                                             <input class="w-90" type="number" v-model="testObj.x">
                                             <span>px</span>
+                                            <span @click="testObj.x++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                            <span @click="testObj.x--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                             <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
                                         </div>
-                                        <div class="fr">
+                                        <div class="fr" style="position: relative;">
                                             <label>Y</label>
                                             <input class="w-90" type="number" v-model="testObj.y">
                                             <span>px</span>
+                                            <span @click="testObj.y++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                            <span @click="testObj.y--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                             <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                                         </div>
                                     </div>
@@ -415,6 +439,48 @@
                                   </div>
                                 </div>
 
+                                <div class="e-legend" v-if="selectedItem.chartType=='v-map'">
+                                  <div>
+                                      <div class="m-gap form-group">图例</div>
+                                      <div class="form-group cols2">
+                                          <label>可见性</label>
+                                          <select v-model="selectedItem.ctLegendShow">
+                                              <option value="true">显示</option>
+                                              <option value="false">隐藏</option>
+                                          </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                          <label>位置</label>
+                                          <select v-model="selectedItem.visualPosition">
+                                              <option value="left">底部靠左</option>
+                                              <option value="right">底部靠右</option>
+                                          </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                        <label>配色</label>
+                                        <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
+                                            <option value="defalut">默认</option>
+                                            <option value="custom" v-show="alertLevel">自定义</option>
+                                        </select>
+                                    </div>
+                                    <div class="colorConf" v-if="selectedItem.colorType=='custom'">
+                                        <div class="form-group">
+                                            <span>序号</span>
+                                            <span class="text">颜色</span>
+                                            <span class="options">操作</span>
+                                        </div>
+                                        <div class="form-group" v-for="(v,index) in selectedItem.ctColors" :key="index">
+                                            <span class="colorOrder">{{index+1}}</span>
+                                            <div class="color-w70">
+                                              <Vcolor :data="selectedItem.ctColors[index]" :index="index" @getdata="getMapColor"></Vcolor>
+                                            </div>
+
+                                            <i class="icon-n-toUp" @click="moveUp(index)"></i>
+                                            <i class="icon-n-putin" @click="moveDown(index)"></i>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
                                 <!--图例-->
                                 <div class="e-legend" v-if="isEcharts">
                                     <div v-show="showLengendConf">
@@ -463,7 +529,7 @@
                                               </div>
                                             </div>
                                             <i class="icon-n-add" @click="addColor(index + 1)"></i>
-                                            <i class="icon-n-up" @click="moveUp(index)"></i>
+                                            <i class="icon-n-toUp" @click="moveUp(index)"></i>
                                             <i class="icon-n-putin" @click="moveDown(index)"></i>
                                             <i class="icon-n-deleteNew" @click="delColor(index)"></i>
                                         </div>
@@ -503,7 +569,7 @@
                                         <label>数据来源</label>
                                         <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
                                             <option value="static">静态数据</option>
-                                            <option value="system">系统数据</option>
+                                            <option v-show="selectedItem.chartType!=='v-map'" value="system">系统数据</option>
                                         </select>
                                     </div>
                                     <div v-show="selectedItem.ctDataSource == 'system'">
@@ -523,46 +589,46 @@
                                         </div>
                                        <!-- <button @click="getUrlData">请求数据</button>-->
                                     </div>
-                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 've-map'">
+                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map'">
                                         <div ref="textarea" class="confData" contenteditable="true">{{selectedItem.chartData}}</div>
                                     </div>
-                                    <div v-show="selectedItem.chartType === 've-map'">
+                                    <div v-show="selectedItem.chartType === 'v-map'">
                                       <div class="form-group cols2">
                                         <label>展示范围</label>
-                                        <select>
-                                            <option value="local">国家级</option>
-                                            <option value="local">省级</option>
-                                            <option value="local">地市级</option>
+                                        <select v-model="selectedItem.mapLevel">
+                                            <option value="country">国家级</option>
+                                            <option value="province">省级</option>
+                                            <option value="city">地市级</option>
                                         </select>
                                       </div>
-                                      <div class="form-group cols2">
-                                        <label>省</label>
-                                        <select>
-                                            <option value="local">四川省</option>
-                                            <option value="local">云南省</option>
-                                            <option value="local">东北省</option>
-                                        </select>
+                                      <div v-show="selectedItem.mapLevel!=='country'" class="form-group cols2">
+                                        <label>省/直辖市</label>
+                                        <Select2 v-model="selectedItem.provinceCode" :mapSelect="true" :obj="provinceArr" @input="chgProvince(selectedItem.provinceCode)"></Select2>
                                       </div>
-                                      <div class="form-group cols2">
+                                      <div v-if="selectedItem.mapLevel==='city'" class="form-group cols2">
                                         <label>市</label>
-                                        <select>
-                                            <option value="local">成都市</option>
-                                            <option value="local">绵阳市</option>
-                                            <option value="local">眉山市</option>
-                                        </select>
+                                        <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
                                       </div>
                                       <div class="form-group cols2">
                                         <label>数据设置</label>
                                         <div class="setMapData">
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
-                                          <div class="area-item"><span>武侯区</span><input class="w-200" type="number" ></div>
+                                          <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span>{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                         </div>
+                                      </div>
+                                      <div class="form-group cols2">
+                                        <!-- editPieces -->
+                                        <label>数据量级</label>
+                                        <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
+                                          <span>量级一</span>
+                                          <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -
+                                          <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].max">
+                                        </div> -->
+                                        <div class="setMapGrad" v-for="(item, index) in editPieces" :key="index">
+                                          <span>量级一</span>
+                                          <input class="w-90" type="number" disabled v-model="editPieces[index].min"> -
+                                          <input class="w-90" type="number" :disabled="index===(editPieces.length-1)" @change="chgMapGrad(index)" v-model="editPieces[index].max">
+                                        </div>
+                                        <button type="button" class="colorToall" @click="colorToAll">添加量级</button>
                                       </div>
                                     </div>
                                     <button @click="dataChange">更新视图</button>
@@ -824,12 +890,16 @@ export default EditJs
 .content-side .cs-item:nth-child(4n-1) {
   top: -1px;
 }
+
 .form-group{
   .w-70{
     width: 70px !important;
   }
   .w-90 {
     width: 90px !important;
+  }
+  .w-90:focus ~ .input-arrow {
+    display: inline-block;
   }
   .w-100 {
     width: 100px !important;
@@ -843,6 +913,9 @@ export default EditJs
   overflow: auto;
   span{
     margin-right: 6px;
+    display: inline-block;
+    width: 110px;
+    text-align: right;
   }
   .area-item {
     margin-bottom: 8px;
@@ -850,6 +923,12 @@ export default EditJs
     input{
       height: 22px !important;
     }
+  }
+}
+.setMapGrad {
+  margin-bottom: 10px;
+  span {
+    margin-right: 10px;
   }
 }
 .e-base label {
@@ -881,17 +960,29 @@ export default EditJs
 .m-gap {
   color: #fff;
 }
-.input-arrow i{
-  font-size: 12px;
-}
+
 .input-arrow{
-  position: relative;
-  left: -35px;
-  bottom: -6px;
+  position: absolute;
+  right: 20px;
   color: #7d8eb9;
+  cursor: pointer;
+  // display: none;
+}
+.input-arrow:nth-child(odd) {
+  bottom: 0px;
+}
+.input-arrow:nth-child(even) {
+  top: 0px;
+}
+.input-arrow i{
+  // font-size: 12px;
 }
 .input-arrow:hover {
   color: #ffffff;
+}
+.map-base .input-arrow,
+.chooseMore .input-arrow {
+  right: 2px;
 }
 .set-map{
   text-align: center;
@@ -991,7 +1082,7 @@ export default EditJs
     border: 1px solid #cad6dd;
     overflow: hidden;
     margin-top: -3px;
-    padding: 2px;
+    padding: 1px;
     background: #1b2031;
 }
 .colorToall {
@@ -1001,6 +1092,18 @@ export default EditJs
     font-size: 14px;
     color: #fff;
     margin-top: 15px;
+}
+.colorConf {
+  .text, .color-w70 {
+    margin-left: 30px;
+  }
+  .options {
+    margin-left: 70px;
+  }
+  .icon-n-toUp {
+    margin-left: 30px;
+    margin-right: 5px;
+  }
 }
 #mainEdit-edit .colorsConf [class^="icon-n-"] {
   margin: 0 1px;
@@ -1022,7 +1125,11 @@ export default EditJs
 .table thead {
   background: none;
 }
-#mainEdit-edit.moniModal button.close {
+// #mainEdit-edit.moniModal button.close {
+//   font-weight: 400;
+//   margin-right: 14px;
+// }
+#mainEdit-edit.editPage button.close {
   font-weight: 400;
   margin-right: 14px;
 }

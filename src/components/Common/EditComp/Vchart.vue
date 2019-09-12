@@ -798,7 +798,7 @@ export default {
                 // 图形上的文本标签
                 itemStyle: {
                   normal: {
-                    areaColor: '#5275ae', // 地图区域的颜色!
+                    areaColor: '#1d324e', // 地图区域的颜色!
                     borderColor: '#f0f0f0' // 区域分割线颜色!
                   }
                 },
@@ -813,22 +813,23 @@ export default {
                   itemStyle: {
                     areaColor: '#0573bf', // 选中之后的颜色值
                     shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 10
+                    shadowBlur: 2
                   }
                 }
               }
             })
           } else {
             // 区域分布图
-            obj.settings = $.extend(obj.settings, {
-              // position: 'province/sichuan',
-              position: 'china',
-              dimension: '位置',
-              metrics: ['资源', '告警'],
-              dataType: {
-                '资源': 'KMB'
-              }
-            })
+            // obj.settings = $.extend(obj.settings, {
+            //   // position: 'province/sichuan',
+            //   // position: 'china',
+            //   dimension: '位置',
+            //   metrics: ['资源', '告警'],
+            //   dataType: {
+            //     '资源': 'KMB'
+            //   }
+            // })
+
             obj.extend = $.extend(obj.extend, {
               tooltip: {
                 trigger: 'item'
@@ -864,20 +865,10 @@ export default {
                 controller: {
                 }
               },
-              // toolbox: {
-              //   show: true,
-              //   orient: 'vertical',
-              //   left: 'right',
-              //   top: 'center',
-              //   feature: {
-              //     mark: { show: true },
-              //     dataView: { show: true, readOnly: false },
-              //     restore: { show: true }
-              //     // saveAsImage : {show: true}
-              //   }
-              // },
               series: {
                 type: 'map',
+                name: '',
+                data: [],
                 // name: '人口',
                 // roam: true, // 允许鼠标缩放地图
                 selectedMode: 'single',
@@ -895,7 +886,7 @@ export default {
                 itemStyle: {
                   normal: {
                     // color: 'red', // 展示指标及圆点的颜色
-                    areaColor: '#5275ae', // 地图区域的颜色!
+                    areaColor: '#294671', // 地图区域的颜色!
                     borderColor: '#f0f0f0' // 区域分割线颜色!
                     // color: 'green', // 图例的颜色!
                     // borderColor: 'pink', // 各区域分界线!
@@ -905,7 +896,7 @@ export default {
                 // 选中之后的状态
                 emphasis: {
                   label: {
-                    show: true,
+                    show: false, // 选中区域的文字展示
                     textStyle: {
                       color: '#000' // 选中之后的字体颜色!
                     }
@@ -913,7 +904,7 @@ export default {
                   itemStyle: {
                     areaColor: '#0573bf', // 选中之后的颜色值
                     shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 10
+                    shadowBlur: 0
                   }
                 }
               }
@@ -942,51 +933,8 @@ export default {
                   areaColor: '#2a333d'
                 }
               }
-            },
-          })
-          /*obj.extend = $.extend(obj.extend, {
-            series: {
-              type: 'map',
-              // name: '人口',
-              // roam: true, // 允许鼠标缩放地图
-              selectedMode: 'single',
-              // 图形上的文本标签
-              label: {
-                normal: {
-                  // show: true, // 省份文字最开始不显示，选中之后再显示
-                  textStyle: {
-                    // fontWeight:'bold',
-                    // backgroundColor: 'pink', // 文字背景色
-                    // color: '#231816' // 默认的字体颜色! auto
-                  }
-                }
-              },
-              itemStyle: {
-                normal: {
-                  // color: 'red', // 展示指标及圆点的颜色
-                  areaColor: '#5275ae', // 地图区域的颜色!
-                  borderColor: '#f0f0f0' // 区域分割线颜色!
-                  // color: 'green', // 图例的颜色!
-                  // borderColor: 'pink', // 各区域分界线!
-                  // borderWidth: 2
-                }
-              },
-              // 选中之后的状态
-              emphasis: {
-                label: {
-                  show: true,
-                  textStyle: {
-                    color: '#000' // 选中之后的字体颜色!
-                  }
-                },
-                itemStyle: {
-                  areaColor: '#0573bf', // 选中之后的颜色值
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                  shadowBlur: 10
-                }
-              }
             }
-          })*/
+          })
           obj.extend = {
             series: {
               type: 'scatter'

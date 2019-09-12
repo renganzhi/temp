@@ -89,4 +89,11 @@ export default {
     border: none;
   }
 }
+// 可能会影响系统中其它的
+// .sp-replacer,
+// .sp-replacer:hover {
+//   background: transparent;
+//   border: solid 1px #3d445a;
+//   color: #3d445a;
+// }
 </style>

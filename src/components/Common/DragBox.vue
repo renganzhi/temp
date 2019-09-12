@@ -41,6 +41,10 @@
            :item="item"></Vtime>
     <Vnumber v-else-if="item.chartType=='number'"
              :item="item"></Vnumber>
+    <Map v-else-if="item.chartType=='map'"
+         :item="item"></Map>
+    <Vmap v-else-if="item.chartType=='v-map'"
+          :item="item"></Vmap>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
@@ -58,11 +62,13 @@ import Topo from './EditComp/Topo' // 拓扑
 import Marquee from './EditComp/Marquee' // 跑马灯
 import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
+import Map from './EditComp/Map' // 地图
+import Vmap from './EditComp/Vmap' // 地图
 
 export default {
   name: 'dragBox',
   props: ['item', 'editable', 'index'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Map, Vmap },
   data () {
     return {
 
@@ -75,7 +81,7 @@ export default {
       this.$emit('resized', attr)
     },
     bodyDown (item, attr) { // 点击
-      // this.$emit('selected', item, 'down', 'item', this.index)
+      this.$emit('selected', item, 'down', 'item', this.index)
     },
     bodymove (item, attr) {
       item.x = attr.left

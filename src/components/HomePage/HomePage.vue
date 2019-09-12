@@ -1,36 +1,36 @@
 <template>
-  <div class="flex flex-vertical"
-       id="page_container">
-    <div id="home-html"
-         class="flex flex-vertical full-height full-width">
-      <div class="portlet light bordered flex-1"
-           id="mainbox">
-        <div class="full-height pagebox">
-          <!-- <DragBox v-for="(item,index) in nowPage"
+  <!-- <div class="flex flex-vertical"
+       id="page_container"> -->
+  <div id="home-html"
+       class="flex flex-vertical full-height full-width">
+    <div class="portlet light bordered flex-1"
+         id="mainbox">
+      <div class="full-height pagebox">
+        <!-- <DragBox v-for="(item,index) in nowPage"
                    :index="index"
                    :item="item"
                    :editable="editable"
                    :key="(pageIndex+index)"></DragBox> -->
-          <LookItem v-for="(item,index) in nowPage"
-                    :index="index"
-                    :item="item"
-                    :key="(pageIndex+index)"></LookItem>
-        </div>
+        <LookItem v-for="(item,index) in nowPage"
+                  :index="index"
+                  :item="item"
+                  :key="(pageIndex+index)"></LookItem>
       </div>
-      <div class="btm-tools"
-           :class="isFullScreen?'full':''">
-        <div class="fl btn-box">
-          <span @click="editPage"
-                class="ring-icon"
-                title="编辑"
-                v-show="!isFullScreen"><i class="icon-n-set"></i></span>
-          <span @click="refresh"
-                class="ring-icon"
-                :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
-          <span @click="fullScreen"
-                class="ring-icon"
-                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-          <!-- <el-tooltip placement="top"
+    </div>
+    <div class="btm-tools"
+         :class="isFullScreen?'full':''">
+      <div class="fl btn-box">
+        <span @click="editPage"
+              class="ring-icon"
+              title="编辑"
+              v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+        <span @click="refresh"
+              class="ring-icon"
+              :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+        <span @click="fullScreen"
+              class="ring-icon"
+              :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+        <!-- <el-tooltip placement="top"
                       v-show="!isFullScreen">
             <div slot="content">编辑</div>
             <span @click="editPage"
@@ -48,49 +48,49 @@
                   class="ring-icon"
                   :title="isFullScreen ? '退出全屏' : ''"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
           </el-tooltip> -->
-        </div>
-        <div class="fr btn-box"
-             v-show="pageSize>1">
-          <!-- <el-tooltip placement="top">
+      </div>
+      <div class="fr btn-box"
+           v-show="pageSize>1">
+        <!-- <el-tooltip placement="top">
             <div slot="content">上一页</div>
             <span @click="prev"
                   :title="isFullScreen ? '上一页' : ''"
                   class="ring-icon"><i class="icon-n-prev"></i></span>
           </el-tooltip> -->
-          <span @click="prev"
-                class="ring-icon"
-                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
-          <span @click="togglePlay"
-                class="ring-icon"
-                :title="!timer ? '开启轮播' : '暂停轮播'"
-                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-          <!-- <el-tooltip placement="top">
+        <span @click="prev"
+              class="ring-icon"
+              :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+        <span @click="togglePlay"
+              class="ring-icon"
+              :title="!timer ? '开启轮播' : '暂停轮播'"
+              v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+        <!-- <el-tooltip placement="top">
             <div slot="content">下一页 </div>
             <span @click="next"
                   class="ring-icon"
                   :title="isFullScreen ? '下一页' : ''"><i class="icon-n-next"></i></span>
           </el-tooltip> -->
-          <span @click="next"
-                class="ring-icon"
-                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
-        </div>
+        <span @click="next"
+              class="ring-icon"
+              :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
       </div>
-
-      <div role="alert"
-           v-if="showTip"
-           class="el-notification toast toast-info right"
-           style="bottom: 16px; z-index: 2001;">
-        <div class="el-notification__group">
-          <h2 class="el-notification__title"></h2>
-          <div class="el-notification__content">
-            <p>鼠标移动到左/右下角对大屏操作</p>
-          </div>
-          <div class="el-notification__closeBtn el-icon-close"></div>
-        </div>
-      </div>
-
     </div>
+
+    <div role="alert"
+         v-if="showTip"
+         class="el-notification toast toast-info right"
+         style="bottom: 16px; z-index: 2001;">
+      <div class="el-notification__group">
+        <h2 class="el-notification__title"></h2>
+        <div class="el-notification__content">
+          <p>鼠标移动到左/右下角对大屏操作</p>
+        </div>
+        <div class="el-notification__closeBtn el-icon-close"></div>
+      </div>
+    </div>
+
   </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -338,10 +338,12 @@ export default {
   mounted: function () {
     this.getPageData()
     // titleShow('top', $('#home-html'));
-    // $('#home-html').tooltip()
     $(window).off('resize.homescale').on('resize.homescale', () => {
       this.setScale()
     })
+    if (!gbs.inDev) {
+      titleShow('top', $('#home-html'))
+    }
   },
   watch: {
     nowPage: function (newV) {

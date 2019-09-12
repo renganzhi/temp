@@ -1,7 +1,8 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
+  <!-- padding: 10px; padding-bottom: 0px; -->
   <div id="editHome-wrap"
-       style="height: 100%;padding: 10px; padding-bottom: 0px;">
+       style="height: 100%;">
     <AddPage :showModal="addPage"
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
@@ -174,12 +175,13 @@ export default {
       this.viewPage = false
     },
     edit (item) {
-      this.$router.push({
-        name: 'edit',
-        params: {
-          id: item.id
-        }
-      })
+      this.$router.push('/edit/' + item.id)
+      // this.$router.push({
+      //   name: 'edit',
+      //   params: {
+      //     id: item.id
+      //   }
+      // })
     },
     del (item) {
       this.showDelModal = true
@@ -274,7 +276,7 @@ export default {
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
-    $('body').removeClass().removeAttr('style')
+    // $('body').removeClass().removeAttr('style')
     // document.body.calss = ''
     // document.body.style = ''
   },

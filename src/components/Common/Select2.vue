@@ -1,5 +1,10 @@
 <template>
-  <select>
+  <select v-if="mapSelect">
+    <option v-for="(subv,index) in obj"
+            :value="subv.value"
+            :key="index">{{subv.name}}</option>
+  </select>
+  <select v-else>
     <option v-if="!obj.notNull"
             value="">-不限-</option>
     <option v-for="(subv,index) in obj.data"
@@ -10,7 +15,7 @@
 <script>
 export default {
   name: 'select2',
-  props: ['obj', 'value'],
+  props: ['obj', 'value', 'mapSelect'],
   data () {
     return {
       myData: {}
@@ -65,6 +70,15 @@ export default {
     value: function (value, oldV) {
       if (value !== oldV) {
         $(this.$el).val(value).trigger('change.select2')
+      }
+    },
+    'obj': function (newV) {
+      if (this.mapSelect) {
+        var _this = this
+        this.$nextTick(function () {
+          _this.init(!newV.length ? null : newV[0].value)
+          _this = null
+        })
       }
     },
     'obj.data': function (newV) {

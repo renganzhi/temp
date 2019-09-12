@@ -1563,8 +1563,8 @@ body.page-header-fixed .healthy {
 }
 
 /*统一系统*/
-.moniModal .sp-replacer,
-.moniModal .sp-replacer:hover {
+#mainEdit-edit .sp-replacer,
+#mainEdit-edit .sp-replacer:hover {
     background: transparent;
     border: solid 1px #3d445a;
     color: #3d445a;

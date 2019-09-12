@@ -21,7 +21,10 @@ export default {
       allowOverflow: 20, // 允许溢出的宽高
       childResize: false, // 当前选中的是不是组合内部的元件
       parentId: 0, // 当前选中组合内部的元件的父级元件的序号
-      // fonts: baseData.fontFaces,
+      provinceArr: [], // 34个省的数据
+      cityArr: [], // 选中省的所有市数据
+      areaArr: [], // 选中市的所有区域数据
+      editPieces: [],
       settingData: baseData,
       pageId: 0,
       value2: 0.5,
@@ -56,6 +59,13 @@ export default {
         opacity: 100,
         showGrid: true // 显示网格
       },
+      // 箭头的展示与隐藏
+      arrowObj: {
+        witdhS: false,
+        heightS: false,
+        xShow: false,
+        yShow: false
+      },
       ceditable: true, // 组合
       combinList: [], // 组合的数组
       chooseItems: [], // ctrl选中的元件
@@ -65,6 +75,16 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
+      defMapColors: [
+        '#37a2da',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c',
+        '#ff9f7f',
+        '#fb7293',
+        '#e062ae'
+      ],
       defalutColors: [
         '#37a2da',
         '#32c5e9',
@@ -113,6 +133,7 @@ export default {
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
+      tempAreaData: {},
       widthVali: {
         isShowError: false,
         errorMsg: ''
@@ -135,6 +156,7 @@ export default {
       },
       proHeightErr: false,
       radiusErr: false,
+      selectMapData: {},
       selectArea: {
         choose: false, // 是否处于框选状态
         left: 0, // 多选情况下输入框改变前的x位移
@@ -190,6 +212,114 @@ export default {
     ...mapActions([
       'changeHomeData'
     ]),
+    getMapData (chinaId) {
+      if (chinaId) {
+        return new Promise((resolve, reject) => {
+          this.axios.get('./../../../../static/libs/map/' + chinaId + '.json', {}).then(response => {
+            var data = this.initMapData(response)
+            resolve(data)
+          }).catch((error) => {
+            Notification({
+              message: '该地区暂无详细地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+            reject(error)
+          })
+        })
+      } else {
+        return null
+      }
+    },
+    mapDataToChart () {
+      // 用户输入的数据转化为chartData
+      var tempData = []
+      for (var k in this.selectMapData) {
+        let obj = { '位置': k, '告警': this.selectMapData[k] }
+        tempData.push(obj)
+      }
+      this.selectedItem.chartData.rows = tempData
+    },
+    chartDataToMap () {
+      // chartData转化为input输入数据
+      this.selectMapData = {}
+      var tempData = this.selectedItem.chartData.rows
+      tempData.forEach((item) => {
+        this.selectMapData[item['位置']] = item['告警']
+      })
+    },
+    chgMapGrad (index) {
+      if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
+        alert('该量级的最大值不可小于最小值')
+      } else if (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1) {
+        this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
+      } else {
+        alert('跨度大了')
+      }
+      console.log(this.editPieces[index])
+    },
+    changeMapData (chinaId, target) {
+      this.axios.get('./../../../../static/libs/map/' + chinaId + '.json', {}).then(response => {
+        this[target] = this.initMapData(response)
+        if (target === 'provinceArr' && !this.selectedItem.provinceCode) {
+          this.selectedItem.provinceCode = this[target][0].value
+        }
+        if (target === 'cityArr') {
+          this.selectedItem.cityCode = this[target][0].value
+        }
+        // if (this.selectedItem.mapLevel === 'country') {
+        //   this.areaArr = this.provinceArr
+        //   console.log('country')
+        // } else if (this.selectedItem.mapLevel === 'province') {
+        //   console.log('province')
+        //   this.areaArr = this.cityArr
+        // }
+      })
+    },
+    initMapData (mapJson) {
+      var mapData = []
+      for (var i = 0; i < mapJson.features.length; i++) {
+        mapData.push({
+          value: mapJson.features[i].id,
+          name: mapJson.features[i].properties.name
+        })
+      }
+      return mapData
+    },
+    // 切换地图的省
+    chgProvince (id) {
+      if (this.selectedItem.mapLevel === 'city') {
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000']
+        if (noMapArr.indexOf(id) !== -1) {
+          this.selectedItem.mapLevel = 'province'
+          Notification({
+            message: '该地区不支持第三级地图',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        }
+      }
+      if (id) {
+        // this.changeMapData(id, 'cityArr')
+        this.getMapData(id).then((data) => {
+          this.cityArr = data
+          if (this.selectedItem.mapLevel === 'province') {
+            this.areaArr = data
+          }
+        })
+      }
+    },
+    chgCity (id) {
+      if (id) {
+        console.log('chgCity:' + id)
+        // this.changeMapData(id, 'areaArr')
+        this.getMapData(id).then((data) => {
+          this.areaArr = data
+        })
+      } else {
+        console.log('id为空，不处理')
+      }
+    },
     changeProHeight () {
       // 改变进度条元件的高度
       var proHeight = Math.floor(this.progressObj.height)
@@ -265,22 +395,22 @@ export default {
       this.showStyleTab = true
       var obj = $.extend(
         true, {}, {
-          id: new Date().getTime(),
-          ctName: value.text,
-          ctLegendShow: 'true',
-          x: 400,
-          y: 100,
-          width: 350,
-          height: 350,
-          colorType: 'defalut',
-          ctColors: this.defalutColors.concat(),
-          ctDataSource: 'static', // 数据来源system\static，默认static
-          url: '', // 请求接口
-          params: {}, // 请求接口参数
-          bdpx: 1, // 边框线宽
-          fontSize: 12, // 字号
-          lineArea: false // 折线是否为区域
-        },
+        id: new Date().getTime(),
+        ctName: value.text,
+        ctLegendShow: 'true',
+        x: 400,
+        y: 100,
+        width: 350,
+        height: 350,
+        colorType: 'defalut',
+        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+        ctDataSource: 'static', // 数据来源system\static，默认static
+        url: '', // 请求接口
+        params: {}, // 请求接口参数
+        bdpx: 1, // 边框线宽
+        fontSize: 12, // 字号
+        lineArea: false // 折线是否为区域
+      },
         value
       )
 
@@ -292,19 +422,28 @@ export default {
       this.selectedItem = obj
       this.testObj = this.selectedItem
       this.chooseIndexs = [this.chartNum.length - 1]
-      this.$nextTick(function () {
-        // titleShow('bottom', $('.m-right'));
-      })
+      if (!gbs.inDev) {
+        this.$nextTick(function () {
+          titleShow('bottom', $('.m-right'))
+        })
+      }
     },
     chgColorType: function () {
       if (this.selectedItem.colorType === 'defalut') {
         this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-        this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
+        if (this.selectedItem.chartType === 'v-map') {
+          this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
+          console.log(this.selectedItem.ctColors)
+        } else {
+          this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
+        }
       } else {
-        this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-        // var newColors = this.setDefColor()
-        var newColors = JSON.parse(JSON.stringify(this.defGradColors))
-        this.$set(this.selectedItem, 'ctColors', newColors)
+        if (this.selectedItem.chartType !== 'v-map') {
+          this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
+          // var newColors = this.setDefColor()
+          let newColors = JSON.parse(JSON.stringify(this.defGradColors))
+          this.$set(this.selectedItem, 'ctColors', newColors)
+        }
       }
     },
     // 旧的系列色赋值
@@ -353,7 +492,6 @@ export default {
       // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
-      console.log('selected')
       if (this.childResize && ev === 'context') {
         // 内部元件的右键
         return
@@ -416,6 +554,29 @@ export default {
           this.minXItem.maxY = item.y // 最远元素的y
         }
       }
+      if (this.selectedItem.chartType === 'v-map' && !window.event.ctrlKey && this.oldCheckId !== item.id) {
+        this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
+        // 地图元件重新加载右边的区域数据
+        this.oldCheckId = item.id
+        console.log('选中地图: ' + this.selectedItem.mapLevel)
+        if (this.selectedItem.mapLevel === 'country') {
+          this.areaArr = this.provinceArr
+          this.chartDataToMap()
+        } else if (this.selectedItem.mapLevel === 'province') {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.areaArr = data
+            this.chartDataToMap()
+          })
+        } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.cityArr = data
+          })
+          this.getMapData(this.selectedItem.cityCode).then((data) => {
+            this.areaArr = data
+            this.chartDataToMap()
+          })
+        }
+      }
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
         this.oldCheckId = item.id
@@ -423,9 +584,11 @@ export default {
           this.getUrlByType(true)
         }
       }
-      this.$nextTick(function () {
-        // titleShow('bottom', $('.m-right'));
-      })
+      if (!gbs.inDev) {
+        this.$nextTick(function () {
+          titleShow('bottom', $('.m-right'))
+        })
+      }
     },
     // 组合内的元件选中
     childSelect (item, childId, index) {
@@ -551,18 +714,18 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-          id: new Date().getTime() + parseInt(Math.random() * 10000),
-          ctLegendShow: 'true',
-          x: _left,
-          y: _top,
-          width: _right - _left,
-          height: _bottom - _top,
-          zIndex: _index,
-          sacleX: 1,
-          sacleY: 1,
-          // slted: false,
-          child: []
-        }, {}
+        id: new Date().getTime() + parseInt(Math.random() * 10000),
+        ctLegendShow: 'true',
+        x: _left,
+        y: _top,
+        width: _right - _left,
+        height: _bottom - _top,
+        zIndex: _index,
+        sacleX: 1,
+        sacleY: 1,
+        // slted: false,
+        child: []
+      }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -580,7 +743,9 @@ export default {
     removeItem: function () {
       // 组合的元件从chartNum中删除
       var i = 0
-      var tempArr = this.chooseIndexs.sort()
+      var tempArr = this.chooseIndexs.sort(function (a, b) {
+        return a - b
+      })
       tempArr.forEach(item => {
         // this.chartNum.splice(item, 1, {});
         this.chartNum.splice(item - i, 1)
@@ -842,14 +1007,6 @@ export default {
           })
         }
       })
-      // 这个接口不用弹出层所以用ajax
-      // var _type = this.dealTypeStr()
-      // await this.axios.get('home/getUrl?typeStr=' + _type).then((data) => {
-      //   this.$set(this.syst, 'urlSel', data.obj || [])
-      //   this.$nextTick(function () {
-      //     _this.syst.urlSel.length && _this.chgUrl(flag)
-      //   })
-      // })
     },
     // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
     chgUrl (flag) {
@@ -962,11 +1119,6 @@ export default {
               //  console.log(v.key,d.dataUrl,postData);
             }
           })
-          /*  await _this.axios.get(d.dataUrl, { params: postData }).then(data => {
-            data.obj = data.obj || []
-            d.data.splice(0, d.data.length)
-            d.data = data.obj
-          }) */
           _this.$set(_this.syst.curUrl, grp.index(), $.extend(true, {}, d))
         }
       })
@@ -1066,6 +1218,8 @@ export default {
     dataChange () {
       if (this.selectedItem.ctDataSource === 'system') {
         this.getUrlData()
+      } else if (this.selectedItem.chartType === 'v-map') {
+        this.mapDataToChart()
       } else {
         var textData = this.$refs.textarea.innerText
         var reg = /^\{[\s\S]*\}$/
@@ -1108,10 +1262,9 @@ export default {
       }
       $('#screen').show()
       var cThis = this
-      cThis.selectedItem.slted = false
+      // cThis.selectedItem.slted = false
+      this.cancelSelected() // 取消所有的选中
       var canvas2 = document.createElement('canvas')
-      // var _canvas = document.querySelector('#mainEdit-edit .m-main>div')
-      // var _canvas = document.querySelector('.m-main #chooseWrap')
       var _canvas = document.querySelector('.m-main .paint-bg')
       $('#chooseWrap').removeClass('gridBg')
       // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
@@ -1201,21 +1354,6 @@ export default {
               }
             })
         })
-        /* var _data = {
-          id: cThis.pageId,
-          viewConf: JSON.stringify(cThis.chartNum),
-          viewImage: canvas.toDataURL('png')
-        }
-        cThis.axios({
-          method: 'post',
-          url: 'home/homePage',
-          data: qs.stringify(_data),
-          headers: { 'content-type': 'application/x-www-form-urlencoded' }
-        }).then((res) => {
-          canvas.remove()
-          _canvas.style.background = 'transparent'
-          $('#screen').hide()
-        }) */
       })
     },
     uploadFile: function (formData, cb) {
@@ -1261,9 +1399,6 @@ export default {
       this.pageData = JSON.stringify(this.chartNum)
       this.composeData = JSON.stringify(this.combinList)
       this.viewPage = true
-      // $.comps.mainPreview.open({
-      //   conf: this.chartNum
-      // })
     },
     hidePreview: function () {
       this.viewPage = false
@@ -1274,18 +1409,8 @@ export default {
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
-        this.$router.push('editPage')
+        this.$router.push('/editPage')
       }
-      // $.api.view.confirm({
-      //   okText: '确定',
-      //   msg: '确认离开当前页吗？未保存数据将会丢失！',
-      //   callBack: function (state) {
-      //     if (state === 1) { // 确定
-      //       _this.$edit.edit('hide');
-      //       typeof _this.params.callback === 'function' && _this.params.callback();
-      //     }
-      //   }
-      // })
     },
     /* 统一右键 */
     context: function (index, ev, type) {
@@ -1470,7 +1595,9 @@ export default {
     },
     deleteOne: function (type, tempArr) {
       var i = 0
-      tempArr = tempArr.sort()
+      tempArr = tempArr.sort(function (a, b) {
+        return a - b
+      })
       if (type === 'item') {
         var _type = 'chartNum'
       } else {
@@ -1576,6 +1703,15 @@ export default {
         // 用来解决不能监听直接赋值的数组变化
         this.selectedItem.ctColors.splice(data.index, 1)
         this.selectedItem.ctColors.splice(data.index, 0, data.color)
+      }
+    },
+    getMapColor (data) {
+      if (data.type !== undefined) {
+        this.selectedItem[data.type] = data.color
+      } else {
+        // var oldColor = this.selectedItem.ctColors[data.index]
+        // oldColor = data.color
+        this.selectedItem.ctColors.splice(data.index, 1, data.color)
       }
     },
     getColorStart (data) {
@@ -1688,6 +1824,47 @@ export default {
     }
   },
   watch: {
+    'selectedItem.mapLevel': function (newValue, oldV) {
+      var _this = this
+      if (newValue === 'country') {
+        this.areaArr = this.provinceArr
+      } else if (newValue === 'city') {
+        if (oldV === 'country') {
+          console.log('从国家级到市级')
+          // 从国家级到市级
+          this.selectedItem.provinceCode = 510000 // 默认选中一个位置
+        }
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000']
+        if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
+          this.selectedItem.mapLevel = oldV
+          Notification({
+            message: '该地区不支持第三级地图',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            _this.cityArr = data
+            _this.selectedItem.cityCode = data[0].value
+          })
+        }
+      } else {
+        if (newValue === 'province') {
+          if (!_this.selectedItem.provinceCode) {
+            _this.selectedItem.provinceCode = _this.provinceArr[0].value
+            _this.getMapData(_this.selectedItem.provinceCode).then((data) => {
+              _this.cityArr = data
+              _this.areaArr = data
+            })
+          } else {
+            _this.areaArr = _this.cityArr
+          }
+        }
+        // else {
+        //   this.areaArr = this.cityArr
+        // }
+      }
+    },
     'testObj.width': function (newValue, oldValue) {
       this.testObjChange('width', newValue)
     },
@@ -1708,16 +1885,23 @@ export default {
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
+    // $('#header').hide()
+    $('.navbar-fixed-top').css('display', 'none')
+    $('.page-container').css('top', '0px')
     this.chooseMap()
+    if (!gbs.inDev) {
+      titleShow()
+    }
     // 初始化paintInput
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
-    // this.gerPageConf();
-    // this.$nextTick(() => {
-    //   this.chooseMap()
-    // })
+    // this.changeMapData(100000, 'provinceArr')
+    this.getMapData(100000).then((data) => {
+      this.provinceArr = data
+    })
   },
   beforeDestroy: function () {
+    $('#header').show()
     $('.tempDiv').remove() // 绑定的事件也会移除
     document.removeEventListener('keydown', this.handleKeyDown)
     document.removeEventListener('keyup', this.handleKeyUp)
@@ -1726,6 +1910,8 @@ export default {
     // console.log(document)
     // console.log(stateBar)
     // stateBar.removeEventListener('mousedown', this.userChoose)
+    $('.navbar-fixed-top').css('display', 'block')
+    $('.page-container').css('top', '50px')
   },
   destoryed: function () {
     // $.comps.editHome = null;

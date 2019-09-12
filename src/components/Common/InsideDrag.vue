@@ -45,6 +45,8 @@
            :item="item"></Vtime>
     <Vnumber v-else-if="item.chartType=='number'"
              :item="item"></Vnumber>
+    <Vmap v-else-if="item.chartType=='v-map'"
+          :item="item"></Vmap>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
@@ -62,11 +64,12 @@ import Topo from './EditComp/Topo' // 拓扑
 import Marquee from './EditComp/Marquee' // 跑马灯
 import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
+import Vmap from './EditComp/Vmap' // 指标展示
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap },
   data () {
     return {
 

@@ -155,24 +155,23 @@ var morenData = {
     value: 60
   },
   map: {
-    position: 'province/sichuan',
     columns: ['位置', '资源', '告警'],
-    rows: [
-      { '位置': '四川', '资源': 1, '告警': 1 },
-      { '位置': '吉林', '资源': 10, '告警': 10 },
-      { '位置': '北京', '资源': 100, '告警': 100 },
-      { '位置': '广东', '资源': 500, '告警': 500 },
-      { '位置': '上海', '资源': 1000, '告警': 1000 },
-      { '位置': '浙江', '资源': 10000, '告警': 10000 }
-    ]
     // rows: [
-    //   { '位置': '成都市', '资源': 1, '告警': 1 },
-    //   { '位置': '眉山市', '资源': 10, '告警': 10 },
-    //   { '位置': '南充市', '资源': 100, '告警': 100 },
-    //   { '位置': '绵阳市', '资源': 500, '告警': 500 },
-    //   { '位置': '阿坝藏族羌族自治州', '资源': 1000, '告警': 5000 },
-    //   { '位置': '达州市', '资源': 10000, '告警': 10000 }
+    //   { '位置': '四川', '资源': 1, '告警': 1 },
+    //   { '位置': '吉林', '资源': 10, '告警': 10 },
+    //   { '位置': '北京', '资源': 100, '告警': 100 },
+    //   { '位置': '广东', '资源': 500, '告警': 500 },
+    //   { '位置': '上海', '资源': 1000, '告警': 1000 },
+    //   { '位置': '浙江', '资源': 10000, '告警': 10000 }
     // ]
+    rows: [
+      { '位置': '成都市', '告警': 1 },
+      { '位置': '眉山市', '告警': 10 },
+      { '位置': '南充市', '告警': 100 },
+      { '位置': '绵阳市', '告警': 500 },
+      { '位置': '阿坝藏族羌族自治州', '告警': 5000 },
+      { '位置': '达州市', '告警': 10000 }
+    ]
   }
 }
 var compsArr = [{
@@ -307,7 +306,7 @@ var compsArr = [{
 },
 {
   text: '跑马灯',
-  imgClass: 'icon-n-text',
+  imgClass: 'icon-n-marquee',
   chartType: 'marquee',
   width: 200,
   height: 50,
@@ -375,7 +374,7 @@ var compsArr = [{
 },
 {
   text: '时间器',
-  imgClass: 'icon-n-doubler',
+  imgClass: 'icon-n-time',
   chartType: 'time',
   width: 200,
   height: 50,
@@ -386,7 +385,7 @@ var compsArr = [{
 },
 {
   text: '指标展示',
-  imgClass: 'icon-n-doubler',
+  imgClass: 'icon-n-number',
   chartType: 'number',
   fontSize: 36,
   fontFamily: 'number1',
@@ -399,21 +398,47 @@ var compsArr = [{
 {
   text: '区域分布图',
   imgClass: 'icon-n-radar',
-  chartType: 've-map',
+  chartType: 'v-map',
   width: 500,
   height: 300,
-  chartData: morenData.map
-},
-{
-  text: '地图实时图',
-  imgClass: 'icon-n-radar',
-  // chartType: 've-scatter',
-  chartType: 've-map',
-  secondType: 'scatter', // 散点图
-  width: 500,
-  height: 300,
+  mapLevel: 'country',
+  mapName: '中国',
+  countryCode: 100000,
+  provinceCode: '',
+  cityCode: '',
+  visualPosition: 'left',
+  piecesData: [
+    { min: 0, max: 50 },
+    { min: 51, max: 100 },
+    { min: 101 }
+  ],
   chartData: morenData.map
 }
+  // {
+  //   text: '地图',
+  //   imgClass: 'icon-n-radar',
+  //   chartType: 'map',
+  //   width: 500,
+  //   height: 300,
+  //   chartData: morenData.map
+  // },
+  // {
+  //   text: '区域分布图',
+  //   imgClass: 'icon-n-radar',
+  //   chartType: 've-map',
+  //   width: 500,
+  //   height: 300,
+  //   chartData: morenData.map
+  // },
+  // {
+  //   text: '地图实时图',
+  //   imgClass: 'icon-n-radar',
+  //   chartType: 've-map',
+  //   secondType: 'scatter', // 散点图
+  //   width: 500,
+  //   height: 300,
+  //   chartData: morenData.map
+  // }
 ]
 
 // export default morenData;
