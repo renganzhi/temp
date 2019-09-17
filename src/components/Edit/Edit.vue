@@ -605,9 +605,12 @@
                                         <label>省/直辖市</label>
                                         <Select2 v-model="selectedItem.provinceCode" :mapSelect="true" :obj="provinceArr" @input="chgProvince(selectedItem.provinceCode)"></Select2>
                                       </div>
-                                      <div v-if="selectedItem.mapLevel==='city'" class="form-group cols2">
+                                      <div v-show="selectedItem.mapLevel==='city'" class="form-group cols2">
                                         <label>市</label>
                                         <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
+                                        <!-- <select v-model="selectedItem.cityCode">
+                                            <option v-for="(item ,index) in cityArr" :key="index" :value="item.value" @change="chgCity(selectedItem.cityCode)">{{item.name}}</option>
+                                        </select> -->
                                       </div>
                                       <div class="form-group cols2">
                                         <label>数据设置</label>
@@ -624,11 +627,12 @@
                                           <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].max">
                                         </div> -->
                                         <div class="setMapGrad" v-for="(item, index) in editPieces" :key="index">
-                                          <span>量级一</span>
+                                          <span>量级{{index + 1}}</span>
                                           <input class="w-90" type="number" disabled v-model="editPieces[index].min"> -
                                           <input class="w-90" type="number" :disabled="index===(editPieces.length-1)" @change="chgMapGrad(index)" v-model="editPieces[index].max">
+                                          <i v-if="index===(editPieces.length-1)" class="icon-n-deleteNew" @click="delMapLevel"></i>
                                         </div>
-                                        <button type="button" class="colorToall" @click="colorToAll">添加量级</button>
+                                        <button type="button" class="colorToall" @click="addMapLevel">添加量级</button>
                                       </div>
                                     </div>
                                     <button @click="dataChange">更新视图</button>
@@ -916,6 +920,9 @@ export default EditJs
     display: inline-block;
     width: 110px;
     text-align: right;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .area-item {
     margin-bottom: 8px;

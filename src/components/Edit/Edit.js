@@ -25,6 +25,7 @@ export default {
       cityArr: [], // 选中省的所有市数据
       areaArr: [], // 选中市的所有区域数据
       editPieces: [],
+      editPiecesCopy: [],
       settingData: baseData,
       pageId: 0,
       value2: 0.5,
@@ -213,9 +214,10 @@ export default {
       'changeHomeData'
     ]),
     getMapData (chinaId) {
+      var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
       if (chinaId) {
         return new Promise((resolve, reject) => {
-          this.axios.get('./../../../../static/libs/map/' + chinaId + '.json', {}).then(response => {
+          this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
             var data = this.initMapData(response)
             resolve(data)
           }).catch((error) => {
@@ -241,25 +243,35 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     chartDataToMap () {
+      console.log('chartData转化为用户输入的数据')
       // chartData转化为input输入数据
       this.selectMapData = {}
       var tempData = this.selectedItem.chartData.rows
+      console.log(tempData)
       tempData.forEach((item) => {
         this.selectMapData[item['位置']] = item['告警']
       })
     },
-    chgMapGrad (index) {
-      if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
-        alert('该量级的最大值不可小于最小值')
-      } else if (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1) {
-        this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
-      } else {
-        alert('跨度大了')
+    initLevelData (arr) {
+      // var obj = JSON.stringify(this.selectMapData)
+      // if (obj === '{}') return
+      // if (this.selectedItem.chartData.rows.length > 0) return
+      // if (this.oldCheckId !== this.selectedItem.id) return
+      return null
+      console.log('初始化默认数据')
+      this.selectMapData = {}
+      var tempData = []
+      let len = arr.length < 3 ? arr.length : 3
+      for (let i = 0; i < len; i++) {
+        this.selectMapData[arr[i].name] = i * 50 + 25
+        let chartObj = { '位置': arr[i].name, '告警': i * 50 + 25 }
+        tempData.push(chartObj)
       }
-      console.log(this.editPieces[index])
+      this.selectedItem.chartData.rows = tempData
     },
     changeMapData (chinaId, target) {
-      this.axios.get('./../../../../static/libs/map/' + chinaId + '.json', {}).then(response => {
+      var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
+      this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
         this[target] = this.initMapData(response)
         if (target === 'provinceArr' && !this.selectedItem.provinceCode) {
           this.selectedItem.provinceCode = this[target][0].value
@@ -275,6 +287,63 @@ export default {
         //   this.areaArr = this.cityArr
         // }
       })
+    },
+    chgMapGrad (index) {
+      if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
+        Notification({
+          message: '量级的最大值不可小于最小值',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+        this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+      } else if (!this.editPieces[index + 1]['max'] || (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1)) {
+        this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
+      } else {
+        var newValue = this.editPieces[index]['max']
+        if (index === 0 && newValue + 2 > this.editPieces[this.editPieces.length - 2]['max']) {
+          // 合并之后梯度不足3个
+          Notification({
+            message: '区间跨度太大，请至少保证三个量级',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+          this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+          return
+        }
+        var delLevel = 0
+        for (let i = index + 1, len = this.editPieces.length - 1; i < len; i++) {
+          if (newValue >= this.editPieces[i]['max']) {
+            delLevel++
+          }
+        }
+        var r = confirm('与其余量级区间重合，是否合并为一个量级')
+        if (r) {
+          this.editPieces.splice(index + 1, delLevel)
+          this.editPieces[index + 1].min = Number(newValue) + 1
+        } else {
+          this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+        }
+      }
+      this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
+    },
+    addMapLevel () {
+      if (this.editPieces.length >= 8) {
+        return
+      }
+      var lastMin = this.editPieces[this.editPieces.length - 1].min
+      this.editPieces[this.editPieces.length - 1].max = lastMin + 49
+      this.editPieces.push({ min: lastMin + 50 })
+      this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
+      this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
+    },
+    delMapLevel () {
+      if (this.editPieces.length <= 3) {
+        return
+      }
+      this.editPieces.pop()
+      delete this.editPieces[this.editPieces.length - 1].max
+      this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
+      this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
     },
     initMapData (mapJson) {
       var mapData = []
@@ -305,6 +374,9 @@ export default {
           this.cityArr = data
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
+            this.initLevelData(this.areaArr)
+          } else if (this.selectedItem.mapLevel === 'city') {
+            this.selectedItem.cityCode = data[0].value
           }
         })
       }
@@ -315,6 +387,7 @@ export default {
         // this.changeMapData(id, 'areaArr')
         this.getMapData(id).then((data) => {
           this.areaArr = data
+          this.initLevelData(this.areaArr)
         })
       } else {
         console.log('id为空，不处理')
@@ -522,6 +595,9 @@ export default {
       } else {
         // 增加选中
         item.slted = this.editable && true
+        if (item.chartType === 'v-map') {
+          this.selectedItem = {} // 避免触发三级下拉的监听
+        }
         this.selectedItem = item
         if (item.chartType === 'progress') {
           this.progressObj.height = item.proHeight
@@ -554,29 +630,39 @@ export default {
           this.minXItem.maxY = item.y // 最远元素的y
         }
       }
-      if (this.selectedItem.chartType === 'v-map' && !window.event.ctrlKey && this.oldCheckId !== item.id) {
-        this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
-        // 地图元件重新加载右边的区域数据
-        this.oldCheckId = item.id
-        console.log('选中地图: ' + this.selectedItem.mapLevel)
-        if (this.selectedItem.mapLevel === 'country') {
-          this.areaArr = this.provinceArr
-          this.chartDataToMap()
-        } else if (this.selectedItem.mapLevel === 'province') {
-          this.getMapData(this.selectedItem.provinceCode).then((data) => {
-            this.areaArr = data
-            this.chartDataToMap()
-          })
+      if (this.selectedItem.chartType === 'v-map') {
+        if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
+          this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
+          this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
+          // 地图元件重新加载右边的区域数据
+          this.oldCheckId = item.id
+          console.log('选中地图: ' + this.selectedItem.mapLevel)
+          if (this.selectedItem.mapLevel === 'country') {
+            this.areaArr = this.provinceArr
+            this.$nextTick(() => {
+              this.chartDataToMap()
+            })
+          } else if (this.selectedItem.mapLevel === 'province') {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.areaArr = data
+              this.chartDataToMap()
+            })
+          } else {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.cityArr = data
+            })
+            this.getMapData(this.selectedItem.cityCode).then((data) => {
+              this.areaArr = data
+              this.chartDataToMap()
+            })
+          }
         } else {
-          this.getMapData(this.selectedItem.provinceCode).then((data) => {
-            this.cityArr = data
-          })
-          this.getMapData(this.selectedItem.cityCode).then((data) => {
-            this.areaArr = data
+          if (ev !== 'move') {
             this.chartDataToMap()
-          })
+          }
         }
       }
+
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
         this.oldCheckId = item.id
@@ -1220,6 +1306,7 @@ export default {
         this.getUrlData()
       } else if (this.selectedItem.chartType === 'v-map') {
         this.mapDataToChart()
+        this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else {
         var textData = this.$refs.textarea.innerText
         var reg = /^\{[\s\S]*\}$/
@@ -1825,14 +1912,22 @@ export default {
   },
   watch: {
     'selectedItem.mapLevel': function (newValue, oldV) {
+      if (oldV) {
+        this.selectMapData = {}
+      }
       var _this = this
       if (newValue === 'country') {
         this.areaArr = this.provinceArr
+        this.initLevelData(this.areaArr)
       } else if (newValue === 'city') {
+        console.log('mapLevel改变为city')
+        console.log(oldV)
         if (oldV === 'country') {
           console.log('从国家级到市级')
           // 从国家级到市级
-          this.selectedItem.provinceCode = 510000 // 默认选中一个位置
+          if (!this.selectedItem.provinceCode) {
+            this.selectedItem.provinceCode = 510000 // 默认选中一个位置
+          }
         }
         var noMapArr = ['110000', '310000', '500000', '120000', '710000']
         if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
@@ -1845,7 +1940,9 @@ export default {
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data
-            _this.selectedItem.cityCode = data[0].value
+            if (!_this.selectedItem.cityCode) {
+              _this.selectedItem.cityCode = data[0].value
+            }
           })
         }
       } else {
@@ -1855,14 +1952,13 @@ export default {
             _this.getMapData(_this.selectedItem.provinceCode).then((data) => {
               _this.cityArr = data
               _this.areaArr = data
+              _this.initLevelData(_this.areaArr)
             })
           } else {
             _this.areaArr = _this.cityArr
+            _this.initLevelData(_this.areaArr)
           }
         }
-        // else {
-        //   this.areaArr = this.cityArr
-        // }
       }
     },
     'testObj.width': function (newValue, oldValue) {
@@ -1885,6 +1981,8 @@ export default {
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
+    var _url = 'http://' + window.location.host + '/index'
+    window.history.pushState({}, '', _url)
     // $('#header').hide()
     $('.navbar-fixed-top').css('display', 'none')
     $('.page-container').css('top', '0px')

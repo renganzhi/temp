@@ -307,15 +307,20 @@ export default {
       ct.setScale()
     },
 
-    /* 缩放 */
+    /* 缩放setScale */
     setScale: function () {
-      // var $el = $(this.$el);
+      // var $el = document.getElementById('home-html')
       // var $el = document.getElementById('home-html')
       var $el = $('#home-html')
+      var _app = $('#app')
+      // var pageContainer = $('#page_container')
+      // var h = pageContainer.height() // 打包的时候获取不到高度使用这个
       var w = $el.width()
       var h = $el.height()
-      var scaleX = w / baseData.home.w
-      var scaleY = h / baseData.home.h
+      console.log('width:' + w + '  height: ' + h)
+      console.log('app width:' + _app.width() + '  app height: ' + _app.height())
+      var scaleX = w / 1920 // 这里需要改成设置的画布的大小
+      var scaleY = h / 1080
       var scale = Math.min(scaleX, scaleY)
       var mrg = 0
       if (scaleX <= 1) {
@@ -336,10 +341,13 @@ export default {
     // mainPage = _this = _this.vue = null;
   },
   mounted: function () {
-    this.getPageData()
-    // titleShow('top', $('#home-html'));
-    $(window).off('resize.homescale').on('resize.homescale', () => {
-      this.setScale()
+    var _url = 'http://' + window.location.host + '/index'
+    window.history.pushState({}, '', _url)
+    this.$nextTick(() => {
+      this.getPageData()
+      $(window).off('resize.homescale').on('resize.homescale', () => {
+        this.setScale()
+      })
     })
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
@@ -357,6 +365,9 @@ export default {
       this.refreshFn(newV)
       this.initRefreshTimer()
     }
+  },
+  beforeDestroy: function () {
+    $(this.$el).find('[title]').tooltip('destroy')
   },
   destoryed: function () {
   }

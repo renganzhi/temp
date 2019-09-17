@@ -76,7 +76,7 @@ export default {
       if (this.mapSelect) {
         var _this = this
         this.$nextTick(function () {
-          _this.init(!newV.length ? null : newV[0].value)
+          _this.init(_this.value ? _this.value : newV[0].value) // 不要直接赋值第一个
           _this = null
         })
       }

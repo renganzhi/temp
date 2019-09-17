@@ -126,7 +126,8 @@ export default {
     hideModal (data) {
       this.addPage = false
       if (data.ifAdd) {
-        this.search()
+        // this.search()
+        this.$router.push('/edit/' + data.addId)
       }
     },
     hideSetting (data) {
@@ -273,6 +274,8 @@ export default {
   },
   mounted: function () {
     this.search()
+    var _url = 'http://' + window.location.host + '/index'
+    window.history.pushState({}, '', _url)
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()

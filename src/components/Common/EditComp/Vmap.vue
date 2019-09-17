@@ -1,22 +1,22 @@
 <template>
   <!-- :init-options="initOption" -->
-  <component :is="'ve-map'"
-             :data="dealChartData"
-             :width="comWidth"
-             :height="comHeight"
-             :settings="settings"
-             :extend="extend"
-             :key="keyId"
-             :judge-width="true">
-    <div class="v-charts-data-empty"
+  <ve-map :data="dealChartData"
+          :width="comWidth"
+          :height="comHeight"
+          :settings="settings"
+          :extend="extend"
+          :id="'map_' + keyId"
+          :key="keyId"
+          :judge-width="true">
+    <!-- <div class="v-charts-data-empty"
          v-if="empty"
          style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
       <div><i class="icon-n-nodata"
            style="font-size: 108px;"></i><br>
         <p>抱歉，没有数据可供展示...</p>
       </div>
-    </div>
-  </component>
+    </div> -->
+  </ve-map>
   <!-- <ve-map :data="dealChartData"
           :width="comWidth"
           v-if="initOption"
@@ -37,6 +37,7 @@
   </ve-map> -->
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   name: 'vmap',
   props: ['item'],
@@ -47,19 +48,20 @@ export default {
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
     }
+    var _static = gbs.inDev ? 'static' : 'leaderview-static'
     this.settings = {
-      positionJsonLink: './../../../../static/libs/map/' + code + '.json',
-      position: code === 100000 ? 'china' : '四川' // 设置为非china才不显示南海群岛
+      positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
+      position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
     }
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
       initOption: { renderer: 'svg' },
+      mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
       // settings: {
       //   // yAxisType: [0],
       //   // positionJsonLink: 'https://unpkg.com/v-charts-custom-maps@0.2.1/hk-geo.json',
       //   positionJsonLink: './../../../../static/libs/map/100000.json',
-      //   // positionJsonLink: './../../../../leaderview-static/libs/map/100000.json', // 打包部署
       //   position: '四川' // 设置为非china才不显示南海群岛
       //   // dimension: '位置',
       //   // metrics: ['资源', '告警'],
@@ -94,7 +96,7 @@ export default {
           },
           // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
           // splitNumber: 3, // 几种颜色值及取值范围
-          pieces: this.item.piecesData, // 默认取data中最后一个维度
+          pieces: this.formatPieces(this.item.piecesData), // 默认取data中最后一个维度
           // pieces: [
           //   // { min: 1000, label: '自定义', color: 'orange' },
           //   { min: 100, max: 499 },
@@ -193,16 +195,22 @@ export default {
         this.extend.visualMap.right = 0
       }
     },
-    'item.mapLevel': function (newV) {
+    'item.piecesData': function (newV) {
+      this.extend.visualMap.pieces = this.formatPieces(newV)
+      var len = newV.length
+      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
+    },
+    'item.mapLevel': function (newV, oldV) {
+      console.log('v-map mapLevel:' + oldV + ' to ' + newV)
       this.$nextTick(() => {
         if (newV === 'city') {
-          this.settings.positionJsonLink = './../../../../static/libs/map/' + this.item.cityCode + '.json'
+          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
           this.settings.position = '其它'
         } else if (newV === 'province') {
-          this.settings.positionJsonLink = './../../../../static/libs/map/' + this.item.provinceCode + '.json'
+          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
           this.settings.position = '其它'
         } else {
-          this.settings.positionJsonLink = './../../../../static/libs/map/100000.json'
+          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
         }
         this.keyId = new Date().getTime() + Math.random() * 10000
@@ -211,15 +219,16 @@ export default {
     'item.provinceCode': function (newV) {
       console.log(newV)
       if (this.item.mapLevel === 'province') {
-        console.log('procode:' + newV)
-        this.settings.positionJsonLink = './../../../../static/libs/map/' + newV + '.json'
+        console.log('v-map procode:' + newV)
+        this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
     },
-    'item.cityCode': function (newV) {
+    'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
+        console.log('v-map cityCode:' + oldV + ' to ' + newV)
         console.log('citycode:' + newV)
-        this.settings.positionJsonLink = './../../../../static/libs/map/' + newV + '.json'
+        this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
     },
@@ -281,33 +290,11 @@ export default {
     }
   },
   mounted: function () {
-    console.log(this.item.cityCode)
-    // setTimeout(() => {
-    //   this.settings.positionJsonLink = './../../../../static/libs/map/510000.json'
-    //   this.keyId = new Date().getTime() + Math.random() * 10000
-    //   console.log(1)
-    // }, 4000)
   },
   methods: {
-    initMapData (mapJson) {
-      var mapData = []
-      for (var i = 0; i < mapJson.features.length; i++) {
-        mapData.push({
-          name: mapJson.features[i].properties.name
-          // id:mapJson.features[i].id
-        })
-      }
-      console.log(mapData)
-      return mapData
-    },
-    setGaugeColor: function (type, newV) {
-      if (Array.isArray(newV[0])) {
-        this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = new echarts.graphic.LinearGradient(1, 0, 0, 0, [{ offset: 0, color: newV[0][0] }, { offset: 1, color: newV[0][1] }])
-        this.settings.seriesMap[type].detail.color = newV[0][0]
-      } else {
-        this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = newV[0]
-        this.settings.seriesMap[type].detail.color = newV[0]
-      }
+    formatPieces (piecesData) {
+      piecesData[piecesData.length - 1].gte = piecesData[piecesData.length - 1].min
+      return piecesData
     }
   },
   beforeDestroy: function () {

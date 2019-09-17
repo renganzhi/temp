@@ -76,6 +76,7 @@ export default {
     return {
       name: '',
       baseUrl: gbs.host,
+      addId: 0,
       addOne: false,
       errMsg: '必填项',
       showErr: false,
@@ -91,7 +92,7 @@ export default {
     }
     $('#addHomePage-modal').on('hide.bs.modal', function () {
       // 关闭模态框时触发
-      _this.$emit('hideModal', { ifAdd: _this.addOne })
+      _this.$emit('hideModal', { ifAdd: _this.addOne, addId: _this.addId })
       _this.addOne = false
     })
   },
@@ -146,6 +147,7 @@ export default {
       }).then((res) => {
         if (res.success) {
           this.addOne = true
+          this.addId = res.obj.id
           // tooltip('', '操作成功！', 'success')
           Notification({
             message: '操作成功！',
