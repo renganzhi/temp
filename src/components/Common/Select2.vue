@@ -29,6 +29,9 @@ export default {
     }
   },
   computed: {
+    disAbleData: function () {
+      return this.disData
+    },
     tempArr: function () {
       return []
     }
@@ -90,6 +93,11 @@ export default {
           // $(this.$el).val(oldV).trigger('change.select2')
         }
       }
+    },
+    disData: function (oldV, newV) {
+      // if (!_.isEqual(newV, oldV)) {
+      //   // console.log(newV)
+      // }
     },
     'obj': function (newV) {
       if (this.mapSelect) {

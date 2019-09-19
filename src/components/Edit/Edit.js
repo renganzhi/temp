@@ -313,18 +313,12 @@ export default {
           console.log('changeCity2:')
           this.selectedItem.cityCode = this[target][0].value
         }
-        // if (this.selectedItem.mapLevel === 'country') {
-        //   this.areaArr = this.provinceArr
-        //   console.log('country')
-        // } else if (this.selectedItem.mapLevel === 'province') {
-        //   console.log('province')
-        //   this.areaArr = this.cityArr
-        // }
       })
     },
     // 改变展示范围
     chgMapLevel () {
       // 这里会先于watch mapLevel触发
+      console.log('-------selfMapLevel: true------')
       this.selfMapLevel = true
     },
     chgMapGrad (index) {
@@ -429,6 +423,7 @@ export default {
           this.cityArr = data
           console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
+            console.log('-------areaArr1-------')
             this.areaArr = data
             this.initLevelData(this.areaArr)
           } else if (this.selectedItem.mapLevel === 'city') {
@@ -442,7 +437,8 @@ export default {
       }
     },
     chgCity (id) {
-      if (id) {
+      console.log('--+++++++chgCity+++++++----' + this.selfMapLevel)
+      if (id && this.selfMapLevel) {
         console.log('changeCity:' + id)
         this.getMapData(id).then((data) => {
           this.areaArr = data
@@ -702,28 +698,28 @@ export default {
       }
       if (this.selectedItem.chartType === 'v-scatter') {
         if (ev !== 'move' && this.oldCheckId !== item.id) {
-          this.$nextTick(() => {
-            console.log('触发selected：重新设置alertMapData')
-            console.log(this.selectedItem.chartData)
-            // this.alertMapData = JSON.parse(JSON.stringify(this.selectedItem.chartData))
+          this.alertMapData = []
+          if (this.selectedItem.mapLevel === 'country') {
             this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
-            console.log(this.alertMapData)
             this.selectedPositn = _.map(this.alertMapData, 'name')
-            console.log(this.selectedPositn)
-          })
+          }
         }
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
           this.oldCheckId = item.id
           console.log('切换元件，重新计算地图~')
           if (this.selectedItem.mapLevel === 'country') {
             console.log('country')
+            console.log('-------areaArr3-------')
             this.areaArr = this.provinceArr
             // this.$nextTick(() => {
             //   this.chartDataToMap()
             // })
           } else if (this.selectedItem.mapLevel === 'province') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              console.log('-------areaArr4-------')
               this.areaArr = data
+              this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+              this.selectedPositn = _.map(this.alertMapData, 'name')
               console.log('province')
               // this.chartDataToMap()
             })
@@ -732,7 +728,10 @@ export default {
               this.cityArr = data
             })
             this.getMapData(this.selectedItem.cityCode).then((data) => {
+              console.log('-------areaArr5-------')
               this.areaArr = data
+              this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+              this.selectedPositn = _.map(this.alertMapData, 'name')
               console.log('city')
               // this.chartDataToMap()
             })
@@ -749,12 +748,14 @@ export default {
           this.oldCheckId = item.id
           console.log('选中地图: ' + this.selectedItem.mapLevel)
           if (this.selectedItem.mapLevel === 'country') {
+            console.log('-------areaArr6-------')
             this.areaArr = this.provinceArr
             this.$nextTick(() => {
               this.chartDataToMap()
             })
           } else if (this.selectedItem.mapLevel === 'province') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              console.log('-------areaArr7-------')
               this.areaArr = data
               this.chartDataToMap()
             })
@@ -763,6 +764,7 @@ export default {
               this.cityArr = data
             })
             this.getMapData(this.selectedItem.cityCode).then((data) => {
+              console.log('-------areaArr7-------')
               this.areaArr = data
               this.chartDataToMap()
             })
@@ -2039,6 +2041,7 @@ export default {
       console.log('----------------watch----------')
       var _this = this
       if (newValue === 'country') {
+        console.log('-------areaArr9-------')
         this.areaArr = this.provinceArr
         if (this.selectedItem.chartType === 'v-scatter') {
           this.clearAlertMap()
@@ -2077,10 +2080,12 @@ export default {
             _this.selectedItem.provinceCode = _this.provinceArr[0].value
             _this.getMapData(_this.selectedItem.provinceCode).then((data) => {
               _this.cityArr = data
+              console.log('-------areaArr10-------')
               _this.areaArr = data
               _this.initLevelData(_this.areaArr)
             })
           } else {
+            console.log('-------areaArr11-------')
             _this.areaArr = _this.cityArr
             _this.initLevelData(_this.areaArr)
           }

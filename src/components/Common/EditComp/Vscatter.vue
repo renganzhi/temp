@@ -74,7 +74,10 @@ export default {
           pieces: [
             { value: 1, color: '#ff9900' },
             { value: 2, color: '#00ffff' },
-            { value: 3, color: '#ffffff' }
+            { value: 3, color: '#ffff00' },
+            { value: 4, color: '#ff9f7f' },
+            { value: 5, color: '#37a2da' },
+            { value: 6, color: '#ffffff' }
           ],
           color: ['#E0022B', '#E09107', '#A3E00B'],
           show: false,

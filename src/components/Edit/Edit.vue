@@ -601,11 +601,11 @@
                                             <option value="city">地市级</option>
                                         </select>
                                       </div>
-                                      <div v-show="selectedItem.mapLevel!=='country'" class="form-group cols2">
+                                      <div v-show="selectedItem.mapLevel!=='country'" @click="chgMapLevel" class="form-group cols2">
                                         <label>省/直辖市</label>
                                         <Select2 v-model="selectedItem.provinceCode" :mapSelect="true" :obj="provinceArr" @input="chgProvince(selectedItem.provinceCode)"></Select2>
                                       </div>
-                                      <div v-if="selectedItem.mapLevel==='city'" class="form-group cols2">
+                                      <div v-if="selectedItem.mapLevel==='city'" @click="chgMapLevel" class="form-group cols2">
                                         <label>市</label>
                                         <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
                                       </div>
@@ -619,7 +619,7 @@
                                                 <option value="province">省级</option>
                                                 <option value="city">地市级</option>
                                             </select> -->
-                                            <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
+                                            <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :key="selectedItem.id + index" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
                                             <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
                                             <i class="icon-n-deleteNew" @click="delAlertLevel(index)"></i>
                                           </div>
