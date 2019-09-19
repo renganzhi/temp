@@ -2119,7 +2119,7 @@ export default {
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
-    var _url = 'http://' + window.location.host + '/index'
+    var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
     // $('#header').hide()
     $('.navbar-fixed-top').css('display', 'none')

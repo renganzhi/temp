@@ -341,7 +341,7 @@ export default {
     // mainPage = _this = _this.vue = null;
   },
   mounted: function () {
-    var _url = 'http://' + window.location.host + '/index'
+    var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
     this.$nextTick(() => {
       this.getPageData()

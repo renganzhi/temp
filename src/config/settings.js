@@ -2,7 +2,7 @@ var env = process.env.NODE_ENV
 var settings = {
   // 这里配置一些全局变量
   gbs: {
-    host: env === 'development' ? '/api' : 'http://' + window.location.host,
+    host: env === 'development' ? '/api' : window.location.protocol + '//' + window.location.host,
     inDev: env === 'development'
     // host: 'http://' + window.location.host // 打包的前缀
     // host: 'http://localhost:9999/leaderview'

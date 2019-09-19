@@ -274,7 +274,7 @@ export default {
   },
   mounted: function () {
     this.search()
-    var _url = 'http://' + window.location.host + '/index'
+    var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
   },
   beforeDestroy: function () {
