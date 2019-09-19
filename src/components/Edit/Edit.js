@@ -791,8 +791,7 @@ export default {
     },
     // 组合内的元件选中
     childSelect (item, childId, index) {
-      console.log('双击选中内部元件')
-      console.log(index)
+      console.log('双击选中内部元件: ' + index)
       this.selectedItem = item
       if (item.chartType === 'progress') {
         this.progressObj.height = item.proHeight
@@ -804,6 +803,57 @@ export default {
       this.parentId = index // 父级元件的序号
       this.chooseCompIndexs = []
       this.childResize = true
+      if (this.selectedItem.chartType === 'v-scatter') {
+        this.alertMapData = []
+        if (this.selectedItem.mapLevel === 'country') {
+          this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+          this.selectedPositn = _.map(this.alertMapData, 'name')
+        }
+        // this.oldCheckId = item.id
+        if (this.selectedItem.mapLevel === 'country') {
+          this.areaArr = this.provinceArr
+        } else if (this.selectedItem.mapLevel === 'province') {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.areaArr = data
+            this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+            this.selectedPositn = _.map(this.alertMapData, 'name')
+          })
+        } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.cityArr = data
+          })
+          this.getMapData(this.selectedItem.cityCode).then((data) => {
+            this.areaArr = data
+            this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+            this.selectedPositn = _.map(this.alertMapData, 'name')
+          })
+        }
+      }
+      if (this.selectedItem.chartType === 'v-map') {
+        this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
+        this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
+        // 地图元件重新加载右边的区域数据
+        // this.oldCheckId = item.id
+        if (this.selectedItem.mapLevel === 'country') {
+          this.areaArr = this.provinceArr
+          this.$nextTick(() => {
+            this.chartDataToMap()
+          })
+        } else if (this.selectedItem.mapLevel === 'province') {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.areaArr = data
+            this.chartDataToMap()
+          })
+        } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.cityArr = data
+          })
+          this.getMapData(this.selectedItem.cityCode).then((data) => {
+            this.areaArr = data
+            this.chartDataToMap()
+          })
+        }
+      }
     },
     updateMinXitem: function () {
       var _this = this
