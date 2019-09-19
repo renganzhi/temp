@@ -569,7 +569,7 @@
                                         <label>数据来源</label>
                                         <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
                                             <option value="static">静态数据</option>
-                                            <option v-show="selectedItem.chartType!=='v-map'" value="system">系统数据</option>
+                                            <option v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'" value="system">系统数据</option>
                                         </select>
                                     </div>
                                     <div v-show="selectedItem.ctDataSource == 'system'">
@@ -589,13 +589,13 @@
                                         </div>
                                        <!-- <button @click="getUrlData">请求数据</button>-->
                                     </div>
-                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map'">
+                                    <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter'">
                                         <div ref="textarea" class="confData" contenteditable="true">{{selectedItem.chartData}}</div>
                                     </div>
-                                    <div v-show="selectedItem.chartType === 'v-map'">
+                                    <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                                       <div class="form-group cols2">
                                         <label>展示范围</label>
-                                        <select v-model="selectedItem.mapLevel">
+                                        <select v-model="selectedItem.mapLevel" @change="chgMapLevel">
                                             <option value="country">国家级</option>
                                             <option value="province">省级</option>
                                             <option value="city">地市级</option>
@@ -605,20 +605,34 @@
                                         <label>省/直辖市</label>
                                         <Select2 v-model="selectedItem.provinceCode" :mapSelect="true" :obj="provinceArr" @input="chgProvince(selectedItem.provinceCode)"></Select2>
                                       </div>
-                                      <div v-show="selectedItem.mapLevel==='city'" class="form-group cols2">
+                                      <div v-if="selectedItem.mapLevel==='city'" class="form-group cols2">
                                         <label>市</label>
                                         <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
-                                        <!-- <select v-model="selectedItem.cityCode">
-                                            <option v-for="(item ,index) in cityArr" :key="index" :value="item.value" @change="chgCity(selectedItem.cityCode)">{{item.name}}</option>
-                                        </select> -->
                                       </div>
-                                      <div class="form-group cols2">
+                                      <div class="form-group cols2" v-if="selectedItem.chartType==='v-scatter'">
+                                        <label>数据设置</label>
+                                        <div class="setMapData">
+                                          <div class="area-item" v-for="(item, index) in alertMapData" :key="index">
+                                            <div>数据点{{index + 1}}</div>
+                                            <!-- <select v-model="alertMapData[index].position">
+                                                <option value="country">国家级</option>
+                                                <option value="province">省级</option>
+                                                <option value="city">地市级</option>
+                                            </select> -->
+                                            <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
+                                            <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
+                                            <i class="icon-n-deleteNew" @click="delAlertLevel(index)"></i>
+                                          </div>
+                                        </div>
+                                        <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button>
+                                      </div>
+                                      <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                         <label>数据设置</label>
                                         <div class="setMapData">
                                           <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span>{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                         </div>
                                       </div>
-                                      <div class="form-group cols2">
+                                      <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                         <!-- editPieces -->
                                         <label>数据量级</label>
                                         <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
@@ -929,6 +943,9 @@ export default EditJs
     padding-left: 12px;
     input{
       height: 22px !important;
+    }
+    select, .select2 {
+      width: 110px !important;
     }
   }
 }

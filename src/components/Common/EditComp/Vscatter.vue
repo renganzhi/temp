@@ -1,13 +1,13 @@
 <template>
-  <!-- :init-options="initOption" -->
-  <ve-map :data="dealChartData"
-          :width="comWidth"
-          :height="comHeight"
-          :settings="settings"
-          :extend="extend"
-          :id="'map_' + keyId"
-          :key="keyId"
-          :judge-width="true">
+  <component :is="'ve-map'"
+             :width="comWidth"
+             :height="comHeight"
+             :settings="settings"
+             :data="dealChartData"
+             :extend="extend"
+             :id="'map_' + keyId"
+             :key="keyId"
+             :judge-width="true">
     <!-- <div class="v-charts-data-empty"
          v-if="empty"
          style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
@@ -16,12 +16,13 @@
         <p>抱歉，没有数据可供展示...</p>
       </div>
     </div> -->
-  </ve-map>
+  </component>
 </template>
 <script>
 import { gbs } from '@/config/settings'
+import { mapGetters } from 'vuex'
 export default {
-  name: 'vmap',
+  name: 'vscatter',
   props: ['item'],
   data () {
     var code = 100000 // 中国
@@ -30,6 +31,7 @@ export default {
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
     }
+    // var code = 510000
     var _static = gbs.inDev ? 'static' : 'leaderview-static'
     this.settings = {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
@@ -40,17 +42,6 @@ export default {
       keyId: new Date().getTime() + Math.random() * 10000,
       initOption: { renderer: 'svg' },
       mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
-      // settings: {
-      //   // yAxisType: [0],
-      //   // positionJsonLink: 'https://unpkg.com/v-charts-custom-maps@0.2.1/hk-geo.json',
-      //   positionJsonLink: './../../../../static/libs/map/100000.json',
-      //   position: '四川' // 设置为非china才不显示南海群岛
-      //   // dimension: '位置',
-      //   // metrics: ['资源', '告警'],
-      //   // dataType: {
-      //   //   '资源': 'KMB'
-      //   // }
-      // },
       extend: {
         silent: true, // 不响应和触发鼠标事件
         title: {
@@ -68,25 +59,26 @@ export default {
         },
         visualMap: {
           type: 'piecewise', // 分段显示值
+          // type: 'continuous', // 连续显示值
+          // min: 0, // 值域最小值，必须参数
+          // max: 500, // 值域最大值，必须参数
           realtime: false,
-          calculable: true,
+          calculable: true, // 是否启用值域漫游
           left: this.item.visualPosition === 'left' ? 0 : 'auto',
           right: this.item.visualPosition === 'right' ? 0 : 'auto', // 图例靠右
           inRange: {
-            // color: ['pink', 'yellow', '#dd7e6b'] // 按照值的范围给的不同颜色
-            color: this.item.ctColors.slice(0, this.item.piecesData.length)
+            color: ['#ff9900', '#00ffff', '#ffffff'] // 按照值的范围给的不同颜色
+            // color: this.item.ctColors.slice(0, this.item.piecesData.length)
           },
           // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
-          // splitNumber: 3, // 几种颜色值及取值范围
-          pieces: this.formatPieces(this.item.piecesData), // 默认取data中最后一个维度
-          // pieces: [
-          //   // { min: 1000, label: '自定义', color: 'orange' },
-          //   { min: 100, max: 499 },
-          //   { max: 99 }
-          // ],
+          pieces: [
+            { value: 1, color: '#ff9900' },
+            { value: 2, color: '#00ffff' },
+            { value: 3, color: '#ffffff' }
+          ],
           color: ['#E0022B', '#E09107', '#A3E00B'],
-          // itemSymbol: 'none',
-          show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
+          show: false,
+          // show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
           hoverLink: true,
           showLabel: true,
           textStyle: {
@@ -99,46 +91,116 @@ export default {
         legend: {
           show: false
         },
-        series: {
-          type: 'map',
-          showLegendSymbol: false, // 不展示，所以以下配置无用，暂且留着万一需求有变
-          // roam: true, // 允许鼠标缩放地图
-          // selectedMode: 'single',
-          // 图形上的文本标签
+        geo: { // 地图配置
+          silent: true, // 不响应和触发鼠标事件
+          show: true,
+          map: code === 100000 ? 'china' : 'map_' + code,
           label: {
             normal: {
-              show: false, // 省份文字最开始不显示，选中之后再显示 // 测试地图是否准确
-              textStyle: {
-                // color: '#231816' // 默认的字体颜色! auto
-              }
+              show: false
+            },
+            emphasis: {
+              show: false
             }
           },
+          roam: false,
           itemStyle: {
             normal: {
-              // color: 'red', // 展示指标及圆点的颜色
-              areaColor: '#294671', // 地图区域的颜色!
-              borderColor: '#f0f0f0' // 区域分割线颜色!
+              areaColor: '#626262',
+              borderColor: '#434343'
             }
+            // emphasis: {
+            //   areaColor: '#2B91B7'
+            // }
+          }
+        },
+        series: {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          geoIndex: 0,
+          data: this.item.scatterPoint,
+          // data: [
+          //   { name: '成都', value: [104.06, 30.67, 10] },
+          //   { name: '自贡', value: [104.773447, 29.352765, 200] },
+          //   { name: '成华区', value: [104.153985625, 30.740483625, 100] },
+          //   { name: '双流县', value: [104.042503691406, 30.269048078125, 10] },
+          //   { name: '都江堰市1', value: [103.695362578125, 31.3499343085938, 20] },
+          //   { name: '都江堰市2', value: [103.71744265625, 31.2742067695313, 110] }
+          // ],
+          rippleEffect: { // 涟漪特效
+            period: 4, // 动画时间，值越小速度越快
+            brushType: 'stroke', // 波纹绘制方式 stroke, fill
+            scale: 4 // 波纹圆环最大限制，值越大波纹越大
           },
-          // 选中之后的状态
-          emphasis: {
-            label: {
-              show: false, // 选中区域的文字展示
-              textStyle: {
-                color: '#000' // 选中之后的字体颜色!
-              }
+          // showEffectOn: 'emphasis',
+          // rippleEffect: {
+          //   brushType: 'stroke'
+          // },
+          // hoverAnimation: true,
+          symbolSize: 6,
+          // 鼠标移上显示城市名
+          label: {
+            normal: {
+              formatter: '{b}',
+              position: 'right',
+              color: '#fff',
+              show: true // false
             },
-            itemStyle: {
-              areaColor: '#0573bf', // 选中之后的颜色值
-              shadowColor: 'rgba(0, 0, 0, 0.5)',
-              shadowBlur: 0
+            emphasis: {
+              show: true
             }
           }
         }
+        // series: {
+        //   type: 'map',
+        //   showLegendSymbol: false, // 不展示，所以以下配置无用，暂且留着万一需求有变
+        //   // roam: true, // 允许鼠标缩放地图
+        //   // selectedMode: 'single',
+        //   // 图形上的文本标签
+        //   label: {
+        //     normal: {
+        //       show: false, // 省份文字最开始不显示，选中之后再显示 // 测试地图是否准确
+        //       textStyle: {
+        //         // color: '#231816' // 默认的字体颜色! auto
+        //       }
+        //     }
+        //   },
+        //   itemStyle: {
+        //     normal: {
+        //       // color: 'red', // 展示指标及圆点的颜色
+        //       areaColor: '#294671', // 地图区域的颜色!
+        //       borderColor: '#f0f0f0' // 区域分割线颜色!
+        //     }
+        //   },
+        //   // 选中之后的状态
+        //   emphasis: {
+        //     label: {
+        //       show: false, // 选中区域的文字展示
+        //       textStyle: {
+        //         color: '#000' // 选中之后的字体颜色!
+        //       }
+        //     },
+        //     itemStyle: {
+        //       areaColor: '#0573bf', // 选中之后的颜色值
+        //       shadowColor: 'rgba(0, 0, 0, 0.5)',
+        //       shadowBlur: 0
+        //     }
+        //   }
+        // }
       }
     }
   },
   computed: {
+    ...mapGetters([
+      'areaData'
+    ]),
+    geoCoordMap: function () {
+      var geoData = {}
+      this.areaData.forEach((item) => {
+        geoData[item.name] = item.geoCoord
+      })
+      return geoData
+    },
     mapCode: function () {
       var code = 100000 // 中国
       if (this.item.mapLevel === 'province') {
@@ -183,17 +245,20 @@ export default {
       this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
     },
     'item.mapLevel': function (newV, oldV) {
-      console.log('v-map mapLevel:' + oldV + ' to ' + newV)
+      console.log('v-scatter mapLevel:' + oldV + ' to ' + newV)
       this.$nextTick(() => {
         if (newV === 'city') {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
           this.settings.position = 'map_' + this.item.cityCode
+          this.extend.geo.map = 'map_' + this.item.cityCode
         } else if (newV === 'province') {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
           this.settings.position = 'map_' + this.item.provinceCode
+          this.extend.geo.map = 'map_' + this.item.provinceCode
         } else {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
+          this.extend.geo.map = 'china'
         }
         this.keyId = new Date().getTime() + Math.random() * 10000
       })
@@ -201,18 +266,20 @@ export default {
     'item.provinceCode': function (newV) {
       console.log(newV)
       if (this.item.mapLevel === 'province') {
-        console.log('v-map procode:' + newV)
+        console.log('v-scatter procode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
+        this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
     },
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
-        console.log('v-map cityCode:' + oldV + ' to ' + newV)
+        console.log('v-scatter cityCode:' + oldV + ' to ' + newV)
         console.log('citycode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
+        this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
     },
@@ -220,31 +287,57 @@ export default {
       this.extend.title.text = newV
     },
     'item.width': function (newV, oldValue) {
+
     },
     'item.ctColors': function (newV) {
       var len = this.extend.visualMap.pieces.length
       this.extend.visualMap.inRange.color = newV.slice(0, len).reverse()
     },
-    'item.chartData': function (newV) {
-      // if (newV.rows && newV.rows.length > 0) {
-      //   this.empty = false
-      // } else {
-      //   this.empty = true
-      // }
+    'item.chartData': function (newV, oldV) {
+      if (!_.isEqual(newV, oldV)) {
+        console.log('不等')
+        this.extend.series.data = this.formatData(newV)
+        this.item.scatterPoint = this.extend.series.data
+        console.log('scatter chartData 改变: ')
+        console.log('--------item.chartData old----')
+        console.log(oldV)
+        console.log('--------item.chartData new----')
+        console.log(newV)
+      }
     }
-
   },
   beforeMount: function () {
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
-      this.empty = true
-    }
+
   },
   mounted: function () {
+    // setTimeout(() => {
+    //   var code = 100000
+    //   var _static = gbs.inDev ? 'static' : 'leaderview-static'
+    //   this.settings = {
+    //     positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
+    //     position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
+    //   }
+    //   this.extend.geo.map = 'china'
+    // }, 5000)
   },
   methods: {
     formatPieces (piecesData) {
       piecesData[piecesData.length - 1].gte = piecesData[piecesData.length - 1].min
       return piecesData
+    },
+    formatData (newV) {
+      var mapData = []
+      newV.forEach((item) => {
+        let _value = this.geoCoordMap[item.name].concat(item.value)
+        let obj = { name: item.name, value: _value }
+        mapData.push(obj)
+      })
+      return mapData
+      // if (this.geoCoordMap && this.geoCoordMap.length > 0) {
+
+      // } else {
+      //   return false
+      // }
     }
   },
   beforeDestroy: function () {

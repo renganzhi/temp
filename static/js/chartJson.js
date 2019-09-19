@@ -159,21 +159,14 @@ var morenData = {
     rows: []
     // rows: [
     //   { '位置': '四川', '资源': 1, '告警': 1 },
-    //   { '位置': '吉林', '资源': 10, '告警': 10 },
-    //   { '位置': '北京', '资源': 100, '告警': 100 },
-    //   { '位置': '广东', '资源': 500, '告警': 500 },
-    //   { '位置': '上海', '资源': 1000, '告警': 1000 },
-    //   { '位置': '浙江', '资源': 10000, '告警': 10000 }
+    //   { '位置': '北京', '资源': 100, '告警': 100 }
+
     // ]
-    // rows: [
-    //   { '位置': '成都市', '告警': 1 },
-    //   { '位置': '眉山市', '告警': 10 },
-    //   { '位置': '南充市', '告警': 100 },
-    //   { '位置': '绵阳市', '告警': 500 },
-    //   { '位置': '阿坝藏族羌族自治州', '告警': 5000 },
-    //   { '位置': '达州市', '告警': 10000 }
-    // ]
-  }
+  },
+  mapData: [
+    // { name: '成都', value: [104.06, 30.67, 10] },
+    // { name: '自贡', value: [104.773447, 29.352765, 200] }
+  ]
 }
 var compsArr = [{
   text: '饼图',
@@ -403,7 +396,6 @@ var compsArr = [{
   width: 500,
   height: 300,
   mapLevel: 'country',
-  mapName: '中国',
   countryCode: 100000,
   provinceCode: '',
   cityCode: '',
@@ -414,6 +406,21 @@ var compsArr = [{
     { min: 101 }
   ],
   chartData: morenData.map
+},
+{
+  text: '地图实时图',
+  imgClass: 'icon-n-radar',
+  chartType: 'v-scatter', // 散点图
+  width: 500,
+  height: 300,
+  mapLevel: 'country',
+  countryCode: 100000,
+  provinceCode: '',
+  cityCode: '',
+  visualPosition: 'left',
+  scatterPoint: [], // 带有地理位置的散点数据
+  chartData: []
+  // chartData: morenData.mapData
 }
   // {
   //   text: '地图',

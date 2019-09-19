@@ -45,25 +45,13 @@
 </template>
 <script>
 import DragResize from './EditComp/DragResize' // drag拖拽组件
-import Vtextarea from './EditComp/Vtextarea' // 文本
-import Vprogress from './EditComp/Vprogress' // 进度条
-import Vimg from './EditComp/Vimg'
-import Doubler from './EditComp/Doubler' // 数字翻牌器
-import Border from './EditComp/Border' // 边框
-import Vchart from './EditComp/Vchart'
-import Vtable from './EditComp/Vtable' // 表格
-import Topo from './EditComp/Topo' // 拓扑
-import Marquee from './EditComp/Marquee' // 跑马灯
-import Vtime from './EditComp/Vtime' // 时间器
-import Vnumber from './EditComp/Vnumber' // 指标展示
-
-// 测试组内编辑
+// 组内编辑
 import InsideDrag from './InsideDrag'
 
 export default {
   name: 'compose',
   props: ['list', 'index', 'editable'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, InsideDrag, Vnumber },
+  components: { DragResize, InsideDrag },
   data () {
     return {
       chooseChild: false,

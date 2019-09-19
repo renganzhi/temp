@@ -41,8 +41,8 @@
            :item="item"></Vtime>
     <Vnumber v-else-if="item.chartType=='number'"
              :item="item"></Vnumber>
-    <Map v-else-if="item.chartType=='map'"
-         :item="item"></Map>
+    <Vscatter v-else-if="item.chartType=='v-scatter'"
+              :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
     <Vchart v-else
@@ -62,13 +62,13 @@ import Topo from './EditComp/Topo' // 拓扑
 import Marquee from './EditComp/Marquee' // 跑马灯
 import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
-import Map from './EditComp/Map' // 地图
 import Vmap from './EditComp/Vmap' // 地图
+import Vscatter from './EditComp/Vscatter' // 散点图
 
 export default {
   name: 'dragBox',
   props: ['item', 'editable', 'index'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Map, Vmap },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
   data () {
     return {
 

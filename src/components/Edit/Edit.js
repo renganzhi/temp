@@ -18,14 +18,31 @@ export default {
   props: [],
   data: function () {
     return {
+      selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
+      alertLevels: [
+        { name: '提示', value: 1 },
+        { name: '通知', value: 2 },
+        { name: '次要', value: 3 },
+        { name: '警告', value: 4 },
+        { name: '普通', value: 5 },
+        { name: '一般', value: 6 }
+      ],
+      // 实时地图的数据
+      // alertMapData: [
+      //   { position: '四川', value: 3 }
+      // ],
+      alertMapData: [],
+      selectedPositn: [],
+      geoCoordMap: {}, // 各地理位置对应的坐标
       allowOverflow: 20, // 允许溢出的宽高
       childResize: false, // 当前选中的是不是组合内部的元件
       parentId: 0, // 当前选中组合内部的元件的父级元件的序号
       provinceArr: [], // 34个省的数据
       cityArr: [], // 选中省的所有市数据
       areaArr: [], // 选中市的所有区域数据
-      editPieces: [],
+      editPieces: [], // 区域分布图量级
       editPiecesCopy: [],
+      selectMapData: {}, // 匹配区域分布图输入框的数据
       settingData: baseData,
       pageId: 0,
       value2: 0.5,
@@ -134,7 +151,6 @@ export default {
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
-      tempAreaData: {},
       widthVali: {
         isShowError: false,
         errorMsg: ''
@@ -157,7 +173,6 @@ export default {
       },
       proHeightErr: false,
       radiusErr: false,
-      selectMapData: {},
       selectArea: {
         choose: false, // 是否处于框选状态
         left: 0, // 多选情况下输入框改变前的x位移
@@ -211,7 +226,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'changeHomeData'
+      'changeHomeData',
+      'changeAreaData'
     ]),
     getMapData (chinaId) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
@@ -234,7 +250,7 @@ export default {
       }
     },
     mapDataToChart () {
-      // 用户输入的数据转化为chartData
+      // 用户输入的数据转化为区域分布图所需数据
       var tempData = []
       for (var k in this.selectMapData) {
         let obj = { '位置': k, '告警': this.selectMapData[k] }
@@ -243,31 +259,48 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     chartDataToMap () {
-      console.log('chartData转化为用户输入的数据')
-      // chartData转化为input输入数据
-      this.selectMapData = {}
-      var tempData = this.selectedItem.chartData.rows
-      console.log(tempData)
-      tempData.forEach((item) => {
-        this.selectMapData[item['位置']] = item['告警']
+      if (this.selectedItem.chartType === 'v-map') {
+        // chartData转化为input输入数据
+        this.selectMapData = {}
+        var tempData = this.selectedItem.chartData.rows
+        console.log(tempData)
+        tempData.forEach((item) => {
+          this.selectMapData[item['位置']] = item['告警']
+        })
+      }
+    },
+    selectToPoint () {
+      // 数据点转化为散点数据
+      this.geoCoordMap = {}
+      this.areaArr.forEach((item) => {
+        this.geoCoordMap[item.name] = item.geoCoord
       })
     },
+    clearAlertMap () {
+      console.log('初始化清空数据点')
+      this.alertMapData = []
+      this.selectedPositn = []
+      // this.$set('selectedItem', 'chartData', [])
+      this.selectedItem.chartData = []
+    },
     initLevelData (arr) {
+      // 初始化数据
+      // 区域分布图给前三项赋默认值
       // var obj = JSON.stringify(this.selectMapData)
       // if (obj === '{}') return
       // if (this.selectedItem.chartData.rows.length > 0) return
       // if (this.oldCheckId !== this.selectedItem.id) return
-      return null
-      console.log('初始化默认数据')
-      this.selectMapData = {}
-      var tempData = []
-      let len = arr.length < 3 ? arr.length : 3
-      for (let i = 0; i < len; i++) {
-        this.selectMapData[arr[i].name] = i * 50 + 25
-        let chartObj = { '位置': arr[i].name, '告警': i * 50 + 25 }
-        tempData.push(chartObj)
-      }
-      this.selectedItem.chartData.rows = tempData
+      // return false
+      /* console.log('初始化默认数据')
+       this.selectMapData = {}
+       var tempData = []
+       let len = arr.length < 3 ? arr.length : 3
+       for (let i = 0; i < len; i++) {
+         this.selectMapData[arr[i].name] = i * 50 + 25
+         let chartObj = { '位置': arr[i].name, '告警': i * 50 + 25 }
+         tempData.push(chartObj)
+       }
+       this.selectedItem.chartData.rows = tempData */
     },
     changeMapData (chinaId, target) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
@@ -277,6 +310,7 @@ export default {
           this.selectedItem.provinceCode = this[target][0].value
         }
         if (target === 'cityArr') {
+          console.log('changeCity2:')
           this.selectedItem.cityCode = this[target][0].value
         }
         // if (this.selectedItem.mapLevel === 'country') {
@@ -287,6 +321,11 @@ export default {
         //   this.areaArr = this.cityArr
         // }
       })
+    },
+    // 改变展示范围
+    chgMapLevel () {
+      // 这里会先于watch mapLevel触发
+      this.selfMapLevel = true
     },
     chgMapGrad (index) {
       if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
@@ -350,10 +389,26 @@ export default {
       for (var i = 0; i < mapJson.features.length; i++) {
         mapData.push({
           value: mapJson.features[i].id,
-          name: mapJson.features[i].properties.name
+          name: mapJson.features[i].properties.name,
+          geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
         })
       }
       return mapData
+    },
+    // 删除实时图数据点
+    delAlertLevel (index) {
+      this.alertMapData.splice(index, 1)
+      this.selectedPositn.splice(index, 1)
+    },
+    // 地图实时图添加数据点
+    addAlertLevel () {
+      for (let i = 0, len = this.areaArr.length; i < len; i++) {
+        if (this.selectedPositn.indexOf(this.areaArr[i].name) === -1) {
+          this.selectedPositn.push(this.areaArr[i].name)
+          this.alertMapData.push({ name: this.areaArr[i].name, value: 1 })
+          break
+        }
+      }
     },
     // 切换地图的省
     chgProvince (id) {
@@ -372,6 +427,7 @@ export default {
         // this.changeMapData(id, 'cityArr')
         this.getMapData(id).then((data) => {
           this.cityArr = data
+          console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
             this.initLevelData(this.areaArr)
@@ -379,19 +435,33 @@ export default {
             this.selectedItem.cityCode = data[0].value
           }
         })
+        if (this.selectedItem.chartType === 'v-scatter') {
+          console.log('clear1:')
+          this.clearAlertMap()
+        }
       }
     },
     chgCity (id) {
       if (id) {
-        console.log('chgCity:' + id)
-        // this.changeMapData(id, 'areaArr')
+        console.log('changeCity:' + id)
         this.getMapData(id).then((data) => {
           this.areaArr = data
           this.initLevelData(this.areaArr)
         })
-      } else {
-        console.log('id为空，不处理')
       }
+      if (this.selectedItem.chartType === 'v-scatter') {
+        if (this.selfMapLevel && id) {
+          console.log('clear2:')
+          this.clearAlertMap()
+        }
+      }
+    },
+    chgAreaName (name, index) {
+      console.log('chgAreaName:' + name)
+      if (name) {
+        this.selectedPositn[index] = name
+      }
+      // 数组需要更换
     },
     changeProHeight () {
       // 改变进度条元件的高度
@@ -506,7 +576,6 @@ export default {
         this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
         if (this.selectedItem.chartType === 'v-map') {
           this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
-          console.log(this.selectedItem.ctColors)
         } else {
           this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
         }
@@ -565,6 +634,7 @@ export default {
       // this.onCtrl = false
     },
     selected: function (item, ev, type, i) {
+      this.selfMapLevel = false
       if (this.childResize && ev === 'context') {
         // 内部元件的右键
         return
@@ -630,7 +700,48 @@ export default {
           this.minXItem.maxY = item.y // 最远元素的y
         }
       }
+      if (this.selectedItem.chartType === 'v-scatter') {
+        if (ev !== 'move' && this.oldCheckId !== item.id) {
+          this.$nextTick(() => {
+            console.log('触发selected：重新设置alertMapData')
+            console.log(this.selectedItem.chartData)
+            // this.alertMapData = JSON.parse(JSON.stringify(this.selectedItem.chartData))
+            this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+            console.log(this.alertMapData)
+            this.selectedPositn = _.map(this.alertMapData, 'name')
+            console.log(this.selectedPositn)
+          })
+        }
+        if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
+          this.oldCheckId = item.id
+          console.log('切换元件，重新计算地图~')
+          if (this.selectedItem.mapLevel === 'country') {
+            console.log('country')
+            this.areaArr = this.provinceArr
+            // this.$nextTick(() => {
+            //   this.chartDataToMap()
+            // })
+          } else if (this.selectedItem.mapLevel === 'province') {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.areaArr = data
+              console.log('province')
+              // this.chartDataToMap()
+            })
+          } else {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.cityArr = data
+            })
+            this.getMapData(this.selectedItem.cityCode).then((data) => {
+              this.areaArr = data
+              console.log('city')
+              // this.chartDataToMap()
+            })
+          }
+        }
+        // this.selectToPoint() // 这里应该不需要
+      }
       if (this.selectedItem.chartType === 'v-map') {
+        // 这里是不是少了点什么
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
           this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
           this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
@@ -1307,6 +1418,11 @@ export default {
       } else if (this.selectedItem.chartType === 'v-map') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
+      } else if (this.selectedItem.chartType === 'v-scatter') {
+        this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
+        console.log(this.selectedItem.chartData)
+        // 更新散点图
+        // this.mapDataToChart()
       } else {
         var textData = this.$refs.textarea.innerText
         var reg = /^\{[\s\S]*\}$/
@@ -1912,12 +2028,21 @@ export default {
   },
   watch: {
     'selectedItem.mapLevel': function (newValue, oldV) {
+      if (!this.selfMapLevel) {
+        console.log('切换元件导致的mapLevel更改')
+        // 不同地图元件的改变不触发watch
+        return
+      }
       if (oldV) {
         this.selectMapData = {}
       }
+      console.log('----------------watch----------')
       var _this = this
       if (newValue === 'country') {
         this.areaArr = this.provinceArr
+        if (this.selectedItem.chartType === 'v-scatter') {
+          this.clearAlertMap()
+        }
         this.initLevelData(this.areaArr)
       } else if (newValue === 'city') {
         console.log('mapLevel改变为city')
@@ -1941,6 +2066,7 @@ export default {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data
             if (!_this.selectedItem.cityCode) {
+              console.log('changeCity3:')
               _this.selectedItem.cityCode = data[0].value
             }
           })
@@ -1958,8 +2084,15 @@ export default {
             _this.areaArr = _this.cityArr
             _this.initLevelData(_this.areaArr)
           }
+          console.log('省级')
+          if (this.selectedItem.chartType === 'v-scatter') {
+            this.clearAlertMap()
+          }
         }
       }
+    },
+    areaArr: function (newObj) {
+      this.changeAreaData(newObj)
     },
     'testObj.width': function (newValue, oldValue) {
       this.testObjChange('width', newValue)
