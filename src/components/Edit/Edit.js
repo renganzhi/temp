@@ -229,6 +229,24 @@ export default {
       'changeHomeData',
       'changeAreaData'
     ]),
+    scrollLeft (x) {
+      x = x || 10
+      var _scrollLeft = $('.m-main').scrollLeft()
+      _scrollLeft += x
+      if (_scrollLeft < 0) {
+        _scrollLeft = 0
+      }
+      $('.m-main').scrollLeft(_scrollLeft)
+    },
+    scrollTop (y) {
+      y = y || 10
+      var _scrollTop = $('.m-main').scrollTop()
+      _scrollTop += y
+      if (_scrollTop < 0) {
+        _scrollTop = 0
+      }
+      $('.m-main').scrollTop(_scrollTop)
+    },
     getMapData (chinaId) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
       if (chinaId) {
@@ -506,9 +524,9 @@ export default {
     gerPageConf (id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
+        this.pageName = res.obj.name
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
-          this.pageName = res.obj.name
           let tempNum = this.chartNum
           for (let i = 0, len = tempNum.length; i < len; i++) {
             tempNum[i].zIndex > this.maxIndex
@@ -588,6 +606,7 @@ export default {
     },
     clickPaint (event) {
       if (!window.event.ctrlKey) {
+        // console.log(this.selectArea.choose)
         this.cancelSelected(event)
       }
       if ($('.tempDiv').length > 0) {
@@ -615,8 +634,8 @@ export default {
       this.chooseCompIndexs = []
       // console.log('取消所有选中')
       // 初始化多选时的x，y值
-      this.minXItem.x = 1920
-      this.minXItem.y = 1080
+      this.minXItem.x = 10000
+      this.minXItem.y = 10000
       this.minXItem.maxX = 0
       this.minXItem.maxY = 0
       this.childResize = false // 暂且保留
@@ -632,7 +651,7 @@ export default {
       if (ev !== 'context' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
-      if (window.event.ctrlKey && item.slted) {
+      if (window.event.ctrlKey && ev !== 'move' && item.slted) {
         // 取消选中
         item.slted = this.editable && false
         if (type === 'compose') {
@@ -702,7 +721,6 @@ export default {
           console.log('切换元件，重新计算地图~')
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
-
           } else if (this.selectedItem.mapLevel === 'province') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
               this.areaArr = data
@@ -839,6 +857,9 @@ export default {
       var _this = this
       var minIndex = _.minBy(this.chooseIndexs, function (i) { return _this.chartNum[i].x })
       var minCompIndex = _.minBy(this.chooseCompIndexs, function (i) { return _this.combinList[i].x })
+      if (minIndex === undefined && minCompIndex === undefined) {
+        return
+      }
       if (minCompIndex === undefined) {
         // this.minXItem = this.chartNum[minIndex]
         this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y)
@@ -1493,7 +1514,8 @@ export default {
       $('#screen').show()
       var cThis = this
       // cThis.selectedItem.slted = false
-      this.cancelSelected() // 取消所有的选中
+      this.clickPaint() // 取消所有的选中
+      this.selectedItem = {}
       var canvas2 = document.createElement('canvas')
       var _canvas = document.querySelector('.m-main .paint-bg')
       $('#chooseWrap').removeClass('gridBg')
@@ -1742,6 +1764,7 @@ export default {
           this.chooseCompIndexs.push(index)
         }
       })
+      this.updateMinXitem()
     },
     itemInChoose: function (left, right, top, bottom, item) {
       // 判断是否在框选区域内
@@ -1786,15 +1809,20 @@ export default {
         // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
       }
       stateBar.onmouseup = function () {
-        // div.parentNode.removeChild(div)
+        var tempDiv = document.getElementsByClassName('tempDiv')[0]
+        if (tempDiv) {
+          _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+        }
         div.addEventListener('contextmenu', function (ee) {
-          _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
-          $(_this.$refs.contextMenu)
-            .css({
-              left: ee.pageX,
-              top: ee.pageY
-            })
-            .toggle(true)
+          // _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
+          if (_this.chooseCompIndexs.length + _this.chooseIndexs.length > 0) {
+            $(_this.$refs.contextMenu)
+              .css({
+                left: ee.pageX,
+                top: ee.pageY
+              })
+              .toggle(true)
+          }
           ee.preventDefault()
         })
         stateBar.onmousemove = null
@@ -2036,10 +2064,33 @@ export default {
     // 这里来处理快捷键
     handleKeyDown (e) {
       var key = window.event.keyCode ? window.event.keyCode : window.event.which
-      // delete： 46
+      /***
+        delete：46
+        上键：38
+        下键：40
+        左键：37
+        右键：39
+        crtl: 17
+      */
       if (key === 46) {
         this.del()
         e.preventDefault() // 取消浏览器原有的操作
+      }
+      if (key === 38) {
+        this.scrollTop(-10) // 画布上移
+        e.preventDefault()
+      }
+      if (key === 40) {
+        this.scrollTop(10) // 画布下移
+        e.preventDefault()
+      }
+      if (key === 37) {
+        this.scrollLeft(-10) // 画布左移
+        e.preventDefault()
+      }
+      if (key === 39) {
+        this.scrollLeft(10) // 画布右移
+        e.preventDefault()
       }
     },
     handleKeyUp (e) {
@@ -2047,6 +2098,27 @@ export default {
       if (key === 13) {
         // flag = true
         e.preventDefault()
+      }
+    },
+    onMouseScroll (e) {
+      if (window.event.ctrlKey) {
+        e.preventDefault()
+        var wheel = e.originalEvent.wheelDelta || -e.originalEvent.detail
+        var delta = Math.max(-1, Math.min(1, wheel))
+        if (delta < 0) { // 向下滚动
+          console.log('向下滚动')
+        } else { // 向上滚动
+          console.log('向上滚动')
+        }
+      }
+    },
+    scrollFunc (e) {
+      e = e || window.event
+      e.preventDefault()
+      if (e.wheelDelta && event.ctrlKey) { // IE/Opera/Chrome
+        event.returnValue = false
+      } else if (e.detail) { // Firefox
+        event.returnValue = false
       }
     }
   },
@@ -2153,6 +2225,12 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
+    // 添加事件监听
+    // if (document.addEventListener) {
+    //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)
+    // } // W3C
+    // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
+    // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
   },
   beforeDestroy: function () {
     $('#header').show()

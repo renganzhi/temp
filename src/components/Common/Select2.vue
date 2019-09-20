@@ -37,7 +37,6 @@ export default {
     }
   },
   mounted: function () {
-    console.log('select2 value: ' + this.value)
     // console.log(this.disData)
     var vm = this
     this.init()
@@ -87,23 +86,21 @@ export default {
         $(this.$el).val(value).trigger('change.select2')
       }
       if (this.mapSelect && this.sameName && !value) {
-        console.log(oldV, value)
         if (oldV) {
           // this.value = oldV
           // $(this.$el).val(oldV).trigger('change.select2')
         }
       }
     },
-    disData: function (oldV, newV) {
-      // if (!_.isEqual(newV, oldV)) {
-      //   // console.log(newV)
-      // }
-    },
+    // disData: function (oldV, newV) {
+    //   // if (!_.isEqual(newV, oldV)) {
+    //   //   // console.log(newV)
+    //   // }
+    // },
     'obj': function (newV) {
       if (this.mapSelect) {
         var _this = this
         this.$nextTick(function () {
-          console.log('select2 obj watch')
           _this.init(_this.value ? _this.value : _this.sameName ? newV[0].name : newV[0].value)
           _this = null
         })

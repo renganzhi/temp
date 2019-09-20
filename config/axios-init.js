@@ -26,6 +26,9 @@ axios.interceptors.response.use(
   res => {
     // loading结束
     $('#screen').hide()
+    if (res.status == 776) {
+      window.location.href = window.location.origin + '/loginPage'
+    }
     return Promise.resolve(res.data)
   },
   error => {
