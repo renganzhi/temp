@@ -718,7 +718,7 @@ export default {
         }
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
           this.oldCheckId = item.id
-          console.log('切换元件，重新计算地图~')
+          // console.log('切换元件，重新计算地图~')
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
           } else if (this.selectedItem.mapLevel === 'province') {

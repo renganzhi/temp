@@ -310,15 +310,16 @@ export default {
     /* 缩放setScale */
     setScale: function () {
       // var $el = document.getElementById('home-html')
-      // var $el = document.getElementById('home-html')
       var $el = $('#home-html')
-      var _app = $('#app')
-      // var pageContainer = $('#page_container')
-      // var h = pageContainer.height() // 打包的时候获取不到高度使用这个
       var w = $el.width()
       var h = $el.height()
-      console.log('width:' + w + '  height: ' + h)
-      console.log('app width:' + _app.width() + '  app height: ' + _app.height())
+      if (h < 100) {
+        var pageContainer = $('#page_container')
+        h = pageContainer.height() // 打包的时候获取不到高度使用这个
+      }
+      // var _app = $('#app')
+      // console.log('width:' + w + '  height: ' + h)
+      // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
       var scaleX = w / 1920 // 这里需要改成设置的画布的大小
       var scaleY = h / 1080
       var scale = Math.min(scaleX, scaleY)
