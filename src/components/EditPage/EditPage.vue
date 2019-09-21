@@ -289,7 +289,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$test: rgba(13, 17, 31, 0.8);
 .page-item {
   position: relative;
   height: 206px;
@@ -381,5 +382,13 @@ export default {
 .wrap-content,
 .wrap-body {
   height: 100%;
+}
+body[data-theme="blackWhite"] {
+  .page-item .operates {
+    background-color: #fff;
+  }
+  .page-item {
+    box-shadow: 1px 1px 4px 4px #888;
+  }
 }
 </style>

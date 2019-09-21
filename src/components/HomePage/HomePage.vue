@@ -161,7 +161,9 @@ export default {
       // this.refreshType = res.refreshType;
       if (this.pageSize) {
         this.timeFn()
-        this.setScale()
+        this.$nextTick(() => {
+          this.setScale()
+        })
       }
     },
     editPage: function () { // 编辑主页
@@ -304,7 +306,9 @@ export default {
           })
         }
       })
-      ct.setScale()
+      this.$nextTick(() => {
+        ct.setScale()
+      })
     },
 
     /* 缩放setScale */
@@ -347,7 +351,9 @@ export default {
     this.$nextTick(() => {
       this.getPageData()
       $(window).off('resize.homescale').on('resize.homescale', () => {
-        this.setScale()
+        this.$nextTick(() => {
+          this.setScale()
+        })
       })
     })
     if (!gbs.inDev) {
@@ -374,7 +380,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 /*   drag-class */
 .vdr {
   position: absolute;
@@ -462,5 +468,7 @@ export default {
 .v-charts-data-empty {
   background-color: rgba(28, 36, 60, 0.71) !important;
   color: inherit !important;
+}
+body[data-theme="blackWhite"] {
 }
 </style>

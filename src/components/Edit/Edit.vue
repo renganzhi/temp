@@ -671,7 +671,8 @@
 import EditJs from './Edit.js'
 export default EditJs
 </script>
-<style scoped lang="scss">
+<style lang="scss">
+// @import url('./Edit.scss');
 #mainEdit-edit {
   /* position: fixed; */
   position: absolute;
@@ -826,6 +827,7 @@ export default EditJs
 
 #mainEdit-edit .paintWrap {
   display: none;
+  overflow-x: hidden;
 }
 #mainEdit-edit .chooseMore {
   display: block;
@@ -1212,5 +1214,21 @@ export default EditJs
 /* .m-main::-webkit-scrollbar-track, */
 .m-main::-webkit-scrollbar-thumb {
   border-radius: 6px !important;
+}
+/* slider */
+.el-slider__runway {
+    height: 2px !important;
+    border-radius: 2px !important;
+    margin: 10px 0 !important;
+}
+.el-slider__bar {
+    height: 2px !important;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    background-color: #7d8eb9 !important;
+}
+.el-slider__button {
+    border: 1px solid gray !important;
+    background-color: #7d8eb9 !important;
 }
 </style>

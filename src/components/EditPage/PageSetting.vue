@@ -52,7 +52,7 @@
               <table class="table table-hover"
                      style="table-layout: fixed;">
                 <thead>
-                  <tr :style="[trStyle,theadTrStyle]">
+                  <tr>
                     <th>所在页数</th>
                     <th>页面名称</th>
                     <th>是否可见</th>
@@ -61,8 +61,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr :style="trStyle"
-                      v-for="(tr, index) in tableData"
+                  <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
                     <td>{{tr.name}}</td>
@@ -84,8 +83,7 @@
               <table class="table table-hover"
                      style="table-layout: fixed;">
                 <tbody>
-                  <tr :style="trStyle"
-                      v-for="(tr, index) in tableData"
+                  <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
                     <td>{{tr.name}}</td>

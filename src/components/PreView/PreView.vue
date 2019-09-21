@@ -63,7 +63,9 @@ export default {
     // this.getTemps()
     if (this.showModal) {
       $('#mainPreview-modal').modal('show')
-      this.setScale()
+      this.$nextTick(() => {
+        this.setScale()
+      })
     }
     $('#mainPreview-modal').on('hide.bs.modal', function () {
       // 关闭模态框时触发
@@ -118,6 +120,9 @@ export default {
         this.axios.get('/leaderview/home/homePage/getById/' + this.viewId).then((res) => {
           if (res.success) {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
+            this.$nextTick(() => {
+              this.setScale()
+            })
           } else {
             // tooltip("", data.msg, "error")
             Notification({
@@ -130,6 +135,9 @@ export default {
       } else {
         this.pageList = JSON.parse(this.pageData) || []
         this.combinList = JSON.parse(this.composeData) || []
+        this.$nextTick(() => {
+          this.setScale()
+        })
       }
     }
   },
@@ -137,7 +145,7 @@ export default {
     showModal: function (newV) {
       this.getConf()
       if (newV) $('#mainPreview-modal').modal('show')
-      this.setScale()
+      // this.setScale()
     }
   },
   destoryed: function () {

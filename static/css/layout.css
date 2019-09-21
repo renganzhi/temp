@@ -670,7 +670,7 @@ body.page-sidebar-closed > .moniModal.modal {
 }
 
 /* slider */
-.el-slider__runway {
+/* .el-slider__runway {
     height: 2px !important;
     border-radius: 2px !important;
     margin: 10px 0 !important;
@@ -684,7 +684,7 @@ body.page-sidebar-closed > .moniModal.modal {
 .el-slider__button {
     border: 1px solid gray !important;
     background-color: #7d8eb9 !important;
-}
+} */
 @keyframes textMove {
     from {
         left: 100%;
