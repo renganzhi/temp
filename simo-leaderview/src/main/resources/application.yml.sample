@@ -1,0 +1,102 @@
+server:
+  port: 11100 
+  tomcat: 
+    uri-encoding: UTF-8
+logging:
+  level:
+    root: WARN
+    com:
+      uxsino: INFO
+security:
+  oauth2:
+    resource:
+      userInfoUri: BUGFIX
+
+banner: 
+  charset: UTF-8
+
+spring:
+#log mode ,in development enviroument set to 'dev' and set to 'prod' in production environment
+  profiles:
+    active: ${logmode}
+  application: 
+    name: leaderview 
+  redis: 
+    host: ${redishost}
+    port: ${redisport}
+    password: uxsino@2016
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true 
+      force: true
+  messages:
+    encoding: UTF-8
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: ${dburl}
+    username: ${dbusername}
+    password: ${dbpassword}
+    driverClassName: ${dbdriver}
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat
+    connectionProperties: 
+      druid: 
+        stat: 
+          mergeSql: true;
+          slowSqlMillis: 5000
+    useGlobalDataSourceStat: true
+  jpa: 
+    database: ${dbtype}
+    show-sql: false
+    generate-ddl: true   
+    hibernate: 
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy  
+    database-platform: ${dbdialect}
+    properties: 
+      hibernate: 
+        hbm2ddl: 
+          auto: update
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${servicecenterhost}:${servicecenterport}/eureka/
+  instance:
+    ip-address: 127.0.0.1
+    hostname: 127.0.0.1
+    prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
+simo: 
+  mq:
+    broker: 
+      url: ${activemqfailover}tcp://${activemqhost}:${activemqport}
+
+heartbeat:
+    send_interval: 20000
+
+
+service-mc: ${servicemc}
+service-useradmin: ${serviceuseradmin}
+service-workflow: ${serviceworkflow}
+service-alert: ${servicealert}
+service-monitoring: ${servicemonitoring}
+service-patrol: ${servicepatrol}
+service-report: ${servicereport}
+service-cmdb: ${servicecmdb}
+service-business: ${servicebusiness}
+service-knowledgebase: ${serviceknowledgebase}
+service-msg: ${servicemsg}
