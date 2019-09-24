@@ -328,9 +328,9 @@ var compsArr = [{
   imgClass: 'icon-n-doubler',
   chartType: 'doubler',
   fontSize: 36,
-  bgClr: '',
-  bdClr: '#0c527c',
-  clr: '#25aff8',
+  bgClr: '#222739',
+  bdClr: '', // #0c527c
+  clr: '#0088cc',
   width: 300,
   height: 90,
   ctLegendShow: 'true',

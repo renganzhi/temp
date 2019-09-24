@@ -19,7 +19,33 @@
                 <a class="fr simoLink icon-n-preview edit-opt" @click="preview">预览</a>
                 <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
                 <a class="fr icon-n-save simoLink edit-opt" @click="saveConf">保存</a>
+                <span class="fr">|</span>
+                <a class="fr simoLink icon-n-keyboard edit-opt" @mouseover="showKeybd = true" @mouseout="showKeybd = false">快捷键</a>
                 <h4 class="edit-title" @click.self="clickPaint($event)">{{pageName}}</h4>
+            </div>
+            <div class="edit-keyboard" v-show="showKeybd">
+              <span class="keybd-arrow"><i class="icon-n-arrowUp" style="font-size: 40px;"></i></span>
+              <div class="keybd-info">
+                <span class='fl'>缩放画布</span>
+                <div class="fr">
+                  <span class="keybd">Ctrl</span> + <span class="keybd">F2/F3</span>
+                </div>
+              </div>
+              <div class="keybd-info">
+                <span class='fl'>删除</span>
+                <div class="fr">
+                  <span class="keybd">Delete</span>
+                </div>
+              </div>
+              <div class="keybd-info">
+                <span class='fl'>元件移动</span>
+                <div class="fr">
+                  <span class="keybd"><i class="icon-n-arrowUp"></i></span>
+                  <span class="keybd"><i class="icon-n-arrowDown"></i></span>
+                  <span class="keybd"><i class="icon-n-arrowLeft"></i></span>
+                  <span class="keybd"><i class="icon-n-arrowRight"></i></span>
+                </div>
+              </div>
             </div>
             <div class="edit-body flex" @click="hideContext">
               <!--  <div class="m-contain full-height">-->
@@ -629,7 +655,7 @@
                                       <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                         <label>数据设置</label>
                                         <div class="setMapData">
-                                          <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span>{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
+                                          <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                         </div>
                                       </div>
                                       <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
@@ -673,6 +699,7 @@ export default EditJs
 </script>
 <style lang="scss">
 // @import url('./Edit.scss');
+$headHeight: 50px;
 #mainEdit-edit {
   /* position: fixed; */
   position: absolute;
@@ -687,28 +714,59 @@ export default EditJs
 }
 
 #mainEdit-edit .edit-header {
-  /* height: 50px; */
-  height: 38px;
+  height: $headHeight;
+  // height: 38px;
   border-bottom: 1px solid #383f54;
 }
-
+#mainEdit-edit .edit-keyboard {
+  position: fixed;
+  top: 48px;
+  right: 108px;
+  z-index: 120;
+  background: #222739;
+  width: 250px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+  padding: 10px 15px;
+  .keybd-arrow {
+    color: #222739;
+    position: absolute;
+    top: -25px;
+    left: 105px;
+  }
+  .keybd-info{
+    line-height: 40px;
+    clear: both;
+    zoom: 1;
+  }
+  .keybd {
+    border: solid 1px #3d445a;
+    padding: 2px 5px;
+  }
+}
+// .icon-n-keyboard:hover ~ .edit-keyboard {
+//   display: block;
+// }
+#mainEdit-edit .edit-header span,
 #mainEdit-edit .edit-header .simoLink {
-  line-height: 36px;
+  line-height: $headHeight;
   font-size: 14px;
-  margin-right: 15px;
+  margin-right: 18px;
+}
+#mainEdit-edit .edit-header span {
+  font-size: 12px;
 }
 
 #mainEdit-edit .edit-title {
-  line-height: 36px;
+  line-height: $headHeight;
   text-indent: 10px;
   font-size: 14px;
-  background: #1b2031;
+  // background: #1b2031;
 }
 
 #mainEdit-edit .edit-body {
   padding: 0;
   overflow: hidden;
-  height: calc(100% - 38px);
+  height: calc(100% - 50px);
 }
 
 .m-left {
@@ -778,6 +836,7 @@ export default EditJs
     transform-origin: top left;
     transform: scale(1);
     overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 12px;
 }
 .paint{
   width: 100%;
@@ -850,7 +909,7 @@ export default EditJs
 }
 .scaleBox{
   position: fixed;
-  top: -10px;
+  top: -5px;
   z-index: 999;
   width: 200px;
   left: 50%;
@@ -931,7 +990,7 @@ export default EditJs
 .setMapData {
   height: 180px;
   overflow: auto;
-  span{
+  .area-name{
     margin-right: 6px;
     display: inline-block;
     width: 110px;
@@ -1165,6 +1224,10 @@ export default EditJs
 }
 #mainEdit-edit .edit-opt:hover {
   color: #0088cc;
+}
+#mainEdit-edit .edit-opt:before {
+  margin-right: 3px;
+  font-size: 14px;
 }
 .chooseBgImg {
   width: 170px;

@@ -9,6 +9,7 @@
                 :nextNum="num"
                 :numWidth="numWidth"
                 :numHeight="numHeight"
+                :bgClr="bgdColor"
                 :style="numCardValue">
 
       </TurnOver>
@@ -47,13 +48,13 @@ export default {
     },
     numCardValue: function () {
       return {
-        padding: '6px 16px',
+        padding: '3px 8px',
         fontSize: this.item.fontSize + 'px',
         fontFamily: 'asn !important',
-        border: '1px solid ' + this.item.bdClr,
+        border: this.item.bdClr ? '1px solid ' + this.item.bdClr : '',
         borderRadius: '8px',
-        backgroundColor: this.item.bgClr,
-        marginRight: '2px',
+        // backgroundColor: this.item.bgClr,
+        marginRight: '6px',
         color: this.item.clr
       }
     },
@@ -70,6 +71,9 @@ export default {
         fontSize: '20px',
         backgroundColor: this.item.bgClr
       }
+    },
+    bgdColor: function () {
+      return this.item.bgClr
     }
   },
   watch: {

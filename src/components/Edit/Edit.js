@@ -18,6 +18,7 @@ export default {
   props: [],
   data: function () {
     return {
+      showKeybd: false,
       selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
       alertLevels: [
         { name: '提示', value: 1 },
@@ -93,16 +94,7 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
-      defMapColors: [
-        '#37a2da',
-        '#32c5e9',
-        '#67e0e3',
-        '#9fe6b8',
-        '#ffdb5c',
-        '#ff9f7f',
-        '#fb7293',
-        '#e062ae'
-      ],
+      defMapColors: ['#8fadcc', '#7aa3cc', '#6699cc', '#528fcc', '#3d85cc', '#297acc', '#1470cc', '#0066cc'],
       defalutColors: [
         '#37a2da',
         '#32c5e9',
@@ -230,22 +222,35 @@ export default {
       'changeAreaData'
     ]),
     scrollLeft (x) {
-      x = x || 10
+      if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+        this.minXItem.x += x
+        this.changeTarget('x')
+      } else {
+        this.testObj.x += x
+      }
+      /* x = x || 10
       var _scrollLeft = $('.m-main').scrollLeft()
       _scrollLeft += x
       if (_scrollLeft < 0) {
         _scrollLeft = 0
       }
-      $('.m-main').scrollLeft(_scrollLeft)
+      $('.m-main').scrollLeft(_scrollLeft) */
     },
     scrollTop (y) {
+      if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+        this.minXItem.y += y
+        this.changeTarget('y')
+      } else {
+        this.testObj.y += y
+      }
+      /* // 画布移动
       y = y || 10
       var _scrollTop = $('.m-main').scrollTop()
       _scrollTop += y
       if (_scrollTop < 0) {
         _scrollTop = 0
       }
-      $('.m-main').scrollTop(_scrollTop)
+      $('.m-main').scrollTop(_scrollTop) */
     },
     getMapData (chinaId) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
@@ -324,6 +329,8 @@ export default {
         if (target === 'cityArr') {
           this.selectedItem.cityCode = this[target][0].value
         }
+      }).catch((err) => {
+        console.log(err)
       })
     },
     // 改变展示范围
@@ -2077,20 +2084,40 @@ export default {
         e.preventDefault() // 取消浏览器原有的操作
       }
       if (key === 38) {
-        this.scrollTop(-10) // 画布上移
-        e.preventDefault()
+        if ($(':focus').length === 0) {
+          this.scrollTop(-1) // 上移
+          e.preventDefault()
+        }
       }
       if (key === 40) {
-        this.scrollTop(10) // 画布下移
-        e.preventDefault()
+        if ($(':focus').length === 0) {
+          this.scrollTop(1) // 下移
+          e.preventDefault()
+        }
       }
       if (key === 37) {
-        this.scrollLeft(-10) // 画布左移
-        e.preventDefault()
+        if ($(':focus').length === 0) {
+          this.scrollLeft(-1) // 左移
+          e.preventDefault()
+        }
       }
       if (key === 39) {
-        this.scrollLeft(10) // 画布右移
-        e.preventDefault()
+        if ($(':focus').length === 0) {
+          this.scrollLeft(1) // 右移
+          e.preventDefault()
+        }
+      }
+      if (key === 113) {
+        // F2
+        if (window.event.ctrlKey && this.paintObj.scale >= 25) {
+          this.paintObj.scale -= 5
+        }
+      }
+      if (key === 114) {
+        // F3
+        if (window.event.ctrlKey && this.paintObj.scale <= 195) {
+          this.paintObj.scale += 5
+        }
       }
     },
     handleKeyUp (e) {

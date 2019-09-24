@@ -1,16 +1,20 @@
 <template>
   <div :class="{'countNum': true, 'down': true, 'changed':changed, 'changing': changing}"
        :style="countStyle">
-    <span class="current top">{{currentNum}}</span>
-    <span class="next top">{{nextNum}}</span>
-    <span class="current bottom">{{currentNum}}</span>
-    <span class="next bottom">{{nextNum}}</span>
+    <span class="current top"
+          :style="spanStyle">{{currentNum}}</span>
+    <span class="next top"
+          :style="spanStyle">{{nextNum}}</span>
+    <span class="current bottom"
+          :style="spanStyle">{{currentNum}}</span>
+    <span class="next bottom"
+          :style="spanStyle">{{nextNum}}</span>
   </div>
 </template>
 <script>
 export default {
   name: 'turnOver', // 数字翻牌器
-  props: ['item', 'nextNum', 'numHeight', 'numWidth'],
+  props: ['item', 'nextNum', 'numHeight', 'numWidth', 'bgClr'],
   data () {
     return {
       currentNum: 0, // 变化前
@@ -25,6 +29,12 @@ export default {
         height: this.numHeight + 'px !important',
         lineHeight: this.numHeight + 'px !important',
         width: this.numWidth + 'px !important'
+      }
+    },
+    spanStyle: function () {
+      return {
+        backgroundColor: this.bgClr,
+        transformRrigin: '0 ' + parseInt(this.numHeight / 2) + 'px 0'
       }
     }
   },
@@ -56,9 +66,12 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
+$radius: 6px;
+$bRadius: 7px;
 .countNum {
-  box-shadow: 0 10px 5px -5px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0 10px 5px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 5px -5px rgba(0, 0, 0, 0.15);
   height: 100px;
   line-height: 100px;
   /* -moz-perspective: 500px;
@@ -73,7 +86,8 @@ export default {
   width: 80px;
 }
 .countNum span {
-  background: #202020;
+  /* background: #202020; */
+  background: #222739;
   display: block;
   /* font-size: 250px; */
   left: 0;
@@ -81,6 +95,7 @@ export default {
   top: 0;
   text-shadow: 0 1px 0 #282828, 0 2px 0 #1e1e1e, 0 3px 0 #141414,
     0 4px 0 #0a0a0a, 0 5px 0 #000, 0 0 10px rgba(0, 0, 0, 0.8);
+  /* text-shadow:0 1px 0 #282828, 0 2px 0 #1e1e1e, 0 1px 0 #141414, 0 4px 0 #0a0a0a, 0 1px 0 #000, 0 0 8px rgba(0, 0, 0, 0.8) */
   /* -moz-transform-origin: 0 150px 0;
   -webkit-transform-origin: 0 150px 0; */
   -moz-transform-origin: 0 50% 0;
@@ -89,14 +104,15 @@ export default {
   width: 100%;
 }
 .countNum span:before {
-  border-bottom: 0.8px solid #000;
+  /* border-bottom: 0.8px solid #000; */
   content: "";
   left: 0;
   position: absolute;
   width: 100%;
 }
 .countNum span:after {
-  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.35);
+  /* box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.35); */
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.35);
   content: "";
   height: 100%;
   left: 0;
@@ -105,11 +121,15 @@ export default {
   width: 100%;
 }
 .countNum .top {
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+  /* border-top-left-radius: 11px;
+  border-top-right-radius: 11px; */
+  border-top-left-radius: $bRadius;
+  border-top-right-radius: $bRadius;
   /* 顶部圆弧 */
-  box-shadow: inset 0 2px rgba(0, 0, 0, 0.9),
-    inset 0 3px 0 rgba(255, 255, 255, 0.4);
+  /* box-shadow: inset 0 2px rgba(0, 0, 0, 0.9),
+    inset 0 3px 0 rgba(255, 255, 255, 0.4); */
+  /* box-shadow: inset 0 2px rgba(0, 0, 0, 0.6),
+    inset 0 3px 0 rgba(255, 255, 255, 0.4); */
   height: 50%;
   overflow: hidden;
 }
@@ -120,18 +140,22 @@ export default {
   background: -moz-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
   background: -webkit-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+  /* border-top-left-radius: 11px;
+  border-top-right-radius: 11px; */
+  border-top-left-radius: $bRadius;
+  border-top-right-radius: $bRadius;
 }
 .countNum .bottom {
-  border-radius: 10px;
+  /* border-radius: 10px; */
+  border-radius: $radius;
   height: 100%;
 }
 .countNum .bottom:before {
   top: 50%;
 }
 .countNum .bottom:after {
-  border-radius: 10px;
+  /* border-radius: 10px; */
+  border-radius: $radius;
   background: -moz-linear-gradient(
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0.1) 50%,
@@ -149,8 +173,10 @@ export default {
   );
 }
 .countNum.down .top {
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+  /* border-top-left-radius: 11px;
+  border-top-right-radius: 11px; */
+  border-top-left-radius: $bRadius;
+  border-top-right-radius: $bRadius;
   height: 50%;
 }
 .countNum.down .top.current {
@@ -167,7 +193,8 @@ export default {
   z-index: 4;
 }
 .countNum.down .bottom {
-  border-radius: 10px;
+  /* border-radius: 10px; */
+  border-radius: $radius;
 }
 .countNum.down .bottom.current {
   z-index: 2;
@@ -211,7 +238,8 @@ export default {
   z-index: 1;
 }
 .countNum.up .bottom.next {
-  box-shadow: 0 75px 5px -20px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 0 75px 5px -20px rgba(0, 0, 0, 0.3); */
+  box-shadow: 0 25px 5px -20px rgba(0, 0, 0, 0.3);
   -moz-transform: rotate3d(1, 0, 0, 90deg);
   -ms-transform: rotate3d(1, 0, 0, 90deg);
   -webkit-transform: rotate3d(1, 0, 0, 90deg);

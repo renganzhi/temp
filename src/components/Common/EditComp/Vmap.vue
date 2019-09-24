@@ -116,8 +116,10 @@ export default {
           itemStyle: {
             normal: {
               // color: 'red', // 展示指标及圆点的颜色
-              areaColor: '#294671', // 地图区域的颜色!
-              borderColor: '#f0f0f0' // 区域分割线颜色!
+              // areaColor: '#294671', // 地图区域的颜色!
+              areaColor: '#545d78',
+              borderColor: '#222739'
+              // borderColor: '#f0f0f0' // 区域分割线颜色!
             }
           },
           // 选中之后的状态
@@ -180,7 +182,8 @@ export default {
     'item.piecesData': function (newV) {
       this.extend.visualMap.pieces = this.formatPieces(newV)
       var len = newV.length
-      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
+      // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
+      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
     },
     'item.mapLevel': function (newV, oldV) {
       console.log('v-map mapLevel:' + oldV + ' to ' + newV)

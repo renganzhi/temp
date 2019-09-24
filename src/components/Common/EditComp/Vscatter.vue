@@ -109,7 +109,8 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              areaColor: '#626262',
+              areaColor: '#545d78',
+              // areaColor: '#626262'
               borderColor: '#434343'
             }
             // emphasis: {
