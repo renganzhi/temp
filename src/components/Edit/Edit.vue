@@ -207,7 +207,7 @@
                                   </div>
                                   <div v-else class="chooseBgImg">
                                     <i class="icon-n-exportPicture"></i><br>点击选择图片
-                                    <input type="file" class="uploadBg" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
+                                    <input type="file" class="uploadBg" style="height: 120px !important;" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
                                   </div>
                                   <input type="radio" name="bgType" value='1' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
                                   <input type="radio" name="bgType" value='2' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
@@ -1243,7 +1243,6 @@ $headHeight: 50px;
 }
 .chooseBgImg .uploadBg {
     width: 170px;
-    height: 120px !important;
     position: absolute;
     top: 0;
     left: 0;
