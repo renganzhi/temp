@@ -316,10 +316,12 @@ export default {
       // var $el = document.getElementById('home-html')
       var $el = $('#home-html')
       var w = $el.width()
-      var h = $el.height()
-      if (h < 100) {
-        var pageContainer = $('#page_container')
-        h = pageContainer.height() // 打包的时候获取不到高度使用这个
+      // var h = $el.height()
+      var pageContainer = $('#page_container')
+      if (pageContainer) {
+        var h = pageContainer.height() // 打包的时候获取不到高度使用这个
+      } else {
+        h = $el.height()
       }
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
@@ -374,7 +376,10 @@ export default {
     }
   },
   beforeDestroy: function () {
-    $(this.$el).find('[title]').tooltip('destroy')
+    // let titleList = $(this.$el).find('[title]')
+    // if (titleList.length > 0) {
+    //   $(this.$el).find('[title]').tooltip('destroy')
+    // }
   },
   destoryed: function () {
   }
