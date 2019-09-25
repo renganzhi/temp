@@ -136,6 +136,7 @@ export default {
         fontSize: this.item.fontSize + 'px !important',
         whiteSpace: 'nowrap',
         float: 'left',
+        backgroundColor: 'transparent !important',
         overflow: 'hidden'
       }
     },

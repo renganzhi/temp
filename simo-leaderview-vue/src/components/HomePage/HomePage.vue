@@ -318,7 +318,7 @@ export default {
       var w = $el.width()
       // var h = $el.height()
       var pageContainer = $('#page_container')
-      if (pageContainer) {
+      if (pageContainer.length) {
         var h = pageContainer.height() // 打包的时候获取不到高度使用这个
       } else {
         h = $el.height()
@@ -343,9 +343,6 @@ export default {
       this.stopRefreshTimer()
       this.$destroy()
     }
-  },
-  destroyed () {
-    // mainPage = _this = _this.vue = null;
   },
   mounted: function () {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
@@ -376,12 +373,11 @@ export default {
     }
   },
   beforeDestroy: function () {
-    // let titleList = $(this.$el).find('[title]')
-    // if (titleList.length > 0) {
-    //   $(this.$el).find('[title]').tooltip('destroy')
-    // }
   },
-  destoryed: function () {
+  destroyed: function () {
+    if ($('.tooltip').length > 0) {
+      $(this.$el).find('[title]').tooltip('destroy')
+    }
   }
 }
 </script>
@@ -474,6 +470,6 @@ export default {
   background-color: rgba(28, 36, 60, 0.71) !important;
   color: inherit !important;
 }
-body[data-theme="blackWhite"] {
+html[data-theme="blackWhite"] {
 }
 </style>

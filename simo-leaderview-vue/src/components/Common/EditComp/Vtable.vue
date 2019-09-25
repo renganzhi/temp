@@ -81,8 +81,6 @@ export default {
   destroyed: function () {
     $(this.$el).find('[title]').tooltip('destroy')
     // this.$destroy(true)
-  },
-  destoryed: function () {
   }
 }
 </script>

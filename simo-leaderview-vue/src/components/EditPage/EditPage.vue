@@ -383,12 +383,35 @@ $test: rgba(13, 17, 31, 0.8);
 .wrap-body {
   height: 100%;
 }
-body[data-theme="blackWhite"] {
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
   .page-item .operates {
     background-color: #fff;
   }
   .page-item {
-    box-shadow: 1px 1px 4px 4px #888;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.07);
+    .title-name {
+      color: #50607c;
+    }
+    .edit-icon {
+      color: #828bac;
+    }
+  }
+  .page-item:hover {
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.17);
+    .edit-icon {
+      color: #323746;
+    }
+    .operates {
+      background-color: #334153;
+      opacity: 0.6;
+    }
+    .opera-item {
+      color: #9ca6b5;
+    }
+    .opera-item:hover {
+      color: #fefeff;
+    }
   }
 }
 </style>

@@ -658,8 +658,13 @@
                                           <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                         </div>
                                       </div>
-                                      <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
+                                      <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'" style="position: relative;">
                                         <!-- editPieces -->
+                                        <div class="levelTips" v-show="levelTipsShow" :style="{'top': (60 + 40*this.levelChangeIndex) + 'px'}">
+                                            <i class="icon-n-arrowUp" style="font-size: 30px;"></i>
+                                            <div>与其余量级区间重合，是否合并为一个量级?</div>
+                                            <span class="tipbtn" @click="sureLevelTips">是</span><span class="tipbtn" @click="cancelLevelTips">否</span>
+                                          </div>
                                         <label>数据量级</label>
                                         <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
                                           <span>量级一</span>
@@ -1016,6 +1021,28 @@ $headHeight: 50px;
     margin-right: 10px;
   }
 }
+.levelTips {
+  position: absolute;
+  width: 260px;
+  color: #fff;
+  background: #cc2a45;
+  padding: 10px;
+  top: 65px;
+  .icon-n-arrowUp {
+    color: #cc2a45;
+    position: absolute;
+    top: -18px;
+    right: 52px;
+  }
+  .tipbtn{
+    border: 1px solid #fff;
+    float: left;
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 1px 10px;
+    cursor: pointer;
+  }
+}
 .e-base label {
   margin-right: 4px;
   display: inline-block;
@@ -1292,5 +1319,17 @@ $headHeight: 50px;
 .el-slider__button {
     border: 1px solid gray !important;
     background-color: #7d8eb9 !important;
+}
+.el-slider__button-wrapper {
+  width: 30px !important;
+  height: 3px !important;
+  top: -10px !important;
+}
+/*颜色选择器*/
+#mainEdit-edit .sp-replacer,
+#mainEdit-edit .sp-replacer:hover {
+    background: transparent;
+    border: solid 1px #3d445a;
+    color: #3d445a;
 }
 </style>

@@ -19,6 +19,8 @@ export default {
   data: function () {
     return {
       showKeybd: false,
+      levelTipsShow: false, // 数据量级提示信息
+      levelChangeIndex: -1, // 量级改变的输入框
       selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
       alertLevels: [
         { name: '提示', value: 1 },
@@ -28,11 +30,7 @@ export default {
         { name: '普通', value: 5 },
         { name: '一般', value: 6 }
       ],
-      // 实时地图的数据
-      // alertMapData: [
-      //   { position: '四川', value: 3 }
-      // ],
-      alertMapData: [],
+      alertMapData: [], // 实时地图的数据
       selectedPositn: [],
       geoCoordMap: {}, // 各地理位置对应的坐标
       allowOverflow: 20, // 允许溢出的宽高
@@ -349,6 +347,7 @@ export default {
         this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
       } else if (!this.editPieces[index + 1]['max'] || (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1)) {
         this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
+        this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
       } else {
         var newValue = this.editPieces[index]['max']
         if (index === 0 && newValue + 2 > this.editPieces[this.editPieces.length - 2]['max']) {
@@ -361,21 +360,41 @@ export default {
           this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
           return
         }
-        var delLevel = 0
-        for (let i = index + 1, len = this.editPieces.length - 1; i < len; i++) {
-          if (newValue >= this.editPieces[i]['max']) {
-            delLevel++
-          }
-        }
-        var r = confirm('与其余量级区间重合，是否合并为一个量级')
-        if (r) {
-          this.editPieces.splice(index + 1, delLevel)
-          this.editPieces[index + 1].min = Number(newValue) + 1
-        } else {
-          this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+        // var delLevel = 0
+        // for (let i = index + 1, len = this.editPieces.length - 1; i < len; i++) {
+        //   if (newValue >= this.editPieces[i]['max']) {
+        //     delLevel++
+        //   }
+        // }
+        // var r = confirm('与其余量级区间重合，是否合并为一个量级')
+        this.levelChangeIndex = index
+        this.levelTipsShow = true
+        // if (r) {
+        //   this.editPieces.splice(index + 1, delLevel)
+        //   this.editPieces[index + 1].min = Number(newValue) + 1
+        // } else {
+        //   this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+        // }
+      }
+      // this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
+    },
+    sureLevelTips () {
+      var index = this.levelChangeIndex
+      var newValue = this.editPieces[index]['max']
+      var delLevel = 0
+      for (let i = index + 1, len = this.editPieces.length - 1; i < len; i++) {
+        if (newValue >= this.editPieces[i]['max']) {
+          delLevel++
         }
       }
+      this.editPieces.splice(index + 1, delLevel)
+      this.editPieces[index + 1].min = Number(newValue) + 1
+      this.levelTipsShow = false
       this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
+    },
+    cancelLevelTips () {
+      this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
+      this.levelTipsShow = false
     },
     addMapLevel () {
       if (this.editPieces.length >= 8) {
