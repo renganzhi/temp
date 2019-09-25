@@ -24,11 +24,11 @@
                  :style="paintStyle"></div>
             <div class="full-height box"
                  style="transform-origin:0 0; -webkit-transform-origin:0 0; -moz-transform-origin:0 0; -ms-transform-origin:0 0;">
-              <DragBox v-for="(item,index) in pageList"
-                       :index="index"
-                       :item="item"
-                       :editable="editable"
-                       :key="index"></DragBox>
+              <LookItem v-for="(item,index) in pageList"
+                        :index="index"
+                        :item="item"
+                        :editable="editable"
+                        :key="index"></LookItem>
               <Compose v-for="(list, index1) in combinList"
                        :index="index1"
                        :key="list.id"
@@ -43,14 +43,14 @@
 </template>
 <script>
 import { baseData, gbs } from '@/config/settings'
-import DragBox from './../Common/DragBox'
+import LookItem from './../Common/LookItem'
 import Compose from './../Common/Compose'
 import { Notification } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
   name: 'preView',
   props: ['showModal', 'viewId', 'pageData', 'composeData', 'paintObj'],
-  components: { DragBox, Compose, Notification },
+  components: { LookItem, Compose, Notification },
   data () {
     return {
       editable: false,
