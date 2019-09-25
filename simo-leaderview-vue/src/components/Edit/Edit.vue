@@ -939,7 +939,7 @@ $headHeight: 50px;
 }
 
 .gridBg{
-  background: url('./../../assets/bg.png');
+  background: url('./../../assets/bg1.png');
 }
 
 #mainEdit-edit .content-side .cs-item {
