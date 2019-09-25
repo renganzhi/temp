@@ -216,6 +216,11 @@ export default {
       }
       if (this.item.chartType === 've-line') {
         this.extend.yAxis.name = newV.unit
+        if (newV.unit === '%') {
+          this.extend.yAxis.max = this.getYaxiosMax(newV)
+        } else {
+          this.extend.yAxis.max = null
+        }
       }
     },
     'item.symbolImg': function (newV) {
@@ -230,6 +235,18 @@ export default {
     }
   },
   methods: {
+    getYaxiosMax: function (obj) {
+      var rowData = obj.rows
+      var maxData = 0
+      for (let i = 1, len = obj.columns.length; i < len; i++) {
+        var key = obj.columns[i]
+        var maxItem = _.maxBy(rowData, function (item) { return item[key] })
+        if (maxItem[key] > maxData) {
+          maxData = maxItem[key]
+        }
+      }
+      return (parseInt(maxData / 100) * 100 + 100)
+    },
     getColors: function (tempArr) {
       var type = this.item.chartType
       // LinearGradient: 右 下 左 上
@@ -397,6 +414,7 @@ export default {
               type: 'value',
               position: 'left',
               name: _this.item.chartData.unit, // 单位
+              max: _this.item.chartData.unit === '%' ? _this.getYaxiosMax(_this.item.chartData) : null,
               axisTick: {
                 show: true,
                 lineStyle: {
