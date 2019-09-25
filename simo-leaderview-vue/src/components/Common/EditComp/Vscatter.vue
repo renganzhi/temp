@@ -112,6 +112,9 @@ export default {
               areaColor: '#545d78',
               // areaColor: '#626262'
               borderColor: '#434343'
+              // borderWidth: 0.5,
+              // shadowColor: 'rgba(255, 255, 255, 0.5)',
+              // shadowBlur: 1
             }
             // emphasis: {
             //   areaColor: '#2B91B7'

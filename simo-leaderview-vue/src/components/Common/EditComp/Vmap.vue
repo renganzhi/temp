@@ -119,6 +119,22 @@ export default {
               // areaColor: '#294671', // 地图区域的颜色!
               areaColor: '#545d78',
               borderColor: '#222739'
+              // areaColor: '#3f15d6',
+              // areaColor: {
+              //   type: 'linear',
+              //   x: 0,
+              //   y: 0,
+              //   x2: 0,
+              //   y2: 1,
+              //   colorStops: [{
+              //     offset: 0, color: '#3f15d6' // 0% 处的颜色
+              //   }, {
+              //     offset: 1, color: '#d243cd' // 100% 处的颜色
+              //   }],
+              //   globalCoord: false // 缺省为 false
+              // },
+              // borderWidth: 0.5, // 设置外层边框
+              // borderColor: '#6d9eeb'
               // borderColor: '#f0f0f0' // 区域分割线颜色!
             }
           },
