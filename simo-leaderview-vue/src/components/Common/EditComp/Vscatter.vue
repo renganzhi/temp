@@ -109,11 +109,12 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              areaColor: '#545d78',
-              // areaColor: '#626262'
-              borderColor: '#434343'
+              // areaColor: 'rgba(172, 191, 220, 0.5)',
+              areaColor: 'rgba(104, 150, 197, 0.5)',
+              borderColor: '#222739',
+              borderWidth: 0.3,
               // borderWidth: 0.5,
-              // shadowColor: 'rgba(255, 255, 255, 0.5)',
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
             }
             // emphasis: {

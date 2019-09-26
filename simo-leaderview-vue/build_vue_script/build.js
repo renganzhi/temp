@@ -42,9 +42,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     // var arguments = process.argv.splice(2)
     var replaceText = '/leaderview-static/' // 目标目录
 
-    var ignoreJs1 = ['jquery', 'jquery-ui']
-    var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap-table']
-    var ignoreCss = ['select2', 'css\/bootstrap', 'bootstrap-tab']
+    var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
+    var ignoreCss = ['select2', 'bootstrap']
 
     var readStream = fs.createReadStream(sourceFile)
     var writeStream = fs.createWriteStream(destPath)
@@ -62,16 +61,13 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       data = data.replace(/<\/body>/, '')
 
       ignoreJs.forEach(function (item) {
-        var jsReg = new RegExp('(<script){1} (src=https){1}(.+?)' + item + '(.+?)(script>){1}', 'm')
-        data = data.replace(jsReg, '')
-      })
-      ignoreJs1.forEach(function (item) {
-        var jsReg = new RegExp('(<script.+?' + item + '.+?<\/script>)', 'm')
+        // var jsReg = new RegExp('(<script){1} (src=https){1}(.+?)' + item + '(.+?)(script>){1}', 'm')
+        var jsReg = new RegExp('<script[^>]*' + item + '[^>]*>(.*?)<\/script>', 'ig')
         data = data.replace(jsReg, '')
       })
       ignoreCss.forEach(function (item) {
-        // var cssReg = new RegExp('<link.+?' + item + '.+?.css>', 'im')
-        var cssReg = new RegExp('<link .+?' + item + '.+?(.css){1}>', 'im')
+        // var cssReg = new RegExp('<link .+?' + item + '.+?(.css){1}>', 'im')
+        var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
         data = data.replace(cssReg, '')
       })
       writeStream.write(data, 'UTF8')

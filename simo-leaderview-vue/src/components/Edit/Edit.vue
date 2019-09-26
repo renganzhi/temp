@@ -23,7 +23,7 @@
                 <a class="fr simoLink icon-n-keyboard edit-opt" @mouseover="showKeybd = true" @mouseout="showKeybd = false">快捷键</a>
                 <h4 class="edit-title" @click.self="clickPaint($event)">{{pageName}}</h4>
             </div>
-            <div class="edit-keyboard" v-show="showKeybd">
+            <div class="edit-keyboard" v-show="showKeybd" @mouseover="showKeybd = true" @mouseout="showKeybd = false">
               <span class="keybd-arrow"><i class="icon-n-arrowUp" style="font-size: 40px;"></i></span>
               <div class="keybd-info">
                 <span class='fl'>缩放画布</span>
@@ -771,6 +771,7 @@ $headHeight: 50px;
 #mainEdit-edit .edit-body {
   padding: 0;
   overflow: hidden;
+  width: 100%;
   height: calc(100% - 50px);
 }
 
@@ -1323,7 +1324,7 @@ $headHeight: 50px;
 .el-slider__button-wrapper {
   width: 30px !important;
   height: 3px !important;
-  top: -10px !important;
+  top: -9px !important;
 }
 /*颜色选择器*/
 #mainEdit-edit .sp-replacer,

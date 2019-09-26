@@ -92,7 +92,7 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
-      defMapColors: ['#8fadcc', '#7aa3cc', '#6699cc', '#528fcc', '#3d85cc', '#297acc', '#1470cc', '#0066cc'],
+      defMapColors: ['#0066cc', '#1470cc', '#297acc', '#3d85cc', '#528fcc', '#6699cc', '#7aa3cc', '#8fadcc'],
       defalutColors: [
         '#37a2da',
         '#32c5e9',
@@ -109,11 +109,11 @@ export default {
         '#96bfff'
       ],
       defGradColors: [
-        ['#3bb9f7', '#0573bf'],
-        ['#97eee6', '#1bbcae'],
-        ['#f97d62', '#db4222'],
-        ['#9c6af8', '#7537d0'],
-        ['#f56391', '#f31d53'],
+        ['#6fcaf7', '#0c79c5'],
+        ['#8feee5', '#1bbcae'],
+        ['#fa8d76', '#db4222'],
+        ['#af8af3', '#874edc'],
+        ['#f5739c', '#f31d53'],
         ['#ffdf91', '#eeb01b'],
         ['#5c84e7', '#144fe5'],
         ['#85f8c0', '#62dc26']
@@ -473,11 +473,12 @@ export default {
       }
     },
     chgCity (id) {
-      console.log('+++++++chgCity+++++++-' + this.selfMapLevel)
+      // console.log('+++++++chgCity+++++++-' + this.selfMapLevel)
+      id = id || this.selectedItem.cityCode
       if (id && this.selfMapLevel) {
-        console.log('changeCity:' + id)
         this.getMapData(id).then((data) => {
           this.areaArr = data
+          this.selectedItem.cityCode = id
           if (this.selectedItem.chartType === 'v-map') {
             this.initLevelData()
           }
@@ -2204,9 +2205,9 @@ export default {
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data
-            if (!_this.selectedItem.cityCode) {
-              _this.selectedItem.cityCode = data[0].value
-            }
+            // if (!_this.selectedItem.cityCode) {
+            _this.selectedItem.cityCode = data[0].value
+            // }
           })
         }
       } else {
