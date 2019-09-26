@@ -5,6 +5,7 @@
      <!-- style="z-index: 20099" -->
     <PreView :showModal="viewPage"
              :pageData="pageData"
+             :key="viewKey"
              :composeData="composeData"
              :paintObj="paintObj"
              @hidePreview="hidePreview"></PreView>

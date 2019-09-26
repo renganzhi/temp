@@ -18,6 +18,7 @@ export default {
   props: [],
   data: function () {
     return {
+      viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
@@ -599,6 +600,9 @@ export default {
       this.selectedItem = obj
       this.testObj = this.selectedItem
       this.chooseIndexs = [this.chartNum.length - 1]
+      if (value.chartType === 'v-map') {
+        this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
+      }
       if (!gbs.inDev) {
         this.$nextTick(function () {
           titleShow('bottom', $('.m-right'))
@@ -1677,7 +1681,10 @@ export default {
       }
       this.pageData = JSON.stringify(this.chartNum)
       this.composeData = JSON.stringify(this.combinList)
-      this.viewPage = true
+      this.viewKey = new Date().getTime() + parseInt(Math.random() * 10)
+      this.$nextTick(() => {
+        this.viewPage = true
+      })
     },
     hidePreview: function () {
       this.viewPage = false
@@ -1784,11 +1791,13 @@ export default {
         if (this.itemInChoose(left, right, top, bottom, item)) {
           this.chooseIndexs.push(index)
           this.chooseItems.push(item)
+          this.chartNum[index].slted = true
         }
       })
       this.combinList.forEach((item, index) => {
         if (this.itemInChoose(left, right, top, bottom, item)) {
           this.chooseCompIndexs.push(index)
+          this.combinList[index].slted = true
         }
       })
       this.updateMinXitem()
@@ -1825,7 +1834,6 @@ export default {
         div.style.top = Math.min(clientY, posy) + 'px'
         div.style.width = Math.abs(posx - clientX) + 'px'
         div.style.height = Math.abs(posy - clientY) + 'px'
-        // console.log('mouseover')
         if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
           stateBar.appendChild(div)
           if ($('.tempDiv').length > 1) {
@@ -1838,7 +1846,9 @@ export default {
       stateBar.onmouseup = function () {
         var tempDiv = document.getElementsByClassName('tempDiv')[0]
         if (tempDiv) {
-          _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+          setTimeout(() => {
+            _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+          }, 0)
         }
         div.addEventListener('contextmenu', function (ee) {
           // _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
