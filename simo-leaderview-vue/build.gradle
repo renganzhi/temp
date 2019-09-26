@@ -41,8 +41,7 @@ task npmDev(type: NpmTask, dependsOn: domesticNpmInstall) {
 task copyDist {
   doFirst{
     copy {
-      from "dist"
-      include "leaderview-static"
+      from "dist/leaderview-static"
       into "build/resources/main/templates/leaderview-static"
     }
   }
