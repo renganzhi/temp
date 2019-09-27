@@ -1,10 +1,8 @@
 package com.uxsino.leaderview.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +32,7 @@ import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.spring.web.json.Json;
 
 @Api(tags = "大屏展示数据接口-HomePageController")
 @RestController
@@ -188,6 +187,8 @@ public class HomePageController {
         }
         existHomePage.setViewConf(homePage.getViewConf());
         existHomePage.setViewImage(homePage.getViewImage());
+        existHomePage.setPaintObj(homePage.getPaintObj());
+        existHomePage.setComposeObj(homePage.getComposeObj());
         homePageService.update(existHomePage);
         return new JsonModel(true);
     }
@@ -397,6 +398,18 @@ public class HomePageController {
         } catch (IOException e) {
             logger.error("下载图片失败:" + id, e);
         }
+    }
+
+    /**
+     * 返回当前服务端的时间
+    */
+    @ApiOperation("返回服务端当前时间")
+    @RequestMapping(value = "/getTime" , method = RequestMethod.GET)
+    public JsonModel getTime(){
+        JSONArray result = new JSONArray();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        result.add(df.format(new Date()));
+        return new JsonModel(true , result);
     }
 
     @ApiOperation("遍历主页模板")

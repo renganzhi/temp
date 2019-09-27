@@ -39,6 +39,12 @@ public class HomePage {
     private boolean visible = true;
     // 最后更新时间
     private Date lastUpdateTime;
+    // 大屏画布
+    @Column(columnDefinition = "TEXT")
+    private String paintObj;
+    // 组合功能
+    @Column(columnDefinition = "TEXT")
+    private String composeObj;
     // 页面视图配置
     @Column(columnDefinition = "TEXT")
     private String viewConf;
