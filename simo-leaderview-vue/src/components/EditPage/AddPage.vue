@@ -148,20 +148,26 @@ export default {
         if (res.success) {
           this.addOne = true
           this.addId = res.obj.id
-          // tooltip('', '操作成功！', 'success')
-          Notification({
-            message: '操作成功！',
-            position: 'bottom-right',
-            customClass: 'toast toast-success'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '操作成功！',
+              position: 'bottom-right',
+              customClass: 'toast toast-success'
+            })
+          } else {
+            tooltip('', '操作成功！', 'success')
+          }
           $('#addHomePage-modal').modal('hide')
         } else {
-          // tooltip("", data.msg, "error");
-          Notification({
-            message: res.msg,
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
         }
       })
     },
@@ -177,7 +183,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 /* 新建页面-弹窗样式 */
 #addHomePage-modal .defPages {
   flex-wrap: wrap;
@@ -204,5 +210,21 @@ export default {
 
 #addHomePage-modal .active {
   outline: 2px solid #0088cc;
+}
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  #addHomePage-modal .flex-item {
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  }
+}
+html[data-theme="blueWhite"] {
+  #addHomePage-modal .active {
+    outline: 2px solid #60abff;
+  }
+}
+html[data-theme="blackWhite"] {
+  #addHomePage-modal .active {
+    outline: 2px solid #026bf4;
+  }
 }
 </style>

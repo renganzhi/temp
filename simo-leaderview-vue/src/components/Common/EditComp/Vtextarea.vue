@@ -36,3 +36,12 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  textarea {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+}
+</style>

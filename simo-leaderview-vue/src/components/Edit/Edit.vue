@@ -224,7 +224,7 @@
                               <div class="form-group">
                                 <label>重置</label>
                                 <div class="fl">
-                                  <button class="reset" @click="resetPaint">恢复默认</button>
+                                  <button class="reset btn" @click="resetPaint">恢复默认</button>
                                 </div>
                               </div>
                               <div class="form-group">
@@ -875,12 +875,13 @@ $headHeight: 50px;
   float: left;
   margin-right: 10px !important;
 }
-.paintWrap .form-group .reset, .reset:hover {
-  color: #0088cc;
-  border: 1px solid #0088cc;
-  background: transparent;
+.paintWrap .form-group .btn, .btn:hover {
+  // color: #0088cc;
+  // border: 1px solid #0088cc;
+  // background: transparent;
   margin-top: -5px;
   border-radius: 5px;
+  outline: none;
 }
 #mainEdit-edit .noSlected .m-tabMain {
   display: none;
@@ -1333,5 +1334,73 @@ $headHeight: 50px;
     background: transparent;
     border: solid 1px #3d445a;
     color: #3d445a;
+}
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  #mainEdit-edit{
+    .m-main {
+      background: #f6f6f6;
+    }
+    .edit-header{
+    border-bottom: none;
+    background: #fff;
+    position: relative;
+    z-index: 102;
+    box-shadow: 0 0 16px rgba(0,0,0,0.1);
+    }
+    .m-left, .m-right{
+      background: #fff;
+    }
+    .m-right .active {
+      background: #f6f6f6;
+    }
+    .m-tabMain, .paintWrap, .m-tab, .edit-keyboard{
+      background: #fff;
+    }
+    .edit-keyboard .keybd-arrow {
+      color: #fff;
+    }
+    .edit-keyboard .keybd {
+      border: 1px solid #adb9ca !important;
+    }
+    .chooseBgImg{
+      background: #f6f6f6;
+    }
+    .content-side .cs-item:first-child,
+    .content-side .cs-item:nth-child(2) {
+      border-top: 1px solid #b1bdcd !important;
+    }
+    .content-side .cs-item {
+      border: 1px solid #b1bdcd !important;
+      border-top: none !important;
+    }
+    .content-side .cs-item:hover {
+      border: 1px solid #026bf4 !important;
+    }
+    .sp-replacer, .sp-replacer:hover {
+      border: solid 1px #cdd5da !important;
+      color: #666f8b;
+    }
+    .edit-opt {
+      color: #50607c;
+    }
+    textarea {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+  }
+  .colorToall {
+    color: #026bf4;
+  }
+}
+html[data-theme="blackWhite"]{
+  .m-right .active, .set-map {
+    color: #026bfe;
+  }
+}
+html[data-theme="blueWhite"]{
+  .m-right .active, .set-map {
+    color: #60abff;
+  }
 }
 </style>

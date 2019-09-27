@@ -7,7 +7,7 @@ import PreView from './../PreView/PreView'
 import Confirm from './../Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
 import qs from 'qs'
 import lodash from 'lodash'
@@ -23,14 +23,6 @@ export default {
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
       selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
-      alertLevels: [
-        { name: '提示', value: 1 },
-        { name: '通知', value: 2 },
-        { name: '次要', value: 3 },
-        { name: '警告', value: 4 },
-        { name: '普通', value: 5 },
-        { name: '一般', value: 6 }
-      ],
       alertMapData: [], // 实时地图的数据
       selectedPositn: [],
       geoCoordMap: {}, // 各地理位置对应的坐标
@@ -174,6 +166,25 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'alertInfo'
+    ]),
+    alertLevels: function () {
+      if (this.alertInfo && this.alertInfo.length > 0) {
+        return _.forEach(this.alertInfo, function (item) {
+          item.value = item.level
+        })
+      } else {
+        return [
+          { name: '通知', value: 1 },
+          { name: '警告', value: 2 },
+          { name: '一般', value: 3 },
+          { name: '严重', value: 4 },
+          { name: '致命', value: 5 },
+          { name: '提示', value: 6 }
+        ]
+      }
+    },
     paintStyle: function () {
       var type = this.paintObj.bgStyle
       if (type === '1') {
@@ -259,11 +270,15 @@ export default {
             var data = this.initMapData(response)
             resolve(data)
           }).catch((error) => {
-            Notification({
-              message: '该地区暂无详细地图',
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+            if (gbs.inDev) {
+              Notification({
+                message: '该地区暂无详细地图',
+                position: 'bottom-right',
+                customClass: 'toast toast-info'
+              })
+            } else {
+              tooltip('', '该地区暂无详细地图', 'info')
+            }
             reject(error)
           })
         })
@@ -340,11 +355,15 @@ export default {
     },
     chgMapGrad (index) {
       if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
-        Notification({
-          message: '量级的最大值不可小于最小值',
-          position: 'bottom-right',
-          customClass: 'toast toast-info'
-        })
+        if (gbs.inDev) {
+          Notification({
+            message: '量级的最大值不可小于最小值',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '量级的最大值不可小于最小值', 'info')
+        }
         this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
       } else if (!this.editPieces[index + 1]['max'] || (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1)) {
         this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
@@ -353,11 +372,15 @@ export default {
         var newValue = this.editPieces[index]['max']
         if (index === 0 && newValue + 2 > this.editPieces[this.editPieces.length - 2]['max']) {
           // 合并之后梯度不足3个
-          Notification({
-            message: '区间跨度太大，请至少保证三个量级',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '区间跨度太大，请至少保证三个量级',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '区间跨度太大，请至少保证三个量级', 'info')
+          }
           this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
           return
         }
@@ -448,11 +471,15 @@ export default {
         var noMapArr = ['110000', '310000', '500000', '120000', '710000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
-          Notification({
-            message: '该地区不支持第三级地图',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '该地区不支持第三级地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '该地区不支持第三级地图', 'info')
+          }
         }
       }
       if (id) {
@@ -1222,12 +1249,15 @@ export default {
     delColor (index) {
       // 删除自定义颜色
       if (this.selectedItem.ctColors.length === 1) {
-        // // tooltip('', '至少配置一种颜色', 'info');
-        Notification({
-          message: '至少配置一种颜色',
-          position: 'bottom-right',
-          customClass: 'toast toast-info'
-        })
+        if (gbs.inDev) {
+          Notification({
+            message: '至少配置一种颜色',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '至少配置一种颜色', 'info')
+        }
         return
       }
       this.selectedItem.ctColors.splice(index, 1)
@@ -1279,11 +1309,15 @@ export default {
           })
         },
         error: function () {
-          Notification({
-            message: '连接错误！',
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', '连接错误！', 'error')
+          }
         }
       })
     },
@@ -1345,11 +1379,15 @@ export default {
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               error: function () {
-                Notification({
-                  message: '连接错误！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
+                if (gbs.inDev) {
+                  Notification({
+                    message: '连接错误！',
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', '连接错误！', 'error')
+                }
               }
             })
           }
@@ -1432,11 +1470,15 @@ export default {
           _this.selectedItem.params = param
         },
         error: function () {
-          Notification({
-            message: '连接错误！',
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', '连接错误！', 'error')
+          }
         }
       })
     },
@@ -1510,20 +1552,26 @@ export default {
           try {
             this.selectedItem.chartData = this.formatJson(textData)
           } catch (err) {
-            // tooltip('', '请输入正确的JSON格式的数据', 'info')
+            if (gbs.inDev) {
+              Notification({
+                message: '请输入正确的JSON格式的数据',
+                position: 'bottom-right',
+                customClass: 'toast toast-info'
+              })
+            } else {
+              tooltip('', '请输入正确的JSON格式的数据', 'info')
+            }
+          }
+        } else {
+          if (gbs.inDev) {
             Notification({
               message: '请输入正确的JSON格式的数据',
               position: 'bottom-right',
               customClass: 'toast toast-info'
             })
+          } else {
+            tooltip('', '请输入正确的JSON格式的数据', 'info')
           }
-        } else {
-          // tooltip('', '请输入正确的JSON格式的数据', 'info')
-          Notification({
-            message: '请输入正确的JSON格式的数据',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
         }
       }
     },
@@ -1534,12 +1582,15 @@ export default {
         !this.xVali.isShowError &&
         !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr
       )) {
-        // tooltip('', '请填写正确的配置信息', 'info')
-        Notification({
-          message: '请填写正确的配置信息',
-          position: 'bottom-right',
-          customClass: 'toast toast-info'
-        })
+        if (gbs.inDev) {
+          Notification({
+            message: '请填写正确的配置信息',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '请填写正确的配置信息', 'info')
+        }
         return
       }
       $('#screen').show()
@@ -1629,11 +1680,15 @@ export default {
               // $('#screen').hide()
               typeof cb === 'function' && cb()
               if (res.success) {
-                Notification({
-                  message: '操作成功！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-success'
-                })
+                if (gbs.inDev) {
+                  Notification({
+                    message: '操作成功！',
+                    position: 'bottom-right',
+                    customClass: 'toast toast-success'
+                  })
+                } else {
+                  tooltip('', '操作成功！', 'success')
+                }
               }
             })
         })
@@ -1654,12 +1709,15 @@ export default {
             typeof cb === 'function' && cb(data)
           } else {
             // $("#screen").hide()
-            // tooltip('', data.msg, 'error')
-            Notification({
-              message: data.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+            if (gbs.inDev) {
+              Notification({
+                message: data.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', data.msg, 'error')
+            }
           }
         }
       })
@@ -1671,12 +1729,15 @@ export default {
         !this.xVali.isShowError &&
         !this.yVali.isShowError
       )) {
-        // tooltip('', '请填写正确的配置信息', 'info')
-        Notification({
-          message: '请填写正确的配置信息',
-          position: 'bottom-right',
-          customClass: 'toast toast-info'
-        })
+        if (gbs.inDev) {
+          Notification({
+            message: '请填写正确的配置信息',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '请填写正确的配置信息', 'info')
+        }
         return
       }
       this.pageData = JSON.stringify(this.chartNum)
@@ -1957,12 +2018,15 @@ export default {
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
-        // return // tooltip('', '上传的文件不能大于15MB', 'info')
-        Notification({
-          message: '上传的文件不能大于15MB',
-          position: 'bottom-right',
-          customClass: 'toast toast-info'
-        })
+        if (gbs.inDev) {
+          Notification({
+            message: '上传的文件不能大于15MB',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '上传的文件不能大于15MB', 'info')
+        }
         return
       }
       var _this = this
@@ -2207,11 +2271,15 @@ export default {
         }
         if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
           this.selectedItem.mapLevel = oldV
-          Notification({
-            message: '该地区不支持第三级地图',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '该地区不支持第三级地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '该地区不支持第三级地图', 'info')
+          }
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data

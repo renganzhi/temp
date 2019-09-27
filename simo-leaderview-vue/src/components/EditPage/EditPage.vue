@@ -114,12 +114,15 @@ export default {
         if (res.success) {
           this.pageList = res.obj
         } else {
-          // tooltip('', res.msg, 'error')
-          Notification({
-            message: res.msg,
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
         }
       })
     },
@@ -158,12 +161,15 @@ export default {
         if (res.success) {
           this.search()
         } else {
-          // tooltip("", res.msg, "error");
-          Notification({
-            message: res.msg,
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
         }
       })
     },
@@ -211,12 +217,15 @@ export default {
           if (res.success) {
             this.search()
           } else {
-            // tooltip("", res.msg, "error");
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+            if (gbs.inDev) {
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', res.msg, 'error')
+            }
           }
         })
       }
@@ -250,11 +259,15 @@ export default {
         this.axios.post('/leaderview/home/homePage/edit', qs.stringify(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
           .then((res) => {
             item.name = this.editName
-            Notification({
-              message: '操作成功！',
-              position: 'bottom-right',
-              customClass: 'toast toast-success'
-            })
+            if (gbs.inDev) {
+              Notification({
+                message: '操作成功！',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+            } else {
+              tooltip('', '操作成功！', 'success')
+            }
           })
       }
       this.editIndex = -1
@@ -389,6 +402,7 @@ html[data-theme="blueWhite"] {
     background-color: #fff;
   }
   .page-item {
+    background: #fff;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.07);
     .title-name {
       color: #50607c;

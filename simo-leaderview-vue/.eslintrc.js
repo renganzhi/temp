@@ -31,6 +31,7 @@ module.exports = {
     ActiveXObject: true,
     html2canvas: true,
     Math: true,
+    tooltip: true,
     _: true, // lodash
     MainTp: true
   }

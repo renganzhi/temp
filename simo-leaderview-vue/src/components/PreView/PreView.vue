@@ -124,12 +124,15 @@ export default {
               this.setScale()
             })
           } else {
-            // tooltip("", data.msg, "error")
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+            if (gbs.inDev) {
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', res.msg, 'error')
+            }
           }
         })
       } else {
