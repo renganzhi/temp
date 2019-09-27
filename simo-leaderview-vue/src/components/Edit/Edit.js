@@ -2041,10 +2041,10 @@ export default {
         }
         if (_this.selectedItem.chartType === 'image') {
           _this.selectedItem.imgSrc =
-            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg =
-            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         }
       })
       e.target.value = ''

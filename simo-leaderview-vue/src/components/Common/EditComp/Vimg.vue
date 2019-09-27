@@ -20,8 +20,8 @@ export default {
   beforeMount () {
     var reg = /^\/api/
     if (!reg.test(this.item.imgSrc)) {
-      // this.baseUrl = 'http://localhost:9999'
-      this.baseUrl = gbs.host + '/leaderview'
+      this.baseUrl = gbs.host
+      // this.baseUrl = gbs.host + '/leaderview'
     }
   },
   computed: {
