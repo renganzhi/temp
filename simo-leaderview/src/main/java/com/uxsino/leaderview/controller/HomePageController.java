@@ -187,8 +187,8 @@ public class HomePageController {
         }
         existHomePage.setViewConf(homePage.getViewConf());
         existHomePage.setViewImage(homePage.getViewImage());
-        existHomePage.setComposeObj(homePage.getComposeObj());
         existHomePage.setPaintObj(homePage.getPaintObj());
+        existHomePage.setComposeObj(homePage.getComposeObj());
         homePageService.update(existHomePage);
         return new JsonModel(true);
     }
