@@ -402,7 +402,7 @@ public class HomePageController {
 
     /**
      * 返回当前服务端的时间
-    */
+     */
     @ApiOperation("返回服务端当前时间")
     @RequestMapping(value = "/getTime" , method = RequestMethod.GET)
     public JsonModel getTime(){
