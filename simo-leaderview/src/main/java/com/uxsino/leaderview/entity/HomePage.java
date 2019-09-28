@@ -42,6 +42,13 @@ public class HomePage {
     // 页面视图配置
     @Column(columnDefinition = "TEXT")
     private String viewConf;
+    // 大屏画布
+    @Column(columnDefinition = "TEXT")
+    private String paintObj;
+    // 组合功能
+    @Column(columnDefinition = "TEXT")
+    private String composeObj;
+
 
     /**
      * 主页展示内容的缩略图,存放图片的64位编码的字符串
