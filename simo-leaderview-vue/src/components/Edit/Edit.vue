@@ -58,10 +58,10 @@
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li>
                       <!-- <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1" class="context-menu-item context-menu-visible" @click="addToCompose"><span>组合</span></li>
                       <li v-show="chooseCompIndexs.length === 1 && chooseIndexs.length === 0" class="context-menu-item context-menu-visible" @click="itemSplit"><span>取消组合</span></li> -->
-                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="upward"><span>上移</span></li>
-                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="downward"><span>下移</span></li>
-                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toTop"><span>置顶</span></li>
-                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toBottom"><span>置底</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="upward"><span>上移一层</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="downward"><span>下移一层</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toTop"><span>置于顶层</span></li>
+                      <li v-show="(chooseCompIndexs.length === 1 && chooseIndexs.length === 0) || (chooseCompIndexs.length === 0 && chooseIndexs.length === 1)" class="context-menu-item context-menu-visible" @click="toBottom"><span>置于底层</span></li>
                     </ul>
 
                     <div class="m-left content-side flex" @click.self="clickPaint($event)">
