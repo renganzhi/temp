@@ -1051,6 +1051,9 @@ $headHeight: 50px;
   display: inline-block;
   min-width: 14px;
 }
+label.error {
+  white-space: nowrap;
+}
 
 .cols2 {
   label {
@@ -1090,7 +1093,7 @@ $headHeight: 50px;
   top: 0px;
 }
 .input-arrow i{
-  // font-size: 12px;
+  font-size: 12px !important;
 }
 .input-arrow:hover {
   color: #ffffff;

@@ -390,7 +390,7 @@ var compsArr = [{
 },
 {
   text: '区域分布图',
-  imgClass: 'icon-n-radar',
+  imgClass: 'icon-n-areaMap',
   chartType: 'v-map',
   width: 300,
   height: 300,
@@ -408,7 +408,7 @@ var compsArr = [{
 },
 {
   text: '地图实时图',
-  imgClass: 'icon-n-radar',
+  imgClass: 'icon-n-scatterMap',
   chartType: 'v-scatter', // 散点图
   width: 300,
   height: 300,
