@@ -114,3 +114,29 @@
     -webkit-align-items: flex-start;
     align-items: flex-start;
 }
+
+/* 指标显示器字体，时间器字体 */
+@font-face {
+    font-family: 'timeFont';
+    src: url('../font/timeFont/timeFont.ttf');
+}
+
+@font-face {
+    font-family: 'number1';
+    src: url('../font/numberFont/Poppins-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'number2';
+    src: url('../font/numberFont/FuturaStd-Heavy.otf');
+}
+
+@font-face {
+    font-family: 'number3';
+    src: url('../font/numberFont/NexaBold.otf');
+}
+
+@font-face {
+    font-family: 'number4';
+    src: url('../font/numberFont/RobotoSlab-Regular.ttf');
+}
