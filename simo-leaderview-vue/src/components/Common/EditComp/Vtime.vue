@@ -11,6 +11,7 @@ export default {
   data () {
     return {
       showTime: '',
+      serverceTime: '',
       refreshTime: 1, // 设置为1误差最小
       timeoutId: 0,
       sizeObj: {
@@ -40,38 +41,106 @@ export default {
     }
   },
   mounted () {
-    this.initTime(this.item.timeType)
-    var _this = this
-    this.timeoutId = setTimeout(function test () {
-      _this.initTime(_this.item.timeType)
-      _this.timeoutId = setTimeout(test, _this.refreshTime)
-    }, this.refreshTime * 1000)
+    if (this.item.timeSource === 'system') {
+      this.serviceTimeFn()
+    } else {
+      this.localTimeFn()
+    }
   },
   methods: {
-    initTime (type) {
+    initTime (type, time) {
       switch (type) {
         case '1': // 时分秒
-          this.showTime = moment().format('HH:mm:ss')
+          this.showTime = moment(time).format('HH:mm:ss')
           this.refreshTime = 1
           break
         case '2':
-          this.showTime = moment().format('YYYY-MM-DD')
+          this.showTime = moment(time).format('YYYY-MM-DD')
           this.refreshTime = 60 * 60 // 这种需要确定一下精确度
           break
         case '3':
-          this.showTime = moment().format('YYYY-MM-DD HH:mm')
+          this.showTime = moment(time).format('YYYY-MM-DD HH:mm')
           this.refreshTime = 10 // 存在10s内的误差
           break
         case '4':
-          this.showTime = moment().format('YYYY-MM-DD HH:mm:ss')
+          this.showTime = moment(time).format('YYYY-MM-DD HH:mm:ss')
           this.refreshTime = 1
           break
       }
+    },
+    initServiceTime (type) {
+      this.serverceTime = moment(this.serverceTime).add(this.refreshTime, 'seconds')
+      console.log('serverceTime: ' + this.serverceTime)
+      switch (type) {
+        case '1': // 时分秒
+          this.showTime = moment(this.serverceTime).format('HH:mm:ss')
+          break
+        case '2':
+          this.showTime = moment(this.serverceTime).format('YYYY-MM-DD')
+          break
+        case '3':
+          this.showTime = moment(this.serverceTime).format('YYYY-MM-DD HH:mm')
+          break
+        case '4':
+          this.showTime = moment(this.serverceTime).format('YYYY-MM-DD HH:mm:ss')
+          break
+      }
+    },
+    serviceTimeFn () {
+      // 取服务器时间
+      this.axios.get('/leaderview/home/getTime').then((res) => {
+        this.serverceTime = moment(res.obj[0]).format('YYYY-MM-DD HH:mm:ss')
+        this.initTime(this.item.timeType, res.obj[0])
+        var _this = this
+        this.timeoutId = setTimeout(function test () {
+          _this.initServiceTime(_this.item.timeType)
+          _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
+        }, this.refreshTime * 1000)
+      })
+    },
+    localTimeFn () {
+      this.initTime(this.item.timeType)
+      var _this = this
+      this.timeoutId = setTimeout(function test () {
+        _this.initTime(_this.item.timeType)
+        _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
+      }, this.refreshTime * 1000)
     }
   },
   watch: {
+    'item.timeSource': function (newV, oldV) {
+      this.timeoutId && clearTimeout(this.timeoutId)
+      // if (newV === 'system') {
+      //   this.axios.get('/leaderview/home/getTime').then((res) => {
+      //     this.serverceTime = moment(res.obj[0]).format('YYYY-MM-DD HH:mm:ss')
+      //     this.initTime(this.item.timeType, res.obj[0])
+      //     var _this = this
+      //     this.timeoutId = setTimeout(function test () {
+      //       _this.initServiceTime(_this.item.timeType)
+      //       _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
+      //     }, this.refreshTime * 1000)
+      //   })
+      // } else {
+      //   this.initTime(this.item.timeType)
+      //   var _this = this
+      //   this.timeoutId = setTimeout(function test () {
+      //     _this.initTime(_this.item.timeType)
+      //     _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
+      //   }, this.refreshTime * 1000)
+      // }
+      if (newV === 'system') {
+        this.serviceTimeFn()
+      } else {
+        this.localTimeFn()
+      }
+    },
     'item.timeType': function (newV, oldV) {
-      this.initTime(newV)
+      if (this.item.timeSource === 'system') {
+        this.timeoutId && clearTimeout(this.timeoutId)
+        this.serviceTimeFn()
+      } else {
+        this.initTime(newV)
+      }
       if (newV > oldV) {
         let len = this.showTime.length
         let width = parseInt(this.sizeObj['f' + this.item.fontSize].w / 8 * len)
