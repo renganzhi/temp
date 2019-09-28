@@ -99,6 +99,7 @@ import DragBox from './../Common/DragBox'
 import LookItem from './../Common/LookItem'
 import Public from '#/js/public'
 import { Notification } from 'element-ui'
+import { mapActions } from 'vuex'
 export default {
   name: 'HomePage',
   components: { DragBox, Notification, LookItem },
@@ -144,6 +145,9 @@ export default {
   computed: {
   },
   methods: {
+    ...mapActions([
+      'changeAlertInfo'
+    ]),
     getPageData: function () {
       // 获取大屏配置内容
       this.axios.get('/leaderview/home/homePage').then((data) => {
@@ -195,13 +199,16 @@ export default {
       $(window).off('resize.home')
     },
     full: function () { // 全屏
-      // tooltip('', '鼠标移动到左/右下角对大屏操作', 'info', {
-      //   target: '#home-html'
-      // })
-      this.showTip = true
-      setTimeout(() => {
-        this.showTip = false
-      }, 3500)
+      if (gbs.inDev) {
+        this.showTip = true
+        setTimeout(() => {
+          this.showTip = false
+        }, 3500)
+      } else {
+        tooltip('', '鼠标移动到左/右下角对大屏操作', 'info', {
+          target: '#home-html'
+        })
+      }
       $('#home-html').css('background', $('body').css('background'))
       Public.bigScreenfullScreen($('#home-html').get(0))
       this.isFullScreen = true
@@ -297,11 +304,15 @@ export default {
               d.chartData = res.obj
             },
             error: function () {
-              Notification({
-                message: '连接错误！',
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
+              if (gbs.inDev) {
+                Notification({
+                  message: '连接错误！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              } else {
+                tooltip('', '连接错误！', 'error')
+              }
             }
           })
         }
@@ -344,6 +355,24 @@ export default {
       this.$destroy()
     }
   },
+  watch: {
+    nowPage: function (newV) {
+      $(this.$el).find('.pagebox').css({
+        transform: 'scale(1)'
+      })
+      this.stopRefreshTimer()
+      if (!newV) {
+        return []
+      }
+      this.refreshFn(newV)
+      this.initRefreshTimer()
+    }
+  },
+  beforeMount: function () {
+    this.axios.get('/alert/currencyAlertmanager/findAlertLevelList').then((res) => {
+      this.changeAlertInfo(res.obj)
+    })
+  },
   mounted: function () {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
@@ -357,19 +386,6 @@ export default {
     })
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
-    }
-  },
-  watch: {
-    nowPage: function (newV) {
-      $(this.$el).find('.pagebox').css({
-        transform: 'scale(1)'
-      })
-      this.stopRefreshTimer()
-      if (!newV) {
-        return []
-      }
-      this.refreshFn(newV)
-      this.initRefreshTimer()
     }
   },
   beforeDestroy: function () {
@@ -470,6 +486,11 @@ export default {
   background-color: rgba(28, 36, 60, 0.71) !important;
   color: inherit !important;
 }
-html[data-theme="blackWhite"] {
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  textarea {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
 }
 </style>

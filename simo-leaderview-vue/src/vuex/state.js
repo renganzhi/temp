@@ -3,6 +3,7 @@ const state = {
     width: 1920,
     height: 1080
   },
+  alertInfo: [],
   areaData: [] // 地图实时图的可选数据点的区域信息
 }
 

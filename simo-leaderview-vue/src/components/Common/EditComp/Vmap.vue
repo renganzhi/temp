@@ -74,8 +74,9 @@ export default {
           right: this.item.visualPosition === 'right' ? 0 : 'auto', // 图例靠右
           inRange: {
             // color: ['pink', 'yellow', '#dd7e6b'] // 按照值的范围给的不同颜色
-            color: this.item.ctColors.slice(0, this.item.piecesData.length)
+            color: this.item.ctColors.slice(0, this.item.piecesData.length).reverse()
           },
+          // inverse: true,
           // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
           // splitNumber: 3, // 几种颜色值及取值范围
           pieces: this.formatPieces(this.item.piecesData), // 默认取data中最后一个维度
@@ -117,9 +118,11 @@ export default {
             normal: {
               // color: 'red', // 展示指标及圆点的颜色
               // areaColor: '#294671', // 地图区域的颜色!
-              areaColor: '#545d78',
-              borderColor: '#222739'
-              // areaColor: '#3f15d6',
+              areaColor: 'rgba(35, 60, 102, 0.5)',
+              borderColor: 'rgba(53, 128, 205, 0.5)',
+              borderWidth: 0.5
+              // shadowColor: 'rgba(0, 0, 0, 1)',
+              // shadowBlur: 6
               // areaColor: {
               //   type: 'linear',
               //   x: 0,
@@ -133,9 +136,6 @@ export default {
               //   }],
               //   globalCoord: false // 缺省为 false
               // },
-              // borderWidth: 0.5, // 设置外层边框
-              // borderColor: '#6d9eeb'
-              // borderColor: '#f0f0f0' // 区域分割线颜色!
             }
           },
           // 选中之后的状态
@@ -198,8 +198,8 @@ export default {
     'item.piecesData': function (newV) {
       this.extend.visualMap.pieces = this.formatPieces(newV)
       var len = newV.length
-      // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
-      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
+      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
+      // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
     },
     'item.mapLevel': function (newV, oldV) {
       console.log('v-map mapLevel:' + oldV + ' to ' + newV)
@@ -218,7 +218,6 @@ export default {
       })
     },
     'item.provinceCode': function (newV) {
-      console.log(newV)
       if (this.item.mapLevel === 'province') {
         console.log('v-map procode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
@@ -229,7 +228,6 @@ export default {
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
         console.log('v-map cityCode:' + oldV + ' to ' + newV)
-        console.log('citycode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000

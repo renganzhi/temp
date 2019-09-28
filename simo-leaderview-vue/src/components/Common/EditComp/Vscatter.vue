@@ -72,12 +72,12 @@ export default {
           },
           // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
           pieces: [
-            { value: 1, color: '#ff9900' },
-            { value: 2, color: '#00ffff' },
-            { value: 3, color: '#ffff00' },
-            { value: 4, color: '#ff9f7f' },
-            { value: 5, color: '#37a2da' },
-            { value: 6, color: '#ffffff' }
+            { value: 1, color: '#02D4A0' },
+            { value: 2, color: '#FFFF00' },
+            { value: 3, color: '#FFB445' },
+            { value: 4, color: '#FF6E00' },
+            { value: 5, color: '#FF0000' },
+            { value: 6, color: '#87CEFA' }
           ],
           color: ['#E0022B', '#E09107', '#A3E00B'],
           show: false,
@@ -109,11 +109,12 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              areaColor: '#545d78',
-              // areaColor: '#626262'
-              borderColor: '#434343'
+              // areaColor: 'rgba(172, 191, 220, 0.5)',
+              areaColor: 'rgba(104, 150, 197, 0.5)',
+              borderColor: '#222739',
+              borderWidth: 0.3,
               // borderWidth: 0.5,
-              // shadowColor: 'rgba(255, 255, 255, 0.5)',
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
             }
             // emphasis: {
@@ -199,7 +200,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'areaData'
+      'areaData',
+      'alertInfo'
     ]),
     geoCoordMap: function () {
       var geoData = {}
@@ -317,6 +319,14 @@ export default {
 
   },
   mounted: function () {
+    var piecesArr = []
+    if (this.alertInfo && this.alertInfo.length > 0) {
+      _.forEach(this.alertInfo, function (item) {
+        let obj = { 'value': item.level, color: item.color }
+        piecesArr.push(obj)
+      })
+      this.extend.visualMap.pieces = piecesArr
+    }
     // setTimeout(() => {
     //   var code = 100000
     //   var _static = gbs.inDev ? 'static' : 'leaderview-static'

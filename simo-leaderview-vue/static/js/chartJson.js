@@ -156,12 +156,11 @@ var morenData = {
   },
   map: {
     columns: ['位置', '资源', '告警'],
-    rows: []
-    // rows: [
-    //   { '位置': '四川', '资源': 1, '告警': 1 },
-    //   { '位置': '北京', '资源': 100, '告警': 100 }
-
-    // ]
+    rows: [
+      { '位置': '台湾', '告警': 25 },
+      { '位置': '河北', '告警': 75 },
+      { '位置': '山西', '告警': 125 }
+    ]
   },
   mapData: [
     // { name: '成都', value: [104.06, 30.67, 10] },
@@ -393,7 +392,7 @@ var compsArr = [{
   text: '区域分布图',
   imgClass: 'icon-n-radar',
   chartType: 'v-map',
-  width: 500,
+  width: 300,
   height: 300,
   mapLevel: 'country',
   countryCode: 100000,
@@ -411,7 +410,7 @@ var compsArr = [{
   text: '地图实时图',
   imgClass: 'icon-n-radar',
   chartType: 'v-scatter', // 散点图
-  width: 500,
+  width: 300,
   height: 300,
   mapLevel: 'country',
   countryCode: 100000,

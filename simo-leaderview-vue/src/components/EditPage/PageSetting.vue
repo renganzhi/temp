@@ -122,6 +122,7 @@
 </template>
 <script>
 import qs from 'qs'
+import { gbs } from '@/config/settings'
 import { Notification } from 'element-ui'
 export default {
   name: 'pageSetting',
@@ -180,12 +181,15 @@ export default {
           var datas = res.pages.sort(this.visibleSort)
           this.tableData = datas
         } else {
-          // tooltip("", data.msg, "error");
-          Notification({
-            message: res.msg,
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
         }
       })
     },
