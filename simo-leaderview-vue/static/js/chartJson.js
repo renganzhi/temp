@@ -369,6 +369,7 @@ var compsArr = [{
   text: '时间器',
   imgClass: 'icon-n-time',
   chartType: 'time',
+  timeSource: 'local',
   width: 200,
   height: 50,
   fontSize: 18,

@@ -585,9 +585,9 @@
                                 <div v-show="selectedItem.chartType == 'time'">
                                     <div class="form-group cols2">
                                         <label>取值来源</label>
-                                        <select>
+                                        <select v-model="selectedItem.timeSource">
                                             <option value="local">本机</option>
-                                            <!-- <option value="system">服务器</option> -->
+                                            <option value="system">服务器</option>
                                         </select>
                                     </div>
                                 </div>
