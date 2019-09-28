@@ -55,7 +55,8 @@ export default {
     return {
       editable: false,
       pageList: [],
-      combinList: []
+      combinList: [],
+      paingConf: ''
     }
   },
   mounted: function () {
@@ -75,8 +76,10 @@ export default {
   },
   computed: {
     paintStyle: function () {
-      if (!this.paintObj) return
-      var type = this.paintObj.bgStyle
+      var paintData = this.paintObj || this.paingConf
+      // if (!this.paintObj) return
+      if (!paintData) return
+      var type = paintData.bgStyle
       if (type === '1') {
         var backgroundSize = '100% auto'
       } else if (type === '2') {
@@ -85,12 +88,12 @@ export default {
         backgroundSize = '100% 100%'
       }
       return {
-        backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')'
+        backgroundImage: paintData.bgImg
+          ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
-        backgroundColor: this.paintObj.bgColor,
+        backgroundColor: paintData.bgColor,
         backgroundSize: backgroundSize,
-        opacity: this.paintObj.opacity / 100
+        opacity: paintData.opacity / 100
       }
     },
     ...mapGetters([
@@ -120,6 +123,8 @@ export default {
         this.axios.get('/leaderview/home/homePage/getById/' + this.viewId).then((res) => {
           if (res.success) {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
+            this.combinList = res.obj.composeObj ? JSON.parse(res.obj.composeObj) : []
+            this.paingConf = res.obj.paintObj ? JSON.parse(res.obj.paintObj) : ''
             this.$nextTick(() => {
               this.setScale()
             })

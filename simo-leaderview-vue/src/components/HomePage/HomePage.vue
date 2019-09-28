@@ -6,15 +6,15 @@
     <div class="portlet light bordered flex-1"
          id="mainbox">
       <div class="full-height pagebox">
-        <!-- <DragBox v-for="(item,index) in nowPage"
-                   :index="index"
-                   :item="item"
-                   :editable="editable"
-                   :key="(pageIndex+index)"></DragBox> -->
         <LookItem v-for="(item,index) in nowPage"
                   :index="index"
                   :item="item"
                   :key="(pageIndex+index)"></LookItem>
+        <Compose v-for="(list, index1) in combinList"
+                 :index="index1"
+                 :key="list.id"
+                 :list="list"
+                 :editable="false"></Compose>
       </div>
     </div>
     <div class="btm-tools"
@@ -95,20 +95,22 @@
 
 <script>
 import { baseData, gbs } from '@/config/settings'
-import DragBox from './../Common/DragBox'
 import LookItem from './../Common/LookItem'
+import Compose from './../Common/Compose'
 import Public from '#/js/public'
 import { Notification } from 'element-ui'
 import { mapActions } from 'vuex'
 export default {
   name: 'HomePage',
-  components: { DragBox, Notification, LookItem },
+  components: { Notification, LookItem, Compose },
   data () {
     return {
       isFullScreen: false,
       editable: false,
       showTip: false, // 全屏的提示信息
       pageList: [],
+      combinList: [],
+      paintConf: {},
       nowPage: [],
       pageSize: 0,
       pageIndex: 0,
@@ -175,6 +177,7 @@ export default {
       this.stopRefreshTimer()
       this.pageList = []
       this.nowPage = []
+      this.combinList = []
       this.pageIndex = 0
       this.$router.push('/editPage')
       // $.comps.editHome.open({
@@ -219,8 +222,38 @@ export default {
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
       }
+      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
       this.isFullScreen && this.interTimer()
+    },
+    setPaint: function () {
+      if (this.paintConf) {
+        if (this.paintConf.bgImg) {
+          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf.bgImg + ')')
+        } else if (this.paintConf.bgColor) {
+          $('#mainbox').css('background', this.paintConf.bgColor)
+        } else {
+          $('#mainbox').css('background', '')
+        }
+        if (this.paintConf.bgStyle) {
+          var type = this.paintConf.bgStyle
+          if (type === '1') {
+            var backgroundSize = '100% auto'
+          } else if (type === '2') {
+            backgroundSize = 'auto 100%'
+          } else {
+            backgroundSize = '100% 100%'
+          }
+          $('#mainbox').css('background-size', backgroundSize)
+        } else {
+          $('#mainbox').css('background-size', '')
+        }
+      } else {
+        $('#mainbox').css('background', '')
+        $('#mainbox').css('background-size', '')
+      }
     },
     togglePlay: function () { // 开启/暂停
       this.timer ? this.stopTimer() : this.interTimer()
@@ -232,6 +265,9 @@ export default {
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.pageIndex++
+      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
     },
     stopTimer: function () {
@@ -329,10 +365,14 @@ export default {
       var w = $el.width()
       // var h = $el.height()
       var pageContainer = $('#page_container')
-      if (pageContainer.length) {
-        var h = pageContainer.height() // 打包的时候获取不到高度使用这个
+      if (this.isFullScreen) {
+        var h = $el.height()
       } else {
-        h = $el.height()
+        if (pageContainer.length) {
+          h = pageContainer.height() // 打包的时候获取不到高度使用这个
+        } else {
+          h = $el.height()
+        }
       }
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
@@ -342,6 +382,8 @@ export default {
       var scale = Math.min(scaleX, scaleY)
       var mrg = 0
       if (scaleX <= 1) {
+        // var _width = this.paintConf.width || baseData.home.w
+        // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
         mrg = [0, (w - baseData.home.w * scale) / 2 + 'px'].join(' ')
       }
       $el.find('.pagebox').css({

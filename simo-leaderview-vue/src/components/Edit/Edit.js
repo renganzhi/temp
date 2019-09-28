@@ -64,7 +64,7 @@ export default {
         height: 1080,
         bgColor: '',
         bgImg: '',
-        scale: 100,
+        scale: 80,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: true // 显示网格
@@ -582,7 +582,11 @@ export default {
         this.pageName = res.obj.name
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
-          let tempNum = this.chartNum
+          this.paintObj = JSON.parse(res.obj.paintObj)
+          this.paintInput.width = this.paintObj.width
+          this.paintInput.height = this.paintObj.height
+          this.combinList = JSON.parse(res.obj.composeObj)
+          let tempNum = this.chartNum.concat(this.combinList)
           for (let i = 0, len = tempNum.length; i < len; i++) {
             tempNum[i].zIndex > this.maxIndex
               ? (this.maxIndex = tempNum[i].zIndex)
@@ -1235,11 +1239,14 @@ export default {
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
     resetPaint () {
+      this.paintObj.width = 1920
+      this.paintObj.height = 1080
       this.paintObj.bgColor = ''
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
       this.paintObj.showGrid = true
+      this.paintObj.scale = 80
     },
     addColor (index) {
       // 添加颜色
@@ -1661,7 +1668,8 @@ export default {
           var _data = {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
-            paintConf: 'test',
+            paintObj: JSON.stringify(cThis.paintObj),
+            composeObj: JSON.stringify(cThis.combinList),
             viewImage: '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
