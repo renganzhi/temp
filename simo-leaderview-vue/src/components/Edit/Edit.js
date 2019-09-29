@@ -313,11 +313,14 @@ export default {
       })
     },
     clearAlertMap () {
-      console.log('初始化清空数据点')
+      console.log('清空初始化数据点')
       this.alertMapData = []
-      this.selectedPositn = []
+      this.selectedItem.chartData = [{ name: this.areaArr[0].name, value: 2 }]
+      this.$nextTick(() => {
+        this.alertMapData = [{ name: this.areaArr[0].name, value: 2 }]
+        this.selectedPositn = [this.areaArr[0].name]
+      })
       // this.$set('selectedItem', 'chartData', [])
-      this.selectedItem.chartData = []
     },
     initLevelData (areaData) {
       // 区域分布图给前三项赋默认值
@@ -490,14 +493,16 @@ export default {
             this.areaArr = data
             if (this.selectedItem.chartType === 'v-map') {
               this.initLevelData()
+            } else if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
             }
           } else if (this.selectedItem.mapLevel === 'city') {
             this.selectedItem.cityCode = data[0].value
+            if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
+            }
           }
         })
-        if (this.selectedItem.chartType === 'v-scatter') {
-          this.clearAlertMap()
-        }
       }
     },
     chgCity (id) {
@@ -510,12 +515,12 @@ export default {
           if (this.selectedItem.chartType === 'v-map') {
             this.initLevelData()
           }
+          if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selfMapLevel && id) {
+              this.clearAlertMap()
+            }
+          }
         })
-      }
-      if (this.selectedItem.chartType === 'v-scatter') {
-        if (this.selfMapLevel && id) {
-          this.clearAlertMap()
-        }
       }
     },
     chgAreaName (name, index) {
@@ -2308,16 +2313,22 @@ export default {
               if (this.selectedItem.chartType === 'v-map') {
                 this.initLevelData()
               }
+              if (this.selectedItem.chartType === 'v-scatter') {
+                this.clearAlertMap()
+              }
             })
           } else {
             _this.areaArr = _this.cityArr
             if (this.selectedItem.chartType === 'v-map') {
               this.initLevelData()
             }
+            if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
+            }
           }
-          if (this.selectedItem.chartType === 'v-scatter') {
-            this.clearAlertMap()
-          }
+          // if (this.selectedItem.chartType === 'v-scatter') {
+          //   this.clearAlertMap()
+          // }
         }
       }
     },

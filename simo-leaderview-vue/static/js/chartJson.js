@@ -163,8 +163,7 @@ var morenData = {
     ]
   },
   mapData: [
-    // { name: '成都', value: [104.06, 30.67, 10] },
-    // { name: '自贡', value: [104.773447, 29.352765, 200] }
+    { name: '北京', value: 2 }
   ]
 }
 var compsArr = [{
@@ -418,9 +417,8 @@ var compsArr = [{
   provinceCode: '',
   cityCode: '',
   visualPosition: 'left',
-  scatterPoint: [], // 带有地理位置的散点数据
-  chartData: []
-  // chartData: morenData.mapData
+  scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
+  chartData: morenData.mapData
 }
   // {
   //   text: '地图',

@@ -648,7 +648,7 @@
                                             </select> -->
                                             <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :key="selectedItem.id + index" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
                                             <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
-                                            <i class="icon-n-deleteNew" @click="delAlertLevel(index)"></i>
+                                            <i class="icon-n-deleteNew" v-if="alertMapData.length > 1" @click="delAlertLevel(index)"></i>
                                           </div>
                                         </div>
                                         <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button>
