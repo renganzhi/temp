@@ -1239,6 +1239,8 @@ export default {
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
     resetPaint () {
+      this.paintInput.width = 1920
+      this.paintInput.height = 1080
       this.paintObj.width = 1920
       this.paintObj.height = 1080
       this.paintObj.bgColor = ''

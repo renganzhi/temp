@@ -70,7 +70,7 @@ export default {
     },
     initServiceTime (type) {
       this.serverceTime = moment(this.serverceTime).add(this.refreshTime, 'seconds')
-      console.log('serverceTime: ' + this.serverceTime)
+      // console.log('serverceTime: ' + this.serverceTime)
       switch (type) {
         case '1': // 时分秒
           this.showTime = moment(this.serverceTime).format('HH:mm:ss')

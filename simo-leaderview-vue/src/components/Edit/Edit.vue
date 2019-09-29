@@ -182,15 +182,15 @@
                                 <div class="fl" style="position: relative;">
                                     <label>宽</label>
                                     <input class="w-70" type="number" @change="changePaintSize('w')" v-model="paintInput.width">
-                                    <span @click="paintInput.width--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
-                                    <span @click="paintInput.width++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                    <span @click="paintInput.width > 500 ? paintInput.width-- : ''" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="paintInput.width < 10000 ? paintInput.width++ : ''" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <!-- <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label> -->
                                 </div>
                                 <div class="fr" style="position: relative;">
                                     <label>高</label>
                                     <input class="w-70" type="number" @change="changePaintSize('h')" v-model="paintInput.height">
-                                    <span @click="paintInput.height--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
-                                    <span @click="paintInput.height++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
+                                    <span @click="paintInput.height > 500 ? paintInput.height-- : ''" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
+                                    <span @click="paintInput.height < 10000 ? paintInput.height++ : ''" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                     <!-- <label class="error" v-if="heightVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{heightVali.errorMsg}}</label> -->
                                 </div>
                               </div>
