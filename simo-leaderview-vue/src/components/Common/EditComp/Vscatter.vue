@@ -307,11 +307,6 @@ export default {
         console.log('不等')
         this.extend.series.data = this.formatData(newV)
         this.item.scatterPoint = this.extend.series.data
-        console.log('scatter chartData 改变: ')
-        console.log('--------item.chartData old----')
-        console.log(oldV)
-        console.log('--------item.chartData new----')
-        console.log(newV)
       }
     }
   },
