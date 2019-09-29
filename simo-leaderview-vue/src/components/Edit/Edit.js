@@ -1415,6 +1415,9 @@ export default {
         ? null
         : (d.data.length && d.data[0].value) || null
     },
+    isArray (o) {
+      return Object.prototype.toString.call(o) === '[object Array]'
+    },
     chgSelects (v) {
       // 需要判断是否有改变联动下拉框的值，需要重新请求
       var _this = this
@@ -1430,7 +1433,11 @@ export default {
             .find('[name="' + i + '"]')
             .closest('.form-group')
           $.each(d.params, function (j, o) {
-            postData[o] = cur[o]
+            if (_this.isArray(cur[o])) {
+              postData[o] = cur[o].join(',')
+            } else {
+              postData[o] = cur[o]
+            }
             if (chaip[o] && chaip[o].params && v.key !== chaip[o].key) {
               // 避免重复请求
               flag = chaip[o].params.indexOf(v.key) !== -1
