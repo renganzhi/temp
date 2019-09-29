@@ -676,7 +676,7 @@
                                           <span>量级{{index + 1}}</span>
                                           <input class="w-90" type="number" disabled v-model="editPieces[index].min"> -
                                           <input class="w-90" type="number" :disabled="index===(editPieces.length-1)" @change="chgMapGrad(index)" v-model="editPieces[index].max">
-                                          <i v-if="index===(editPieces.length-1)" class="icon-n-deleteNew" @click="delMapLevel"></i>
+                                          <i v-if="index===(editPieces.length-1) && index > 2" class="icon-n-deleteNew" @click="delMapLevel"></i>
                                         </div>
                                         <button type="button" class="colorToall" @click="addMapLevel">添加量级</button>
                                       </div>
