@@ -46,7 +46,7 @@ MainTp.prototype = {
     // )
     // topoConfig:function(tpId,callback,isAsync){   //获取拓扑全局设置
     $.ajax({
-      url: gbs.host + '/business/topo/backgroundSet/' + this.opt.tpId,
+      url: gbs.host + '/business/topology/backgroundSet/' + this.opt.tpId,
       type: 'GET',
       async: false,
       success: function (data) {
