@@ -10,6 +10,8 @@
               :preventActiveBehavior="!editable"
               :hasChild="true"
               :key="list.id"
+              :parentW="parentW"
+              :parentH="parentH"
               :w="Number(list.width)"
               :h="Number(list.height)"
               :x="Number(list.x)"
@@ -50,7 +52,7 @@ import InsideDrag from './InsideDrag'
 
 export default {
   name: 'compose',
-  props: ['list', 'index', 'editable'],
+  props: ['list', 'index', 'editable', 'parentH', 'parentW'],
   components: { DragResize, InsideDrag },
   data () {
     return {

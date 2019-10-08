@@ -6,6 +6,8 @@
               :isActive="editable && item.slted"
               :preventActiveBehavior="!editable"
               :key="item.id"
+              :parentW="parentW"
+              :parentH="parentH"
               :w="Number(item.width)"
               :h="Number(item.height)"
               :x="Number(item.x)"
@@ -67,7 +69,7 @@ import Vscatter from './EditComp/Vscatter' // 散点图
 
 export default {
   name: 'dragBox',
-  props: ['item', 'editable', 'index'],
+  props: ['item', 'editable', 'index', 'parentW', 'parentH'],
   components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
   data () {
     return {
