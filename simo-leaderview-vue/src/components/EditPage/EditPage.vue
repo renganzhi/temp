@@ -402,13 +402,16 @@ html[data-theme="blueWhite"] {
     background-color: #fff;
   }
   .page-item {
-    background: #fff;
+    background: #f6f6f6;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.07);
     .title-name {
       color: #50607c;
     }
     .edit-icon {
       color: #828bac;
+    }
+    .page-title {
+      background-color: #fff;
     }
   }
   .page-item:hover {

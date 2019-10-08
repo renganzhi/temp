@@ -74,9 +74,9 @@
                         <div class="paint" :style="paintStyle"></div>
                         <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
                         <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                            <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
+                            <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
                             </DragBox>
-                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
+                            <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
                         </div>
                       </div>
                     </div>
@@ -1381,7 +1381,7 @@ html[data-theme="blueWhite"] {
       border: 1px solid #026bf4 !important;
     }
     .sp-replacer, .sp-replacer:hover {
-      border: solid 1px #cdd5da !important;
+      border: solid 1px #fff !important;
       color: #666f8b;
     }
     .edit-opt {
@@ -1400,10 +1400,21 @@ html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
     color: #026bfe;
   }
+  #mainEdit-edit .menu-list {
+    background: #fff;
+    color: #50607c;
+  }
+  .color-w15 {
+    background: #fff;
+  }
 }
 html[data-theme="blueWhite"]{
   .m-right .active, .set-map {
     color: #60abff;
+  }
+   #mainEdit-edit .menu-list {
+    background: #fff;
+    color: #666666;
   }
 }
 </style>

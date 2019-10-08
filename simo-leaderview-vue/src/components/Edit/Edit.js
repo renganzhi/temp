@@ -590,6 +590,7 @@ export default {
           this.paintObj = JSON.parse(res.obj.paintObj)
           this.paintInput.width = this.paintObj.width
           this.paintInput.height = this.paintObj.height
+          this.changeHomeData(this.paintObj) // vuex保存画布大小
           this.combinList = JSON.parse(res.obj.composeObj)
           let tempNum = this.chartNum.concat(this.combinList)
           for (let i = 0, len = tempNum.length; i < len; i++) {
@@ -1622,9 +1623,7 @@ export default {
       var canvas2 = document.createElement('canvas')
       var _canvas = document.querySelector('.m-main .paint-bg')
       $('#chooseWrap').removeClass('gridBg')
-      // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
-      // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
-      _canvas.style.background = $('body').css('background')
+      // _canvas.style.background = $('body').css('background')
       // document.querySelector('.m-main #chooseWrap').style.background = $('body').css('background')
 
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
@@ -1652,6 +1651,7 @@ export default {
         height: this.paintObj.height * (cThis.paintObj.scale / 100),
         logging: false,
         scale: 0.4,
+        backgroundColor: 'transparent', // 设置背景透明
         canvas: canvas2,
         onclone: function (doc) {
           // 提前还原拓扑
@@ -2112,24 +2112,30 @@ export default {
       }
     },
     testObjChange (direct, newValue) {
-      var defData = 0,
-        isWidth = direct == 'width',
-        valiType = direct + 'Vali'
-      defData = isWidth ? baseData.home.w : baseData.home.h
-      if (newValue < this.miniW || newValue > defData) {
-        this[valiType].isShowError = true
-        this[valiType].errorMsg = isWidth
-          ? '宽度范围为' + this.miniW + '-' + defData
-          : '高度范围为' + this.miniW + '-' + defData
-      } else {
-        this[valiType].isShowError = false
-        this.selectedItem[direct] = newValue
-      }
+      var defData = 0
+      var isWidth = direct === 'width'
+      var valiType = direct + 'Vali'
+      var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
+      defData = isWidth ? this.paintObj.width : this.paintObj.height
+      var selectData = isWidth ? this.selectedItem.x : this.selectedItem.y // 选中元素的x,y
+      var limitValue = defData - selectData + allowOverflow // 可设置的最大值
       // not Number
       if (Number(newValue) < this.miniW) {
         this.selectedItem[direct] = this.miniW
       } else {
         this.selectedItem[direct] = Number(this.selectedItem[direct])
+      }
+      if (newValue < this.miniW || newValue < -allowOverflow || newValue > limitValue) {
+        this[valiType].isShowError = true
+        this[valiType].errorMsg = isWidth
+          ? '宽度范围为' + this.miniW + '~' + (limitValue)
+          : '高度范围为' + this.miniW + '~' + (limitValue)
+        if (newValue > limitValue) {
+          this.testObj[direct] = limitValue
+        }
+      } else {
+        this[valiType].isShowError = false
+        this.selectedItem[direct] = newValue
       }
     },
     testObjPosChange (position, newValue) {
@@ -2142,7 +2148,8 @@ export default {
         var compId = this.parentId
         defData = isX ? this.combinList[compId].width : this.combinList[compId].height // 父元素
       } else {
-        defData = isX ? baseData.home.w : baseData.home.h // 画布的宽高
+        // defData = isX ? baseData.home.w : baseData.home.h // 画布的宽高
+        defData = isX ? this.paintObj.width : this.paintObj.height // 画布的宽高
       }
       selectData = isX ? this.selectedItem.width : this.selectedItem.height // 选中元素的宽高
       if (selectData > defData) {
