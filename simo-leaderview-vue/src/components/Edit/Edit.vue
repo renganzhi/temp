@@ -617,7 +617,7 @@
                                        <!-- <button @click="getUrlData">请求数据</button>-->
                                     </div>
                                     <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter'">
-                                        <div ref="textarea" class="confData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                        <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
                                     </div>
                                     <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                                       <div class="form-group cols2">

@@ -18,6 +18,7 @@ export default {
   props: [],
   data: function () {
     return {
+      refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
       levelTipsShow: false, // 数据量级提示信息
@@ -852,6 +853,13 @@ export default {
       if (!gbs.inDev) {
         this.$nextTick(function () {
           titleShow('bottom', $('.m-right'))
+        })
+      }
+      if (ev !== 'move') {
+        // 重新给静态数据框赋值
+        this.refreshData = false
+        this.$nextTick(() => {
+          this.refreshData = true
         })
       }
     },
