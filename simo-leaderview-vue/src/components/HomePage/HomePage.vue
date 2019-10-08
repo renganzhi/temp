@@ -480,11 +480,13 @@ export default {
   width: 30px;
   height: 30px;
   background: #15192a;
+  // background: rgba(21, 25, 42, 0.3);
   border-radius: 50%;
   text-align: center;
   line-height: 30px;
   opacity: 0.3;
   margin: 0 4px;
+  cursor: pointer;
 }
 
 #home-html .pagebox {
@@ -533,6 +535,13 @@ html[data-theme="blueWhite"] {
   textarea {
     background: transparent !important;
     background-color: transparent !important;
+  }
+  #home-html .ring-icon {
+    background: #edf3fe;
+    opacity: 1;
+  }
+  #home-html .ring-icon [class*="icon-n-"] {
+    color: #0089ff;
   }
 }
 </style>

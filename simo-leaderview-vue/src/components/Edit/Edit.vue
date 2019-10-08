@@ -1381,7 +1381,7 @@ html[data-theme="blueWhite"] {
       border: 1px solid #026bf4 !important;
     }
     .sp-replacer, .sp-replacer:hover {
-      border: solid 1px #cdd5da !important;
+      border: solid 1px #fff !important;
       color: #666f8b;
     }
     .edit-opt {
@@ -1400,10 +1400,21 @@ html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
     color: #026bfe;
   }
+  #mainEdit-edit .menu-list {
+    background: #fff;
+    color: #50607c;
+  }
+  .color-w15 {
+    background: #fff;
+  }
 }
 html[data-theme="blueWhite"]{
   .m-right .active, .set-map {
     color: #60abff;
+  }
+   #mainEdit-edit .menu-list {
+    background: #fff;
+    color: #666666;
   }
 }
 </style>

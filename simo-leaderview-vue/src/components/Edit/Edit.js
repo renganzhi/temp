@@ -1623,9 +1623,7 @@ export default {
       var canvas2 = document.createElement('canvas')
       var _canvas = document.querySelector('.m-main .paint-bg')
       $('#chooseWrap').removeClass('gridBg')
-      // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
-      // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
-      _canvas.style.background = $('body').css('background')
+      // _canvas.style.background = $('body').css('background')
       // document.querySelector('.m-main #chooseWrap').style.background = $('body').css('background')
 
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
@@ -1653,6 +1651,7 @@ export default {
         height: this.paintObj.height * (cThis.paintObj.scale / 100),
         logging: false,
         scale: 0.4,
+        backgroundColor: 'transparent', // 设置背景透明
         canvas: canvas2,
         onclone: function (doc) {
           // 提前还原拓扑
