@@ -2120,11 +2120,11 @@ export default {
       var selectData = isWidth ? this.selectedItem.x : this.selectedItem.y // 选中元素的x,y
       var limitValue = defData - selectData + allowOverflow // 可设置的最大值
       // not Number
-      if (Number(newValue) < this.miniW) {
-        this.selectedItem[direct] = this.miniW
-      } else {
-        this.selectedItem[direct] = Number(this.selectedItem[direct])
-      }
+      // if (Number(newValue) < this.miniW) {
+      //   this.selectedItem[direct] = this.miniW
+      // } else {
+      //   this.selectedItem[direct] = Number(this.selectedItem[direct])
+      // }
       if (newValue < this.miniW || newValue < -allowOverflow || newValue > limitValue) {
         this[valiType].isShowError = true
         this[valiType].errorMsg = isWidth
