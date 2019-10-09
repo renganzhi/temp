@@ -111,9 +111,9 @@ export default {
       return {
         width: this.textWidth + 'px',
         animation: this.stop ? '' : 'textMove linear ' + this.speed + 's infinite',
-        position: 'relative'
-        // left: '100%'
-        // transform: 'translateX(' + this.distance + 'px)'
+        position: 'relative',
+        left: this.stop ? '0px' : '',
+        transform: this.stop ? 'translateX(0px)' : ''
       }
     },
     wrapStyle: function () {
