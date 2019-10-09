@@ -2162,13 +2162,18 @@ export default {
       }
       selectData = isX ? this.selectedItem.width : this.selectedItem.height // 选中元素的宽高
       if (selectData > defData) {
-        this[valiType].isShowError = true
-        this[valiType].errorMsg = isX
-          ? '横轴位置范围为0-' + defData
-          : '纵轴位置范围为0-' + defData
-        if (newValue > defData) {
-          this.testObj[position] = defData
-        }
+        // 这里暂不需要判断宽高的限制
+        // this[valiType].isShowError = true
+        // // this[valiType].errorMsg = isX
+        // //   ? '横轴位置范围为0-' + defData
+        // //   : '纵轴位置范围为0-' + defData
+        // // if (newValue > defData) {
+        // //   this.testObj[position] = defData
+        // // }
+        // var limitValue = defData + allowOverflow // 可设置的最大值
+        // this[valiType].errorMsg = isX
+        //   ? '宽度范围为' + this.miniW + '~' + (limitValue)
+        //   : '高度范围为' + this.miniW + '~' + (limitValue)
       } else {
         var limitValue = defData - selectData + allowOverflow // 可设置的最大值
         if (newValue < -allowOverflow || newValue > limitValue) {

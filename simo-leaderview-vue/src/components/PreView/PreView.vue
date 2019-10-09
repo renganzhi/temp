@@ -56,7 +56,7 @@ export default {
       editable: false,
       pageList: [],
       combinList: [],
-      paingConf: ''
+      paintConf: ''
     }
   },
   mounted: function () {
@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     paintStyle: function () {
-      var paintData = this.paintObj || this.paingConf
+      var paintData = this.paintObj || this.paintConf
       // if (!this.paintObj) return
       if (!paintData) return
       var type = paintData.bgStyle
@@ -110,6 +110,9 @@ export default {
       if (this.paintObj) {
         var scaleX = w / this.paintObj.width
         var scaleY = h / this.paintObj.height
+      } else if (this.paintConf) {
+        scaleX = w / this.paintConf.width
+        scaleY = h / this.paintConf.height
       } else {
         scaleX = w / 1920
         scaleY = h / 1080
@@ -124,7 +127,7 @@ export default {
           if (res.success) {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
             this.combinList = res.obj.composeObj ? JSON.parse(res.obj.composeObj) : []
-            this.paingConf = res.obj.paintObj ? JSON.parse(res.obj.paintObj) : ''
+            this.paintConf = res.obj.paintObj ? JSON.parse(res.obj.paintObj) : ''
             this.$nextTick(() => {
               this.setScale()
             })

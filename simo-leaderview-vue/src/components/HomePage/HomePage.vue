@@ -5,16 +5,18 @@
        class="flex flex-vertical full-height full-width">
     <div class="portlet light bordered flex-1"
          id="mainbox">
-      <div class="full-height pagebox">
-        <LookItem v-for="(item,index) in nowPage"
-                  :index="index"
-                  :item="item"
-                  :key="(pageIndex+index)"></LookItem>
-        <Compose v-for="(list, index1) in combinList"
-                 :index="index1"
-                 :key="list.id"
-                 :list="list"
-                 :editable="false"></Compose>
+      <div class="home_wrapBox">
+        <div class="full-height pagebox">
+          <LookItem v-for="(item,index) in nowPage"
+                    :index="index"
+                    :item="item"
+                    :key="(pageIndex+index)"></LookItem>
+          <Compose v-for="(list, index1) in combinList"
+                   :index="index1"
+                   :key="list.id"
+                   :list="list"
+                   :editable="false"></Compose>
+        </div>
       </div>
     </div>
     <div class="btm-tools"
@@ -214,6 +216,7 @@ export default {
       }
       $('#home-html').css('background', $('body').css('background'))
       Public.bigScreenfullScreen($('#home-html').get(0))
+      // Public.bigScreenfullScreen($('.home_wrapBox').get(0))
       this.isFullScreen = true
       this.interTimer()
     },
@@ -377,19 +380,36 @@ export default {
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
-      var scaleX = w / 1920 // 这里需要改成设置的画布的大小
-      var scaleY = h / 1080
+      // var maxW = this.paintConf.width || 1920
+      // var maxH = this.paintConf.height || 1080
+      var scaleX = w / this.paintConf.width // 这里需要改成设置的画布的大小
+      var scaleY = h / this.paintConf.height
       var scale = Math.min(scaleX, scaleY)
+      // console.log(w, h)
+      // console.log(scale)
       var mrg = 0
-      if (scaleX <= 1) {
-        // var _width = this.paintConf.width || baseData.home.w
-        // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
-        mrg = [0, (w - baseData.home.w * scale) / 2 + 'px'].join(' ')
+      // if (scaleX <= 1) {
+      // var _width = this.paintConf.width || baseData.home.w
+      // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
+      mrg = [0, Math.abs(w - this.paintConf.width * scale) / 2 + 'px'].join(' ')
+      // }
+      if (this.isFullScreen) {
+        $el.find('.pagebox').css({
+          transform: 'scale(' + scale + ',' + scale + ')',
+          margin: 0
+        })
+        $el.find('.home_wrapBox').css({
+          margin: 0
+        })
+      } else {
+        $el.find('.pagebox').css({
+          transform: 'scale(' + scale + ',' + scale + ')',
+          margin: 0
+        })
+        $el.find('.home_wrapBox').css({
+          margin: mrg
+        })
       }
-      $el.find('.pagebox').css({
-        transform: 'scale(' + scale + ',' + scale + ')',
-        margin: mrg
-      })
     },
     clearPage: function () { // 离开主页清定时器
       this.stopTimer()
@@ -414,6 +434,7 @@ export default {
     this.axios.get('/alert/currencyAlertmanager/findAlertLevelList').then((res) => {
       this.changeAlertInfo(res.obj)
     })
+    $('#page_container').css('padding', '0px')
   },
   mounted: function () {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
@@ -433,6 +454,7 @@ export default {
   beforeDestroy: function () {
   },
   destroyed: function () {
+    $('#page_container').css('padding', '')
     if ($('.tooltip').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
@@ -495,7 +517,10 @@ export default {
   -moz-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
 }
-
+.home_wrapBox {
+  height: 100%;
+  overflow: hidden;
+}
 #home-html .ring-icon:hover {
   opacity: 1;
 }
