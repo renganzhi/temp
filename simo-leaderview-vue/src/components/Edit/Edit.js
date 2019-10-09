@@ -636,7 +636,8 @@ export default {
       obj.slted = true
       this.chartNum.push(obj)
       this.selectedItem = obj
-      this.testObj = this.selectedItem
+      // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
+      this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
       if (value.chartType === 'v-map') {
         this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
