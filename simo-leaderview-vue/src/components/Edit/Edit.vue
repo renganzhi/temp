@@ -69,7 +69,7 @@
                           @click="initChart(value)">
                           {{value.text}}</div>
                     </div>
-                    <div class="m-main flex-1 auto">
+                    <div class="m-main flex-1 auto" @click.self="clickPaint($event)">
                       <div class="paint-bg" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')'}">
                         <div class="paint" :style="paintStyle"></div>
                         <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
