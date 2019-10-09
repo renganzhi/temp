@@ -1354,10 +1354,13 @@ html[data-theme="blueWhite"] {
     .m-left, .m-right{
       background: #fff;
     }
-    .m-right .active {
+    .m-tabMain, .paintWrap, .edit-keyboard{
+      background: #fff;
+    }
+    .m-tab {
       background: #f6f6f6;
     }
-    .m-tabMain, .paintWrap, .m-tab, .edit-keyboard{
+    .m-right .active {
       background: #fff;
     }
     .edit-keyboard .keybd-arrow {

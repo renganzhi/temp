@@ -252,8 +252,12 @@ export default {
 
   },
   beforeMount: function () {
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
-      this.empty = true
+    // if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+    //   this.empty = true
+    // }
+    var theme = $('html').attr('data-theme')
+    if (theme === 'blackWhite' || theme === 'blueWhite') {
+      this.extend.visualMap.textStyle = '#50607c'
     }
   },
   mounted: function () {
