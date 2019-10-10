@@ -1073,6 +1073,8 @@ $headHeight: 50px;
 }
 label.error {
   white-space: nowrap;
+  left: 0px;
+  top: 25px;
 }
 
 .cols2 {

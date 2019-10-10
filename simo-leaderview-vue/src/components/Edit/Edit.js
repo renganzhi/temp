@@ -53,7 +53,7 @@ export default {
       selectedItem: {},
       selectedIndex: null,
       chartNum: [],
-      miniW: 10,
+      miniW: 20,
       minIndex: 500, // 当前最低层级
       maxIndex: 500, // 当前最高层级
       paintInput: {
@@ -612,22 +612,22 @@ export default {
       this.showStyleTab = true
       var obj = $.extend(
         true, {}, {
-          id: new Date().getTime(),
-          ctName: value.text,
-          ctLegendShow: 'true',
-          x: 400,
-          y: 100,
-          width: 350,
-          height: 350,
-          colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-          ctDataSource: 'static', // 数据来源system\static，默认static
-          url: '', // 请求接口
-          params: {}, // 请求接口参数
-          bdpx: 1, // 边框线宽
-          fontSize: 12, // 字号
-          lineArea: false // 折线是否为区域
-        },
+        id: new Date().getTime(),
+        ctName: value.text,
+        ctLegendShow: 'true',
+        x: 400,
+        y: 100,
+        width: 350,
+        height: 350,
+        colorType: 'defalut',
+        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+        ctDataSource: 'static', // 数据来源system\static，默认static
+        url: '', // 请求接口
+        params: {}, // 请求接口参数
+        bdpx: 1, // 边框线宽
+        fontSize: 12, // 字号
+        lineArea: false // 折线是否为区域
+      },
         value
       )
 
@@ -1041,18 +1041,18 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-          id: new Date().getTime() + parseInt(Math.random() * 10000),
-          ctLegendShow: 'true',
-          x: _left,
-          y: _top,
-          width: _right - _left,
-          height: _bottom - _top,
-          zIndex: _index,
-          sacleX: 1,
-          sacleY: 1,
-          // slted: false,
-          child: []
-        }, {}
+        id: new Date().getTime() + parseInt(Math.random() * 10000),
+        ctLegendShow: 'true',
+        x: _left,
+        y: _top,
+        width: _right - _left,
+        height: _bottom - _top,
+        zIndex: _index,
+        sacleX: 1,
+        sacleY: 1,
+        // slted: false,
+        child: []
+      }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -1694,7 +1694,7 @@ export default {
             viewConf: JSON.stringify(cThis.chartNum),
             paintObj: JSON.stringify(cThis.paintObj),
             composeObj: JSON.stringify(cThis.combinList),
-            viewImage: '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            viewImage: '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({

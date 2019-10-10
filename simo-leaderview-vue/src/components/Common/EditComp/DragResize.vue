@@ -114,14 +114,14 @@ export default {
     },
     minw: {
       type: Number,
-      default: 10,
+      default: 20,
       validator: function (val) {
         return val > 0
       }
     },
     minh: {
       type: Number,
-      default: 10,
+      default: 20,
       validator: function (val) {
         return val > 0
       }
