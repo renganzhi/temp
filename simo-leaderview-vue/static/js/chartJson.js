@@ -414,6 +414,7 @@ var compsArr = [{
   height: 300,
   mapLevel: 'country',
   countryCode: 100000,
+  ctLegendShow: 'true', // 地名是否展示
   provinceCode: '',
   cityCode: '',
   visualPosition: 'left',

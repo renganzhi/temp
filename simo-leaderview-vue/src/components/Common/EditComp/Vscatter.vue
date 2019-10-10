@@ -147,7 +147,7 @@ export default {
               formatter: '{b}',
               position: 'right',
               color: '#fff',
-              show: true // false
+              show: this.item.ctLegendShow === 'true' // false
             },
             emphasis: {
               show: true
@@ -232,7 +232,7 @@ export default {
   },
   watch: {
     'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.visualMap.show = newV === 'true'
+      this.extend.series.label.normal.show = newV === 'true'
     },
     'item.visualPosition': function (newV, oldValue) {
       // this.extend.visualMap.show = newV === 'true'

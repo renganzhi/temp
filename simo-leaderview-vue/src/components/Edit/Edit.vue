@@ -466,6 +466,18 @@
                                   </div>
                                 </div>
 
+                                <div class="e-legend" v-if="selectedItem.chartType=='v-scatter'">
+                                  <div>
+                                      <div class="m-gap form-group">图例</div>
+                                      <div class="form-group cols2">
+                                          <label>可见性</label>
+                                          <select v-model="selectedItem.ctLegendShow">
+                                              <option value="true">显示</option>
+                                              <option value="false">隐藏</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                </div>
                                 <div class="e-legend" v-if="selectedItem.chartType=='v-map'">
                                   <div>
                                       <div class="m-gap form-group">图例</div>
