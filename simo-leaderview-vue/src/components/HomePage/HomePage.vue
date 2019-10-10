@@ -380,13 +380,9 @@ export default {
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
-      // var maxW = this.paintConf.width || 1920
-      // var maxH = this.paintConf.height || 1080
       var scaleX = w / this.paintConf.width // 这里需要改成设置的画布的大小
       var scaleY = h / this.paintConf.height
       var scale = Math.min(scaleX, scaleY)
-      // console.log(w, h)
-      // console.log(scale)
       var mrg = 0
       // if (scaleX <= 1) {
       // var _width = this.paintConf.width || baseData.home.w
@@ -394,9 +390,13 @@ export default {
       mrg = [0, Math.abs(w - this.paintConf.width * scale) / 2 + 'px'].join(' ')
       // }
       if (this.isFullScreen) {
+        var boxMrg = [0, Math.abs(w - this.paintConf.width * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          margin: 0
+          width: this.paintConf.width + 'px',
+          height: this.paintConf.height + 'px',
+          overflow: 'hidden',
+          margin: boxMrg
         })
         $el.find('.home_wrapBox').css({
           margin: 0
@@ -404,6 +404,9 @@ export default {
       } else {
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
+          width: 'auto',
+          height: 'auto',
+          overflow: 'visible',
           margin: 0
         })
         $el.find('.home_wrapBox').css({
