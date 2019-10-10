@@ -304,12 +304,13 @@ export default {
           return;
       } */
       // 定时器
-      this.refreshTimer = setTimeout(function () {
+      this.refreshTimer = setTimeout(function freshFn () {
         if (!$('#home-html').length) {
           ct.clearPage()
           return
         }
         ct.refreshFn()
+        ct.refreshTimer = setTimeout(freshFn, ct.refreshTime * 1000)
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
     },
