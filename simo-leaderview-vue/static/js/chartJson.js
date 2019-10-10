@@ -256,7 +256,7 @@ var compsArr = [{
   chartType: 've-line',
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
-  showPoint: true // 是否标点
+  showPoint: 'true' // 是否标点
 },
 {
   text: '雷达图',
