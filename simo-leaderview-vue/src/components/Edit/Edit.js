@@ -472,7 +472,8 @@ export default {
     // 切换地图的省
     chgProvince (id) {
       if (this.selectedItem.mapLevel === 'city') {
-        var noMapArr = ['110000', '310000', '500000', '120000', '710000']
+        // 北京， ... ， 香港， 澳门
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
           if (gbs.inDev) {
@@ -611,22 +612,22 @@ export default {
       this.showStyleTab = true
       var obj = $.extend(
         true, {}, {
-        id: new Date().getTime(),
-        ctName: value.text,
-        ctLegendShow: 'true',
-        x: 400,
-        y: 100,
-        width: 350,
-        height: 350,
-        colorType: 'defalut',
-        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-        ctDataSource: 'static', // 数据来源system\static，默认static
-        url: '', // 请求接口
-        params: {}, // 请求接口参数
-        bdpx: 1, // 边框线宽
-        fontSize: 12, // 字号
-        lineArea: false // 折线是否为区域
-      },
+          id: new Date().getTime(),
+          ctName: value.text,
+          ctLegendShow: 'true',
+          x: 400,
+          y: 100,
+          width: 350,
+          height: 350,
+          colorType: 'defalut',
+          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctDataSource: 'static', // 数据来源system\static，默认static
+          url: '', // 请求接口
+          params: {}, // 请求接口参数
+          bdpx: 1, // 边框线宽
+          fontSize: 12, // 字号
+          lineArea: false // 折线是否为区域
+        },
         value
       )
 
@@ -1040,18 +1041,18 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-        id: new Date().getTime() + parseInt(Math.random() * 10000),
-        ctLegendShow: 'true',
-        x: _left,
-        y: _top,
-        width: _right - _left,
-        height: _bottom - _top,
-        zIndex: _index,
-        sacleX: 1,
-        sacleY: 1,
-        // slted: false,
-        child: []
-      }, {}
+          id: new Date().getTime() + parseInt(Math.random() * 10000),
+          ctLegendShow: 'true',
+          x: _left,
+          y: _top,
+          width: _right - _left,
+          height: _bottom - _top,
+          zIndex: _index,
+          sacleX: 1,
+          sacleY: 1,
+          // slted: false,
+          child: []
+        }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -2305,7 +2306,7 @@ export default {
           this.initLevelData()
         }
       } else if (newValue === 'city') {
-        var noMapArr = ['110000', '310000', '500000', '120000', '710000'] // 直辖市自治区没有三级地图
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000'] // 直辖市自治区没有三级地图
         if (oldV === 'country') {
           console.log('从国家级到市级') // 从国家级到市级
           if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
