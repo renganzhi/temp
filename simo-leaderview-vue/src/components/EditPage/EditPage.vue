@@ -90,7 +90,7 @@ export default {
   components: { AddPage, PreView, PageSetting, Confirm, Notification },
   data () {
     return {
-      baseUrl: gbs.host + '/leaderview',
+      baseUrl: gbs.host,
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
