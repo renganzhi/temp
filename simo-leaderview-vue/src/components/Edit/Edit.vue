@@ -591,7 +591,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div  v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time')">
+                                <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time')">
                                     <div class="form-group cols2">
                                         <label>数据来源</label>
                                         <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
@@ -637,22 +637,10 @@
                                         <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
                                       </div>
                                       <div class="form-group cols2" v-if="selectedItem.chartType==='v-scatter'">
-                                        <label>数据设置</label>
-                                        <div class="setMapData">
-                                          <div class="area-item" v-for="(item, index) in alertMapData" :key="index">
-                                            <div>数据点{{index + 1}}</div>
-                                            <!-- <select v-model="alertMapData[index].position">
-                                                <option value="country">国家级</option>
-                                                <option value="province">省级</option>
-                                                <option value="city">地市级</option>
-                                            </select> -->
-                                            <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :key="selectedItem.id + index" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
-                                            <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
-                                            <i class="icon-n-deleteNew" v-if="alertMapData.length > 1" @click="delAlertLevel(index)"></i>
-                                          </div>
-                                        </div>
-                                        <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button>
+                                        <label>数据设置</label><button class="addData" @click="addAlertLevel">添加数据点</button>
+                                        <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                                       </div>
+                                      
                                       <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                         <label>数据设置</label>
                                         <div class="setMapData">
@@ -679,6 +667,14 @@
                                           <i v-if="index===(editPieces.length-1) && index > 2" class="icon-n-deleteNew" @click="delMapLevel"></i>
                                         </div>
                                         <button type="button" class="colorToall" @click="addMapLevel">添加量级</button>
+                                      </div>
+                                    </div>
+                                    <div class="setMapData" v-if="selectedItem.chartType==='v-scatter'">
+                                      <div class="area-item" v-for="(item, index) in alertMapData" :key="index">
+                                        <span class="area-index">{{index + 1}}</span>
+                                        <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :key="selectedItem.id + index" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
+                                        <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
+                                        <i class="icon-n-deleteNew" v-if="alertMapData.length > 1" @click="delAlertLevel(index)"></i>
                                       </div>
                                     </div>
                                     <button @click="dataChange">更新视图</button>
@@ -713,6 +709,7 @@ $headHeight: 50px;
   bottom: 0;
   right: 0;
   left: -4px;
+  overflow: hidden;
   /* z-index: 10052 !important;*/
 }
 #mainEdit-edit .edit-content{
@@ -995,9 +992,21 @@ $headHeight: 50px;
     width: 200px;
   }
 }
+.addData {
+  margin-left: 116px;
+  background: transparent;
+  color: #0088cc;
+  border: 1px solid #0088cc;
+}
+.addData:hover {
+  background: transparent;
+  color: #0088cc;
+}
 .setMapData {
-  height: 180px;
-  overflow: auto;
+    max-height: calc(100% - 180px);
+    overflow: auto;
+    margin-top: 15px;
+    margin-bottom: 10px;
   .area-name{
     margin-right: 6px;
     display: inline-block;
@@ -1009,12 +1018,23 @@ $headHeight: 50px;
   }
   .area-item {
     margin-bottom: 8px;
-    padding-left: 12px;
+    // padding-left: 12px;
+    .area-index{
+      margin-right: 32px;
+      display: inline-block;
+      width: 15px;
+    }
+    i {
+      position: relative;
+      top: 2px;
+    }
     input{
       height: 22px !important;
     }
     select, .select2 {
-      width: 110px !important;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      width: 85px !important;
     }
   }
 }
