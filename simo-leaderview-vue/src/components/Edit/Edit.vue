@@ -544,7 +544,7 @@
                                             <option value="defalut">默认</option>
                                             <option value="custom" v-show="alertLevel">系列</option>
                                         </select>
-                                        <select v-model="selectedItem.colorful" v-show="(selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType" style="width: 80px !important; float: right;">
+                                        <select v-model="selectedItem.colorful" v-show="(selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType" style="width: 80px !important; margin-left: 3px;">
                                             <option value="false">单色</option>
                                             <option value="true">多色</option>
                                         </select>
@@ -1109,10 +1109,6 @@ label.error {
   border: 1px solid #3d445a;
 }
 
-.m-gap {
-  color: #fff;
-}
-
 .input-arrow{
   position: absolute;
   right: 20px;
@@ -1452,6 +1448,11 @@ html[data-theme="blueWhite"]{
    #mainEdit-edit .menu-list {
     background: #fff;
     color: #666666;
+  }
+}
+html[data-theme="default"]{
+  .m-gap {
+    color: #fff;
   }
 }
 </style>
