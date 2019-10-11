@@ -652,10 +652,10 @@
                                         <label>数据设置</label><button class="addData" @click="addAlertLevel">添加数据点</button>
                                         <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                                       </div>
-                                      
+
                                       <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                         <label>数据设置</label>
-                                        <div class="setMapData">
+                                        <div class="setMapData" style="height: 180px;">
                                           <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                         </div>
                                       </div>
@@ -923,6 +923,7 @@ $headHeight: 50px;
 
 .m-main {
   position: relative;
+  background: #141929;
 }
 .scaleBox{
   position: fixed;
