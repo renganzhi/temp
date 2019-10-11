@@ -381,21 +381,23 @@ export default {
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
-      var scaleX = w / this.paintConf.width // 这里需要改成设置的画布的大小
-      var scaleY = h / this.paintConf.height
+      var paintW = (this.paintConf && this.paintConf.width) || 1920
+      var paintH = (this.paintConf && this.paintConf.height) || 1080
+      var scaleX = w / paintW // 这里需要改成设置的画布的大小
+      var scaleY = h / paintH
       var scale = Math.min(scaleX, scaleY)
       var mrg = 0
       // if (scaleX <= 1) {
       // var _width = this.paintConf.width || baseData.home.w
       // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
-      mrg = [0, Math.abs(w - this.paintConf.width * scale) / 2 + 'px'].join(' ')
+      mrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
       // }
       if (this.isFullScreen) {
-        var boxMrg = [0, Math.abs(w - this.paintConf.width * scale) / 2 + 'px'].join(' ')
+        var boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          width: this.paintConf.width + 'px',
-          height: this.paintConf.height + 'px',
+          width: paintW + 'px',
+          height: paintH + 'px',
           overflow: 'hidden',
           margin: boxMrg
         })
