@@ -54,7 +54,7 @@ export default {
       selectedIndex: null,
       chartNum: [],
       miniW: 20,
-      minIndex: 500, // 当前最低层级
+      minIndex: 499, // 当前最低层级
       maxIndex: 500, // 当前最高层级
       paintInput: {
         width: 1920, // 输入的画布大小
@@ -619,6 +619,7 @@ export default {
         y: 100,
         width: 350,
         height: 350,
+        zIndex: ++this.maxIndex,
         colorType: 'defalut',
         ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
         ctDataSource: 'static', // 数据来源system\static，默认static
@@ -1007,7 +1008,14 @@ export default {
         _top = arr[0].y
       var bottomIndex = 0,
         _bottom = arr[0].y + arr[0].height
-      var _index = 500
+      // var _index = 500
+      var _index = this.maxIndex // 没有图层属性的旧数据
+      var minIndexItem = _.minBy(arr, function (item) { return item.zIndex }) // 旧数据会返回undefined
+      // var maxIndexItem = _.maxBy(arr, function (item) { return item.zIndex })
+      // console.log(minIndexItem.zIndex, maxIndexItem.zIndex)
+      if (minIndexItem) {
+        _index = minIndexItem.zIndex
+      }
       // 获取合并之后的组件的范围
       for (var i = 1, len = arr.length; i < len; i++) {
         if (arr[i].x < _left) {
@@ -1026,9 +1034,9 @@ export default {
           _bottom = arr[i].y + arr[i].height
           bottomIndex = i
         }
-        if (arr[i].zIndex && arr[i].zIndex < _index) {
-          _index = arr[i].zIndex
-        }
+        // if (arr[i].zIndex && arr[i].zIndex < _index) {
+        //   _index = arr[i].zIndex
+        // }
       }
       // 为每一个内部组件重新计算相对位置
       for (var i = 0, len = arr.length; i < len; i++) {
@@ -1080,14 +1088,31 @@ export default {
       this.chooseIndexs = []
       this.chooseItems = []
     },
+    itemIndexAdd: function (index, zIndex) {
+      // 组合元素的index， 该组合元素的zIndex
+      this.chartNum.forEach((item) => {
+        if (item.zIndex > zIndex) {
+          item.zIndex++
+        }
+      })
+      this.combinList.forEach((item, i) => {
+        if (index !== i && item.zIndex > zIndex) {
+          item.zIndex++
+        }
+      })
+    },
     // 取消组合
     itemSplit: function () {
       var index = this.selectedIndex
-      var tempArr = this.combinList[index].child
+      var tempArr = _.sortBy(this.combinList[index].child, function (o) { return o.zIndex })
+      var zIndex = this.combinList[index].zIndex
+      this.itemIndexAdd(index, zIndex)
+      // 图层比他大的全部加1
       this.chooseIndexs = []
-      tempArr.forEach(item => {
+      tempArr.forEach((item, i) => {
         // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
         // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
+        item.zIndex = zIndex + i
         item.x = item.x + this.combinList[index].x
         item.y = item.y + this.combinList[index].y
         item.id = item.id + parseInt(Math.random() * 1000) // 复制的元素id一样
@@ -1105,26 +1130,42 @@ export default {
     // 下移
     downward: function () {
       var z = this.selectedItem.zIndex || 500
-      this.$set(this.selectedItem, 'zIndex', z - 1)
-      if (z - 1 < this.minIndex) {
-        this.minIndex = z - 1
+      if (z > this.minIndex) {
+        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.maxIndex) {
+          this.maxIndex -= 1
+        }
+        this.$set(this.selectedItem, 'zIndex', z - 1)
+        if (z - 1 < this.minIndex) {
+          this.minIndex = z - 1
+        }
       }
     },
     // 上移
     upward: function () {
       var z = this.selectedItem.zIndex || 500
-      this.$set(this.selectedItem, 'zIndex', z + 1)
-      if (z + 1 > this.maxIndex) {
-        this.maxIndex = z + 1
+      if (z < this.maxIndex) {
+        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.minIndex) {
+          this.minIndex += 1
+        }
+        this.$set(this.selectedItem, 'zIndex', z + 1)
+        if (z + 1 > this.maxIndex) {
+          this.maxIndex = z + 1
+        }
       }
     },
     toBottom: function () {
-      this.minIndex--
-      this.$set(this.selectedItem, 'zIndex', this.minIndex)
+      var z = this.selectedItem.zIndex || 500
+      if (z > this.minIndex) {
+        this.minIndex--
+        this.$set(this.selectedItem, 'zIndex', this.minIndex)
+      }
     },
     toTop: function () {
-      this.maxIndex++
-      this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+      var z = this.selectedItem.zIndex || 500
+      if (z < this.maxIndex) {
+        this.maxIndex++
+        this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+      }
     },
     // 通过chooseIndex 获取 选中的元件集合
     indexToItem: function (type) {
