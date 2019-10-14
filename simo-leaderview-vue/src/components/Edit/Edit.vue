@@ -1154,7 +1154,6 @@ label.error {
   right: 20px;
   color: #7d8eb9;
   cursor: pointer;
-  // display: none;
 }
 .input-arrow:nth-child(odd) {
   bottom: 0px;
