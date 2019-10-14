@@ -112,6 +112,7 @@ export default {
         ['#5c84e7', '#144fe5'],
         ['#85f8c0', '#62dc26']
       ],
+      showWindowBtn: false, // 多资源多指标弹窗按钮
       syst: {
         // 系统数据
         urlSel: [], // 接口下拉列表，根据不同的图形类型有不同的接口
@@ -121,6 +122,8 @@ export default {
           url: '',
           params: {} // 请求发送给后端的数据
         },
+        windowObj: [], // 保存弹窗数据
+        windowData: [], // 发送给后端的弹窗数据
         chainParams: {} // 用于缓存需要多级下拉联动请求，以便不用每次遍历当前选中接口数据
       },
       dataApi: [], // 选择接口数据
@@ -848,6 +851,7 @@ export default {
 
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
+        this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id
         if (ev === 'down' && item.ctDataSource === 'system') {
           this.getUrlByType(true)
@@ -1392,7 +1396,7 @@ export default {
       var _this = this
       var chainP = (this.syst.chainParams = {}) // 将需要联动的字段缓存
       var index = -1
-
+      this.showWindowBtn = false
       if (typeof flag === 'boolean') {
         var selectedP = (this.syst.curConf.params = $.extend(
           true, {},
@@ -1432,8 +1436,15 @@ export default {
             if (d.params) {
               $.each(d.params, function (j, o) {
                 postData[o] = selectedP[o] || ''
+                if (_this.isArray(postData[o])) {
+                  postData[o] = postData[o].join(',') // 数组形式转化为，分割的字符串传给后端
+                }
               })
               chainP[d.key] = d
+            }
+            if (selectedP.windows) {
+              _this.showWindowBtn = true
+              _this.syst.windowData = JSON.parse(selectedP.windows)
             }
             $.ajax({
               url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
@@ -1442,6 +1453,11 @@ export default {
               type: d.method || 'get',
               success: function (data) {
                 d.data = data.obj || []
+                if (data.obj.length > 0) {
+                  if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
+                    _this.syst.windowObj = data.obj
+                  }
+                }
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               error: function () {
@@ -1506,6 +1522,8 @@ export default {
               data.obj = data.obj || []
               d.data.splice(0, d.data.length)
               d.data = data.obj
+              // 判断是否是获取的多资源的部件和属性
+              _this.getWindowObj(data)
               //  console.log(v.key,d.dataUrl,postData);
             }
           })
@@ -1513,11 +1531,46 @@ export default {
         }
       })
     },
+    getWindowObj (data) {
+      this.showWindowBtn = false
+      if (data.obj.length > 0) {
+        if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
+          this.syst.windowObj = data.obj
+          this.syst.windowData = []
+          this.syst.windowData = this.initWindowData(data.obj)
+          this.syst.curConf.params.windows = JSON.stringify(this.syst.windowData)
+          this.showWindowBtn = true
+        }
+      }
+    },
+    initWindowData (data) {
+      var obj = []
+      data.forEach((item, index) => {
+        obj.push({
+          'indicator': item.indicator.value,
+          'fields': item.fields[0].value,
+          'ne': []
+        })
+        item.ne.forEach((list) => {
+          obj[index].ne.push({
+            'id': list.id,
+            'component': list.component.length > 0 ? list.component[0].value : null
+          })
+        })
+      })
+      return obj
+    },
+    getWindowData () {
+      $('#partsEdit-modal').modal('show')
+    },
     getUrlData () {
       // 根据接口获取数据更新图表
       var _this = this
       var curConf = this.syst.curConf
       var param = curConf.params
+      if (param.hasOwnProperty('windows')) {
+        param.windows = JSON.stringify(this.syst.windowData) // 保存弹窗填写的数据
+      }
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param)
         return
@@ -1527,6 +1580,9 @@ export default {
       $.each(param, function (i, d) {
         datas[i] = $.isArray(d) ? d.join(',') : d
       })
+      // if (_this.syst.windowData.length > 0) {
+      //   datas.windows = JSON.stringify(_this.syst.windowData)
+      // }
       $.ajax({
         url: reg.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url,
         data: datas,

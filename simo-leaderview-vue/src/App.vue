@@ -77,7 +77,7 @@ body {
   opacity: 0.3;
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
   z-index: 20099;
-}
+} */
 </style>
