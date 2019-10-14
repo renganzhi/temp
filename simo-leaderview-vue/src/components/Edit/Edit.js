@@ -1457,7 +1457,7 @@ export default {
               type: d.method || 'get',
               success: function (data) {
                 d.data = data.obj || []
-                if (data.obj.length > 0) {
+                if (_this.isArray(data.obj) && data.obj.length > 0) {
                   if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
                     _this.syst.windowObj = data.obj
                   }
@@ -1537,7 +1537,7 @@ export default {
     },
     getWindowObj (data) {
       this.showWindowBtn = false
-      if (data.obj.length > 0) {
+      if (this.isArray(data.obj) && data.obj.length > 0) {
         if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
           this.syst.windowObj = data.obj
           this.syst.windowData = []
