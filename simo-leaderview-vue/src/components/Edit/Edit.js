@@ -647,6 +647,10 @@ export default {
       if (value.chartType === 'v-map') {
         this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
       }
+      if (value.chartType === 'progress') {
+        this.progressObj.height = 16
+        this.progressObj.radius = 8
+      }
       if (!gbs.inDev) {
         this.$nextTick(function () {
           titleShow('bottom', $('.m-right'))
@@ -753,8 +757,8 @@ export default {
         }
         this.selectedItem = item
         if (item.chartType === 'progress') {
-          this.progressObj.height = item.proHeight
-          this.progressObj.radius = item.radius
+          this.progressObj.height = item.proHeight || 16
+          this.progressObj.radius = item.radius || 8
         }
         this.testObj = JSON.parse(JSON.stringify(item))
         if (type === 'compose') {
