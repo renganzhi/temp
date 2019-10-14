@@ -1491,9 +1491,10 @@ html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
     color: #026bfe;
   }
-  #mainEdit-edit .menu-list {
-    background: #fff;
-    color: #50607c;
+  #mainEdit-edit .context-menu-item{
+    background-color: #fff;
+    color:#50607c;
+    box-shadow: 4px 4px 12px rgba(0,0,0,.1);
   }
   .color-w15 {
     background: #fff;
