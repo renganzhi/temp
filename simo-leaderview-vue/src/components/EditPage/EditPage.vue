@@ -2,7 +2,7 @@
   <!-- class="wrap moniwrap nofooter" -->
   <!-- padding: 10px; padding-bottom: 0px; -->
   <div id="editHome-wrap"
-       style="height: 100%;">
+       style="height: 100%; padding: 15px;">
     <AddPage :showModal="addPage"
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
