@@ -440,7 +440,6 @@ export default {
     this.axios.get('/alert/currencyAlertmanager/findAlertLevelList').then((res) => {
       this.changeAlertInfo(res.obj)
     })
-    $('#page_container').css('padding', '0px')
   },
   mounted: function () {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
@@ -460,7 +459,6 @@ export default {
   beforeDestroy: function () {
   },
   destroyed: function () {
-    $('#page_container').css('padding', '')
     if ($('.tooltip').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
@@ -537,11 +535,12 @@ export default {
 }
 
 #home-html .btm-tools {
-  margin-bottom: -8px;
+  margin-bottom: -3px;
   position: fixed;
   bottom: 12px;
   width: 100%;
   padding-right: 30px;
+  padding-left: 15px;
 }
 
 #home-html .btm-tools.full {
