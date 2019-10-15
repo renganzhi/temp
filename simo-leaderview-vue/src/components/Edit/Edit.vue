@@ -76,6 +76,8 @@
                         </DragBox>
                         <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
                     </div>
+                    <!-- 触发框选时覆盖在元件之上的div，这样不会和元件的拖拽事件相冲突 -->
+                    <div id="inWrap" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}"></div>
                   </div>
                 </div>
 
@@ -963,6 +965,7 @@ $headHeight: 50px;
 
 .m-main {
   position: relative;
+  background: #141929;
 }
 .scaleBox{
   position: fixed;
@@ -988,6 +991,19 @@ $headHeight: 50px;
   height: 100%;
   background-repeat: repeat;
   position: relative;
+}
+.paint-bg {
+  position: relative;
+}
+#inWrap {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: none;
+  z-index: 1999;
 }
 
 .gridBg{
