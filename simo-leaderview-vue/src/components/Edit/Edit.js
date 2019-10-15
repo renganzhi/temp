@@ -166,6 +166,11 @@ export default {
         top: 0, // 多选情况下输入框改变前的y位移
         width: 0,
         height: 0
+      },
+      // 框选的鼠标起点
+      chooseStart: {
+        posX: 0,
+        posY: 0
       }
     }
   },
@@ -2012,13 +2017,11 @@ export default {
       var posx = e.offsetX
       var posy = e.offsetY
       var div = document.createElement('div')
-      div.className = 'tempDiv'
+      // div.className = 'tempDiv'
       div.style.left = posx + 'px'
       div.style.top = posy + 'px'
 
       stateBar.onmousemove = function (ev) {
-        // stateBar.appendChild(div)
-        // _this.selectArea.choose = false
         ev = ev || window.event
         // 获取盒子在整个页面的位置
         var clientX = ev.offsetX
@@ -2029,11 +2032,14 @@ export default {
         div.style.width = Math.abs(posx - clientX) + 'px'
         div.style.height = Math.abs(posy - clientY) + 'px'
         if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
-          stateBar.appendChild(div)
-          if ($('.tempDiv').length > 1) {
-            $('.tempDiv').eq(0).remove()
-          }
-          _this.selectArea.choose = false
+          $('#inWrap').show()
+          var inWrap = document.getElementById('inWrap')
+          _this.chooseStart.posX = posx
+          _this.chooseStart.posY = posy
+          inWrap.addEventListener('mousemove', _this.wrapChoose)
+          stateBar.onmousemove = null
+          stateBar.onmouseup = null
+          // return
         }
         // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
       }
@@ -2056,6 +2062,57 @@ export default {
           }
           ee.preventDefault()
         })
+        stateBar.onmousemove = null
+        stateBar.onmouseup = null
+      }
+    },
+    wrapChoose: function (ev) {
+      var _this = this
+      var stateBar = document.getElementById('inWrap')
+      // 获取鼠标起点位置，并绘制div起点
+      var posx = this.chooseStart.posX
+      var posy = this.chooseStart.posY
+      var div = document.createElement('div')
+      div.className = 'tempDiv'
+      div.style.left = posx + 'px'
+      div.style.top = posy + 'px'
+
+      ev = ev || window.event
+      // 获取盒子在整个页面的位置
+      var clientX = ev.offsetX
+      var clientY = ev.offsetY
+      div.style.left = Math.min(clientX, posx) + 'px'
+      div.style.top = Math.min(clientY, posy) + 'px'
+      div.style.width = Math.abs(posx - clientX) + 'px'
+      div.style.height = Math.abs(posy - clientY) + 'px'
+      stateBar.appendChild(div)
+      if ($('.tempDiv').length > 1) {
+        $('.tempDiv').eq(0).remove()
+      }
+      _this.selectArea.choose = false
+
+      stateBar.onmouseup = function () {
+        var tempDiv = document.getElementsByClassName('tempDiv')[0]
+        if (tempDiv) {
+          setTimeout(() => {
+            _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+            $('.tempDiv').remove()
+            $('#inWrap').empty()
+            $('#inWrap').hide()
+            stateBar.removeEventListener('mousemove', _this.wrapChoose)
+          }, 0)
+        }
+        // div.addEventListener('contextmenu', function (ee) {
+        //   if (_this.chooseCompIndexs.length + _this.chooseIndexs.length > 0) {
+        //     $(_this.$refs.contextMenu)
+        //       .css({
+        //         left: ee.pageX,
+        //         top: ee.pageY
+        //       })
+        //       .toggle(true)
+        //   }
+        //   ee.preventDefault()
+        // })
         stateBar.onmousemove = null
         stateBar.onmouseup = null
       }
