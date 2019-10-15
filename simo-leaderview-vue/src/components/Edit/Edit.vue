@@ -1491,7 +1491,10 @@ html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
     color: #026bfe;
   }
-  #mainEdit-edit .context-menu-item{
+  #mainEdit-edit .menu-list {
+    background: #fff;
+  }
+  #mainEdit-edit .context-menu-item {
     background-color: #fff;
     color:#50607c;
     box-shadow: 4px 4px 12px rgba(0,0,0,.1);
@@ -1500,16 +1503,16 @@ html[data-theme="blackWhite"]{
     background: #fff;
   }
 }
-html[data-theme="blueWhite"]{
+html[data-theme="blueWhite"] {
   .m-right .active, .set-map {
     color: #60abff;
   }
-   #mainEdit-edit .menu-list {
+  #mainEdit-edit .menu-list {
     background: #fff;
     color: #666666;
   }
 }
-html[data-theme="default"]{
+html[data-theme="default"] {
   .m-gap {
     color: #fff;
   }
