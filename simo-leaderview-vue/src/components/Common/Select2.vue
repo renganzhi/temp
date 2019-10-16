@@ -41,11 +41,15 @@ export default {
     var vm = this
     this.init()
     $(this.$el).on('change', function () {
-      console.log('change select')
+      // console.log('change select')
       vm.$emit('input', $(this).val())
     }).on('select2:selecting', function (e) {
       if (vm.obj.type === 'multi-select' && e.params && e.params.args && e.params.args.data) {
         var v = $(this).val()
+        // 这里设置最多可选项
+        if (v && vm.obj.maxLength && (v.length > vm.obj.maxLength - 1)) {
+          return e.preventDefault()
+        }
         if (e.params.args.data.id === '') { // 选择不限
           $(this).val(null)
         } else { // 选中其他
@@ -70,6 +74,7 @@ export default {
     init: function (v) {
       var multi = this.obj.type === 'multi-select'
       var value = typeof v === 'undefined' ? this.value : v
+      // var maxLen = this.obj.maxLength || -1
       // if (this.mapSelect && this.sameName && !value) {
       //   value = this.obj[0].name
       // }
@@ -77,6 +82,7 @@ export default {
       $(this.$el).select2({
         multiple: multi,
         closeOnSelect: !multi
+        // maximumSelectionLength: maxLen, // 该属性设置最多可选项有bug
       }).val(value).trigger('change')
     }
   },
