@@ -88,7 +88,7 @@ export default {
           color: ['#E0022B', '#E09107', '#A3E00B'],
           // itemSymbol: 'none',
           show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
-          hoverLink: true,
+          hoverLink: false,
           showLabel: true,
           textStyle: {
             color: '#fff'
