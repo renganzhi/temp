@@ -1465,6 +1465,11 @@ export default {
                 if (_this.isArray(data.obj) && data.obj.length > 0) {
                   if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
                     _this.syst.windowObj = data.obj
+                    if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
+                      _this.syst.windowData = _this.initWindowData(data.obj)
+                      // 初始化弹窗赋值并展示
+                    }
+                    _this.showWindowBtn = true
                   }
                 }
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
@@ -1491,9 +1496,6 @@ export default {
       this.syst.curConf.params[d.key] = !d.notNull
         ? null
         : (d.data.length && d.data[0].value) || null
-    },
-    isArray (o) {
-      return Object.prototype.toString.call(o) === '[object Array]'
     },
     chgSelects (v) {
       // 需要判断是否有改变联动下拉框的值，需要重新请求
@@ -1577,7 +1579,7 @@ export default {
       var _this = this
       var curConf = this.syst.curConf
       var param = curConf.params
-      if (param.hasOwnProperty('windows')) {
+      if (this.showWindowBtn && param.hasOwnProperty('windows')) {
         param.windows = JSON.stringify(this.syst.windowData) // 保存弹窗填写的数据
       }
       if (this.selectedItem.chartType === 'topo') {
