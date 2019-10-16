@@ -1603,6 +1603,10 @@ export default {
           if (data.obj.colors) {
             _this.selectedItem.ctColors = data.obj.colors
             _this.selectedItem.colorType = 'defalut'
+          } else {
+            if (_this.selectedItem.colorType === 'defalut') {
+              _this.selectedItem.ctColors = _this.defalutColors.concat()
+            }
           }
           _this.selectedItem.chartData = data.obj
           _this.selectedItem.url = curConf.url
