@@ -656,7 +656,7 @@
 
                                   <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
                                     <label>数据设置</label>
-                                    <div class="setMapData">
+                                    <div class="setMapData" style="height: 180px;">
                                       <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
                                     </div>
                                   </div>
@@ -722,14 +722,14 @@
           </div>
           <div class="modal-body" style="height: 450px; overflow: auto;">
             <form autocomplete="off" v-for="(list, i) in syst.windowObj" :key="i">
-              <div class="form-group">
-                <label class="page-lable page-title">指标： {{list.indicator.name}}</label>
+              <div class="form-group modal-label">
+                <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
                 <div class="page-lable-content">
                   <span>属性：</span>
                   <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :obj="list.fields"></Select2>
                 </div>
               </div>
-              <div class="form-group" v-for="(item, index) in list.ne" :key="index">
+              <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">
                 <label class="page-title">资源{{index+1}}: {{item.name}}</label><label class="page-title">资源类型：{{item.neClass}}</label>
                 <div class="page-lable-content" v-if="item.component.length > 0">
                   <span>部件：</span>
@@ -931,7 +931,6 @@ $headHeight: 50px;
   // border: 1px solid #0088cc;
   // background: transparent;
   margin-top: -5px;
-  border-radius: 5px;
   outline: none;
 }
 #mainEdit-edit .noSlected .m-tabMain {
@@ -1289,7 +1288,6 @@ label.error {
     background: #1b2031;
 }
 .colorToall {
-    border-radius: 5px;
     width: 90%;
     margin-left: 5%;
     font-size: 14px;
@@ -1420,19 +1418,38 @@ label.error {
   .form-group {
     line-height: 28px;
   }
- .page-title {
-    width: auto;
+ .form-content .page-title {
     margin-right: 20px;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   select {
     width: 195px !important;
   }
   .page-lable {
     font-weight: bold;
+    width: 150px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .page-lable i {
+    font-size: 12px;
+    color: #0088cc;
+  }
+  .form-content {
+    margin-left: 13px;
   }
   .page-lable-content, .page-title {
     display: inline-block;
     margin-left: 0px;
+    overflow: hidden;
+  }
+  .form-group {
+    margin-bottom: 10px;
   }
 }
 /*颜色选择器*/
@@ -1455,7 +1472,7 @@ html[data-theme="blueWhite"] {
     z-index: 102;
     box-shadow: 0 0 16px rgba(0,0,0,0.1);
     }
-    .m-left, .m-right{
+    .m-left, .m-right {
       background: #fff;
     }
     .m-tabMain, .paintWrap, .edit-keyboard{
@@ -1502,6 +1519,9 @@ html[data-theme="blueWhite"] {
   .colorToall {
     color: #026bf4;
   }
+  #partsEdit-modal .page-lable i{
+    color:#026bf4;
+  }
 }
 html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
@@ -1531,6 +1551,14 @@ html[data-theme="blueWhite"] {
 html[data-theme="default"] {
   .m-gap {
     color: #fff;
+  }
+  #partsEdit-modal {
+    .modal-label {
+      color:#c2c6d7;
+    }
+    .form-content {
+      color: #909ab7;
+    }
   }
 }
 </style>
