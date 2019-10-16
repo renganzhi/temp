@@ -118,8 +118,8 @@ export default {
             normal: {
               // color: 'red', // 展示指标及圆点的颜色
               // areaColor: '#294671', // 地图区域的颜色!
-              areaColor: 'rgba(35, 60, 102, 0.5)',
-              borderColor: 'rgba(53, 128, 205, 0.5)',
+              areaColor: '#121a33',
+              borderColor: '#38597b',
               borderWidth: 0.5
               // shadowColor: 'rgba(0, 0, 0, 1)',
               // shadowBlur: 6

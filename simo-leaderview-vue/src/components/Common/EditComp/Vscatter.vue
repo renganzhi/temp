@@ -110,9 +110,9 @@ export default {
           itemStyle: {
             normal: {
               // areaColor: 'rgba(172, 191, 220, 0.5)',
-              areaColor: 'rgba(104, 150, 197, 0.5)',
-              borderColor: '#222739',
-              borderWidth: 0.3,
+              areaColor: '#333e61',
+              borderColor: '#141929',
+              borderWidth: 0.5,
               // borderWidth: 0.5,
               shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
@@ -133,7 +133,7 @@ export default {
           rippleEffect: { // 涟漪特效
             period: 4, // 动画时间，值越小速度越快
             brushType: 'stroke', // 波纹绘制方式 stroke, fill
-            scale: 4 // 波纹圆环最大限制，值越大波纹越大
+            scale: 6 // 波纹圆环最大限制，值越大波纹越大
           },
           // showEffectOn: 'emphasis',
           // rippleEffect: {

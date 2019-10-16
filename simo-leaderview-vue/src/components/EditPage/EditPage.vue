@@ -303,13 +303,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$test: rgba(13, 17, 31, 0.8);
 .page-item {
   position: relative;
   height: 206px;
   margin: 12px;
   width: 310px;
-  box-shadow: 1px 1px 4px 4px #191d2b;
+  box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 .page-item .page-title {
