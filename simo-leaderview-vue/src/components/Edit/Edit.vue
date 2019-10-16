@@ -731,9 +731,9 @@
               </div>
               <div class="form-group" v-for="(item, index) in list.ne" :key="index">
                 <label class="page-title">资源{{index+1}}: {{item.name}}</label><label class="page-title">资源类型：{{item.neClass}}</label>
-                <div class="page-lable-content">
+                <div class="page-lable-content" v-if="item.component.length > 0">
                   <span>部件：</span>
-                  <Select2 v-if="item.component.length > 0" v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :obj="item.component"></Select2>
+                  <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :obj="item.component"></Select2>
                 </div>
               </div>
             </form>
