@@ -233,9 +233,9 @@ export default {
     changeEdit (index) {
       this.editName = this.pageList[index].name
       this.editIndex = index
-      this.$nextTick(function () {
-        // cTthis.addValidator()
-      })
+      // this.$nextTick(function () {
+      // cTthis.addValidator()
+      // })
     },
     changeName (index, item) {
       // var _this = this
@@ -283,6 +283,20 @@ export default {
     },
     exitwrap () {
       // typeof cTthis.pram.exitCb === 'function' && cTthis.pram.exitCb()
+    }
+  },
+  watch: {
+    editName: function (newV, oldV) {
+      // 缩略图编辑校验，不能输入特殊字符
+      if (newV.length > 12) {
+        this.editName = oldV
+      } else {
+        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
+        var flag = (!str.test(newV)) && !/\s/.test(newV)
+        if (!flag) {
+          this.editName = oldV
+        }
+      }
     }
   },
   mounted: function () {

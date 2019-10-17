@@ -111,6 +111,10 @@ export default {
         this.errMsg = '必填项'
         this.showErr = true
         return
+      } else if (this.name.length > 12) {
+        this.errMsg = '最大长度为12个字符'
+        this.showErr = true
+        return
       } else {
         var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
         var flag = (!str.test(this.name)) && !/\s/.test(this.name)
