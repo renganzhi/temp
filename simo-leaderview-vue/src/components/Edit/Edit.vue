@@ -598,8 +598,8 @@
                                 <div class="form-group cols2">
                                     <label>取值来源</label>
                                     <select v-model="selectedItem.timeSource">
-                                        <option value="local">本机</option>
-                                        <option value="system">服务器</option>
+                                        <option value="local">客户端</option>
+                                        <option value="system">服务端</option>
                                     </select>
                                 </div>
                             </div>
@@ -894,6 +894,8 @@ $headHeight: 50px;
     transform-origin: top left;
     transform: scale(1);
     overflow: hidden;
+    margin-top: 15px;
+    margin-left: 15px;
     box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 12px;
 }
 .paint{
@@ -1290,7 +1292,6 @@ label.error {
 .colorToall {
     width: 90%;
     margin-left: 5%;
-    font-size: 14px;
     color: #fff;
     margin-top: 15px;
 }
@@ -1505,7 +1506,7 @@ html[data-theme="blueWhite"] {
       border: 1px solid #026bf4 !important;
     }
     .sp-replacer, .sp-replacer:hover {
-      border: solid 1px #fff !important;
+      border: solid 1px #adb9ca !important;
       color: #666f8b;
     }
     .edit-opt {
