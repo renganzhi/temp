@@ -1533,7 +1533,9 @@ export default {
             data: postData,
             success: function (data) {
               data.obj = data.obj || []
-              d.data.splice(0, d.data.length)
+              if (_this.isArray(d.data)) {
+                d.data.splice(0, d.data.length)
+              }
               d.data = data.obj
               // 判断是否是获取的多资源的部件和属性
               _this.getWindowObj(data)
@@ -1583,6 +1585,8 @@ export default {
       var param = curConf.params
       if (this.showWindowBtn && param.hasOwnProperty('windows')) {
         param.windows = JSON.stringify(this.syst.windowData) // 保存弹窗填写的数据
+      } else if (param.windows) {
+        param.windows = null
       }
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param)
