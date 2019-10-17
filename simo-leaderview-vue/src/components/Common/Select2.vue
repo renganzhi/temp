@@ -124,8 +124,9 @@ export default {
   },
   destroyed: function () {
     $(this.$el).off().select2('destroy')
-  },
-  destoryed: function () {
+    if ($(this.$el).find('.tooltip').length > 0) {
+      $(this.$el).find('[title]').tooltip('destroy')
+    }
   }
 }
 </script>

@@ -660,7 +660,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.m-right'))
+          titleShow('bottom', $('.e-legend'))
         })
       }
     },
@@ -870,7 +870,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.m-right'))
+          titleShow('bottom', $('.e-legend'))
         })
       }
       if (ev !== 'move') {
@@ -2557,7 +2557,7 @@ export default {
     $('.page-container').css('top', '0px')
     this.chooseMap()
     if (!gbs.inDev) {
-      titleShow()
+      titleShow('bottom', $('.e-legend'))
     }
     // 初始化paintInput
     document.addEventListener('keydown', this.handleKeyDown)

@@ -76,10 +76,12 @@ export default {
     }
   },
   mounted: function () {
-    titleShow()
+    titleShow('bottom', $(this.$el))
   },
   destroyed: function () {
-    $(this.$el).find('[title]').tooltip('destroy')
+    if ($(this.$el).find('.tooltip').length > 0) {
+      $(this.$el).find('[title]').tooltip('destroy')
+    }
     // this.$destroy(true)
   }
 }
