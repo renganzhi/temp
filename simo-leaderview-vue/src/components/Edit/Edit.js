@@ -498,7 +498,7 @@ export default {
       if (id) {
         this.getMapData(id).then((data) => {
           this.cityArr = data
-          console.log('===========' + this.selectedItem.mapLevel + '=========')
+          // console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
             if (this.selectedItem.chartType === 'v-map') {
@@ -534,7 +534,7 @@ export default {
       }
     },
     chgAreaName (name, index) {
-      console.log('chgAreaName:' + name)
+      // console.log('chgAreaName:' + name)
       if (name) {
         this.selectedPositn[index] = name
       }
@@ -557,8 +557,10 @@ export default {
       } else {
         this.progressObj.height = this.selectedItem.proHeight
       }
-      this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
-      this.progressObj.radius = this.selectedItem.radius
+      if (this.selectedItem.radius > Math.ceil(this.selectedItem.proHeight / 2)) {
+        this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
+        this.progressObj.radius = this.selectedItem.radius
+      }
     },
     // 改变进度条元件的圆角
     changeRadius () {
@@ -1938,8 +1940,8 @@ export default {
       var stateBar = document.getElementById('chooseWrap')
       // var posLeft = stateBar.clientLeft
       // var posTop = stateBar.clientTop
-      var posLeft = 210 // 左侧宽度
-      var posTop = 38 // 顶部banner的高度
+      // var posLeft = 210 // 左侧宽度
+      // var posTop = 38 // 顶部banner的高度
       stateBar.addEventListener('mousedown', _this.userChoose)
       /*     var _this = this
         console.log('注册框选事件')
@@ -2341,7 +2343,7 @@ export default {
         //   : '高度范围为' + this.miniW + '~' + (limitValue)
       } else {
         var limitValue = defData - selectData + allowOverflow // 可设置的最大值
-        if (newValue < -allowOverflow || newValue > limitValue) {
+        if ((newValue !== 0 && !newValue) || newValue < -allowOverflow || newValue > limitValue) {
           this[valiType].isShowError = true
           this[valiType].errorMsg = isX
             ? '横轴位置范围为' + -allowOverflow + '~' + (limitValue)
