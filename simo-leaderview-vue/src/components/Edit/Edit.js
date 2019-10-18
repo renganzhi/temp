@@ -1061,6 +1061,10 @@ export default {
         arr[i].x = arr[i].x - _left
         arr[i].y = arr[i].y - _top
         arr[i].slted = false
+        arr[i].oldX = arr[i].x
+        arr[i].oldY = arr[i].y
+        arr[i].oldW = arr[i].width
+        arr[i].oldH = arr[i].height
       }
       var newObj = $.extend(
         true, {}, {
@@ -1083,6 +1087,7 @@ export default {
       this.removeItem()
 
       this.selectedItem = this.combinList[this.combinList.length - 1]
+      this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseCompIndexs = [this.combinList.length - 1] // 设置右边的值
       if (this.selectArea.choose) {
         this.selectArea.choose = false
@@ -1131,11 +1136,11 @@ export default {
         item.x = item.x + this.combinList[index].x
         item.y = item.y + this.combinList[index].y
         item.id = item.id + parseInt(Math.random() * 1000) // 复制的元素id一样
-        // item.x = item.left + this.combinList[index].x
-        // item.y = item.top + this.combinList[index].y
-        item.width = parseInt(item.width * this.combinList[index].sacleX)
-        item.height = parseInt(item.height * this.combinList[index].sacleY)
         item.slted = true
+        delete item.oldH
+        delete item.oldW
+        delete item.oldX
+        delete item.oldY
         this.chartNum.push(item)
         this.chooseIndexs.push(this.chartNum.length - 1)
       })

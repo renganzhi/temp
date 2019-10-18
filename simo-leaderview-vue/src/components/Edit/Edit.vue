@@ -141,14 +141,14 @@
                           <div class="form-group" style="height: 30px;">
                             <div class="fl" style="position: relative;">
                                 <label>宽</label>
-                                <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.width">
+                                <input class="w-90" type="number" @change="changeTarget('x')" v-model.lazy="testObj.width">
                                 <span @click="testObj.width--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                 <span @click="testObj.width++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                 <label class="error" v-if="widthVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{widthVali.errorMsg}}</label>
                             </div>
                             <div class="fr" style="position: relative;">
                                 <label>高</label>
-                                <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.height">
+                                <input class="w-90" type="number" @change="changeTarget('y')" v-model.lazy="testObj.height">
                                 <span @click="testObj.height--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                 <span @click="testObj.height++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                 <label class="error" v-if="heightVali.isShowError" style="right: 8px; margin-top: 5px;">{{heightVali.errorMsg}}</label>
@@ -157,14 +157,14 @@
                           <div class="form-group" style="height: 30px;">
                             <div class="fl" style="position: relative;">
                                 <label>X</label>
-                                <input class="w-90" type="number" @change="changeTarget('x')" v-model="testObj.x">
+                                <input class="w-90" type="number" @change="changeTarget('x')" v-model.lazy="testObj.x">
                                 <span @click="testObj.x--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                 <span @click="testObj.x++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                 <label class="error" v-if="xVali.isShowError" style="margin-left: 22px;margin-top: 5px;">{{xVali.errorMsg}}</label>
                             </div>
                             <div class="fr" style="position: relative;">
                                 <label>Y</label>
-                                <input class="w-90" type="number" @change="changeTarget('y')" v-model="testObj.y">
+                                <input class="w-90" type="number" @change="changeTarget('y')" v-model.lazy="testObj.y">
                                 <span @click="testObj.y--" class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                                 <span @click="testObj.y++" class="input-arrow"><i class="icon-n-arrowUp"></i></span>
                                 <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>

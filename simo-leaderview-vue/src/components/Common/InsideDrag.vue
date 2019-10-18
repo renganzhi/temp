@@ -15,6 +15,8 @@
               :y="Number(item.y)"
               :z="item.zIndex || 500"
               :item="item"
+              :parentW="Number(parentW)"
+              :parentH="Number(parentH)"
               @childResize="childResize"
               @resizing="resizing"
               @bodyDown="bodyDown"
@@ -71,7 +73,7 @@ import Vscatter from './EditComp/Vscatter' // 散点图
 
 export default {
   name: 'insideDrag',
-  props: ['item', 'editable', 'index', 'parentIndex'],
+  props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
   components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
   data () {
     return {
@@ -109,6 +111,32 @@ export default {
     contextMenu (item, ev) {
       this.$emit('selected', item, 'context', 'item', this.index)
       this.$emit('context', this.index, ev)
+    }
+  },
+  watch: {
+    sacleX: function (newV) {
+      this.$nextTick(() => {
+        this.item.width = parseInt(this.item.oldW * newV)
+        this.item.x = parseInt(this.item.oldX * newV)
+      })
+    },
+    sacleY: function (newV) {
+      this.$nextTick(() => {
+        this.item.height = parseInt(this.item.oldH * newV)
+        this.item.y = parseInt(this.item.oldY * newV)
+      })
+    },
+    'item.x': function (newV) {
+      this.item.oldX = (newV / this.sacleX)
+    },
+    'item.y': function (newV) {
+      this.item.oldY = (newV / this.sacleY)
+    },
+    'item.width': function (newV) {
+      this.item.oldW = (newV / this.sacleX)
+    },
+    'item.height': function (newV) {
+      this.item.oldH = (newV / this.sacleY)
     }
   },
   beforeDestroy () {
