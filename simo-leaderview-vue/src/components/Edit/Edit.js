@@ -1422,6 +1422,9 @@ export default {
           return o.url === _this.selectedItem.url
         })
       } else {
+        if (!flag) {
+          index = 0
+        }
         selectedP = this.syst.curConf.params = {}
       }
 
