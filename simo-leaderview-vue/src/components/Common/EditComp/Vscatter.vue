@@ -109,11 +109,9 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              // areaColor: 'rgba(172, 191, 220, 0.5)',
-              areaColor: '#333e61',
-              borderColor: '#141929',
+              areaColor: this.item.themeType === '1' ? '#333e61' : '#cfd9e3',
+              borderColor: this.item.themeType === '1' ? '#141929' : '#a2b1c0',
               borderWidth: 0.5,
-              // borderWidth: 0.5,
               shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
             }
@@ -146,7 +144,7 @@ export default {
             normal: {
               formatter: '{b}',
               position: 'right',
-              color: '#fff',
+              color: this.item.themeType === '1' ? '#fff' : '#50607c',
               show: this.item.ctLegendShow === 'true' // false
             },
             emphasis: {
@@ -180,7 +178,7 @@ export default {
         //     label: {
         //       show: false, // 选中区域的文字展示
         //       textStyle: {
-        //         color: '#000' // 选中之后的字体颜色!
+        //         color: '#50607c' // 选中之后的字体颜色!
         //       }
         //     },
         //     itemStyle: {
@@ -231,6 +229,11 @@ export default {
     }
   },
   watch: {
+    'item.themeType': function (newV) {
+      this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
+      this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
+      this.extend.series.label.normal.color = newV === '1' ? '#fff' : '#50607c'
+    },
     'item.ctLegendShow': function (newV, oldValue) {
       this.extend.series.label.normal.show = newV === 'true'
     },

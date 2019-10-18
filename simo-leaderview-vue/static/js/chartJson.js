@@ -399,6 +399,7 @@ var compsArr = [{
   provinceCode: '',
   cityCode: '',
   visualPosition: 'left',
+  themeType: '1', // 1深色 2浅色
   piecesData: [
     { min: 0, max: 50 },
     { min: 51, max: 100 },
@@ -417,6 +418,7 @@ var compsArr = [{
   ctLegendShow: 'true', // 地名是否展示
   provinceCode: '',
   cityCode: '',
+  themeType: '1',
   visualPosition: 'left',
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData

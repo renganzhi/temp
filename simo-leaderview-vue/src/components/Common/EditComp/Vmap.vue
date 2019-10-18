@@ -91,7 +91,7 @@ export default {
           hoverLink: false,
           showLabel: true,
           textStyle: {
-            color: '#fff'
+            color: this.item.themeType === '1' ? '#fff' : '#50607c'
           }
         },
         tooltip: {
@@ -118,8 +118,8 @@ export default {
             normal: {
               // color: 'red', // 展示指标及圆点的颜色
               // areaColor: '#294671', // 地图区域的颜色!
-              areaColor: '#121a33',
-              borderColor: '#38597b',
+              areaColor: this.item.themeType === '1' ? '#121a33' : '#cfd9e3',
+              borderColor: this.item.themeType === '1' ? '#38597b' : '#a2b1c0',
               borderWidth: 0.5
               // shadowColor: 'rgba(0, 0, 0, 1)',
               // shadowBlur: 6
@@ -183,6 +183,11 @@ export default {
     }
   },
   watch: {
+    'item.themeType': function (newV) {
+      this.extend.series.itemStyle.normal.areaColor = newV === '1' ? '#121a33' : '#cfd9e3'
+      this.extend.series.itemStyle.normal.borderColor = newV === '1' ? '#38597b' : '#a2b1c0'
+      this.extend.visualMap.textStyle.color = newV === '1' ? '#fff' : '#50607c'
+    },
     'item.ctLegendShow': function (newV, oldValue) {
       this.extend.visualMap.show = newV === 'true'
     },
