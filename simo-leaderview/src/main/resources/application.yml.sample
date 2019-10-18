@@ -25,6 +25,11 @@ spring:
     host: ${redishost}
     port: ${redisport}
     password: uxsino@2016
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
   http:
     encoding:
       charset: UTF-8
