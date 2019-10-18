@@ -34,6 +34,10 @@
       <InsideDrag v-for="(item,_index) in list.child"
                   :index="_index"
                   :item="item"
+                  :sacleX="list.sacleX"
+                  :sacleY="list.sacleY"
+                  :parentW="list.width"
+                  :parentH="list.height"
                   @childChoose="childChoose"
                   @childResize="childResize"
                   @selected="selected"
@@ -72,8 +76,8 @@ export default {
         top: 0,
         left: 0,
         float: 'left',
-        transformOrigin: 'left top',
-        transform: 'scale(' + this.list.sacleX + ', ' + this.list.sacleY + ')'
+        transformOrigin: 'left top'
+        // transform: 'scale(' + this.list.sacleX + ', ' + this.list.sacleY + ')'
       }
     }
   },
@@ -98,11 +102,13 @@ export default {
     resizing (list, attr) {
       list.width = attr.width
       list.height = attr.height
-      var sacleX = attr.width / this.oldWidth
-      this.list.sacleX = Number(sacleX.toFixed(5))
-      var sacleY = attr.height / this.oldHeight
-      this.list.sacleY = Number(sacleY.toFixed(5))
       this.$emit('resized', attr)
+      this.$nextTick(() => {
+        var sacleX = attr.width / this.oldWidth
+        var sacleY = attr.height / this.oldHeight
+        this.list.sacleX = Number(sacleX.toFixed(5))
+        this.list.sacleY = Number(sacleY.toFixed(5))
+      })
     },
     childResize (attr) {
       this.$emit('childResize', attr)
