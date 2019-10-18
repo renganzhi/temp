@@ -476,6 +476,13 @@
                                           <option value="false">隐藏</option>
                                       </select>
                                   </div>
+                                  <div class="form-group cols2">
+                                      <label>主题</label>
+                                      <select v-model="selectedItem.themeType">
+                                          <option value="1">深色</option>
+                                          <option value="2">浅色</option>
+                                      </select>
+                                  </div>
                               </div>
                             </div>
                             <div class="e-legend" v-if="selectedItem.chartType=='v-map'">
@@ -493,6 +500,13 @@
                                       <select v-model="selectedItem.visualPosition">
                                           <option value="left">底部靠左</option>
                                           <option value="right">底部靠右</option>
+                                      </select>
+                                  </div>
+                                  <div class="form-group cols2">
+                                      <label>主题</label>
+                                      <select v-model="selectedItem.themeType">
+                                          <option value="1">深色</option>
+                                          <option value="2">浅色</option>
                                       </select>
                                   </div>
                                   <div class="form-group cols2">
