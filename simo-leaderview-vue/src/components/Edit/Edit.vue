@@ -634,15 +634,15 @@
                                     </div>
                                     <div id="mainSystemConf" >
                                         <div class="form-group cols2" v-for="(v,idx) in syst.curUrl" :key="idx">
-                                            <label>{{v.name}}</label>
+                                            <label v-if="v.type=='drop-down' || v.type=='multi-select'" >{{v.name}}</label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                             </Select2>
                                         </div>
                                     </div>
-                                    <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="margin-top: -80px; margin-left: 67px;">配置资源指标详细</button>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>
+                                <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter'">
                                     <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
                                 </div>
@@ -736,16 +736,16 @@
           </div>
           <div class="modal-body" style="height: 450px; overflow: auto;">
             <form autocomplete="off" v-for="(list, i) in syst.windowObj" :key="i">
-              <div class="form-group modal-label">
+              <div class="form-group modal-label" style="width: 100%">
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
-                <div class="page-lable-content">
+                <div class="page-lable-content" v-if="list.fields && list.fields.length > 0">
                   <span>属性：</span>
                   <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :obj="list.fields"></Select2>
                 </div>
               </div>
               <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">
                 <label class="page-title">资源{{index+1}}: {{item.name}}</label><label class="page-title">资源类型：{{item.neClass}}</label>
-                <div class="page-lable-content" v-if="item.component.length > 0">
+                <div class="page-lable-content" v-if="item.component && item.component.length > 0">
                   <span>部件：</span>
                   <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :obj="item.component"></Select2>
                 </div>
@@ -1432,6 +1432,7 @@ label.error {
 #partsEdit-modal {
   .form-group {
     line-height: 28px;
+    height: 28px;
   }
  .form-content .page-title {
     margin-right: 20px;

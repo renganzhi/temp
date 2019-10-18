@@ -1365,6 +1365,9 @@ export default {
       $event &&
         this.selectedItem.ctDataSource === 'system' &&
         this.getUrlByType()
+      if (this.selectedItem.ctDataSource === 'static') {
+        this.showWindowBtn = false
+      }
     },
     dealTypeStr: function () {
       // 根据需求传值给后端对应的接口
@@ -1472,14 +1475,16 @@ export default {
               type: d.method || 'get',
               success: function (data) {
                 d.data = data.obj || []
-                if (_this.isArray(data.obj) && data.obj.length > 0) {
-                  if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
+                if (data.msg === 'windows') {
+                  if (_this.isArray(data.obj) && data.obj.length > 0) {
                     _this.syst.windowObj = data.obj
                     if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
                       _this.syst.windowData = _this.initWindowData(data.obj)
                       // 初始化弹窗赋值并展示
                     }
                     _this.showWindowBtn = true
+                  } else {
+                    _this.showWindowBtn = false
                   }
                 }
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
@@ -1546,7 +1551,9 @@ export default {
               }
               d.data = data.obj
               // 判断是否是获取的多资源的部件和属性
-              _this.getWindowObj(data)
+              if (data.msg === 'windows') {
+                _this.getWindowObj(data)
+              }
               //  console.log(v.key,d.dataUrl,postData);
             }
           })
@@ -1557,13 +1564,14 @@ export default {
     getWindowObj (data) {
       this.showWindowBtn = false
       if (this.isArray(data.obj) && data.obj.length > 0) {
-        if (data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')) {
-          this.syst.windowObj = data.obj
-          this.syst.windowData = []
-          this.syst.windowData = this.initWindowData(data.obj)
-          this.syst.curConf.params.windows = JSON.stringify(this.syst.windowData)
-          this.showWindowBtn = true
-        }
+        // data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')
+        // if (data.msg === 'windows') {
+        this.syst.windowObj = data.obj
+        this.syst.windowData = []
+        this.syst.windowData = this.initWindowData(data.obj)
+        this.syst.curConf.params.windows = JSON.stringify(this.syst.windowData)
+        this.showWindowBtn = true
+        // }
       }
     },
     initWindowData (data) {
@@ -1571,13 +1579,13 @@ export default {
       data.forEach((item, index) => {
         obj.push({
           'indicator': item.indicator.value,
-          'fields': item.fields[0].value,
+          'fields': (this.isArray(item.fields) && item.fields.length > 0) ? item.fields[0].value : null,
           'ne': []
         })
         item.ne.forEach((list) => {
           obj[index].ne.push({
             'id': list.id,
-            'component': list.component.length > 0 ? list.component[0].value : null
+            'component': (this.isArray(list.component) && list.component.length > 0) ? list.component[0].value : null
           })
         })
       })
