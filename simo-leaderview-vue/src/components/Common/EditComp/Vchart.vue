@@ -52,7 +52,7 @@ export default {
       obj = {
         empty: false,
         keyId: new Date().getTime() + Math.random() * 10000,
-        initOption: { renderer: 'svg' },
+        initOption: { renderer: this.item.chartType === 've-line' ? 'canvas' : 'svg' },
         settings: {
           yAxisType: [0]
         },
@@ -407,6 +407,9 @@ export default {
           obj.settings.area = _this.item.lineArea === 'true'
           // obj.settings.xAxisType = 'time'
           obj.extend = $.extend(obj.extend, {
+            series: {
+              showAllSymbol: false
+            },
             label: {
               show: _this.item.showPoint === 'true'
             },
