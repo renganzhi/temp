@@ -766,12 +766,6 @@ export default {
         if (item.chartType === 'progress') {
           this.progressObj.height = item.proHeight || 16
           this.progressObj.radius = (item.radius === 0) ? 0 : (item.radius || 8)
-          if (this.selectedItem.proHeight === undefined) {
-            this.selectedItem.proHeight = 16
-          }
-          if (this.selectedItem.radius === undefined) {
-            this.selectedItem.radius = 8
-          }
         }
         this.testObj = JSON.parse(JSON.stringify(item))
         if (type === 'compose') {
