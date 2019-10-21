@@ -31,7 +31,7 @@ export default {
         height: (this.item.proHeight || 16) + 'px',
         backgroundColor: this.item.bgClr,
         position: 'relative',
-        borderRadius: (this.item.radius || 8) + 'px',
+        borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         overflow: 'hidden'
       }
     },
@@ -41,7 +41,7 @@ export default {
         height: (this.item.proHeight || 16) + 'px',
         backgroundColor: this.item.barClr,
         position: 'relative',
-        borderRadius: (this.item.radius || 8) + 'px',
+        borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         left: 0,
         top: 0
       }
