@@ -56,6 +56,14 @@ export default {
       return value
     }
   },
+  created: function () {
+    if (this.item.proHeight === undefined) {
+      this.$set(this.item, 'proHeight', 16)
+    }
+    if (this.item.radius === undefined) {
+      this.$set(this.item, 'radius', 8)
+    }
+  },
   watch: {
     // 'item.proHeight': function (newV) {
     //   if (newV < 8 && newV !== '') {
