@@ -737,12 +737,8 @@ html[data-theme="blueWhite"] {
     .content-side .cs-item:hover {
       border: 1px solid #026bf4 !important;
     }
-    .sp-preview {
-      height: 12px;
-    }
     .sp-replacer, .sp-replacer:hover {
-      // border: solid 1px #adb9ca !important;
-      border: none;
+      border: solid 1px #adb9ca !important;
       color: #666f8b;
     }
     .edit-opt {
