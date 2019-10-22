@@ -144,7 +144,7 @@ export default {
             normal: {
               formatter: '{b}',
               position: 'right',
-              color: this.item.themeType === '1' ? '#fff' : '#50607c',
+              color: this.item.themeType === '1' ? '#cad6dd' : '#50607c',
               show: this.item.ctLegendShow === 'true' // false
             },
             emphasis: {
@@ -232,7 +232,7 @@ export default {
     'item.themeType': function (newV) {
       this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
       this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
-      this.extend.series.label.normal.color = newV === '1' ? '#fff' : '#50607c'
+      this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
     },
     'item.ctLegendShow': function (newV, oldValue) {
       this.extend.series.label.normal.show = newV === 'true'
