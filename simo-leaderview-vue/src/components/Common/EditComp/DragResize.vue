@@ -1,6 +1,6 @@
 <template>
   <div class="vdr"
-       :style="style"
+       :style="{'width': this.w + 'px', 'height': this.h + 'px', 'left': this.x + 'px', 'top': this.y + 'px', 'z-index': this.zIndex}"
        :class="active || is-active ? 'active' : 'inactive'"
        @mousedown="bodyDown($event)"
        @dblclick="dbClick($event)"
@@ -187,8 +187,8 @@ export default {
       aspectFactor: this.w / this.h,
       parentWidth: null,
       parentHeight: null,
-      left: this.x,
-      top: this.y,
+      // left: this.x,
+      // top: this.y,
       right: null,
       bottom: null,
       minWidth: this.minw,
@@ -295,7 +295,6 @@ export default {
       }
     },
     dbClick: function (ev) {
-      console.log('内部双击')
       if (this.hasChild || this.insideFlag) {
         this.active = true
       } else {
@@ -677,6 +676,23 @@ export default {
   },
 
   computed: {
+    left: {
+      get: function () {
+        return this.x
+      },
+      set: function (value) {
+        this.$emit('update:x', value)
+      }
+    },
+    top: {
+      get: function () {
+        return this.y
+      },
+      set: function (value) {
+        this.$emit('update:y', value)
+      }
+    },
+
     style () {
       return {
         top: this.top + 'px',

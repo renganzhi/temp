@@ -11,8 +11,8 @@
               :key="item.id"
               :w="Number(item.width)"
               :h="Number(item.height)"
-              :x="Number(item.x)"
-              :y="Number(item.y)"
+              :x.sync="item.x"
+              :y.sync="item.y"
               :z="item.zIndex || 500"
               :item="item"
               :parentW="Number(parentW)"
@@ -114,29 +114,34 @@ export default {
     }
   },
   watch: {
-    sacleX: function (newV) {
-      this.$nextTick(() => {
-        this.item.width = parseInt(this.item.oldW * newV)
-        this.item.x = parseInt(this.item.oldX * newV)
-      })
+    sacleX: {
+      handler: function (newV) {
+        this.$set(this.item, 'width', Math.round(this.item.oldW * newV))
+        this.$set(this.item, 'x', Math.round(this.item.oldX * newV))
+        this.$forceUpdate()
+      },
+      deep: true
+      // immediate: true
     },
-    sacleY: function (newV) {
-      this.$nextTick(() => {
-        this.item.height = parseInt(this.item.oldH * newV)
-        this.item.y = parseInt(this.item.oldY * newV)
-      })
+    sacleY: {
+      handler: function (newV) {
+        this.$set(this.item, 'height', Math.round(this.item.oldH * newV))
+        this.$set(this.item, 'y', Math.round(this.item.oldY * newV))
+        this.$forceUpdate()
+      },
+      deep: true
     },
     'item.x': function (newV) {
-      this.item.oldX = (newV / this.sacleX)
+      this.item.oldX = Math.round(newV / this.sacleX)
     },
     'item.y': function (newV) {
-      this.item.oldY = (newV / this.sacleY)
+      this.item.oldY = Math.round(newV / this.sacleY)
     },
     'item.width': function (newV) {
-      this.item.oldW = (newV / this.sacleX)
+      this.item.oldW = Math.round(newV / this.sacleX)
     },
     'item.height': function (newV) {
-      this.item.oldH = (newV / this.sacleY)
+      this.item.oldH = Math.round(newV / this.sacleY)
     }
   },
   beforeDestroy () {

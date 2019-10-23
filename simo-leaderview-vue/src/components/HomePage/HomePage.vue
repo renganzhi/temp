@@ -9,11 +9,10 @@
                     :index="index"
                     :item="item"
                     :key="(pageIndex+index)"></LookItem>
-          <Compose v-for="(list, index1) in combinList"
-                   :index="index1"
-                   :key="list.id"
-                   :list="list"
-                   :editable="false"></Compose>
+          <LookCompose v-for="(list, index1) in combinList"
+                       :index="index1"
+                       :key="list.id"
+                       :list="list"></LookCompose>
         </div>
       </div>
     </div>
@@ -65,13 +64,13 @@
 <script>
 import { baseData, gbs } from '@/config/settings'
 import LookItem from './../Common/LookItem'
-import Compose from './../Common/Compose'
+import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
 import { Notification } from 'element-ui'
 import { mapActions } from 'vuex'
 export default {
   name: 'HomePage',
-  components: { Notification, LookItem, Compose },
+  components: { Notification, LookItem, LookCompose },
   data () {
     return {
       isFullScreen: false,

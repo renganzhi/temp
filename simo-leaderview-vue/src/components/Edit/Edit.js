@@ -1073,7 +1073,9 @@ export default {
         x: _left,
         y: _top,
         width: _right - _left,
+        oldWidth: _right - _left,
         height: _bottom - _top,
+        oldHeight: _bottom - _top,
         zIndex: _index,
         sacleX: 1,
         sacleY: 1,
@@ -2312,7 +2314,11 @@ export default {
       var isWidth = direct === 'width'
       var valiType = direct + 'Vali'
       var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
-      defData = isWidth ? this.paintObj.width : this.paintObj.height
+      if (this.childResize) {
+        defData = isWidth ? this.combinList[this.parentId].width : this.combinList[this.parentId].height
+      } else {
+        defData = isWidth ? this.paintObj.width : this.paintObj.height
+      }
       var selectData = isWidth ? this.selectedItem.x : this.selectedItem.y // 选中元素的x,y
       var limitValue = defData - selectData + allowOverflow // 可设置的最大值
       // not Number
@@ -2331,7 +2337,7 @@ export default {
         }
       } else {
         this[valiType].isShowError = false
-        this.selectedItem[direct] = newValue
+        this.$set(this.selectedItem, direct, newValue)
       }
     },
     testObjPosChange (position, newValue) {
