@@ -29,11 +29,10 @@
                         :item="item"
                         :editable="editable"
                         :key="index"></LookItem>
-              <Compose v-for="(list, index1) in combinList"
-                       :index="index1"
-                       :key="list.id"
-                       :list="list"
-                       :editable="editable"></Compose>
+              <LookCompose v-for="(list, index1) in combinList"
+                           :index="index1"
+                           :key="list.id"
+                           :list="list"></LookCompose>
             </div>
           </div>
         </div>
@@ -42,15 +41,15 @@
   </div>
 </template>
 <script>
-import { baseData, gbs } from '@/config/settings'
+import { gbs } from '@/config/settings'
 import LookItem from './../Common/LookItem'
-import Compose from './../Common/Compose'
+import LookCompose from './../Common/LookCompose'
 import { Notification } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
   name: 'preView',
   props: ['showModal', 'viewId', 'pageData', 'composeData', 'paintObj'],
-  components: { LookItem, Compose, Notification },
+  components: { LookItem, Notification, LookCompose },
   data () {
     return {
       editable: false,
@@ -105,8 +104,7 @@ export default {
       var box = $('#mainPreview-modal').find('.box')
       var w = box.width()
       var h = box.height()
-      // var scaleX = w / baseData.home.w
-      // var scaleY = h / baseData.home.h
+
       if (this.paintObj) {
         var scaleX = w / this.paintObj.width
         var scaleY = h / this.paintObj.height

@@ -1,62 +1,27 @@
 <template>
-  <!-- :preventActiveBehavior="chooseChild && !editable" -->
-  <!-- :isActive="editable && list.slted" -->
-  <!-- :isResizable="!chooseChild" -->
-  <DragResize class="newDrag2 newDrag3"
-              :isDraggable="editable"
-              :isResizable="!chooseChild"
-              :active="editable && list.slted"
-              :isActive="editable && list.slted"
-              :preventActiveBehavior="!editable"
-              :hasChild="true"
-              :key="list.id"
-              :parentW="parentW"
-              :parentH="parentH"
-              :w="Number(list.width)"
-              :h="Number(list.height)"
-              :x.sync="list.x"
-              :y.sync="list.y"
-              :z="list.zIndex || 500"
-              :item="list"
-              @vdbclick="vdbclick"
-              @bodyDown="bodyDown"
-              @bodymove="bodymove"
-              @resizing="resizing"
-              @contextMenu="contextMenu">
-    <!-- :style="wrapStyle" -->
-    <!-- :editable="false" -->
-    <InsideDrag v-for="(item,_index) in list.child"
-                :index="_index"
-                :item="item"
-                :sacleX="list.sacleX"
-                :sacleY="list.sacleY"
-                :parentW="list.width"
-                :parentH="list.height"
-                @childChoose="childChoose"
-                @childResize="childResize"
-                @selected="selected"
-                @resized="resized"
-                @context="context"
-                @contextmenu="contextItem(_index)"
-                :key="'inside_' + item.id">
-    </InsideDrag>
-    <!-- </div> -->
-  </DragResize>
+  <div class="newDrag compWrapBox"
+       :key="list.id"
+       :style="boxStyle">
+    <LookItem v-for="(item,_index) in list.child"
+              :index="_index"
+              :item="item"
+              :key="'inside_' + item.id">
+    </LookItem>
+  </div>
 </template>
 <script>
 import DragResize from './EditComp/DragResize' // drag拖拽组件
 // 组内编辑
 import InsideDrag from './InsideDrag'
+import LookItem from './../Common/LookItem'
 
 export default {
   name: 'compose',
   props: ['list', 'index', 'editable', 'parentH', 'parentW'],
-  components: { DragResize, InsideDrag },
+  components: { DragResize, InsideDrag, LookItem },
   data () {
     return {
       chooseChild: false
-      // sacleX: 1,
-      // sacleY: 1
     }
   },
   computed: {
@@ -69,7 +34,15 @@ export default {
         left: 0,
         float: 'left',
         transformOrigin: 'left top'
-        // transform: 'scale(' + this.list.sacleX + ', ' + this.list.sacleY + ')'
+      }
+    },
+    boxStyle: function () {
+      return {
+        width: Number(this.list.width) + 'px',
+        height: Number(this.list.height) + 'px',
+        left: Number(this.list.x) + 'px',
+        top: Number(this.list.y) + 'px',
+        zIndex: this.list.zIndex || 500
       }
     }
   },
@@ -148,6 +121,11 @@ export default {
       console.log('右键内部元件：' + index)
     }
   },
+  beforeMount () {
+    // this.list.oldWidth = this.list.width
+    // this.list.oldHeight = this.list.height
+    // console.log(this.list.oldWidth, this.list.oldHeight)
+  },
   beforeDestroy () {
   },
   destoryed: function () {
@@ -158,6 +136,10 @@ export default {
 .comp-item {
   float: left;
   position: absolute;
+}
+.compWrapBox {
+  position: absolute;
+  box-sizing: border-box;
 }
 .dragwrap {
   width: 100%;

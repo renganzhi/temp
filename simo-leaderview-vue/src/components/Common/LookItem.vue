@@ -34,7 +34,6 @@
   </div>
 </template>
 <script>
-import DragResize from './EditComp/DragResize' // drag拖拽组件
 import Vtextarea from './EditComp/Vtextarea' // 文本
 import Vprogress from './EditComp/Vprogress' // 进度条
 import Vimg from './EditComp/Vimg'
@@ -52,7 +51,7 @@ import Vscatter from './EditComp/Vscatter' // 散点图
 export default {
   name: 'lookItem',
   props: ['item', 'index'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
+  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
   data () {
     return {
       editable: false
