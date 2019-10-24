@@ -222,6 +222,9 @@ export default {
           this.extend.yAxis.max = null
         }
       }
+      if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
+        this.extend.color = this.getColors(this.item.ctColors)
+      }
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
@@ -248,6 +251,31 @@ export default {
       return (parseInt(maxData / 100) * 100 + 100)
     },
     getColors: function (tempArr) {
+      if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
+        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
+          // 判断是不是只有一个为0的数据
+          let key = this.item.chartData.columns[1]
+          let firstVal = this.item.chartData.rows[0][key]
+          if (!firstVal || firstVal === '0') {
+            return '#33394b'
+          }
+        }
+      }
+      if (this.item.chartType === 've-radar') {
+        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
+          let keys = this.item.chartData.columns.slice(1)
+          let flag = 0
+          keys.forEach((item) => {
+            let _val = this.item.chartData.rows[0][item]
+            if (!_val || _val === '0') {
+              flag++
+            }
+          })
+          if (flag === keys.length) {
+            return '#33394b'
+          }
+        }
+      }
       var type = this.item.chartType
       // LinearGradient: 右 下 左 上
       var direct = [0, 0, 1, 0]
