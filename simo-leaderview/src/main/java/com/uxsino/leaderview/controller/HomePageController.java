@@ -116,6 +116,7 @@ public class HomePageController {
             if (null != template) {
                 homePage.setViewImage(template.getViewImage());
                 homePage.setViewConf(template.getViewConf());
+                homePage.setPaintObj(template.getPaintObj());
             }
         }
         homePageService.add(homePage);
@@ -174,6 +175,8 @@ public class HomePageController {
         targetPage.setViewConf(sourcePage.getViewConf());
         targetPage.setViewImage(sourcePage.getViewImage());
         targetPage.setVisible(sourcePage.isVisible());
+        targetPage.setPaintObj(sourcePage.getPaintObj());
+        targetPage.setComposeObj(sourcePage.getComposeObj());
         homePageService.save(targetPage);
         return new JsonModel(true, "复制成功");
     }
@@ -230,6 +233,7 @@ public class HomePageController {
         if (homePage == null) {
             return new JsonModel(false, "未查询到对应的页面数据");
         }
+        JSONObject test = JSON.parseObject(JSON.toJSONString(homePage));
         return new JsonModel(true, JSON.parseObject(JSON.toJSONString(homePage)));
     }
 
