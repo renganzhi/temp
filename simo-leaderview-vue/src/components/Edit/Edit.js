@@ -1784,11 +1784,12 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', window.location.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
           .css({
             width: '100%',
             height: '100%',
             position: 'absolute',
+            top: 0,
             left: 0
           })
       )

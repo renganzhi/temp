@@ -114,8 +114,8 @@ MainTp.prototype = {
     }
     setTimeout(function () {
       /* if(_this.opt.viewBox) {
-                tp.svgContainer.attr('viewBox',_this.opt.viewBox);
-            }else{ */
+           tp.svgContainer.attr('viewBox',_this.opt.viewBox);
+       }else{ */
       tp.setMaxCavWH(rg.minRgX, rg.maxRgX, rg.minRgY, rg.maxRgY)
       $(_this.opt.el).css('opacity', 1)
       /* } */

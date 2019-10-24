@@ -43,7 +43,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     var replaceText = '/leaderview-static/' // 目标目录
 
     var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
-    var ignoreCss = ['select2', 'bootstrap', 'mainStyle']
+    var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'select2']
 
     var readStream = fs.createReadStream(sourceFile)
     var writeStream = fs.createWriteStream(destPath)
@@ -66,8 +66,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
         data = data.replace(jsReg, '')
       })
       ignoreCss.forEach(function (item) {
-        // var cssReg = new RegExp('<link .+?' + item + '.+?(.css){1}>', 'im')
-        var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
+        // var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
+        var cssReg = new RegExp('<link [^>]*' + item + '[^>]*>', 'igm')
         data = data.replace(cssReg, '')
       })
       writeStream.write(data, 'UTF8')
