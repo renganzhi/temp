@@ -1,6 +1,19 @@
 <template>
   <div id="home-html"
        class="flex flex-vertical full-height full-width">
+    <div style="width: 100%; height: 100%;"
+         v-if="loadAll && pageList.length < 1">
+      <div class="homeEmpty">
+        <img src="../../assets/homeEmpty.png" />
+        <div>
+          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p><button type="button"
+                  @click="addPage = true">新增页面</button>
+        </div>
+      </div>
+      <AddPage :showModal="addPage"
+               @hideModal="hideModal"></AddPage>
+    </div>
+
     <div class="portlet light bordered flex-1"
          id="mainbox">
       <div class="home_wrapBox">
@@ -16,45 +29,47 @@
         </div>
       </div>
     </div>
-    <div class="btm-tools"
-         :class="isFullScreen?'full':''">
-      <div class="fl btn-box">
-        <span @click="editPage"
-              class="ring-icon"
-              title="编辑"
-              v-show="!isFullScreen"><i class="icon-n-set"></i></span>
-        <span @click="refresh"
-              class="ring-icon"
-              :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
-        <span @click="fullScreen"
-              class="ring-icon"
-              :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-      </div>
-      <div class="fr btn-box"
-           v-show="pageSize>1">
-        <span @click="prev"
-              class="ring-icon"
-              :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
-        <span @click="togglePlay"
-              class="ring-icon"
-              :title="!timer ? '开启轮播' : '暂停轮播'"
-              v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-        <span @click="next"
-              class="ring-icon"
-              :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
-      </div>
-    </div>
-
-    <div role="alert"
-         v-if="showTip"
-         class="el-notification toast toast-info right"
-         style="bottom: 16px; z-index: 2001;">
-      <div class="el-notification__group">
-        <h2 class="el-notification__title"></h2>
-        <div class="el-notification__content">
-          <p>鼠标移动到左/右下角对大屏操作</p>
+    <div v-if="loadAll && pageList.length > 0">
+      <div class="btm-tools"
+           :class="isFullScreen?'full':''">
+        <div class="fl btn-box">
+          <span @click="editPage"
+                class="ring-icon"
+                title="编辑"
+                v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+          <span @click="refresh"
+                class="ring-icon"
+                :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+          <span @click="fullScreen"
+                class="ring-icon"
+                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
         </div>
-        <div class="el-notification__closeBtn el-icon-close"></div>
+        <div class="fr btn-box"
+             v-show="pageSize>1">
+          <span @click="prev"
+                class="ring-icon"
+                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+          <span @click="togglePlay"
+                class="ring-icon"
+                :title="!timer ? '开启轮播' : '暂停轮播'"
+                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+          <span @click="next"
+                class="ring-icon"
+                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+        </div>
+      </div>
+
+      <div role="alert"
+           v-if="showTip"
+           class="el-notification toast toast-info right"
+           style="bottom: 16px; z-index: 2001;">
+        <div class="el-notification__group">
+          <h2 class="el-notification__title"></h2>
+          <div class="el-notification__content">
+            <p>鼠标移动到左/右下角对大屏操作</p>
+          </div>
+          <div class="el-notification__closeBtn el-icon-close"></div>
+        </div>
       </div>
     </div>
 
@@ -66,16 +81,19 @@ import { baseData, gbs } from '@/config/settings'
 import LookItem from './../Common/LookItem'
 import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
+import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions } from 'vuex'
 export default {
   name: 'HomePage',
-  components: { Notification, LookItem, LookCompose },
+  components: { Notification, LookItem, LookCompose, AddPage },
   data () {
     return {
       isFullScreen: false,
       editable: false,
       showTip: false, // 全屏的提示信息
+      addPage: false,
+      loadAll: false, // 请求完成之后再展示页面
       pageList: [],
       combinList: [],
       paintConf: {},
@@ -118,11 +136,19 @@ export default {
     ...mapActions([
       'changeAlertInfo'
     ]),
+    hideModal (data) {
+      this.addPage = false
+      if (data.ifAdd) {
+        this.$router.push('/edit/' + data.addId)
+      }
+    },
     getPageData: function () {
       // 获取大屏配置内容
       this.axios.get('/leaderview/home/homePage').then((data) => {
         if (data.success) {
           this.initPage(data.obj)
+        } else {
+          this.loadAll = true
         }
       })
     },
@@ -130,6 +156,7 @@ export default {
       this.pageSize = res.pages.length
       this.pageIndex = 0
       this.pageList = res.pages
+      this.loadAll = true
       this.intervalTime = res.intervalTime || 5
       this.refreshTime = res.refreshTime || 3
       // this.refreshType = res.refreshType;
@@ -509,6 +536,12 @@ export default {
   padding-left: 15px;
 }
 
+#home-html .homeEmpty {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  margin-top: -153px;
+}
 #home-html .btm-tools.full {
   bottom: 22px;
   padding-right: 0px;
