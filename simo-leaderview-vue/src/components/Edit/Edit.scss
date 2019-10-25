@@ -641,6 +641,14 @@ $headHeight: 50px;
     top: -9px !important;
   }
 
+  // 空数据
+  .v-charts-data-empty {
+    background-color: transparent !important;
+    i, p {
+      color: #666f8b;
+    }
+  }
+
   #partsEdit-modal {
     .form-group {
       line-height: 28px;

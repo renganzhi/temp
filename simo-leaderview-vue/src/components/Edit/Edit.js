@@ -620,6 +620,7 @@ export default {
     },
     initChart (value) {
       this.showStyleTab = true
+      this.showWindowBtn = false // 隐藏部件弹窗按钮
       var obj = $.extend(
         true, {}, {
         id: new Date().getTime(),
@@ -738,6 +739,7 @@ export default {
         this.cancelSelected()
       }
       if (window.event.ctrlKey && ev !== 'move' && item.slted) {
+        this.showWindowBtn = false
         // 取消选中
         item.slted = this.editable && false
         if (type === 'compose') {
@@ -795,6 +797,7 @@ export default {
         }
       }
       if (this.selectedItem.chartType === 'v-scatter') {
+        this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
           if (this.selectedItem.mapLevel === 'country') {
@@ -827,6 +830,7 @@ export default {
         // this.selectToPoint() // 这里应该不需要
       }
       if (this.selectedItem.chartType === 'v-map') {
+        this.showWindowBtn = false
         // 这里是不是少了点什么
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
           this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
