@@ -193,7 +193,8 @@ var compsArr = [{
   chartType: 've-gauge',
   subType: 'progress',
   bgClr: '#657992',
-  ctLegendShow: false,
+  fontSize: 24,
+  ctLegendShow: 'true',
   chartData: morenData.single
 },
 {

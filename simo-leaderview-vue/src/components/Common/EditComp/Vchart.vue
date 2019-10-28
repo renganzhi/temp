@@ -75,7 +75,7 @@ export default {
             // orient : 'vertical', //横向、纵向
             x: 'center',
             y: 'bottom',
-            show: this.item.ctLegendShow === 'true',
+            show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
               color: '#666f8b'
             }
@@ -142,6 +142,11 @@ export default {
     'item.ctName': function (newV, oldValue) {
       this.extend.title.text = newV
     },
+    'item.fontSize': function (newV) {
+      if (this.item.subType === 'progress') {
+        this.settings.seriesMap.pro.detail.fontSize = newV
+      }
+    },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
         var barW = Math.floor((newV - 60) * 0.7 / this.item.chartData.rows.length)
@@ -151,8 +156,16 @@ export default {
         }
       }
     },
-    'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.legend.show = newV === 'true'
+    'item.ctLegendShow': function (newV) {
+      if (this.item.subType === 'progress') {
+        if (newV === 'true') {
+          this.settings.dataName.p = this.item.chartData.name
+        } else {
+          this.settings.dataName.p = ''
+        }
+      } else {
+        this.extend.legend.show = newV === 'true'
+      }
     },
     'item.lineArea': function (newV, oldValue) {
       this.settings.area = newV === 'true'
@@ -576,7 +589,7 @@ export default {
             // 目标占比图
             obj.settings = {
               dataName: {
-                'p': data.name
+                'p': _this.item.ctLegendShow === 'true' ? data.name : ''
               },
               seriesMap: {
                 'p': {
