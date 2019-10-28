@@ -599,19 +599,23 @@ export default {
         this.pageName = res.obj.name
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
-          this.paintObj = JSON.parse(res.obj.paintObj)
-          this.paintInput.width = this.paintObj.width
-          this.paintInput.height = this.paintObj.height
-          this.changeHomeData(this.paintObj) // vuex保存画布大小
-          this.combinList = JSON.parse(res.obj.composeObj)
-          let tempNum = this.chartNum.concat(this.combinList)
-          for (let i = 0, len = tempNum.length; i < len; i++) {
-            tempNum[i].zIndex > this.maxIndex
-              ? (this.maxIndex = tempNum[i].zIndex)
-              : ''
-            tempNum[i].zIndex < this.minIndex
-              ? (this.minIndex = tempNum[i].zIndex)
-              : ''
+          if (res.obj.paintObj) {
+            this.paintObj = JSON.parse(res.obj.paintObj)
+            this.paintInput.width = this.paintObj.width
+            this.paintInput.height = this.paintObj.height
+            this.changeHomeData(this.paintObj) // vuex保存画布大小
+          }
+          if (res.obj.composeObj) {
+            this.combinList = JSON.parse(res.obj.composeObj)
+            let tempNum = this.chartNum.concat(this.combinList)
+            for (let i = 0, len = tempNum.length; i < len; i++) {
+              tempNum[i].zIndex > this.maxIndex
+                ? (this.maxIndex = tempNum[i].zIndex)
+                : ''
+              tempNum[i].zIndex < this.minIndex
+                ? (this.minIndex = tempNum[i].zIndex)
+                : ''
+            }
           }
         } else {
           this.chartNum = []
