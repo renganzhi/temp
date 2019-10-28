@@ -502,6 +502,7 @@ $headHeight: 50px;
     float: left;
     margin-left: 10px;
     margin-top: 3px;
+    margin-right: 5px;
   }
 
   .color-w200 {
@@ -563,7 +564,10 @@ $headHeight: 50px;
     }
     .icon-n-add {
       float: right;
-      margin-right: 2px;
+    }
+    .text {
+      width: 130px;
+      text-align: center;
     }
   }
 
