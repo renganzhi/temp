@@ -286,7 +286,7 @@ export default {
           let key = this.item.chartData.columns[1]
           let firstVal = this.item.chartData.rows[0][key]
           if (!firstVal || firstVal === '0') {
-            return '#33394b'
+            return 'rgba(51, 57, 75, 0.62)'
           }
         }
       }
@@ -301,7 +301,7 @@ export default {
             }
           })
           if (flag === keys.length) {
-            return '#33394b'
+            return 'rgba(51, 57, 75, 0.62)'
           }
         }
       }
