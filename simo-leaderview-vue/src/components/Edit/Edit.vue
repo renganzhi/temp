@@ -553,6 +553,20 @@
                                     </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
+                                  <div class="m-gap form-group">图例</div>
+                                    <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
+                                      <label>可见性</label>
+                                      <select v-model="selectedItem.ctLegendShow">
+                                        <option value="true">显示</option>
+                                        <option value="false">隐藏</option>
+                                      </select>
+                                    </div>
+                                    <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
+                                      <label>字号</label>
+                                      <select v-model="selectedItem.fontSize">
+                                          <option v-for="item in proFontSize" :key="item">{{item}}</option>
+                                      </select>
+                                    </div>
                                     <label>底色</label>
                                     <div class="color-w200">
                                         <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
