@@ -452,6 +452,7 @@ export default {
           // obj.settings.xAxisType = 'time'
           obj.extend = $.extend(obj.extend, {
             series: {
+              type: 'line',
               showAllSymbol: false
             },
             label: {
