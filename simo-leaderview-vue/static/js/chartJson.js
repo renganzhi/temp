@@ -192,6 +192,7 @@ var compsArr = [{
   imgClass: 'icon-n-percent',
   chartType: 've-gauge',
   subType: 'progress',
+  bgClr: '#657992',
   ctLegendShow: false,
   chartData: morenData.single
 },
@@ -271,6 +272,7 @@ var compsArr = [{
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
   ctLegendShow: false,
+  bgClr: '#657992',
   chartData: morenData.single
 },
 {

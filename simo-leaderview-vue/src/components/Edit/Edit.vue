@@ -552,6 +552,12 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
+                                    <label>底色</label>
+                                    <div class="color-w200">
+                                        <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getColor"></Vcolor>
+                                    </div>
+                                </div>
                                 <div class="form-group cols2">
                                     <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
                                     <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
