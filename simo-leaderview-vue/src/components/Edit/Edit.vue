@@ -308,7 +308,7 @@
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
-                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
+                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor1"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
@@ -555,7 +555,7 @@
                                 <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
                                     <label>底色</label>
                                     <div class="color-w200">
-                                        <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getColor"></Vcolor>
+                                        <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2">

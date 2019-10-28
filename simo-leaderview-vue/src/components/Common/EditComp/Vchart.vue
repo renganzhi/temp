@@ -161,18 +161,21 @@ export default {
       this.extend.label.show = newV === 'true'
       this.keyId = new Date().getTime() // 强制更新视图
     },
-    'item.bgClr': function (newV) {
-      if (this.item.chartType === 've-gauge') {
-        if (!newV) {
-          newV = '#657992'
+    'item.bgClr': {
+      handler: function (newV) {
+        if (this.item.chartType === 've-gauge') {
+          if (!newV) {
+            newV = '#657992'
+          }
+          if (this.item.subType === 'progress') {
+            this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
+          } else {
+            this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
+            this.settings.seriesMap.outerpro.axisLine.lineStyle.color[1].splice(1, 1, newV)
+          }
         }
-        if (this.item.subType === 'progress') {
-          this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
-        } else {
-          this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
-          this.settings.seriesMap.outerpro.axisLine.lineStyle.color[1].splice(1, 1, newV)
-        }
-      }
+      },
+      deep: true
     },
     'item.ctColors': function (newV) {
       if (this.item.chartType === 've-gauge') {
@@ -584,7 +587,7 @@ export default {
                     lineStyle: { //  属性lineStyle控制线条样式
                       width: 12,
                       color: [
-                        [1, _this.item.bgClr]
+                        [1, _this.item.bgClr || '#657992']
                       ]
                     }
                   },
@@ -662,7 +665,7 @@ export default {
                     lineStyle: { //  属性lineStyle控制线条样式
                       width: 4,
                       color: [
-                        [1, _this.item.bgClr]
+                        [1, _this.item.bgClr || '#657992']
                       ]
                     }
                   },

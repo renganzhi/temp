@@ -593,7 +593,7 @@ export default {
       })
     },
     // 获取当前页的配置
-    gerPageConf (id) {
+    getPageConf (id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
@@ -617,9 +617,25 @@ export default {
                 : ''
             }
           }
+          this.formatVersion()
         } else {
           this.chartNum = []
         }
+      })
+    },
+    formatVersion () {
+      // 新增字段的监听需要对以前版本进行兼容
+      this.chartNum.forEach((item) => {
+        if (item.chartType === 've-gauge' && !item.bgClr) {
+          this.$set(item, 'bgClr', '#657992')
+        }
+      })
+      this.combinList.forEach((item) => {
+        item.child.forEach((list) => {
+          if (list.chartType === 've-gauge' && !item.bgClr) {
+            this.$set(list, 'bgClr', '#657992')
+          }
+        })
       })
     },
     initChart (value) {
@@ -2290,6 +2306,9 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 0, data.color)
       }
     },
+    getGaugeCl (data) {
+      this.$set(this.selectedItem, 'bgClr', data.color)
+    },
     getMapColor (data) {
       if (data.type !== undefined) {
         this.selectedItem[data.type] = data.color
@@ -2581,7 +2600,7 @@ export default {
   beforeMount: function () {
     var id = this.$route.params.id || sessionStorage.getItem('pageId')
     this.pageId = id
-    this.gerPageConf(id)
+    this.getPageConf(id)
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
