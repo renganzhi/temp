@@ -390,9 +390,17 @@
                                 </div>
                                 <div class="form-group cols2">
                                     <label>进度条色</label>
-                                    <div class="color-w200">
+                                    <!-- <div class="color-w200">
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
-                                    </div>
+                                    </div> -->
+                                    <div class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                          <div class="color-w15">
+                                              <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
+                                          </div>
+                                          <div class="color-w15" style="float: right">
+                                              <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
+                                          </div>
+                                        </div>
                                     <!-- <input type="color" v-model="selectedItem.barClr"/> -->
                                 </div>
                                 <div class="form-group cols2">

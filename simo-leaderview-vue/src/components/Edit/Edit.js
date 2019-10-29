@@ -630,14 +630,17 @@ export default {
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
         }
+        if (item.chartType === 'progress' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.barClr, item.barClr])
+        }
       })
-      this.combinList.forEach((item) => {
-        item.child.forEach((list) => {
-          if (list.chartType === 've-gauge' && !item.bgClr) {
-            this.$set(list, 'bgClr', '#657992')
-          }
-        })
-      })
+      // this.combinList.forEach((item) => {
+      //   item.child.forEach((list) => {
+      //     if (list.chartType === 've-gauge' && !item.bgClr) {
+      //       this.$set(list, 'bgClr', '#657992')
+      //     }
+      //   })
+      // })
     },
     initChart (value) {
       this.showStyleTab = true
@@ -2337,6 +2340,9 @@ export default {
         oldColor[1] = data.color
         this.selectedItem.ctColors.splice(data.index, 1, oldColor)
       }
+    },
+    getBarClr (data) {
+      this.selectedItem.barClrs.splice(data.index, 1, data.color)
     },
     testObjChange (direct, newValue) {
       var defData = 0

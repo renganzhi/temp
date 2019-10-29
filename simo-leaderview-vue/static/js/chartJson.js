@@ -319,6 +319,7 @@ var compsArr = [{
   height: 50,
   bgClr: '#33394b',
   barClr: '#1fc3ce',
+  barClrs: ['#1fc3ce', '#1fc3ce'],
   clr: '#1fc3ce',
   chartData: morenData.single,
   proHeight: 16,

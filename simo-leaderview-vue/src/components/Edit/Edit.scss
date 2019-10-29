@@ -504,6 +504,17 @@ $headHeight: 50px;
     margin-top: 3px;
     margin-right: 5px;
   }
+  .barGradient {
+    float: right;
+    position: relative;
+    width: 195px;
+    height: 10px;
+    right: 9px;
+    top: 9px;
+    .sp-preview {
+      border: none !important;
+    }
+  }
 
   .color-w200 {
     width: 195px;
@@ -531,7 +542,7 @@ $headHeight: 50px;
     overflow: hidden;
     margin-top: -3px;
     padding: 1px;
-    background: #1b2031;
+    // background-color: #1b2031;
   }
   .colorToall {
     width: 90%;
@@ -573,6 +584,7 @@ $headHeight: 50px;
 
   .sp-replacer {
     width: 100% !important;
+    height: 100%;
   }
   .sp-preview {
     width: calc(100% - 20px);
