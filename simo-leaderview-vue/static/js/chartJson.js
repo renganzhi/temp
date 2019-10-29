@@ -366,6 +366,7 @@ var compsArr = [{
   height: 300,
   bdpx: 1,
   bgClr: 'rgba(255, 255, 255, 0.02)',
+  barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
   bdClr: '#175278'
 },
 {

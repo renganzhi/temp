@@ -633,6 +633,9 @@ export default {
         if (item.chartType === 'progress' && !item.barClrs) {
           this.$set(item, 'barClrs', [item.barClr, item.barClr])
         }
+        if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+        }
       })
       // this.combinList.forEach((item) => {
       //   item.child.forEach((list) => {

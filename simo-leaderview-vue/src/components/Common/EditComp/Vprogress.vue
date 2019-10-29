@@ -40,7 +40,7 @@ export default {
         width: this.persent + '%',
         height: (this.item.proHeight || 16) + 'px',
         // backgroundColor: this.item.barClr,
-        background: 'linear-gradient(45deg, ' + (this.item.barClrs[0] || this.item.bgClr) + ', ' + (this.item.barClrs[1] || this.item.bgClr) + ')',
+        background: this.item.barClrs ? 'linear-gradient(45deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(45deg, ' + this.item.barClr + ', ' + this.item.barClr + ')',
         position: 'relative',
         borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         left: 0,

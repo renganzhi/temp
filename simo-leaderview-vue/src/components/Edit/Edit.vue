@@ -339,9 +339,17 @@
 
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                     <label>填充色</label>
-                                    <div class="color-w200">
-                                        <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
+                                    <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                      <div class="color-w15">
+                                          <Vcolor :data="selectedItem.barClrs[0]" :key="2" :index="0" @getdata="getBarClr"></Vcolor>
+                                      </div>
+                                      <div class="color-w15" style="float: right">
+                                          <Vcolor :data="selectedItem.barClrs[1]" :key="15" :index="1" @getdata="getBarClr"></Vcolor>
+                                      </div>
                                     </div>
+                                    <!-- <div class="color-w200">
+                                        <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
+                                    </div> -->
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                     <label>边框色</label>
@@ -394,13 +402,13 @@
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
                                     </div> -->
                                     <div class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
-                                          <div class="color-w15">
-                                              <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
-                                          </div>
-                                          <div class="color-w15" style="float: right">
-                                              <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
-                                          </div>
-                                        </div>
+                                      <div class="color-w15">
+                                          <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
+                                      </div>
+                                      <div class="color-w15" style="float: right">
+                                          <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
+                                      </div>
+                                    </div>
                                     <!-- <input type="color" v-model="selectedItem.barClr"/> -->
                                 </div>
                                 <div class="form-group cols2">
