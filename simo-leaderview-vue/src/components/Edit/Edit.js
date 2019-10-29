@@ -86,6 +86,7 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
+      proFontSize: [24, 12, 13, 14, 16, 18, 20, 28, 36, 48],
       defMapColors: ['#bb2a52', '#bd3d50', '#bf4e4e', '#c2634b', '#c47346', '#c7833f', '#ca9137', '#cd9d2c'],
       defalutColors: [
         '#37a2da',
@@ -593,7 +594,7 @@ export default {
       })
     },
     // 获取当前页的配置
-    gerPageConf (id) {
+    getPageConf (id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
@@ -617,10 +618,32 @@ export default {
                 : ''
             }
           }
+          this.formatVersion()
         } else {
           this.chartNum = []
         }
       })
+    },
+    formatVersion () {
+      // 新增字段的监听需要对以前版本进行兼容
+      this.chartNum.forEach((item) => {
+        if (item.chartType === 've-gauge' && !item.bgClr) {
+          this.$set(item, 'bgClr', '#657992')
+        }
+        if (item.chartType === 'progress' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.barClr, item.barClr])
+        }
+        if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+        }
+      })
+      // this.combinList.forEach((item) => {
+      //   item.child.forEach((list) => {
+      //     if (list.chartType === 've-gauge' && !item.bgClr) {
+      //       this.$set(list, 'bgClr', '#657992')
+      //     }
+      //   })
+      // })
     },
     initChart (value) {
       this.showStyleTab = true
@@ -2290,6 +2313,9 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 0, data.color)
       }
     },
+    getGaugeCl (data) {
+      this.$set(this.selectedItem, 'bgClr', data.color)
+    },
     getMapColor (data) {
       if (data.type !== undefined) {
         this.selectedItem[data.type] = data.color
@@ -2317,6 +2343,9 @@ export default {
         oldColor[1] = data.color
         this.selectedItem.ctColors.splice(data.index, 1, oldColor)
       }
+    },
+    getBarClr (data) {
+      this.selectedItem.barClrs.splice(data.index, 1, data.color)
     },
     testObjChange (direct, newValue) {
       var defData = 0
@@ -2581,7 +2610,7 @@ export default {
   beforeMount: function () {
     var id = this.$route.params.id || sessionStorage.getItem('pageId')
     this.pageId = id
-    this.gerPageConf(id)
+    this.getPageConf(id)
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {

@@ -192,7 +192,9 @@ var compsArr = [{
   imgClass: 'icon-n-percent',
   chartType: 've-gauge',
   subType: 'progress',
-  ctLegendShow: false,
+  bgClr: '#657992',
+  fontSize: 24,
+  ctLegendShow: 'true',
   chartData: morenData.single
 },
 {
@@ -271,6 +273,7 @@ var compsArr = [{
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
   ctLegendShow: false,
+  bgClr: '#657992',
   chartData: morenData.single
 },
 {
@@ -316,6 +319,7 @@ var compsArr = [{
   height: 50,
   bgClr: '#33394b',
   barClr: '#1fc3ce',
+  barClrs: ['#1fc3ce', '#1fc3ce'],
   clr: '#1fc3ce',
   chartData: morenData.single,
   proHeight: 16,
@@ -362,6 +366,7 @@ var compsArr = [{
   height: 300,
   bdpx: 1,
   bgClr: 'rgba(255, 255, 255, 0.02)',
+  barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
   bdClr: '#175278'
 },
 {

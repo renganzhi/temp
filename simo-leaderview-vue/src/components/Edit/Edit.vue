@@ -308,7 +308,7 @@
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
-                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
+                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor1"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
@@ -339,9 +339,17 @@
 
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                     <label>填充色</label>
-                                    <div class="color-w200">
-                                        <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
+                                    <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                      <div class="color-w15">
+                                          <Vcolor :data="selectedItem.barClrs[0]" :key="2" :index="0" @getdata="getBarClr"></Vcolor>
+                                      </div>
+                                      <div class="color-w15" style="float: right">
+                                          <Vcolor :data="selectedItem.barClrs[1]" :key="15" :index="1" @getdata="getBarClr"></Vcolor>
+                                      </div>
                                     </div>
+                                    <!-- <div class="color-w200">
+                                        <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
+                                    </div> -->
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                     <label>边框色</label>
@@ -390,8 +398,16 @@
                                 </div>
                                 <div class="form-group cols2">
                                     <label>进度条色</label>
-                                    <div class="color-w200">
+                                    <!-- <div class="color-w200">
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
+                                    </div> -->
+                                    <div class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                      <div class="color-w15">
+                                          <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
+                                      </div>
+                                      <div class="color-w15" style="float: right">
+                                          <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
+                                      </div>
                                     </div>
                                     <!-- <input type="color" v-model="selectedItem.barClr"/> -->
                                 </div>
@@ -550,6 +566,26 @@
                                         <select>
                                             <option>底部居中</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
+                                  <div class="m-gap form-group">图例</div>
+                                    <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
+                                      <label>可见性</label>
+                                      <select v-model="selectedItem.ctLegendShow">
+                                        <option value="true">显示</option>
+                                        <option value="false">隐藏</option>
+                                      </select>
+                                    </div>
+                                    <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
+                                      <label>字号</label>
+                                      <select v-model="selectedItem.fontSize">
+                                          <option v-for="item in proFontSize" :key="item">{{item}}</option>
+                                      </select>
+                                    </div>
+                                    <label>底色</label>
+                                    <div class="color-w200">
+                                        <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2">
