@@ -19,7 +19,7 @@ export default {
       return {
         width: this.item.width + 'px',
         height: this.item.height + 'px',
-        backgroundColor: this.item.bgClr,
+        background: this.item.barClrs ? 'linear-gradient(180deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(0deg, ' + this.item.bgClr + ', ' + this.item.bgClr + ')',
         border: this.item.bdpx + 'px solid ' + this.item.bdClr
       }
     }
