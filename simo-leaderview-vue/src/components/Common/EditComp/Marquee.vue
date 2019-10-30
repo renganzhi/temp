@@ -1,6 +1,23 @@
 <template>
   <!-- :key="item.id + marqueeKey" -->
-  <div class="text-wrap"
+  <div v-if="item.direction === 'top'"
+       class="text-wrap"
+       :key="item.id + marqueeKey"
+       :style="wrapStyle">
+    <div class="text"
+         :style="boxStyle1">
+      <textarea ref="marqueeText"
+                :style="textStyle1"
+                v-model="item.ctName"
+                :disabled="dis"
+                @blur="initMove"></textarea>
+    </div>
+    <div ref="hideText"
+         :id='"hideText" + item.id'
+         :style="hideTextStyle1">{{item.ctName}}</div>
+  </div>
+  <div v-else
+       class="text-wrap"
        :key="item.id + marqueeKey"
        :style="wrapStyle">
     <div class="text"
@@ -14,6 +31,8 @@
     </div>
     <div @keydown="checkEnter"
          ref="hideText"
+         class="noWrapText"
+         contenteditable="true"
          :id='"hideText" + item.id'
          :style="hideTextStyle">{{item.ctName}}</div>
   </div>
@@ -27,6 +46,8 @@ export default {
       intervalId: 0,
       marqueeKey: new Date().getTime() + Math.random() * 10000,
       speed: 10,
+      speed2: 3,
+      textHeight: 30,
       stop: false,
       distance: 0,
       offsetWidth: 0, // 内容改变之后与原始长度的偏移量
@@ -41,19 +62,65 @@ export default {
         this.$refs.marqueeText.focus()
       })
     },
+    topSpeed (val) {
+      if (!val) {
+        val = this.item.speed
+      }
+      if (val === '1') {
+        this.speed2 = parseFloat((this.textHeight + this.item.height) / 100)
+      } else if (val === '3') {
+        this.speed2 = parseFloat((this.textHeight + this.item.height) / 40)
+      } else {
+        this.speed2 = parseFloat((this.textHeight + this.item.height) / 70)
+      }
+    },
+    leftSpeed (val) {
+      if (!val) {
+        val = this.item.speed
+      }
+      if (val === '1') {
+        this.speed = parseFloat((this.textWidth + this.item.width) / 100)
+      } else if (val === '3') {
+        this.speed = parseFloat((this.textWidth + this.item.width) / 40)
+      } else {
+        this.speed = parseFloat((this.textWidth + this.item.width) / 60)
+      }
+    },
     initMove () {
       // this.stop = false
       this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
+      this.textHeight = this.$refs.hideText.getBoundingClientRect().height + 20
       var _transform = $(this.$el).parents('.full-height').css('transform')
-      if (_transform) {
-        var _temp = _transform.split(',')[0]
-        var _scaleX = _temp.split('.')[1]
+      if (_transform && _transform !== 'none') {
+        var reg = /\((.*)\)$/
+        var _temp = reg.exec(_transform)
+        _temp = _temp[0]
+        _temp = _temp.slice(1, _temp.length)
+        _temp = _temp.split(',')
+        var _scaleX = Number(_temp[0])
+        var _scaleY = Number(_temp[3])
         if (_scaleX) {
-          _scaleX = Number('0.' + _scaleX)
           this.textWidth = this.textWidth / _scaleX
         }
+        if (_scaleY) {
+          this.textHeight = this.textHeight / _scaleY
+        }
       }
-      this.speed = parseInt((this.textWidth + this.item.width) / 60)
+      // if (_transform) {
+      //   var _temp = _transform.split(',')[0]
+      //   var _scaleX = _temp.split('.')[1]
+      //   if (_scaleX) {
+      //     _scaleX = Number('0.' + _scaleX)
+      //     this.textWidth = this.textWidth / _scaleX
+      //   }
+      // }
+      if (this.item.direction === 'top') {
+        this.topSpeed()
+      } else {
+        this.leftSpeed()
+      }
+      // this.speed = parseFloat((this.textWidth + this.item.width) / 60)
+      // this.speed2 = parseFloat((this.textHeight + this.item.height) / 40) // 100 60 40
       this.stop = false
       this.marqueeKey = new Date().getTime() + Math.random() * 10000
     },
@@ -107,10 +174,42 @@ export default {
     dis () {
       return !this.disabled
     },
+    boxStyle1: function () {
+      return {
+        width: '100%',
+        height: this.textHeight + 'px',
+        overflow: 'hidden',
+        animation: this.stop ? '' : 'textMoveTop linear ' + this.speed2 + 's infinite',
+        position: 'relative',
+        left: this.stop ? '0px' : '',
+        transform: this.stop ? 'translateX(0px)' : ''
+      }
+    },
+    textStyle1: function () {
+      return {
+        width: '100% !important',
+        // height: 'auto !important',
+        height: this.textHeight + 'px !important',
+        color: this.item.clr + ' !important',
+        border: 'none !important',
+        fontSize: this.item.fontSize + 'px !important',
+        float: 'left',
+        backgroundColor: 'transparent !important',
+        overflow: 'hidden'
+      }
+    },
+    hideTextStyle1: function () {
+      return {
+        fontSize: this.item.fontSize + 'px !important',
+        float: 'left',
+        padding: '10px',
+        opacity: 0
+      }
+    },
     boxStyle: function () {
       return {
         width: this.textWidth + 'px',
-        animation: this.stop ? '' : 'textMove linear ' + this.speed + 's infinite',
+        animation: this.stop ? '' : 'textMoveLeft linear ' + this.speed + 's infinite',
         position: 'relative',
         left: this.stop ? '0px' : '',
         transform: this.stop ? 'translateX(0px)' : ''
@@ -156,10 +255,35 @@ export default {
     textWidth: function () {
       if (this.stop) return
       this.$nextTick(() => {
-        this.speed = parseInt((this.textWidth + this.item.width) / 60)
+        this.leftSpeed()
+      })
+    },
+    textHeight: function () {
+      if (this.stop) return
+      this.$nextTick(() => {
+        this.topSpeed()
+      })
+    },
+    'item.speed': function (val) {
+      if (this.item.direction === 'top') {
+        this.topSpeed(val)
+      } else {
+        this.leftSpeed(val)
+      }
+      this.marqueeKey = new Date().getTime() + Math.random() * 10000
+    },
+    'item.direction': function (val) {
+      if (val === 'left') {
+        var text = this.$refs.hideText.innerText
+        this.item.ctName = text
+      }
+      if (this.stop) return
+      this.$nextTick(() => {
+        this.initMove()
       })
     },
     'item.fontSize': function () {
+      this.textHeight = this.$refs.hideText.getBoundingClientRect().height
       this.$nextTick(() => {
         this.initMove()
       })
@@ -169,10 +293,16 @@ export default {
       this.$nextTick(() => {
         this.initMove()
       })
+    },
+    'item.width': function (newV) {
+      // this.textHeight = this.$refs.hideText.getBoundingClientRect().height
+      if (this.stop) return
+      this.initMove()
     }
   },
   mounted: function () {
     // this.move()
+    this.textHeight = this.$refs.hideText.getBoundingClientRect().height
     this.initMove()
   },
   beforeDestroy: function () {
@@ -184,7 +314,7 @@ export default {
 </script>
 
 <style>
-@keyframes textMove {
+@keyframes textMoveLeft {
   from {
     left: 100%;
     transform: translateX(0);
@@ -192,6 +322,27 @@ export default {
   to {
     left: 0px;
     transform: translateX(-100%);
+  }
+}
+@keyframes textMoveRight {
+  from {
+    left: 0px;
+    transform: translateX(-100%);
+  }
+  to {
+    left: 100%;
+    transform: translateX(0);
+  }
+}
+@keyframes textMoveTop {
+  from {
+    top: 100%;
+    transform: translateY(0);
+  }
+  to {
+    /* 有padding值 */
+    top: 12px;
+    transform: translateY(-100%);
   }
 }
 </style>

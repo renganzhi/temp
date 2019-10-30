@@ -307,6 +307,8 @@ var compsArr = [{
   height: 50,
   bdpx: 0,
   bgClr: '',
+  direction: 'left',
+  speed: 2,
   clr: '#c2c6d7',
   bdClr: '',
   ctName: '这是一个跑马灯的演示demo，双击可对文案进行编辑'
