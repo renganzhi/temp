@@ -30,16 +30,19 @@ axios.interceptors.response.use(
   },
   error => {
     $('#screen').hide()
-    if (error.toString().includes('776')) {
-      window.location.href = window.location.origin + '/loginPage'
-    }
     if (gbs.inDev) {
       Notification({
         message: '连接错误！',
         position: 'bottom-right',
         customClass: 'toast toast-error'
       })
+      if (error.toString().includes('776')) {
+        window.location.href = window.location.origin + '/#/login'
+      }
     } else {
+      if (error.toString().includes('776')) {
+        window.location.href = window.location.origin + '/loginPage'
+      }
       tooltip('', '连接错误！', 'error')
     }
     return Promise.reject(error)

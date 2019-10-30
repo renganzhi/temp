@@ -20,6 +20,11 @@
       <div class="wrap-content">
         <div class="wrap-body flex flex-vertical">
           <div class="searchForm">
+            <select name="pageType">
+              <option value="5">全部页面</option>
+              <option value="10">我的页面</option>
+              <option value="30">分享的页面</option>
+            </select>
             <button type="button"
                     @click="add">新增页面</button>
             <button type="button"
@@ -65,11 +70,95 @@
               </div>
               <div v-else
                    class="page-title flex-1 flex">
+                <span class="shareIcon"><i class="icon-n-assetys"></i></span>
                 <span class="title-name flex-1">{{item.name}}</span>
                 <a class="icon-n-edit2 edit-icon"
                    @click="changeEdit(index)"></a>
+                <a class="icon-n-connectionType edit-icon"
+                   @click="toShare(index)"></a>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="homeShareModal"
+         class="modal"
+         style="z-index: 10086">
+      <div class="modal-dialog"
+           role="document"
+           style="margin: 206px auto;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true">
+              <span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title">
+              <span class="pre-page"
+                    data-dismiss="modal"></span>
+              <span class="now-page">分享设置</span>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <form autocomplete="off"
+                  id="shareFm1">
+              <div class="form-group">
+                <label class="page-lable">分享给用户</label>
+                <div class="page-lable-content">
+                  <!-- <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
+                                                      v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
+                                            </Select2> -->
+                  <select id="shareUsers"
+                          v-model="shareUsers">
+                    <option v-for="(user, index) in userList"
+                            :value="user.userName"
+                            :key="index">{{user.userName}}</option>
+                  </select>
+                  <!-- <select>
+                    <option value="2">四川员工</option>
+                    <option value="3">成都员工</option>
+                    <option value="4">湖南员工</option>
+                  </select> -->
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="page-lable">分享给角色</label>
+                <div class="page-lable-content">
+                  <select v-model="shareRoles"
+                          id="shareRoles">
+                    <option v-for="(role, index) in roleList"
+                            :value="role.name"
+                            :key="index">{{role.name}}</option>
+                  </select>
+                  <!-- <select>
+                    <option value="2">所属域角色</option>
+                    <option value="3">所属域及子域角色</option>
+                    <option value="4">全部域角色</option>
+                  </select> -->
+                </div>
+              </div>
+              <div class="form-group"
+                   id="hasChild"
+                   style="display: none;">
+                <label class="page-lable">
+                  <input type="checkbox"
+                         name="ifShareSub">
+                </label>
+                <div class="page-lable-content">
+                  <span class="share-checkcontent">同时分享其子结构</span>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    data-share="sureShare">确认</button>
+            <button type="button"
+                    data-dismiss="modal">取消</button>
           </div>
         </div>
       </div>
@@ -84,16 +173,21 @@ import PageSetting from './PageSetting'
 import PreView from './../PreView/PreView'
 import { gbs } from '@/config/settings'
 import Confirm from './../Common/Confirm'
+import Select2 from './../Common/Select2'
 import { Notification } from 'element-ui'
 export default {
   name: 'editPage',
-  components: { AddPage, PreView, PageSetting, Confirm, Notification },
+  components: { AddPage, PreView, PageSetting, Confirm, Select2, Notification },
   data () {
     return {
       baseUrl: gbs.host,
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
+      shareUsers: [],
+      shareRoles: [],
+      userList: [],
+      roleList: [],
       showDelModal: false, // 确认删除
       delId: -1,
       addPage: false, // 新增页面
@@ -108,6 +202,89 @@ export default {
   methods: {
     backHome () {
       this.$router.push('/')
+    },
+    toShare (index) {
+      $('#homeShareModal').modal('show')
+    },
+    saerchShareUser () {
+      this.axios.get('/user/findAvailableUsers?isNotMe=true').then((res) => {
+        if (res.success) {
+          this.userList = res.obj
+          this.initSelect2('shareUsers')
+          this.initSelect2User()
+        }
+      })
+      this.axios.get('http://192.168.2.129:9999/role/findAllEnableRoles').then((res) => {
+        if (res.success) {
+          this.roleList = res.obj
+          this.initSelect2('shareRoles')
+          this.initSelect2Role()
+        }
+      })
+    },
+    initSelect2 (id, v) {
+      // var value = typeof v === 'undefined' ? this.value : v
+      $('#' + id).select2({
+        multiple: true,
+        closeOnSelect: false
+      }).val(null).trigger('change')
+    },
+    initSelect2User () {
+      var _this = this
+      $('#shareUsers').on('change', function () {
+        // vm.$emit('input', $(this).val())
+        _this.shareUsers = $(this).val()
+        console.log(_this.shareUsers)
+      }).on('select2:selecting', function (e) {
+        if (e.params && e.params.args && e.params.args.data) {
+          var v = $(this).val()
+          if (e.params.args.data.id === '') { // 选择不限
+            $(this).val(null)
+          } else { // 选中其他
+            if (v && v.indexOf('') !== -1) {
+              $(this).val([e.params.args.data.id])
+            }
+          }
+        }
+      }).on('select2:unselecting', function (e) {
+        if (e.params && e.params.args && e.params.args.data) {
+          var v = $(this).val()
+          if (v && v.length === 1) {
+            if (e.params.args.data.id === '') {
+              e.preventDefault()
+            }
+            $(this).val(null)
+          }
+        }
+      })
+    },
+    initSelect2Role () {
+      var _this = this
+      $('#shareRoles').on('change', function () {
+        _this.shareRoles = $(this).val()
+        console.log(_this.shareRoles)
+      }).on('select2:selecting', function (e) {
+        if (e.params && e.params.args && e.params.args.data) {
+          var v = $(this).val()
+          if (e.params.args.data.id === '') { // 选择不限
+            $(this).val(null)
+          } else { // 选中其他
+            if (v && v.indexOf('') !== -1) {
+              $(this).val([e.params.args.data.id])
+            }
+          }
+        }
+      }).on('select2:unselecting', function (e) {
+        if (e.params && e.params.args && e.params.args.data) {
+          var v = $(this).val()
+          if (v && v.length === 1) {
+            if (e.params.args.data.id === '') {
+              e.preventDefault()
+            }
+            $(this).val(null)
+          }
+        }
+      })
     },
     search () {
       this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
@@ -303,6 +480,7 @@ export default {
     this.search()
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
+    this.saerchShareUser()
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
@@ -366,6 +544,26 @@ export default {
 
 .page-item .title-name {
   overflow: hidden;
+}
+
+.page-item .shareIcon {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  background: #0088cc;
+  float: left;
+  margin-top: 10px;
+  margin-right: 10px;
+  i {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    position: relative;
+    top: -10px;
+    color: rgba(13, 17, 31, 1);
+  }
 }
 
 .page-item .edit-icon {

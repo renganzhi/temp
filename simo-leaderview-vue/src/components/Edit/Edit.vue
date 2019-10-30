@@ -673,7 +673,7 @@
                                             <label v-if="v.type=='drop-down' || v.type=='multi-select'" >{{v.name}}</label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
-                                            </Select2>
+                                              </Select2>
                                         </div>
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
