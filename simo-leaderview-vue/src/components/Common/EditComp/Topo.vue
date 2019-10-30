@@ -66,6 +66,12 @@ export default {
       this.clearTp()
       this.initTp()
     },
+    'item.refresh': function (newV) {
+      if (newV) {
+        this.clearTp()
+        this.initTp()
+      }
+    },
     'item.time': function () { // 为了刷新能及时更新
       this.initTp()
     }

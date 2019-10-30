@@ -1683,7 +1683,14 @@ export default {
     },
     saveTopoConf: function (param) {
       // 拓扑与其他组件不同，需要特殊处理
-      this.selectedItem.tpId = param.topoId
+      if (this.selectedItem.tpId === param.topoId) {
+        this.$set(this.selectedItem, 'refresh', true)
+        this.$nextTick(() => {
+          this.selectedItem.refresh = false
+        })
+      } else {
+        this.selectedItem.tpId = param.topoId
+      }
     },
     // 以下为静态数据的输入校验
     formatJson (a) {
