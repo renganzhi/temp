@@ -11,6 +11,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import com.uxsino.commons.db.redis.service.SiteUserRedis;
+import com.uxsino.leaderview.model.ShareState;
+import com.uxsino.leaderview.rpc.MCService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,7 +35,6 @@ import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import springfox.documentation.spring.web.json.Json;
 
 @Api(tags = "大屏展示数据接口-HomePageController")
 @RestController
@@ -75,6 +77,12 @@ public class HomePageController {
     @Autowired
     private HomeTemplateImgService templateImgService;
 
+    @Autowired
+    private SiteUserRedis userRedis;
+
+    @Autowired
+    private MCService mcService;
+
     @ApiOperation("获取可用数据接口")
     @RequestMapping(value = "/getUrl", method = RequestMethod.GET)
     public JsonModel getUrl(@ApiParam("图表类型") @RequestParam String typeStr) {
@@ -111,12 +119,15 @@ public class HomePageController {
         homePage.setPageIndex(index);
         homePage.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
         homePage.setRoleIds(SessionUtils.getSessionUserRoleIds(session));
+        homePage.setCreateUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        homePage.setHandoverId(SessionUtils.getCurrentUserIdFromSession(session));
         if (null != templateId && templateId != 0) {
             HomeTemplate template = templateService.one(templateId);
             if (null != template) {
                 homePage.setViewImage(template.getViewImage());
                 homePage.setViewConf(template.getViewConf());
                 homePage.setPaintObj(template.getPaintObj());
+                //从当前session中获取用户id
             }
         }
         homePageService.add(homePage);
@@ -177,11 +188,13 @@ public class HomePageController {
         targetPage.setVisible(sourcePage.isVisible());
         targetPage.setPaintObj(sourcePage.getPaintObj());
         targetPage.setComposeObj(sourcePage.getComposeObj());
+        targetPage.setCreateUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        targetPage.setHandoverId(SessionUtils.getCurrentUserIdFromSession(session));
         homePageService.save(targetPage);
         return new JsonModel(true, "复制成功");
     }
 
-    @ApiOperation("大屏配置-配置大屏展示内容")
+    @ApiOperation("大屏配置-配置大屏展示内容-并且保存")
     @RequestMapping(value = "/homePage", method = RequestMethod.POST)
     public JsonModel homePage(HttpSession session, @ApiParam("封装好的页面配置对象") HomePage homePage) {
         HomePage existHomePage = homePageService.getById(homePage.getId());
@@ -210,10 +223,35 @@ public class HomePageController {
         return new JsonModel(true, result);
     }
 
-    @ApiOperation("获取大屏页面列表，不含配置信息")
+    @ApiOperation("获取当前用户可见的大屏页面列表，不含内容配置信息")
     @RequestMapping(value = "/homePage/noConf", method = RequestMethod.GET)
     public JsonModel homePageNoConf(HttpSession session) {
-        return new JsonModel(true, homePageService.findAllWithoutConf());
+        boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
+        String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
+        JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
+        String userRole = userObj.getString("departmentId");
+        List<HomePage> AllhomePage = homePageService.findAllWithoutConf();
+        List<HomePage> result = Lists.newArrayList();
+        AllhomePage.forEach(homePage -> {
+            JSONObject obj = new JSONObject();
+            Integer validState = validSharedorAuthor(homePage, userId, userRole);
+            if (isSuperAdmin || validState.equals(ShareState.IS_BE_SHARED.getValue())
+                    || validState.equals(ShareState.IS_BELONGS_CURRENT.getValue())){
+                if (!ObjectUtils.isEmpty(homePage.getHandoverId())){
+                    obj = JSONObject.parseObject(userRedis.get(homePage.getHandoverId().toString()));
+                }else {
+                    obj = JSONObject.parseObject(userRedis.get(homePage.getCreateUserId().toString()));
+                }
+                if (validState.equals(ShareState.IS_BE_SHARED.getValue())){
+                    homePage.setBelongCurrentUser("false");
+                }else {
+                    homePage.setBelongCurrentUser("true");
+                }
+                homePage.setShareName(obj.getString("userName") + "(" + obj.getString("employeeCode")+ ")");
+                result.add(homePage);
+            }
+        });
+        return new JsonModel(true, result);
     }
 
     @ApiOperation("根据序号查询大屏页面")
@@ -233,7 +271,6 @@ public class HomePageController {
         if (homePage == null) {
             return new JsonModel(false, "未查询到对应的页面数据");
         }
-        JSONObject test = JSON.parseObject(JSON.toJSONString(homePage));
         return new JsonModel(true, JSON.parseObject(JSON.toJSONString(homePage)));
     }
 
@@ -274,6 +311,8 @@ public class HomePageController {
     public JsonModel carouselTimeConf(HttpSession session, @ApiParam("轮播配置对象") HomeCarousel homeCarousel, String pages) {
         List<HomePage> pageList = JSON.parseObject(pages, new TypeReference<List<HomePage>>() {
         });
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        homeCarousel.setUserId(userId);
         homeCarouselService.save(homeCarousel, pageList);
         return new JsonModel(true);
     }
@@ -292,6 +331,8 @@ public class HomePageController {
             json = JSON.parseObject(JSON.toJSONString(homeCarousel));
         }
         json.put("pages", pageList);
+
+
         return new JsonModel(true, json);
     }
 
@@ -420,5 +461,84 @@ public class HomePageController {
     @GetMapping("/template/list")
     public JsonModel getTemplateList() {
         return new JsonModel(true, templateService.noConf());
+    }
+
+    @ApiOperation("将某个页面分享给其他用户或者域")
+    @PostMapping("/share/{pageId}")
+    public JsonModel shareById(HttpSession session, @PathVariable Long pageId,
+                               @RequestParam(value = "uids") String uids,
+                               @RequestParam(value = "roles") String roles){
+        JSONObject shareConf = new JSONObject();
+        JSONArray uidArray = new JSONArray();
+        JSONArray roleArray = new JSONArray();
+        if (!StringUtils.isEmpty(uids)){
+            String[] uidArr = uids.split(",");
+            for (String uid : uidArr) {
+                uidArray.add(Long.parseLong(uid));
+            }
+        }
+        if (!StringUtils.isEmpty(roles)){
+            String[] roleArr = roles.split(",");
+            for (String role : roleArr){
+                roleArray.add(Long.parseLong(role));
+            }
+        }
+        shareConf.put("roles", roleArray);
+        shareConf.put("uids", uidArray);
+        HomePage homePage = homePageService.getById(pageId);
+        homePage.setShareConf(shareConf.toJSONString());
+        homePageService.update(homePage);
+        return new JsonModel(true);
+    }
+
+    @ApiOperation("获取当前用户大屏权限")
+    @GetMapping(value = "/getMenu")
+    public JsonModel getMenu(HttpSession session){
+        JsonModel menu = mcService.getMenu("SESSION=" + session.getId());
+        List<LinkedHashMap> list = (List<LinkedHashMap>) menu.getObj();
+        for (LinkedHashMap map : list) {
+            if (map.get("id").equals("VIEW01")){
+                if (SessionUtils.isSuperAdmin(session)){
+                    map.put("isSuperAdmin", true);
+                }else {
+                    map.put("isSuperAdmin", false);
+                }
+                return new JsonModel(true, map);
+            }
+        }
+        return new JsonModel(true , new LinkedHashMap<>());
+    }
+
+    /**
+     * 用于判断某个页面是否已被分享给当前用户，用于页面显示
+     * @param homePage
+     * @param userId
+     * @param userRole
+     * @return
+     */
+    private int validSharedorAuthor(HomePage homePage, String userId, String userRole) {
+        JSONObject shareConf = JSONObject.parseObject(homePage.getShareConf());
+        Long handoverId = homePage.getHandoverId();
+        Long createUserId = homePage.getCreateUserId();
+        if ((!ObjectUtils.isEmpty(handoverId) && userId.equals(handoverId.toString()))
+                || (!ObjectUtils.isEmpty(createUserId) && userId.equals(createUserId.toString()))){
+            return ShareState.IS_BELONGS_CURRENT.getValue();
+        }
+        if (ObjectUtils.isEmpty(shareConf)){
+            return ShareState.INDEPENDENT.getValue();
+        }
+        JSONArray shareUids = shareConf.getJSONArray("uids");
+        JSONArray shareRoles = shareConf.getJSONArray("roles");
+        for (int i = 0; i < shareUids.size(); i++) {
+            if (userId.equals(shareUids.get(i).toString())){
+                return ShareState.IS_BE_SHARED.getValue();
+            }
+        }
+        for (int i = 0; i < shareRoles.size(); i++) {
+            if (userRole.equals(shareRoles.get(i).toString())){
+                return ShareState.IS_BE_SHARED.getValue();
+            }
+        }
+        return ShareState.INDEPENDENT.getValue();
     }
 }

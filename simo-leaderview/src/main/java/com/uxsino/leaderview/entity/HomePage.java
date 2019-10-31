@@ -48,7 +48,17 @@ public class HomePage {
     // 页面视图配置
     @Column(columnDefinition = "TEXT")
     private String viewConf;
-
+    // 创建人ID
+    private Long createUserId;
+    // 接收人ID
+    private Long handoverId;
+    // 分享人名字，用于大屏显示，数据库中不存放
+    private String shareName;
+    // 分享配置 格式如{"roles":[1,2,3],"uids":[8,9,11]}
+    @Column(columnDefinition = "TEXT")
+    private String shareConf;
+    // 是否为当前登录用户的页面，用于大屏显示，数据库中不存放
+    private String belongCurrentUser;
 
     /**
      * 主页展示内容的缩略图,存放图片的64位编码的字符串
@@ -78,5 +88,18 @@ public class HomePage {
         this.visible = visible;
         this.lastUpdateTime = lastUpdateTime;
     }
-
+    public HomePage(Long id, Long userId, String roleIds, int pageIndex, String name, boolean visible,
+                    Date lastUpdateTime, String viewImage, Long createUserId, Long handoverId, String shareConf) {
+        this.id = id;
+        this.userId = userId;
+        this.roleIds = roleIds;
+        this.pageIndex = pageIndex;
+        this.name = name;
+        this.visible = visible;
+        this.lastUpdateTime = lastUpdateTime;
+        this.viewImage = viewImage;
+        this.createUserId = createUserId;
+        this.handoverId = handoverId;
+        this.shareConf = shareConf;
+    }
 }
