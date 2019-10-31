@@ -358,6 +358,11 @@ export default {
           // this.pageList = res.obj
           this.allPage = res.obj
           this.changePageType()
+          if (!gbs.inDev) {
+            this.$nextTick(() => {
+              titleShow('bottom', $('#editHome-wrap'))
+            })
+          }
         } else {
           if (gbs.inDev) {
             Notification({
@@ -560,7 +565,6 @@ export default {
     window.history.pushState({}, '', _url)
     this.saerchShareUser()
     this.getAccess()
-    titleShow('bottom', $('#editHome-wrap'))
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
