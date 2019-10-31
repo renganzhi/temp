@@ -11,6 +11,7 @@
     <PreView :showModal="viewPage"
              :viewId="viewId"
              :pageData="pageData"
+             :key="viewKey"
              @hidePreview="hidePreview"></PreView>
     <Confirm :showModal="showDelModal"
              :message="'删除操作不可恢复，是否继续？'"
@@ -220,7 +221,8 @@ export default {
       viewPage: false, // 预览
       pageData: '', // 预览的page内容
       viewId: -1, // 预览的id
-      editName: ''
+      editName: '',
+      viewKey: new Date().getTime() + parseInt(Math.random() * 70)
     }
   },
 
@@ -438,7 +440,10 @@ export default {
     },
     pev (item) {
       this.viewId = item.id
-      this.viewPage = true
+      this.viewKey = new Date().getTime() + parseInt(Math.random() * 70)
+      this.$nextTick(() => {
+        this.viewPage = true
+      })
     },
     // 关闭预览弹窗
     hidePreview () {
