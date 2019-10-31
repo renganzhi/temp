@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import com.uxsino.authority.lib.annotation.Permission;
 import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
@@ -103,6 +104,7 @@ public class HomePageController {
     }
 
     @ApiOperation("增加一页")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @RequestMapping(value = "/homePage/add", method = RequestMethod.POST)
     public JsonModel addHomePage(HttpSession session, @ApiParam("待添加页面名称") @RequestParam String name,
                                  @ApiParam("插入位置，null或者0则默认加到最后") @RequestParam(required = false) Integer index,
@@ -135,6 +137,7 @@ public class HomePageController {
     }
 
     @ApiOperation("修改页面名称")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @RequestMapping(value = "/homePage/edit", method = RequestMethod.POST)
     public JsonModel editPageName(HttpSession session, @ApiParam("修改后的名称") @RequestParam String name,
         @ApiParam("预修改的页面ID") @RequestParam Long id) {
@@ -168,6 +171,7 @@ public class HomePageController {
     }
 
     @ApiOperation("复制一页到末尾")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @RequestMapping(value = "/homePage/copy/{pageId}", method = RequestMethod.GET)
     public JsonModel copyHomePage(HttpSession session, @ApiParam("待复制页面ID") @PathVariable Long pageId) {
         HomePage sourcePage = homePageService.getById(pageId);
@@ -195,6 +199,7 @@ public class HomePageController {
     }
 
     @ApiOperation("大屏配置-配置大屏展示内容-并且保存")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @RequestMapping(value = "/homePage", method = RequestMethod.POST)
     public JsonModel homePage(HttpSession session, @ApiParam("封装好的页面配置对象") HomePage homePage) {
         HomePage existHomePage = homePageService.getById(homePage.getId());
@@ -224,6 +229,7 @@ public class HomePageController {
     }
 
     @ApiOperation("获取当前用户可见的大屏页面列表，不含内容配置信息")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"R"})
     @RequestMapping(value = "/homePage/noConf", method = RequestMethod.GET)
     public JsonModel homePageNoConf(HttpSession session) {
         boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
@@ -274,6 +280,7 @@ public class HomePageController {
         return new JsonModel(true, JSON.parseObject(JSON.toJSONString(homePage)));
     }
 
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @ApiOperation("根据序号删除大屏配置")
     @RequestMapping(value = "/homePage/deleteByIndex/{pageIndex}", method = RequestMethod.DELETE)
     public JsonModel deleteHomePage(HttpSession session, @ApiParam("待删除的页面序号") @PathVariable int pageIndex) {
@@ -290,6 +297,7 @@ public class HomePageController {
         }
     }
 
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @ApiOperation("根据ID删除大屏配置")
     @RequestMapping(value = "/homePage/deleteById/{pageId}", method = RequestMethod.DELETE)
     public JsonModel deleteHomePageById(HttpSession session, @ApiParam("待删除的页面序号") @PathVariable Long pageId) {
@@ -464,6 +472,7 @@ public class HomePageController {
     }
 
     @ApiOperation("将某个页面分享给其他用户或者域")
+    @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @PostMapping("/share/{pageId}")
     public JsonModel shareById(HttpSession session, @PathVariable Long pageId,
                                @RequestParam(value = "uids") String uids,
