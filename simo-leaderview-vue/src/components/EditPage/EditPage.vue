@@ -20,17 +20,22 @@
       <div class="wrap-content">
         <div class="wrap-body flex flex-vertical">
           <div class="searchForm">
-            <select name="pageType">
-              <option value="5">全部页面</option>
-              <option value="10">我的页面</option>
-              <option value="30">分享的页面</option>
+            <select name="pageType"
+                    v-model="pageType"
+                    @change="changePageType"
+                    style="margin-right: 10px;">
+              <option value="1">全部页面</option>
+              <option value="2">我的页面</option>
+              <option value="3">分享的页面</option>
             </select>
             <button type="button"
+                    v-if="access === 'w'"
                     @click="add">新增页面</button>
             <button type="button"
                     @click="openSetting">设置</button>
             <button type="button"
-                    @click="backHome">返回</button>
+                    class="homeBack"
+                    @click="backHome"><i class="icon-n-back"></i> 返回</button>
           </div>
           <div id="pagesBox"
                class="auto flex flex-wrap flex-1">
@@ -46,14 +51,28 @@
                    v-else />
               <div class="operates"
                    v-show="hoverIndex === index">
+
+                <a class="opera-item noUse"
+                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">复制</a>
                 <a class="opera-item"
+                   v-else
                    @click.prevent="copy(item)">复制</a>
+
                 <a class="opera-item"
                    @click.prevent="pev(item)">预览</a>
+
+                <a class="opera-item noUse"
+                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">编辑</a>
                 <a class="opera-item"
+                   v-else
                    @click.prevent="edit(item)">编辑</a>
+
+                <a class="opera-item noUse"
+                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">删除</a>
                 <a class="opera-item"
+                   v-else
                    @click.prevent="del(item)">删除</a>
+
               </div>
               <div v-if="editIndex === index"
                    class="page-title titleShow">
@@ -70,12 +89,22 @@
               </div>
               <div v-else
                    class="page-title flex-1 flex">
-                <span class="shareIcon"><i class="icon-n-assetys"></i></span>
+                <span class="shareIcon"
+                      v-show="item.belongCurrentUser === 'false'"
+                      :title="item.shareName"><i class="icon-n-assetys"></i></span>
                 <span class="title-name flex-1">{{item.name}}</span>
+
+                <a class="icon-n-edit2 edit-icon noClk"
+                   v-if="(item.belongCurrentUser === 'false' || access !== 'w') && !isSuperAdmin"></a>
                 <a class="icon-n-edit2 edit-icon"
+                   v-else
                    @click="changeEdit(index)"></a>
-                <a class="icon-n-connectionType edit-icon"
-                   @click="toShare(index)"></a>
+
+                <a class="icon-n-share edit-icon noClk"
+                   v-if="item.belongCurrentUser === 'false' || access !== 'w'"></a>
+                <a class="icon-n-share edit-icon"
+                   v-else
+                   @click="toShare(item)"></a>
               </div>
             </div>
           </div>
@@ -115,14 +144,9 @@
                   <select id="shareUsers"
                           v-model="shareUsers">
                     <option v-for="(user, index) in userList"
-                            :value="user.userName"
+                            :value="user.id"
                             :key="index">{{user.userName}}</option>
                   </select>
-                  <!-- <select>
-                    <option value="2">四川员工</option>
-                    <option value="3">成都员工</option>
-                    <option value="4">湖南员工</option>
-                  </select> -->
                 </div>
               </div>
               <div class="form-group">
@@ -131,14 +155,9 @@
                   <select v-model="shareRoles"
                           id="shareRoles">
                     <option v-for="(role, index) in roleList"
-                            :value="role.name"
+                            :value="role.id"
                             :key="index">{{role.name}}</option>
                   </select>
-                  <!-- <select>
-                    <option value="2">所属域角色</option>
-                    <option value="3">所属域及子域角色</option>
-                    <option value="4">全部域角色</option>
-                  </select> -->
                 </div>
               </div>
               <div class="form-group"
@@ -156,7 +175,7 @@
           </div>
           <div class="modal-footer">
             <button type="button"
-                    data-share="sureShare">确认</button>
+                    @click="sureShare">确认</button>
             <button type="button"
                     data-dismiss="modal">取消</button>
           </div>
@@ -182,8 +201,14 @@ export default {
     return {
       baseUrl: gbs.host,
       pageList: [],
+      allPage: [], // 全部页面
+      access: 'r',
+      isSuperAdmin: false,
       editIndex: -1,
       hoverIndex: -1,
+      pageType: '1',
+      shareItem: {},
+      shareId: 0,
       shareUsers: [],
       shareRoles: [],
       userList: [],
@@ -203,8 +228,51 @@ export default {
     backHome () {
       this.$router.push('/')
     },
-    toShare (index) {
+    changePageType () {
+      let type = this.pageType
+      if (type === '3') {
+        this.pageList = _.filter(this.allPage, function (o) { return o.belongCurrentUser === 'false' })
+      } else if (type === '2') {
+        this.pageList = _.filter(this.allPage, function (o) { return o.belongCurrentUser === 'true' })
+      } else {
+        this.pageList = this.allPage
+      }
+    },
+    toShare (item) {
+      this.shareId = item.id
+      if (item.shareConf) {
+        this.shareItem = JSON.parse(item.shareConf)
+        this.shareUsers = this.shareItem.uids || []
+        this.shareRoles = this.shareItem.roles || []
+      } else {
+        this.shareItem = {}
+        this.shareRoles = []
+        this.shareUsers = []
+      }
+      this.initSelect2('shareUsers', this.shareUsers)
+      this.initSelect2('shareRoles', this.shareRoles)
       $('#homeShareModal').modal('show')
+    },
+    sureShare () {
+      // var data = { 'roles': this.shareRoles.join(','), 'uids': this.shareUsers.join(',') }
+      // this.axios.post('/leaderview/home/share/' + this.shareId, data).then((res) => {
+      //   if (res.success) {
+      //   }
+      // })
+      var data = {}
+      data.roles = (this.shareRoles && this.shareRoles.length > 0) ? this.shareRoles.join(',') : ''
+      data.uids = (this.shareUsers && this.shareUsers.length > 0) ? this.shareUsers.join(',') : ''
+      this.axios({
+        method: 'post',
+        url: '/leaderview/home/share/' + this.shareId,
+        data: qs.stringify(data),
+        headers: { 'content-type': 'application/x-www-form-urlencoded' }
+      }).then((res) => {
+        if (res.success) {
+          this.search()
+          $('#homeShareModal').modal('hide')
+        }
+      })
     },
     saerchShareUser () {
       this.axios.get('/user/findAvailableUsers?isNotMe=true').then((res) => {
@@ -214,7 +282,7 @@ export default {
           this.initSelect2User()
         }
       })
-      this.axios.get('http://192.168.2.129:9999/role/findAllEnableRoles').then((res) => {
+      this.axios.get('/role/findAllEnableRoles').then((res) => {
         if (res.success) {
           this.roleList = res.obj
           this.initSelect2('shareRoles')
@@ -223,23 +291,22 @@ export default {
       })
     },
     initSelect2 (id, v) {
-      // var value = typeof v === 'undefined' ? this.value : v
+      var value = typeof v === 'undefined' ? [] : v
       $('#' + id).select2({
         multiple: true,
         closeOnSelect: false
-      }).val(null).trigger('change')
+      }).val(value).trigger('change')
     },
     initSelect2User () {
       var _this = this
       $('#shareUsers').on('change', function () {
         // vm.$emit('input', $(this).val())
-        _this.shareUsers = $(this).val()
-        console.log(_this.shareUsers)
+        _this.shareUsers = $(this).val() ? $(this).val() : []
       }).on('select2:selecting', function (e) {
         if (e.params && e.params.args && e.params.args.data) {
           var v = $(this).val()
           if (e.params.args.data.id === '') { // 选择不限
-            $(this).val(null)
+            $(this).val([])
           } else { // 选中其他
             if (v && v.indexOf('') !== -1) {
               $(this).val([e.params.args.data.id])
@@ -253,7 +320,7 @@ export default {
             if (e.params.args.data.id === '') {
               e.preventDefault()
             }
-            $(this).val(null)
+            $(this).val([])
           }
         }
       })
@@ -261,13 +328,12 @@ export default {
     initSelect2Role () {
       var _this = this
       $('#shareRoles').on('change', function () {
-        _this.shareRoles = $(this).val()
-        console.log(_this.shareRoles)
+        _this.shareRoles = $(this).val() ? $(this).val() : []
       }).on('select2:selecting', function (e) {
         if (e.params && e.params.args && e.params.args.data) {
           var v = $(this).val()
           if (e.params.args.data.id === '') { // 选择不限
-            $(this).val(null)
+            $(this).val([])
           } else { // 选中其他
             if (v && v.indexOf('') !== -1) {
               $(this).val([e.params.args.data.id])
@@ -281,7 +347,7 @@ export default {
             if (e.params.args.data.id === '') {
               e.preventDefault()
             }
-            $(this).val(null)
+            $(this).val([])
           }
         }
       })
@@ -289,7 +355,9 @@ export default {
     search () {
       this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
         if (res.success) {
-          this.pageList = res.obj
+          // this.pageList = res.obj
+          this.allPage = res.obj
+          this.changePageType()
         } else {
           if (gbs.inDev) {
             Notification({
@@ -300,6 +368,19 @@ export default {
           } else {
             tooltip('', res.msg, 'error')
           }
+        }
+      })
+    },
+    getAccess () {
+      this.axios.get('/leaderview/home/getMenu').then((res) => {
+        if (res.success) {
+          let permission = res.obj.permission.toLowerCase().split(',')
+          if (permission.indexOf('w') !== -1) {
+            this.access = 'w'
+          } else {
+            this.access = 'r'
+          }
+          this.isSuperAdmin = res.obj.isSuperAdmin
         }
       })
     },
@@ -410,9 +491,6 @@ export default {
     changeEdit (index) {
       this.editName = this.pageList[index].name
       this.editIndex = index
-      // this.$nextTick(function () {
-      // cTthis.addValidator()
-      // })
     },
     changeName (index, item) {
       // var _this = this
@@ -481,20 +559,33 @@ export default {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
     this.saerchShareUser()
+    this.getAccess()
+    titleShow('bottom', $('#editHome-wrap'))
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
-    // $('body').removeClass().removeAttr('style')
-    // document.body.calss = ''
-    // document.body.style = ''
   },
-  destoryed: function () {
-
+  destroyed: function () {
+    if ($('.tooltip').length > 0) {
+      $(this.$el).find('[title]').tooltip('destroy')
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.homeBack {
+  float: right;
+  background: transparent;
+  color: #026bf4;
+  font-size: 13px;
+  border: none;
+  i {
+    font-size: 15px;
+    margin-right: 2px;
+  }
+}
+
 .page-item {
   position: relative;
   height: 206px;
@@ -542,6 +633,10 @@ export default {
   color: #0088cc;
 }
 
+.page-item .operates .noUse {
+  color: #3d3d3e !important;
+}
+
 .page-item .title-name {
   overflow: hidden;
 }
@@ -567,13 +662,20 @@ export default {
 }
 
 .page-item .edit-icon {
-  width: 40px;
+  width: 28px;
   line-height: 40px;
   text-align: center;
   display: inline-block;
   font-size: 12px;
 }
-
+.page-item .edit-icon.noClk {
+  // color: #5b5f6d;
+  color: #494d5a;
+}
+.page-item .icon-n-share {
+  font-size: 13px;
+  margin-right: 10px;
+}
 #pagesBox {
   margin-left: -6px;
   height: 100%;
@@ -609,6 +711,9 @@ export default {
 }
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
+  .page-item .operates .noUse {
+    color: #a9a9a9 !important;
+  }
   .page-item .operates {
     background-color: #fff;
   }

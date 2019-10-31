@@ -1,5 +1,9 @@
 <template>
   <div style="margin: 20px;">
+    <input v-model="name"
+           placeholder="请输入用户名" /><br>
+    <input v-model="pwd"
+           placeholder="请输入密码" /><br>
     <img :src="baseUrl + '/verification'" />
     <input v-model="code" /><button @click='login'>登录</button>
   </div>
@@ -13,7 +17,9 @@ export default {
   data () {
     return {
       baseUrl: '',
-      code: 0
+      code: 0,
+      name: '',
+      pwd: ''
     }
   },
   mounted: function () {
@@ -21,14 +27,16 @@ export default {
   },
   methods: {
     login () {
-      var _data = { 'username': 'admin', 'password': 'Admin123', 'checkCode': this.code }
+      var _data = { 'username': this.name, 'password': this.pwd, 'checkCode': this.code }
       this.axios({
         method: 'post',
         url: '/login',
         data: qs.stringify(_data),
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
-        this.$router.push('/')
+        if (res.success) {
+          this.$router.push('/')
+        }
       })
     }
   }
