@@ -10,7 +10,7 @@ var argument = process.argv.splice(2)
 var replaceText = argument[0] || '/leaderview-static/' // 目标目录
 
 var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
-var ignoreCss = ['select2', 'bootstrap', 'mainStyle']
+var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'select2']
 
 var readStream = fs.createReadStream(sourceFile)
 var writeStream = fs.createWriteStream(destPath)
@@ -33,8 +33,8 @@ readStream.on('data', function (chunk) {
     data = data.replace(jsReg, '')
   })
   ignoreCss.forEach(function (item) {
-    // var cssReg = new RegExp('<link .+?' + item + '.+?(.css){1}>', 'im')
-    var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
+    // var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
+    var cssReg = new RegExp('<link [^>]*' + item + '[^>]*>', 'igm')
     data = data.replace(cssReg, '')
   })
   writeStream.write(data, 'UTF8')

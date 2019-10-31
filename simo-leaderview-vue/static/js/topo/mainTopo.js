@@ -46,7 +46,7 @@ MainTp.prototype = {
     // )
     // topoConfig:function(tpId,callback,isAsync){   //获取拓扑全局设置
     $.ajax({
-      url: gbs.host + '/business/topo/backgroundSet/' + this.opt.tpId,
+      url: gbs.host + '/monitor/topo/findTopoBackgroundSetByTopoId?topoId=' + this.opt.tpId,
       type: 'GET',
       async: false,
       success: function (data) {
@@ -114,8 +114,8 @@ MainTp.prototype = {
     }
     setTimeout(function () {
       /* if(_this.opt.viewBox) {
-                tp.svgContainer.attr('viewBox',_this.opt.viewBox);
-            }else{ */
+           tp.svgContainer.attr('viewBox',_this.opt.viewBox);
+       }else{ */
       tp.setMaxCavWH(rg.minRgX, rg.maxRgX, rg.minRgY, rg.maxRgY)
       $(_this.opt.el).css('opacity', 1)
       /* } */

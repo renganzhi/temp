@@ -6,7 +6,7 @@
 /*topo左侧导航栏*/
 #network_attention{
     height: 100%;
-} 
+}
 #tp-tree-wrap{
     position: absolute;
     width: 160px;
@@ -295,7 +295,7 @@ body.showtopo .margin-left-150{
     stroke-linejoin: bevel;
     fill: none; 
     cursor: pointer;
-    stroke:#fff;
+    stroke:#0096ff;
     pointer-events: stroke;
 }
 
@@ -304,26 +304,26 @@ body.showtopo .margin-left-150{
 }
 
 .link.Enable{   /* 正常 */
-    stroke:#2aff00;
+    stroke:#00e510;
 }
 
 .link.Unkown{/*未知*/
-	stroke:#5f5f5f;
+	stroke:#a0a0a0;
 }
 
-.link.Alert{
-    stroke:#f3c200;
+.link.Alert{ /*告警*/
+    stroke:#ff9900;
 }
 
-.link.Disconnect{
-    stroke:#FF0000;
+.link.Disconnect{/*断开*/
+    stroke:#fa0019;
 }
 
-.link.Cancelmonitor{
-    stroke:#999999;
+.link.Cancelmonitor{ /*未监控*/
+    stroke:#495872;
 }
-.link.Unconnection{
-     stroke:red;
+.link.Unconnection{ /*未连接*/
+     stroke:#fa0019;
 }
 
 path.link.selected{
@@ -332,8 +332,8 @@ path.link.selected{
 
 path.link.dragline {
     pointer-events: none;
-    stroke:#fff;
-    fill:#fff;
+    stroke:#0096ff;
+    fill:#0096ff;
 }
 
 path.link.hidden {
@@ -397,7 +397,7 @@ path.link.hidden {
    /*  right: 20px;
     top: 15px; */
     right:0;
-    top:0;
+    top:15px;
     height: 30px;
     padding:3px 5px;
     background: rgb(20, 21, 36);
@@ -663,6 +663,9 @@ text.rgText:hover,text.rgText.selected{
     left: 180px;
    width:230px !important;
 }
+.topoSearch .input-group{
+    top: 15px;
+}
 
 .close-tree .topoSearch{
     left: 50px;
@@ -699,6 +702,9 @@ input.rg-searchInp {
 .topoSearch .rg-search{
 	margin-left: -19px;
     color: #b1b4bf;
+    position: absolute;
+    right: 8px;
+    top: 8px;
 }
 
 .tp_allRes{

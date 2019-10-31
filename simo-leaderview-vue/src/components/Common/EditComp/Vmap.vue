@@ -88,10 +88,10 @@ export default {
           color: ['#E0022B', '#E09107', '#A3E00B'],
           // itemSymbol: 'none',
           show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
-          hoverLink: true,
+          hoverLink: false,
           showLabel: true,
           textStyle: {
-            color: '#fff'
+            color: this.item.themeType === '1' ? '#fff' : '#50607c'
           }
         },
         tooltip: {
@@ -118,8 +118,8 @@ export default {
             normal: {
               // color: 'red', // 展示指标及圆点的颜色
               // areaColor: '#294671', // 地图区域的颜色!
-              areaColor: 'rgba(35, 60, 102, 0.5)',
-              borderColor: 'rgba(53, 128, 205, 0.5)',
+              areaColor: this.item.themeType === '1' ? '#121a33' : '#cfd9e3',
+              borderColor: this.item.themeType === '1' ? '#38597b' : '#a2b1c0',
               borderWidth: 0.5
               // shadowColor: 'rgba(0, 0, 0, 1)',
               // shadowBlur: 6
@@ -183,6 +183,11 @@ export default {
     }
   },
   watch: {
+    'item.themeType': function (newV) {
+      this.extend.series.itemStyle.normal.areaColor = newV === '1' ? '#121a33' : '#cfd9e3'
+      this.extend.series.itemStyle.normal.borderColor = newV === '1' ? '#38597b' : '#a2b1c0'
+      this.extend.visualMap.textStyle.color = newV === '1' ? '#fff' : '#50607c'
+    },
     'item.ctLegendShow': function (newV, oldValue) {
       this.extend.visualMap.show = newV === 'true'
     },
@@ -252,8 +257,12 @@ export default {
 
   },
   beforeMount: function () {
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
-      this.empty = true
+    // if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+    //   this.empty = true
+    // }
+    var theme = $('html').attr('data-theme')
+    if (theme === 'blackWhite' || theme === 'blueWhite') {
+      this.extend.visualMap.textStyle = '#50607c'
     }
   },
   mounted: function () {

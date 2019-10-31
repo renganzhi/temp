@@ -25,6 +25,13 @@ export default {
     return {
       bodyClass: ''
     }
+  },
+  created: function () {
+    var _hash = window.location.hash
+    if (_hash.split('/')[1]) {
+      var _url = window.location.protocol + '//' + window.location.host + '/index'
+      window.location.href = _url
+    }
   }
 }
 </script>
@@ -77,7 +84,7 @@ body {
   opacity: 0.3;
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
   z-index: 20099;
-}
+} */
 </style>

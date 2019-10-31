@@ -52,7 +52,7 @@ export default {
       obj = {
         empty: false,
         keyId: new Date().getTime() + Math.random() * 10000,
-        initOption: { renderer: 'svg' },
+        initOption: { renderer: this.item.chartType === 've-line' ? 'canvas' : 'svg' },
         settings: {
           yAxisType: [0]
         },
@@ -75,7 +75,7 @@ export default {
             // orient : 'vertical', //横向、纵向
             x: 'center',
             y: 'bottom',
-            show: this.item.ctLegendShow === 'true',
+            show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
               color: '#666f8b'
             }
@@ -142,6 +142,11 @@ export default {
     'item.ctName': function (newV, oldValue) {
       this.extend.title.text = newV
     },
+    'item.fontSize': function (newV) {
+      if (this.item.subType === 'progress') {
+        this.settings.seriesMap.pro.detail.fontSize = newV
+      }
+    },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
         var barW = Math.floor((newV - 60) * 0.7 / this.item.chartData.rows.length)
@@ -151,8 +156,16 @@ export default {
         }
       }
     },
-    'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.legend.show = newV === 'true'
+    'item.ctLegendShow': function (newV) {
+      if (this.item.subType === 'progress') {
+        if (newV === 'true') {
+          this.settings.dataName.p = this.item.chartData.name
+        } else {
+          this.settings.dataName.p = ''
+        }
+      } else {
+        this.extend.legend.show = newV === 'true'
+      }
     },
     'item.lineArea': function (newV, oldValue) {
       this.settings.area = newV === 'true'
@@ -160,6 +173,22 @@ export default {
     'item.showPoint': function (newV, oldValue) {
       this.extend.label.show = newV === 'true'
       this.keyId = new Date().getTime() // 强制更新视图
+    },
+    'item.bgClr': {
+      handler: function (newV) {
+        if (this.item.chartType === 've-gauge') {
+          if (!newV) {
+            newV = '#657992'
+          }
+          if (this.item.subType === 'progress') {
+            this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
+          } else {
+            this.settings.seriesMap.p.axisLine.lineStyle.color[0].splice(1, 1, newV)
+            this.settings.seriesMap.outerpro.axisLine.lineStyle.color[1].splice(1, 1, newV)
+          }
+        }
+      },
+      deep: true
     },
     'item.ctColors': function (newV) {
       if (this.item.chartType === 've-gauge') {
@@ -222,6 +251,9 @@ export default {
           this.extend.yAxis.max = null
         }
       }
+      if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
+        this.extend.color = this.getColors(this.item.ctColors)
+      }
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
@@ -248,6 +280,31 @@ export default {
       return (parseInt(maxData / 100) * 100 + 100)
     },
     getColors: function (tempArr) {
+      if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
+        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
+          // 判断是不是只有一个为0的数据
+          let key = this.item.chartData.columns[1]
+          let firstVal = this.item.chartData.rows[0][key]
+          if (!firstVal || firstVal === '0') {
+            return 'rgba(51, 57, 75, 0.62)'
+          }
+        }
+      }
+      if (this.item.chartType === 've-radar') {
+        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
+          let keys = this.item.chartData.columns.slice(1)
+          let flag = 0
+          keys.forEach((item) => {
+            let _val = this.item.chartData.rows[0][item]
+            if (!_val || _val === '0') {
+              flag++
+            }
+          })
+          if (flag === keys.length) {
+            return 'rgba(51, 57, 75, 0.62)'
+          }
+        }
+      }
       var type = this.item.chartType
       // LinearGradient: 右 下 左 上
       var direct = [0, 0, 1, 0]
@@ -407,6 +464,10 @@ export default {
           obj.settings.area = _this.item.lineArea === 'true'
           // obj.settings.xAxisType = 'time'
           obj.extend = $.extend(obj.extend, {
+            series: {
+              type: 'line',
+              showAllSymbol: false
+            },
             label: {
               show: _this.item.showPoint === 'true'
             },
@@ -528,7 +589,7 @@ export default {
             // 目标占比图
             obj.settings = {
               dataName: {
-                'p': data.name
+                'p': _this.item.ctLegendShow === 'true' ? data.name : ''
               },
               seriesMap: {
                 'p': {
@@ -540,7 +601,7 @@ export default {
                     lineStyle: { //  属性lineStyle控制线条样式
                       width: 12,
                       color: [
-                        [1, '#657992']
+                        [1, _this.item.bgClr || '#657992']
                       ]
                     }
                   },
@@ -618,7 +679,7 @@ export default {
                     lineStyle: { //  属性lineStyle控制线条样式
                       width: 4,
                       color: [
-                        [1, '#657992']
+                        [1, _this.item.bgClr || '#657992']
                       ]
                     }
                   },
@@ -691,7 +752,7 @@ export default {
                       shadowBlur: 0,
                       color: [
                         [data.value / 100, color],
-                        [1, '#657992']
+                        [1, _this.item.bgClr]
                       ]
                     }
                   },

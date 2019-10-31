@@ -18,6 +18,7 @@ export default {
   props: [],
   data: function () {
     return {
+      refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
       levelTipsShow: false, // 数据量级提示信息
@@ -52,8 +53,8 @@ export default {
       selectedItem: {},
       selectedIndex: null,
       chartNum: [],
-      miniW: 10,
-      minIndex: 500, // 当前最低层级
+      miniW: 20,
+      minIndex: 499, // 当前最低层级
       maxIndex: 500, // 当前最高层级
       paintInput: {
         width: 1920, // 输入的画布大小
@@ -64,7 +65,7 @@ export default {
         height: 1080,
         bgColor: '',
         bgImg: '',
-        scale: 100,
+        scale: 80,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: true // 显示网格
@@ -85,7 +86,8 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
-      defMapColors: ['#0066cc', '#1470cc', '#297acc', '#3d85cc', '#528fcc', '#6699cc', '#7aa3cc', '#8fadcc'],
+      proFontSize: [24, 12, 13, 14, 16, 18, 20, 28, 36, 48],
+      defMapColors: ['#bb2a52', '#bd3d50', '#bf4e4e', '#c2634b', '#c47346', '#c7833f', '#ca9137', '#cd9d2c'],
       defalutColors: [
         '#37a2da',
         '#32c5e9',
@@ -111,6 +113,7 @@ export default {
         ['#5c84e7', '#144fe5'],
         ['#85f8c0', '#62dc26']
       ],
+      showWindowBtn: false, // 多资源多指标弹窗按钮
       syst: {
         // 系统数据
         urlSel: [], // 接口下拉列表，根据不同的图形类型有不同的接口
@@ -120,6 +123,8 @@ export default {
           url: '',
           params: {} // 请求发送给后端的数据
         },
+        windowObj: [], // 保存弹窗数据
+        windowData: [], // 发送给后端的弹窗数据
         chainParams: {} // 用于缓存需要多级下拉联动请求，以便不用每次遍历当前选中接口数据
       },
       dataApi: [], // 选择接口数据
@@ -162,6 +167,11 @@ export default {
         top: 0, // 多选情况下输入框改变前的y位移
         width: 0,
         height: 0
+      },
+      // 框选的鼠标起点
+      chooseStart: {
+        posX: 0,
+        posY: 0
       }
     }
   },
@@ -313,11 +323,14 @@ export default {
       })
     },
     clearAlertMap () {
-      console.log('初始化清空数据点')
+      console.log('清空初始化数据点')
       this.alertMapData = []
-      this.selectedPositn = []
+      this.selectedItem.chartData = [{ name: this.areaArr[0].name, value: 2 }]
+      this.$nextTick(() => {
+        this.alertMapData = [{ name: this.areaArr[0].name, value: 2 }]
+        this.selectedPositn = [this.areaArr[0].name]
+      })
       // this.$set('selectedItem', 'chartData', [])
-      this.selectedItem.chartData = []
     },
     initLevelData (areaData) {
       // 区域分布图给前三项赋默认值
@@ -468,7 +481,8 @@ export default {
     // 切换地图的省
     chgProvince (id) {
       if (this.selectedItem.mapLevel === 'city') {
-        var noMapArr = ['110000', '310000', '500000', '120000', '710000']
+        // 北京， ... ， 香港， 澳门
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
           if (gbs.inDev) {
@@ -485,19 +499,21 @@ export default {
       if (id) {
         this.getMapData(id).then((data) => {
           this.cityArr = data
-          console.log('===========' + this.selectedItem.mapLevel + '=========')
+          // console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
             if (this.selectedItem.chartType === 'v-map') {
               this.initLevelData()
+            } else if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
             }
           } else if (this.selectedItem.mapLevel === 'city') {
             this.selectedItem.cityCode = data[0].value
+            if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
+            }
           }
         })
-        if (this.selectedItem.chartType === 'v-scatter') {
-          this.clearAlertMap()
-        }
       }
     },
     chgCity (id) {
@@ -510,16 +526,16 @@ export default {
           if (this.selectedItem.chartType === 'v-map') {
             this.initLevelData()
           }
+          if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selfMapLevel && id) {
+              this.clearAlertMap()
+            }
+          }
         })
-      }
-      if (this.selectedItem.chartType === 'v-scatter') {
-        if (this.selfMapLevel && id) {
-          this.clearAlertMap()
-        }
       }
     },
     chgAreaName (name, index) {
-      console.log('chgAreaName:' + name)
+      // console.log('chgAreaName:' + name)
       if (name) {
         this.selectedPositn[index] = name
       }
@@ -542,8 +558,10 @@ export default {
       } else {
         this.progressObj.height = this.selectedItem.proHeight
       }
-      this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
-      this.progressObj.radius = this.selectedItem.radius
+      if (this.selectedItem.radius > Math.ceil(this.selectedItem.proHeight / 2)) {
+        this.selectedItem.radius = Math.ceil(this.selectedItem.proHeight / 2)
+        this.progressObj.radius = this.selectedItem.radius
+      }
     },
     // 改变进度条元件的圆角
     changeRadius () {
@@ -576,28 +594,60 @@ export default {
       })
     },
     // 获取当前页的配置
-    gerPageConf (id) {
+    getPageConf (id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
-          let tempNum = this.chartNum
-          for (let i = 0, len = tempNum.length; i < len; i++) {
-            tempNum[i].zIndex > this.maxIndex
-              ? (this.maxIndex = tempNum[i].zIndex)
-              : ''
-            tempNum[i].zIndex < this.minIndex
-              ? (this.minIndex = tempNum[i].zIndex)
-              : ''
+          if (res.obj.paintObj) {
+            this.paintObj = JSON.parse(res.obj.paintObj)
+            this.paintInput.width = this.paintObj.width
+            this.paintInput.height = this.paintObj.height
+            this.changeHomeData(this.paintObj) // vuex保存画布大小
           }
+          if (res.obj.composeObj) {
+            this.combinList = JSON.parse(res.obj.composeObj)
+            let tempNum = this.chartNum.concat(this.combinList)
+            for (let i = 0, len = tempNum.length; i < len; i++) {
+              tempNum[i].zIndex > this.maxIndex
+                ? (this.maxIndex = tempNum[i].zIndex)
+                : ''
+              tempNum[i].zIndex < this.minIndex
+                ? (this.minIndex = tempNum[i].zIndex)
+                : ''
+            }
+          }
+          this.formatVersion()
         } else {
           this.chartNum = []
         }
       })
     },
+    formatVersion () {
+      // 新增字段的监听需要对以前版本进行兼容
+      this.chartNum.forEach((item) => {
+        if (item.chartType === 've-gauge' && !item.bgClr) {
+          this.$set(item, 'bgClr', '#657992')
+        }
+        if (item.chartType === 'progress' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.barClr, item.barClr])
+        }
+        if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
+          this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+        }
+      })
+      // this.combinList.forEach((item) => {
+      //   item.child.forEach((list) => {
+      //     if (list.chartType === 've-gauge' && !item.bgClr) {
+      //       this.$set(list, 'bgClr', '#657992')
+      //     }
+      //   })
+      // })
+    },
     initChart (value) {
       this.showStyleTab = true
+      this.showWindowBtn = false // 隐藏部件弹窗按钮
       var obj = $.extend(
         true, {}, {
         id: new Date().getTime(),
@@ -607,6 +657,7 @@ export default {
         y: 100,
         width: 350,
         height: 350,
+        zIndex: ++this.maxIndex,
         colorType: 'defalut',
         ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
         ctDataSource: 'static', // 数据来源system\static，默认static
@@ -625,14 +676,19 @@ export default {
       obj.slted = true
       this.chartNum.push(obj)
       this.selectedItem = obj
-      this.testObj = this.selectedItem
+      // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
+      this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
       if (value.chartType === 'v-map') {
         this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
       }
+      if (value.chartType === 'progress') {
+        this.progressObj.height = 16
+        this.progressObj.radius = 8
+      }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.m-right'))
+          titleShow('bottom', $('.e-legend'))
         })
       }
     },
@@ -710,6 +766,7 @@ export default {
         this.cancelSelected()
       }
       if (window.event.ctrlKey && ev !== 'move' && item.slted) {
+        this.showWindowBtn = false
         // 取消选中
         item.slted = this.editable && false
         if (type === 'compose') {
@@ -736,8 +793,8 @@ export default {
         }
         this.selectedItem = item
         if (item.chartType === 'progress') {
-          this.progressObj.height = item.proHeight
-          this.progressObj.radius = item.radius
+          this.progressObj.height = item.proHeight || 16
+          this.progressObj.radius = (item.radius === 0) ? 0 : (item.radius || 8)
         }
         this.testObj = JSON.parse(JSON.stringify(item))
         if (type === 'compose') {
@@ -767,6 +824,7 @@ export default {
         }
       }
       if (this.selectedItem.chartType === 'v-scatter') {
+        this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
           if (this.selectedItem.mapLevel === 'country') {
@@ -799,6 +857,7 @@ export default {
         // this.selectToPoint() // 这里应该不需要
       }
       if (this.selectedItem.chartType === 'v-map') {
+        this.showWindowBtn = false
         // 这里是不是少了点什么
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
           this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
@@ -834,6 +893,7 @@ export default {
 
       if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
+        this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id
         if (ev === 'down' && item.ctDataSource === 'system') {
           this.getUrlByType(true)
@@ -841,7 +901,14 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.m-right'))
+          titleShow('bottom', $('.e-legend'))
+        })
+      }
+      if (ev !== 'move') {
+        // 重新给静态数据框赋值
+        this.refreshData = false
+        this.$nextTick(() => {
+          this.refreshData = true
         })
       }
     },
@@ -987,7 +1054,14 @@ export default {
         _top = arr[0].y
       var bottomIndex = 0,
         _bottom = arr[0].y + arr[0].height
-      var _index = 500
+      // var _index = 500
+      var _index = this.maxIndex // 没有图层属性的旧数据
+      var minIndexItem = _.minBy(arr, function (item) { return item.zIndex }) // 旧数据会返回undefined
+      // var maxIndexItem = _.maxBy(arr, function (item) { return item.zIndex })
+      // console.log(minIndexItem.zIndex, maxIndexItem.zIndex)
+      if (minIndexItem) {
+        _index = minIndexItem.zIndex
+      }
       // 获取合并之后的组件的范围
       for (var i = 1, len = arr.length; i < len; i++) {
         if (arr[i].x < _left) {
@@ -1006,9 +1080,9 @@ export default {
           _bottom = arr[i].y + arr[i].height
           bottomIndex = i
         }
-        if (arr[i].zIndex && arr[i].zIndex < _index) {
-          _index = arr[i].zIndex
-        }
+        // if (arr[i].zIndex && arr[i].zIndex < _index) {
+        //   _index = arr[i].zIndex
+        // }
       }
       // 为每一个内部组件重新计算相对位置
       for (var i = 0, len = arr.length; i < len; i++) {
@@ -1018,6 +1092,10 @@ export default {
         arr[i].x = arr[i].x - _left
         arr[i].y = arr[i].y - _top
         arr[i].slted = false
+        arr[i].oldX = arr[i].x
+        arr[i].oldY = arr[i].y
+        arr[i].oldW = arr[i].width
+        arr[i].oldH = arr[i].height
       }
       var newObj = $.extend(
         true, {}, {
@@ -1026,7 +1104,9 @@ export default {
         x: _left,
         y: _top,
         width: _right - _left,
+        oldWidth: _right - _left,
         height: _bottom - _top,
+        oldHeight: _bottom - _top,
         zIndex: _index,
         sacleX: 1,
         sacleY: 1,
@@ -1040,6 +1120,7 @@ export default {
       this.removeItem()
 
       this.selectedItem = this.combinList[this.combinList.length - 1]
+      this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseCompIndexs = [this.combinList.length - 1] // 设置右边的值
       if (this.selectArea.choose) {
         this.selectArea.choose = false
@@ -1060,22 +1141,39 @@ export default {
       this.chooseIndexs = []
       this.chooseItems = []
     },
+    itemIndexAdd: function (index, zIndex) {
+      // 组合元素的index， 该组合元素的zIndex
+      this.chartNum.forEach((item) => {
+        if (item.zIndex > zIndex) {
+          item.zIndex++
+        }
+      })
+      this.combinList.forEach((item, i) => {
+        if (index !== i && item.zIndex > zIndex) {
+          item.zIndex++
+        }
+      })
+    },
     // 取消组合
     itemSplit: function () {
       var index = this.selectedIndex
-      var tempArr = this.combinList[index].child
+      var tempArr = _.sortBy(this.combinList[index].child, function (o) { return o.zIndex })
+      var zIndex = this.combinList[index].zIndex
+      this.itemIndexAdd(index, zIndex)
+      // 图层比他大的全部加1
       this.chooseIndexs = []
-      tempArr.forEach(item => {
+      tempArr.forEach((item, i) => {
         // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
         // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
+        item.zIndex = zIndex + i
         item.x = item.x + this.combinList[index].x
         item.y = item.y + this.combinList[index].y
         item.id = item.id + parseInt(Math.random() * 1000) // 复制的元素id一样
-        // item.x = item.left + this.combinList[index].x
-        // item.y = item.top + this.combinList[index].y
-        item.width = parseInt(item.width * this.combinList[index].sacleX)
-        item.height = parseInt(item.height * this.combinList[index].sacleY)
         item.slted = true
+        delete item.oldH
+        delete item.oldW
+        delete item.oldX
+        delete item.oldY
         this.chartNum.push(item)
         this.chooseIndexs.push(this.chartNum.length - 1)
       })
@@ -1085,26 +1183,42 @@ export default {
     // 下移
     downward: function () {
       var z = this.selectedItem.zIndex || 500
-      this.$set(this.selectedItem, 'zIndex', z - 1)
-      if (z - 1 < this.minIndex) {
-        this.minIndex = z - 1
+      if (z > this.minIndex) {
+        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.maxIndex) {
+          this.maxIndex -= 1
+        }
+        this.$set(this.selectedItem, 'zIndex', z - 1)
+        if (z - 1 < this.minIndex) {
+          this.minIndex = z - 1
+        }
       }
     },
     // 上移
     upward: function () {
       var z = this.selectedItem.zIndex || 500
-      this.$set(this.selectedItem, 'zIndex', z + 1)
-      if (z + 1 > this.maxIndex) {
-        this.maxIndex = z + 1
+      if (z < this.maxIndex) {
+        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.minIndex) {
+          this.minIndex += 1
+        }
+        this.$set(this.selectedItem, 'zIndex', z + 1)
+        if (z + 1 > this.maxIndex) {
+          this.maxIndex = z + 1
+        }
       }
     },
     toBottom: function () {
-      this.minIndex--
-      this.$set(this.selectedItem, 'zIndex', this.minIndex)
+      var z = this.selectedItem.zIndex || 500
+      if (z > this.minIndex) {
+        this.minIndex--
+        this.$set(this.selectedItem, 'zIndex', this.minIndex)
+      }
     },
     toTop: function () {
-      this.maxIndex++
-      this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+      var z = this.selectedItem.zIndex || 500
+      if (z < this.maxIndex) {
+        this.maxIndex++
+        this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+      }
     },
     // 通过chooseIndex 获取 选中的元件集合
     indexToItem: function (type) {
@@ -1235,11 +1349,16 @@ export default {
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
     resetPaint () {
+      this.paintInput.width = 1920
+      this.paintInput.height = 1080
+      this.paintObj.width = 1920
+      this.paintObj.height = 1080
       this.paintObj.bgColor = ''
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
       this.paintObj.showGrid = true
+      this.paintObj.scale = 80
     },
     addColor (index) {
       // 添加颜色
@@ -1279,6 +1398,9 @@ export default {
       $event &&
         this.selectedItem.ctDataSource === 'system' &&
         this.getUrlByType()
+      if (this.selectedItem.ctDataSource === 'static') {
+        this.showWindowBtn = false
+      }
     },
     dealTypeStr: function () {
       // 根据需求传值给后端对应的接口
@@ -1326,7 +1448,7 @@ export default {
       var _this = this
       var chainP = (this.syst.chainParams = {}) // 将需要联动的字段缓存
       var index = -1
-
+      this.showWindowBtn = false
       if (typeof flag === 'boolean') {
         var selectedP = (this.syst.curConf.params = $.extend(
           true, {},
@@ -1336,6 +1458,9 @@ export default {
           return o.url === _this.selectedItem.url
         })
       } else {
+        if (!flag) {
+          index = 0
+        }
         selectedP = this.syst.curConf.params = {}
       }
 
@@ -1366,8 +1491,15 @@ export default {
             if (d.params) {
               $.each(d.params, function (j, o) {
                 postData[o] = selectedP[o] || ''
+                if (_this.isArray(postData[o])) {
+                  postData[o] = postData[o].join(',') // 数组形式转化为，分割的字符串传给后端
+                }
               })
               chainP[d.key] = d
+            }
+            if (selectedP.windows) {
+              _this.showWindowBtn = true
+              _this.syst.windowData = JSON.parse(selectedP.windows)
             }
             $.ajax({
               url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
@@ -1376,6 +1508,18 @@ export default {
               type: d.method || 'get',
               success: function (data) {
                 d.data = data.obj || []
+                if (data.msg === 'windows') {
+                  if (_this.isArray(data.obj) && data.obj.length > 0) {
+                    _this.syst.windowObj = data.obj
+                    if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
+                      _this.syst.windowData = _this.initWindowData(data.obj)
+                      // 初始化弹窗赋值并展示
+                    }
+                    _this.showWindowBtn = true
+                  } else {
+                    _this.showWindowBtn = false
+                  }
+                }
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               error: function () {
@@ -1416,7 +1560,11 @@ export default {
             .find('[name="' + i + '"]')
             .closest('.form-group')
           $.each(d.params, function (j, o) {
-            postData[o] = cur[o]
+            if (_this.isArray(cur[o])) {
+              postData[o] = cur[o].join(',')
+            } else {
+              postData[o] = cur[o]
+            }
             if (chaip[o] && chaip[o].params && v.key !== chaip[o].key) {
               // 避免重复请求
               flag = chaip[o].params.indexOf(v.key) !== -1
@@ -1431,8 +1579,14 @@ export default {
             data: postData,
             success: function (data) {
               data.obj = data.obj || []
-              d.data.splice(0, d.data.length)
+              if (_this.isArray(d.data)) {
+                d.data.splice(0, d.data.length)
+              }
               d.data = data.obj
+              // 判断是否是获取的多资源的部件和属性
+              if (data.msg === 'windows') {
+                _this.getWindowObj(data)
+              }
               //  console.log(v.key,d.dataUrl,postData);
             }
           })
@@ -1440,11 +1594,49 @@ export default {
         }
       })
     },
+    getWindowObj (data) {
+      this.showWindowBtn = false
+      if (this.isArray(data.obj) && data.obj.length > 0) {
+        // data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')
+        // if (data.msg === 'windows') {
+        this.syst.windowObj = data.obj
+        this.syst.windowData = []
+        this.syst.windowData = this.initWindowData(data.obj)
+        this.syst.curConf.params.windows = JSON.stringify(this.syst.windowData)
+        this.showWindowBtn = true
+        // }
+      }
+    },
+    initWindowData (data) {
+      var obj = []
+      data.forEach((item, index) => {
+        obj.push({
+          'indicator': item.indicator.value,
+          'fields': (this.isArray(item.fields) && item.fields.length > 0) ? item.fields[0].value : null,
+          'ne': []
+        })
+        item.ne.forEach((list) => {
+          obj[index].ne.push({
+            'id': list.id,
+            'component': (this.isArray(list.component) && list.component.length > 0) ? list.component[0].value : null
+          })
+        })
+      })
+      return obj
+    },
+    getWindowData () {
+      $('#partsEdit-modal').modal('show')
+    },
     getUrlData () {
       // 根据接口获取数据更新图表
       var _this = this
       var curConf = this.syst.curConf
       var param = curConf.params
+      if (this.showWindowBtn && param.hasOwnProperty('windows')) {
+        param.windows = JSON.stringify(this.syst.windowData) // 保存弹窗填写的数据
+      } else if (param.windows) {
+        param.windows = null
+      }
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param)
         return
@@ -1454,6 +1646,9 @@ export default {
       $.each(param, function (i, d) {
         datas[i] = $.isArray(d) ? d.join(',') : d
       })
+      // if (_this.syst.windowData.length > 0) {
+      //   datas.windows = JSON.stringify(_this.syst.windowData)
+      // }
       $.ajax({
         url: reg.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url,
         data: datas,
@@ -1463,6 +1658,10 @@ export default {
           if (data.obj.colors) {
             _this.selectedItem.ctColors = data.obj.colors
             _this.selectedItem.colorType = 'defalut'
+          } else {
+            if (_this.selectedItem.colorType === 'defalut') {
+              _this.selectedItem.ctColors = _this.defalutColors.concat()
+            }
           }
           _this.selectedItem.chartData = data.obj
           _this.selectedItem.url = curConf.url
@@ -1484,7 +1683,14 @@ export default {
     },
     saveTopoConf: function (param) {
       // 拓扑与其他组件不同，需要特殊处理
-      this.selectedItem.tpId = param.topoId
+      if (this.selectedItem.tpId === param.topoId) {
+        this.$set(this.selectedItem, 'refresh', true)
+        this.$nextTick(() => {
+          this.selectedItem.refresh = false
+        })
+      } else {
+        this.selectedItem.tpId = param.topoId
+      }
     },
     // 以下为静态数据的输入校验
     formatJson (a) {
@@ -1601,9 +1807,7 @@ export default {
       var canvas2 = document.createElement('canvas')
       var _canvas = document.querySelector('.m-main .paint-bg')
       $('#chooseWrap').removeClass('gridBg')
-      // _canvas.style.background = _this.$edit.find('.edit-content').css('background');
-      // _canvas.style.background = $('#mainEdit-edit').find('.edit-content').css('background');
-      _canvas.style.background = $('body').css('background')
+      // _canvas.style.background = $('body').css('background')
       // document.querySelector('.m-main #chooseWrap').style.background = $('body').css('background')
 
       // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
@@ -1618,11 +1822,12 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', window.location.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
           .css({
             width: '100%',
             height: '100%',
             position: 'absolute',
+            top: 0,
             left: 0
           })
       )
@@ -1631,6 +1836,7 @@ export default {
         height: this.paintObj.height * (cThis.paintObj.scale / 100),
         logging: false,
         scale: 0.4,
+        backgroundColor: 'transparent', // 设置背景透明
         canvas: canvas2,
         onclone: function (doc) {
           // 提前还原拓扑
@@ -1661,8 +1867,9 @@ export default {
           var _data = {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
-            paintConf: 'test',
-            viewImage: '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            paintObj: JSON.stringify(cThis.paintObj),
+            composeObj: JSON.stringify(cThis.combinList),
+            viewImage: '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({
@@ -1794,8 +2001,8 @@ export default {
       var stateBar = document.getElementById('chooseWrap')
       // var posLeft = stateBar.clientLeft
       // var posTop = stateBar.clientTop
-      var posLeft = 210 // 左侧宽度
-      var posTop = 38 // 顶部banner的高度
+      // var posLeft = 210 // 左侧宽度
+      // var posTop = 38 // 顶部banner的高度
       stateBar.addEventListener('mousedown', _this.userChoose)
       /*     var _this = this
         console.log('注册框选事件')
@@ -1879,13 +2086,11 @@ export default {
       var posx = e.offsetX
       var posy = e.offsetY
       var div = document.createElement('div')
-      div.className = 'tempDiv'
+      // div.className = 'tempDiv'
       div.style.left = posx + 'px'
       div.style.top = posy + 'px'
 
       stateBar.onmousemove = function (ev) {
-        // stateBar.appendChild(div)
-        // _this.selectArea.choose = false
         ev = ev || window.event
         // 获取盒子在整个页面的位置
         var clientX = ev.offsetX
@@ -1896,11 +2101,14 @@ export default {
         div.style.width = Math.abs(posx - clientX) + 'px'
         div.style.height = Math.abs(posy - clientY) + 'px'
         if (parseInt(div.style.width) > 10 && parseInt(div.style.height) > 10) {
-          stateBar.appendChild(div)
-          if ($('.tempDiv').length > 1) {
-            $('.tempDiv').eq(0).remove()
-          }
-          _this.selectArea.choose = false
+          $('#inWrap').show()
+          var inWrap = document.getElementById('inWrap')
+          _this.chooseStart.posX = posx
+          _this.chooseStart.posY = posy
+          inWrap.addEventListener('mousemove', _this.wrapChoose)
+          stateBar.onmousemove = null
+          stateBar.onmouseup = null
+          // return
         }
         // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
       }
@@ -1923,6 +2131,57 @@ export default {
           }
           ee.preventDefault()
         })
+        stateBar.onmousemove = null
+        stateBar.onmouseup = null
+      }
+    },
+    wrapChoose: function (ev) {
+      var _this = this
+      var stateBar = document.getElementById('inWrap')
+      // 获取鼠标起点位置，并绘制div起点
+      var posx = this.chooseStart.posX
+      var posy = this.chooseStart.posY
+      var div = document.createElement('div')
+      div.className = 'tempDiv'
+      div.style.left = posx + 'px'
+      div.style.top = posy + 'px'
+
+      ev = ev || window.event
+      // 获取盒子在整个页面的位置
+      var clientX = ev.offsetX
+      var clientY = ev.offsetY
+      div.style.left = Math.min(clientX, posx) + 'px'
+      div.style.top = Math.min(clientY, posy) + 'px'
+      div.style.width = Math.abs(posx - clientX) + 'px'
+      div.style.height = Math.abs(posy - clientY) + 'px'
+      stateBar.appendChild(div)
+      if ($('.tempDiv').length > 1) {
+        $('.tempDiv').eq(0).remove()
+      }
+      _this.selectArea.choose = false
+
+      stateBar.onmouseup = function () {
+        var tempDiv = document.getElementsByClassName('tempDiv')[0]
+        if (tempDiv) {
+          setTimeout(() => {
+            _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+            $('.tempDiv').remove()
+            $('#inWrap').empty()
+            $('#inWrap').hide()
+            stateBar.removeEventListener('mousemove', _this.wrapChoose)
+          }, 0)
+        }
+        // div.addEventListener('contextmenu', function (ee) {
+        //   if (_this.chooseCompIndexs.length + _this.chooseIndexs.length > 0) {
+        //     $(_this.$refs.contextMenu)
+        //       .css({
+        //         left: ee.pageX,
+        //         top: ee.pageY
+        //       })
+        //       .toggle(true)
+        //   }
+        //   ee.preventDefault()
+        // })
         stateBar.onmousemove = null
         stateBar.onmouseup = null
       }
@@ -2061,6 +2320,9 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 0, data.color)
       }
     },
+    getGaugeCl (data) {
+      this.$set(this.selectedItem, 'bgClr', data.color)
+    },
     getMapColor (data) {
       if (data.type !== undefined) {
         this.selectedItem[data.type] = data.color
@@ -2089,25 +2351,38 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 1, oldColor)
       }
     },
+    getBarClr (data) {
+      this.selectedItem.barClrs.splice(data.index, 1, data.color)
+    },
     testObjChange (direct, newValue) {
-      var defData = 0,
-        isWidth = direct == 'width',
-        valiType = direct + 'Vali'
-      defData = isWidth ? baseData.home.w : baseData.home.h
-      if (newValue < this.miniW || newValue > defData) {
+      var defData = 0
+      var isWidth = direct === 'width'
+      var valiType = direct + 'Vali'
+      var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
+      if (this.childResize) {
+        defData = isWidth ? this.combinList[this.parentId].width : this.combinList[this.parentId].height
+      } else {
+        defData = isWidth ? this.paintObj.width : this.paintObj.height
+      }
+      var selectData = isWidth ? this.selectedItem.x : this.selectedItem.y // 选中元素的x,y
+      var limitValue = defData - selectData + allowOverflow // 可设置的最大值
+      // not Number
+      // if (Number(newValue) < this.miniW) {
+      //   this.selectedItem[direct] = this.miniW
+      // } else {
+      //   this.selectedItem[direct] = Number(this.selectedItem[direct])
+      // }
+      if (newValue < this.miniW || newValue < -allowOverflow || newValue > limitValue) {
         this[valiType].isShowError = true
         this[valiType].errorMsg = isWidth
-          ? '宽度范围为' + this.miniW + '-' + defData
-          : '高度范围为' + this.miniW + '-' + defData
+          ? '宽度范围为' + this.miniW + '~' + (limitValue)
+          : '高度范围为' + this.miniW + '~' + (limitValue)
+        if (newValue > limitValue) {
+          this.testObj[direct] = limitValue
+        }
       } else {
         this[valiType].isShowError = false
-        this.selectedItem[direct] = newValue
-      }
-      // not Number
-      if (Number(newValue) < this.miniW) {
-        this.selectedItem[direct] = this.miniW
-      } else {
-        this.selectedItem[direct] = Number(this.selectedItem[direct])
+        this.$set(this.selectedItem, direct, newValue)
       }
     },
     testObjPosChange (position, newValue) {
@@ -2120,20 +2395,26 @@ export default {
         var compId = this.parentId
         defData = isX ? this.combinList[compId].width : this.combinList[compId].height // 父元素
       } else {
-        defData = isX ? baseData.home.w : baseData.home.h // 画布的宽高
+        // defData = isX ? baseData.home.w : baseData.home.h // 画布的宽高
+        defData = isX ? this.paintObj.width : this.paintObj.height // 画布的宽高
       }
       selectData = isX ? this.selectedItem.width : this.selectedItem.height // 选中元素的宽高
       if (selectData > defData) {
-        this[valiType].isShowError = true
-        this[valiType].errorMsg = isX
-          ? '横轴位置范围为0-' + defData
-          : '纵轴位置范围为0-' + defData
-        if (newValue > defData) {
-          this.testObj[position] = defData
-        }
+        // 这里暂不需要判断宽高的限制
+        // this[valiType].isShowError = true
+        // // this[valiType].errorMsg = isX
+        // //   ? '横轴位置范围为0-' + defData
+        // //   : '纵轴位置范围为0-' + defData
+        // // if (newValue > defData) {
+        // //   this.testObj[position] = defData
+        // // }
+        // var limitValue = defData + allowOverflow // 可设置的最大值
+        // this[valiType].errorMsg = isX
+        //   ? '宽度范围为' + this.miniW + '~' + (limitValue)
+        //   : '高度范围为' + this.miniW + '~' + (limitValue)
       } else {
         var limitValue = defData - selectData + allowOverflow // 可设置的最大值
-        if (newValue < -allowOverflow || newValue > limitValue) {
+        if ((newValue !== 0 && !newValue) || newValue < -allowOverflow || newValue > limitValue) {
           this[valiType].isShowError = true
           this[valiType].errorMsg = isX
             ? '横轴位置范围为' + -allowOverflow + '~' + (limitValue)
@@ -2262,7 +2543,7 @@ export default {
           this.initLevelData()
         }
       } else if (newValue === 'city') {
-        var noMapArr = ['110000', '310000', '500000', '120000', '710000'] // 直辖市自治区没有三级地图
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000'] // 直辖市自治区没有三级地图
         if (oldV === 'country') {
           console.log('从国家级到市级') // 从国家级到市级
           if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
@@ -2298,16 +2579,22 @@ export default {
               if (this.selectedItem.chartType === 'v-map') {
                 this.initLevelData()
               }
+              if (this.selectedItem.chartType === 'v-scatter') {
+                this.clearAlertMap()
+              }
             })
           } else {
             _this.areaArr = _this.cityArr
             if (this.selectedItem.chartType === 'v-map') {
               this.initLevelData()
             }
+            if (this.selectedItem.chartType === 'v-scatter') {
+              this.clearAlertMap()
+            }
           }
-          if (this.selectedItem.chartType === 'v-scatter') {
-            this.clearAlertMap()
-          }
+          // if (this.selectedItem.chartType === 'v-scatter') {
+          //   this.clearAlertMap()
+          // }
         }
       }
     },
@@ -2330,7 +2617,7 @@ export default {
   beforeMount: function () {
     var id = this.$route.params.id || sessionStorage.getItem('pageId')
     this.pageId = id
-    this.gerPageConf(id)
+    this.getPageConf(id)
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
@@ -2341,7 +2628,7 @@ export default {
     $('.page-container').css('top', '0px')
     this.chooseMap()
     if (!gbs.inDev) {
-      titleShow()
+      titleShow('bottom', $('.e-legend'))
     }
     // 初始化paintInput
     document.addEventListener('keydown', this.handleKeyDown)

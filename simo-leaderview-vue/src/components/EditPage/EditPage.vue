@@ -2,7 +2,7 @@
   <!-- class="wrap moniwrap nofooter" -->
   <!-- padding: 10px; padding-bottom: 0px; -->
   <div id="editHome-wrap"
-       style="height: 100%;">
+       style="height: 100%; padding: 15px;">
     <AddPage :showModal="addPage"
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
@@ -90,7 +90,7 @@ export default {
   components: { AddPage, PreView, PageSetting, Confirm, Notification },
   data () {
     return {
-      baseUrl: gbs.host + '/leaderview',
+      baseUrl: gbs.host,
       pageList: [],
       editIndex: -1,
       hoverIndex: -1,
@@ -233,9 +233,9 @@ export default {
     changeEdit (index) {
       this.editName = this.pageList[index].name
       this.editIndex = index
-      this.$nextTick(function () {
-        // cTthis.addValidator()
-      })
+      // this.$nextTick(function () {
+      // cTthis.addValidator()
+      // })
     },
     changeName (index, item) {
       // var _this = this
@@ -285,6 +285,20 @@ export default {
       // typeof cTthis.pram.exitCb === 'function' && cTthis.pram.exitCb()
     }
   },
+  watch: {
+    editName: function (newV, oldV) {
+      // 缩略图编辑校验，不能输入特殊字符
+      if (newV.length > 12) {
+        this.editName = oldV
+      } else {
+        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
+        var flag = (!str.test(newV)) && !/\s/.test(newV)
+        if (!flag) {
+          this.editName = oldV
+        }
+      }
+    }
+  },
   mounted: function () {
     this.search()
     var _url = window.location.protocol + '//' + window.location.host + '/index'
@@ -303,13 +317,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$test: rgba(13, 17, 31, 0.8);
 .page-item {
   position: relative;
   height: 206px;
   margin: 12px;
   width: 310px;
-  box-shadow: 1px 1px 4px 4px #191d2b;
+  box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 .page-item .page-title {
@@ -402,13 +415,16 @@ html[data-theme="blueWhite"] {
     background-color: #fff;
   }
   .page-item {
-    background: #fff;
+    background: #f6f6f6;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.07);
     .title-name {
       color: #50607c;
     }
     .edit-icon {
       color: #828bac;
+    }
+    .page-title {
+      background-color: #fff;
     }
   }
   .page-item:hover {

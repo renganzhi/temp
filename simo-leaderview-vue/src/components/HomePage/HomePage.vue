@@ -1,114 +1,102 @@
 <template>
-  <!-- <div class="flex flex-vertical"
-       id="page_container"> -->
   <div id="home-html"
        class="flex flex-vertical full-height full-width">
-    <div class="portlet light bordered flex-1"
-         id="mainbox">
-      <div class="full-height pagebox">
-        <!-- <DragBox v-for="(item,index) in nowPage"
-                   :index="index"
-                   :item="item"
-                   :editable="editable"
-                   :key="(pageIndex+index)"></DragBox> -->
-        <LookItem v-for="(item,index) in nowPage"
-                  :index="index"
-                  :item="item"
-                  :key="(pageIndex+index)"></LookItem>
+    <div style="width: 100%; height: 100%;"
+         v-if="loadAll && pageList.length < 1">
+      <div class="homeEmpty">
+        <img src="../../assets/homeEmpty.png" />
+        <div>
+          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p><button type="button"
+                  @click="addPage = true">新增页面</button>
+        </div>
       </div>
-    </div>
-    <div class="btm-tools"
-         :class="isFullScreen?'full':''">
-      <div class="fl btn-box">
-        <span @click="editPage"
-              class="ring-icon"
-              title="编辑"
-              v-show="!isFullScreen"><i class="icon-n-set"></i></span>
-        <span @click="refresh"
-              class="ring-icon"
-              :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
-        <span @click="fullScreen"
-              class="ring-icon"
-              :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-        <!-- <el-tooltip placement="top"
-                      v-show="!isFullScreen">
-            <div slot="content">编辑</div>
-            <span @click="editPage"
-                  class="ring-icon"><i class="icon-n-set"></i></span>
-          </el-tooltip>
-          <el-tooltip placement="top">
-            <div slot="content">刷新</div>
-            <span @click="refresh"
-                  class="ring-icon"
-                  :title="isFullScreen ? '刷新' : ''"><i class="icon-n-freshen"></i></span>
-          </el-tooltip>
-          <el-tooltip placement="top">
-            <div slot="content">全屏</div>
-            <span @click="fullScreen"
-                  class="ring-icon"
-                  :title="isFullScreen ? '退出全屏' : ''"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
-          </el-tooltip> -->
-      </div>
-      <div class="fr btn-box"
-           v-show="pageSize>1">
-        <!-- <el-tooltip placement="top">
-            <div slot="content">上一页</div>
-            <span @click="prev"
-                  :title="isFullScreen ? '上一页' : ''"
-                  class="ring-icon"><i class="icon-n-prev"></i></span>
-          </el-tooltip> -->
-        <span @click="prev"
-              class="ring-icon"
-              :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
-        <span @click="togglePlay"
-              class="ring-icon"
-              :title="!timer ? '开启轮播' : '暂停轮播'"
-              v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-        <!-- <el-tooltip placement="top">
-            <div slot="content">下一页 </div>
-            <span @click="next"
-                  class="ring-icon"
-                  :title="isFullScreen ? '下一页' : ''"><i class="icon-n-next"></i></span>
-          </el-tooltip> -->
-        <span @click="next"
-              class="ring-icon"
-              :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
-      </div>
+      <AddPage :showModal="addPage"
+               @hideModal="hideModal"></AddPage>
     </div>
 
-    <div role="alert"
-         v-if="showTip"
-         class="el-notification toast toast-info right"
-         style="bottom: 16px; z-index: 2001;">
-      <div class="el-notification__group">
-        <h2 class="el-notification__title"></h2>
-        <div class="el-notification__content">
-          <p>鼠标移动到左/右下角对大屏操作</p>
+    <div class="portlet light bordered flex-1"
+         id="mainbox">
+      <div class="home_wrapBox">
+        <div class="full-height pagebox">
+          <LookItem v-for="(item,index) in nowPage"
+                    :index="index"
+                    :item="item"
+                    :key="(pageIndex+index)"></LookItem>
+          <LookCompose v-for="(list, index1) in combinList"
+                       :index="index1"
+                       :key="list.id"
+                       :list="list"></LookCompose>
         </div>
-        <div class="el-notification__closeBtn el-icon-close"></div>
+      </div>
+    </div>
+    <div v-if="loadAll && pageList.length > 0">
+      <div class="btm-tools"
+           :class="isFullScreen?'full':''">
+        <div class="fl btn-box">
+          <span @click="editPage"
+                class="ring-icon"
+                title="编辑"
+                v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+          <span @click="refresh"
+                class="ring-icon"
+                :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+          <span @click="fullScreen"
+                class="ring-icon"
+                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+        </div>
+        <div class="fr btn-box"
+             v-show="pageSize>1">
+          <span @click="prev"
+                class="ring-icon"
+                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+          <span @click="togglePlay"
+                class="ring-icon"
+                :title="!timer ? '开启轮播' : '暂停轮播'"
+                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+          <span @click="next"
+                class="ring-icon"
+                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+        </div>
+      </div>
+
+      <div role="alert"
+           v-if="showTip"
+           class="el-notification toast toast-info right"
+           style="bottom: 16px; z-index: 2001;">
+        <div class="el-notification__group">
+          <h2 class="el-notification__title"></h2>
+          <div class="el-notification__content">
+            <p>鼠标移动到左/右下角对大屏操作</p>
+          </div>
+          <div class="el-notification__closeBtn el-icon-close"></div>
+        </div>
       </div>
     </div>
 
   </div>
-  <!-- </div> -->
 </template>
 
 <script>
 import { baseData, gbs } from '@/config/settings'
-import DragBox from './../Common/DragBox'
 import LookItem from './../Common/LookItem'
+import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
+import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions } from 'vuex'
 export default {
   name: 'HomePage',
-  components: { DragBox, Notification, LookItem },
+  components: { Notification, LookItem, LookCompose, AddPage },
   data () {
     return {
       isFullScreen: false,
       editable: false,
       showTip: false, // 全屏的提示信息
+      addPage: false,
+      loadAll: false, // 请求完成之后再展示页面
       pageList: [],
+      combinList: [],
+      paintConf: {},
       nowPage: [],
       pageSize: 0,
       pageIndex: 0,
@@ -148,11 +136,19 @@ export default {
     ...mapActions([
       'changeAlertInfo'
     ]),
+    hideModal (data) {
+      this.addPage = false
+      if (data.ifAdd) {
+        this.$router.push('/edit/' + data.addId)
+      }
+    },
     getPageData: function () {
       // 获取大屏配置内容
       this.axios.get('/leaderview/home/homePage').then((data) => {
         if (data.success) {
           this.initPage(data.obj)
+        } else {
+          this.loadAll = true
         }
       })
     },
@@ -160,6 +156,7 @@ export default {
       this.pageSize = res.pages.length
       this.pageIndex = 0
       this.pageList = res.pages
+      this.loadAll = true
       this.intervalTime = res.intervalTime || 5
       this.refreshTime = res.refreshTime || 3
       // this.refreshType = res.refreshType;
@@ -175,6 +172,7 @@ export default {
       this.stopRefreshTimer()
       this.pageList = []
       this.nowPage = []
+      this.combinList = []
       this.pageIndex = 0
       this.$router.push('/editPage')
       // $.comps.editHome.open({
@@ -211,6 +209,7 @@ export default {
       }
       $('#home-html').css('background', $('body').css('background'))
       Public.bigScreenfullScreen($('#home-html').get(0))
+      // Public.bigScreenfullScreen($('.home_wrapBox').get(0))
       this.isFullScreen = true
       this.interTimer()
     },
@@ -219,8 +218,38 @@ export default {
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
       }
+      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
       this.isFullScreen && this.interTimer()
+    },
+    setPaint: function () {
+      if (this.paintConf) {
+        if (this.paintConf.bgImg) {
+          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf.bgImg + ')')
+        } else if (this.paintConf.bgColor) {
+          $('#mainbox').css('background', this.paintConf.bgColor)
+        } else {
+          $('#mainbox').css('background', '')
+        }
+        if (this.paintConf.bgStyle) {
+          var type = this.paintConf.bgStyle
+          if (type === '1') {
+            var backgroundSize = '100% auto'
+          } else if (type === '2') {
+            backgroundSize = 'auto 100%'
+          } else {
+            backgroundSize = '100% 100%'
+          }
+          $('#mainbox').css('background-size', backgroundSize)
+        } else {
+          $('#mainbox').css('background-size', '')
+        }
+      } else {
+        $('#mainbox').css('background', '')
+        $('#mainbox').css('background-size', '')
+      }
     },
     togglePlay: function () { // 开启/暂停
       this.timer ? this.stopTimer() : this.interTimer()
@@ -232,6 +261,9 @@ export default {
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.pageIndex++
+      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
     },
     stopTimer: function () {
@@ -265,12 +297,13 @@ export default {
           return;
       } */
       // 定时器
-      this.refreshTimer = setTimeout(function () {
+      this.refreshTimer = setTimeout(function freshFn () {
         if (!$('#home-html').length) {
           ct.clearPage()
           return
         }
         ct.refreshFn()
+        ct.refreshTimer = setTimeout(freshFn, ct.refreshTime * 1000)
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
     },
@@ -329,25 +362,53 @@ export default {
       var w = $el.width()
       // var h = $el.height()
       var pageContainer = $('#page_container')
-      if (pageContainer.length) {
-        var h = pageContainer.height() // 打包的时候获取不到高度使用这个
+      if (this.isFullScreen) {
+        var h = $el.height()
       } else {
-        h = $el.height()
+        if (pageContainer.length) {
+          h = pageContainer.height() // 打包的时候获取不到高度使用这个
+        } else {
+          h = $el.height()
+        }
       }
       // var _app = $('#app')
       // console.log('width:' + w + '  height: ' + h)
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
-      var scaleX = w / 1920 // 这里需要改成设置的画布的大小
-      var scaleY = h / 1080
+      var paintW = (this.paintConf && this.paintConf.width) || 1920
+      var paintH = (this.paintConf && this.paintConf.height) || 1080
+      var scaleX = w / paintW // 这里需要改成设置的画布的大小
+      var scaleY = h / paintH
       var scale = Math.min(scaleX, scaleY)
       var mrg = 0
-      if (scaleX <= 1) {
-        mrg = [0, (w - baseData.home.w * scale) / 2 + 'px'].join(' ')
+      // if (scaleX <= 1) {
+      // var _width = this.paintConf.width || baseData.home.w
+      // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
+      mrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
+      // }
+      if (this.isFullScreen) {
+        var boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
+        $el.find('.pagebox').css({
+          transform: 'scale(' + scale + ',' + scale + ')',
+          width: paintW + 'px',
+          height: paintH + 'px',
+          overflow: 'hidden',
+          margin: boxMrg
+        })
+        $el.find('.home_wrapBox').css({
+          margin: 0
+        })
+      } else {
+        $el.find('.pagebox').css({
+          transform: 'scale(' + scale + ',' + scale + ')',
+          width: 'auto',
+          height: 'auto',
+          overflow: 'visible',
+          margin: 0
+        })
+        $el.find('.home_wrapBox').css({
+          margin: mrg
+        })
       }
-      $el.find('.pagebox').css({
-        transform: 'scale(' + scale + ',' + scale + ')',
-        margin: mrg
-      })
     },
     clearPage: function () { // 离开主页清定时器
       this.stopTimer()
@@ -438,11 +499,13 @@ export default {
   width: 30px;
   height: 30px;
   background: #15192a;
+  // background: rgba(21, 25, 42, 0.3);
   border-radius: 50%;
   text-align: center;
   line-height: 30px;
   opacity: 0.3;
   margin: 0 4px;
+  cursor: pointer;
 }
 
 #home-html .pagebox {
@@ -451,7 +514,10 @@ export default {
   -moz-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
 }
-
+.home_wrapBox {
+  height: 100%;
+  overflow: hidden;
+}
 #home-html .ring-icon:hover {
   opacity: 1;
 }
@@ -462,13 +528,20 @@ export default {
 }
 
 #home-html .btm-tools {
-  margin-bottom: -8px;
+  margin-bottom: -3px;
   position: fixed;
   bottom: 12px;
   width: 100%;
   padding-right: 30px;
+  padding-left: 15px;
 }
 
+#home-html .homeEmpty {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  margin-top: -153px;
+}
 #home-html .btm-tools.full {
   bottom: 22px;
   padding-right: 0px;
@@ -491,6 +564,13 @@ html[data-theme="blueWhite"] {
   textarea {
     background: transparent !important;
     background-color: transparent !important;
+  }
+  #home-html .ring-icon {
+    background: #edf3fe;
+    opacity: 1;
+  }
+  #home-html .ring-icon [class*="icon-n-"] {
+    color: #0089ff;
   }
 }
 </style>

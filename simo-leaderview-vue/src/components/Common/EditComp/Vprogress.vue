@@ -28,23 +28,21 @@ export default {
     barBoxStyle: function () {
       return {
         width: '100%',
-        // height: '16px',
-        height: this.item.proHeight + 'px',
+        height: (this.item.proHeight || 16) + 'px',
         backgroundColor: this.item.bgClr,
         position: 'relative',
-        // borderRadius: '10px',
-        borderRadius: this.item.radius + 'px',
+        borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         overflow: 'hidden'
       }
     },
     barStyle: function () {
       return {
         width: this.persent + '%',
-        // height: '100%',
-        height: this.item.proHeight + 'px',
-        backgroundColor: this.item.barClr,
+        height: (this.item.proHeight || 16) + 'px',
+        // backgroundColor: this.item.barClr,
+        background: this.item.barClrs ? 'linear-gradient(45deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(45deg, ' + this.item.barClr + ', ' + this.item.barClr + ')',
         position: 'relative',
-        borderRadius: this.item.radius + 'px',
+        borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         left: 0,
         top: 0
       }
@@ -57,6 +55,14 @@ export default {
         value = 0
       }
       return value
+    }
+  },
+  created: function () {
+    if (this.item.proHeight === undefined) {
+      this.$set(this.item, 'proHeight', 16)
+    }
+    if (this.item.radius === undefined) {
+      this.$set(this.item, 'radius', 8)
     }
   },
   watch: {

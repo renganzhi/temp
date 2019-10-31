@@ -29,11 +29,10 @@
                         :item="item"
                         :editable="editable"
                         :key="index"></LookItem>
-              <Compose v-for="(list, index1) in combinList"
-                       :index="index1"
-                       :key="list.id"
-                       :list="list"
-                       :editable="editable"></Compose>
+              <LookCompose v-for="(list, index1) in combinList"
+                           :index="index1"
+                           :key="list.id"
+                           :list="list"></LookCompose>
             </div>
           </div>
         </div>
@@ -42,20 +41,21 @@
   </div>
 </template>
 <script>
-import { baseData, gbs } from '@/config/settings'
+import { gbs } from '@/config/settings'
 import LookItem from './../Common/LookItem'
-import Compose from './../Common/Compose'
+import LookCompose from './../Common/LookCompose'
 import { Notification } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
   name: 'preView',
   props: ['showModal', 'viewId', 'pageData', 'composeData', 'paintObj'],
-  components: { LookItem, Compose, Notification },
+  components: { LookItem, Notification, LookCompose },
   data () {
     return {
       editable: false,
       pageList: [],
-      combinList: []
+      combinList: [],
+      paintConf: ''
     }
   },
   mounted: function () {
@@ -75,8 +75,10 @@ export default {
   },
   computed: {
     paintStyle: function () {
-      if (!this.paintObj) return
-      var type = this.paintObj.bgStyle
+      var paintData = this.paintObj || this.paintConf
+      // if (!this.paintObj) return
+      if (!paintData) return
+      var type = paintData.bgStyle
       if (type === '1') {
         var backgroundSize = '100% auto'
       } else if (type === '2') {
@@ -85,12 +87,12 @@ export default {
         backgroundSize = '100% 100%'
       }
       return {
-        backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')'
+        backgroundImage: paintData.bgImg
+          ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
-        backgroundColor: this.paintObj.bgColor,
+        backgroundColor: paintData.bgColor,
         backgroundSize: backgroundSize,
-        opacity: this.paintObj.opacity / 100
+        opacity: paintData.opacity / 100
       }
     },
     ...mapGetters([
@@ -102,11 +104,13 @@ export default {
       var box = $('#mainPreview-modal').find('.box')
       var w = box.width()
       var h = box.height()
-      // var scaleX = w / baseData.home.w
-      // var scaleY = h / baseData.home.h
+
       if (this.paintObj) {
         var scaleX = w / this.paintObj.width
         var scaleY = h / this.paintObj.height
+      } else if (this.paintConf) {
+        scaleX = w / this.paintConf.width
+        scaleY = h / this.paintConf.height
       } else {
         scaleX = w / 1920
         scaleY = h / 1080
@@ -120,6 +124,8 @@ export default {
         this.axios.get('/leaderview/home/homePage/getById/' + this.viewId).then((res) => {
           if (res.success) {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
+            this.combinList = res.obj.composeObj ? JSON.parse(res.obj.composeObj) : []
+            this.paintConf = res.obj.paintObj ? JSON.parse(res.obj.paintObj) : ''
             this.$nextTick(() => {
               this.setScale()
             })

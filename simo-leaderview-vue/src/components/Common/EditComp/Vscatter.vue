@@ -109,11 +109,9 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              // areaColor: 'rgba(172, 191, 220, 0.5)',
-              areaColor: 'rgba(104, 150, 197, 0.5)',
-              borderColor: '#222739',
-              borderWidth: 0.3,
-              // borderWidth: 0.5,
+              areaColor: this.item.themeType === '1' ? '#333e61' : '#cfd9e3',
+              borderColor: this.item.themeType === '1' ? '#141929' : '#a2b1c0',
+              borderWidth: 0.5,
               shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
             }
@@ -129,16 +127,11 @@ export default {
           data: this.item.scatterPoint,
           // data: [
           //   { name: '成都', value: [104.06, 30.67, 10] },
-          //   { name: '自贡', value: [104.773447, 29.352765, 200] },
-          //   { name: '成华区', value: [104.153985625, 30.740483625, 100] },
-          //   { name: '双流县', value: [104.042503691406, 30.269048078125, 10] },
-          //   { name: '都江堰市1', value: [103.695362578125, 31.3499343085938, 20] },
-          //   { name: '都江堰市2', value: [103.71744265625, 31.2742067695313, 110] }
           // ],
           rippleEffect: { // 涟漪特效
             period: 4, // 动画时间，值越小速度越快
             brushType: 'stroke', // 波纹绘制方式 stroke, fill
-            scale: 4 // 波纹圆环最大限制，值越大波纹越大
+            scale: 6 // 波纹圆环最大限制，值越大波纹越大
           },
           // showEffectOn: 'emphasis',
           // rippleEffect: {
@@ -151,8 +144,8 @@ export default {
             normal: {
               formatter: '{b}',
               position: 'right',
-              color: '#fff',
-              show: true // false
+              color: this.item.themeType === '1' ? '#cad6dd' : '#50607c',
+              show: this.item.ctLegendShow === 'true' // false
             },
             emphasis: {
               show: true
@@ -185,7 +178,7 @@ export default {
         //     label: {
         //       show: false, // 选中区域的文字展示
         //       textStyle: {
-        //         color: '#000' // 选中之后的字体颜色!
+        //         color: '#50607c' // 选中之后的字体颜色!
         //       }
         //     },
         //     itemStyle: {
@@ -236,8 +229,13 @@ export default {
     }
   },
   watch: {
+    'item.themeType': function (newV) {
+      this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
+      this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
+      this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
+    },
     'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.visualMap.show = newV === 'true'
+      this.extend.series.label.normal.show = newV === 'true'
     },
     'item.visualPosition': function (newV, oldValue) {
       // this.extend.visualMap.show = newV === 'true'
@@ -307,11 +305,6 @@ export default {
         console.log('不等')
         this.extend.series.data = this.formatData(newV)
         this.item.scatterPoint = this.extend.series.data
-        console.log('scatter chartData 改变: ')
-        console.log('--------item.chartData old----')
-        console.log(oldV)
-        console.log('--------item.chartData new----')
-        console.log(newV)
       }
     }
   },

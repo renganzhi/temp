@@ -11,10 +11,12 @@
               :key="item.id"
               :w="Number(item.width)"
               :h="Number(item.height)"
-              :x="Number(item.x)"
-              :y="Number(item.y)"
+              :x.sync="item.x"
+              :y.sync="item.y"
               :z="item.zIndex || 500"
               :item="item"
+              :parentW="Number(parentW)"
+              :parentH="Number(parentH)"
               @childResize="childResize"
               @resizing="resizing"
               @bodyDown="bodyDown"
@@ -71,7 +73,7 @@ import Vscatter from './EditComp/Vscatter' // 散点图
 
 export default {
   name: 'insideDrag',
-  props: ['item', 'editable', 'index', 'parentIndex'],
+  props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
   components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
   data () {
     return {
@@ -109,6 +111,37 @@ export default {
     contextMenu (item, ev) {
       this.$emit('selected', item, 'context', 'item', this.index)
       this.$emit('context', this.index, ev)
+    }
+  },
+  watch: {
+    sacleX: {
+      handler: function (newV) {
+        this.$set(this.item, 'width', Math.round(this.item.oldW * newV))
+        this.$set(this.item, 'x', Math.round(this.item.oldX * newV))
+        this.$forceUpdate()
+      },
+      deep: true
+      // immediate: true
+    },
+    sacleY: {
+      handler: function (newV) {
+        this.$set(this.item, 'height', Math.round(this.item.oldH * newV))
+        this.$set(this.item, 'y', Math.round(this.item.oldY * newV))
+        this.$forceUpdate()
+      },
+      deep: true
+    },
+    'item.x': function (newV) {
+      this.item.oldX = Math.round(newV / this.sacleX)
+    },
+    'item.y': function (newV) {
+      this.item.oldY = Math.round(newV / this.sacleY)
+    },
+    'item.width': function (newV) {
+      this.item.oldW = Math.round(newV / this.sacleX)
+    },
+    'item.height': function (newV) {
+      this.item.oldH = Math.round(newV / this.sacleY)
     }
   },
   beforeDestroy () {

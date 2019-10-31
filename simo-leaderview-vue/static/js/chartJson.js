@@ -163,8 +163,7 @@ var morenData = {
     ]
   },
   mapData: [
-    // { name: '成都', value: [104.06, 30.67, 10] },
-    // { name: '自贡', value: [104.773447, 29.352765, 200] }
+    { name: '北京', value: 2 }
   ]
 }
 var compsArr = [{
@@ -193,7 +192,9 @@ var compsArr = [{
   imgClass: 'icon-n-percent',
   chartType: 've-gauge',
   subType: 'progress',
-  ctLegendShow: false,
+  bgClr: '#657992',
+  fontSize: 24,
+  ctLegendShow: 'true',
   chartData: morenData.single
 },
 {
@@ -257,7 +258,7 @@ var compsArr = [{
   chartType: 've-line',
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
-  showPoint: false // 是否标点
+  showPoint: 'true' // 是否标点
 },
 {
   text: '雷达图',
@@ -272,6 +273,7 @@ var compsArr = [{
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
   ctLegendShow: false,
+  bgClr: '#657992',
   chartData: morenData.single
 },
 {
@@ -305,6 +307,8 @@ var compsArr = [{
   height: 50,
   bdpx: 0,
   bgClr: '',
+  direction: 'left',
+  speed: 2,
   clr: '#c2c6d7',
   bdClr: '',
   ctName: '这是一个跑马灯的演示demo，双击可对文案进行编辑'
@@ -317,6 +321,7 @@ var compsArr = [{
   height: 50,
   bgClr: '#33394b',
   barClr: '#1fc3ce',
+  barClrs: ['#1fc3ce', '#1fc3ce'],
   clr: '#1fc3ce',
   chartData: morenData.single,
   proHeight: 16,
@@ -363,12 +368,14 @@ var compsArr = [{
   height: 300,
   bdpx: 1,
   bgClr: 'rgba(255, 255, 255, 0.02)',
+  barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
   bdClr: '#175278'
 },
 {
   text: '时间器',
   imgClass: 'icon-n-time',
   chartType: 'time',
+  timeSource: 'local',
   width: 200,
   height: 50,
   fontSize: 18,
@@ -390,7 +397,7 @@ var compsArr = [{
 },
 {
   text: '区域分布图',
-  imgClass: 'icon-n-radar',
+  imgClass: 'icon-n-areaMap',
   chartType: 'v-map',
   width: 300,
   height: 300,
@@ -399,6 +406,7 @@ var compsArr = [{
   provinceCode: '',
   cityCode: '',
   visualPosition: 'left',
+  themeType: '1', // 1深色 2浅色
   piecesData: [
     { min: 0, max: 50 },
     { min: 51, max: 100 },
@@ -408,18 +416,19 @@ var compsArr = [{
 },
 {
   text: '地图实时图',
-  imgClass: 'icon-n-radar',
+  imgClass: 'icon-n-scatterMap',
   chartType: 'v-scatter', // 散点图
   width: 300,
   height: 300,
   mapLevel: 'country',
   countryCode: 100000,
+  ctLegendShow: 'true', // 地名是否展示
   provinceCode: '',
   cityCode: '',
+  themeType: '1',
   visualPosition: 'left',
-  scatterPoint: [], // 带有地理位置的散点数据
-  chartData: []
-  // chartData: morenData.mapData
+  scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
+  chartData: morenData.mapData
 }
   // {
   //   text: '地图',
