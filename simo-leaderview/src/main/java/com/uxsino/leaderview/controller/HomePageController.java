@@ -242,10 +242,10 @@ public class HomePageController {
                 }else {
                     obj = JSONObject.parseObject(userRedis.get(homePage.getCreateUserId().toString()));
                 }
-                if (validState.equals(ShareState.IS_BE_SHARED.getValue())){
-                    homePage.setBelongCurrentUser("false");
-                }else {
+                if (validState.equals(ShareState.IS_BELONGS_CURRENT.getValue())){
                     homePage.setBelongCurrentUser("true");
+                }else {
+                    homePage.setBelongCurrentUser("false");
                 }
                 homePage.setShareName(obj.getString("userName") + "(" + obj.getString("employeeCode")+ ")");
                 result.add(homePage);
