@@ -2,8 +2,7 @@ package com.uxsino.leaderview.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 每个用户的页面配置：可见性，展示排序
@@ -12,20 +11,17 @@ import javax.persistence.Table;
 @Data
 @Table(name = "simo_mc_home_page_user_conf")
 public class HomePageUserConf {
+    /** 自增长ID */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     //用户id
     private Long userId;
     //页面id
     private Long pageId;
     //可见性
-    private boolean visible = false;
+    private String visible;
     // 大屏页面序号，用于排序和展示
     private int pageIndex;
-
-    public HomePageUserConf(Long userId, Long pageId, boolean visible, int pageIndex) {
-        this.userId = userId;
-        this.pageId = pageId;
-        this.visible = visible;
-        this.pageIndex = pageIndex;
-    }
 
 }

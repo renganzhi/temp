@@ -9,5 +9,4 @@ public class HomePageUserConfService {
     @Autowired
     private IHomePageUserConfDao homePageUserConfDao;
 
-
 }

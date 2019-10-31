@@ -1,8 +1,8 @@
 package com.uxsino.leaderview.dao;
 
 import com.uxsino.commons.db.repository.ICustomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uxsino.leaderview.entity.HomePageUserConf;
 
-public interface IHomePageUserConfDao extends ICustomRepository<ICustomRepository, Long> {
+public interface IHomePageUserConfDao extends ICustomRepository<HomePageUserConf, Long> {
 
 }
