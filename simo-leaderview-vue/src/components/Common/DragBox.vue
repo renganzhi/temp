@@ -14,6 +14,7 @@
               :y.sync="item.y"
               :z="item.zIndex || 500"
               :item="item"
+              @dragging="dragging"
               @resizing="resizing"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
@@ -77,6 +78,9 @@ export default {
     }
   },
   methods: {
+    dragging (chgX, chgY) {
+      this.$emit('draged', chgX, chgY)
+    },
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height

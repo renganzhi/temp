@@ -72,7 +72,7 @@
                     <div class="paint" :style="paintStyle"></div>
                     <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
                     <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
+                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context">
                         </DragBox>
                         <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
                     </div>

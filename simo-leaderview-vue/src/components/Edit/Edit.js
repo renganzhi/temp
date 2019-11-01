@@ -1009,6 +1009,33 @@ export default {
       this.selectArea.left = x
       this.selectArea.top = y
     },
+    // 多元件拖拽改变x，y位移
+    changeItems: function (xy) {
+      var left = 'left'
+      var width = 'width'
+      var maxX = 'maxX'
+      if (xy === 'y') {
+        left = 'top'
+        width = 'height'
+        maxX = 'maxY'
+      }
+      var allowOverflow = baseData.allowOverflow // 可提取为可配置变量
+      if (this.minXItem[xy] < -allowOverflow) {
+        // this.minXItem[xy] = this.selectArea[left] // 恢复原值
+        this.minXItem[xy] = -allowOverflow
+      }
+      if (this.minXItem[xy] > this.paintObj[width] - this.minXItem[maxX] + allowOverflow) {
+        this.minXItem[xy] = this.paintObj[width] - this.minXItem[maxX] + allowOverflow
+      }
+      var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
+      this.chooseIndexs.forEach((i) => {
+        this.chartNum[i][xy] += changes
+      })
+      this.chooseCompIndexs.forEach((i) => {
+        this.combinList[i][xy] += changes
+      })
+      this.selectArea[left] = this.minXItem[xy]
+    },
     // 多选时改变x，y位移
     changeTarget: function (xy) {
       var left = 'left'
@@ -1339,6 +1366,18 @@ export default {
       })
       for (let i = 1, len = itemArr.length; i < len - 1; i++) {
         itemArr[i].y = parseInt(itemArr[i - 1].y + itemArr[i - 1].height + gap)
+      }
+    },
+    draged (chgX, chgY) {
+      if (window.event.ctrlKey) {
+        if (chgX !== 0) {
+          this.minXItem.x += chgX
+          this.changeItems('x')
+        }
+        if (chgY !== 0) {
+          this.minXItem.y += chgY
+          this.changeItems('y')
+        }
       }
     },
     resized: function (item) {
