@@ -161,14 +161,14 @@ export default {
   }
 }
 </script>
-<style scoped>
-.wrap {
+<style>
+#mainPreview-modal .wrap {
   width: 100%;
   height: 530px;
   overflow: hidden;
   position: relative;
 }
-.paintBox {
+#mainPreview-modal .paintBox {
   width: 100%;
   height: 530px;
   position: absolute;
@@ -177,5 +177,8 @@ export default {
   overflow: hidden;
   /* margin: 15px 20px;
   width: calc(100% - 40px); */
+}
+#mainPreview-modal .itemWrapBox {
+  padding-top: 1px !important;
 }
 </style>

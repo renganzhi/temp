@@ -12,7 +12,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         target: 'http://localhost:9999',
-        // target: 'http://localhost:9999/leaderview/',
+        // target: 'http://192.168.2.129:9999',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
         pathRewrite: {
           '^/api': '' // 重写
