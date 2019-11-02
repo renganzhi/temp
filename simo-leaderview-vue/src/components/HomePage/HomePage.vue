@@ -6,7 +6,9 @@
       <div class="homeEmpty">
         <img src="../../assets/homeEmpty.png" />
         <div>
-          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p><button type="button"
+          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p>
+          <button type="button"
+                  v-if="access==='w'"
                   @click="addPage = true">新增页面</button>
         </div>
       </div>
@@ -93,6 +95,7 @@ export default {
       editable: false,
       showTip: false, // 全屏的提示信息
       addPage: false,
+      access: 'r',
       loadAll: false, // 请求完成之后再展示页面
       pageList: [],
       combinList: [],
@@ -414,6 +417,18 @@ export default {
       this.stopTimer()
       this.stopRefreshTimer()
       this.$destroy()
+    },
+    getAccess () {
+      this.axios.get('/leaderview/home/getMenu').then((res) => {
+        if (res.success) {
+          let permission = res.obj.permission.toLowerCase().split(',')
+          if (permission.indexOf('w') !== -1) {
+            this.access = 'w'
+          } else {
+            this.access = 'r'
+          }
+        }
+      })
     }
   },
   watch: {
@@ -437,6 +452,7 @@ export default {
   mounted: function () {
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
+    this.getAccess()
     this.$nextTick(() => {
       this.getPageData()
       $(window).off('resize.homescale').on('resize.homescale', () => {

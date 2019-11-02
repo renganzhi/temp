@@ -22,7 +22,7 @@ public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
     @Query("from HomePage h where h.pageIndex > 0 order by h.pageIndex")
     List<HomePage> findAllOrderly();
 
-    @Query("select new com.uxsino.leaderview.entity.HomePage(id,userId,roleIds,pageIndex,name,visible,lastUpdateTime,viewImage) from HomePage order by pageIndex")
+    @Query("select new com.uxsino.leaderview.entity.HomePage(id,userId,roleIds,pageIndex,name,visible,lastUpdateTime,viewImage,createUserId,handoverId,shareConf) from HomePage order by pageIndex")
     List<HomePage> findAllWithoutConfOrderly();
 
     @Query("select new com.uxsino.leaderview.entity.HomePage(id,userId,roleIds,pageIndex,name,visible,lastUpdateTime) from HomePage order by pageIndex")

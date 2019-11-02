@@ -341,15 +341,15 @@
                                     <label>填充色</label>
                                     <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
-                                          <Vcolor :data="selectedItem.barClrs[0]" :key="2" :index="0" @getdata="getBarClr"></Vcolor>
+                                          <Vcolor :data="selectedItem.barClrs[0]" :key="15" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
                                       <div class="color-w15" style="float: right">
-                                          <Vcolor :data="selectedItem.barClrs[1]" :key="15" :index="1" @getdata="getBarClr"></Vcolor>
+                                          <Vcolor :data="selectedItem.barClrs[1]" :key="16" :index="1" @getdata="getBarClr"></Vcolor>
                                       </div>
                                     </div>
-                                    <!-- <div class="color-w200">
+                                    <div class="color-w200" v-else>
                                         <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                     <label>边框色</label>
@@ -374,6 +374,21 @@
                                     <label>字号</label>
                                     <select v-model="selectedItem.fontSize">
                                         <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                    <label>轮播方向</label>
+                                    <select v-model="selectedItem.direction">
+                                        <option value="left">横向</option>
+                                        <option value="top">纵向</option>
+                                    </select>
+                                </div>
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                    <label>轮播速度</label>
+                                    <select v-model="selectedItem.speed">
+                                        <option value="1">高速</option>
+                                        <option value="2">中速</option>
+                                        <option value="3">低速</option>
                                     </select>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='time'">
@@ -673,7 +688,7 @@
                                             <label v-if="v.type=='drop-down' || v.type=='multi-select'" >{{v.name}}</label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
-                                            </Select2>
+                                              </Select2>
                                         </div>
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
