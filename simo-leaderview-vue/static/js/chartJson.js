@@ -436,7 +436,8 @@ var compsArr = [{
   chartType: 'video',
   width: 300,
   height: 300,
-  videoSrc: 'http://vd2.bdstatic.com/mda-jj7pbz81snk8sk9i/sc/mda-jj7pbz81snk8sk9i.mp4',
+  videoType: 'url',
+  videoSrc: 'http://f.us.sinaimg.cn/001z6liflx07ujKIPQFG01041200CXtc0E010.mp4?label=mp4_hd&template=852x480.28.0&Expires=1572690516&ssig=7Vx6%2B%2Fjtuz&KID=unistore,video',
   chartData: {}
 }
   // {

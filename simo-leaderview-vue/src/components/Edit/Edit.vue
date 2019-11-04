@@ -668,7 +668,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time')">
+                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time'&& selectedItem.chartType!=='video')">
                                 <div class="form-group cols2">
                                     <label>数据来源</label>
                                     <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
@@ -757,6 +757,20 @@
                                 </div>
                                 <button @click="dataChange">更新视图</button>
 
+                            </div>
+                            <div style="height: 100%;" v-show="selectedItem.chartType==='video'">
+                              <div class="form-group cols2">
+                                <label>视频来源</label>
+                                <select v-model="selectedItem.videoType">
+                                  <option value="url">URL地址</option>
+                                  <option value="local">本地文件</option>
+                                </select>
+                              </div>
+                              <div class="form-group cols2">
+                                <label>URL地址</label>
+                                <input v-model="tempVideoUrl">
+                              </div>
+                              <button @click="videoChange">更新视图</button>
                             </div>
                         </div>
                     </div>

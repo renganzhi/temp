@@ -172,7 +172,8 @@ export default {
       chooseStart: {
         posX: 0,
         posY: 0
-      }
+      },
+      tempVideoUrl: '' // 用户输入的视频URL
     }
   },
   computed: {
@@ -788,6 +789,9 @@ export default {
       } else {
         // 增加选中
         item.slted = this.editable && true
+        if (item.chartType === 'video') {
+          this.tempVideoUrl = item.videoSrc
+        }
         if (item.chartType === 'v-map') {
           this.selectedItem = {} // 避免触发三级下拉的监听
         }
@@ -1780,6 +1784,9 @@ export default {
           }
         }
       }
+    },
+    videoChange: function () {
+      this.selectedItem.videoSrc = this.tempVideoUrl
     },
     saveConf: function (event, cb) {
       // 保存
