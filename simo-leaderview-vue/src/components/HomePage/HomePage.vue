@@ -571,10 +571,6 @@ export default {
   opacity: 1;
 }
 
-.v-charts-data-empty {
-  background-color: rgba(28, 36, 60, 0.71) !important;
-  color: inherit !important;
-}
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
   textarea {
