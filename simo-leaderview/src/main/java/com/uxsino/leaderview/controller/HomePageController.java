@@ -241,14 +241,15 @@ public class HomePageController {
     @ApiOperation("获取大屏页面列表")
     @RequestMapping(value = "/homePage", method = RequestMethod.GET)
     public JsonModel homePage(HttpSession session) {
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
         JSONObject result = new JSONObject();
-        HomeCarousel homeCarousel = homeCarouselService.get();
+        HomeCarousel homeCarousel = homeCarouselService.getByUserId(userId);
         if (!ObjectUtils.isEmpty(homeCarousel)) {
             // 添加轮播设置的信息
             result = JSON.parseObject(JSON.toJSONString(homeCarousel));
         }
         // 添加页面的信息
-        result.put("pages", homePageService.findVisible());
+        result.put("pages", homePageService.findVisible(userId));
         return new JsonModel(true, result);
     }
 
@@ -483,7 +484,8 @@ public class HomePageController {
     @Transactional
     public JsonModel shareById(HttpSession session, @PathVariable Long pageId,
                                @RequestParam(value = "uids") String uids,
-                               @RequestParam(value = "roles") String roles){
+                               @RequestParam(value = "roles") String roles,
+                               @RequestParam(value = "uidsByRoles") String uidsByRoles){
         JSONObject shareConf = new JSONObject();
         JSONArray uidArray = new JSONArray();
         JSONArray roleArray = new JSONArray();
@@ -501,6 +503,12 @@ public class HomePageController {
                 roleArray.add(Long.parseLong(role));
             }
         }
+        if (!StringUtils.isEmpty(uidsByRoles)){
+            String[] uidsByRolesArr = uidsByRoles.split(",");
+            for (String uidByRole: uidsByRolesArr){
+                homePageUserConfService.addShare(Long.parseLong(uidByRole), homePage);
+            }
+        }
         shareConf.put("roles", roleArray);
         shareConf.put("uids", uidArray);
         homePage.setShareConf(shareConf.toJSONString());
@@ -508,25 +516,16 @@ public class HomePageController {
         return new JsonModel(true);
     }
 
-    @ApiOperation("获取当前用户大屏权限")
-    @GetMapping(value = "/getMenu")
-    public JsonModel getMenu(HttpSession session){
-        JsonModel menu = mcService.getMenu("SESSION=" + session.getId());
-        if (!menu.isSuccess()){
-            return new JsonModel(false, "服务调用失败，权限查询失败", new LinkedHashMap<>());
+    @ApiOperation("判断当前用户是否是超级管理员")
+    @GetMapping(value = "/validSuperAdmin")
+    public JsonModel getSuperAdmin(HttpSession session){
+        LinkedHashMap result = new LinkedHashMap();
+        if (SessionUtils.isSuperAdmin(session)){
+            result.put("isSuperAdmin",true);
+        }else {
+            result.put("isSuperAdmin",false);
         }
-        List<LinkedHashMap> list = (List<LinkedHashMap>) menu.getObj();
-        for (LinkedHashMap map : list) {
-            if (map.get("id").equals("VIEW01")){
-                if (SessionUtils.isSuperAdmin(session)){
-                    map.put("isSuperAdmin", true);
-                }else {
-                    map.put("isSuperAdmin", false);
-                }
-                return new JsonModel(true, map);
-            }
-        }
-        return new JsonModel(true , new LinkedHashMap<>());
+        return new JsonModel(true, result);
     }
 
     /**
