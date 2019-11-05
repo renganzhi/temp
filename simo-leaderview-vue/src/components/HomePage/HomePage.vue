@@ -419,14 +419,21 @@ export default {
       this.$destroy()
     },
     getAccess () {
-      this.axios.get('/leaderview/home/getMenu').then((res) => {
+      this.axios.get('/mc/getMenu').then((res) => {
         if (res.success) {
-          let permission = res.obj.permission.toLowerCase().split(',')
-          if (permission.indexOf('w') !== -1) {
-            this.access = 'w'
-          } else {
-            this.access = 'r'
-          }
+          let obj = res.obj
+          let permission = 'r'
+          obj.forEach(item => {
+            if (item.id === 'VIEW01' || item.name === '大屏展示') {
+              permission = item.permission.toLowerCase().split(',')
+              if (permission.indexOf('w') !== -1) {
+                this.access = 'w'
+              } else {
+                this.access = 'r'
+              }
+              return false
+            }
+          })
         }
       })
     }
