@@ -363,7 +363,7 @@ export default {
           this.changePageType()
           if (!gbs.inDev) {
             this.$nextTick(() => {
-              titleShow('bottom', $('#editHome-wrap'))
+              titleShow()
             })
           }
         } else {
