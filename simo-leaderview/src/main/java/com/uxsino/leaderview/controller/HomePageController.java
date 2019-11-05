@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -70,6 +72,9 @@ public class HomePageController {
     private HomeCarouselService homeCarouselService;
 
     @Autowired
+    private HomePageUserConfService homePageUserConfService;
+
+    @Autowired
     private UploadedFileService uploadedFileService;
 
     @Autowired
@@ -106,6 +111,7 @@ public class HomePageController {
     @ApiOperation("增加一页")
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @RequestMapping(value = "/homePage/add", method = RequestMethod.POST)
+    @Transactional
     public JsonModel addHomePage(HttpSession session, @ApiParam("待添加页面名称") @RequestParam String name,
                                  @ApiParam("插入位置，null或者0则默认加到最后") @RequestParam(required = false) Integer index,
                                  @ApiParam("模板ID") @RequestParam(required = false) Long templateId) {
@@ -132,7 +138,11 @@ public class HomePageController {
                 //从当前session中获取用户id
             }
         }
-        homePageService.add(homePage);
+        Long pageId = homePageService.addAndGetId(homePage);
+        HomePageUserConf homePageUserConf = new HomePageUserConf();
+        homePageUserConf.setPageId(pageId);
+        homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        homePageUserConfService.add(homePageUserConf, true);
         return new JsonModel(true, homePage);
     }
 
@@ -167,6 +177,16 @@ public class HomePageController {
         } else {
             homePageService.moveAll(homePage, back);
         }
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        HomePageUserConf homePageUserConf = homePageUserConfService.findOneByIndexAndUserId(pageIndex, userId);
+        if (homePageUserConf == null) {
+            return new JsonModel(false, "所移动的页面不存在！");
+        }
+        if (one) {
+            homePageUserConfService.move(homePageUserConf, back ,userId);
+        } else {
+            homePageUserConfService.moveAll(homePageUserConf, back, userId);
+        }
         return new JsonModel(true);
     }
 
@@ -194,7 +214,11 @@ public class HomePageController {
         targetPage.setComposeObj(sourcePage.getComposeObj());
         targetPage.setCreateUserId(SessionUtils.getCurrentUserIdFromSession(session));
         targetPage.setHandoverId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageService.save(targetPage);
+        pageId = homePageService.addAndGetId(targetPage);
+        HomePageUserConf homePageUserConf = new HomePageUserConf();
+        homePageUserConf.setPageId(pageId);
+        homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        homePageUserConfService.add(homePageUserConf, true);
         return new JsonModel(true, "复制成功");
     }
 
@@ -232,31 +256,7 @@ public class HomePageController {
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"R"})
     @RequestMapping(value = "/homePage/noConf", method = RequestMethod.GET)
     public JsonModel homePageNoConf(HttpSession session) {
-        boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
-        String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
-        JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
-        String userRole = userObj.getString("departmentId");
-        List<HomePage> AllhomePage = homePageService.findAllWithoutConf();
-        List<HomePage> result = Lists.newArrayList();
-        AllhomePage.forEach(homePage -> {
-            JSONObject obj = new JSONObject();
-            Integer validState = validSharedorAuthor(homePage, userId, userRole);
-            if (isSuperAdmin || validState.equals(ShareState.IS_BE_SHARED.getValue())
-                    || validState.equals(ShareState.IS_BELONGS_CURRENT.getValue())){
-                if (!ObjectUtils.isEmpty(homePage.getHandoverId())){
-                    obj = JSONObject.parseObject(userRedis.get(homePage.getHandoverId().toString()));
-                }else {
-                    obj = JSONObject.parseObject(userRedis.get(homePage.getCreateUserId().toString()));
-                }
-                if (validState.equals(ShareState.IS_BELONGS_CURRENT.getValue())){
-                    homePage.setBelongCurrentUser("true");
-                }else {
-                    homePage.setBelongCurrentUser("false");
-                }
-                homePage.setShareName(obj.getString("userName") + "(" + obj.getString("employeeCode")+ ")");
-                result.add(homePage);
-            }
-        });
+        List<HomePage> result = homePageService.getByAuthority(session);
         return new JsonModel(true, result);
     }
 
@@ -307,6 +307,13 @@ public class HomePageController {
         }
         try {
             homePageService.delete(homePage);
+            List<HomePageUserConf> pageUserConfList = homePageUserConfService.findByPageId(pageId);
+            for (HomePageUserConf page : pageUserConfList) {
+                Long uesrId = page.getUserId();
+                homePageUserConfService.leftPageIndex(page.getPageIndex(),
+                        homePageUserConfService.getMaxPageByUserId(uesrId), uesrId);
+                homePageUserConfService.delete(page);
+            }
             return new JsonModel(true);
         } catch (Exception e) {
             logger.error("systemHomePageService.deteleByEmployeeIdAndPageNo执行失败：", e);
@@ -317,11 +324,11 @@ public class HomePageController {
     @ApiOperation("大屏展示轮播配置")
     @RequestMapping(value = "/carousel/conf", method = RequestMethod.POST)
     public JsonModel carouselTimeConf(HttpSession session, @ApiParam("轮播配置对象") HomeCarousel homeCarousel, String pages) {
-        List<HomePage> pageList = JSON.parseObject(pages, new TypeReference<List<HomePage>>() {
+        List<HomePageVo> pageList = JSON.parseObject(pages, new TypeReference<List<HomePageVo>>() {
         });
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
         homeCarousel.setUserId(userId);
-        homeCarouselService.save(homeCarousel, pageList);
+        homeCarouselService.save(homeCarousel, pageList, userId);
         return new JsonModel(true);
     }
 
@@ -331,16 +338,15 @@ public class HomePageController {
      */
     @ApiOperation("获取轮播配置")
     @RequestMapping(value = "/getCarouselTimeConf", method = RequestMethod.GET)
-    public JsonModel getCarouselTimeConf() {
-        HomeCarousel homeCarousel = homeCarouselService.get();
-        List<HomePage> pageList = homePageService.findNoView();
+    public JsonModel getCarouselTimeConf(HttpSession session) {
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        List<HomePageVo> list = homePageService.findNoViewByUserId(userId);
+        HomeCarousel homeCarousel = homeCarouselService.getByUserId(userId);
         JSONObject json = new JSONObject();
         if (!ObjectUtils.isEmpty(homeCarousel)) {
             json = JSON.parseObject(JSON.toJSONString(homeCarousel));
         }
-        json.put("pages", pageList);
-
-
+        json.put("pages", list);
         return new JsonModel(true, json);
     }
 
@@ -474,16 +480,19 @@ public class HomePageController {
     @ApiOperation("将某个页面分享给其他用户或者域")
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @PostMapping("/share/{pageId}")
+    @Transactional
     public JsonModel shareById(HttpSession session, @PathVariable Long pageId,
                                @RequestParam(value = "uids") String uids,
                                @RequestParam(value = "roles") String roles){
         JSONObject shareConf = new JSONObject();
         JSONArray uidArray = new JSONArray();
         JSONArray roleArray = new JSONArray();
+        HomePage homePage = homePageService.getById(pageId);
         if (!StringUtils.isEmpty(uids)){
             String[] uidArr = uids.split(",");
             for (String uid : uidArr) {
                 uidArray.add(Long.parseLong(uid));
+                homePageUserConfService.addShare(Long.parseLong(uid), homePage);
             }
         }
         if (!StringUtils.isEmpty(roles)){
@@ -494,7 +503,6 @@ public class HomePageController {
         }
         shareConf.put("roles", roleArray);
         shareConf.put("uids", uidArray);
-        HomePage homePage = homePageService.getById(pageId);
         homePage.setShareConf(shareConf.toJSONString());
         homePageService.update(homePage);
         return new JsonModel(true);
@@ -504,6 +512,9 @@ public class HomePageController {
     @GetMapping(value = "/getMenu")
     public JsonModel getMenu(HttpSession session){
         JsonModel menu = mcService.getMenu("SESSION=" + session.getId());
+        if (!menu.isSuccess()){
+            return new JsonModel(false, "服务调用失败，权限查询失败", new LinkedHashMap<>());
+        }
         List<LinkedHashMap> list = (List<LinkedHashMap>) menu.getObj();
         for (LinkedHashMap map : list) {
             if (map.get("id").equals("VIEW01")){

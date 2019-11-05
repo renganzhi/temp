@@ -20,7 +20,7 @@ public class HomePageUserConf {
     //页面id
     private Long pageId;
     //可见性
-    private String visible;
+    private boolean visible = true;
     // 大屏页面序号，用于排序和展示
     private int pageIndex;
 

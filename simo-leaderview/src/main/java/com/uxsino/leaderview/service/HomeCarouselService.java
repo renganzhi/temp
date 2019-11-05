@@ -2,6 +2,9 @@ package com.uxsino.leaderview.service;
 
 import java.util.List;
 
+import com.uxsino.leaderview.dao.IHomePageUserConfDao;
+import com.uxsino.leaderview.entity.HomePageUserConf;
+import com.uxsino.leaderview.entity.HomePageVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,26 +24,29 @@ public class HomeCarouselService {
     @Autowired
     private IHomePageDao homePageDao;
 
+    @Autowired
+    private IHomePageUserConfDao homePageUserConfDao;
+
     /**
      * 保存大屏展示轮播配置
      * 
      */
     @Transactional
-    public void save(HomeCarousel carouselTime, List<HomePage> pages) {
-        HomeCarousel exist = get();
+    public void save(HomeCarousel carouselTime, List<HomePageVo> pages, Long userId) {
+        HomeCarousel exist = getByUserId(userId);
         if (exist == null) {
             homeCarouselDao.save(carouselTime);
         } else {
             homeCarouselDao.update(exist.getId(), carouselTime);
         }
         pages.forEach(page -> {
-            HomePage existPage = homePageDao.findOne(page.getId());
+            HomePageUserConf existPage = homePageUserConfDao.findOne(page.getId());
             if (existPage == null) {
                 return;
             }
             existPage.setVisible(page.isVisible());
             existPage.setPageIndex(page.getPageIndex());
-            homePageDao.update(existPage.getId(), existPage);
+            homePageUserConfDao.update(existPage.getId(), existPage);
         });
     }
 
@@ -51,6 +57,18 @@ public class HomeCarouselService {
     public HomeCarousel get() {
         List<HomeCarousel> list = homeCarouselDao.findAll();
         if (CollectionUtils.isEmpty(list)) {
+            return null;
+        } else {
+            return list.get(0);
+        }
+    }
+
+    /**
+     * 获得当前用户的大屏轮播配置
+     */
+    public HomeCarousel getByUserId(Long userId){
+        List<HomeCarousel> list = homeCarouselDao.findByUserId(userId);
+        if (CollectionUtils.isEmpty(list)){
             return null;
         } else {
             return list.get(0);

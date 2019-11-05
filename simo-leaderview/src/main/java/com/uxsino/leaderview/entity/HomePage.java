@@ -88,6 +88,7 @@ public class HomePage {
         this.visible = visible;
         this.lastUpdateTime = lastUpdateTime;
     }
+
     public HomePage(Long id, Long userId, String roleIds, int pageIndex, String name, boolean visible,
                     Date lastUpdateTime, String viewImage, Long createUserId, Long handoverId, String shareConf) {
         this.id = id;
