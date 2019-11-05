@@ -516,32 +516,6 @@ public class HomePageController {
         return new JsonModel(true);
     }
 
-    /**
-     * 该方法暂时不稳定，服务间调用在测试过程中有失败的情况，暂时用其他方法替代
-     * @param session
-     * @return
-     */
-    @ApiOperation("获取当前用户大屏权限")
-    @GetMapping(value = "/getMenu")
-    public JsonModel getMenu(HttpSession session){
-        JsonModel menu = mcService.getMenu("SESSION=" + session.getId());
-        if (!menu.isSuccess()){
-            return new JsonModel(false, "服务调用失败，权限查询失败", new LinkedHashMap<>());
-        }
-        List<LinkedHashMap> list = (List<LinkedHashMap>) menu.getObj();
-        for (LinkedHashMap map : list) {
-            if (map.get("id").equals("VIEW01")){
-                if (SessionUtils.isSuperAdmin(session)){
-                    map.put("isSuperAdmin", true);
-                }else {
-                    map.put("isSuperAdmin", false);
-                }
-                return new JsonModel(true, map);
-            }
-        }
-        return new JsonModel(true , new LinkedHashMap<>());
-    }
-
     @ApiOperation("判断当前用户是否是超级管理员")
     @GetMapping(value = "/validSuperAdmin")
     public JsonModel getSuperAdmin(HttpSession session){
