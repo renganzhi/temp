@@ -16,6 +16,8 @@ public interface IHomePageUserConfDao extends ICustomRepository<HomePageUserConf
 
     List<HomePageUserConf> findByPageId(Long pageId);
 
+    HomePageUserConf findByUserIdAndPageId(Long userId, Long pageId);
+
     HomePageUserConf findOneByPageIndexAndUserId(int pageIndex, Long userId);
 
     @Modifying

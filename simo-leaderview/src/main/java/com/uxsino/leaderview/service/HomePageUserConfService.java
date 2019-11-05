@@ -5,6 +5,7 @@ import com.uxsino.leaderview.entity.HomePage;
 import com.uxsino.leaderview.entity.HomePageUserConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -59,8 +60,12 @@ public class HomePageUserConfService {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(homePage.getId());
         homePageUserConf.setUserId(userId);
-        homePageUserConf.setPageIndex(homePageUserConfDao.countByUserId(userId) + 1);
-        homePageUserConfDao.save(homePageUserConf);
+        //添加配置前进行判断，查看该用户是否已经被分享了当前页面
+        HomePageUserConf exist = homePageUserConfDao.findByUserIdAndPageId(userId,homePage.getId());
+        if (ObjectUtils.isEmpty(exist)){
+            homePageUserConf.setPageIndex(homePageUserConfDao.countByUserId(userId) + 1);
+            homePageUserConfDao.save(homePageUserConf);
+        }
     }
 
     @Transactional

@@ -171,9 +171,35 @@ public class HomePageService {
      * 查询可参与轮播的主页，即visible = true
      * 排除掉viewImage字段
      */
-    public List<HomePage> findVisible() {
-        List<HomePage> pages = homePageDao.findByVisible(true);
-        pages.forEach(e -> e.setViewImage(null));
+    public List<HomePage> findVisible(Long userId) {
+        String sql = "SELECT b.id,b.compose_obj,b.last_update_time,b.name,a.page_index,b.paint_obj,b.view_conf,a.visible,b.create_user_id,b.handover_id,b.share_conf" +
+                " FROM simo_mc_home_page_user_conf a LEFT JOIN simo_mc_home_page b" +
+                " ON(b.id = a.page_id)" +
+                " where a.visible = TRUE" +
+                " AND a.user_id =?1" +
+                " ORDER BY a.page_index";
+        List<Object[]> objList = (List<Object[]>) homePageDao.findBySQL(sql,userId);
+        List<HomePage> pages = Lists.newArrayList();
+        objList.forEach(obj ->{
+            Long id = Long.parseLong(obj[0].toString());
+            String composeObj = (String) obj[1];
+            Date lastUpdateTime = (Date) obj[2];
+            String name = (String) obj[3];
+            int pageIndex = (Integer) obj[4];
+            String paintObj = (String) obj[5];
+            String viewConf = (String) obj[6];
+            boolean visible = (Boolean) obj[7];
+            Long createUserId = null;
+            if (!ObjectUtils.isEmpty(obj[8])){
+                createUserId = Long.parseLong(obj[8].toString());
+            }
+            Long handoverId = null;
+            if (!ObjectUtils.isEmpty(obj[9])){
+                handoverId = Long.parseLong(obj[9].toString());
+            }
+            String shareConf = (String) obj[10];
+            pages.add(new HomePage(id,composeObj,lastUpdateTime,name,pageIndex,paintObj,viewConf,visible,createUserId,handoverId,shareConf));
+        });
         return pages;
     }
 
