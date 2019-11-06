@@ -32,7 +32,7 @@ export default {
         method: 'post',
         url: '/login',
         data: qs.stringify(_data),
-        headers: { 'content-type': 'application/x-www-form-urlencoded' }
+        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' }
       }).then((res) => {
         if (res.success) {
           this.$router.push('/')

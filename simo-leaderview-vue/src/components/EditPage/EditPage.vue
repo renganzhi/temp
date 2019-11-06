@@ -256,23 +256,24 @@ export default {
       $('#homeShareModal').modal('show')
     },
     sureShare () {
-      // var data = { 'roles': this.shareRoles.join(','), 'uids': this.shareUsers.join(',') }
-      // this.axios.post('/leaderview/home/share/' + this.shareId, data).then((res) => {
-      //   if (res.success) {
-      //   }
-      // })
       var data = {}
       data.roles = (this.shareRoles && this.shareRoles.length > 0) ? this.shareRoles.join(',') : ''
       data.uids = (this.shareUsers && this.shareUsers.length > 0) ? this.shareUsers.join(',') : ''
-      this.axios({
-        method: 'post',
-        url: '/leaderview/home/share/' + this.shareId,
-        data: qs.stringify(data),
-        headers: { 'content-type': 'application/x-www-form-urlencoded' }
-      }).then((res) => {
-        if (res.success) {
-          this.search()
-          $('#homeShareModal').modal('hide')
+
+      this.axios.get('/mc/role/findAllUserByRoleId?roleIds=' + data.roles).then((object) => {
+        if (object.success) {
+          data.uidsByRoles = object.obj.join(',')
+          this.axios({
+            method: 'post',
+            url: '/leaderview/home/share/' + this.shareId,
+            data: qs.stringify(data),
+            headers: { 'content-type': 'application/x-www-form-urlencoded' }
+          }).then((res) => {
+            if (res.success) {
+              this.search()
+              $('#homeShareModal').modal('hide')
+            }
+          })
         }
       })
     },
@@ -362,7 +363,7 @@ export default {
           this.changePageType()
           if (!gbs.inDev) {
             this.$nextTick(() => {
-              titleShow('bottom', $('#editHome-wrap'))
+              titleShow()
             })
           }
         } else {
@@ -379,14 +380,25 @@ export default {
       })
     },
     getAccess () {
-      this.axios.get('/leaderview/home/getMenu').then((res) => {
+      this.axios.get('/mc/getMenu').then((res) => {
         if (res.success) {
-          let permission = res.obj.permission.toLowerCase().split(',')
-          if (permission.indexOf('w') !== -1) {
-            this.access = 'w'
-          } else {
-            this.access = 'r'
-          }
+          let obj = res.obj
+          let permission = 'r'
+          obj.forEach(item => {
+            if (item.id === 'VIEW01' || item.name === '大屏展示') {
+              permission = item.permission.toLowerCase().split(',')
+              if (permission.indexOf('w') !== -1) {
+                this.access = 'w'
+              } else {
+                this.access = 'r'
+              }
+              return false
+            }
+          })
+        }
+      })
+      this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
+        if (res.success) {
           this.isSuperAdmin = res.obj.isSuperAdmin
         }
       })

@@ -105,3 +105,4 @@ service-cmdb: ${servicecmdb}
 service-business: ${servicebusiness}
 service-knowledgebase: ${serviceknowledgebase}
 service-msg: ${servicemsg}
+service-leaderview: ${serviceleaderview}
