@@ -2655,7 +2655,7 @@ export default {
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
   },
-  destoryed: function () {
+  destroyed: function () {
     // $.comps.editHome = null;
   }
 }

@@ -1,0 +1,180 @@
+<template>
+  <div class="waterWave"
+       v-if="!empty">
+    <div class="liquidfill-chart"
+         ref="liquidfill"
+         :style="boxStyle"></div>
+    <div class="name">{{item.chartData.name}}</div>
+  </div>
+  <div class="v-charts-data-empty"
+       v-else
+       style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+    <div><i class="icon-n-nodata"
+         style="font-size: 108px;"></i><br>
+      <p>抱歉，没有数据可供展示...</p>
+    </div>
+  </div>
+</template>
+<script>
+import echarts from 'echarts'
+export default {
+  name: 'liquidfill',
+  props: ['item'],
+  data () {
+    return {
+      chart: null,
+      empty: false,
+      option: {}
+    }
+  },
+  computed: {
+    boxStyle: function () {
+      return {
+        width: this.item.width + 'px',
+        height: this.item.height + 'px'
+      }
+    }
+  },
+  watch: {
+    'item.width': function () {
+      this.$nextTick(() => {
+        this.chart.resize()
+      })
+    },
+    'item.height': function () {
+      this.$nextTick(() => {
+        this.chart.resize()
+      })
+    },
+    'item.bgClr': function (newV) {
+      this.option.series[0].color = [newV]
+      this.chart.setOption(this.option)
+    },
+    'item.clr': function (newV) {
+      this.option.series[0].label.color = newV
+      this.option.series[0].label.insideColor = newV
+      this.chart.setOption(this.option)
+    },
+    'item.bdClr': function (newV) {
+      this.option.series[0].outline.itemStyle.borderColor = newV
+      this.chart.setOption(this.option)
+    },
+    'item.bdpx': function (newV) {
+      this.option.series[0].outline.itemStyle.borderWidth = newV
+      this.chart.setOption(this.option)
+    },
+    'item.fontSize': function (newV) {
+      this.option.series[0].label.fontSize = newV
+      this.chart.setOption(this.option)
+    },
+    'item.chartData': function () {
+      if (this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+        this.empty = true
+        return
+      }
+      this.empty = false
+      this.$nextTick(() => {
+        this.initBall()
+      })
+    }
+  },
+  methods: {
+    initBall () {
+      // this.chart = echarts.init(document.getElementById('liquidfill-chart'))
+      this.chart = echarts.init(this.$refs.liquidfill)
+      // var option = {
+      //   series: [{
+      //     type: 'liquidFill',
+      // data: [0.5, {
+      //   name: '数据名称',
+      //   value: '0.5',
+      //   direction: 'right',
+      //   itemStyle: {
+      //     normal: {
+      //       color: 'red'
+      //     }
+      //   }
+      // }],
+      //   }]
+      // }
+      if (this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+        this.empty = true
+      }
+
+      this.option = {
+        series: [
+          {
+            type: 'liquidFill',
+            name: '系列名称',
+            // waveAnimation: false, // 禁止左右波动
+            // animationDuration: 0,
+            // animationDurationUpdate: 0,
+            data: [0.8, 0.75],
+            color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
+            // itemStyle: {
+            //   opacity: 0.6
+            // },
+            outline: {
+              // show: false
+              borderDistance: 5,
+              itemStyle: {
+                borderWidth: 5,
+                borderColor: '#767272'
+                // shadowBlur: 20,
+                // shadowColor: 'rgba(255, 0, 0, 1)'
+              }
+            },
+            backgroundStyle: {
+              color: 'transparent'
+            },
+            label: {
+              fontWeight: 'normal',
+              fontSize: 28,
+              formatter: '80%', // 显示在水球图中间的文字，可以是字符串，可以是占位符，也可以是一个函数。
+              // 如果使用{a}\n{b}\nValue: {c} ，a代表系列名称，b代表数据名称，c代表数据值。
+              color: '#fff', // 默认背景下的文字颜色
+              insideColor: '#fff' // 水波背景下的文字颜色
+            }
+          }
+        ]
+      }
+      if (this.item.chartData.unit.trim() === '%') {
+        this.option.series[0].label.formatter = this.item.chartData.value + this.item.chartData.unit
+        let val = Number(this.item.chartData.value)
+        if (val === val) {
+          // 非NaN
+          let data = parseInt(val * 100) / 10000
+          this.option.series[0].data = [data, data - 0.05]
+        } else {
+          this.option.series[0].data = [0]
+        }
+      }
+      if (this.chart) {
+        this.chart.setOption(this.option)
+      }
+    }
+  },
+  mounted () {
+    this.initBall()
+  },
+  beforeDestroyed () {
+    this.chart.dispose()
+  },
+  destroyed () {
+  }
+}
+</script>
+<style scoped>
+.waterWave {
+  text-align: center;
+  position: relative;
+}
+.waterWave .name {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 80%;
+  font-size: 14px;
+  color: #666f8b;
+}
+</style>

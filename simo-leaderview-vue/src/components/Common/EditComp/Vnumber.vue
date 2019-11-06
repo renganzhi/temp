@@ -70,7 +70,7 @@ export default {
       return result
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

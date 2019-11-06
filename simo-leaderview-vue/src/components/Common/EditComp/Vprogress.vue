@@ -80,7 +80,7 @@ export default {
     //   }
     // }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

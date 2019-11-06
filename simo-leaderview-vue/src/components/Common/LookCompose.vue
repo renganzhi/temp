@@ -128,7 +128,7 @@ export default {
   },
   beforeDestroy () {
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

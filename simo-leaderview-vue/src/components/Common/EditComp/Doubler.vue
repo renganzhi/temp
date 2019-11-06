@@ -93,7 +93,7 @@ export default {
     this.numHeight = this.$refs.hideNum.getBoundingClientRect().height
     this.numWidth = this.$refs.hideNum.getBoundingClientRect().width
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

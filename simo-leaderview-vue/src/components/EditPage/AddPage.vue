@@ -183,7 +183,7 @@ export default {
     $('#addHomePage-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
