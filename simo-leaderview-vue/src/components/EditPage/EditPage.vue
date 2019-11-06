@@ -91,8 +91,8 @@
               <div v-else
                    class="page-title flex-1 flex">
                 <span class="shareIcon"
-                      v-show="item.belongCurrentUser === 'false'"
-                      :title="item.shareName"><i class="icon-n-assetys"></i></span>
+                      v-show="item.belongCurrentUser === 'false'"><i class="icon-n-assetys"
+                     :title="item.shareName"></i></span>
                 <span class="title-name flex-1">{{item.name}}</span>
 
                 <a class="icon-n-edit2 edit-icon noClk"
@@ -363,7 +363,7 @@ export default {
           this.changePageType()
           if (!gbs.inDev) {
             this.$nextTick(() => {
-              titleShow()
+              titleShow('bottom', $('.shareIcon'))
             })
           }
         } else {
@@ -756,6 +756,9 @@ html[data-theme="blueWhite"] {
     .edit-icon {
       color: #323746;
     }
+    .noClk {
+      color: #828bac;
+    }
     .operates {
       background-color: #334153;
       opacity: 0.6;
@@ -766,6 +769,9 @@ html[data-theme="blueWhite"] {
     .opera-item:hover {
       color: #fefeff;
     }
+  }
+  .page-item .shareIcon i {
+    color: #fff;
   }
 }
 </style>
