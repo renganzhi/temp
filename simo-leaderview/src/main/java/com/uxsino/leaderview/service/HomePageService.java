@@ -132,7 +132,38 @@ public class HomePageService {
         return homePageDao.findAllOrderly();
     }
 
-    public List<HomePage> findAllWithoutConf() {
+    public List<HomePage> findAllWithoutConf(Long userId) {
+        List<HomePage> result = Lists.newArrayList();
+        String sql = "SELECT a.id, a.user_id, a.role_ids, b.page_index, a.name, b.visible, a.last_update_time, a.view_image," +
+                " a.create_user_id, a.handover_id, a.share_conf " +
+                " FROM simo_mc_home_page a JOIN simo_mc_home_page_user_conf b on (a.id = b.page_id)" +
+                " WHERE b.user_id = ?1" +
+                " ORDER BY b.page_index, b.user_id";
+        List<Object[]> list = Lists.newArrayList();
+        try {
+            list = (List<Object[]>) homePageDao.findBySQL(sql, userId);
+        }catch (Exception e) {
+            log.error("", e);
+        }
+        for (Object[] obj : list) {
+            Long id = Long.parseLong(obj[0].toString());
+            Long user = Long.parseLong(obj[1].toString());
+            String roleIds = (String) obj[2];
+            int pageIndex = (Integer) obj[3];
+            String name = (String) obj[4];
+            boolean visible = (boolean) obj[5];
+            Date lastUpdateTime = (Date) obj[6];
+            String viewImage = (String) obj[7];
+            Long createUserId = Long.parseLong(obj[8].toString());
+            Long handoverId = Long.parseLong(obj[9].toString());
+            String shareConf = (String) obj[10];
+            result.add(new HomePage(id,user,roleIds,pageIndex,name,visible,
+                    lastUpdateTime,viewImage,createUserId,handoverId,shareConf));
+        }
+        return result;
+    }
+
+    public List<HomePage> findAllWithoutConf(){
         return homePageDao.findAllWithoutConfOrderly();
     }
 
@@ -264,7 +295,7 @@ public class HomePageService {
         String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
         JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
         String userRole = userObj.getString("departmentId");
-        List<HomePage> AllhomePage = findAllWithoutConf();
+        List<HomePage> AllhomePage = findAllWithoutConf(SessionUtils.getCurrentUserIdFromSession(session));
         List<HomePage> result = Lists.newArrayList();
         AllhomePage.forEach(homePage -> {
             JSONObject obj = new JSONObject();
