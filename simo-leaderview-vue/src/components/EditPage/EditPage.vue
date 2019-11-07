@@ -612,8 +612,8 @@ export default {
     this.search()
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
-    this.saerchShareUser()
     this.getAccess()
+    this.saerchShareUser()
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
