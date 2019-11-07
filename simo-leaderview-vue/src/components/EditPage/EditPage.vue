@@ -92,7 +92,7 @@
                    class="page-title flex-1 flex">
                 <span class="shareIcon"
                       v-show="item.belongCurrentUser === 'false'"><i class="icon-n-assetys"
-                     :title="item.shareName"></i></span>
+                     :title="'负责人：' + item.shareName"></i></span>
                 <span class="title-name flex-1">{{item.name}}</span>
 
                 <a class="icon-n-edit2 edit-icon noClk"
@@ -222,6 +222,7 @@ export default {
       pageData: '', // 预览的page内容
       viewId: -1, // 预览的id
       editName: '',
+      userIds: [],
       viewKey: new Date().getTime() + parseInt(Math.random() * 70)
     }
   },
@@ -229,6 +230,26 @@ export default {
   methods: {
     backHome () {
       this.$router.push('/')
+    },
+    getAdminUsers () {
+      // 获取超级管理员角色下的所有用户
+      return new Promise((resolve, reject) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+          if (res.success) {
+            this.userIds = res.obj
+            return resolve()
+          }
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
+        })
+      })
     },
     changePageType () {
       let type = this.pageType
@@ -272,6 +293,15 @@ export default {
             if (res.success) {
               this.search()
               $('#homeShareModal').modal('hide')
+              if (gbs.inDev) {
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
+              } else {
+                tooltip('', '操作成功！', 'success')
+              }
             }
           })
         }
@@ -434,20 +464,22 @@ export default {
       }) */
     },
     copy (item) {
-      this.axios.get('/leaderview/home/homePage/copy/' + item.id).then((res) => {
-        if (res.success) {
-          this.search()
-        } else {
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+      this.getAdminUsers().then(() => {
+        this.axios.get('/leaderview/home/homePage/copy', { params: { 'pageId': item.id, adminId: this.userIds.join(',') } }).then((res) => {
+          if (res.success) {
+            this.search()
           } else {
-            tooltip('', res.msg, 'error')
+            if (gbs.inDev) {
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', res.msg, 'error')
+            }
           }
-        }
+        })
       })
     },
     pev (item) {
