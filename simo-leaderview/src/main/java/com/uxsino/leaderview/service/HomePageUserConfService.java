@@ -41,7 +41,8 @@ public class HomePageUserConfService {
     }
 
     @Transactional
-    public void add(HomePageUserConf homePageUserConf, boolean isBegin) {
+    public void add(HomePageUserConf homePageUserConf, boolean isBegin, String[] adminId) {
+        Long userId = homePageUserConf.getUserId();
         int countByUser = homePageUserConfDao.countByUserId(homePageUserConf.getUserId()) + 1;
         //新增的页面自动设为首位，其他的页面自动向后移一位
         if (isBegin){
@@ -53,6 +54,20 @@ public class HomePageUserConfService {
             homePageUserConf.setPageIndex(countByUser);
         }
         homePageUserConfDao.save(homePageUserConf);
+        //保存的时候向超级管理员用户中保存一份
+        if (ObjectUtils.isEmpty(adminId)){
+            adminId = new String[1];
+            adminId[0] = "1";
+        }
+        for (String admin : adminId) {
+            if (Long.parseLong(admin) == userId) continue;
+            HomePageUserConf otherHomePageUserConf = new HomePageUserConf();
+            otherHomePageUserConf.setUserId(Long.parseLong(admin));
+            otherHomePageUserConf.setPageId(homePageUserConf.getPageId());
+            countByUser = homePageUserConfDao.countByUserId(otherHomePageUserConf.getUserId()) + 1;
+            otherHomePageUserConf.setPageIndex(countByUser);
+            homePageUserConfDao.save(otherHomePageUserConf);
+        }
     }
 
     @Transactional

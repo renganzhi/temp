@@ -114,8 +114,9 @@ public class HomePageController {
     @Transactional
     public JsonModel addHomePage(HttpSession session, @ApiParam("待添加页面名称") @RequestParam String name,
                                  @ApiParam("插入位置，null或者0则默认加到最后") @RequestParam(required = false) Integer index,
-                                 @ApiParam("模板ID") @RequestParam(required = false) Long templateId) {
-        int maxIndex = homePageService.getMaxIndex();
+                                 @ApiParam("模板ID") @RequestParam(required = false) Long templateId,
+                                 @RequestParam(required = false) String[] adminId) {
+        int maxIndex = homePageService.getMaxIndex(SessionUtils.getCurrentUserIdFromSession(session));
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }
@@ -142,7 +143,7 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageUserConfService.add(homePageUserConf, true);
+        homePageUserConfService.add(homePageUserConf, true, adminId);
         return new JsonModel(true, homePage);
     }
 
@@ -192,13 +193,15 @@ public class HomePageController {
 
     @ApiOperation("复制一页到末尾")
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
-    @RequestMapping(value = "/homePage/copy/{pageId}", method = RequestMethod.GET)
-    public JsonModel copyHomePage(HttpSession session, @ApiParam("待复制页面ID") @PathVariable Long pageId) {
+    @RequestMapping(value = "/homePage/copy", method = RequestMethod.GET)
+    @Transactional
+    public JsonModel copyHomePage(HttpSession session, @ApiParam("待复制页面ID") @RequestParam Long pageId,
+                                  @RequestParam(required = false) String[] adminId) {
         HomePage sourcePage = homePageService.getById(pageId);
         if (ObjectUtils.isEmpty(sourcePage)) {
             return new JsonModel(false, "待复制页面不存在!");
         }
-        int maxIndex = homePageService.getMaxIndex();
+        int maxIndex = homePageService.getMaxIndex(SessionUtils.getCurrentUserIdFromSession(session));
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }
@@ -218,7 +221,7 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageUserConfService.add(homePageUserConf, true);
+        homePageUserConfService.add(homePageUserConf, true, adminId);
         return new JsonModel(true, "复制成功");
     }
 
@@ -526,6 +529,13 @@ public class HomePageController {
             result.put("isSuperAdmin",false);
         }
         return new JsonModel(true, result);
+    }
+
+    @ApiOperation("获取超级管理员下的所有用户Id")
+    @GetMapping(value = "/getAdminUserId")
+    public JsonModel getAdminUserId(HttpSession session){
+        Long[] adminRoles = {1L};
+        return mcService.findAllUserByRoleId("SESSION=" + session , adminRoles);
     }
 
     /**
