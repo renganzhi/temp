@@ -423,23 +423,35 @@ export default {
       this.$destroy()
     },
     getAccess () {
-      this.axios.get('/mc/getMenu').then((res) => {
-        if (res.success) {
-          let obj = res.obj
-          let permission = 'r'
-          obj.forEach(item => {
-            if (item.id === 'VIEW01' || item.name === '大屏展示') {
-              permission = item.permission.toLowerCase().split(',')
-              if (permission.indexOf('w') !== -1) {
-                this.access = 'w'
-              } else {
-                this.access = 'r'
-              }
-              return false
-            }
-          })
+      let permission = 'r'
+      // 先获取simo存在本地的
+      if (baseData && baseData.menuParam && baseData.menuParam.permission) {
+        permission = baseData.menuParam.permission.toLowerCase().split(',')
+        if (permission.indexOf('w') !== -1) {
+          this.access = 'w'
+        } else {
+          this.access = 'r'
         }
-      })
+        sessionStorage.setItem('leaderAccess', this.access)
+      } else {
+        this.axios.get('/mc/getMenu').then((res) => {
+          if (res.success) {
+            let obj = res.obj
+            obj.forEach(item => {
+              if (item.id === 'VIEW01' || item.name === '大屏展示') {
+                permission = item.permission.toLowerCase().split(',')
+                if (permission.indexOf('w') !== -1) {
+                  this.access = 'w'
+                } else {
+                  this.access = 'r'
+                }
+                sessionStorage.setItem('leaderAccess', this.access)
+                return false
+              }
+            })
+          }
+        })
+      }
     }
   },
   watch: {
