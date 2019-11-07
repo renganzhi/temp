@@ -35,7 +35,7 @@ public class HomePageService {
     @Transactional
     public void add(HomePage homePage) {
         homePage.setLastUpdateTime(new Date());
-        homePageDao.rightPageIndex(homePage.getPageIndex(), getMaxIndex());
+        homePageDao.rightPageIndex(homePage.getPageIndex(), getMaxIndex(homePage.getUserId()));
         homePageDao.save(homePage);
     }
 
@@ -47,7 +47,7 @@ public class HomePageService {
     @Transactional
     public Long addAndGetId(HomePage homePage) {
         homePage.setLastUpdateTime(new Date());
-        homePageDao.rightPageIndex(homePage.getPageIndex(), getMaxIndex());
+        homePageDao.rightPageIndex(homePage.getPageIndex(), getMaxIndex(homePage.getUserId()));
         HomePage result = homePageDao.save(homePage);
         return result.getId();
     }
@@ -102,7 +102,7 @@ public class HomePageService {
             homePageDao.rightPageIndex(1, index - 1);
             homePage.setPageIndex(1);
         } else {
-            int maxIndex = getMaxIndex();
+            int maxIndex = getMaxIndex(homePage.getUserId());
             if (maxIndex == index) {
                 return;
             }
@@ -112,8 +112,8 @@ public class HomePageService {
         homePageDao.update(homePage.getId(), homePage);
     }
 
-    public int getMaxIndex() {
-        Integer maxIndex = homePageDao.getMaxPageIndex();
+    public int getMaxIndex(Long userId) {
+        Integer maxIndex = homePageDao.countByUserId(userId);
         return maxIndex == null ? 0 : maxIndex;
     }
 
@@ -250,7 +250,7 @@ public class HomePageService {
      */
     @Transactional
     public void delete(HomePage page) {
-        homePageDao.leftPageIndex(page.getPageIndex() + 1, getMaxIndex());
+        homePageDao.leftPageIndex(page.getPageIndex() + 1, getMaxIndex(page.getUserId()));
         homePageDao.delete(page);
     }
 
