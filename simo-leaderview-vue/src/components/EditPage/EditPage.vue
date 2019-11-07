@@ -410,23 +410,7 @@ export default {
       })
     },
     getAccess () {
-      this.axios.get('/mc/getMenu').then((res) => {
-        if (res.success) {
-          let obj = res.obj
-          let permission = 'r'
-          obj.forEach(item => {
-            if (item.id === 'VIEW01' || item.name === '大屏展示') {
-              permission = item.permission.toLowerCase().split(',')
-              if (permission.indexOf('w') !== -1) {
-                this.access = 'w'
-              } else {
-                this.access = 'r'
-              }
-              return false
-            }
-          })
-        }
-      })
+      this.access = sessionStorage.getItem('leaderAccess') || 'r'
       this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
         if (res.success) {
           this.isSuperAdmin = res.obj.isSuperAdmin
