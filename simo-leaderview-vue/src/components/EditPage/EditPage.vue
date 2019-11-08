@@ -614,7 +614,7 @@ export default {
 .homeBack {
   float: right;
   background: transparent;
-  color: #026bf4;
+  color: #0088cc;
   font-size: 13px;
   border: none;
   i {
