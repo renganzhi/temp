@@ -33,6 +33,8 @@ public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
     @Query("select max(pageIndex) from HomePage")
     Integer getMaxPageIndex();
 
+    Integer countByUserId(Long uesrId);
+
     @Query("from HomePage where userId=?1 order by  pageIndex")
     List<HomePage> findByUserId(long employeeId);
 
