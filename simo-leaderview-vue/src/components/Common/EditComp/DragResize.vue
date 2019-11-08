@@ -420,7 +420,7 @@ export default {
         if (this.rawTop === this.rect.top) {
           chgY = newTop - this.rawTop
         }
-        this.$emit('dragging', chgX, chgY)
+        this.$emit('dragging', chgX, chgY, this.rect)
       }
 
       this.rawTop = newTop
@@ -688,7 +688,7 @@ export default {
   },
 
   computed: {
-    left: {
+    left1: {
       get: function () {
         return this.x
       },
@@ -696,7 +696,7 @@ export default {
         this.$emit('update:x', value)
       }
     },
-    top: {
+    top1: {
       get: function () {
         return this.y
       },

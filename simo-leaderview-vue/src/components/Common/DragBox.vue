@@ -78,12 +78,13 @@ export default {
     }
   },
   methods: {
-    dragging (chgX, chgY) {
-      this.$emit('draged', chgX, chgY)
+    dragging (chgX, chgY, attr) {
+      this.$emit('draged', chgX, chgY, attr)
     },
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height
+      attr.id = item.id
       this.$emit('resized', attr)
     },
     bodyDown (item, attr) { // 点击

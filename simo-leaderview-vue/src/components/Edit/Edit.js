@@ -130,12 +130,6 @@ export default {
       dataApi: [], // 选择接口数据
       currApi: {}, // 当前选中api
       dataInps: [],
-      minXItem: {
-        x: 1920,
-        y: 1080,
-        maxX: 0,
-        maxY: 0
-      }, // 多选情况下X值最小的元素
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
@@ -161,6 +155,23 @@ export default {
       },
       proHeightErr: false,
       radiusErr: false,
+      minXItem: {
+        x: 10000, // 最小的x
+        y: 10000, // 最小x的y
+        maxW: 0, // 最远元素的width
+        maxH: 0, // 最远高度元素的height
+        gapX: 0, // maxW元素与x的间距
+        gapY: 0 // maxH元素与y的间距
+      }, // 多选情况下X值最小的元素
+      minXItemCopy: {
+        x: 10000, // 最小的x
+        y: 10000, // 最小x的y
+        id: 0,
+        maxW: 0, // 最远元素的width
+        maxH: 0, // 最远高度元素的height
+        gapX: 0, // maxW元素与x的间距
+        gapY: 0 // maxH元素与y的间距
+      },
       selectArea: {
         choose: false, // 是否处于框选状态
         left: 0, // 多选情况下输入框改变前的x位移
@@ -357,7 +368,7 @@ export default {
           this.selectedItem.cityCode = this[target][0].value
         }
       }).catch((err) => {
-        console.log(err)
+        // console.log(err)
       })
     },
     // 改变展示范围
@@ -748,10 +759,7 @@ export default {
       this.chooseCompIndexs = []
       // console.log('取消所有选中')
       // 初始化多选时的x，y值
-      this.minXItem.x = 10000
-      this.minXItem.y = 10000
-      this.minXItem.maxX = 0
-      this.minXItem.maxY = 0
+      this.minXItem = JSON.parse(JSON.stringify(this.minXItemCopy))
       this.childResize = false // 暂且保留
       // this.onCtrl = false
     },
@@ -762,7 +770,7 @@ export default {
         return
       }
       this.childResize = false
-      if (ev !== 'context' && !window.event.ctrlKey) {
+      if (ev !== 'context' && ev !== 'move' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
       if (window.event.ctrlKey && ev !== 'move' && item.slted) {
@@ -813,16 +821,15 @@ export default {
           // this.minXItem = item
           this.minXItem.x = item.x
           this.minXItem.y = item.y
+          this.minXItem.id = item.id
           this.selectArea.left = item.x // 不变的最小值
           this.selectArea.top = item.y
         }
-        if (item.x + item.width > this.minXItem.maxX) {
-          this.minXItem.maxX = item.x // 最远元素的x
-        }
-        if (item.y + item.height > this.minXItem.maxY) {
-          this.minXItem.maxY = item.y // 最远元素的y
+        if (ev !== 'move') {
+          this.setMaxItemInfo()
         }
       }
+
       if (this.selectedItem.chartType === 'v-scatter') {
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
@@ -978,6 +985,32 @@ export default {
         }
       }
     },
+    setMaxItemInfo () {
+      if (this.chooseIndexs.concat(this.chooseCompIndexs).length <= 1) {
+        return
+      }
+      var _this = this
+      this.chooseIndexs.forEach((i) => {
+        if (_this.chartNum[i].x + _this.chartNum[i].width >= _this.minXItem.maxW + _this.minXItem.x + _this.minXItem.gapX) {
+          _this.minXItem.maxW = _this.chartNum[i].width
+          _this.minXItem.gapX = _this.chartNum[i].x - _this.minXItem.x
+        }
+        if (_this.chartNum[i].y + _this.chartNum[i].height >= _this.minXItem.maxH + _this.minXItem.y + _this.minXItem.gapY) {
+          this.minXItem.maxH = _this.chartNum[i].height // 最远元素的y
+          this.minXItem.gapY = _this.chartNum[i].y - _this.minXItem.y
+        }
+      })
+      this.chooseCompIndexs.forEach((i) => {
+        if (_this.combinList[i].x + _this.combinList[i].width >= _this.minXItem.maxW + _this.minXItem.x + _this.minXItem.gapX) {
+          _this.minXItem.maxW = _this.combinList[i].width
+          _this.minXItem.gapX = _this.combinList[i].x - _this.minXItem.x
+        }
+        if (_this.combinList[i].y + _this.combinList[i].height >= _this.minXItem.maxH + _this.minXItem.y + _this.minXItem.gapY) {
+          this.minXItem.maxH = _this.combinList[i].height // 最远元素的y
+          this.minXItem.gapY = _this.combinList[i].y - _this.minXItem.y
+        }
+      })
+    },
     updateMinXitem: function () {
       var _this = this
       var minIndex = _.minBy(this.chooseIndexs, function (i) { return _this.chartNum[i].x })
@@ -986,81 +1019,75 @@ export default {
         return
       }
       if (minCompIndex === undefined) {
-        // this.minXItem = this.chartNum[minIndex]
-        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y)
+        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y, this.chartNum[minIndex].id)
+        this.setMaxItemInfo() // 更新最远位置
         return
       }
       if (minIndex === undefined) {
-        // this.minXItem = this.combinList[minCompIndex]
-        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y)
+        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y, this.combinList[minCompIndex].id)
+        this.setMaxItemInfo() // 更新最远位置
         return
       }
       if (this.chartNum[minIndex].x < this.combinList[minCompIndex].x) {
-        // this.minXItem = this.chartNum[minIndex]
-        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y)
+        this.changeMinXitem(this.chartNum[minIndex].x, this.chartNum[minIndex].y, this.chartNum[minIndex].id)
       } else {
-        // this.minXItem = this.combinList[minCompIndex]
-        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y)
+        this.changeMinXitem(this.combinList[minCompIndex].x, this.combinList[minCompIndex].y, this.combinList[minCompIndex].id)
       }
+      this.setMaxItemInfo() // 更新最远位置
     },
-    changeMinXitem: function (x, y) {
+    changeMinXitem: function (x, y, id) {
       this.minXItem.x = x
       this.minXItem.y = y
+      if (id) {
+        this.minXItem.id = id
+      }
       this.selectArea.left = x
       this.selectArea.top = y
     },
-    // 多元件拖拽改变x，y位移
-    changeItems: function (xy) {
-      var left = 'left'
-      var width = 'width'
-      var maxX = 'maxX'
-      if (xy === 'y') {
-        left = 'top'
-        width = 'height'
-        maxX = 'maxY'
-      }
-      var allowOverflow = baseData.allowOverflow // 可提取为可配置变量
-      if (this.minXItem[xy] < -allowOverflow) {
-        // this.minXItem[xy] = this.selectArea[left] // 恢复原值
-        this.minXItem[xy] = -allowOverflow
-      }
-      if (this.minXItem[xy] > this.paintObj[width] - this.minXItem[maxX] + allowOverflow) {
-        this.minXItem[xy] = this.paintObj[width] - this.minXItem[maxX] + allowOverflow
-      }
-      var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
-      this.chooseIndexs.forEach((i) => {
-        this.chartNum[i][xy] += changes
-      })
-      this.chooseCompIndexs.forEach((i) => {
-        this.combinList[i][xy] += changes
-      })
-      this.selectArea[left] = this.minXItem[xy]
-    },
+
     // 多选时改变x，y位移
     changeTarget: function (xy) {
       var left = 'left'
       var width = 'width'
-      var maxX = 'maxX'
+      var maxW = 'maxW'
+      var gapX = 'gapX'
       if (xy === 'y') {
         left = 'top'
         width = 'height'
-        maxX = 'maxY'
+        maxW = 'maxH'
+        gapX = 'gapY'
       }
       var allowOverflow = baseData.allowOverflow // 可提取为可配置变量
       if (this.minXItem[xy] < -allowOverflow) {
-        // this.minXItem[xy] = this.selectArea[left] // 恢复原值
         this.minXItem[xy] = -allowOverflow
       }
-      if (this.minXItem[xy] > this.paintObj[width] - this.minXItem[maxX] + allowOverflow) {
-        this.minXItem[xy] = this.paintObj[width] - this.minXItem[maxX] + allowOverflow
+      // 右下边界的处理
+      // console.log(this.minXItem[maxW], this.minXItem[gapX], this.minXItem[xy])
+      if (this.minXItem[maxW] + this.minXItem[gapX] + Number(this.minXItem[xy]) > this.paintObj[width] + allowOverflow) {
+        this.minXItem[xy] = this.paintObj[width] + allowOverflow - (this.minXItem[maxW] + this.minXItem[gapX])
       }
+      // 上边界的处理
       var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
-      this.chooseIndexs.forEach((i) => {
-        this.chartNum[i][xy] += changes
-      })
-      this.chooseCompIndexs.forEach((i) => {
-        this.combinList[i][xy] += changes
-      })
+      if (window.event.ctrlKey) {
+        // 拖拽情况下被拖拽元件不再手动更新值
+        this.chooseIndexs.forEach((i) => {
+          if (this.chartNum[i].id !== this.selectedItem.id) {
+            this.chartNum[i][xy] += changes
+          }
+        })
+        this.chooseCompIndexs.forEach((i) => {
+          if (this.combinList[i].id !== this.selectedItem.id) {
+            this.combinList[i][xy] += changes
+          }
+        })
+      } else {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][xy] += changes
+        })
+        this.chooseCompIndexs.forEach((i) => {
+          this.combinList[i][xy] += changes
+        })
+      }
       this.selectArea[left] = this.minXItem[xy]
     },
     bindCtrl: function () {
@@ -1368,23 +1395,34 @@ export default {
         itemArr[i].y = parseInt(itemArr[i - 1].y + itemArr[i - 1].height + gap)
       }
     },
-    draged (chgX, chgY) {
+    draged (chgX, chgY, attr) {
+      // if (this.selectedItem.id === this.minXItem.id) return
       if (window.event.ctrlKey) {
         if (chgX !== 0) {
-          this.minXItem.x += chgX
-          this.changeItems('x')
+          if (this.selectedItem.id === this.minXItem.id) {
+            this.minXItem.x = attr.left
+          } else {
+            this.minXItem.x += chgX
+          }
+          this.changeTarget('x')
         }
         if (chgY !== 0) {
-          this.minXItem.y += chgY
-          this.changeItems('y')
+          if (this.selectedItem.id === this.minXItem.id) {
+            this.minXItem.y = attr.top
+          } else {
+            this.minXItem.y += chgY
+          }
+          this.changeTarget('y')
         }
       }
     },
     resized: function (item) {
-      this.testObj.width = item.width
-      this.testObj.height = item.height
-      this.testObj.x = item.left
-      this.testObj.y = item.top
+      if (item.id === this.testObj.id) {
+        this.testObj.width = item.width
+        this.testObj.height = item.height
+        this.testObj.x = item.left
+        this.testObj.y = item.top
+      }
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
     resetPaint () {
@@ -2010,8 +2048,6 @@ export default {
       // if (type !=='compose') {
 
       // }
-      console.log(this.chooseIndexs)
-      console.log(this.chooseCompIndexs)
       console.log('childResize:' + this.childResize)
       $(this.$refs.contextMenu)
         .css({
@@ -2036,57 +2072,9 @@ export default {
     // 框选
     chooseMap: function () {
       var _this = this
-      console.log('注册框选事件')
+      // 注册框选事件
       var stateBar = document.getElementById('chooseWrap')
-      // var posLeft = stateBar.clientLeft
-      // var posTop = stateBar.clientTop
-      // var posLeft = 210 // 左侧宽度
-      // var posTop = 38 // 顶部banner的高度
       stateBar.addEventListener('mousedown', _this.userChoose)
-      /*     var _this = this
-        console.log('注册框选事件')
-        var stateBar = document.getElementById('chooseWrap')
-        var wrap = document.getElementsByClassName('m-main')[0]
-        var posLeft = stateBar.clientLeft
-        var posTop = stateBar.clientTop
-        // var posLeft = 210 // 左侧宽度
-        // var posTop = 38 // 顶部banner的高度
-        stateBar.addEventListener('mousedown', function (e) {
-          _this.cancelSelected()
-          var posx = e.clientX - posLeft
-          var posy = e.clientY - posTop
-          var div = document.createElement('div')
-          div.className = 'tempDiv'
-          div.style.left = e.clientX - posLeft + 'px'
-          div.style.top = e.clientY - posTop + 'px'
-          stateBar.onmousemove = function (ev) {
-            if ($('.tempDiv').length > 0) {
-              $('.tempDiv').remove()
-            }
-            stateBar.appendChild(div)
-            _this.selectArea.choose = false
-            div.style.left = Math.min(ev.clientX - posLeft, posx) + 'px'
-            div.style.top = Math.min(ev.clientY - posTop, posy) + 'px'
-            div.style.width = Math.abs(posx - (ev.clientX - posLeft)) + 'px'
-            div.style.height = Math.abs(posy - (ev.clientY - posTop)) + 'px'
-            // console.log('MouseX: ' + (ev.clientX - posLeft) + '<br/>MouseY: ' + (ev.clientY - posTop))
-          }
-          stateBar.onmouseup = function () {
-            // div.parentNode.removeChild(div)
-            div.addEventListener('contextmenu', function (ee) {
-              _this.getChooseItems(div.style.left, div.style.top, div.style.width, div.style.height)
-              $(_this.$refs.contextMenu)
-                .css({
-                  left: ee.pageX,
-                  top: ee.pageY
-                })
-                .toggle(true)
-              ee.preventDefault()
-            })
-            stateBar.onmousemove = null
-            stateBar.onmouseup = null
-          }
-        }, false) */
     },
     getChooseItems: function (left, top, width, height) {
       var bottom = top + height
@@ -2547,9 +2535,9 @@ export default {
         var wheel = e.originalEvent.wheelDelta || -e.originalEvent.detail
         var delta = Math.max(-1, Math.min(1, wheel))
         if (delta < 0) { // 向下滚动
-          console.log('向下滚动')
+          // console.log('向下滚动')
         } else { // 向上滚动
-          console.log('向上滚动')
+          // console.log('向上滚动')
         }
       }
     },
