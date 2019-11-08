@@ -1,8 +1,8 @@
 <template>
-  <!-- :init-options="initOption" -->
   <ve-map :data="dealChartData"
           :width="comWidth"
           :height="comHeight"
+          :init-options="initOption"
           :settings="settings"
           :extend="extend"
           :id="'map_' + keyId"
