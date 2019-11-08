@@ -4,7 +4,10 @@
     <div style="width: 100%; height: 100%;"
          v-if="loadAll && pageList.length < 1">
       <div class="homeEmpty">
-        <img src="../../assets/homeEmpty.png" />
+        <img v-if="defTheme"
+             src="../../assets/homeEmpty1.png" />
+        <img v-else
+             src="../../assets/homeEmpty.png" />
         <div>
           <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p>
           <button type="button"
@@ -91,6 +94,7 @@ export default {
   components: { Notification, LookItem, LookCompose, AddPage },
   data () {
     return {
+      defTheme: true, // 默认主题
       isFullScreen: false,
       editable: false,
       showTip: false, // 全屏的提示信息
@@ -468,6 +472,10 @@ export default {
         })
       })
     })
+    var theme = $('html').attr('data-theme')
+    if (theme !== 'default') {
+      this.defTheme = false
+    }
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
