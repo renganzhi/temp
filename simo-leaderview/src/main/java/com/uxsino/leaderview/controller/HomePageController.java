@@ -294,6 +294,7 @@ public class HomePageController {
         }
         try {
             homePageService.delete(homePage);
+            homePageUserConfService.delete(homePage.getId());
             return new JsonModel(true);
         } catch (Exception e) {
             logger.error("systemHomePageService.deteleByEmployeeIdAndPageNo执行失败：", e);
@@ -311,13 +312,7 @@ public class HomePageController {
         }
         try {
             homePageService.delete(homePage);
-            List<HomePageUserConf> pageUserConfList = homePageUserConfService.findByPageId(pageId);
-            for (HomePageUserConf page : pageUserConfList) {
-                Long uesrId = page.getUserId();
-                homePageUserConfService.leftPageIndex(page.getPageIndex(),
-                        homePageUserConfService.getMaxPageByUserId(uesrId), uesrId);
-                homePageUserConfService.delete(page);
-            }
+            homePageUserConfService.delete(homePage.getId());
             return new JsonModel(true);
         } catch (Exception e) {
             logger.error("systemHomePageService.deteleByEmployeeIdAndPageNo执行失败：", e);
