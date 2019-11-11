@@ -157,7 +157,7 @@ export default {
       // this.setScale()
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

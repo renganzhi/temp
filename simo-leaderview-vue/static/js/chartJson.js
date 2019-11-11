@@ -198,6 +198,22 @@ var compsArr = [{
   chartData: morenData.single
 },
 {
+  text: '水波球',
+  width: 300,
+  height: 300,
+  imgClass: 'icon-n-percent',
+  chartType: 've-gauge',
+  subType: 'progress',
+  secondType: 'liquidfill',
+  // chartType: 'liquidfill',
+  bdpx: 5,
+  bgClr: '#156acf',
+  clr: '#fff',
+  bdClr: '#767272',
+  fontSize: 28,
+  chartData: morenData.single
+},
+{
   text: '柱状图',
   colorful: false,
   imgClass: 'icon-n-histogram',

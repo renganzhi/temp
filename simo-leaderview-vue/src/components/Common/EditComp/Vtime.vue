@@ -163,7 +163,7 @@ export default {
   beforeDestroy () {
     this.timeoutId && clearTimeout(this.timeoutId)
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

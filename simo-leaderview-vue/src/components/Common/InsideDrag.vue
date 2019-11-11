@@ -51,6 +51,8 @@
               :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
+    <Liquidfill v-else-if="item.secondType=='liquidfill'"
+                :item="item"></Liquidfill>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
@@ -70,11 +72,12 @@ import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
 import Vmap from './EditComp/Vmap' // 指标展示
 import Vscatter from './EditComp/Vscatter' // 散点图
+import Liquidfill from './EditComp/Liquidfill' // 水波图
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill },
   data () {
     return {
 
@@ -146,7 +149,7 @@ export default {
   },
   beforeDestroy () {
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

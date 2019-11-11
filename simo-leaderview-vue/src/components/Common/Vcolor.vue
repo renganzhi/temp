@@ -64,8 +64,6 @@ export default {
   },
   destroyed: function () {
     $(this.$el).off().spectrum('destroy')
-  },
-  destoryed: function () {
   }
 }
 </script>

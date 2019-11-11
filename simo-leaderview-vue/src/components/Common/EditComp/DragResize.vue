@@ -958,7 +958,7 @@ export default {
       this.isDraggable = val
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

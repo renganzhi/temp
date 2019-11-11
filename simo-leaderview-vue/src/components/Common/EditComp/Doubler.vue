@@ -105,7 +105,7 @@ export default {
     this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
     this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

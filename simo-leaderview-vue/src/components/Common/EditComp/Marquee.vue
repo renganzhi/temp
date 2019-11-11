@@ -311,7 +311,7 @@ export default {
   beforeDestroy: function () {
     // this.stopmove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

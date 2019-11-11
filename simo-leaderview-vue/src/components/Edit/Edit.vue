@@ -304,7 +304,7 @@
                             </div>
 
                             <!--表格\文本框配置-->
-                            <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
+                            <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time' || selectedItem.secondType == 'liquidfill'">
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
@@ -583,7 +583,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
+                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
                                   <div class="m-gap form-group">图例</div>
                                     <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
                                       <label>可见性</label>
@@ -603,7 +603,7 @@
                                         <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
                                     </div>
                                 </div>
-                                <div class="form-group cols2">
+                                <div class="form-group cols2" v-show="selectedItem.secondType !== 'liquidfill'">
                                     <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
                                     <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
                                         <option value="defalut">默认</option>

@@ -282,7 +282,7 @@ export default {
       // chart.dispose() // 销毁
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
