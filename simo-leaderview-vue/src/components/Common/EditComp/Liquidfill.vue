@@ -110,7 +110,8 @@ export default {
             // animationDuration: 0,
             // animationDurationUpdate: 0,
             data: [0.8, 0.75],
-            color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
+            color: [this.item.bgClr],
+            // color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
             // itemStyle: {
             //   opacity: 0.6
             // },
@@ -118,8 +119,8 @@ export default {
               // show: false
               borderDistance: 5,
               itemStyle: {
-                borderWidth: 5,
-                borderColor: '#767272'
+                borderWidth: this.item.bdpx,
+                borderColor: this.item.bdClr
                 // shadowBlur: 20,
                 // shadowColor: 'rgba(255, 0, 0, 1)'
               }
@@ -129,11 +130,11 @@ export default {
             },
             label: {
               fontWeight: 'normal',
-              fontSize: 28,
+              fontSize: this.item.fontSize,
               formatter: '80%', // 显示在水球图中间的文字，可以是字符串，可以是占位符，也可以是一个函数。
               // 如果使用{a}\n{b}\nValue: {c} ，a代表系列名称，b代表数据名称，c代表数据值。
-              color: '#fff', // 默认背景下的文字颜色
-              insideColor: '#fff' // 水波背景下的文字颜色
+              color: this.item.clr, // 默认背景下的文字颜色
+              insideColor: this.item.clr // 水波背景下的文字颜色
             }
           }
         ]
