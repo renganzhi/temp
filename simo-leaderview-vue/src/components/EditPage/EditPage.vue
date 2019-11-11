@@ -91,8 +91,8 @@
               <div v-else
                    class="page-title flex-1 flex">
                 <span class="shareIcon"
-                      v-show="item.belongCurrentUser === 'false'"
-                      :title="item.shareName"><i class="icon-n-assetys"></i></span>
+                      v-show="item.belongCurrentUser === 'false'"><i class="icon-n-assetys"
+                     :title="'负责人：' + item.shareName"></i></span>
                 <span class="title-name flex-1">{{item.name}}</span>
 
                 <a class="icon-n-edit2 edit-icon noClk"
@@ -222,6 +222,7 @@ export default {
       pageData: '', // 预览的page内容
       viewId: -1, // 预览的id
       editName: '',
+      userIds: [],
       viewKey: new Date().getTime() + parseInt(Math.random() * 70)
     }
   },
@@ -229,6 +230,26 @@ export default {
   methods: {
     backHome () {
       this.$router.push('/')
+    },
+    getAdminUsers () {
+      // 获取超级管理员角色下的所有用户
+      return new Promise((resolve, reject) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+          if (res.success) {
+            this.userIds = res.obj
+            return resolve()
+          }
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
+        })
+      })
     },
     changePageType () {
       let type = this.pageType
@@ -272,6 +293,15 @@ export default {
             if (res.success) {
               this.search()
               $('#homeShareModal').modal('hide')
+              if (gbs.inDev) {
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
+              } else {
+                tooltip('', '操作成功！', 'success')
+              }
             }
           })
         }
@@ -363,7 +393,7 @@ export default {
           this.changePageType()
           if (!gbs.inDev) {
             this.$nextTick(() => {
-              titleShow()
+              titleShow('bottom', $('.shareIcon'))
             })
           }
         } else {
@@ -380,23 +410,7 @@ export default {
       })
     },
     getAccess () {
-      this.axios.get('/mc/getMenu').then((res) => {
-        if (res.success) {
-          let obj = res.obj
-          let permission = 'r'
-          obj.forEach(item => {
-            if (item.id === 'VIEW01' || item.name === '大屏展示') {
-              permission = item.permission.toLowerCase().split(',')
-              if (permission.indexOf('w') !== -1) {
-                this.access = 'w'
-              } else {
-                this.access = 'r'
-              }
-              return false
-            }
-          })
-        }
-      })
+      this.access = sessionStorage.getItem('leaderAccess') || 'r'
       this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
         if (res.success) {
           this.isSuperAdmin = res.obj.isSuperAdmin
@@ -434,20 +448,22 @@ export default {
       }) */
     },
     copy (item) {
-      this.axios.get('/leaderview/home/homePage/copy/' + item.id).then((res) => {
-        if (res.success) {
-          this.search()
-        } else {
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+      this.getAdminUsers().then(() => {
+        this.axios.get('/leaderview/home/homePage/copy', { params: { 'pageId': item.id, adminId: this.userIds.join(',') } }).then((res) => {
+          if (res.success) {
+            this.search()
           } else {
-            tooltip('', res.msg, 'error')
+            if (gbs.inDev) {
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', res.msg, 'error')
+            }
           }
-        }
+        })
       })
     },
     pev (item) {
@@ -580,8 +596,8 @@ export default {
     this.search()
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
-    this.saerchShareUser()
     this.getAccess()
+    this.saerchShareUser()
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
@@ -598,7 +614,7 @@ export default {
 .homeBack {
   float: right;
   background: transparent;
-  color: #026bf4;
+  color: #0088cc;
   font-size: 13px;
   border: none;
   i {
@@ -756,6 +772,9 @@ html[data-theme="blueWhite"] {
     .edit-icon {
       color: #323746;
     }
+    .noClk {
+      color: #828bac;
+    }
     .operates {
       background-color: #334153;
       opacity: 0.6;
@@ -766,6 +785,9 @@ html[data-theme="blueWhite"] {
     .opera-item:hover {
       color: #fefeff;
     }
+  }
+  .page-item .shareIcon i {
+    color: #fff;
   }
 }
 </style>

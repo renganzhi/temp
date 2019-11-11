@@ -5,6 +5,7 @@
              :settings="settings"
              :data="dealChartData"
              :extend="extend"
+             :init-options="initOption"
              :id="'map_' + keyId"
              :key="keyId"
              :judge-width="true">
