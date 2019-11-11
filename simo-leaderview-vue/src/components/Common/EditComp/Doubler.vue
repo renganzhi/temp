@@ -11,7 +11,6 @@
                 :numHeight="numHeight"
                 :bgClr="bgdColor"
                 :style="numCardValue">
-
       </TurnOver>
     </div>
     <div v-show="showTitle"
@@ -27,6 +26,8 @@ export default {
   data () {
     return {
       showOver: true,
+      scaleX: 1,
+      scaleY: 1,
       numHeight: 100,
       numWidth: 80
     }
@@ -78,20 +79,31 @@ export default {
   },
   watch: {
     'item.fontSize': function () {
+      this.getPageScale()
       this.$nextTick(() => {
-        this.numHeight = this.$refs.hideNum.getBoundingClientRect().height
-        this.numWidth = this.$refs.hideNum.getBoundingClientRect().width
+        this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
+        this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
       })
     }
   },
   methods: {
-    getAutoSize () {
-
+    getPageScale () {
+      var _transform = $(this.$el).parents('.paint-bg').css('transform')
+      if (_transform && _transform !== 'none') {
+        var reg = /\((.*)\)$/
+        var _temp = reg.exec(_transform)
+        _temp = _temp[0]
+        _temp = _temp.slice(1, _temp.length)
+        _temp = _temp.split(',')
+        this.scaleX = Number(_temp[0])
+        this.scaleY = Number(_temp[3])
+      }
     }
   },
   mounted () {
-    this.numHeight = this.$refs.hideNum.getBoundingClientRect().height
-    this.numWidth = this.$refs.hideNum.getBoundingClientRect().width
+    this.getPageScale()
+    this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
+    this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
   },
   destoryed: function () {
   }

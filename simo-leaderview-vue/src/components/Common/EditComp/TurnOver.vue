@@ -20,7 +20,7 @@ export default {
       currentNum: 0, // 变化前
       duration: 1000,
       changing: false,
-      changed: false
+      changed: true
     }
   },
   computed: {
@@ -80,9 +80,10 @@ $bRadius: 7px;
   display: inline-block;
   position: relative;
   text-align: center;
-  -moz-transform: translateZ(0);
+  // 解决缩放时页面会变得模糊
+  /*-moz-transform: translateZ(0);
   -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  transform: translateZ(0);*/
   width: 80px;
 }
 .countNum span {
