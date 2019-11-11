@@ -198,7 +198,7 @@ var compsArr = [{
   chartData: morenData.single
 },
 {
-  text: '水波球',
+  text: '水波图',
   width: 300,
   height: 300,
   imgClass: 'icon-n-percent',
