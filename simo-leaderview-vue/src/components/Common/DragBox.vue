@@ -14,6 +14,7 @@
               :y.sync="item.y"
               :z="item.zIndex || 500"
               :item="item"
+              @dragging="dragging"
               @resizing="resizing"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
@@ -80,9 +81,13 @@ export default {
     }
   },
   methods: {
+    dragging (chgX, chgY, attr) {
+      this.$emit('draged', chgX, chgY, attr)
+    },
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height
+      attr.id = item.id
       this.$emit('resized', attr)
     },
     bodyDown (item, attr) { // 点击
