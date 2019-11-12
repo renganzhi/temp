@@ -18,6 +18,7 @@ export default {
   props: [],
   data: function () {
     return {
+      baseUrl: gbs.host,
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
@@ -271,6 +272,11 @@ export default {
         _scrollTop = 0
       }
       $('.m-main').scrollTop(_scrollTop) */
+    },
+    changeBdType () {
+      if (this.selectedItem.borderType === 'stable') {
+        this.$set(this.selectedItem, 'imgSrc', this.settingData.cardCase[0].imgSrc)
+      }
     },
     getMapData (chinaId) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
@@ -632,6 +638,10 @@ export default {
         }
         if (item.chartType === 'progress' && !item.barClrs) {
           this.$set(item, 'barClrs', [item.barClr, item.barClr])
+        }
+        if (item.chartType === 'border' && !item.borderType) {
+          this.$set(item, 'borderType', 'simple')
+          this.$set(item, 'imgSrc', '')
         }
         if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
           this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
