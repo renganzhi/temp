@@ -308,12 +308,12 @@
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
-                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor1"></Vcolor>
+                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
                                     <label>边框类型</label>
-                                    <select v-model="selectedItem.borderType">
+                                    <select v-model="selectedItem.borderType" @change="changeBdType">
                                         <option value="simple">简单边框</option>
                                         <option value="stable">内置边框</option>
                                     </select>
@@ -322,14 +322,14 @@
                                   <label>卡片背景</label><br><br>
                                   <div class="form-group">
                                     <div v-for="(item, index) in settingData.cardCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'card-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
-                                        <img :src="item.mini"/>
+                                        <img :src="baseUrl + item.mini"/>
                                         <!-- <img :src="'../../assets/cardMini' + index +'.png'"/> -->
                                     </div>
                                   </div>
                                   <label style="display: block; clear: both;">标题栏背景</label><br>
                                   <div class="form-group">
                                     <div v-for="(item, index) in settingData.titleCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
-                                        <img :src="item.mini"/>
+                                        <img :src="baseUrl + item.mini"/>
                                     </div>
                                     <!-- <div class="fl font-case">
                                         <img src='../../assets/titleMini2.png'/>
