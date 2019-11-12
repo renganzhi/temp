@@ -281,19 +281,23 @@ export default {
       }).then((res) => {
         if (res.success) {
           this.changeSort = true
-          Notification({
-            message: '操作成功！',
-            position: 'bottom-right',
-            customClass: 'toast toast-success'
-          })
+          if (gbs.inDev) {
+            Notification({
+              message: '操作成功！',
+              position: 'bottom-right',
+              customClass: 'toast toast-success'
+            })
+          } else {
+            tooltip('', '操作成功！', 'success')
+          }
           $('#homeSetting-modal').modal('hide')
         } else {
-          // tooltip('', res.msg, 'error')
-          Notification({
-            message: res.msg,
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+          tooltip('', res.msg, 'error')
+          // Notification({
+          //   message: res.msg,
+          //   position: 'bottom-right',
+          //   customClass: 'toast toast-error'
+          // })
         }
       })
     }
