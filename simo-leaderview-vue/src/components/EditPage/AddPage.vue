@@ -80,6 +80,7 @@ export default {
       addOne: false,
       errMsg: '必填项',
       showErr: false,
+      userIds: [],
       tems: [],
       temId: ''
     }
@@ -106,6 +107,26 @@ export default {
     }
   },
   methods: {
+    getAdminUsers () {
+      // 获取超级管理员角色下的所有用户
+      return new Promise((resolve, reject) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+          if (res.success) {
+            this.userIds = res.obj
+            return resolve()
+          }
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
+        })
+      })
+    },
     changeName () {
       if (!this.name) {
         this.errMsg = '必填项'
@@ -139,40 +160,43 @@ export default {
       // 校验名称
       this.changeName()
       if (this.showErr) return
-      var data = {
-        name: this.name,
-        templateId: this.temId
-      }
-      this.axios({
-        method: 'post',
-        url: '/leaderview/home/homePage/add',
-        data: qs.stringify(data),
-        headers: { 'content-type': 'application/x-www-form-urlencoded' }
-      }).then((res) => {
-        if (res.success) {
-          this.addOne = true
-          this.addId = res.obj.id
-          if (gbs.inDev) {
-            Notification({
-              message: '操作成功！',
-              position: 'bottom-right',
-              customClass: 'toast toast-success'
-            })
-          } else {
-            tooltip('', '操作成功！', 'success')
-          }
-          $('#addHomePage-modal').modal('hide')
-        } else {
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
+      this.getAdminUsers().then(() => {
+        var data = {
+          name: this.name,
+          templateId: this.temId,
+          adminId: this.userIds.join(',')
         }
+        this.axios({
+          method: 'post',
+          url: '/leaderview/home/homePage/add',
+          data: qs.stringify(data),
+          headers: { 'content-type': 'application/x-www-form-urlencoded' }
+        }).then((res) => {
+          if (res.success) {
+            this.addOne = true
+            this.addId = res.obj.id
+            if (gbs.inDev) {
+              Notification({
+                message: '操作成功！',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+            } else {
+              tooltip('', '操作成功！', 'success')
+            }
+            $('#addHomePage-modal').modal('hide')
+          } else {
+            if (gbs.inDev) {
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', res.msg, 'error')
+            }
+          }
+        })
       })
     },
     choosePage (id) {
@@ -183,7 +207,7 @@ export default {
     $('#addHomePage-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

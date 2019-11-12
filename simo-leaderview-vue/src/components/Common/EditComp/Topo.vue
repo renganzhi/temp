@@ -79,7 +79,7 @@ export default {
   beforeDestroy () {
     this.clearTp()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

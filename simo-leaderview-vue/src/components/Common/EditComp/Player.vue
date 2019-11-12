@@ -7,7 +7,8 @@
            loop="loop"
            autoplay="autoplay"
            controls="controls"
-           src="../../../assets/video/video1.mp4">
+           :src="item.videoSrc">
+      <!-- src="../../../assets/video/video1.mp4" -->
       您的浏览器不支持 video 标签。
     </video>
     <!-- src="http://f.us.sinaimg.cn/001z6liflx07ujKIPQFG01041200CXtc0E010.mp4?label=mp4_hd&template=852x480.28.0&Expires=1572690516&ssig=7Vx6%2B%2Fjtuz&KID=unistore,video" -->
@@ -53,6 +54,7 @@ export default {
   mounted () {
     // setTimeout(() => {
     // this.playMedia(20, 30)
+    this.item.videoSrc = require('../../../assets/video/video1.mp4')
     this.autoPaly()
     // }, 2000)
     setTimeout(() => {

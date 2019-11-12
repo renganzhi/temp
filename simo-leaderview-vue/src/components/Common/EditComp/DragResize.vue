@@ -187,8 +187,8 @@ export default {
       aspectFactor: this.w / this.h,
       parentWidth: null,
       parentHeight: null,
-      // left: this.x,
-      // top: this.y,
+      left: this.x,
+      top: this.y,
       right: null,
       bottom: null,
       minWidth: this.minw,
@@ -410,6 +410,19 @@ export default {
         newRight = parentWidth - width - newLeft
       }
 
+      if (this.rawLeft === this.rect.left || this.rawTop === this.rect.top) {
+        let chgX = 0
+        let chgY = 0
+        if (this.rawLeft === this.rect.left) {
+          chgX = newLeft - this.rawLeft
+          // console.log(this.rawLeft, newLeft, this.rect.left)
+        }
+        if (this.rawTop === this.rect.top) {
+          chgY = newTop - this.rawTop
+        }
+        this.$emit('dragging', chgX, chgY, this.rect)
+      }
+
       this.rawTop = newTop
       this.rawBottom = newBottom
       this.rawLeft = newLeft
@@ -419,13 +432,12 @@ export default {
         this.$emit('childResize', this.rect)
       }
       // this.$emit('dragidex', this.rect); //  多加一个传值，告诉父组件，当前事件位于哪一个上面
-      //  this.$emit('sigleindex', this.rect); //  单个时监听，判断当前修改的是哪一个
-      //  this.$emit('dragging', this.rect);
+      // this.$emit('sigleindex', this.rect); //  单个时监听，判断当前修改的是哪一个
     },
 
     bodyUp () {
       this.bodyDrag = false
-      this.$emit('dragging', this.rect)
+      // this.$emit('dragging', this.item, this.rect)
       this.$emit('dragstop', this.rect)
 
       this.stickStartPos = { mouseX: 0, mouseY: 0, x: 0, y: 0, w: 0, h: 0 }
@@ -676,7 +688,7 @@ export default {
   },
 
   computed: {
-    left: {
+    left1: {
       get: function () {
         return this.x
       },
@@ -684,7 +696,7 @@ export default {
         this.$emit('update:x', value)
       }
     },
-    top: {
+    top1: {
       get: function () {
         return this.y
       },
@@ -946,7 +958,7 @@ export default {
       this.isDraggable = val
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

@@ -29,6 +29,8 @@
               :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
+    <Liquidfill v-else-if="item.secondType=='liquidfill'"
+                :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
     <Vchart v-else
@@ -49,12 +51,13 @@ import Vtime from './EditComp/Vtime' // 时间器
 import Vnumber from './EditComp/Vnumber' // 指标展示
 import Vmap from './EditComp/Vmap' // 地图
 import Vscatter from './EditComp/Vscatter' // 散点图
+import Liquidfill from './EditComp/Liquidfill' // 水波图
 import Player from './EditComp/Player' // 视频流
 
 export default {
   name: 'lookItem',
   props: ['item', 'index'],
-  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Player },
+  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player },
   data () {
     return {
       editable: false

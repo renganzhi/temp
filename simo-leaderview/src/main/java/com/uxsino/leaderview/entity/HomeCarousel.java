@@ -42,4 +42,9 @@ public class HomeCarousel {
      * 数据刷新周期
      */
     private String refreshTime;
+
+    /**
+     * 作用用户
+     */
+    private Long userId;
 }

@@ -5,6 +5,7 @@
              :settings="settings"
              :data="dealChartData"
              :extend="extend"
+             :init-options="initOption"
              :id="'map_' + keyId"
              :key="keyId"
              :judge-width="true">
@@ -359,7 +360,7 @@ export default {
       // chart.dispose() // 销毁
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
@@ -367,7 +368,7 @@ export default {
 .v-charts-data-empty {
   position: absolute !important;
   top: 0px !important;
-  background-color: rgba(28, 36, 60, 0.71) !important;
+  background-color: transparent !important;
   width: 100%;
   height: 100%;
   display: flex;

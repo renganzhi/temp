@@ -1,8 +1,8 @@
 <template>
-  <!-- :init-options="initOption" -->
   <ve-map :data="dealChartData"
           :width="comWidth"
           :height="comHeight"
+          :init-options="initOption"
           :settings="settings"
           :extend="extend"
           :id="'map_' + keyId"
@@ -282,7 +282,7 @@ export default {
       // chart.dispose() // 销毁
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
@@ -290,7 +290,7 @@ export default {
 .v-charts-data-empty {
   position: absolute !important;
   top: 0px !important;
-  background-color: rgba(28, 36, 60, 0.71) !important;
+  background-color: transparent !important;
   width: 100%;
   height: 100%;
   display: flex;

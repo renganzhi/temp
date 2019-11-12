@@ -91,6 +91,9 @@ export default {
       this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
       this.textHeight = this.$refs.hideText.getBoundingClientRect().height + 20
       var _transform = $(this.$el).parents('.full-height').css('transform')
+      if (!_transform) {
+        _transform = $('.paint-bg').css('transform')
+      }
       if (_transform && _transform !== 'none') {
         var reg = /\((.*)\)$/
         var _temp = reg.exec(_transform)
@@ -308,7 +311,7 @@ export default {
   beforeDestroy: function () {
     // this.stopmove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

@@ -22,6 +22,7 @@
               @bodyDown="bodyDown"
               @bodymove="bodymove"
               @resizing="resizing"
+              @dragging="dragging"
               @contextMenu="contextMenu">
     <!-- :style="wrapStyle" -->
     <!-- :editable="false" -->
@@ -87,9 +88,13 @@ export default {
     }
   },
   methods: {
+    dragging (chgX, chgY, attr) {
+      this.$emit('draged', chgX, chgY, attr)
+    },
     resizing (list, attr) {
       list.width = attr.width
       list.height = attr.height
+      attr.id = list.id
       this.$emit('resized', attr)
 
       this.$set(this.list, 'sacleX', attr.width / this.list.oldWidth)
@@ -150,7 +155,7 @@ export default {
   },
   beforeDestroy () {
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

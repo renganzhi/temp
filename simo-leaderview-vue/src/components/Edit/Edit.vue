@@ -72,9 +72,9 @@
                     <div class="paint" :style="paintStyle"></div>
                     <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
                     <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @selected="selected" @resized="resized" :key="item.id" @context="context">
+                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context">
                         </DragBox>
-                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
+                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
                     </div>
                     <!-- 触发框选时覆盖在元件之上的div，这样不会和元件的拖拽事件相冲突 -->
                     <div id="inWrap" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}"></div>
@@ -304,16 +304,16 @@
                             </div>
 
                             <!--表格\文本框配置-->
-                            <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
+                            <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time' || selectedItem.secondType == 'liquidfill'">
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
-                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor1"></Vcolor>
+                                        <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
                                     </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
                                     <label>边框类型</label>
-                                    <select v-model="selectedItem.borderType">
+                                    <select v-model="selectedItem.borderType" @change="changeBdType">
                                         <option value="simple">简单边框</option>
                                         <option value="stable">内置边框</option>
                                     </select>
@@ -322,14 +322,14 @@
                                   <label>卡片背景</label><br><br>
                                   <div class="form-group">
                                     <div v-for="(item, index) in settingData.cardCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'card-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
-                                        <img :src="item.mini"/>
+                                        <img :src="baseUrl + item.mini"/>
                                         <!-- <img :src="'../../assets/cardMini' + index +'.png'"/> -->
                                     </div>
                                   </div>
                                   <label style="display: block; clear: both;">标题栏背景</label><br>
                                   <div class="form-group">
                                     <div v-for="(item, index) in settingData.titleCase" :key="index" @click="selectedItem.imgSrc=item.imgSrc" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
-                                        <img :src="item.mini"/>
+                                        <img :src="baseUrl + item.mini"/>
                                     </div>
                                     <!-- <div class="fl font-case">
                                         <img src='../../assets/titleMini2.png'/>
@@ -583,7 +583,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge'">
+                                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
                                   <div class="m-gap form-group">图例</div>
                                     <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
                                       <label>可见性</label>
@@ -603,7 +603,7 @@
                                         <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
                                     </div>
                                 </div>
-                                <div class="form-group cols2">
+                                <div class="form-group cols2" v-show="selectedItem.secondType !== 'liquidfill'">
                                     <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
                                     <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
                                         <option value="defalut">默认</option>
@@ -688,7 +688,7 @@
                                             <label v-if="v.type=='drop-down' || v.type=='multi-select'" >{{v.name}}</label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
-                                            </Select2>
+                                              </Select2>
                                         </div>
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
