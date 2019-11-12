@@ -1,20 +1,29 @@
 <template>
-  <div v-if="item.borderType==='simple'"
+  <img v-if="item.borderType==='stable'"
+       :src="baseUrl + item.imgSrc"
+       :style="imgStyle" />
+  <div v-else
        :style="boxStyle"></div>
-  <img v-else
-       :src="item.imgSrc"
-       style="width: 100%; max-height: 100%" />
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   name: 'border',
   props: ['item'],
   data () {
     return {
-
+      baseUrl: gbs.host,
+      typeCard: true // 卡片，标题栏
     }
   },
   computed: {
+    imgStyle: function () {
+      return {
+        width: '100%',
+        height: this.typeCard ? '100%' : 'auto',
+        maxHeight: this.typeCard ? '' : '100%'
+      }
+    },
     boxStyle: function () {
       return {
         width: this.item.width + 'px',
@@ -26,12 +35,23 @@ export default {
   },
   watch: {
     'item.imgSrc': function (newV) {
-      // console.log(newV)
+      var reg = /.?title.?/
+      if (reg.test(this.item.imgSrc)) {
+        this.typeCard = false
+      } else {
+        this.typeCard = true
+      }
     },
     'item.borderType': function (newV) {
       if (newV === 'simple') {
         this.item.imgSrc = ''
       }
+    }
+  },
+  mounted: function () {
+    var reg = /.?title.?/
+    if (reg.test(this.item.imgSrc)) {
+      this.typeCard = false
     }
   },
   destoryed: function () {
