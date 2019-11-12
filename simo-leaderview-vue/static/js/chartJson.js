@@ -146,6 +146,30 @@ var morenData = {
       日期: '1/6',
       CPU利用率: 1693,
       内存利用率: 1063
+    },
+    {
+      IP: '192.168.1.7',
+      日期: '1/7',
+      CPU利用率: 1793,
+      内存利用率: 1073
+    },
+    {
+      IP: '192.168.1.8',
+      日期: '1/8',
+      CPU利用率: 1893,
+      内存利用率: 1083
+    },
+    {
+      IP: '192.168.1.9',
+      日期: '1/9',
+      CPU利用率: 1993,
+      内存利用率: 1093
+    },
+    {
+      IP: '192.168.1.10',
+      日期: '1/10',
+      CPU利用率: 1093,
+      内存利用率: 1003
     }
     ]
   },
@@ -296,6 +320,18 @@ var compsArr = [{
   text: '表格',
   imgClass: 'icon-n-table',
   chartType: 'table',
+  hdBgClr: '#1c2132',
+  bgClr: '',
+  clr: '#919cc1',
+  bdClr: '#c2c6d7',
+  bdpx: 0,
+  chartData: morenData.table
+},
+{
+  text: '轮播表格',
+  imgClass: 'icon-n-table',
+  chartType: 'table',
+  thirdType: 'moveTable',
   hdBgClr: '#1c2132',
   bgClr: '',
   clr: '#919cc1',
