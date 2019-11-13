@@ -496,6 +496,9 @@ public class HomePageController {
         JSONArray uidArray = new JSONArray();
         JSONArray roleArray = new JSONArray();
         HomePage homePage = homePageService.getById(pageId);
+        if (ObjectUtils.isEmpty(homePage)){
+            return new JsonModel(false, "该页面已不存在！");
+        }
         if (!StringUtils.isEmpty(uids)){
             String[] uidArr = uids.split(",");
             for (String uid : uidArr) {

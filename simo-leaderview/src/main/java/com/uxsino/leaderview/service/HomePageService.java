@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
@@ -117,8 +118,9 @@ public class HomePageService {
         return maxIndex == null ? 0 : maxIndex;
     }
 
+
     public HomePage getById(Long id) {
-        return homePageDao.getOne(id);
+        return homePageDao.findOne(id);
     }
 
     public HomePage getByIndex(int pageIndex) {
