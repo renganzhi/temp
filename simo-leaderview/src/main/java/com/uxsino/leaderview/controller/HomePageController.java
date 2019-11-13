@@ -221,7 +221,7 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageUserConfService.add(homePageUserConf, true, adminId);
+        homePageUserConfService.add(homePageUserConf, false, adminId);
         return new JsonModel(true, "复制成功");
     }
 
