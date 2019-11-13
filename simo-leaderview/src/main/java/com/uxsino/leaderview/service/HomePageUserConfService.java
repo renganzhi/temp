@@ -41,6 +41,16 @@ public class HomePageUserConfService {
     }
 
     @Transactional
+    public void delete(Long pageId){
+        List<HomePageUserConf> list = homePageUserConfDao.findByPageId(pageId);
+        for (HomePageUserConf homePageUserConf : list) {
+            Long userId = homePageUserConf.getUserId();
+            homePageUserConfDao.leftPageIndex(homePageUserConf.getPageIndex(),homePageUserConfDao.countByUserId(userId), userId);
+        }
+        homePageUserConfDao.deleteByPageId(pageId);
+    }
+
+    @Transactional
     public void add(HomePageUserConf homePageUserConf, boolean isBegin, String[] adminId) {
         Long userId = homePageUserConf.getUserId();
         int countByUser = homePageUserConfDao.countByUserId(homePageUserConf.getUserId()) + 1;
