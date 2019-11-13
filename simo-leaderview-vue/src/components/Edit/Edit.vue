@@ -376,14 +376,14 @@
                                         <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
                                     </select>
                                 </div>
-                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee' || selectedItem.thirdType==='moveTable'">
                                     <label>轮播方向</label>
                                     <select v-model="selectedItem.direction">
                                         <option value="left">横向</option>
                                         <option value="top">纵向</option>
                                     </select>
                                 </div>
-                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee' || selectedItem.thirdType==='moveTable'">
                                     <label>轮播速度</label>
                                     <select v-model="selectedItem.speed">
                                         <option value="1">高速</option>
@@ -754,6 +754,21 @@
                                     <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
                                     <i class="icon-n-deleteNew" v-if="alertMapData.length > 1" @click="delAlertLevel(index)"></i>
                                   </div>
+                                </div>
+                                <div class="form-group cols2" v-show="selectedItem.thirdType==='moveTable'">
+                                    <label style="width: 81px;">每页展示条数</label>
+                                    <select v-model="selectedItem.pageNum" style="width: 175px !important;">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
                                 </div>
                                 <button @click="dataChange">更新视图</button>
 

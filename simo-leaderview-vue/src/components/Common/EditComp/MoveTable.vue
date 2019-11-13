@@ -15,14 +15,13 @@
       </table>
     </div>
     <div class="fixed-table-body"
-         id="tableMove"
+         v-if="item.direction === 'top'"
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden;">
-      <transition name="table-fadeout">
+      <transition>
         <table class="table table-hover"
-               v-show="tableMove"
                :style="scrollStyle"
-               style="table-layout: fixed; position: relative; float: left; transition: all 0.6s ease;">
+               style="table-layout: fixed; transition: all 0.6s ease;">
           <tbody>
             <tr :style="[trStyle,tbodyTrStyle]"
                 v-for="(tr, id) in item.chartData.rows"
@@ -49,6 +48,41 @@
           </tbody>
         </table>
       </transition> -->
+    </div>
+    <div class="fixed-table-body"
+         v-else
+         :style="{'max-height': pageNum * 36 + 'px'}"
+         style="padding-bottom: 26px; overflow: hidden; position: relative;">
+      <transition name="table-fadeout">
+        <table class="table table-hover"
+               v-show="tableMove"
+               style="table-layout: fixed; position: absolute; top:0px;">
+          <tbody>
+            <tr :style="[trStyle,tbodyTrStyle]"
+                v-for="(tr, id) in page1Data"
+                :key="id">
+              <td v-for="(tdText, ind) in tr"
+                  :key="ind"
+                  :title="tdText">{{tdText}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </transition>
+      <transition name="table-fadein">
+        <table class="table table-hover"
+               v-show="!tableMove"
+               style="table-layout: fixed; position: absolute; top:0px;">
+          <tbody>
+            <tr :style="[trStyle,tbodyTrStyle]"
+                v-for="(tr, id) in page2Data"
+                :key="id">
+              <td v-for="(tdText, ind) in tr"
+                  :key="ind"
+                  :title="tdText">{{tdText}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </transition>
     </div>
   </div>
 </template>
@@ -103,6 +137,31 @@ export default {
   },
   watch: {
     'item.chartData': function () {
+      this.pageNum = Number(this.item.pageNum)
+      if (this.item.direction === 'left') {
+        this.initLeftMove()
+      } else {
+        this.initTopMove()
+      }
+    },
+    'item.direction': function (val) {
+      if (val === 'left') {
+        this.initLeftMove()
+      } else {
+        this.initTopMove()
+      }
+      // this.$nextTick(() => {
+      //   this.initMove()
+      // })
+    },
+    'item.speed': function (newV) {
+      if (newV === '1') {
+        this.intervalTime = 2000
+      } else if (newV === '2') {
+        this.intervalTime = 4000
+      } else {
+        this.intervalTime = 6000
+      }
       this.initTopMove()
     }
   },
@@ -126,8 +185,34 @@ export default {
         }, this.intervalTime)
       }
     },
+    initLeftMove () {
+      // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
+      if (this.intervalId) {
+        clearInterval(this.intervalId)
+      }
+      this.nowPage = 0
+      this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
+      this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
+      if (this.item.chartData.rows.length > this.pageNum) {
+        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+          totalPage--
+        }
+        this.intervalId = setInterval(() => {
+          this.tableMove = !this.tableMove
+          if (this.tableMove) {
+            this.nowPage++
+            if (this.nowPage === totalPage) {
+              this.nowPage = 0
+            }
+            this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
+            this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
+          }
+        }, 3000)
+      }
+    },
     initMove () {
-      // 两个transition，vue动画实现的方式（可用于横向轮播）
+      // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
         clearInterval(this.intervalId)
       }
@@ -136,7 +221,6 @@ export default {
         if (totalPage === this.item.chartData.rows.length / this.pageNum) {
           totalPage--
         }
-        console.log(totalPage)
         let nowPage = 0
         this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
         this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
@@ -144,7 +228,6 @@ export default {
           this.tableMove = !this.tableMove
           if (this.tableMove) {
             nowPage++
-            console.log(nowPage)
             if (nowPage === totalPage) {
               nowPage = 0
             }
@@ -157,8 +240,19 @@ export default {
   },
   mounted: function () {
     // this.initMove()
-    this.initTopMove()
-    // titleShow('bottom', $(this.$el))
+    if (this.item.speed === '3') {
+      this.intervalTime = 6000
+    } else if (this.item.speed === '1') {
+      this.intervalTime = 2000
+    } else {
+      this.intervalTime = 4000
+    }
+    if (this.direction === 'left') {
+      this.initLeftMove()
+    } else {
+      this.initTopMove()
+    }
+    titleShow('bottom', $(this.$el))
   },
   destroyed: function () {
     clearInterval(this.intervalId)
@@ -177,19 +271,38 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* 向上移动 */
+/* 向右移动 */
+/* .table-fadeout-leave {
+  transform: translateX(0);
+}
 .table-fadeout-leave-active {
-  /* transition: all 0.6s ease;
-  transform: translateY(-100%); */
+  transition: all 0.6s ease;
+}
+.table-fadeout-leave-to {
+  transform: translateX(100%);
+}
+.table-fadein-enter {
+  transform: translateX(-100%);
+}
+.table-fadein-enter-active {
+  transition: all 0.6s ease;
+}
+.table-fadein-enter-to {
+  transform: translateX(0);
+} */
+/* 向上移动 */
+/* .table-fadeout-leave-active {
+  transition: all 0.6s ease;
+  transform: translateY(-100%);
   animation: table-leave 1s;
   animation-timing-function: linear;
 }
 .table-fadein-enter-active {
-  /* transition: all 0.6s ease;
-  transform: translateY(-100%); */
+  transition: all 0.6s ease;
+  transform: translateY(-100%);
   animation: table-leave 1s;
   animation-timing-function: linear;
-}
+} */
 /* 向下移动 */
 /* .table-fadeout-leave-active {
   animation: table-leave 1s reverse;
@@ -197,12 +310,34 @@ export default {
 .table-fadein-enter-active {
   animation: table-leave 1s reverse;
 } */
+.table-fadeout-leave-active {
+  animation: table-left-leave 1s;
+}
+.table-fadein-enter-active {
+  animation: table-left-in 1s;
+}
 @keyframes table-leave {
   from {
     transform: translateY(0);
   }
   to {
     transform: translateY(-100%);
+  }
+}
+@keyframes table-left-leave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes table-left-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>
