@@ -221,7 +221,7 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageUserConfService.add(homePageUserConf, true, adminId);
+        homePageUserConfService.add(homePageUserConf, false, adminId);
         return new JsonModel(true, "复制成功");
     }
 
@@ -302,6 +302,7 @@ public class HomePageController {
         }
     }
 
+    @Transactional
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @ApiOperation("根据ID删除大屏配置")
     @RequestMapping(value = "/homePage/deleteById/{pageId}", method = RequestMethod.DELETE)
@@ -312,7 +313,16 @@ public class HomePageController {
         }
         try {
             homePageService.delete(homePage);
-            homePageUserConfService.delete(homePage.getId());
+            List<HomePageUserConf> pageUserConfList = homePageUserConfService.findByPageId(pageId);
+            for (HomePageUserConf page : pageUserConfList) {
+                Long uesrId = page.getUserId();
+                int startIndex = page.getPageIndex();
+                int endIndex = homePageUserConfService.getMaxPageByUserId(uesrId);
+                if (startIndex < endIndex){
+                    homePageUserConfService.leftPageIndex(startIndex, endIndex, uesrId);
+                }
+                homePageUserConfService.delete(page);
+            }
             return new JsonModel(true);
         } catch (Exception e) {
             logger.error("systemHomePageService.deteleByEmployeeIdAndPageNo执行失败：", e);
@@ -327,8 +337,7 @@ public class HomePageController {
         });
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
         homeCarousel.setUserId(userId);
-        homeCarouselService.save(homeCarousel, pageList, userId);
-        return new JsonModel(true);
+        return homeCarouselService.save(homeCarousel, pageList, userId);
     }
 
     /**
@@ -488,6 +497,9 @@ public class HomePageController {
         JSONArray uidArray = new JSONArray();
         JSONArray roleArray = new JSONArray();
         HomePage homePage = homePageService.getById(pageId);
+        if (ObjectUtils.isEmpty(homePage)){
+            return new JsonModel(false, "该页面已不存在！");
+        }
         if (!StringUtils.isEmpty(uids)){
             String[] uidArr = uids.split(",");
             for (String uid : uidArr) {

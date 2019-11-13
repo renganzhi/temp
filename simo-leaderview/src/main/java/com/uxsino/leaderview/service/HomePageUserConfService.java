@@ -74,6 +74,7 @@ public class HomePageUserConfService {
             HomePageUserConf otherHomePageUserConf = new HomePageUserConf();
             otherHomePageUserConf.setUserId(Long.parseLong(admin));
             otherHomePageUserConf.setPageId(homePageUserConf.getPageId());
+            otherHomePageUserConf.setVisible(false);
             countByUser = homePageUserConfDao.countByUserId(otherHomePageUserConf.getUserId()) + 1;
             otherHomePageUserConf.setPageIndex(countByUser);
             homePageUserConfDao.save(otherHomePageUserConf);
@@ -89,6 +90,7 @@ public class HomePageUserConfService {
         HomePageUserConf exist = homePageUserConfDao.findByUserIdAndPageId(userId,homePage.getId());
         if (ObjectUtils.isEmpty(exist)){
             homePageUserConf.setPageIndex(homePageUserConfDao.countByUserId(userId) + 1);
+            homePageUserConf.setVisible(false);
             homePageUserConfDao.save(homePageUserConf);
         }
     }
