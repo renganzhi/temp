@@ -177,7 +177,7 @@ public class HomePageService {
     public List<HomePageVo> findNoViewByUserId(Long userId){
         String sql = "SELECT a.id,a.page_id,a.page_index,a.user_id,a.visible,b.name,b.last_update_time" +
                 " FROM simo_mc_home_page_user_conf as a LEFT JOIN simo_mc_home_page as b on(b.id = a.page_id)" +
-                " where a.user_id = ?1";
+                " where a.user_id = ?1 order by a.page_index";
         List<Object[]> list = Lists.newArrayList();
         try {
             list = (List<Object[]>) homePageDao.findBySQL(sql,userId);

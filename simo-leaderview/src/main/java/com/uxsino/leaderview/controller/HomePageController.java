@@ -332,8 +332,7 @@ public class HomePageController {
         });
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
         homeCarousel.setUserId(userId);
-        homeCarouselService.save(homeCarousel, pageList, userId);
-        return new JsonModel(true);
+        return homeCarouselService.save(homeCarousel, pageList, userId);
     }
 
     /**
