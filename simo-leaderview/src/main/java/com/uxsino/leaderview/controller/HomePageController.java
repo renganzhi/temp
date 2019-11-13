@@ -301,6 +301,7 @@ public class HomePageController {
         }
     }
 
+    @Transactional
     @Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"W"})
     @ApiOperation("根据ID删除大屏配置")
     @RequestMapping(value = "/homePage/deleteById/{pageId}", method = RequestMethod.DELETE)
@@ -314,8 +315,11 @@ public class HomePageController {
             List<HomePageUserConf> pageUserConfList = homePageUserConfService.findByPageId(pageId);
             for (HomePageUserConf page : pageUserConfList) {
                 Long uesrId = page.getUserId();
-                homePageUserConfService.leftPageIndex(page.getPageIndex(),
-                        homePageUserConfService.getMaxPageByUserId(uesrId), uesrId);
+                int startIndex = page.getPageIndex();
+                int endIndex = homePageUserConfService.getMaxPageByUserId(uesrId);
+                if (startIndex < endIndex){
+                    homePageUserConfService.leftPageIndex(startIndex, endIndex, uesrId);
+                }
                 homePageUserConfService.delete(page);
             }
             return new JsonModel(true);
