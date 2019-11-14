@@ -93,6 +93,10 @@ simo:
 heartbeat:
     send_interval: 20000
 
+web:
+  upload:
+    file:
+      path: simo_file
 
 service-mc: ${servicemc}
 service-useradmin: ${serviceuseradmin}
