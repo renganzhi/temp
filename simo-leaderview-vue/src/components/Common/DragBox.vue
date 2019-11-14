@@ -51,6 +51,7 @@
     <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
+            @palyErr="palyErr"
             :item="item"></Player>
     <Vchart v-else
             :item="item"></Vchart>
@@ -84,6 +85,9 @@ export default {
     }
   },
   methods: {
+    palyErr () {
+      this.$emit('palyErr')
+    },
     dragging (chgX, chgY, attr) {
       this.$emit('draged', chgX, chgY, attr)
     },

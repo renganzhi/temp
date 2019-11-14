@@ -72,9 +72,9 @@
                     <div class="paint" :style="paintStyle"></div>
                     <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
                     <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context">
+                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context" @palyErr="palyErr">
                         </DragBox>
-                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
+                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context" @palyErr="palyErr"></Compose>
                     </div>
                     <!-- 触发框选时覆盖在元件之上的div，这样不会和元件的拖拽事件相冲突 -->
                     <div id="inWrap" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}"></div>
@@ -766,11 +766,18 @@
                                   <option value="local">本地文件</option>
                                 </select>
                               </div>
-                              <div class="form-group cols2">
+                              <div class="form-group cols2" v-show="selectedItem.videoType === 'url'" style="position: relative;">
                                 <label>URL地址</label>
-                                <input v-model="tempVideoUrl">
+                                <input v-model="tempVideoUrl" @focus="showPlayErr = false">
+                                <label class="error" v-show="showPlayErr" style="margin-left: 68px;margin-top: 2px;">该地址无效或不允许在本网页播放</label>
                               </div>
-                              <button @click="videoChange">更新视图</button>
+                              <div>
+                                <div class="form-group cols2" v-show="selectedItem.videoType === 'local'">
+                                    <label>选择文件</label>
+                                    <input type="file" name="myfiles" id="myfiles" accept="video/mp4" @change="uploadVideo">
+                                </div>
+                            </div>
+                              <button @click="videoChange" style="margin-top: 30px">更新视图</button>
                             </div>
                         </div>
                     </div>
