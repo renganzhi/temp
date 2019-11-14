@@ -1,9 +1,9 @@
 <template>
   <div class="v-doubler">
     <div>
-      <span class="autoSize"
+      <!-- <span class="autoSize"
             ref="hideNum"
-            :style="numCardValue">8</span>
+            :style="numCardValue">8</span> -->
       <TurnOver v-for="(num,index) in numArr"
                 :key="index"
                 :nextNum="num"
@@ -29,7 +29,19 @@ export default {
       scaleX: 1,
       scaleY: 1,
       numHeight: 100,
-      numWidth: 80
+      numWidth: 80,
+      defConf: {
+        'f12': [22, 23],
+        'f13': [25, 24],
+        'f14': [25, 25],
+        'f16': [27, 28],
+        'f18': [28.5, 31],
+        'f20': [30, 34],
+        'f28': [35, 45],
+        'f36': [41, 57],
+        'f48': [49, 74],
+        'f72': [66, 108]
+      }
     }
   },
   computed: {
@@ -79,11 +91,14 @@ export default {
   },
   watch: {
     'item.fontSize': function () {
-      this.getPageScale()
-      this.$nextTick(() => {
-        this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
-        this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
-      })
+      let key = 'f' + this.item.fontSize
+      this.numWidth =this.defConf[key][0]
+      this.numHeight = this.defConf[key][1]
+      // this.getPageScale()
+      // this.$nextTick(() => {
+      //   this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
+      //   this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
+      // })
     }
   },
   methods: {
@@ -101,9 +116,9 @@ export default {
     }
   },
   mounted () {
-    this.getPageScale()
-    this.numHeight = this.$refs.hideNum.getBoundingClientRect().height / this.scaleY
-    this.numWidth = this.$refs.hideNum.getBoundingClientRect().width / this.scaleX
+    let key = 'f' + this.item.fontSize
+    this.numWidth =this.defConf[key][0]
+    this.numHeight = this.defConf[key][1]
   },
   destroyed: function () {
   }
