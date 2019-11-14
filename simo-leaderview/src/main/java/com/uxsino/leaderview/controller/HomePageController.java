@@ -1,6 +1,6 @@
 package com.uxsino.leaderview.controller;
 
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,13 +15,16 @@ import com.google.common.collect.Lists;
 
 import com.uxsino.authority.lib.annotation.Permission;
 import com.uxsino.commons.db.redis.service.SiteUserRedis;
+import com.uxsino.commons.utils.SimoResourceUtil;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +47,9 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/home")
 @Business(name = BusinessConstants.SYSTEM)
 public class HomePageController {
+
+    @Value("${web.upload.file.path}")
+    private String upload_path;
 
     private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
 
@@ -88,6 +94,9 @@ public class HomePageController {
 
     @Autowired
     private MCService mcService;
+
+    @Autowired
+    private VideoFileService videoFileService;
 
     @ApiOperation("获取可用数据接口")
     @RequestMapping(value = "/getUrl", method = RequestMethod.GET)
@@ -355,6 +364,78 @@ public class HomePageController {
         }
         json.put("pages", list);
         return new JsonModel(true, json);
+    }
+
+    /**
+     * 保存视频文件
+     * @param multipartFile
+     * @param session
+     * @return
+     */
+    @ApiOperation("保存视频文件")
+    @RequestMapping(value = "/file/uploadVideoFile", method = RequestMethod.POST)
+    public JsonModel uploadVideoFile(@ApiParam("上传的文件") @RequestParam("uploaded_file") MultipartFile multipartFile,
+                                     HttpSession session){
+        if (multipartFile.isEmpty() || StringUtils.isBlank(multipartFile.getOriginalFilename())) {
+            return new JsonModel(false, "请上传文件");
+        }
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        int begin = multipartFile.getOriginalFilename().indexOf(".");
+        int length = multipartFile.getOriginalFilename().length();
+        String backupFileName = multipartFile.getName() + sdf.format(d) + multipartFile.getOriginalFilename().substring(begin, length);
+        File path = new File(upload_path + File.separator + "video");
+        path.mkdirs();
+        File file = new File(path.getAbsoluteFile() + File.separator + backupFileName);
+        VideoFile videoFile = new VideoFile();
+        videoFile.setName(backupFileName);
+        videoFile.setExtension(multipartFile.getContentType());
+        videoFile.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        videoFile.setFilePath(path.getAbsoluteFile() + File.separator + backupFileName);
+        try {
+            multipartFile.transferTo(file);
+            videoFileService.save(videoFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String url = "/leaderview/home/file/getVideo/" + backupFileName;
+        return new JsonModel(true, "保存成功", url);
+    }
+
+    @ApiOperation("根据视频文件名获取视频文件")
+    @RequestMapping(value = "/file/getVideo/{fileName}", method = RequestMethod.GET)
+    public void getVideo(@ApiParam("视频名") @PathVariable String fileName,
+                              HttpServletResponse resp, HttpSession session){
+        VideoFile videoFileInfo = videoFileService.getByName(fileName);
+        if (ObjectUtils.isEmpty(videoFileInfo)){
+            logger.error("文件 -> {} not exists ！", fileName);
+            return;
+        }
+        InputStream ins = null;
+        OutputStream ops = null;
+        try {
+            resp.setContentType(videoFileInfo.getExtension());
+            File file = new File(videoFileInfo.getFilePath());
+            ins = new FileInputStream(file);
+            ops = new BufferedOutputStream(resp.getOutputStream());
+            byte[] buff = new byte[1024];
+            int n;
+            while ((n=ins.read(buff))!= -1){
+                ops.write(buff,0,n);
+            }
+            ops.flush();
+        } catch (IOException e) {
+            logger.error("文件读取失败", e);
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+                ops.close();
+            } catch (IOException e) {
+                logger.error("流关闭异常", e);
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
