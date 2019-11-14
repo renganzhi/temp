@@ -39,26 +39,26 @@ var settings = {
     ],
     cardCase: [
       {
-        mini: '/resources/img/leaderView/border/cardMini1.png',
-        imgSrc: '/resources/img/leaderView/border/cardBg1.png'
+        mini: '/leaderview/border/cardMini1.png',
+        imgSrc: '/leaderview/border/cardBg1.png'
       },
       {
-        mini: '/resources/img/leaderView/border/cardMini2.png',
-        imgSrc: '/resources/img/leaderView/border/cardBg2.png'
+        mini: '/leaderview/border/cardMini2.png',
+        imgSrc: '/leaderview/border/cardBg2.png'
       },
       {
-        mini: '/resources/img/leaderView/border/cardMini3.png',
-        imgSrc: '/resources/img/leaderView/border/cardBg3.png'
+        mini: '/leaderview/border/cardMini3.png',
+        imgSrc: '/leaderview/border/cardBg3.png'
       }
     ],
     titleCase: [
       {
-        mini: '/resources/img/leaderView/border/titleMini1.png',
-        imgSrc: '/resources/img/leaderView/border/titleBg1.png'
+        mini: '/leaderview/border/titleMini1.png',
+        imgSrc: '/leaderview/border/titleBg1.png'
       },
       {
-        mini: '/resources/img/leaderView/border/titleMini2.png',
-        imgSrc: '/resources/img/leaderView/border/titleBg2.png'
+        mini: '/leaderview/border/titleMini2.png',
+        imgSrc: '/leaderview/border/titleBg2.png'
       }
     ]
   }
