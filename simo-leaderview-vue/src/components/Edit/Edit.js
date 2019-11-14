@@ -1759,6 +1759,9 @@ export default {
           _this.selectedItem.url = curConf.url
           _this.selectedItem.method = curConf.method
           _this.selectedItem.params = param
+          if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+            _this.selectedItem.ctName = data.obj.info
+          }
         },
         error: function () {
           if (gbs.inDev) {
@@ -1842,6 +1845,8 @@ export default {
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee') {
+        this.selectedItem.ctName = this.selectedItem.chartData.info
       } else {
         var textData = this.$refs.textarea.innerText
         var reg = /^\{[\s\S]*\}$/

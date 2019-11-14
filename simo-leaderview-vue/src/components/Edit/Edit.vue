@@ -244,11 +244,11 @@
                     </div>
                     <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                         <div v-show="showStyleTab" class="full-height m-style">
-                            <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
+                            <!-- <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
                                 <div class="form-group">
                                     <input v-model="selectedItem.ctName">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="e-base">
                                 <div class="m-gap form-group">基础属性</div>
                                 <div class="form-group" style="height: 30px;">
@@ -668,11 +668,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time'&& selectedItem.chartType!=='video')">
+                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time'&& selectedItem.chartType!=='video')">
                                 <div class="form-group cols2">
                                     <label>数据来源</label>
                                     <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
-                                        <option value="static">静态数据</option>
+                                      <option value="static">静态数据</option>
                                         <option v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'" value="system">系统数据</option>
                                     </select>
                                 </div>
@@ -694,8 +694,11 @@
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>
                                 <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
-                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter'">
+                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
                                     <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                </div>
+                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                                    <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.ctName}}</div>
                                 </div>
                                 <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                                   <div class="form-group cols2">
