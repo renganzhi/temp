@@ -22,6 +22,7 @@ export default {
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
+      showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
       selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
@@ -184,7 +185,8 @@ export default {
       chooseStart: {
         posX: 0,
         posY: 0
-      }
+      },
+      tempVideoUrl: '' // 用户输入的视频URL
     }
   },
   computed: {
@@ -806,6 +808,9 @@ export default {
       } else {
         // 增加选中
         item.slted = this.editable && true
+        if (item.chartType === 'video') {
+          this.tempVideoUrl = item.videoSrc
+        }
         if (item.chartType === 'v-map') {
           this.selectedItem = {} // 避免触发三级下拉的监听
         }
@@ -1868,6 +1873,11 @@ export default {
         }
       }
     },
+    videoChange: function () {
+      if (this.selectedItem.videoType === 'url') {
+        this.selectedItem.videoSrc = this.tempVideoUrl
+      }
+    },
     saveConf: function (event, cb) {
       // 保存
       if (!(!this.widthVali.isShowError &&
@@ -1918,6 +1928,21 @@ export default {
             left: 0
           })
       )
+      $('#mainEdit-edit .main_video')
+        .find('video')
+        .css('opacity', 0)
+      $('#mainEdit-edit .main_video').append(
+        $('<img>')
+          .addClass('monitp')
+          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
       html2canvas(_canvas, {
         width: this.paintObj.width * (cThis.paintObj.scale / 100),
         height: this.paintObj.height * (cThis.paintObj.scale / 100),
@@ -1929,6 +1954,9 @@ export default {
           // 提前还原拓扑
           $('#mainEdit-edit .main_topo')
             .find('svg')
+            .css('opacity', 1)
+          $('#mainEdit-edit .main_video')
+            .find('video')
             .css('opacity', 1)
           $('#mainEdit-edit .monitp').remove()
         }
@@ -1950,7 +1978,7 @@ export default {
         var formdata = new FormData()
         formdata.append('uploaded_file', file)
         canvas.remove()
-        cThis.uploadFile(formdata, function (data) {
+        cThis.uploadFile('img', formdata, function (data) {
           var _data = {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
@@ -1988,9 +2016,13 @@ export default {
         })
       })
     },
-    uploadFile: function (formData, cb) {
+    uploadFile: function (type, formData, cb) {
+      var _url = gbs.host + '/leaderview/home/file/upload'
+      if (type === 'video') {
+        _url = gbs.host + '/leaderview/home/file/uploadVideoFile'
+      }
       $.ajax({
-        url: gbs.host + '/leaderview/home/file/upload',
+        url: _url,
         type: 'post',
         data: formData,
         async: false,
@@ -2328,7 +2360,7 @@ export default {
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
-      this.uploadFile(formData, function (data) {
+      this.uploadFile('img', formData, function (data) {
         if (!_this.selectedItem.chartType) {
           // 上传画布图片
           _this.paintObj.bgImg =
@@ -2344,6 +2376,33 @@ export default {
         }
       })
       e.target.value = ''
+    },
+    // 视频
+    uploadVideo (e) {
+      // field, that
+      if (e.value === '') {
+        return
+      }
+      var file = e.target.files[0]
+      // 视频截图
+      /**
+      var windowURL = window.URL || window.webkitURL
+      var videoURL = windowURL.createObjectURL(file)
+      this.selectedItem.videoSrc = videoURL 
+      */
+      var formdata = new FormData()
+      formdata.append('uploaded_file', file)
+      var _this = this
+      this.uploadFile('video', formdata, function (data) {
+        if (_this.selectedItem.chartType === 'video') {
+          _this.selectedItem.videoSrc = gbs.host + data.obj
+          _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
+        }
+      })
+      e.target.value = ''
+    },
+    palyErr () {
+      this.showPlayErr = true
     },
     getPaintCl (data) {
       this.paintObj.bgColor = data.color

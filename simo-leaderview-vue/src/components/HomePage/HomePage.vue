@@ -88,7 +88,7 @@ import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage },
@@ -138,10 +138,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'videoTims'
+    ])
   },
   methods: {
     ...mapActions([
-      'changeAlertInfo'
+      'changeAlertInfo',
+      'initVideoTims'
     ]),
     hideModal (data) {
       this.addPage = false
@@ -488,6 +492,11 @@ export default {
     if (theme !== 'default') {
       this.defTheme = false
     }
+    var videoTims = this.videoTims
+    for (let i in videoTims) {
+      videoTims[i] = 0
+    }
+    this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
