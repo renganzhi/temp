@@ -262,6 +262,9 @@ public class HomePageController {
         }
         // 添加页面的信息
         result.put("pages", homePageService.findVisible(userId));
+        // 判断是不是一个页面都没有的全新用户
+        result.put("isNewUser",
+                ObjectUtils.isEmpty(homePageUserConfService.findOneByIndexAndUserId(1, userId)));
         return new JsonModel(true, result);
     }
 
