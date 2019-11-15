@@ -9,9 +9,10 @@
         <img v-else
              src="../../assets/homeEmpty.png" />
         <div>
-          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p>
+          <p v-show="isNewUser" style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+          <p v-show="!isNewUser" style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
-                  v-if="access==='w'"
+                  v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增页面</button>
         </div>
       </div>
@@ -34,10 +35,10 @@
         </div>
       </div>
     </div>
-    <div v-if="loadAll && pageList.length > 0">
+    <div v-if="loadAll">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
-        <div class="fl btn-box">
+        <div class="fl btn-box" v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
@@ -97,6 +98,7 @@ export default {
       defTheme: true, // 默认主题
       isFullScreen: false,
       editable: false,
+      isNewUser: false,
       showTip: false, // 全屏的提示信息
       addPage: false,
       access: 'r',
@@ -167,6 +169,7 @@ export default {
       this.pageSize = res.pages.length
       this.pageIndex = 0
       this.pageList = res.pages
+      this.isNewUser = res.isNewUser
       this.loadAll = true
       this.intervalTime = res.intervalTime || 5
       this.refreshTime = res.refreshTime || 3
@@ -193,6 +196,18 @@ export default {
       // });
     },
     fullScreen: function () { // 切换全屏
+      if (this.pageList.length === 0) {
+        if (gbs.inDev) {
+          Notification({
+            message: '请配置可展示的大屏页面',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '请配置可展示的大屏页面', 'info')
+        }
+        return
+      }
       var ct = this
       Public.checkFull() ? this.exitFull() : this.full()
       // this.isFullScreen ? this.exitFull() : this.full()
