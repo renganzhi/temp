@@ -207,6 +207,11 @@ export default {
       var second = datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()
       return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
     },
+    getVisiableNum () {
+      return _.sumBy(this.tableData, function (o) {
+        return Number(o.visible)
+      })
+    },
     changeVisiable (index, val) {
       this.tableData[index].visible = !val
       var temp = this.tableData.splice(index, 1)[0]
@@ -220,6 +225,18 @@ export default {
         this.tableData.push(temp)
       } else {
         // 展示
+         if(this.getVisiableNum() >= 20) {
+           if (gbs.inDev) {
+            Notification({
+              message: '可见页面不可超过20个！',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '可见页面不可超过20个！', 'info')
+          }
+          return
+        }
         if (index === 0) {
           return this.tableData.unshift(temp)
         }
