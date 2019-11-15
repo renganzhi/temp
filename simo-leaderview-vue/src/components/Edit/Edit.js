@@ -67,7 +67,7 @@ export default {
         height: 1080,
         bgColor: '',
         bgImg: '',
-        scale: 80,
+        scale: 10,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: true // 显示网格
@@ -1450,7 +1450,7 @@ export default {
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
       this.paintObj.showGrid = true
-      this.paintObj.scale = 80
+      this.paintObj.scale = 100
     },
     addColor (index) {
       // 添加颜色

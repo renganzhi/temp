@@ -45,6 +45,18 @@
               <span class="keybd"><i class="icon-n-arrowRight"></i></span>
             </div>
           </div>
+          <div class="keybd-info">
+            <span class='fl'>多选元件</span>
+            <div class="fr">
+               框选<span style="margin: 0 10px;">|</span><span class="keybd">Ctrl</span> + <span class="keybd"><i class="icon-n-mouse"></i></span>
+            </div>
+          </div>
+          <div class="keybd-info">
+            <span class='fl'>多元件拖动</span>
+            <div class="fr">
+               <span class="keybd">Ctrl</span> + <span class="keybd"><i class="icon-n-mouse"></i></span> 拖动
+            </div>
+          </div>
         </div>
         <div class="edit-body flex" @click="hideContext">
           <!--  <div class="m-contain full-height">-->
