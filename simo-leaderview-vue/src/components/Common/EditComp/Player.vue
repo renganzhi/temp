@@ -2,7 +2,7 @@
   <div class="main_video"
        style="position: relative;">
     <div class="v-charts-data-empty"
-         style="text-align: center;"
+         style="text-align: center; height: 30px;"
          v-if="!item.videoSrc">请选择视频</div>
     <video v-else
            :width="item.width"

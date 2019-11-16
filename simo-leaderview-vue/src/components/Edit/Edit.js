@@ -67,7 +67,7 @@ export default {
         height: 1080,
         bgColor: '',
         bgImg: '',
-        scale: 10,
+        scale: 100,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: true // 显示网格
