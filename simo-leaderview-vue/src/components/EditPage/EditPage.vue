@@ -581,10 +581,10 @@ export default {
   watch: {
     editName: function (newV, oldV) {
       // 缩略图编辑校验，不能输入特殊字符
-      if (newV.length > 12) {
-        this.editName = oldV
+      if (newV.length > 15) {
+        this.editName = newV.slice(0, 15)
       } else {
-        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
+        var str = new RegExp("[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
         var flag = (!str.test(newV)) && !/\s/.test(newV)
         if (!flag) {
           this.editName = oldV

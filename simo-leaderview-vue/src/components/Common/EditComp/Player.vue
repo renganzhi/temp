@@ -1,8 +1,7 @@
 <template>
   <div class="main_video"
-       style="position: relative;">
+       :style="boxStyle">
     <div class="v-charts-data-empty"
-         style="text-align: center; height: 30px;"
          v-if="!item.videoSrc">请选择视频</div>
     <video v-else
            :width="item.width"
@@ -17,6 +16,14 @@
            :src="item.videoSrc">
       您的浏览器不支持 video 标签。
     </video>
+    <!-- <div class="v-charts-data-empty"
+         v-if="item.videoSrc && canNotPlay"
+         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+      <div><i class="icon-n-nodata"
+           style="font-size: 108px;"></i><br>
+        <p>抱歉，无有效视频可播放...</p>
+      </div>
+    </div> -->
     <!-- src="http://vd2.bdstatic.com/mda-jj7pbz81snk8sk9i/sc/mda-jj7pbz81snk8sk9i.mp4" -->
   </div>
 </template>
@@ -27,12 +34,20 @@ export default {
   props: ['item'],
   data () {
     return {
+      canNotPlay: false
     }
   },
   computed: {
     ...mapGetters([
       'videoTims'
-    ])
+    ]),
+    boxStyle: function () {
+      return {
+        position: 'relative',
+        width: '100%',
+        height: this.item.height + 'px'
+      }
+    }
   },
   // watch: {
   // 'item.videoType': function (newV) {
@@ -78,6 +93,7 @@ export default {
       }
     },
     playError (e) {
+      this.canNotPlay = true
       this.$emit('palyErr')
       // console.log(e)
     }
@@ -100,3 +116,20 @@ export default {
   }
 }
 </script>
+<style>
+.v-charts-data-empty {
+  position: absolute !important;
+  top: 0px !important;
+  background-color: transparent !important;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+.v-charts-data-empty i,
+.v-charts-data-empty p {
+  color: #666f8b;
+}
+</style>
