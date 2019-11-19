@@ -14,6 +14,12 @@ public interface IHomePageUserConfDao extends ICustomRepository<HomePageUserConf
 
     int countByUserId(Long uesrId);
 
+    int countByUserIdAndShared(Long userId, boolean shared);
+
+    int countByUserIdAndVisible(Long userId, boolean visible);
+
+    List<HomePageUserConf> findByUserIdAndVisible(Long userId, boolean visible);
+
     List<HomePageUserConf> findByPageId(Long pageId);
 
     HomePageUserConf findByUserIdAndPageId(Long userId, Long pageId);

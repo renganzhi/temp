@@ -23,5 +23,6 @@ public class HomePageUserConf {
     private boolean visible = true;
     // 大屏页面序号，用于排序和展示
     private int pageIndex;
-
+    // 是否是被分享的页面
+    private boolean shared = false;
 }
