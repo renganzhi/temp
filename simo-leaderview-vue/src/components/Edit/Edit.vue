@@ -707,7 +707,7 @@
                                 </div>
                                 <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
-                                    <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                    <div ref="textareaData" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
                                 </div>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
                                     <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.ctName}}</div>
