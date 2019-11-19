@@ -1924,7 +1924,7 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/tpstander.png')
           .css({
             width: '100%',
             height: '100%',
@@ -1939,7 +1939,7 @@ export default {
       $('#mainEdit-edit .main_video').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
           .css({
             width: '100%',
             height: '100%',
