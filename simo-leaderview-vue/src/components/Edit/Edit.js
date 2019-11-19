@@ -1846,9 +1846,10 @@ export default {
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee') {
-        this.selectedItem.ctName = this.selectedItem.chartData.info
+        this.selectedItem.ctName = this.$refs.textarea.innerText
+        this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {
-        var textData = this.$refs.textarea.innerText
+        var textData = this.$refs.textareaData.innerText
         var reg = /^\{[\s\S]*\}$/
         // 先判断是{}类型的对象，而不是new Object
         if (reg.test(textData.trim())) {
@@ -1924,7 +1925,7 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/tpstander.png')
           .css({
             width: '100%',
             height: '100%',
@@ -1939,7 +1940,7 @@ export default {
       $('#mainEdit-edit .main_video').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
           .css({
             width: '100%',
             height: '100%',

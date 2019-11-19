@@ -707,7 +707,7 @@
                                 </div>
                                 <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
-                                    <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                    <div ref="textareaData" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
                                 </div>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
                                     <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.ctName}}</div>
@@ -823,11 +823,11 @@
           </div>
           <div class="modal-body" style="height: 450px; overflow: auto;">
             <form autocomplete="off" style="margin-bottom: 20px;" v-for="(list, i) in syst.windowObj" :key="i">
-              <div class="form-group modal-label" style="width: 100%">
+              <div class="form-group modal-label" style="width: 100%; min-height: 30px; height: auto;">
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
                 <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
-                  <span>属性：</span>
-                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :obj="list.fields"></Select2>
+                  <span style="float: left; margin-top: 5px;">属性：</span>
+                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="true" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
               <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">
