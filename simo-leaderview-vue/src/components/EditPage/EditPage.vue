@@ -23,7 +23,7 @@
           <div class="searchForm">
             <select name="pageType"
                     v-model="pageType"
-                    @change="changePageType"
+                    @change="changePage"
                     style="margin-right: 10px;">
               <option value="1">全部页面</option>
               <option value="2">我的页面</option>
@@ -250,6 +250,9 @@ export default {
           }
         })
       })
+    },
+    changePage () {
+      this.search()
     },
     changePageType () {
       let type = this.pageType
