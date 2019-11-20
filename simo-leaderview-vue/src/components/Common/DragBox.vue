@@ -76,7 +76,7 @@ import Vmap from './EditComp/Vmap' // 地图
 import Vscatter from './EditComp/Vscatter' // 散点图
 import Liquidfill from './EditComp/Liquidfill' // 水波图
 import Player from './EditComp/Player' // 视频流
-import moveTable from './EditComp/moveTable' // 水波图
+import moveTable from './EditComp/moveTable' // 轮播表格
 
 export default {
   name: 'dragBox',
