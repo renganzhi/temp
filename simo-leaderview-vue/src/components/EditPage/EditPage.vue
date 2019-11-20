@@ -23,7 +23,7 @@
           <div class="searchForm">
             <select name="pageType"
                     v-model="pageType"
-                    @change="changePageType"
+                    @change="changePage"
                     style="margin-right: 10px;">
               <option value="1">全部页面</option>
               <option value="2">我的页面</option>
@@ -251,6 +251,9 @@ export default {
         })
       })
     },
+    changePage () {
+      this.search()
+    },
     changePageType () {
       let type = this.pageType
       if (type === '3') {
@@ -301,6 +304,16 @@ export default {
                 })
               } else {
                 tooltip('', '操作成功！', 'success')
+              }
+            } else {
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              } else {
+                tooltip('', res.msg, 'error')
               }
             }
           })
@@ -581,10 +594,10 @@ export default {
   watch: {
     editName: function (newV, oldV) {
       // 缩略图编辑校验，不能输入特殊字符
-      if (newV.length > 12) {
-        this.editName = oldV
+      if (newV.length > 15) {
+        this.editName = newV.slice(0, 15)
       } else {
-        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
+        var str = new RegExp("[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
         var flag = (!str.test(newV)) && !/\s/.test(newV)
         if (!flag) {
           this.editName = oldV

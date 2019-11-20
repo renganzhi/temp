@@ -45,6 +45,18 @@
               <span class="keybd"><i class="icon-n-arrowRight"></i></span>
             </div>
           </div>
+          <div class="keybd-info">
+            <span class='fl'>多选元件</span>
+            <div class="fr">
+               框选<span style="margin: 0 10px;">|</span><span class="keybd">Ctrl</span> + <span class="keybd"><i class="icon-n-mouse"></i></span>
+            </div>
+          </div>
+          <div class="keybd-info">
+            <span class='fl'>多元件拖动</span>
+            <div class="fr">
+               <span class="keybd">Ctrl</span> + <span class="keybd"><i class="icon-n-mouse"></i></span> 拖动
+            </div>
+          </div>
         </div>
         <div class="edit-body flex" @click="hideContext">
           <!--  <div class="m-contain full-height">-->
@@ -72,9 +84,9 @@
                     <div class="paint" :style="paintStyle"></div>
                     <!-- :style="{'background': paintObj.showGrid ? 'url(\'./../../assets/bg.png\')' : ''}"  -->
                     <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context">
+                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context" @palyErr="palyErr">
                         </DragBox>
-                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context"></Compose>
+                        <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context" @palyErr="palyErr"></Compose>
                     </div>
                     <!-- 触发框选时覆盖在元件之上的div，这样不会和元件的拖拽事件相冲突 -->
                     <div id="inWrap" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}"></div>
@@ -244,11 +256,11 @@
                     </div>
                     <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                         <div v-show="showStyleTab" class="full-height m-style">
-                            <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
+                            <!-- <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
                                 <div class="form-group">
                                     <input v-model="selectedItem.ctName">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="e-base">
                                 <div class="m-gap form-group">基础属性</div>
                                 <div class="form-group" style="height: 30px;">
@@ -668,11 +680,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='text' && selectedItem.chartType!=='marquee' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time')">
+                            <div style="height: 100%;" v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time'&& selectedItem.chartType!=='video')">
                                 <div class="form-group cols2">
                                     <label>数据来源</label>
                                     <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
-                                        <option value="static">静态数据</option>
+                                      <option value="static">静态数据</option>
                                         <option v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'" value="system">系统数据</option>
                                     </select>
                                 </div>
@@ -694,8 +706,11 @@
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>
                                 <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
-                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter'">
-                                    <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
+                                    <div ref="textareaData" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
+                                </div>
+                                <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                                    <div ref="textarea" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.ctName}}</div>
                                 </div>
                                 <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                                   <div class="form-group cols2">
@@ -773,6 +788,27 @@
                                 <button @click="dataChange">更新视图</button>
 
                             </div>
+                            <div style="height: 100%;" v-show="selectedItem.chartType==='video'">
+                              <div class="form-group cols2">
+                                <label>视频来源</label>
+                                <select v-model="selectedItem.videoType">
+                                  <option value="url">URL地址</option>
+                                  <option value="local">本地文件</option>
+                                </select>
+                              </div>
+                              <div class="form-group cols2" v-show="selectedItem.videoType === 'url'" style="position: relative;">
+                                <label>URL地址</label>
+                                <input v-model="tempVideoUrl" @focus="showPlayErr = false">
+                                <label class="error" v-show="showPlayErr" style="margin-left: 68px;margin-top: 2px;">该地址无效或不允许在本网页播放</label>
+                              </div>
+                              <div>
+                                <div class="form-group cols2" v-show="selectedItem.videoType === 'local'">
+                                    <label>选择文件</label>
+                                    <input type="file" name="myfiles" id="myfiles" accept="video/mp4" @change="uploadVideo">
+                                </div>
+                            </div>
+                              <button @click="videoChange" style="margin-top: 30px">更新视图</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -801,12 +837,12 @@
             <h4 class="modal-title">配置资源指标详情</h4>
           </div>
           <div class="modal-body" style="height: 450px; overflow: auto;">
-            <form autocomplete="off" v-for="(list, i) in syst.windowObj" :key="i">
-              <div class="form-group modal-label" style="width: 100%">
+            <form autocomplete="off" style="margin-bottom: 20px;" v-for="(list, i) in syst.windowObj" :key="i">
+              <div class="form-group modal-label" style="width: 100%; min-height: 30px; height: auto;">
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
-                <div class="page-lable-content" v-if="list.fields && list.fields.length > 0">
-                  <span>属性：</span>
-                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :obj="list.fields"></Select2>
+                <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
+                  <span style="float: left; margin-top: 5px;">属性：</span>
+                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="true" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
               <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">

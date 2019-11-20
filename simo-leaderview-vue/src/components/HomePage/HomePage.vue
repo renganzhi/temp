@@ -9,9 +9,10 @@
         <img v-else
              src="../../assets/homeEmpty.png" />
         <div>
-          <p style="margin: 30px 0px;">还没有配置可展示的数据大屏！</p>
+          <p v-show="isNewUser" style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+          <p v-show="!isNewUser" style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
-                  v-if="access==='w'"
+                  v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增页面</button>
         </div>
       </div>
@@ -34,10 +35,10 @@
         </div>
       </div>
     </div>
-    <div v-if="loadAll && pageList.length > 0">
+    <div v-if="loadAll">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
-        <div class="fl btn-box">
+        <div class="fl btn-box" v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
@@ -88,7 +89,7 @@ import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage },
@@ -97,6 +98,7 @@ export default {
       defTheme: true, // 默认主题
       isFullScreen: false,
       editable: false,
+      isNewUser: false,
       showTip: false, // 全屏的提示信息
       addPage: false,
       access: 'r',
@@ -138,10 +140,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'videoTims'
+    ])
   },
   methods: {
     ...mapActions([
-      'changeAlertInfo'
+      'changeAlertInfo',
+      'initVideoTims'
     ]),
     hideModal (data) {
       this.addPage = false
@@ -163,6 +169,7 @@ export default {
       this.pageSize = res.pages.length
       this.pageIndex = 0
       this.pageList = res.pages
+      this.isNewUser = res.isNewUser
       this.loadAll = true
       this.intervalTime = res.intervalTime || 5
       this.refreshTime = res.refreshTime || 3
@@ -189,6 +196,18 @@ export default {
       // });
     },
     fullScreen: function () { // 切换全屏
+      if (this.pageList.length === 0) {
+        if (gbs.inDev) {
+          Notification({
+            message: '请配置可展示的大屏页面',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '请配置可展示的大屏页面', 'info')
+        }
+        return
+      }
       var ct = this
       Public.checkFull() ? this.exitFull() : this.full()
       // this.isFullScreen ? this.exitFull() : this.full()
@@ -488,6 +507,11 @@ export default {
     if (theme !== 'default') {
       this.defTheme = false
     }
+    var videoTims = this.videoTims
+    for (let i in videoTims) {
+      videoTims[i] = 0
+    }
+    this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }

@@ -79,6 +79,7 @@ export default {
     }
   },
   methods: {
+    // API: https://github.com/ecomfe/echarts-liquidfill#api
     initBall () {
       // this.chart = echarts.init(document.getElementById('liquidfill-chart'))
       this.chart = echarts.init(this.$refs.liquidfill)
@@ -115,6 +116,10 @@ export default {
             // itemStyle: {
             //   opacity: 0.6
             // },
+            // itemStyle: {
+            //   shadowBlur: 30,
+            //   shadowColor: 'rgba(0, 0, 0, 0.5)'
+            // },
             outline: {
               // show: false
               borderDistance: 5,
@@ -126,7 +131,9 @@ export default {
               }
             },
             backgroundStyle: {
-              color: 'transparent'
+              color: 'transparent',
+              shadowColor: 'rgba(0, 0, 0, 0)',
+              shadowBlur: 20
             },
             label: {
               fontWeight: 'normal',

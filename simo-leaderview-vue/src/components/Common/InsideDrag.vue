@@ -53,6 +53,9 @@
           :item="item"></Vmap>
     <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill>
+    <Player v-else-if="item.chartType=='video'"
+            @palyErr="palyErr"
+            :item="item"></Player>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
@@ -73,17 +76,21 @@ import Vnumber from './EditComp/Vnumber' // 指标展示
 import Vmap from './EditComp/Vmap' // 指标展示
 import Vscatter from './EditComp/Vscatter' // 散点图
 import Liquidfill from './EditComp/Liquidfill' // 水波图
+import Player from './EditComp/Player' // 视频流
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill },
+  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player },
   data () {
     return {
 
     }
   },
   methods: {
+    palyErr () {
+      this.$emit('palyErr')
+    },
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height

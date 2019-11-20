@@ -2,6 +2,7 @@ package com.uxsino.leaderview.service;
 
 import java.util.List;
 
+import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.dao.IHomePageUserConfDao;
 import com.uxsino.leaderview.entity.HomePageUserConf;
 import com.uxsino.leaderview.entity.HomePageVo;
@@ -32,12 +33,22 @@ public class HomeCarouselService {
      * 
      */
     @Transactional
-    public void save(HomeCarousel carouselTime, List<HomePageVo> pages, Long userId) {
+    public JsonModel save(HomeCarousel carouselTime, List<HomePageVo> pages, Long userId) {
         HomeCarousel exist = getByUserId(userId);
         if (exist == null) {
             homeCarouselDao.save(carouselTime);
         } else {
             homeCarouselDao.update(exist.getId(), carouselTime);
+        }
+        //进行可见页面个数统计
+        Integer num = 0;
+        for (HomePageVo pageVo : pages) {
+            if (pageVo.isVisible()){
+                num++;
+            }
+        }
+        if (num > 20){
+            return new JsonModel(false, "页面可见数量设置不可大于20个！");
         }
         pages.forEach(page -> {
             HomePageUserConf existPage = homePageUserConfDao.findOne(page.getId());
@@ -48,6 +59,7 @@ public class HomeCarouselService {
             existPage.setPageIndex(page.getPageIndex());
             homePageUserConfDao.update(existPage.getId(), existPage);
         });
+        return new JsonModel(true);
     }
 
     /**

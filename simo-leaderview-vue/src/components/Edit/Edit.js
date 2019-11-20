@@ -22,6 +22,7 @@ export default {
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
+      showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
       selfMapLevel: false, // 当前元件的展示范围发生改变，并非切换元件导致的改变
@@ -66,7 +67,7 @@ export default {
         height: 1080,
         bgColor: '',
         bgImg: '',
-        scale: 80,
+        scale: 100,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: true // 显示网格
@@ -184,7 +185,8 @@ export default {
       chooseStart: {
         posX: 0,
         posY: 0
-      }
+      },
+      tempVideoUrl: '' // 用户输入的视频URL
     }
   },
   computed: {
@@ -806,6 +808,9 @@ export default {
       } else {
         // 增加选中
         item.slted = this.editable && true
+        if (item.chartType === 'video') {
+          this.tempVideoUrl = item.videoSrc
+        }
         if (item.chartType === 'v-map') {
           this.selectedItem = {} // 避免触发三级下拉的监听
         }
@@ -1445,7 +1450,7 @@ export default {
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
       this.paintObj.showGrid = true
-      this.paintObj.scale = 80
+      this.paintObj.scale = 100
     },
     addColor (index) {
       // 添加颜色
@@ -1754,6 +1759,9 @@ export default {
           _this.selectedItem.url = curConf.url
           _this.selectedItem.method = curConf.method
           _this.selectedItem.params = param
+          if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+            _this.selectedItem.ctName = data.obj.info
+          }
         },
         error: function () {
           if (gbs.inDev) {
@@ -1837,8 +1845,11 @@ export default {
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee') {
+        this.selectedItem.ctName = this.$refs.textarea.innerText
+        this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {
-        var textData = this.$refs.textarea.innerText
+        var textData = this.$refs.textareaData.innerText
         var reg = /^\{[\s\S]*\}$/
         // 先判断是{}类型的对象，而不是new Object
         if (reg.test(textData.trim())) {
@@ -1866,6 +1877,11 @@ export default {
             tooltip('', '请输入正确的JSON格式的数据', 'info')
           }
         }
+      }
+    },
+    videoChange: function () {
+      if (this.selectedItem.videoType === 'url') {
+        this.selectedItem.videoSrc = this.tempVideoUrl
       }
     },
     saveConf: function (event, cb) {
@@ -1909,7 +1925,22 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/resources/img/topo/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/tpstander.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
+      $('#mainEdit-edit .main_video')
+        .find('video')
+        .css('opacity', 0)
+      $('#mainEdit-edit .main_video').append(
+        $('<img>')
+          .addClass('monitp')
+          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
           .css({
             width: '100%',
             height: '100%',
@@ -1929,6 +1960,9 @@ export default {
           // 提前还原拓扑
           $('#mainEdit-edit .main_topo')
             .find('svg')
+            .css('opacity', 1)
+          $('#mainEdit-edit .main_video')
+            .find('video')
             .css('opacity', 1)
           $('#mainEdit-edit .monitp').remove()
         }
@@ -1950,7 +1984,7 @@ export default {
         var formdata = new FormData()
         formdata.append('uploaded_file', file)
         canvas.remove()
-        cThis.uploadFile(formdata, function (data) {
+        cThis.uploadFile('img', formdata, function (data) {
           var _data = {
             id: cThis.pageId,
             viewConf: JSON.stringify(cThis.chartNum),
@@ -1988,9 +2022,13 @@ export default {
         })
       })
     },
-    uploadFile: function (formData, cb) {
+    uploadFile: function (type, formData, cb) {
+      var _url = gbs.host + '/leaderview/home/file/upload'
+      if (type === 'video') {
+        _url = gbs.host + '/leaderview/home/file/uploadVideoFile'
+      }
       $.ajax({
-        url: gbs.host + '/leaderview/home/file/upload',
+        url: _url,
         type: 'post',
         data: formData,
         async: false,
@@ -2328,7 +2366,7 @@ export default {
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
-      this.uploadFile(formData, function (data) {
+      this.uploadFile('img', formData, function (data) {
         if (!_this.selectedItem.chartType) {
           // 上传画布图片
           _this.paintObj.bgImg =
@@ -2344,6 +2382,33 @@ export default {
         }
       })
       e.target.value = ''
+    },
+    // 视频
+    uploadVideo (e) {
+      // field, that
+      if (e.value === '') {
+        return
+      }
+      var file = e.target.files[0]
+      // 视频截图
+      /**
+      var windowURL = window.URL || window.webkitURL
+      var videoURL = windowURL.createObjectURL(file)
+      this.selectedItem.videoSrc = videoURL 
+      */
+      var formdata = new FormData()
+      formdata.append('uploaded_file', file)
+      var _this = this
+      this.uploadFile('video', formdata, function (data) {
+        if (_this.selectedItem.chartType === 'video') {
+          _this.selectedItem.videoSrc = gbs.host + data.obj
+          _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
+        }
+      })
+      e.target.value = ''
+    },
+    palyErr () {
+      this.showPlayErr = true
     },
     getPaintCl (data) {
       this.paintObj.bgColor = data.color

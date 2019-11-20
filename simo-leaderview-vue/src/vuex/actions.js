@@ -7,3 +7,9 @@ export const changeAreaData = function ({ commit, state }, newData) {
 export const changeAlertInfo = function ({ commit, state }, newData) {
   commit('changeAlertInfo', newData)
 }
+export const changeVideoTims = function ({ commit, state }, newData) {
+  commit('changeVideoTims', newData)
+}
+export const initVideoTims = function ({ commit, state }, newData) {
+  commit('initVideoTims', newData)
+}

@@ -235,7 +235,9 @@ export default {
       }
       //  && _.isObject(newV) && !_.isArray(newV)
       if (this.item.chartType === 've-gauge') {
-        this.settings.dataName.p = newV.name
+        if (this.item.ctLegendShow !== 'false') {
+          this.settings.dataName.p = newV.name
+        }
         this.settings.seriesMap.pro.detail.formatter = '{value}' + newV.unit
         this.settings.seriesMap.pro.axisLine.lineStyle.color[0][0] = newV.value / 100
         if (this.item.subType !== 'progress') {

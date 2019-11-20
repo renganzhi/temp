@@ -38,6 +38,7 @@
                 @selected="selected"
                 @resized="resized"
                 @context="context"
+                @palyErr="palyErr"
                 @contextmenu="contextItem(_index)"
                 :key="'inside_' + item.id">
     </InsideDrag>
@@ -88,6 +89,9 @@ export default {
     }
   },
   methods: {
+    palyErr () {
+      this.$emit('palyErr')
+    },
     dragging (chgX, chgY, attr) {
       this.$emit('draged', chgX, chgY, attr)
     },

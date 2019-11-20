@@ -225,15 +225,15 @@ var compsArr = [{
   text: '水波图',
   width: 300,
   height: 300,
-  imgClass: 'icon-n-percent',
+  imgClass: 'icon-n-waveball',
   chartType: 've-gauge',
   subType: 'progress',
   secondType: 'liquidfill',
   // chartType: 'liquidfill',
-  bdpx: 5,
+  bdpx: 4,
   bgClr: '#156acf',
-  clr: '#fff',
-  bdClr: '#767272',
+  clr: 'rgba(221, 221, 221, 0.9)',
+  bdClr: '#666f8b',
   fontSize: 28,
   chartData: morenData.single
 },
@@ -484,6 +484,15 @@ var compsArr = [{
   visualPosition: 'left',
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData
+},
+{
+  text: '视频流',
+  imgClass: 'icon-n-video',
+  chartType: 'video',
+  width: 300,
+  height: 300,
+  videoType: 'local',
+  videoSrc: ''
 }
   // {
   //   text: '地图',

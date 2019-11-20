@@ -132,12 +132,12 @@ export default {
         this.errMsg = '必填项'
         this.showErr = true
         return
-      } else if (this.name.length > 12) {
-        this.errMsg = '最大长度为12个字符'
+      } else if (this.name.length > 15) {
+        this.errMsg = '最大长度为15个字符'
         this.showErr = true
         return
       } else {
-        var str = new RegExp("[`~!@#$^*()|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
+        var str = new RegExp("[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
         var flag = (!str.test(this.name)) && !/\s/.test(this.name)
         if (!flag) {
           this.errMsg = '不能含有特殊字符'

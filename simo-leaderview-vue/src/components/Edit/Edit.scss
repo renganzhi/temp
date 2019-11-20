@@ -659,12 +659,12 @@ $headHeight: 50px;
 
   #partsEdit-modal {
     .form-group {
-      line-height: 28px;
+      // line-height: 28px;
       height: 28px;
     }
    .form-content .page-title {
       margin-right: 20px;
-      width: 150px;
+      width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
