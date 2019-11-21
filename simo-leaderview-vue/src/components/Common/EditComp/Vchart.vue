@@ -279,7 +279,12 @@ export default {
           maxData = maxItem[key]
         }
       }
-      return (parseInt(maxData / 100) * 100 + 100)
+      if (parseInt(maxData / 100) === (maxData / 100)) {
+        // 整百
+        return maxData
+      } else {
+        return (parseInt(maxData / 100) * 100 + 100)
+      }
     },
     getColors: function (tempArr) {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
