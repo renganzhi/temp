@@ -150,12 +150,12 @@ export default {
       if (this.item.chartData.unit.trim() === '%') {
         this.option.series[0].label.formatter = this.item.chartData.value + this.item.chartData.unit
         let val = Number(this.item.chartData.value)
-        if (val === val) {
+        if (val === val && val > 0) {
           // 非NaN
           let data = parseInt(val * 100) / 10000
           this.option.series[0].data = [data, data - 0.05]
         } else {
-          this.option.series[0].data = [0]
+          this.option.series[0].data = [-1]
         }
       }
       if (this.chart) {
