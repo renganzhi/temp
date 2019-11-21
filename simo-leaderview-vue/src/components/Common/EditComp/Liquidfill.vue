@@ -4,7 +4,8 @@
     <div class="liquidfill-chart"
          ref="liquidfill"
          :style="boxStyle"></div>
-    <div class="name">{{item.chartData.name}}</div>
+    <div class="name"
+         v-show="item.ctLegendShow != 'false'">{{item.chartData.name}}</div>
   </div>
   <div class="v-charts-data-empty"
        v-else

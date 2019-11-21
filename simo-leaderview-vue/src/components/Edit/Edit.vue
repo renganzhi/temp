@@ -350,6 +350,14 @@
                                 </div>
 
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
+                                   <div class="form-group cols2" v-if="selectedItem.secondType==='liquidfill'">
+                                     <div class="m-gap form-group">图例</div>
+                                      <label>可见性</label>
+                                      <select v-model="selectedItem.ctLegendShow">
+                                          <option value="true">显示</option>
+                                          <option value="false">隐藏</option>
+                                      </select>
+                                    </div>
                                     <label>填充色</label>
                                     <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
