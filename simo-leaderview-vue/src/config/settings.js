@@ -39,26 +39,26 @@ var settings = {
     ],
     cardCase: [
       {
-        mini: require('./../assets/cardMini1.png'),
-        imgSrc: require('./../assets/cardBg1.png')
+        mini: '/leaderview/border/cardMini1.png',
+        imgSrc: '/leaderview/border/cardBg1.png'
       },
       {
-        mini: require('./../assets/cardMini2.png'),
-        imgSrc: require('./../assets/cardBg2.png')
+        mini: '/leaderview/border/cardMini2.png',
+        imgSrc: '/leaderview/border/cardBg2.png'
       },
       {
-        mini: require('./../assets/cardMini3.png'),
-        imgSrc: require('./../assets/cardBg3.png')
+        mini: '/leaderview/border/cardMini3.png',
+        imgSrc: '/leaderview/border/cardBg3.png'
       }
     ],
     titleCase: [
       {
-        mini: require('./../assets/titleMini1.png'),
-        imgSrc: require('./../assets/titleBg1.png')
+        mini: '/leaderview/border/titleMini1.png',
+        imgSrc: '/leaderview/border/titleBg1.png'
       },
       {
-        mini: require('./../assets/titleMini2.png'),
-        imgSrc: require('./../assets/titleBg2.png')
+        mini: '/leaderview/border/titleMini2.png',
+        imgSrc: '/leaderview/border/titleBg2.png'
       }
     ]
   }
