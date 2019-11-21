@@ -834,7 +834,7 @@
               <div class="form-group modal-label" style="width: 100%; min-height: 30px; height: auto;">
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
                 <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
-                  <span style="float: left; margin-top: 5px;">属性：</span>
+                  <span>属性：</span>
                   <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="true" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
@@ -842,7 +842,7 @@
                 <label class="page-title">资源{{index+1}}: {{item.name}}</label><label class="page-title">资源类型：{{item.neClass}}</label>
                 <div class="page-lable-content" v-if="item.component && item.component.length > 0">
                   <span>部件：</span>
-                  <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :obj="item.component"></Select2>
+                  <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :multip="syst.windowData[i].ne[index].multipleComponent" :maxLength="5" :obj="item.component"></Select2>
                 </div>
               </div>
             </form>

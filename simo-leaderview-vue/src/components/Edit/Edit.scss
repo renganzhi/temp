@@ -659,8 +659,10 @@ $headHeight: 50px;
 
   #partsEdit-modal {
     .form-group {
-      // line-height: 28px;
-      height: 28px;
+      min-height: 28px;
+      height: auto;
+      display: flex;
+      align-items: center;
     }
    .form-content .page-title {
       margin-right: 20px;
