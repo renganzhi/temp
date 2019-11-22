@@ -11,6 +11,8 @@
              :disabled="editable"></Marquee>
     <Border v-else-if="item.chartType==='border'"
             :item="item"></Border>
+    <moveTable v-else-if="item.chartType=='table' && item.thirdType=='moveTable'"
+               :item="item"></moveTable>
     <Vtable v-else-if="item.chartType==='table'"
             :item="item"></Vtable>
     <Vprogress v-else-if="item.chartType==='progress'"
@@ -53,11 +55,12 @@ import Vmap from './EditComp/Vmap' // 地图
 import Vscatter from './EditComp/Vscatter' // 散点图
 import Liquidfill from './EditComp/Liquidfill' // 水波图
 import Player from './EditComp/Player' // 视频流
+import moveTable from './EditComp/moveTable' // 轮播表格
 
 export default {
   name: 'lookItem',
   props: ['item', 'index'],
-  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player },
+  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
       editable: false

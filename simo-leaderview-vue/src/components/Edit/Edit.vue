@@ -396,14 +396,14 @@
                                         <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
                                     </select>
                                 </div>
-                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee' || selectedItem.thirdType==='moveTable'">
                                     <label>轮播方向</label>
                                     <select v-model="selectedItem.direction">
                                         <option value="left">横向</option>
                                         <option value="top">纵向</option>
                                     </select>
                                 </div>
-                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee'">
+                                <div class="form-group cols2" v-show="selectedItem.chartType==='marquee' || selectedItem.thirdType==='moveTable'">
                                     <label>轮播速度</label>
                                     <select v-model="selectedItem.speed">
                                         <option value="1">高速</option>
@@ -705,7 +705,7 @@
                                     </div>
                                     <div id="mainSystemConf" >
                                         <div class="form-group cols2" v-for="(v,idx) in syst.curUrl" :key="idx">
-                                            <label v-if="v.type=='drop-down' || v.type=='multi-select'" >{{v.name}}</label>
+                                            <label v-if="v.type=='drop-down' || v.type=='multi-select'">{{v.name}}<i class="icon-n-tip" v-if="v.title" style="font-size: 16px; position: relative; top: 1px; left: 3px;" :title="v.title"></i></label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                               </Select2>
@@ -713,7 +713,7 @@
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>
-                                <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 67px; margin-bottom: 20px;">配置资源指标详细</button>
+                                <button v-if="showWindowBtn" @click="getWindowData" class="addData" style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                                 <div class="form-group" v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
                                     <div ref="textareaData" class="confData" v-if="refreshData" contenteditable="true">{{selectedItem.chartData}}</div>
                                 </div>
@@ -777,6 +777,21 @@
                                     <Select2 v-model="alertMapData[index].value" :mapSelect="true" :obj="alertLevels"></Select2>
                                     <i class="icon-n-deleteNew" v-if="alertMapData.length > 1" @click="delAlertLevel(index)"></i>
                                   </div>
+                                </div>
+                                <div class="form-group cols2" v-show="selectedItem.thirdType==='moveTable'">
+                                    <label>每页展示条数</label>
+                                    <select v-model="selectedItem.pageNum">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
                                 </div>
                                 <button @click="dataChange">更新视图</button>
 
