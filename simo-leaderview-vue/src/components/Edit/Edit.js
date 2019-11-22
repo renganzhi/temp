@@ -88,7 +88,7 @@ export default {
       showBackModal: false, // 离开页面弹窗
       colorType: 'defalut',
       defaultFontSize: [12, 13, 14, 16, 18, 20, 28, 36, 48, 72],
-      proFontSize: [24, 12, 13, 14, 16, 18, 20, 28, 36, 48],
+      proFontSize: [12, 13, 14, 16, 18, 20, 24, 28, 36, 48],
       defMapColors: ['#bb2a52', '#bd3d50', '#bf4e4e', '#c2634b', '#c47346', '#c7833f', '#ca9137', '#cd9d2c'],
       defalutColors: [
         '#37a2da',
