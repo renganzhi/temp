@@ -125,7 +125,7 @@ public class HomePageController {
                                  @ApiParam("插入位置，null或者0则默认加到最后") @RequestParam(required = false) Integer index,
                                  @ApiParam("模板ID") @RequestParam(required = false) Long templateId,
                                  @RequestParam(required = false) String[] adminId) {
-        int maxIndex = homePageService.getMaxIndex(SessionUtils.getCurrentUserIdFromSession(session));
+        int maxIndex = homePageUserConfService.getMaxPageByUserId(SessionUtils.getCurrentUserIdFromSession(session));
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }
@@ -210,7 +210,7 @@ public class HomePageController {
         if (ObjectUtils.isEmpty(sourcePage)) {
             return new JsonModel(false, "待复制页面不存在!");
         }
-        int maxIndex = homePageService.getMaxIndex(SessionUtils.getCurrentUserIdFromSession(session));
+        int maxIndex = homePageUserConfService.getMaxPageByUserId(SessionUtils.getCurrentUserIdFromSession(session));
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }
@@ -221,7 +221,7 @@ public class HomePageController {
         targetPage.setRoleIds(SessionUtils.getSessionUserRoleIds(session));
         targetPage.setViewConf(sourcePage.getViewConf());
         targetPage.setViewImage(sourcePage.getViewImage());
-        targetPage.setVisible(sourcePage.isVisible());
+        targetPage.setVisible(false);
         targetPage.setPaintObj(sourcePage.getPaintObj());
         targetPage.setComposeObj(sourcePage.getComposeObj());
         targetPage.setCreateUserId(SessionUtils.getCurrentUserIdFromSession(session));
@@ -230,6 +230,7 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        homePageUserConf.setVisible(false);
         homePageUserConfService.add(homePageUserConf, false, adminId);
         return new JsonModel(true, "复制成功");
     }
