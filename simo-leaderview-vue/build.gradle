@@ -24,7 +24,7 @@ dependencies {
 
 task domesticNpmInstall(type: NpmTask) {
   group = 'node'
-  args = ['install', '--registry=http://registry.cnpmjs.org']
+  args = ['ci']
 }
 
 
