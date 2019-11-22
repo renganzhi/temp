@@ -1603,10 +1603,10 @@ export default {
                 if (data.msg === 'windows') {
                   if (_this.isArray(data.obj) && data.obj.length > 0) {
                     _this.syst.windowObj = data.obj
-                    if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
-                      _this.syst.windowData = _this.initWindowData(data.obj)
-                      // 初始化弹窗赋值并展示
-                    }
+                    // if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
+                    _this.syst.windowData = _this.initWindowData(data.obj)
+                    // 初始化弹窗赋值并展示
+                    // }
                     _this.showWindowBtn = true
                   } else {
                     _this.showWindowBtn = false
@@ -1710,6 +1710,7 @@ export default {
         item.ne.forEach((list) => {
           obj[index].ne.push({
             'id': list.id,
+            'multipleComponent': list.multipleComponent,
             'component': (this.isArray(list.component) && list.component.length > 0) ? list.component[0].value : null
           })
         })
