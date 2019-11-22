@@ -40,8 +40,12 @@
               <label class="showSet">刷新周期</label>
               <div style="display: inline-block">
                 <input name="refreshTime"
+                       onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
                        v-model="refreshTime" /> 秒
               </div>
+              <label class="error"
+                     v-show="showErr"
+                     style="margin-left: 10px;margin-top: 5px;">{{errMsg}}</label>
             </div>
           </form>
           <!-- 表格数据 -->
@@ -131,9 +135,11 @@ export default {
   data () {
     return {
       changeSort: false,
+      showErr: false,
       intervalTime: '10',
       specialEffects: '1',
       refreshTime: 30,
+      errMsg: '',
       tableData: []
     }
   },
@@ -280,6 +286,7 @@ export default {
       this.tableData.push(temp)
     },
     save: function () {
+      if (this.showErr) return
       this.tableData.forEach((item, index) => {
         this.tableData[index].pageIndex = index + 1
       })
@@ -319,6 +326,14 @@ export default {
     }
   },
   watch: {
+    refreshTime: function (newV) {
+      if (!newV || parseInt(newV) < 3) {
+        this.showErr = true
+        this.errMsg = '刷新周期最小值为3'
+      } else {
+        this.showErr = false
+      }
+    },
     showModal: function (newV) {
       if (newV) {
         this.getTableData()

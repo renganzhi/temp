@@ -45,6 +45,7 @@
                  class="page-item flex flex-vertical"
                  @mouseenter="showHover(index)"
                  @mouseleave="cancleHover">
+              <div :class="{'canSee': true, 'notSee': !item.visible}"></div>
               <img class="page-img"
                    v-if="item.viewImage"
                    :src="baseUrl + item.viewImage" />
@@ -642,6 +643,17 @@ export default {
   margin: 12px;
   width: 310px;
   box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
+  .canSee {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 30px;
+    height: 30px;
+    background: url("../../assets/canSee.png");
+  }
+  .notSee {
+    background: url("../../assets/noSee.png");
+  }
 }
 
 .page-item .page-title {

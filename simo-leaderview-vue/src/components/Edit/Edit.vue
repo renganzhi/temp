@@ -350,6 +350,14 @@
                                 </div>
 
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
+                                   <div class="form-group cols2" v-if="selectedItem.secondType==='liquidfill'">
+                                     <div class="m-gap form-group">图例</div>
+                                      <label>可见性</label>
+                                      <select v-model="selectedItem.ctLegendShow">
+                                          <option value="true">显示</option>
+                                          <option value="false">隐藏</option>
+                                      </select>
+                                    </div>
                                     <label>填充色</label>
                                     <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
@@ -841,15 +849,15 @@
               <div class="form-group modal-label" style="width: 100%; min-height: 30px; height: auto;">
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
                 <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
-                  <span style="float: left; margin-top: 5px;">属性：</span>
-                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="true" :maxLength="5" :obj="list.fields"></Select2>
+                  <span>属性：</span>
+                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="list.indicator.multipleField" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
               <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">
                 <label class="page-title">资源{{index+1}}: {{item.name}}</label><label class="page-title">资源类型：{{item.neClass}}</label>
                 <div class="page-lable-content" v-if="item.component && item.component.length > 0">
                   <span>部件：</span>
-                  <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :obj="item.component"></Select2>
+                  <Select2 v-model="syst.windowData[i].ne[index].component" :mapSelect="true" :multip="syst.windowData[i].ne[index].multipleComponent" :maxLength="5" :obj="item.component"></Select2>
                 </div>
               </div>
             </form>

@@ -235,6 +235,7 @@ var compsArr = [{
   clr: 'rgba(221, 221, 221, 0.9)',
   bdClr: '#666f8b',
   fontSize: 28,
+  ctLegendShow: 'true',
   chartData: morenData.single
 },
 {

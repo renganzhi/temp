@@ -26,8 +26,22 @@
                          name="name" />
                   <label class="error"
                          v-show="showErr"
-                         style="margin-left: 10px;margin-top: 8px;">{{errMsg}}</label>
+                         style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
                 </div>
+              </div>
+              <div class="form-group"
+                   style="line-height: 28px;">
+                <label class="page-lable"
+                       style="margin-right: 15px;">是否可见</label>
+                <input type="radio"
+                       name="visible"
+                       v-model="visible"
+                       value="true" /> 是
+                <input type="radio"
+                       name="visible"
+                       v-model="visible"
+                       style="margin-left: 15px;"
+                       value="false" /> 否
               </div>
               <div class="form-group"
                    style="margin-bottom: 0">
@@ -75,6 +89,7 @@ export default {
   data () {
     return {
       name: '',
+      visible: true,
       baseUrl: gbs.host,
       addId: 0,
       addOne: false,
@@ -164,6 +179,7 @@ export default {
         var data = {
           name: this.name,
           templateId: this.temId,
+          visible: this.visible,
           adminId: this.userIds.join(',')
         }
         this.axios({
@@ -215,7 +231,7 @@ export default {
 /* 新建页面-弹窗样式 */
 #addHomePage-modal .defPages {
   flex-wrap: wrap;
-  height: 420px;
+  height: 400px;
   overflow: auto;
   margin-left: -10px;
 }
