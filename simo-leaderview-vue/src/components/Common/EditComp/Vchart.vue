@@ -665,7 +665,7 @@ export default {
                   },
                   detail: {
                     offsetCenter: [0, 8],
-                    fontSize: 24,
+                    fontSize: _this.item.fontSize,
                     color: fontColor,
                     formatter: '{value}' + data.unit
                   }

@@ -11,7 +11,7 @@ axios.interceptors.request.use(
   config => {
     // 这里配置全局loading
     if (!(/\.json/.test(config.url))) {
-      $('#screen').show()
+      // $('#screen').show()
     }
 
     return config

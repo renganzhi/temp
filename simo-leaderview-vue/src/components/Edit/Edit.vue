@@ -835,7 +835,7 @@
                 <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
                 <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
                   <span>属性：</span>
-                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="true" :maxLength="5" :obj="list.fields"></Select2>
+                  <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="list.indicator.multipleField" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
               <div class="form-group form-content" v-for="(item, index) in list.ne" :key="index">
