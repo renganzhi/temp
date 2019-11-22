@@ -222,23 +222,6 @@ var compsArr = [{
   chartData: morenData.single
 },
 {
-  text: '水波图',
-  width: 300,
-  height: 300,
-  imgClass: 'icon-n-waveball',
-  chartType: 've-gauge',
-  subType: 'progress',
-  secondType: 'liquidfill',
-  // chartType: 'liquidfill',
-  bdpx: 4,
-  bgClr: '#156acf',
-  clr: 'rgba(221, 221, 221, 0.9)',
-  bdClr: '#666f8b',
-  fontSize: 28,
-  ctLegendShow: 'true',
-  chartData: morenData.single
-},
-{
   text: '柱状图',
   colorful: false,
   imgClass: 'icon-n-histogram',
@@ -448,6 +431,23 @@ var compsArr = [{
   clr: '#25aff8',
   width: 300,
   height: 90,
+  ctLegendShow: 'true',
+  chartData: morenData.single
+},
+{
+  text: '水波图',
+  width: 300,
+  height: 300,
+  imgClass: 'icon-n-waveball',
+  chartType: 've-gauge',
+  subType: 'progress',
+  secondType: 'liquidfill',
+  // chartType: 'liquidfill',
+  bdpx: 4,
+  bgClr: '#156acf',
+  clr: 'rgba(221, 221, 221, 0.9)',
+  bdClr: '#666f8b',
+  fontSize: 28,
   ctLegendShow: 'true',
   chartData: morenData.single
 },

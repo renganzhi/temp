@@ -93,7 +93,7 @@ export default {
   data () {
     return {
       tableMove: true,
-      direction: 'top',
+      // direction: 'top',
       pageNum: 5,
       intervalTime: 4000,
       page1Data: [],
@@ -136,7 +136,8 @@ export default {
     }
   },
   watch: {
-    'item.chartData': function () {
+    'item.chartData': function (newV, oldV) {
+      if (JSON.stringify(oldV) === JSON.stringify(newV)) return
       this.pageNum = Number(this.item.pageNum)
       if (this.item.direction === 'left') {
         this.initLeftMove()
@@ -240,6 +241,7 @@ export default {
   },
   mounted: function () {
     // this.initMove()
+    this.pageNum = Number(this.item.pageNum)
     if (this.item.speed === '3') {
       this.intervalTime = 6000
     } else if (this.item.speed === '1') {
@@ -247,15 +249,19 @@ export default {
     } else {
       this.intervalTime = 4000
     }
-    if (this.direction === 'left') {
+    if (this.item.direction === 'left') {
       this.initLeftMove()
     } else {
       this.initTopMove()
     }
     titleShow('bottom', $(this.$el))
   },
+  beforeDestroy: function () {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+    }
+  },
   destroyed: function () {
-    clearInterval(this.intervalId)
     if ($(this.$el).find('.tooltip').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
