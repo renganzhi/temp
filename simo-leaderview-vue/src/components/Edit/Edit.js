@@ -1630,6 +1630,9 @@ export default {
           first && _this.setFirstV(d)
         })
         _this.syst.curUrl = api
+        if (!gbs.inDev) {
+          titleShow('bottom', $('.e-legend'))
+        }
       })
     },
     setFirstV: function (d) {
@@ -2334,6 +2337,7 @@ export default {
         tempItem.x += 20
         tempItem.y += 20
         tempItem.slted = true // 复制的元件默认选中
+        tempItem.zIndex = ++this.maxIndex
         tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
         this[_type].push(tempItem)
         if (type === 'item') {
@@ -2739,6 +2743,11 @@ export default {
     // this.changeMapData(100000, 'provinceArr')
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
+    })
+    $(document).ajaxStart(function () {
+      $('#creen').hide()
+    }).ajaxSend(function () {
+      $('#creen').hide()
     })
     // 添加事件监听
     // if (document.addEventListener) {
