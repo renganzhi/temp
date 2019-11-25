@@ -93,7 +93,6 @@ export default {
   data () {
     return {
       tableMove: true,
-      // direction: 'top',
       pageNum: 5,
       intervalTime: 4000,
       page1Data: [],
