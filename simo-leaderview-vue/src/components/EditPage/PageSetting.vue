@@ -327,7 +327,7 @@ export default {
   },
   watch: {
     refreshTime: function (newV) {
-      if (!newV || parseInt(newV) < 3) {
+      if (Number(newV) != Number(newV) || !newV || parseInt(newV) < 3) {
         this.showErr = true
         this.errMsg = '刷新周期最小值为3'
       } else {
