@@ -1630,6 +1630,9 @@ export default {
           first && _this.setFirstV(d)
         })
         _this.syst.curUrl = api
+        if (!gbs.inDev) {
+          titleShow('bottom', $('.e-legend'))
+        }
       })
     },
     setFirstV: function (d) {
