@@ -99,10 +99,10 @@
                     </td>
                     <td>{{timeStamp2String(tr.lastUpdateTime)}}</td>
                     <td>
-                      <span v-show="tr.visible"><a class="simoLink"
-                           @click="moveTop(index)">置顶</a><a class="simoLink"
-                           @click="moveUp(index)">上移</a><a class="simoLink"
-                           @click="moveDown(index)">下移</a><a class="simoLink"
+                      <span v-show="tr.visible"><a :class="{'simoLink': true, 'disabled': index === 0}"
+                           @click="moveTop(index)">置顶</a><a :class="{'simoLink': true, 'disabled': index === 0}"
+                           @click="moveUp(index)">上移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
+                           @click="moveDown(index)">下移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
                            @click="moveBottom(index)">置底</a></span>
                     </td>
                   </tr>
@@ -140,6 +140,7 @@ export default {
       intervalTime: '10',
       specialEffects: '1',
       refreshTime: 30,
+      visibleNum: 0, // 可见的个数
       errMsg: '',
       tableData: []
     }
@@ -187,6 +188,7 @@ export default {
           this.refreshTime = res.refreshTime || 3
           var datas = res.pages.sort(this.visibleSort)
           this.tableData = datas
+          this.visibleNum = this.getVisiableNum()
         } else {
           if (gbs.inDev) {
             Notification({
@@ -238,6 +240,7 @@ export default {
         // 隐藏
         for (var i = index, len = this.tableData.length; i < len; i++) {
           if (!this.tableData[i].visible) {
+            this.visibleNum--
             return this.tableData.splice(i, 0, temp)
           }
         }
@@ -248,6 +251,7 @@ export default {
         }
         for (var j = index - 1; j >= 0; j--) {
           if (this.tableData[j].visible) {
+            this.visibleNum++
             return this.tableData.splice(j + 1, 0, temp)
           }
         }
@@ -350,3 +354,15 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+.disabled {
+  color: rgb(74, 74, 78);
+  pointer-events: none;
+}
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  .disabled {
+    color: #e1e1e1 !important;
+  }
+}
+</style>
