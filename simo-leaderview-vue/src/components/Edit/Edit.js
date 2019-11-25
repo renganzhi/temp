@@ -2337,6 +2337,7 @@ export default {
         tempItem.x += 20
         tempItem.y += 20
         tempItem.slted = true // 复制的元件默认选中
+        tempItem.zIndex = ++this.maxIndex
         tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
         this[_type].push(tempItem)
         if (type === 'item') {
