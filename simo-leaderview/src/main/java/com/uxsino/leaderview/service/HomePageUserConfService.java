@@ -45,7 +45,7 @@ public class HomePageUserConfService {
         Long userId = homePageUserConf.getUserId();
         int countByShared = homePageUserConfDao.countByUserIdAndShared(homePageUserConf.getUserId(), false) + 1;
         int countByUser = homePageUserConfDao.countByUserId(homePageUserConf.getUserId()) + 1;
-        //新增的页面自动设为首位，其他的页面自动向后移一位
+        //新增的选择显示的页面设为首位，其他的页面自动向后移一位
         if (isNewPage){
             homePageUserConfDao.rightPageIndex(1, countByUser, homePageUserConf.getUserId());
             homePageUserConf.setPageIndex(1);
@@ -138,5 +138,9 @@ public class HomePageUserConfService {
 
     public int getMaxPageByUserId(Long userId){
         return homePageUserConfDao.countByUserId(userId);
+    }
+
+    public int getMaxMinePage(Long userId, boolean shared){
+        return homePageUserConfDao.countByUserIdAndShared(userId, shared);
     }
 }

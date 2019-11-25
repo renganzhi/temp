@@ -124,8 +124,9 @@ public class HomePageController {
     public JsonModel addHomePage(HttpSession session, @ApiParam("待添加页面名称") @RequestParam String name,
                                  @ApiParam("插入位置，null或者0则默认加到最后") @RequestParam(required = false) Integer index,
                                  @ApiParam("模板ID") @RequestParam(required = false) Long templateId,
-                                 @RequestParam(required = false) String[] adminId) {
-        int maxIndex = homePageUserConfService.getMaxPageByUserId(SessionUtils.getCurrentUserIdFromSession(session));
+                                 @RequestParam(required = false) String[] adminId,
+                                 @RequestParam boolean visible ) {
+        int maxIndex = homePageUserConfService.getMaxMinePage(SessionUtils.getCurrentUserIdFromSession(session),false);
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }
@@ -152,7 +153,8 @@ public class HomePageController {
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
         homePageUserConf.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
-        homePageUserConfService.add(homePageUserConf, true, adminId);
+        homePageUserConf.setVisible(visible);
+        homePageUserConfService.add(homePageUserConf, visible, adminId);
         return new JsonModel(true, homePage);
     }
 
@@ -210,7 +212,7 @@ public class HomePageController {
         if (ObjectUtils.isEmpty(sourcePage)) {
             return new JsonModel(false, "待复制页面不存在!");
         }
-        int maxIndex = homePageUserConfService.getMaxPageByUserId(SessionUtils.getCurrentUserIdFromSession(session));
+        int maxIndex = homePageUserConfService.getMaxMinePage(SessionUtils.getCurrentUserIdFromSession(session), false);
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[20]");
         }

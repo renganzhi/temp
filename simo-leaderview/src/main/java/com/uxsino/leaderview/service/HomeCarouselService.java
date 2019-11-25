@@ -65,12 +65,12 @@ public class HomeCarouselService {
         int countAll = homePageUserConfDao.countByUserId(userId);
         int correction = 1;
         for (HomePageUserConf homePageUserConf : noVisibleList) {
-            if (!homePageUserConf.isShared()){
-                homePageUserConfDao.rightPageIndex(visibleCount + correction, countAll, userId);
-                homePageUserConf.setPageIndex(visibleCount + correction);
+            if (homePageUserConf.isShared()){
+                homePageUserConfDao.leftPageIndex(visibleCount + correction, countAll, userId);
+                homePageUserConf.setPageIndex(countAll);
                 homePageUserConfDao.update(homePageUserConf.getId(), homePageUserConf);
-                correction++;
             }
+            correction++;
         }
         return new JsonModel(true);
     }
