@@ -239,7 +239,6 @@ export default {
     }
   },
   mounted: function () {
-    // this.initMove()
     this.pageNum = Number(this.item.pageNum)
     if (this.item.speed === '3') {
       this.intervalTime = 6000
