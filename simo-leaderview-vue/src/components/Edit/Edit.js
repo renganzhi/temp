@@ -2744,6 +2744,11 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
+    $(document).ajaxStart(function () {
+      $('#creen').hide()
+    }).ajaxSend(function () {
+      $('#creen').hide()
+    })
     // 添加事件监听
     // if (document.addEventListener) {
     //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)

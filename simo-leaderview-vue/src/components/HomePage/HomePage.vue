@@ -9,8 +9,10 @@
         <img v-else
              src="../../assets/homeEmpty.png" />
         <div>
-          <p v-show="isNewUser" style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
-          <p v-show="!isNewUser" style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
+          <p v-show="isNewUser"
+             style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+          <p v-show="!isNewUser"
+             style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
                   v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增页面</button>
@@ -38,7 +40,8 @@
     <div v-if="loadAll">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
-        <div class="fl btn-box" v-show="!isNewUser">
+        <div class="fl btn-box"
+             v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
@@ -515,6 +518,11 @@ export default {
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
+    $(document).ajaxStart(function () {
+      $('#creen').hide()
+    }).ajaxSend(function () {
+      $('#creen').hide()
+    })
   },
   beforeDestroy: function () {
   },

@@ -91,8 +91,9 @@
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
                     <td>{{tr.name}}</td>
-                    <td @click="changeVisiable(index, tr.visible)">
-                      <div :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
+                    <td>
+                      <div @click="changeVisiable(index, tr.visible)"
+                           :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
                         <div></div>
                       </div>
                     </td>
