@@ -562,7 +562,7 @@
                                   </div>
                                   <div class="form-group cols2">
                                     <label>配色</label>
-                                    <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
+                                    <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '100px !important' : ''}">
                                         <option value="defalut">默认</option>
                                         <option value="custom" v-show="alertLevel">自定义</option>
                                     </select>
@@ -629,7 +629,7 @@
                                         <option value="defalut">默认</option>
                                         <option value="custom" v-show="alertLevel">系列</option>
                                     </select>
-                                    <select v-model="selectedItem.colorful" v-show="(selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType" style="width: 80px !important; margin-left: 3px;">
+                                    <select v-model="selectedItem.colorful" v-show="(selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType" style="width: 70px !important; margin-left: 3px;">
                                         <option value="false">单色</option>
                                         <option value="true">多色</option>
                                     </select>
