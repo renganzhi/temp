@@ -798,7 +798,7 @@
                               <div class="form-group cols2" v-show="selectedItem.videoType === 'url'" style="position: relative;">
                                 <label>URL地址</label>
                                 <input v-model="tempVideoUrl" @focus="showPlayErr = false">
-                                <label class="error" v-show="showPlayErr" style="margin-left: 68px;margin-top: 2px;">该地址无效或不允许在本网页播放</label>
+                                <label class="error" v-show="showPlayErr" style="margin-left: 85px; margin-top: 2px;">该地址无效或不允许在本网页播放</label>
                               </div>
                               <div>
                                 <div class="form-group cols2" v-show="selectedItem.videoType === 'local'">
