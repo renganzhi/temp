@@ -292,7 +292,7 @@ export default {
       })
     },
     'item.ctName': function (newV, oldV) {
-      if (this.stop) return
+      if (this.stop || newV === oldV) return
       this.$nextTick(() => {
         this.initMove()
       })

@@ -363,7 +363,11 @@ export default {
               if (res.obj.colors) {
                 d.ctColors = res.obj.colors
               }
-              d.chartData = res.obj
+              if (d.chartType === 'marquee' || d.chartType === 'text') {
+                d.ctName = res.obj.info
+              } else {
+                d.chartData = res.obj
+              }
             },
             error: function () {
               if (gbs.inDev) {
