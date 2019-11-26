@@ -67,11 +67,11 @@ export default {
         val = this.item.speed
       }
       if (val === '1') {
-        this.speed2 = parseFloat((this.textHeight + this.item.height) / 100)
+        this.speed2 = parseFloat((Number(this.textHeight) + Number(this.item.height)) / 100)
       } else if (val === '3') {
-        this.speed2 = parseFloat((this.textHeight + this.item.height) / 40)
+        this.speed2 = parseFloat((Number(this.textHeight) + Number(this.item.height)) / 40)
       } else {
-        this.speed2 = parseFloat((this.textHeight + this.item.height) / 70)
+        this.speed2 = parseFloat((Number(this.textHeight) + Number(this.item.height)) / 70)
       }
     },
     leftSpeed (val) {
@@ -79,11 +79,11 @@ export default {
         val = this.item.speed
       }
       if (val === '1') {
-        this.speed = parseFloat((this.textWidth + this.item.width) / 100)
+        this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 100)
       } else if (val === '3') {
-        this.speed = parseFloat((this.textWidth + this.item.width) / 40)
+        this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 40)
       } else {
-        this.speed = parseFloat((this.textWidth + this.item.width) / 60)
+        this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 60)
       }
     },
     initMove () {
