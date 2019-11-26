@@ -41,27 +41,19 @@ public class HomePageUserConfService {
     }
 
     @Transactional
-    public void delete(Long pageId){
-        List<HomePageUserConf> list = homePageUserConfDao.findByPageId(pageId);
-        for (HomePageUserConf homePageUserConf : list) {
-            Long userId = homePageUserConf.getUserId();
-            homePageUserConfDao.leftPageIndex(homePageUserConf.getPageIndex(),homePageUserConfDao.countByUserId(userId), userId);
-        }
-        homePageUserConfDao.deleteByPageId(pageId);
-    }
-
-    @Transactional
-    public void add(HomePageUserConf homePageUserConf, boolean isBegin, String[] adminId) {
+    public void add(HomePageUserConf homePageUserConf, boolean isNewPage, String[] adminId) {
         Long userId = homePageUserConf.getUserId();
+        int countByShared = homePageUserConfDao.countByUserIdAndShared(homePageUserConf.getUserId(), false) + 1;
         int countByUser = homePageUserConfDao.countByUserId(homePageUserConf.getUserId()) + 1;
-        //新增的页面自动设为首位，其他的页面自动向后移一位
-        if (isBegin){
+        //新增的选择显示的页面设为首位，其他的页面自动向后移一位
+        if (isNewPage){
             homePageUserConfDao.rightPageIndex(1, countByUser, homePageUserConf.getUserId());
             homePageUserConf.setPageIndex(1);
         }
-        // 复制和分享的页面自动设为末位
+        // 复制的页面自动设为属于该用户的末位
         else {
-            homePageUserConf.setPageIndex(countByUser);
+            homePageUserConfDao.rightPageIndex(countByShared, countByUser, homePageUserConf.getUserId());
+            homePageUserConf.setPageIndex(countByShared);
         }
         homePageUserConfDao.save(homePageUserConf);
         //保存的时候向超级管理员用户中保存一份
@@ -75,6 +67,7 @@ public class HomePageUserConfService {
             otherHomePageUserConf.setUserId(Long.parseLong(admin));
             otherHomePageUserConf.setPageId(homePageUserConf.getPageId());
             otherHomePageUserConf.setVisible(false);
+            otherHomePageUserConf.setShared(true);
             countByUser = homePageUserConfDao.countByUserId(otherHomePageUserConf.getUserId()) + 1;
             otherHomePageUserConf.setPageIndex(countByUser);
             homePageUserConfDao.save(otherHomePageUserConf);
@@ -91,6 +84,7 @@ public class HomePageUserConfService {
         if (ObjectUtils.isEmpty(exist)){
             homePageUserConf.setPageIndex(homePageUserConfDao.countByUserId(userId) + 1);
             homePageUserConf.setVisible(false);
+            homePageUserConf.setShared(true);
             homePageUserConfDao.save(homePageUserConf);
         }
     }
@@ -144,5 +138,9 @@ public class HomePageUserConfService {
 
     public int getMaxPageByUserId(Long userId){
         return homePageUserConfDao.countByUserId(userId);
+    }
+
+    public int getMaxMinePage(Long userId, boolean shared){
+        return homePageUserConfDao.countByUserIdAndShared(userId, shared);
     }
 }

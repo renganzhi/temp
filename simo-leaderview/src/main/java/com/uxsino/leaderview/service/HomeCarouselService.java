@@ -59,6 +59,19 @@ public class HomeCarouselService {
             existPage.setPageIndex(page.getPageIndex());
             homePageUserConfDao.update(existPage.getId(), existPage);
         });
+        //对所有不可见页面进行排序，始终保持[不可见的分享页面]在[不可见的当前用户拥有页面]之后
+        List<HomePageUserConf> noVisibleList = homePageUserConfDao.findByUserIdAndVisible(userId, false);
+        int visibleCount = homePageUserConfDao.countByUserIdAndVisible(userId, true);
+        int countAll = homePageUserConfDao.countByUserId(userId);
+        int correction = 1;
+        for (HomePageUserConf homePageUserConf : noVisibleList) {
+            if (homePageUserConf.isShared()){
+                homePageUserConfDao.leftPageIndex(visibleCount + correction, countAll, userId);
+                homePageUserConf.setPageIndex(countAll);
+                homePageUserConfDao.update(homePageUserConf.getId(), homePageUserConf);
+            }
+            correction++;
+        }
         return new JsonModel(true);
     }
 
