@@ -136,8 +136,8 @@ export default {
   },
   watch: {
     'item.chartData': function (newV, oldV) {
-      if (JSON.stringify(oldV) === JSON.stringify(newV)) return
       this.pageNum = Number(this.item.pageNum)
+      if (JSON.stringify(oldV) === JSON.stringify(newV)) return
       if (this.item.direction === 'left') {
         this.initLeftMove()
       } else {
