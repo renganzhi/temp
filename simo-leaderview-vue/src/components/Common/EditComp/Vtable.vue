@@ -5,7 +5,7 @@
          style="height: 36px;">
       <table class="table table-hover"
              style="table-layout: fixed;">
-        <thead>
+        <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
@@ -93,5 +93,6 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: none;
 }
 </style>

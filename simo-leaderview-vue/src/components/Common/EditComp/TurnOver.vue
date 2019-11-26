@@ -62,7 +62,7 @@ export default {
     this.currentNum = this.nextNum
     // this.changeAnima()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

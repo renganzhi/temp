@@ -146,6 +146,30 @@ var morenData = {
       日期: '1/6',
       CPU利用率: 1693,
       内存利用率: 1063
+    },
+    {
+      IP: '192.168.1.7',
+      日期: '1/7',
+      CPU利用率: 1793,
+      内存利用率: 1073
+    },
+    {
+      IP: '192.168.1.8',
+      日期: '1/8',
+      CPU利用率: 1893,
+      内存利用率: 1083
+    },
+    {
+      IP: '192.168.1.9',
+      日期: '1/9',
+      CPU利用率: 1993,
+      内存利用率: 1093
+    },
+    {
+      IP: '192.168.1.10',
+      日期: '1/10',
+      CPU利用率: 1093,
+      内存利用率: 1003
     }
     ]
   },
@@ -288,6 +312,21 @@ var compsArr = [{
   chartData: morenData.table
 },
 {
+  text: '轮播表格',
+  imgClass: 'icon-n-table',
+  chartType: 'table',
+  thirdType: 'moveTable',
+  direction: 'top',
+  speed: 2,
+  pageNum: 5,
+  hdBgClr: '#1c2132',
+  bgClr: '',
+  clr: '#919cc1',
+  bdClr: '#c2c6d7',
+  bdpx: 0,
+  chartData: morenData.table
+},
+{
   text: '文本框',
   imgClass: 'icon-n-text',
   chartType: 'text',
@@ -396,6 +435,23 @@ var compsArr = [{
   chartData: morenData.single
 },
 {
+  text: '水波图',
+  width: 300,
+  height: 300,
+  imgClass: 'icon-n-waveball',
+  chartType: 've-gauge',
+  subType: 'progress',
+  secondType: 'liquidfill',
+  // chartType: 'liquidfill',
+  bdpx: 4,
+  bgClr: '#156acf',
+  clr: 'rgba(221, 221, 221, 0.9)',
+  bdClr: '#666f8b',
+  fontSize: 28,
+  ctLegendShow: 'true',
+  chartData: morenData.single
+},
+{
   text: '区域分布图',
   imgClass: 'icon-n-areaMap',
   chartType: 'v-map',
@@ -429,6 +485,15 @@ var compsArr = [{
   visualPosition: 'left',
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData
+},
+{
+  text: '视频流',
+  imgClass: 'icon-n-video',
+  chartType: 'video',
+  width: 300,
+  height: 300,
+  videoType: 'local',
+  videoSrc: ''
 }
   // {
   //   text: '地图',

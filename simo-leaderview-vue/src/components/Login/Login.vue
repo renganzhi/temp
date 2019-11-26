@@ -17,9 +17,9 @@ export default {
   data () {
     return {
       baseUrl: '',
-      code: 0,
-      name: '',
-      pwd: ''
+      code: '',
+      name: 'admin',
+      pwd: 'PvdD05Lzi7hl2I5Foizn16eIPpTdXfkx85bCrFZ+Ry3bBK0f5lqYI12T05VNR1IlbR7AiQ1X/6465hJk2p+Dz9a5h0451tUGhA/ZIEd7pyAmljstut+ymKBduMuoryw2fja/7/DV3b22L6lUJMloYi12mG122vDy4kFfgLAVgQ0='
     }
   },
   mounted: function () {

@@ -79,7 +79,7 @@ export default {
     $('#alert-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

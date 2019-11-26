@@ -303,7 +303,7 @@ $headHeight: 50px;
     }
   }
   .addData {
-    margin-left: 116px;
+    margin-left: 96px;
     background: transparent;
     color: #0088cc;
     border: 1px solid #0088cc;
@@ -391,12 +391,12 @@ $headHeight: 50px;
   .cols2 {
     label {
       display: inline-block;
-      width: 62px;
+      width: 81px;
       line-height: 28px;
     }
     select,
       input {
-      width: 195px !important;
+      width: 175px !important;
     }
   }
 
@@ -507,7 +507,7 @@ $headHeight: 50px;
   .barGradient {
     float: right;
     position: relative;
-    width: 195px;
+    width: 175px;
     height: 10px;
     right: 9px;
     top: 9px;
@@ -517,7 +517,7 @@ $headHeight: 50px;
   }
 
   .color-w200 {
-    width: 195px;
+    width: 175px;
     float: right;
     margin-right: 9px;
   }
@@ -659,18 +659,20 @@ $headHeight: 50px;
 
   #partsEdit-modal {
     .form-group {
-      line-height: 28px;
-      height: 28px;
+      min-height: 28px;
+      height: auto;
+      display: flex;
+      align-items: center;
     }
    .form-content .page-title {
       margin-right: 20px;
-      width: 150px;
+      width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     select {
-      width: 195px !important;
+      width: 175px !important;
     }
     .page-lable {
       font-weight: bold;

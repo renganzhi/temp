@@ -9,8 +9,10 @@
         <img v-else
              src="../../assets/homeEmpty.png" />
         <div>
-          <p v-show="isNewUser" style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
-          <p v-show="!isNewUser" style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
+          <p v-show="isNewUser"
+             style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+          <p v-show="!isNewUser"
+             style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
                   v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增页面</button>
@@ -38,7 +40,8 @@
     <div v-if="loadAll">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
-        <div class="fl btn-box" v-show="!isNewUser">
+        <div class="fl btn-box"
+             v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
                 title="编辑"
@@ -89,7 +92,7 @@ import LookCompose from './../Common/LookCompose'
 import Public from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage },
@@ -140,10 +143,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'videoTims'
+    ])
   },
   methods: {
     ...mapActions([
-      'changeAlertInfo'
+      'changeAlertInfo',
+      'initVideoTims'
     ]),
     hideModal (data) {
       this.addPage = false
@@ -356,7 +363,11 @@ export default {
               if (res.obj.colors) {
                 d.ctColors = res.obj.colors
               }
-              d.chartData = res.obj
+              if (d.chartType === 'marquee' || d.chartType === 'text') {
+                d.ctName = res.obj.info
+              } else {
+                d.chartData = res.obj
+              }
             },
             error: function () {
               if (gbs.inDev) {
@@ -503,9 +514,19 @@ export default {
     if (theme !== 'default') {
       this.defTheme = false
     }
+    var videoTims = this.videoTims
+    for (let i in videoTims) {
+      videoTims[i] = 0
+    }
+    this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
+    $(document).ajaxStart(function () {
+      $('#creen').hide()
+    }).ajaxSend(function () {
+      $('#creen').hide()
+    })
   },
   beforeDestroy: function () {
   },

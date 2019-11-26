@@ -235,7 +235,9 @@ export default {
       }
       //  && _.isObject(newV) && !_.isArray(newV)
       if (this.item.chartType === 've-gauge') {
-        this.settings.dataName.p = newV.name
+        if (this.item.ctLegendShow !== 'false') {
+          this.settings.dataName.p = newV.name
+        }
         this.settings.seriesMap.pro.detail.formatter = '{value}' + newV.unit
         this.settings.seriesMap.pro.axisLine.lineStyle.color[0][0] = newV.value / 100
         if (this.item.subType !== 'progress') {
@@ -277,7 +279,12 @@ export default {
           maxData = maxItem[key]
         }
       }
-      return (parseInt(maxData / 100) * 100 + 100)
+      if (parseInt(maxData / 100) === (maxData / 100)) {
+        // 整百
+        return maxData
+      } else {
+        return (parseInt(maxData / 100) * 100 + 100)
+      }
     },
     getColors: function (tempArr) {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
@@ -658,7 +665,7 @@ export default {
                   },
                   detail: {
                     offsetCenter: [0, 8],
-                    fontSize: 24,
+                    fontSize: _this.item.fontSize,
                     color: fontColor,
                     formatter: '{value}' + data.unit
                   }
@@ -1033,7 +1040,7 @@ export default {
       // chart.dispose() // 销毁
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

@@ -11,7 +11,7 @@ axios.interceptors.request.use(
   config => {
     // 这里配置全局loading
     if (!(/\.json/.test(config.url))) {
-      $('#screen').show()
+      // $('#screen').show()
     }
 
     return config
@@ -30,6 +30,9 @@ axios.interceptors.response.use(
   },
   error => {
     $('#screen').hide()
+    if (error.response && error.response.config.url.includes('findAlertLevelList')) {
+      return Promise.reject(error)
+    }
     if (gbs.inDev) {
       Notification({
         message: '连接错误！',

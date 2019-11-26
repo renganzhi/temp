@@ -22,7 +22,7 @@
 <script>
 export default {
   name: 'select2',
-  props: ['obj', 'value', 'mapSelect', 'sameName', 'disData'], // disData 不可被选中的数据项
+  props: ['obj', 'value', 'mapSelect', 'sameName', 'disData', 'multip', 'maxLength'], // disData 不可被选中的数据项
   data () {
     return {
       myData: {}
@@ -44,10 +44,13 @@ export default {
       // console.log('change select')
       vm.$emit('input', $(this).val())
     }).on('select2:selecting', function (e) {
-      if (vm.obj.type === 'multi-select' && e.params && e.params.args && e.params.args.data) {
+      if ((vm.obj.type === 'multi-select' || vm.multip) && e.params && e.params.args && e.params.args.data) {
         var v = $(this).val()
         // 这里设置最多可选项
         if (v && vm.obj.maxLength && (v.length > vm.obj.maxLength - 1)) {
+          return e.preventDefault()
+        }
+        if (v && vm.maxLength && (v.length > vm.maxLength - 1)) {
           return e.preventDefault()
         }
         if (e.params.args.data.id === '') { // 选择不限
@@ -59,7 +62,7 @@ export default {
         }
       }
     }).on('select2:unselecting', function (e) {
-      if (vm.obj.type === 'multi-select' && e.params && e.params.args && e.params.args.data) {
+      if ((vm.obj.type === 'multi-select' || vm.multip) && e.params && e.params.args && e.params.args.data) {
         var v = $(this).val()
         if (v && v.length === 1) {
           if (e.params.args.data.id === '') {
@@ -72,7 +75,7 @@ export default {
   },
   methods: {
     init: function (v) {
-      var multi = this.obj.type === 'multi-select'
+      var multi = this.obj.type === 'multi-select' || this.multip
       var value = typeof v === 'undefined' ? this.value : v
       // var maxLen = this.obj.maxLength || -1
       // if (this.mapSelect && this.sameName && !value) {
@@ -90,6 +93,9 @@ export default {
     value: function (value, oldV) {
       if (value !== oldV) {
         $(this.$el).val(value).trigger('change.select2')
+      }
+      if (this.maxLength && !$(this.$el).val()) {
+        $(this.$el).val(this.obj[0].value).trigger('change.select2')
       }
       if (this.mapSelect && this.sameName && !value) {
         if (oldV) {

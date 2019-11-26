@@ -40,8 +40,12 @@
               <label class="showSet">刷新周期</label>
               <div style="display: inline-block">
                 <input name="refreshTime"
+                       onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
                        v-model="refreshTime" /> 秒
               </div>
+              <label class="error"
+                     v-show="showErr"
+                     style="margin-left: 10px;margin-top: 5px;">{{errMsg}}</label>
             </div>
           </form>
           <!-- 表格数据 -->
@@ -87,17 +91,18 @@
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
                     <td>{{tr.name}}</td>
-                    <td @click="changeVisiable(index, tr.visible)">
-                      <div :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
+                    <td>
+                      <div @click="changeVisiable(index, tr.visible)"
+                           :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
                         <div></div>
                       </div>
                     </td>
                     <td>{{timeStamp2String(tr.lastUpdateTime)}}</td>
                     <td>
-                      <span v-show="tr.visible"><a class="simoLink"
-                           @click="moveTop(index)">置顶</a><a class="simoLink"
-                           @click="moveUp(index)">上移</a><a class="simoLink"
-                           @click="moveDown(index)">下移</a><a class="simoLink"
+                      <span v-show="tr.visible"><a :class="{'simoLink': true, 'disabled': index === 0}"
+                           @click="moveTop(index)">置顶</a><a :class="{'simoLink': true, 'disabled': index === 0}"
+                           @click="moveUp(index)">上移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
+                           @click="moveDown(index)">下移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
                            @click="moveBottom(index)">置底</a></span>
                     </td>
                   </tr>
@@ -131,9 +136,12 @@ export default {
   data () {
     return {
       changeSort: false,
+      showErr: false,
       intervalTime: '10',
       specialEffects: '1',
       refreshTime: 30,
+      visibleNum: 0, // 可见的个数
+      errMsg: '',
       tableData: []
     }
   },
@@ -180,6 +188,7 @@ export default {
           this.refreshTime = res.refreshTime || 3
           var datas = res.pages.sort(this.visibleSort)
           this.tableData = datas
+          this.visibleNum = this.getVisiableNum()
         } else {
           if (gbs.inDev) {
             Notification({
@@ -213,35 +222,36 @@ export default {
       })
     },
     changeVisiable (index, val) {
+      if (!this.tableData[index].visible && this.getVisiableNum() >= 20) {
+        if (gbs.inDev) {
+          Notification({
+            message: '可见页面不可超过20个！',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '可见页面不可超过20个！', 'info')
+        }
+        return
+      }
       this.tableData[index].visible = !val
       var temp = this.tableData.splice(index, 1)[0]
       if (val) {
         // 隐藏
         for (var i = index, len = this.tableData.length; i < len; i++) {
           if (!this.tableData[i].visible) {
+            this.visibleNum--
             return this.tableData.splice(i, 0, temp)
           }
         }
         this.tableData.push(temp)
       } else {
-        // 展示
-         if(this.getVisiableNum() >= 20) {
-           if (gbs.inDev) {
-            Notification({
-              message: '可见页面不可超过20个！',
-              position: 'bottom-right',
-              customClass: 'toast toast-info'
-            })
-          } else {
-            tooltip('', '可见页面不可超过20个！', 'info')
-          }
-          return
-        }
         if (index === 0) {
           return this.tableData.unshift(temp)
         }
         for (var j = index - 1; j >= 0; j--) {
           if (this.tableData[j].visible) {
+            this.visibleNum++
             return this.tableData.splice(j + 1, 0, temp)
           }
         }
@@ -281,6 +291,7 @@ export default {
       this.tableData.push(temp)
     },
     save: function () {
+      if (this.showErr) return
       this.tableData.forEach((item, index) => {
         this.tableData[index].pageIndex = index + 1
       })
@@ -320,6 +331,14 @@ export default {
     }
   },
   watch: {
+    refreshTime: function (newV) {
+      if (Number(newV) != Number(newV) || !newV || parseInt(newV) < 3) {
+        this.showErr = true
+        this.errMsg = '刷新周期最小值为3'
+      } else {
+        this.showErr = false
+      }
+    },
     showModal: function (newV) {
       if (newV) {
         this.getTableData()
@@ -331,7 +350,19 @@ export default {
     $('#homeSetting-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
+<style scoped lang="scss">
+.disabled {
+  color: rgb(74, 74, 78);
+  pointer-events: none;
+}
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  .disabled {
+    color: #e1e1e1 !important;
+  }
+}
+</style>

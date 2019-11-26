@@ -54,7 +54,7 @@ export default {
       this.typeCard = false
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

@@ -120,7 +120,7 @@ export default {
     this.numWidth =this.defConf[key][0]
     this.numHeight = this.defConf[key][1]
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>

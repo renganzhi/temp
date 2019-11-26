@@ -19,6 +19,9 @@ export default {
   computed: {
     numStr: function () {
       var num = Math.round(this.item.chartData.value * 100) / 100
+      if (num != num) {
+        return '--'
+      }
       num = num.toString()
       if (!num) {
         return null
@@ -70,7 +73,7 @@ export default {
       return result
     }
   },
-  destoryed: function () {
+  destroyed: function () {
   }
 }
 </script>
