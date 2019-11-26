@@ -625,7 +625,7 @@
                                 </div>
                                 <div class="form-group cols2" v-show="selectedItem.secondType !== 'liquidfill'">
                                     <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
-                                    <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '110px !important' : ''}">
+                                    <select v-model="selectedItem.colorType" @change="chgColorType" :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '100px !important' : ''}">
                                         <option value="defalut">默认</option>
                                         <option value="custom" v-show="alertLevel">系列</option>
                                     </select>
