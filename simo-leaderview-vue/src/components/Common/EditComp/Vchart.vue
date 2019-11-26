@@ -288,30 +288,43 @@ export default {
     },
     getColors: function (tempArr) {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
-        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
+        if (this.item.chartData.rows && this.item.chartData.columns) {
           // 判断是不是只有一个为0的数据
           let key = this.item.chartData.columns[1]
-          let firstVal = this.item.chartData.rows[0][key]
-          if (!firstVal || firstVal === '0') {
-            return 'rgba(51, 57, 75, 0.62)'
+          for (let i = 0, len = this.item.chartData.rows.length; i < len; i++) {
+            if (this.item.chartData.rows[i][key] && this.item.chartData.rows[i][key] !== '0') {
+              break
+            }
+            if (i === len - 1) {
+              return 'rgba(51, 57, 75, 0.62)'
+            }
           }
         }
       }
+
       if (this.item.chartType === 've-radar') {
-        if (this.item.chartData.rows && this.item.chartData.rows.length === 1 && this.item.chartData.columns) {
-          let keys = this.item.chartData.columns.slice(1)
+        if (this.item.chartData.rows && this.item.chartData.columns) {
+          let unKey = this.item.chartData.columns[0]
           let flag = 0
-          keys.forEach((item) => {
-            let _val = this.item.chartData.rows[0][item]
-            if (!_val || _val === '0') {
+          for (let i = 0, len = this.item.chartData.rows.length; i < len; i++) {
+            let obj = this.item.chartData.rows[i]
+            let objFlag = true
+            for (let key in obj) {
+              if (key !== unKey && obj[key] && obj[key] !== '0') {
+                objFlag = false
+                break
+              }
+            }
+            if (objFlag) {
               flag++
             }
-          })
-          if (flag === keys.length) {
+          }
+          if (flag === this.item.chartData.rows.length) {
             return 'rgba(51, 57, 75, 0.62)'
           }
         }
       }
+      // 以上为校验是否是全为0的值
       var type = this.item.chartType
       // LinearGradient: 右 下 左 上
       var direct = [0, 0, 1, 0]
@@ -915,7 +928,6 @@ export default {
             //     '资源': 'KMB'
             //   }
             // })
-
             obj.extend = $.extend(obj.extend, {
               tooltip: {
                 trigger: 'item'
