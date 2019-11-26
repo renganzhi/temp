@@ -332,9 +332,12 @@ export default {
   },
   watch: {
     refreshTime: function (newV) {
-      if (Number(newV) != Number(newV) || !newV || parseInt(newV) < 3) {
+      if (!newV) {
+        this.errMsg = '必填项'
         this.showErr = true
+      } else if (Number(newV) != Number(newV) || parseInt(newV) < 3) {
         this.errMsg = '刷新周期最小值为3'
+        this.showErr = true
       } else {
         this.showErr = false
       }
@@ -363,6 +366,9 @@ html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
   .disabled {
     color: #e1e1e1 !important;
+  }
+  .modal-body .form-group label.error {
+    color: #ef2446;
   }
 }
 </style>
