@@ -1634,7 +1634,9 @@ export default {
         })
         _this.syst.curUrl = api
         if (!gbs.inDev) {
-          titleShow('bottom', $('.e-legend'))
+          this.$nextTick(() => {
+            titleShow('bottom', $('.e-legend'))
+          })
         }
       })
     },
@@ -2751,9 +2753,9 @@ export default {
       this.provinceArr = data
     })
     $(document).ajaxStart(function () {
-      $('#creen').hide()
+      $('#screen').hide()
     }).ajaxSend(function () {
-      $('#creen').hide()
+      $('#screen').hide()
     })
     // 添加事件监听
     // if (document.addEventListener) {
