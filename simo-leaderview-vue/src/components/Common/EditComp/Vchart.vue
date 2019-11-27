@@ -376,6 +376,16 @@ export default {
                   } : null
                 }
               }
+            },
+            yAxis: {
+              axisLabel: {
+                interval: 0,
+                showMinLabel: true,
+                showMaxLabel: true,
+                formatter: function (params, index) {
+                  return params.length > 5 ? params.substr(0, 5) + '...' : params
+                }
+              }
             }
           })
           if (_this.item.subType === 'category') {

@@ -703,9 +703,9 @@
                                             <option v-for="v in syst.urlSel" :value="v.url" :key="v.key">{{v.name}}</option>
                                         </select>
                                     </div>
-                                    <div id="mainSystemConf" class="e-legend">
+                                    <div id="mainSystemConf">
                                         <div class="form-group cols2" v-for="(v,idx) in syst.curUrl" :key="idx">
-                                            <label v-if="v.type=='drop-down' || v.type=='multi-select'">{{v.name}}<i class="icon-n-tip" v-if="v.title" style="font-size: 16px; position: relative; top: 1px; left: 3px;" :title="v.title"></i></label>
+                                            <label v-if="v.type=='drop-down' || v.type=='multi-select'" class="e-legend">{{v.name}}<i class="icon-n-tip" v-if="v.title" style="font-size: 16px; position: relative; top: 1px; left: 3px;" :title="v.title"></i></label>
                                               <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                               </Select2>

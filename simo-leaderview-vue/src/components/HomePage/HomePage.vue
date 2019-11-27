@@ -523,9 +523,9 @@ export default {
       titleShow('top', $('#home-html'))
     }
     $(document).ajaxStart(function () {
-      $('#creen').hide()
+      $('#screen').hide()
     }).ajaxSend(function () {
-      $('#creen').hide()
+      $('#screen').hide()
     })
   },
   beforeDestroy: function () {

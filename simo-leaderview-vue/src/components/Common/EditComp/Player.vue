@@ -3,7 +3,7 @@
        :style="boxStyle">
     <div class="v-charts-data-empty"
          v-if="!item.videoSrc">请选择视频</div>
-    <video v-else
+    <video v-show="item.videoSrc"
            :width="item.width"
            :height="item.height"
            id="myVideo"
@@ -100,11 +100,13 @@ export default {
   },
   mounted () {
     // this.item.videoSrc = require('../../../assets/video/video1.mp4')
-    if (document.getElementById('home-html')) {
-      var time = this.videoTims[this.item.id]
-      this.autoPaly(time)
-    } else {
-      this.autoPaly()
+    if (this.item.videoSrc) {
+      if (document.getElementById('home-html')) {
+        var time = this.videoTims[this.item.id]
+        this.autoPaly(time)
+      } else {
+        this.autoPaly()
+      }
     }
   },
   beforeDestroy () {
