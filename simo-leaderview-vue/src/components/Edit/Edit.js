@@ -785,6 +785,9 @@ export default {
       if (ev !== 'context' && ev !== 'move' && !window.event.ctrlKey) {
         this.cancelSelected()
       }
+      if (ev === 'move') {
+        this.hideContext()
+      }
       if (window.event.ctrlKey && ev !== 'move' && item.slted) {
         this.showWindowBtn = false
         // 取消选中
@@ -2100,11 +2103,14 @@ export default {
       // if (type !=='compose') {
 
       // }
-      console.log('childResize:' + this.childResize)
+      let _top = ev.pageY
+      if (_top > document.body.clientHeight - 188) {
+        _top = document.body.clientHeight - 188
+      }
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
-          top: ev.pageY
+          top: _top
         })
         .toggle(true)
       this.selectedIndex = index
