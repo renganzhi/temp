@@ -157,7 +157,7 @@ export default {
           }
         ]
       }
-      if (this.item.chartData.unit.trim() === '%') {
+      // if (this.item.chartData.unit.trim() === '%') {
         this.option.series[0].label.formatter = this.item.chartData.value + this.item.chartData.unit
         let val = Number(this.item.chartData.value)
         if (val === val && val > 0) {
@@ -167,7 +167,7 @@ export default {
         } else {
           this.option.series[0].data = [-1]
         }
-      }
+      // }
       if (this.chart) {
         this.chart.setOption(this.option)
       }
