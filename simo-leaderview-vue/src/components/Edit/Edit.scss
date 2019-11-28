@@ -349,6 +349,13 @@ $headHeight: 50px;
       }
     }
   }
+
+  .select2 {
+    option, optgroup {
+      opacity: 0 !important;
+    }
+  }
+
   .setMapGrad {
     margin-bottom: 10px;
     span {

@@ -496,7 +496,14 @@ export default {
           obj.extend = $.extend(obj.extend, {
             series: {
               type: 'line',
-              showAllSymbol: false
+              showAllSymbol: false,
+              itemStyle: {
+                normal: {
+                  lineStyle:{
+                    width:1 // 设置线条粗细
+                  }
+                }
+              }
             },
             label: {
               show: _this.item.showPoint === 'true'
