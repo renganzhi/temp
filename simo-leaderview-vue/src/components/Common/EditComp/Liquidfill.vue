@@ -75,6 +75,10 @@ export default {
         this.empty = true
         return
       }
+      if (!this.item.chartData.value && this.item.chartData.value!==0) {
+        this.empty = true
+        return
+      }
       this.empty = false
       this.$nextTick(() => {
         this.initBall()
@@ -101,10 +105,6 @@ export default {
       // }],
       //   }]
       // }
-      if (this.item.chartData.rows && this.item.chartData.rows.length === 0) {
-        this.empty = true
-      }
-
       this.option = {
         series: [
           {
@@ -174,7 +174,11 @@ export default {
     }
   },
   mounted () {
-    this.initBall()
+    if ((this.item.chartData.rows && this.item.chartData.rows.length === 0) || (!this.item.chartData.value && this.item.chartData.value!==0)) {
+      this.empty = true
+    } else {
+      this.initBall()
+    }
   },
   beforeDestroyed () {
     this.chart.dispose()

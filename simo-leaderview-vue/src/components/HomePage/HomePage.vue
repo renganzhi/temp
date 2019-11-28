@@ -349,7 +349,7 @@ export default {
           }) */
         }
 
-        if (d.url) {
+        if (d.ctDataSource == 'system' && d.url) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
