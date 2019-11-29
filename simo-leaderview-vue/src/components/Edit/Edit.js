@@ -56,7 +56,7 @@ export default {
       selectedIndex: null,
       chartNum: [],
       miniW: 20,
-      minIndex: 499, // 当前最低层级
+      minIndex: 501, // 当前最低层级
       maxIndex: 500, // 当前最高层级
       paintInput: {
         width: 1920, // 输入的画布大小
@@ -1128,6 +1128,7 @@ export default {
         _bottom = arr[0].y + arr[0].height
       // var _index = 500
       var _index = this.maxIndex // 没有图层属性的旧数据
+      var comZindex = [arr[0].zIndex] // 选中元素的图层
       var minIndexItem = _.minBy(arr, function (item) { return item.zIndex }) // 旧数据会返回undefined
       // var maxIndexItem = _.maxBy(arr, function (item) { return item.zIndex })
       // console.log(minIndexItem.zIndex, maxIndexItem.zIndex)
@@ -1136,6 +1137,7 @@ export default {
       }
       // 获取合并之后的组件的范围
       for (var i = 1, len = arr.length; i < len; i++) {
+        comZindex.push(arr[i].zIndex)
         if (arr[i].x < _left) {
           _left = arr[i].x
           leftIndex = i
@@ -1156,6 +1158,7 @@ export default {
         //   _index = arr[i].zIndex
         // }
       }
+      comZindex.sort() // 对图层进行从小到大排序
       // 为每一个内部组件重新计算相对位置
       for (var i = 0, len = arr.length; i < len; i++) {
         // arr[i].left = arr[i].x - _left
@@ -1163,6 +1166,7 @@ export default {
 
         arr[i].x = arr[i].x - _left
         arr[i].y = arr[i].y - _top
+        arr[i].zIndex = comZindex.indexOf(arr[i].zIndex) + 1
         arr[i].slted = false
         arr[i].oldX = arr[i].x
         arr[i].oldY = arr[i].y
@@ -1190,6 +1194,8 @@ export default {
       this.combinList.push(newObj)
       this.combinList[this.combinList.length - 1].child = arr.concat()
       this.removeItem()
+      comZindex.shift() // 删除第一个
+      this.composeChgIndex(comZindex) // 改变其它元件的图层
 
       this.selectedItem = this.combinList[this.combinList.length - 1]
       this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
@@ -1197,6 +1203,27 @@ export default {
       if (this.selectArea.choose) {
         this.selectArea.choose = false
         $('.tempDiv').remove()
+      }
+    },
+    composeChgIndex: function (indexArr) {
+      indexArr = indexArr.map((item, i)=> {
+        return item-i
+      })
+      for (let y = 0, len = indexArr.length; y < len; y++) {
+        let z = indexArr[y]
+        if (z) {
+          for (let x = 0, xLen = this.chartNum.length; x < xLen; x++) {
+            if (this.chartNum[x].zIndex > z) {
+              this.chartNum[x].zIndex -= 1
+            }
+          }
+          for (let x = 0, xLen = this.combinList.length; x < xLen; x++) {
+            if (this.combinList[x].zIndex > z) {
+              this.combinList[x].zIndex -= 1
+            }
+          }
+        }
+        this.maxIndex--
       }
     },
     removeItem: function () {
@@ -1213,31 +1240,34 @@ export default {
       this.chooseIndexs = []
       this.chooseItems = []
     },
-    itemIndexAdd: function (index, zIndex) {
+    itemIndexAdd: function (index, zIndex, len) {
       // 组合元素的index， 该组合元素的zIndex
       this.chartNum.forEach((item) => {
         if (item.zIndex > zIndex) {
-          item.zIndex++
+          item.zIndex += len
         }
       })
       this.combinList.forEach((item, i) => {
         if (index !== i && item.zIndex > zIndex) {
-          item.zIndex++
+          item.zIndex += len
         }
       })
+      this.maxIndex += len
     },
     // 取消组合
     itemSplit: function () {
       var index = this.selectedIndex
-      var tempArr = _.sortBy(this.combinList[index].child, function (o) { return o.zIndex })
+      // var tempArr = _.sortBy(this.combinList[index].child, function (o) { return o.zIndex })
+      var tempArr = this.combinList[index].child
+      var length = tempArr.length
       var zIndex = this.combinList[index].zIndex
-      this.itemIndexAdd(index, zIndex)
+      this.itemIndexAdd(index, zIndex, length - 1)
       // 图层比他大的全部加1
       this.chooseIndexs = []
       tempArr.forEach((item, i) => {
         // item.x = parseInt((item.left + this.combinList[index].x) * this.combinList[index].sacleX)
         // item.y = parseInt((item.top + this.combinList[index].y) * this.combinList[index].sacleY)
-        item.zIndex = zIndex + i
+        item.zIndex = item.zIndex + zIndex - 1
         item.x = item.x + this.combinList[index].x
         item.y = item.y + this.combinList[index].y
         item.id = item.id + parseInt(Math.random() * 1000) // 复制的元素id一样
@@ -1254,42 +1284,114 @@ export default {
     },
     // 下移
     downward: function () {
-      var z = this.selectedItem.zIndex || 500
-      if (z > this.minIndex) {
-        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.maxIndex) {
-          this.maxIndex -= 1
+      if (this.childResize) {
+        var z = this.selectedItem.zIndex
+        if (z > 1) {
+          let chgIndex = _.findIndex(this.combinList[this.parentId].child, function (i) { return i.zIndex === z - 1 })
+          let chgItem = this.combinList[this.parentId].child[chgIndex]
+          this.$set(chgItem, 'zIndex', z)
+          this.$set(this.selectedItem, 'zIndex', z - 1)
         }
-        this.$set(this.selectedItem, 'zIndex', z - 1)
-        if (z - 1 < this.minIndex) {
-          this.minIndex = z - 1
+      } else {
+        var z = this.selectedItem.zIndex || 500
+        if (z > this.minIndex) {
+          let chgIndex = _.findIndex(this.chartNum, function (i) { return i.zIndex === z - 1 })
+          let chgItem = {}
+          if (chgIndex === -1) {
+            chgIndex = _.findIndex(this.combinList, function (i) { return i.zIndex === z - 1 })
+            chgItem = this.combinList[chgIndex]
+          } else {
+            chgItem = this.chartNum[chgIndex]
+          }
+          this.$set(chgItem, 'zIndex', z)
+          this.$set(this.selectedItem, 'zIndex', z - 1)
         }
       }
     },
     // 上移
     upward: function () {
-      var z = this.selectedItem.zIndex || 500
-      if (z < this.maxIndex) {
-        if (this.selectedItem.zIndex && this.selectedItem.zIndex === this.minIndex) {
-          this.minIndex += 1
+      if (this.childResize) {
+        var maxIndex = this.combinList[this.parentId].child.length
+        var z = this.selectedItem.zIndex
+        if (z < maxIndex) {
+          let chgIndex = _.findIndex(this.combinList[this.parentId].child, function (i) { return i.zIndex === z + 1 })
+          let chgItem = this.combinList[this.parentId].child[chgIndex]
+          this.$set(chgItem, 'zIndex', z)
+          this.$set(this.selectedItem, 'zIndex', z + 1)
         }
+      } else {
+        var z = this.selectedItem.zIndex || 500
+        if (z < this.maxIndex) {
+          let chgIndex = _.findIndex(this.chartNum, function (i) { return i.zIndex === z + 1 })
+          let chgItem = {}
+          if (chgIndex === -1) {
+            chgIndex = _.findIndex(this.combinList, function (i) { return i.zIndex === z + 1 })
+            chgItem = this.combinList[chgIndex]
+          } else {
+            chgItem = this.chartNum[chgIndex]
+          }
+        this.$set(chgItem, 'zIndex', z)
         this.$set(this.selectedItem, 'zIndex', z + 1)
-        if (z + 1 > this.maxIndex) {
-          this.maxIndex = z + 1
         }
       }
     },
     toBottom: function () {
-      var z = this.selectedItem.zIndex || 500
-      if (z > this.minIndex) {
-        this.minIndex--
-        this.$set(this.selectedItem, 'zIndex', this.minIndex)
+      if (this.childResize) {
+        var z = this.selectedItem.zIndex
+        if (z && z > 1) {
+          let tempArr = this.combinList[this.parentId].child
+          tempArr.forEach((item) => {
+            if (item.zIndex < z) {
+              item.zIndex++
+            }
+          })
+          this.$set(this.selectedItem, 'zIndex', 1)
+        }
+      } else {
+        var z = this.selectedItem.zIndex
+        if (z) {
+          this.chartNum.forEach((item) => {
+            if (item.zIndex < z) {
+              item.zIndex++
+            }
+          })
+          this.combinList.forEach((item) => {
+            if (item.zIndex < z) {
+              item.zIndex++
+            }
+          })
+          this.$set(this.selectedItem, 'zIndex', this.minIndex)
+        }
       }
     },
     toTop: function () {
-      var z = this.selectedItem.zIndex || 500
-      if (z < this.maxIndex) {
-        this.maxIndex++
-        this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+      if (this.childResize) {
+        var z = this.selectedItem.zIndex
+        var maxIndex = this.combinList[this.parentId].child.length
+        if (z && z < maxIndex) {
+          let tempArr = this.combinList[this.parentId].child
+          tempArr.forEach((item) => {
+            if (item.zIndex > z) {
+              item.zIndex--
+            }
+          })
+          this.$set(this.selectedItem, 'zIndex', maxIndex)
+        }
+      } else {
+        var z = this.selectedItem.zIndex
+        if (z) {
+          this.chartNum.forEach((item) => {
+            if (item.zIndex > z) {
+              item.zIndex--
+            }
+          })
+          this.combinList.forEach((item) => {
+            if (item.zIndex > z) {
+              item.zIndex--
+            }
+          })
+          this.$set(this.selectedItem, 'zIndex', this.maxIndex)
+        }
       }
     },
     // 通过chooseIndex 获取 选中的元件集合
@@ -2295,6 +2397,7 @@ export default {
     },
     deleteOne: function (type, tempArr) {
       var i = 0
+      var indexArr = []
       tempArr = tempArr.sort(function (a, b) {
         return a - b
       })
@@ -2303,10 +2406,65 @@ export default {
       } else {
         _type = 'combinList'
       }
-      tempArr.forEach(item => {
-        this[_type].splice(item - i, 1)
-        i++
+      for (let y = 0, len = tempArr.length; y < len; y++) {
+        let item = tempArr[y]
+        let z = this[_type][item].zIndex
+        indexArr.push(z)
+      }
+      indexArr.sort()
+      indexArr = indexArr.map((item, i)=> {
+        return item-i
       })
+      for (let y = 0, len = tempArr.length; y < len; y++) {
+        let item = tempArr[y]
+        let z = indexArr[y]
+        if (z) {
+          for (let x = 0, xLen = this.chartNum.length; x < xLen; x++) {
+            if (this.chartNum[x].zIndex > z) {
+              this.chartNum[x].zIndex -= 1
+            }
+          }
+          for (let x = 0, xLen = this.combinList.length; x < xLen; x++) {
+            if (this.combinList[x].zIndex > z) {
+              this.combinList[x].zIndex -= 1
+            }
+          }
+        }
+        this[_type].splice(item - i, 1)
+        this.maxIndex--
+        i++
+      }
+    },
+    deleteOneOld: function (type, tempArr) {
+      var i = 0
+      tempArr = tempArr.sort(function (a, b) {
+        return a - b
+      })
+      if (type === 'item') {
+        var _type = 'chartNum'
+      } else {
+        _type = 'combinList'
+      }
+      
+      for (let y = 0, len = tempArr.length; y < len; y++) {
+        let item = tempArr[y]
+        let z = this[_type][item].zIndex
+        if (z) {
+          for (let x = 0, xLen = this.chartNum.length; x < xLen; x++) {
+            if (this.chartNum[x].zIndex > z) {
+              this.chartNum[x].zIndex -= 1
+            }
+          }
+          for (let x = 0, xLen = this.combinList.length; x < xLen; x++) {
+            if (this.combinList[x].zIndex > z) {
+              this.combinList[x].zIndex -= 1
+            }
+          }
+        }
+        this[_type].splice(item - i, 1)
+        this.maxIndex--
+        i++
+      }
     },
     /* delOne: function () {
       if (this.selectedItem.hasOwnProperty('chartType')) {
