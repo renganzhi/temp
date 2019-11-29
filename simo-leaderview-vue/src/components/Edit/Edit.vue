@@ -724,9 +724,9 @@
                                   <div class="form-group cols2">
                                     <label>展示范围</label>
                                     <select v-model="selectedItem.mapLevel" @change="chgMapLevel">
-                                        <option value="country">国家级</option>
-                                        <option value="province">省级</option>
-                                        <option value="city">地市级</option>
+                                        <option value="country">全国地图</option>
+                                        <option value="province">省级地图</option>
+                                        <option value="city">地市级地图</option>
                                     </select>
                                   </div>
                                   <div v-show="selectedItem.mapLevel!=='country'" @click="chgMapLevel" class="form-group cols2">
@@ -738,14 +738,14 @@
                                     <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
                                   </div>
                                   <div class="form-group cols2" v-if="selectedItem.chartType==='v-scatter'">
-                                    <label>数据设置</label><button class="addData" @click="addAlertLevel">添加数据点</button>
+                                    <label class="e-legend">数据设置<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData" @click="addAlertLevel">添加数据点</button>
                                     <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                                   </div>
 
                                   <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
-                                    <label>数据设置</label>
+                                    <label class="e-legend">数据设置<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="设置每个地区的分布数量"></i></label>
                                     <div class="setMapData" style="height: 180px;">
-                                      <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" type="number" v-model="selectMapData[area.name]" :name="area.name"></div>
+                                      <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" autocomplete="off" oninput="value=value.replace(/[^\d]/g,'')" v-model="selectMapData[area.name]" :name="area.name"></div>
                                     </div>
                                   </div>
                                   <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'" style="position: relative;">
@@ -755,7 +755,7 @@
                                         <div>与其余量级区间重合，是否合并为一个量级?</div>
                                         <span class="tipbtn" @click="sureLevelTips">是</span><span class="tipbtn" @click="cancelLevelTips">否</span>
                                       </div>
-                                    <label>数据量级</label>
+                                    <label class="e-legend">数据量级<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"></i></label>
                                     <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
                                       <span>量级一</span>
                                       <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -

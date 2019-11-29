@@ -321,6 +321,13 @@ export default {
       })
       this.extend.visualMap.pieces = piecesArr
     }
+    if (this.item.mapLevel === 'country') {
+      this.item.provinceCode = ''
+      this.item.cityCode = ''
+    }
+    if (this.item.mapLevel === 'province') {
+      this.item.cityCode = ''
+    }
     // setTimeout(() => {
     //   var code = 100000
     //   var _static = gbs.inDev ? 'static' : 'leaderview-static'
