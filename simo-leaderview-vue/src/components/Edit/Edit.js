@@ -2844,30 +2844,19 @@ export default {
         }
       } else {
         if (newValue === 'province') {
-          if (!_this.selectedItem.provinceCode) {
-            _this.selectedItem.provinceCode = _this.provinceArr[0].value
-            _this.getMapData(_this.selectedItem.provinceCode).then((data) => {
-              _this.cityArr = data
-              _this.areaArr = data
-              if (this.selectedItem.chartType === 'v-map') {
-                this.initLevelData()
-              }
-              if (this.selectedItem.chartType === 'v-scatter') {
-                this.clearAlertMap()
-              }
-            })
-          } else {
-            _this.areaArr = _this.cityArr
+          if (!this.selectedItem.provinceCode) {
+            this.selectedItem.provinceCode = this.provinceArr[0].value
+          }
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.cityArr = data
+            this.areaArr = data
             if (this.selectedItem.chartType === 'v-map') {
               this.initLevelData()
             }
             if (this.selectedItem.chartType === 'v-scatter') {
               this.clearAlertMap()
             }
-          }
-          // if (this.selectedItem.chartType === 'v-scatter') {
-          //   this.clearAlertMap()
-          // }
+          })
         }
       }
     },

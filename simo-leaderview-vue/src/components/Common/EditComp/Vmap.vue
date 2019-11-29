@@ -266,6 +266,13 @@ export default {
     }
   },
   mounted: function () {
+    if (this.item.mapLevel === 'country') {
+      this.item.provinceCode = ''
+      this.item.cityCode = ''
+    }
+    if (this.item.mapLevel === 'province') {
+      this.item.cityCode = ''
+    }
   },
   methods: {
     formatPieces (piecesData) {
