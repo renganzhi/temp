@@ -429,6 +429,7 @@ export default {
       this.rawRight = newRight
       this.$emit('bodymove', this.item, this.rect)
       if (this.insideFlag) {
+        this.rect.id = this.item.id
         this.$emit('childResize', this.rect)
       }
       // this.$emit('dragidex', this.rect); //  多加一个传值，告诉父组件，当前事件位于哪一个上面
@@ -618,6 +619,7 @@ export default {
       //     debugger
       this.$emit('resizing', this.item, this.rect)
       if (this.insideFlag) {
+        this.rect.id = this.item.id
         this.$emit('childResize', this.rect)
       }
     },
