@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :style="barValueStyle">
-      <span class="fl">{{item.chartData.name}}</span>{{persent}}{{item.chartData.unit}}</div>
+      <span class="fl">{{item.chartData.name}}</span>{{persent}}<span v-show="persent !== '暂无数据'">{{item.chartData.unit}}</span></div>
     <div :style="barBoxStyle">
       <div :style="barStyle"></div>
     </div>
@@ -37,7 +37,7 @@ export default {
     },
     barStyle: function () {
       return {
-        width: this.persent + '%',
+        width: (this.persent === '暂无数据' ? 0 : this.persent) + '%',
         height: (this.item.proHeight || 16) + 'px',
         // backgroundColor: this.item.barClr,
         background: this.item.barClrs ? 'linear-gradient(45deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(45deg, ' + this.item.barClr + ', ' + this.item.barClr + ')',
@@ -48,7 +48,11 @@ export default {
       }
     },
     persent: function () {
-      var value = Number(this.item.chartData.value)
+      var value = this.item.chartData.value
+      if (!value && value !== 0) {
+        return '暂无数据'
+      }
+      value = Number(value)
       if (value > 100) {
         value = 100
       } else if (value < 0 || !value) {

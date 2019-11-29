@@ -838,9 +838,9 @@
           <div class="modal-body" style="height: 450px; overflow: auto;">
             <form autocomplete="off" style="margin-bottom: 20px;" v-for="(list, i) in syst.windowObj" :key="i">
               <div class="form-group modal-label" style="width: 100%; min-height: 30px; height: auto;">
-                <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标： {{list.indicator.name}}</label>
+                <label class="page-lable page-title"><i class="icon-n-arrowRight"></i>指标分类： {{list.indicator.name}}</label>
                 <div class="page-lable-content" style="margin-left: 32px;" v-if="list.fields && list.fields.length > 0">
-                  <span>属性：</span>
+                  <span>指标：</span>
                   <Select2 v-model="syst.windowData[i].fields" :mapSelect="true" :multip="list.indicator.multipleField" :maxLength="5" :obj="list.fields"></Select2>
                 </div>
               </div>
