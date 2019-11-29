@@ -97,6 +97,7 @@ export default {
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height
+      attr.id = item.id
       this.$emit('resized', attr)
     },
     // 子组件改变位置或大小
