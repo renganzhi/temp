@@ -73,20 +73,19 @@ export default {
           },
           // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
           pieces: [
-            { value: 1, color: '#02D4A0' },
-            { value: 2, color: '#FFFF00' },
-            { value: 3, color: '#FFB445' },
-            { value: 4, color: '#FF6E00' },
-            { value: 5, color: '#FF0000' },
-            { value: 6, color: '#87CEFA' }
+            { value: 1, color: '#02D4A0', label: '通知' },
+            { value: 2, color: '#FFFF00', label: '警告' },
+            { value: 3, color: '#FFB445', label: '一般' },
+            { value: 4, color: '#FF6E00', label: '严重' },
+            { value: 5, color: '#FF0000', label: '致命' },
+            { value: 6, color: '#87CEFA', label: '提示' }
           ],
           color: ['#E0022B', '#E09107', '#A3E00B'],
-          show: false,
-          // show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
+          show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
           hoverLink: true,
           showLabel: true,
           textStyle: {
-            color: '#fff'
+            color: this.item.themeType === '1' ? '#fff' : '#50607c'
           }
         },
         tooltip: {
@@ -234,9 +233,10 @@ export default {
       this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
       this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
       this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
+      this.extend.visualMap.textStyle.color = newV === '1' ? '#fff' : '#50607c'
     },
     'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.series.label.normal.show = newV === 'true'
+      this.extend.visualMap.show = newV === 'true'
     },
     'item.visualPosition': function (newV, oldValue) {
       // this.extend.visualMap.show = newV === 'true'
@@ -253,7 +253,6 @@ export default {
       this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
     },
     'item.mapLevel': function (newV, oldV) {
-      console.log('v-scatter mapLevel:' + oldV + ' to ' + newV)
       this.$nextTick(() => {
         if (newV === 'city') {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
@@ -272,9 +271,7 @@ export default {
       })
     },
     'item.provinceCode': function (newV) {
-      console.log(newV)
       if (this.item.mapLevel === 'province') {
-        console.log('v-scatter procode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.extend.geo.map = 'map_' + newV
@@ -283,8 +280,6 @@ export default {
     },
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
-        console.log('v-scatter cityCode:' + oldV + ' to ' + newV)
-        console.log('citycode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.extend.geo.map = 'map_' + newV
@@ -303,7 +298,6 @@ export default {
     },
     'item.chartData': function (newV, oldV) {
       if (!_.isEqual(newV, oldV)) {
-        console.log('不等')
         this.extend.series.data = this.formatData(newV)
         this.item.scatterPoint = this.extend.series.data
       }
@@ -316,7 +310,7 @@ export default {
     var piecesArr = []
     if (this.alertInfo && this.alertInfo.length > 0) {
       _.forEach(this.alertInfo, function (item) {
-        let obj = { 'value': item.level, color: item.color }
+        let obj = { 'value': item.level, color: item.color, label: item.name }
         piecesArr.push(obj)
       })
       this.extend.visualMap.pieces = piecesArr
