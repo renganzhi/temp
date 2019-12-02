@@ -1,35 +1,114 @@
 <template>
-  <textarea :style="textStyle"
+  <div :style="wrapStyle">
+    <div v-show="item.ctDataSource === 'system' && item.chartData.state" ref="titleBox" :style="titleStyle">
+      <span :style="stateSty" v-show="item.chartData.state">【{{item.chartData.state}}】</span>
+      <span>{{item.chartData.ip}}</span>
+      <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
+      <span></span>
+    </div>
+     <textarea :style="textStyle"
             v-model="item.ctName"
+            ref="vtextarea"
             :disabled="dis"></textarea>
+  </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'vtextarea',
   props: ['item', 'disabled'],
   data () {
     return {
-
+      stateCol: '',
+      titleHeight: 0,
+      textHeight: 50
     }
   },
   methods: {
     getMessage (vtextarea) {
-      vtextarea.$el.focus() // 双击穿透，使文本框获得焦点
+      // vtextarea.$el.focus() // 双击穿透，使文本框获得焦点
+      if (this.item.ctDataSource === 'static') {
+        this.$refs.vtextarea.focus()
+      }
+    },
+    updateHeight () {
+      if (this.item.ctDataSource === 'system') {
+        this.$nextTick(() => {
+          this.titleHeight = this.$refs.titleBox.getBoundingClientRect().height
+          this.textHeight = this.item.height - this.titleHeight
+        })
+      } else {
+        this.titleHeight = 0
+        this.textHeight = this.item.height - this.titleHeight
+      }
+    },
+    updateColor () {
+      var _this = this
+      let index = _.findIndex(this.alertInfo, function (i) {
+        return i.name === _this.item.chartData.state
+      })
+      if (index !== -1) {
+        this.stateCol = this.alertInfo[index].color
+      }
     }
   },
+  mounted () {
+    this.updateColor()
+  },
   computed: {
+    ...mapGetters([
+      'alertInfo'
+    ]),
     dis () {
       return !this.disabled
+    },
+    wrapStyle () {
+      return {
+        width: this.item.width + 'px !important',
+        height: this.item.height + 'px !important',
+        overflow: 'hidden',
+        backgroundColor: this.item.bgClr + ' !important',
+        border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
+      }
+    },
+    stateSty () {
+      return {
+        color: this.stateCol
+      }
+    },
+    titleStyle: function () {
+      return {
+        paddingLeft: '10px',
+        paddingTop: '10px',
+        color: this.item.clr + ' !important',
+        fontSize: this.item.fontSize + 'px !important' 
+      }
     },
     textStyle: function () {
       return {
         width: this.item.width + 'px !important',
-        height: this.item.height + 'px !important',
+        height: this.textHeight + 'px !important',
         color: this.item.clr + ' !important',
-        backgroundColor: this.item.bgClr + ' !important',
-        border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important',
-        fontSize: this.item.fontSize + 'px !important'
+        fontSize: this.item.fontSize + 'px !important',
+        border: 'none !important'
       }
+    }
+  },
+  watch: {
+    'item.ctDataSource': function () {
+      this.updateHeight()
+      this.updateColor()
+    },
+    'item.chartData': function () {
+      if (this.item.ctDataSource === 'system') {
+        this.updateColor()
+      }
+    },
+    'item.fontSize': function () {
+      this.updateHeight()
+    },
+    'item.height': function () {
+      this.updateHeight()
     }
   },
   destroyed: function () {

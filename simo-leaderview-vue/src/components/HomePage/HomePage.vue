@@ -365,7 +365,8 @@ export default {
               }
               if (d.chartType === 'marquee' || d.chartType === 'text') {
                 d.ctName = res.obj.info
-              } else {
+              } 
+              if (d.chartType !== 'marquee') {
                 d.chartData = res.obj
               }
             },

@@ -336,7 +336,8 @@ var compsArr = [{
   bgClr: '',
   clr: '#666f8b',
   bdClr: '#3d445a',
-  ctName: '请输入文本框内容'
+  ctName: '请输入文本框内容',
+  chartData: {}
 },
 {
   text: '跑马灯',
