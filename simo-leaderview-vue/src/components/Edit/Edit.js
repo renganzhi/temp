@@ -1872,6 +1872,9 @@ export default {
           _this.selectedItem.params = param
           if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
             _this.selectedItem.ctName = data.obj.info
+            if (_this.selectedItem.chartType === 'text') {
+              _this.selectedItem.chartData = data.obj
+            }
           }
         },
         error: function () {
