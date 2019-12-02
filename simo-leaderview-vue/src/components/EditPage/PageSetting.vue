@@ -247,6 +247,7 @@ export default {
         this.tableData.push(temp)
       } else {
         if (index === 0) {
+          this.visibleNum++
           return this.tableData.unshift(temp)
         }
         for (var j = index - 1; j >= 0; j--) {
