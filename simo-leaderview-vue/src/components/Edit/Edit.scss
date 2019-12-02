@@ -350,7 +350,7 @@ $headHeight: 50px;
     }
   }
 
-  .select2 {
+  .select2, .select2-hidden-accessible, select[multiple] {
     option, optgroup {
       opacity: 0 !important;
     }
