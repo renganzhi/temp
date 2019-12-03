@@ -90,6 +90,15 @@ public class LeaderViewInit implements InitializingBean {
 
 	private void subscribeAuthority() {
 		try {
+			// 域信息变更广播
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_DOMAIN_NOTIFY, JSONArray.class).subscribe(
+					JMSFlux.Catch(authorityHandler::handle, LoggerFactory.getLogger(LeaderViewAuthorityHandler.class))
+			);
+
+			// 资源域变更广播
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_NE_DOMAIN_NOTIFY, JSONObject.class).subscribe(
+					JMSFlux.Catch(authorityHandler::handleDomainChange, LoggerFactory.getLogger(LeaderViewAuthorityHandler.class))
+			);
 
 			// 订阅工作移交
 			rqFactory.createTopicFlux(EventTopicConstants.SIMO_HANDOVER_NOTIFY, String.class).subscribe(
