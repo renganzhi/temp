@@ -6,12 +6,12 @@
     <video v-show="item.videoSrc"
            :width="item.width"
            :height="item.height"
-           id="myVideo"
            ref="videoItem"
            loop="loop"
            autoplay="autoplay"
            @error="playError"
-           controls="controls"
+           controls
+           controlsList='nodownload'
            style="outline: none !important;"
            :src="item.videoSrc">
       您的浏览器不支持 video 标签。
@@ -84,6 +84,7 @@ export default {
     autoPaly (time) {
       try {
         var audio = this.$refs.videoItem
+        audio['disablePictureInPicture'] = true
         if (time) {
           audio.currentTime = Number(time)
         }
