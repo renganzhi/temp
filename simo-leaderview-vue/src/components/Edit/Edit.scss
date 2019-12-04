@@ -487,6 +487,10 @@ $headHeight: 50px;
       height: 30px;
       line-height: 30px;
       padding: 0 12px;
+      cursor: pointer;
+    }
+    li:hover {
+      color: #0088cc;
     }
   }
 
@@ -795,12 +799,15 @@ html[data-theme="blackWhite"]{
     background-color: #fff;
     color:#50607c;
   }
+  #mainEdit-edit .context-menu-item:hover {
+    color:#026bf4;
+  }
   .color-w15 {
     background: #fff;
   }
 }
 html[data-theme="blueWhite"] {
-  .m-right .active, .set-map {
+  #mainEdit-edit .m-right .active, .set-map {
     color: #60abff;
   }
   #mainEdit-edit .menu-list {
@@ -810,6 +817,9 @@ html[data-theme="blueWhite"] {
   #mainEdit-edit .context-menu-item {
     background-color: #fff;
     color:#666666;
+  }
+  #mainEdit-edit .context-menu-item:hover {
+    color:#60abff;
   }
 }
 html[data-theme="default"] {
