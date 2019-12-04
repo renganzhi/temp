@@ -370,15 +370,17 @@ export default {
                 d.chartData = res.obj
               }
             },
-            error: function () {
-              if (gbs.inDev) {
-                Notification({
-                  message: '连接错误！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
-              } else {
-                tooltip('', '连接错误！', 'error')
+            error: function (xhr) {
+              if (xhr.status != 776) {
+                if (gbs.inDev) {
+                  Notification({
+                    message: '连接错误！',
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', '连接错误！', 'error')
+                }
               }
             }
           })
