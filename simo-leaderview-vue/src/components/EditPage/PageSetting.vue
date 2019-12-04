@@ -240,20 +240,17 @@ export default {
         // 隐藏
         for (var i = index, len = this.tableData.length; i < len; i++) {
           if (!this.tableData[i].visible) {
-            this.visibleNum--
             return this.tableData.splice(i, 0, temp)
           }
         }
         this.tableData.push(temp)
       } else {
         if (index === 0) {
-          this.visibleNum++
           return this.tableData.unshift(temp)
         }
         for (var j = index - 1; j >= 0; j--) {
           if (this.tableData[j].visible) {
-            this.visibleNum++
-            return this.tableData.splice(j + 1, 0, temp)
+           return this.tableData.splice(j + 1, 0, temp)
           }
         }
         this.tableData.unshift(temp)
@@ -332,6 +329,9 @@ export default {
     }
   },
   watch: {
+    tableData: function () {
+      this.visibleNum = this.getVisiableNum()
+    },
     refreshTime: function (newV) {
       if (!newV) {
         this.errMsg = '必填项'
