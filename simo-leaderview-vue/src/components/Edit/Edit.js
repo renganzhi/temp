@@ -2924,6 +2924,11 @@ export default {
     // stateBar.removeEventListener('mousedown', this.userChoose)
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
+    $(document).ajaxStart(function () {
+      $('#screen').show()
+    }).ajaxSend(function () {
+      $('#screen').show()
+    })
   },
   destroyed: function () {
     // $.comps.editHome = null;
