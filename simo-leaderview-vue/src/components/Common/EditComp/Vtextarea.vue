@@ -1,6 +1,6 @@
 <template>
   <div :style="wrapStyle">
-    <div v-show="item.ctDataSource === 'system' && item.chartData.state" ref="titleBox" :style="titleStyle">
+    <div v-if="item.ctDataSource === 'system' && item.chartData && item.chartData.state" ref="titleBox" :style="titleStyle">
       <span :style="stateSty" v-show="item.chartData.state">【{{item.chartData.state}}】</span>
       <span>{{item.chartData.ip}}</span>
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
@@ -43,12 +43,14 @@ export default {
       }
     },
     updateColor () {
-      var _this = this
-      let index = _.findIndex(this.alertInfo, function (i) {
-        return i.name === _this.item.chartData.state
-      })
-      if (index !== -1) {
-        this.stateCol = this.alertInfo[index].color
+      if (this.item.chartData && this.item.chartData.state) {
+        var _this = this
+        let index = _.findIndex(this.alertInfo, function (i) {
+          return i.name === _this.item.chartData.state
+        })
+        if (index !== -1) {
+          this.stateCol = this.alertInfo[index].color
+        }
       }
     }
   },
