@@ -81,7 +81,7 @@ export default {
             { value: 6, color: '#87CEFA', label: '提示' }
           ],
           color: ['#E0022B', '#E09107', '#A3E00B'],
-          show: this.item.ctLegendShow === 'true', // 是否显示取值范围颜色段
+          show: false, // 是否显示取值范围颜色段
           hoverLink: true,
           showLabel: true,
           textStyle: {
@@ -233,10 +233,10 @@ export default {
       this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
       this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
       this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
-      this.extend.visualMap.textStyle.color = newV === '1' ? '#fff' : '#50607c'
     },
-    'item.ctLegendShow': function (newV, oldValue) {
-      this.extend.visualMap.show = newV === 'true'
+    'item.ctLegendShow': function (newV) {
+      this.extend.series.label.normal.show = newV === 'true'
+      this.keyId = new Date().getTime() + Math.random() * 10000
     },
     'item.visualPosition': function (newV, oldValue) {
       // this.extend.visualMap.show = newV === 'true'
