@@ -530,6 +530,11 @@ export default {
     })
   },
   beforeDestroy: function () {
+    $(document).ajaxStart(function () {
+      $('#screen').show()
+    }).ajaxSend(function () {
+      $('#screen').show()
+    })
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
