@@ -2,6 +2,10 @@ package com.uxsino.leaderview;
 
 import javax.jms.JMSException;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.uxsino.leaderview.handler.LeaderViewAuthorityHandler;
+import com.uxsino.leaderview.service.AuthorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -42,6 +46,12 @@ public class LeaderViewInit implements InitializingBean {
 	@Autowired
 	private HomeTemplateService homeTemplateService;
 
+	@Autowired
+	private LeaderViewAuthorityHandler authorityHandler;
+
+	@Autowired
+	private AuthorityService authorityService;
+
 	public void init() {
 		_outbox.setFrom("leaderview");
 		ModuleOnLineEvent ev = new ModuleOnLineEvent();
@@ -63,6 +73,7 @@ public class LeaderViewInit implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		init();
+		subscribeAuthority();
 	}
 
 	/**
@@ -76,5 +87,26 @@ public class LeaderViewInit implements InitializingBean {
 		heartbeatEvent.heartbeatMillis = System.currentTimeMillis();
 		_outbox.onNext(heartbeatEvent);
 	}
+
+	private void subscribeAuthority() {
+		try {
+			// 域信息变更广播
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_DOMAIN_NOTIFY, JSONArray.class).subscribe(
+					JMSFlux.Catch(authorityHandler::handle, LoggerFactory.getLogger(LeaderViewAuthorityHandler.class))
+			);
+
+			// 资源域变更广播
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_NE_DOMAIN_NOTIFY, JSONObject.class).subscribe(
+					JMSFlux.Catch(authorityHandler::handleDomainChange, LoggerFactory.getLogger(LeaderViewAuthorityHandler.class))
+			);
+
+			// 订阅工作移交
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_HANDOVER_NOTIFY, String.class).subscribe(
+					JMSFlux.Catch(authorityService::handOver, LoggerFactory.getLogger(AuthorityService.class)));
+		} catch (JMSException e) {
+			logger.error("mq 域变更订阅异常: {}", e);
+		}
+	}
+
 
 }
