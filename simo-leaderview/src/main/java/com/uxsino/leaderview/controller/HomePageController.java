@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.persistence.NonUniqueResultException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -267,8 +268,16 @@ public class HomePageController {
         // 添加页面的信息
         result.put("pages", homePageService.findVisible(userId));
         // 判断是不是一个页面都没有的全新用户
-        result.put("isNewUser",
-                ObjectUtils.isEmpty(homePageUserConfService.findOneByIndexAndUserId(1, userId)));
+        Boolean isNewUser = false;
+        try {
+            isNewUser = ObjectUtils.isEmpty(homePageUserConfService.findOneByIndexAndUserId(1, userId));
+        }catch (Exception e){
+            // 如果出现同一位置有两个值的问题，说明排序出了问题，调用排序修复方案
+            homePageUserConfService.RescueConfSort(userId);
+            isNewUser = false;
+        }finally {
+            result.put("isNewUser", isNewUser);
+        }
         return new JsonModel(true, result);
     }
 
