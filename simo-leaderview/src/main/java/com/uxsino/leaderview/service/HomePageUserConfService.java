@@ -40,6 +40,10 @@ public class HomePageUserConfService {
         homePageUserConfDao.delete(homePageUserConf);
     }
 
+    public List<HomePageUserConf> findByUserId(Long userId){
+        return homePageUserConfDao.findByUserId(userId);
+    }
+
     @Transactional
     public void add(HomePageUserConf homePageUserConf, boolean isNewPage, String[] adminId) {
         Long userId = homePageUserConf.getUserId();
@@ -142,5 +146,50 @@ public class HomePageUserConfService {
 
     public int getMaxMinePage(Long userId, boolean shared){
         return homePageUserConfDao.countByUserIdAndShared(userId, shared);
+    }
+
+    /**
+     * 紧急页面排序修复方案
+     * @param userId
+     */
+    @Transactional
+    public void RescueConfSort(Long userId) {
+        List<HomePageUserConf> confList = findByUserId(userId);
+        HomePageUserConf lastConf = confList.get(0);
+        for (int i = 0; i < confList.size(); i++) {
+            HomePageUserConf conf = confList.get(i);
+            int index = conf.getPageIndex();
+            int lastIndex = i==0 ? 0 : lastConf.getPageIndex();
+            if (index - 1 != lastIndex){
+                boolean visible = conf.isVisible();
+                boolean lastVisible = lastConf.isVisible();
+                boolean lastShared = lastConf.isShared();
+                // 上一个页面是可见的，不用交换位置
+                if (lastVisible){
+                    conf.setPageIndex(lastIndex + 1);
+                    update(conf.getId(),conf);
+                }else {
+                    // 上一个页面不可见，当前页面可见，需换位置
+                    if (visible){
+                        conf.setPageIndex(lastIndex);
+                        update(conf.getId(),conf);
+                        lastConf.setPageIndex(lastIndex + 1);
+                        update(lastConf.getId(),lastConf);
+                    }else {
+                        // 上一个页面不是被分享的，不用交换位置
+                        if (!lastShared){
+                            conf.setPageIndex(lastIndex + 1);
+                            update(conf.getId(),conf);
+                        } else {
+                            conf.setPageIndex(lastIndex);
+                            update(conf.getId(),conf);
+                            lastConf.setPageIndex(lastIndex + 1);
+                            update(lastConf.getId(),lastConf);
+                        }
+                    }
+                }
+            }
+            lastConf = conf;
+        }
     }
 }
