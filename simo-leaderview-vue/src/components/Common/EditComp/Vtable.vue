@@ -30,9 +30,12 @@
           <tr :style="[trStyle,tbodyTrStyle]"
               v-for="(tr, id) in item.chartData.rows"
               :key="id">
-            <td v-for="(tdText, ind) in tr"
+            <td v-for="(tdText, ind, i) in tr"
                 :key="ind"
-                :title="tdText">{{tdText}}</td>
+                :title="tdText">
+                <span v-if="i === 0" :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
+                <span v-else>{{tdText}}</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -40,6 +43,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'vtable',
   props: ['item'],
@@ -49,6 +53,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'alertInfo'
+    ]),
     boxStyle: function () {
       return {
         width: this.item.width + 'px !important',
@@ -73,6 +80,22 @@ export default {
       return {
         backgroundColor: this.item.bgClr + ' !important' // 表体背景色
       }
+    }
+  },
+  methods:  {
+    alertColor: function (type, ind) {
+      if (ind !== '状态') {
+        return ''
+      }
+      if (this.alertInfo && this.alertInfo.length > 0) {
+        let index = _.findIndex(this.alertInfo, function (o) {
+          return o.name === type
+        })
+        if (index !== -1) {
+          return this.alertInfo[index].color
+        }
+      }
+      return ''
     }
   },
   mounted: function () {
