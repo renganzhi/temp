@@ -275,7 +275,7 @@ export default {
       for (let i = 1, len = obj.columns.length; i < len; i++) {
         var key = obj.columns[i]
         var maxItem = _.maxBy(rowData, function (item) { return item[key] })
-        if (maxItem[key] > maxData) {
+        if (maxItem && maxItem[key] > maxData) {
           maxData = maxItem[key]
         }
       }
