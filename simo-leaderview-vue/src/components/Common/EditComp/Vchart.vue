@@ -362,6 +362,9 @@ export default {
         've-bar': function () {
           obj.settings.xAxisType = [0]
           obj.extend = $.extend(obj.extend, {
+            grid: {
+              right: 15
+            },
             series: {
               type: 'bar',
               /* barWidth:'35%', */
@@ -374,6 +377,21 @@ export default {
                     var len = colorList.length
                     return colorList[params.dataIndex % len]
                   } : null
+                }
+              }
+            },
+            xAxis: {
+              splitLine: {
+                show: false
+              },
+              axisLabel: {
+                interval: 'auto', // 采用不重叠的方式展示
+                formatter: function (value) {
+                  if (value >= 1000) {
+                    return (value / 1000 + 'k')
+                  } else {
+                    return value
+                  }
                 }
               }
             },
@@ -428,6 +446,21 @@ export default {
                 showMaxLabel: true,
                 formatter: function (params, index) {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                }
+              }
+            },
+            yAxis: {
+              splitLine: {
+                show: false
+              },
+              axisLabel: {
+                interval: 'auto', // 采用不重叠的方式展示
+                formatter: function (value) {
+                  if (value >= 1000) {
+                    return (value / 1000 + 'k')
+                  } else {
+                    return value
+                  }
                 }
               }
             }
@@ -535,7 +568,14 @@ export default {
                 }
               },
               axisLabel: {
-                interval: 'auto' // 采用不重叠的方式展示
+                interval: 'auto', // 采用不重叠的方式展示
+                formatter: function (value) {
+                  if (value >= 1000) {
+                    return (value / 1000 + 'k')
+                  } else {
+                    return value
+                  }
+                }
               }
             },
             xAxis: {
