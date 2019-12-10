@@ -94,13 +94,17 @@ export default {
       }
     },
     playError (e) {
-      this.canNotPlay = true
-      this.$emit('palyErr')
+      if (this.item.videoSrc) {
+        this.canNotPlay = true
+        this.$emit('palyErr')
+      }
       // console.log(e)
     }
   },
   mounted () {
     // this.item.videoSrc = require('../../../assets/video/video1.mp4')
+    var audio = this.$refs.videoItem
+    audio['disablePictureInPicture'] = true
     if (this.item.videoSrc) {
       if (document.getElementById('home-html')) {
         var time = this.videoTims[this.item.id]

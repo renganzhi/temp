@@ -2563,6 +2563,19 @@ export default {
       if (e.value === '') {
         return
       }
+      if (e.target.files[0].size > 100 * 1024 * 1024) {
+        e.target.value = ''
+        if (gbs.inDev) {
+          Notification({
+            message: '上传的视频不能大于100MB',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '上传的视频不能大于100MB', 'info')
+        }
+        return
+      }
       var file = e.target.files[0]
       // 视频截图
       /**
@@ -2576,6 +2589,7 @@ export default {
       this.uploadFile('video', formdata, function (data) {
         if (_this.selectedItem.chartType === 'video') {
           _this.selectedItem.videoSrc = gbs.host + data.obj
+          _this.tempVideoUrl = _this.selectedItem.videoSrc
           _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
         }
       })

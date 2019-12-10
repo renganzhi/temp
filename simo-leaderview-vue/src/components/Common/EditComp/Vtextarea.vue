@@ -4,7 +4,6 @@
       <span :style="stateSty" v-show="item.chartData.state">【{{item.chartData.state}}】</span>
       <span>{{item.chartData.ip}}</span>
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
-      <span></span>
     </div>
      <textarea :style="textStyle"
             v-model="item.ctName"
@@ -34,7 +33,7 @@ export default {
     updateHeight () {
       if (this.item.ctDataSource === 'system') {
         this.$nextTick(() => {
-          this.titleHeight = this.$refs.titleBox.getBoundingClientRect().height
+          this.titleHeight = this.$refs.titleBox ? this.$refs.titleBox.getBoundingClientRect().height : 0
           this.textHeight = this.item.height - this.titleHeight
         })
       } else {
@@ -55,6 +54,7 @@ export default {
     }
   },
   mounted () {
+    this.updateHeight()
     this.updateColor()
   },
   computed: {
