@@ -57,10 +57,12 @@ export default {
   methods: {
     getMessage (vtextarea) {
       // this.stopmove()
-      this.stop = true
-      this.$nextTick(() => {
-        this.$refs.marqueeText.focus()
-      })
+      if (this.item.ctDataSource === 'static') {
+        this.stop = true
+        this.$nextTick(() => {
+          this.$refs.marqueeText.focus()
+        })
+      }
     },
     topSpeed (val) {
       if (!val) {
