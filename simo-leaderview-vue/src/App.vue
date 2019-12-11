@@ -50,6 +50,9 @@ body {
 .sp-preview {
   flex: 1;
 }
+.disShow {
+  display: none !important;
+}
 /* #screen {
   width: 100%;
   height: 100%;

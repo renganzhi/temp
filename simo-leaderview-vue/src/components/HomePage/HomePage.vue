@@ -525,21 +525,10 @@ export default {
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
-    $(document).ajaxStart(function () {
-      $('#screen').hide()
-    }).ajaxSend(function () {
-      $('#screen').hide()
-    })
+    $('#screen').addClass('disShow')
   },
   beforeDestroy: function () {
-    $(document).ajaxStart(function () {
-      $('#screen').show()
-    }).ajaxSend(function () {
-      $('#screen').show()
-    })
-    window.onerror = function () {
-      $('#screen').hide()
-    }
+    $('#screen').removeClass('disShow')
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
