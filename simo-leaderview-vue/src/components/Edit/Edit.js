@@ -2932,11 +2932,7 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
-    $(document).ajaxStart(function () {
-      $('#screen').hide()
-    }).ajaxSend(function () {
-      $('#screen').hide()
-    })
+    $('#screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {
     //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)
@@ -2951,14 +2947,10 @@ export default {
     document.removeEventListener('keyup', this.handleKeyUp)
     // var stateBar = document.getElementById('chooseWrap')
     // var stateBar = $('#chooseWrap')
-    // stateBar.removeEventListener('mousedown', this.userChoose)
+    // stateBar.removeEventListener('mousedown ', this.userChoose)
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
-    $(document).ajaxStart(function () {
-      $('#screen').show()
-    }).ajaxSend(function () {
-      $('#screen').show()
-    })
+    $('#screen').removeClass('disShow')
   },
   destroyed: function () {
     // $.comps.editHome = null;
