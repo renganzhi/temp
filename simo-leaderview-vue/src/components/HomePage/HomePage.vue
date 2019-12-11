@@ -537,6 +537,9 @@ export default {
     }).ajaxSend(function () {
       $('#screen').show()
     })
+    window.onerror = function () {
+      $('#screen').hide()
+    }
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
