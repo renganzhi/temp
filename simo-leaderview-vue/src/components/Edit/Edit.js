@@ -1121,11 +1121,11 @@ export default {
       var leftIndex = 0,
         _left = arr[0].x
       var rightIndex = 0,
-        _right = arr[0].x + arr[0].width
+        _right = Number(arr[0].x) + Number(arr[0].width)
       var topIndex = 0,
         _top = arr[0].y
       var bottomIndex = 0,
-        _bottom = arr[0].y + arr[0].height
+        _bottom = Number(arr[0].y) + Number(arr[0].height)
       // var _index = 500
       var _index = this.maxIndex // 没有图层属性的旧数据
       var comZindex = [arr[0].zIndex] // 选中元素的图层
@@ -1147,11 +1147,11 @@ export default {
           topIndex = i
         }
         if (arr[i].x + arr[i].width > _right) {
-          _right = arr[i].x + arr[i].width
+          _right = Number(arr[i].x) + Number(arr[i].width)
           rightIndex = i
         }
         if (arr[i].y + arr[i].height > _bottom) {
-          _bottom = arr[i].y + arr[i].height
+          _bottom = Number(arr[i].y) + Number(arr[i].height)
           bottomIndex = i
         }
         // if (arr[i].zIndex && arr[i].zIndex < _index) {
