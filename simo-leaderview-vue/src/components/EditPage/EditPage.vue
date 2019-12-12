@@ -147,7 +147,7 @@
                           v-model="shareUsers">
                     <option v-for="(user, index) in userList"
                             :value="user.id"
-                            :key="index">{{user.userName}}</option>
+                            :key="index">{{user.userName}}({{user.loginName}})</option>
                   </select>
                 </div>
               </div>
