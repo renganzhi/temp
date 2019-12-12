@@ -37,8 +37,7 @@ export default {
           this.textHeight = this.item.height - this.titleHeight
         })
       } else {
-        this.titleHeight = 0
-        this.textHeight = this.item.height - this.titleHeight
+        this.textHeight = this.item.height
       }
     },
     updateColor () {
