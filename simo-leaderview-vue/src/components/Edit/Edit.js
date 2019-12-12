@@ -1009,21 +1009,21 @@ export default {
       }
       var _this = this
       this.chooseIndexs.forEach((i) => {
-        if (_this.chartNum[i].x + _this.chartNum[i].width >= _this.minXItem.maxW + _this.minXItem.x + _this.minXItem.gapX) {
+        if (Number(_this.chartNum[i].x) + Number(_this.chartNum[i].width) >= Number(_this.minXItem.maxW) + Number(_this.minXItem.x) + Number(_this.minXItem.gapX)) {
           _this.minXItem.maxW = _this.chartNum[i].width
           _this.minXItem.gapX = _this.chartNum[i].x - _this.minXItem.x
         }
-        if (_this.chartNum[i].y + _this.chartNum[i].height >= _this.minXItem.maxH + _this.minXItem.y + _this.minXItem.gapY) {
+        if (Number(_this.chartNum[i].y) + Number(_this.chartNum[i].height) >= Number(_this.minXItem.maxH) + Number(_this.minXItem.y) + Number(_this.minXItem.gapY)) {
           this.minXItem.maxH = _this.chartNum[i].height // 最远元素的y
           this.minXItem.gapY = _this.chartNum[i].y - _this.minXItem.y
         }
       })
       this.chooseCompIndexs.forEach((i) => {
-        if (_this.combinList[i].x + _this.combinList[i].width >= _this.minXItem.maxW + _this.minXItem.x + _this.minXItem.gapX) {
+        if (Number(_this.combinList[i].x) + Number(_this.combinList[i].width) >= Number(_this.minXItem.maxW) + Number(_this.minXItem.x) + Number(_this.minXItem.gapX)) {
           _this.minXItem.maxW = _this.combinList[i].width
           _this.minXItem.gapX = _this.combinList[i].x - _this.minXItem.x
         }
-        if (_this.combinList[i].y + _this.combinList[i].height >= _this.minXItem.maxH + _this.minXItem.y + _this.minXItem.gapY) {
+        if (Number(_this.combinList[i].y) + Number(_this.combinList[i].height) >= Number(_this.minXItem.maxH) + Number(_this.minXItem.y) + Number(_this.minXItem.gapY)) {
           this.minXItem.maxH = _this.combinList[i].height // 最远元素的y
           this.minXItem.gapY = _this.combinList[i].y - _this.minXItem.y
         }
@@ -1081,8 +1081,8 @@ export default {
       }
       // 右下边界的处理
       // console.log(this.minXItem[maxW], this.minXItem[gapX], this.minXItem[xy])
-      if (this.minXItem[maxW] + this.minXItem[gapX] + Number(this.minXItem[xy]) > this.paintObj[width] + allowOverflow) {
-        this.minXItem[xy] = this.paintObj[width] + allowOverflow - (this.minXItem[maxW] + this.minXItem[gapX])
+      if (Number(this.minXItem[maxW]) + Number(this.minXItem[gapX]) + Number(this.minXItem[xy]) > Number(this.paintObj[width]) + allowOverflow) {
+        this.minXItem[xy] = Number(this.paintObj[width]) + allowOverflow - (Number(this.minXItem[maxW]) + Number(this.minXItem[gapX]))
       }
       // 上边界的处理
       var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
@@ -1090,20 +1090,20 @@ export default {
         // 拖拽情况下被拖拽元件不再手动更新值
         this.chooseIndexs.forEach((i) => {
           if (this.chartNum[i].id !== this.selectedItem.id) {
-            this.chartNum[i][xy] += changes
+            this.chartNum[i][xy] = Number(this.chartNum[i][xy]) + changes
           }
         })
         this.chooseCompIndexs.forEach((i) => {
           if (this.combinList[i].id !== this.selectedItem.id) {
-            this.combinList[i][xy] += changes
+            this.combinList[i][xy] = Number(this.combinList[i][xy]) + changes
           }
         })
       } else {
         this.chooseIndexs.forEach((i) => {
-          this.chartNum[i][xy] += changes
+          this.chartNum[i][xy] = Number(this.chartNum[i][xy]) + changes
         })
         this.chooseCompIndexs.forEach((i) => {
-          this.combinList[i][xy] += changes
+          this.combinList[i][xy] = Number(this.combinList[i][xy]) + changes
         })
       }
       this.selectArea[left] = this.minXItem[xy]
@@ -1146,11 +1146,11 @@ export default {
           _top = arr[i].y
           topIndex = i
         }
-        if (arr[i].x + arr[i].width > _right) {
+        if (Number(arr[i].x) + Number(arr[i].width) > _right) {
           _right = Number(arr[i].x) + Number(arr[i].width)
           rightIndex = i
         }
-        if (arr[i].y + arr[i].height > _bottom) {
+        if (Number(arr[i].y) + Number(arr[i].height) > _bottom) {
           _bottom = Number(arr[i].y) + Number(arr[i].height)
           bottomIndex = i
         }
@@ -1412,7 +1412,7 @@ export default {
     // 左对齐
     alignLeft: function () {
       var itemArr = this.indexToItem()
-      var minLeftItem = _.minBy(itemArr, function (item) { return item.x })
+      var minLeftItem = _.minBy(itemArr, function (item) { return Number(item.x) })
       var minLeft = minLeftItem.x
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].x = minLeft
@@ -1421,8 +1421,8 @@ export default {
     // 右对齐
     alignRight: function () {
       var itemArr = this.indexToItem()
-      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
-      var maxRight = maxRightItem.x + maxRightItem.width
+      var maxRightItem = _.maxBy(itemArr, function (item) { return Number(item.x) + Number(item.width) })
+      var maxRight = Number(maxRightItem.x) + Number(maxRightItem.width)
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].x = maxRight - itemArr[i].width
       }
@@ -1430,7 +1430,7 @@ export default {
     // 上对齐
     alignTop: function () {
       var itemArr = this.indexToItem()
-      var minTopItem = _.minBy(itemArr, function (item) { return item.y })
+      var minTopItem = _.minBy(itemArr, function (item) { return Number(item.y) })
       var minTop = minTopItem.y
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].y = minTop
@@ -1439,8 +1439,8 @@ export default {
     // 下对齐
     alignBottom: function () {
       var itemArr = this.indexToItem()
-      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
-      var maxBottom = maxBottomItem.y + maxBottomItem.height
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return Number(item.y) + Number(item.height) })
+      var maxBottom = Number(maxBottomItem.y) + Number(maxBottomItem.height)
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].y = maxBottom - itemArr[i].height
       }
@@ -1449,10 +1449,10 @@ export default {
     textCenter: function () {
       // 同一中心纵轴
       var itemArr = this.indexToItem()
-      var minLeftItem = _.minBy(itemArr, function (item) { return item.x }) // 左边界
-      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
-      var maxRight = maxRightItem.x + maxRightItem.width // 右边界
-      var mindItem = (maxRight - minLeftItem.x) / 2 + minLeftItem.x
+      var minLeftItem = _.minBy(itemArr, function (item) { return Number(item.x) }) // 左边界
+      var maxRightItem = _.maxBy(itemArr, function (item) { return Number(item.x) + Number(item.width) })
+      var maxRight = Number(maxRightItem.x) + Number(maxRightItem.width) // 右边界
+      var mindItem = (maxRight - minLeftItem.x) / 2 + Number(minLeftItem.x)
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].x = parseInt(mindItem - itemArr[i].width / 2)
       }
@@ -1461,10 +1461,10 @@ export default {
     alignCenter: function () {
       // 同一中心横轴
       var itemArr = this.indexToItem()
-      var minTopItem = _.minBy(itemArr, function (item) { return item.y }) // 上边界
-      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
-      var maxBottom = maxBottomItem.y + maxBottomItem.height // 下边界
-      var mindItem = (maxBottom - minTopItem.y) / 2 + minTopItem.y
+      var minTopItem = _.minBy(itemArr, function (item) { return Number(item.y) }) // 上边界
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return Number(item.y) + Number(item.height) })
+      var maxBottom = Number(maxBottomItem.y) + Number(maxBottomItem.height) // 下边界
+      var mindItem = (maxBottom - minTopItem.y) / 2 + Number(minTopItem.y)
       for (let i = 0, len = itemArr.length; i < len; i++) {
         itemArr[i].y = parseInt(mindItem - itemArr[i].height / 2)
       }
@@ -1473,64 +1473,66 @@ export default {
     levelDist: function () {
       var itemArr = this.indexToItem()
       if (itemArr.length <= 2) return // 至少三个元件才执行函数
-      var minLeftItem = _.minBy(itemArr, function (item) { return item.x }) // 左边界
+      var minLeftItem = _.minBy(itemArr, function (item) { return Number(item.x) }) // 左边界
       var minLeft = minLeftItem.x
-      var maxRightItem = _.maxBy(itemArr, function (item) { return item.x + item.width })
-      var maxRight = maxRightItem.x + maxRightItem.width // 右边界
+      var maxRightItem = _.maxBy(itemArr, function (item) { return Number(item.x) + Number(item.width) })
+      var maxRight = Number(maxRightItem.x) + Number(maxRightItem.width) // 右边界
       var gapWidth = maxRight - minLeft // 水平分布区域的间距
-      var allItemWid = _.sumBy(itemArr, function (item) { return item.width })
+      var allItemWid = _.sumBy(itemArr, function (item) { return Number(item.width) })
       var gap = parseInt((gapWidth - allItemWid) / (itemArr.length - 1))
       itemArr.sort(function (a, b) {
-        var pre = a.x + a.width
-        var next = b.x + b.width
+        var pre = Number(a.x) + Number(a.width)
+        var next = Number(b.x) + Number(b.width)
         if (a.x === minLeft) {
           pre = 0 // 设置最小，则x最小的在第一个位置
         }
         return pre - next
       })
       for (let i = 1, len = itemArr.length; i < len - 1; i++) {
-        itemArr[i].x = parseInt(itemArr[i - 1].x + itemArr[i - 1].width + gap)
+        itemArr[i].x = parseInt(Number(itemArr[i - 1].x) + Number(itemArr[i - 1].width) + Number(gap))
       }
     },
     // 垂直分布
     verticalDist: function () {
       var itemArr = this.indexToItem()
       if (itemArr.length <= 2) return // 至少三个元件才执行函数
-      var minTopItem = _.minBy(itemArr, function (item) { return item.y }) // 上边界
+      var minTopItem = _.minBy(itemArr, function (item) { return Number(item.y) }) // 上边界
       var minTop = minTopItem.y
-      var maxBottomItem = _.maxBy(itemArr, function (item) { return item.y + item.height })
-      var maxBottom = maxBottomItem.y + maxBottomItem.height // 右边界
+      var maxBottomItem = _.maxBy(itemArr, function (item) { return Number(item.y) + Number(item.height) })
+      var maxBottom = Number(maxBottomItem.y) + Number(maxBottomItem.height) // 右边界
       var gapWidth = maxBottom - minTop // 垂直分布区域的间距
-      var allItemWid = _.sumBy(itemArr, function (item) { return item.height })
+      var allItemWid = _.sumBy(itemArr, function (item) { return Number(item.height) })
       var gap = parseInt((gapWidth - allItemWid) / (itemArr.length - 1))
       itemArr.sort(function (a, b) {
-        var pre = a.y + a.height
-        var next = b.y + b.height
+        var pre = Number(a.y) + Number(a.height)
+        var next = Number(b.y) + Number(b.height)
         if (a.y === minTop) {
           pre = 0 // 设置最小，则x最小的在第一个位置
         }
         return pre - next
       })
       for (let i = 1, len = itemArr.length; i < len - 1; i++) {
-        itemArr[i].y = parseInt(itemArr[i - 1].y + itemArr[i - 1].height + gap)
+        itemArr[i].y = parseInt(Number(itemArr[i - 1].y) + Number(itemArr[i - 1].height) + Number(gap))
       }
     },
     draged (chgX, chgY, attr) {
+      chgX = Number(chgX)
+      chgY = Number(chgY)
       // if (this.selectedItem.id === this.minXItem.id) return
       if (window.event.ctrlKey) {
         if (chgX !== 0) {
           if (this.selectedItem.id === this.minXItem.id) {
-            this.minXItem.x = attr.left
+            this.minXItem.x = Number(attr.left)
           } else {
-            this.minXItem.x += chgX
+            this.minXItem.x = Number(this.minXItem.x) + chgX
           }
           this.changeTarget('x')
         }
         if (chgY !== 0) {
           if (this.selectedItem.id === this.minXItem.id) {
-            this.minXItem.y = attr.top
+            this.minXItem.y = Number(attr.top)
           } else {
-            this.minXItem.y += chgY
+            this.minXItem.y = Number(this.minXItem.y) + chgY
           }
           this.changeTarget('y')
         }
@@ -1538,10 +1540,10 @@ export default {
     },
     resized: function (item) {
       if (item.id === this.testObj.id) {
-        this.testObj.width = item.width
-        this.testObj.height = item.height
-        this.testObj.x = item.left
-        this.testObj.y = item.top
+        this.testObj.width = Number(item.width)
+        this.testObj.height = Number(item.height)
+        this.testObj.x = Number(item.left)
+        this.testObj.y = Number(item.top)
       }
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },

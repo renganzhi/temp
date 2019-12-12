@@ -383,9 +383,9 @@ export default {
       }
 
       let newTop = stickStartPos.top - delta.y
-      let newBottom = stickStartPos.bottom + delta.y
+      let newBottom = Number(stickStartPos.bottom) + Number(delta.y)
       let newLeft = stickStartPos.left - delta.x
-      let newRight = stickStartPos.right + delta.x
+      let newRight = Number(stickStartPos.right) + Number(delta.x)
 
       if (this.snapToGrid) {
         let alignTop = true
