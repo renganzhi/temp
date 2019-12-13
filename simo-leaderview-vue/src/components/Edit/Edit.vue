@@ -89,7 +89,8 @@
                         <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context" @palyErr="palyErr"></Compose>
                     </div>
                     <!-- 触发框选时覆盖在元件之上的div，这样不会和元件的拖拽事件相冲突 -->
-                    <div id="inWrap" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}"></div>
+                    <div id="inWrap"></div>
+                    <!-- :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}" -->
                   </div>
                 </div>
 

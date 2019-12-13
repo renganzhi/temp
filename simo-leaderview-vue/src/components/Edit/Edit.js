@@ -2354,7 +2354,7 @@ export default {
       }
       _this.selectArea.choose = false
 
-      stateBar.onmouseup = function () {
+      stateBar.onmouseup  = function () {
         var tempDiv = document.getElementsByClassName('tempDiv')[0]
         if (tempDiv) {
           setTimeout(() => {
@@ -2365,19 +2365,25 @@ export default {
             stateBar.removeEventListener('mousemove', _this.wrapChoose)
           }, 0)
         }
-        // div.addEventListener('contextmenu', function (ee) {
-        //   if (_this.chooseCompIndexs.length + _this.chooseIndexs.length > 0) {
-        //     $(_this.$refs.contextMenu)
-        //       .css({
-        //         left: ee.pageX,
-        //         top: ee.pageY
-        //       })
-        //       .toggle(true)
-        //   }
-        //   ee.preventDefault()
-        // })
         stateBar.onmousemove = null
         stateBar.onmouseup = null
+        stateBar.onmouseleave = null
+      }
+      // 移出编辑区也取消拖拽
+      stateBar.onmouseleave  = function () {
+        var tempDiv = document.getElementsByClassName('tempDiv')[0]
+        if (tempDiv) {
+          setTimeout(() => {
+            _this.getChooseItems(parseInt(tempDiv.style.left), parseInt(tempDiv.style.top), parseInt(tempDiv.style.width), parseInt(tempDiv.style.height))
+            $('.tempDiv').remove()
+            $('#inWrap').empty()
+            $('#inWrap').hide()
+            stateBar.removeEventListener('mousemove', _this.wrapChoose)
+          }, 0)
+        }
+        stateBar.onmousemove = null
+        stateBar.onmouseup = null
+        stateBar.onmouseleave = null
       }
     },
     del: function () {
