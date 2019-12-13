@@ -2489,17 +2489,25 @@ export default {
     }, */
     copy: function () {
       if (this.chooseIndexs.length > 0) {
-        this.copyOne('item', this.chooseIndexs)
+        if (this.chooseIndexs.length === 1 && this.chooseCompIndexs.length === 0) {
+          this.copyOne('item', this.chooseIndexs, true)
+        } else {
+          this.copyOne('item', this.chooseIndexs)
+        }
       }
       if (this.chooseCompIndexs.length > 0) {
-        this.copyOne('compose', this.chooseCompIndexs)
+        if (this.chooseIndexs.length === 0 && this.chooseCompIndexs.length === 1) {
+          this.copyOne('compose', this.chooseCompIndexs, true)
+        } else {
+          this.copyOne('compose', this.chooseCompIndexs)
+        }
       }
       if (this.selectArea.choose) {
         this.selectArea.choose = false
         $('.tempDiv').remove()
       }
     },
-    copyOne: function (type, arr) {
+    copyOne: function (type, arr, onlyOne) {
       // 单个元件的复制操作
       if (type === 'item') {
         var _type = 'chartNum'
@@ -2522,6 +2530,10 @@ export default {
         } else {
           this.chooseCompIndexs.push(this[_type].length - 1)
         }
+      }
+      // 只有一个元件时修改当前选中
+      if (onlyOne) {
+        this.selectedItem = this[_type][this[_type].length - 1]
       }
       this.updateMinXitem()
     },
