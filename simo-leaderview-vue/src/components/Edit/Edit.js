@@ -673,23 +673,23 @@ export default {
       this.showWindowBtn = false // 隐藏部件弹窗按钮
       var obj = $.extend(
         true, {}, {
-        id: new Date().getTime(),
-        ctName: value.text,
-        ctLegendShow: 'true',
-        x: 400,
-        y: 100,
-        width: 350,
-        height: 350,
-        zIndex: ++this.maxIndex,
-        colorType: 'defalut',
-        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-        ctDataSource: 'static', // 数据来源system\static，默认static
-        url: '', // 请求接口
-        params: {}, // 请求接口参数
-        bdpx: 1, // 边框线宽
-        fontSize: 12, // 字号
-        lineArea: false // 折线是否为区域
-      },
+          id: new Date().getTime(),
+          ctName: value.text,
+          ctLegendShow: 'true',
+          x: 400,
+          y: 100,
+          width: 350,
+          height: 350,
+          zIndex: ++this.maxIndex,
+          colorType: 'defalut',
+          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctDataSource: 'static', // 数据来源system\static，默认static
+          url: '', // 请求接口
+          params: {}, // 请求接口参数
+          bdpx: 1, // 边框线宽
+          fontSize: 12, // 字号
+          lineArea: false // 折线是否为区域
+        },
         value
       )
 
@@ -1175,20 +1175,20 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-        id: new Date().getTime() + parseInt(Math.random() * 10000),
-        ctLegendShow: 'true',
-        x: _left,
-        y: _top,
-        width: _right - _left,
-        oldWidth: _right - _left,
-        height: _bottom - _top,
-        oldHeight: _bottom - _top,
-        zIndex: _index,
-        sacleX: 1,
-        sacleY: 1,
-        // slted: false,
-        child: []
-      }, {}
+          id: new Date().getTime() + parseInt(Math.random() * 10000),
+          ctLegendShow: 'true',
+          x: _left,
+          y: _top,
+          width: _right - _left,
+          oldWidth: _right - _left,
+          height: _bottom - _top,
+          oldHeight: _bottom - _top,
+          zIndex: _index,
+          sacleX: 1,
+          sacleY: 1,
+          // slted: false,
+          child: []
+        }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -1206,8 +1206,8 @@ export default {
       }
     },
     composeChgIndex: function (indexArr) {
-      indexArr = indexArr.map((item, i)=> {
-        return item-i
+      indexArr = indexArr.map((item, i) => {
+        return item - i
       })
       for (let y = 0, len = indexArr.length; y < len; y++) {
         let z = indexArr[y]
@@ -1330,8 +1330,8 @@ export default {
           } else {
             chgItem = this.chartNum[chgIndex]
           }
-        this.$set(chgItem, 'zIndex', z)
-        this.$set(this.selectedItem, 'zIndex', z + 1)
+          this.$set(chgItem, 'zIndex', z)
+          this.$set(this.selectedItem, 'zIndex', z + 1)
         }
       }
     },
@@ -2018,7 +2018,7 @@ export default {
         }
         return
       }
-      $('#screen').show()
+      $('#lead-screen').show()
       var cThis = this
       // cThis.selectedItem.slted = false
       this.clickPaint() // 取消所有的选中
@@ -2121,7 +2121,7 @@ export default {
               if (cThis.paintObj.showGrid) {
                 $('#chooseWrap').addClass('gridBg')
               }
-              // $('#screen').hide()
+              $('#lead-screen').hide()
               typeof cb === 'function' && cb()
               if (res.success) {
                 if (gbs.inDev) {
@@ -2354,7 +2354,7 @@ export default {
       }
       _this.selectArea.choose = false
 
-      stateBar.onmouseup  = function () {
+      stateBar.onmouseup = function () {
         var tempDiv = document.getElementsByClassName('tempDiv')[0]
         if (tempDiv) {
           setTimeout(() => {
@@ -2370,7 +2370,7 @@ export default {
         stateBar.onmouseleave = null
       }
       // 移出编辑区也取消拖拽
-      stateBar.onmouseleave  = function () {
+      stateBar.onmouseleave = function () {
         var tempDiv = document.getElementsByClassName('tempDiv')[0]
         if (tempDiv) {
           setTimeout(() => {
@@ -2423,8 +2423,8 @@ export default {
         indexArr.push(z)
       }
       indexArr.sort()
-      indexArr = indexArr.map((item, i)=> {
-        return item-i
+      indexArr = indexArr.map((item, i) => {
+        return item - i
       })
       for (let y = 0, len = tempArr.length; y < len; y++) {
         let item = tempArr[y]
@@ -2456,7 +2456,7 @@ export default {
       } else {
         _type = 'combinList'
       }
-      
+
       for (let y = 0, len = tempArr.length; y < len; y++) {
         let item = tempArr[y]
         let z = this[_type][item].zIndex
@@ -2617,7 +2617,7 @@ export default {
       /**
       var windowURL = window.URL || window.webkitURL
       var videoURL = windowURL.createObjectURL(file)
-      this.selectedItem.videoSrc = videoURL 
+      this.selectedItem.videoSrc = videoURL
       */
       var formdata = new FormData()
       formdata.append('uploaded_file', file)

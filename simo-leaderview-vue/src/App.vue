@@ -2,7 +2,7 @@
   <div id="app">
     <!-- 等待蒙板层 -->
     <!-- 这里关于screen及其css最好在打包时注释掉，simo里已经存在 -->
-    <!-- <div id='screen'>
+    <div id='lead-screen'>
       <div id="loading">
         <div class="ld-cir"></div>
         <div class="ld-cir"></div>
@@ -13,7 +13,7 @@
         <div class="ld-cir"></div>
         <div class="ld-cir"></div>
       </div>
-    </div> -->
+    </div>
     <router-view />
   </div>
 </template>
@@ -53,7 +53,7 @@ body {
 .disShow {
   display: none !important;
 }
-/* #screen {
+#lead-screen {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -63,7 +63,7 @@ body {
   z-index: 20100;
   background: rgba(0, 0, 0, 0.5);
   display: none;
-} */
+}
 #app {
   width: 100%;
   height: 100%;
