@@ -673,23 +673,23 @@ export default {
       this.showWindowBtn = false // 隐藏部件弹窗按钮
       var obj = $.extend(
         true, {}, {
-          id: new Date().getTime(),
-          ctName: value.text,
-          ctLegendShow: 'true',
-          x: 400,
-          y: 100,
-          width: 350,
-          height: 350,
-          zIndex: ++this.maxIndex,
-          colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-          ctDataSource: 'static', // 数据来源system\static，默认static
-          url: '', // 请求接口
-          params: {}, // 请求接口参数
-          bdpx: 1, // 边框线宽
-          fontSize: 12, // 字号
-          lineArea: false // 折线是否为区域
-        },
+        id: new Date().getTime(),
+        ctName: value.text,
+        ctLegendShow: 'true',
+        x: 400,
+        y: 100,
+        width: 350,
+        height: 350,
+        zIndex: ++this.maxIndex,
+        colorType: 'defalut',
+        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+        ctDataSource: 'static', // 数据来源system\static，默认static
+        url: '', // 请求接口
+        params: {}, // 请求接口参数
+        bdpx: 1, // 边框线宽
+        fontSize: 12, // 字号
+        lineArea: false // 折线是否为区域
+      },
         value
       )
 
@@ -1175,20 +1175,20 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-          id: new Date().getTime() + parseInt(Math.random() * 10000),
-          ctLegendShow: 'true',
-          x: _left,
-          y: _top,
-          width: _right - _left,
-          oldWidth: _right - _left,
-          height: _bottom - _top,
-          oldHeight: _bottom - _top,
-          zIndex: _index,
-          sacleX: 1,
-          sacleY: 1,
-          // slted: false,
-          child: []
-        }, {}
+        id: new Date().getTime() + parseInt(Math.random() * 10000),
+        ctLegendShow: 'true',
+        x: _left,
+        y: _top,
+        width: _right - _left,
+        oldWidth: _right - _left,
+        height: _bottom - _top,
+        oldHeight: _bottom - _top,
+        zIndex: _index,
+        sacleX: 1,
+        sacleY: 1,
+        // slted: false,
+        child: []
+      }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -2285,6 +2285,9 @@ export default {
       div.style.top = posy + 'px'
 
       stateBar.onmousemove = function (ev) {
+        if (ev.which !== 1) {
+          return
+        }
         ev = ev || window.event
         // 获取盒子在整个页面的位置
         var clientX = ev.offsetX
@@ -2330,6 +2333,9 @@ export default {
       }
     },
     wrapChoose: function (ev) {
+      if (ev.which !== 1) {
+        return
+      }
       var _this = this
       var stateBar = document.getElementById('inWrap')
       // 获取鼠标起点位置，并绘制div起点
