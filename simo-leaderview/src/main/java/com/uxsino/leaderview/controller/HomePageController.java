@@ -147,6 +147,7 @@ public class HomePageController {
             if (null != template) {
                 homePage.setViewImage(template.getViewImage());
                 homePage.setViewConf(template.getViewConf());
+                homePage.setComposeObj(template.getComposeObj());
                 homePage.setPaintObj(template.getPaintObj());
                 //从当前session中获取用户id
             }

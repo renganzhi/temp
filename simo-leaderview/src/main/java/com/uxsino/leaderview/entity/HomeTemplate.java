@@ -46,6 +46,9 @@ public class HomeTemplate {
     @Column(columnDefinition = "TEXT")
     private String paintObj;
 
+    @Column(columnDefinition = "TEXT")
+    private String composeObj;
+
     public HomeTemplate(Long id, String name, String viewImage, Date lastUpdateTime) {
         this.id = id;
         this.name = name;
