@@ -247,8 +247,16 @@ export default {
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
       }
-      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
-      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj) {
+        this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      } else {
+        this.combinList = []
+      }
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj) {
+        this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      } else {
+        this.paintConf = {}
+      }
       this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
       this.isFullScreen && this.interTimer()
@@ -290,8 +298,16 @@ export default {
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.pageIndex++
-      this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
-      this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj) {
+        this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      } else {
+        this.combinList = []
+      }
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj) {
+        this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      } else {
+        this.paintConf = {}
+      }
       this.setPaint()
       this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
     },
@@ -365,7 +381,7 @@ export default {
               }
               if (d.chartType === 'marquee' || d.chartType === 'text') {
                 d.ctName = res.obj.info
-              } 
+              }
               if (d.chartType !== 'marquee') {
                 d.chartData = res.obj
               }
