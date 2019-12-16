@@ -18,6 +18,10 @@ public class DataViewCache {
             Iterator<Object> it = apiList.iterator();
             while (it.hasNext()) {
                 JSONObject api = (JSONObject)it.next();
+                // alert接口是放在monitor组件当中的
+                if ("monitor".equals(component) && "alert".equals(api.getString("component"))){
+                    it.remove();
+                }
                 if (component.equals(api.getString("component"))) {
                     it.remove();
                 }
