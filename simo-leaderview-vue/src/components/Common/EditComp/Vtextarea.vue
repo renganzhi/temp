@@ -1,14 +1,17 @@
 <template>
   <div :style="wrapStyle">
-    <div v-if="item.ctDataSource === 'system' && item.chartData && item.chartData.state" ref="titleBox" :style="titleStyle">
-      <span :style="stateSty" v-show="item.chartData.state">【{{item.chartData.state}}】</span>
-      <span>{{item.chartData.ip}}</span>
+    <div v-if="item.ctDataSource === 'system' && item.chartData && item.chartData.state"
+         ref="titleBox"
+         :style="titleStyle">
+      <span :style="stateSty"
+            v-show="item.chartData.state">【{{item.chartData.state}}】</span>
+      <span>{{item.chartData.title}}</span>
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
     </div>
-     <textarea :style="textStyle"
-            v-model="item.ctName"
-            ref="vtextarea"
-            :disabled="dis"></textarea>
+    <textarea :style="textStyle"
+              v-model="item.ctName"
+              ref="vtextarea"
+              :disabled="dis"></textarea>
   </div>
 </template>
 <script>
@@ -82,7 +85,7 @@ export default {
         paddingLeft: '10px',
         paddingTop: '10px',
         color: this.item.clr + ' !important',
-        fontSize: this.item.fontSize + 'px !important' 
+        fontSize: this.item.fontSize + 'px !important'
       }
     },
     textStyle: function () {
