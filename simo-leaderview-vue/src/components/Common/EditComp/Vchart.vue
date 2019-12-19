@@ -256,6 +256,11 @@ export default {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
         this.extend.color = this.getColors(this.item.ctColors)
       }
+      if (this.item.thirdType === 'stackHistogram') {
+        var _key = this.item.chartData.columns[0]
+        var _value = this.item.chartData.columns.slice(1, this.item.chartData.columns.length)
+        this.settings.stack = { _key: _value }
+      }
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
@@ -465,6 +470,11 @@ export default {
               }
             }
           })
+          if (_this.item.thirdType === 'stackHistogram') {
+            var _key = _this.item.chartData.columns[0]
+            var _value = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
+            obj.settings.stack = { _key: _value }
+          }
           if (_this.item.subType === 'pictorialBar') {
             // 象形柱状图
             if (_this.item.secondType === 'symbolBar') {
@@ -532,8 +542,8 @@ export default {
               showAllSymbol: false,
               itemStyle: {
                 normal: {
-                  lineStyle:{
-                    width:1 // 设置线条粗细
+                  lineStyle: {
+                    width: 1 // 设置线条粗细
                   }
                 }
               }
