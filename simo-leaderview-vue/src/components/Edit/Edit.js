@@ -1592,6 +1592,9 @@ export default {
         this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
       }
     },
+    reverseColor (index) {
+      this.selectedItem.ctColors[index].reverse()
+    },
     chgDataSource: function ($event, flag) {
       // 改变数据来源
       $event &&
