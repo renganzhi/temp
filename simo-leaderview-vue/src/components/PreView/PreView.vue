@@ -21,6 +21,8 @@
              style="height:560px;position: relative;overflow: hidden;">
           <div class="wrap">
             <div class="paintBox"
+                 :style="paintStyle1"></div>
+            <div class="paintBox"
                  :style="paintStyle"></div>
             <div class="full-height box"
                  style="transform-origin:0 0; -webkit-transform-origin:0 0; -moz-transform-origin:0 0; -ms-transform-origin:0 0;">
@@ -74,6 +76,13 @@ export default {
     // alert(this.homeData.height)
   },
   computed: {
+    paintStyle1: function () {
+      var paintData = this.paintObj || this.paintConf
+      if (!paintData) return ''
+      return {
+        backgroundColor: paintData.bgColor
+      }
+    },
     paintStyle: function () {
       var paintData = this.paintObj || this.paintConf
       // if (!this.paintObj) return
@@ -90,7 +99,6 @@ export default {
         backgroundImage: paintData.bgImg
           ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
-        backgroundColor: paintData.bgColor,
         backgroundSize: backgroundSize,
         opacity: paintData.opacity / 100
       }
