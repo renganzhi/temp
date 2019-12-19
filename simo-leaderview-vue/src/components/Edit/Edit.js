@@ -554,9 +554,8 @@ export default {
       }
     },
     chgAreaName (name, index) {
-      // console.log('chgAreaName:' + name)
       if (name) {
-        this.selectedPositn[index] = name
+        this.$set(this.selectedPositn, index, name)
       }
       // 数组需要更换
     },
