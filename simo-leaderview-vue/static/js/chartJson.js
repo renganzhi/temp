@@ -235,6 +235,14 @@ var compsArr = [{
   subType: 'groupHistogram',
   chartData: morenData.line
 },
+{
+  text: '堆叠柱图',
+  imgClass: 'icon-n-grouphistogram',
+  chartType: 've-histogram',
+  subType: 'groupHistogram',
+  thirdType: 'stackHistogram',
+  chartData: morenData.line
+},
 /* {
   text:'山峰柱状图',
   imgClass:'icon-n-histogram',
