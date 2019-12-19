@@ -4,6 +4,7 @@
     <div class="fixed-table-header"
          style="height: 36px;">
       <table class="table table-hover"
+             :style="theadTrStyle"
              style="table-layout: fixed;">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
@@ -84,6 +85,13 @@
         </table>
       </transition>
     </div>
+    <div class="v-charts-data-empty"
+         v-if="tableEmpty"
+         style="width: 100%; text-align: center; font-size: 12px;">
+      <div>
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -98,7 +106,8 @@ export default {
       page1Data: [],
       page2Data: [],
       intervalId: 0,
-      nowPage: 0
+      nowPage: 0,
+      tableEmpty: false
     }
   },
   computed: {
@@ -138,6 +147,13 @@ export default {
     'item.chartData': function (newV, oldV) {
       this.pageNum = Number(this.item.pageNum)
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
+      if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
+        this.tableEmpty = true
+        this.intervalId && clearInterval(this.intervalId)
+        return
+      } else {
+        this.tableEmpty = false
+      }
       if (this.item.direction === 'left') {
         this.initLeftMove()
       } else {
@@ -251,6 +267,9 @@ export default {
       this.initLeftMove()
     } else {
       this.initTopMove()
+    }
+    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+      this.tableEmpty = true
     }
     titleShow('bottom', $(this.$el))
   },
