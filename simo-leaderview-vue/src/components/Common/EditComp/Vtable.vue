@@ -4,7 +4,8 @@
     <div class="fixed-table-header"
          style="height: 36px;">
       <table class="table table-hover"
-             style="table-layout: fixed;">
+             style="table-layout: fixed;"
+             :style="theadTrStyle">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
@@ -33,12 +34,20 @@
             <td v-for="(tdText, ind, i) in tr"
                 :key="ind"
                 :title="tdText">
-                <span v-if="i === 0" :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
-                <span v-else>{{tdText}}</span>
+              <span v-if="i === 0"
+                    :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
+              <span v-else>{{tdText}}</span>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="v-charts-data-empty"
+         v-if="tableEmpty"
+         style="width: 100%; text-align: center; font-size: 12px;">
+      <div>
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -49,7 +58,7 @@ export default {
   props: ['item'],
   data () {
     return {
-
+      tableEmpty: false
     }
   },
   computed: {
@@ -82,7 +91,16 @@ export default {
       }
     }
   },
-  methods:  {
+  watch: {
+    'item.chartData': function (newV, oldV) {
+      if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
+        this.tableEmpty = true
+      } else {
+        this.tableEmpty = false
+      }
+    }
+  },
+  methods: {
     alertColor: function (type, ind) {
       if (ind !== '状态') {
         return ''
@@ -99,6 +117,9 @@ export default {
     }
   },
   mounted: function () {
+    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+      this.tableEmpty = true
+    }
     titleShow('bottom', $(this.$el))
   },
   destroyed: function () {
