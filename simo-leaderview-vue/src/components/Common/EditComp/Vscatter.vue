@@ -340,7 +340,10 @@ export default {
     formatData (newV) {
       var mapData = []
       newV.forEach((item) => {
-        let _value = this.geoCoordMap[item.name].concat(item.value)
+        let _value = []
+        if (this.geoCoordMap[item.name]) {
+          _value = this.geoCoordMap[item.name].concat(item.value)
+        }
         let obj = { name: item.name, value: _value }
         mapData.push(obj)
       })
