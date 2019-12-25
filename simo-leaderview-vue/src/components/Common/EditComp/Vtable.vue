@@ -4,7 +4,8 @@
     <div class="fixed-table-header"
          style="height: 36px;">
       <table class="table table-hover"
-             style="table-layout: fixed;">
+             style="table-layout: fixed;"
+             :style="theadTrStyle">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
@@ -41,6 +42,13 @@
         </tbody>
       </table>
     </div>
+    <div class="v-charts-data-empty"
+         v-if="tableEmpty"
+         style="width: 100%; text-align: center; font-size: 12px;">
+      <div>
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -51,7 +59,7 @@ export default {
   props: ['item'],
   data () {
     return {
-
+      tableEmpty: false
     }
   },
   computed: {
@@ -84,6 +92,15 @@ export default {
       }
     }
   },
+  watch: {
+    'item.chartData': function (newV, oldV) {
+      if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
+        this.tableEmpty = true
+      } else {
+        this.tableEmpty = false
+      }
+    }
+  },
   methods: {
     alertColor: function (type, ind) {
       if (ind !== '状态') {
@@ -103,6 +120,9 @@ export default {
   mounted: function () {
     if (!gbs.inDev) {
       titleShow('bottom', $(this.$el))
+    }
+    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+      this.tableEmpty = true
     }
   },
   destroyed: function () {

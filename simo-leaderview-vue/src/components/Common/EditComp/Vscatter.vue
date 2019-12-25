@@ -255,13 +255,17 @@ export default {
     'item.mapLevel': function (newV, oldV) {
       this.$nextTick(() => {
         if (newV === 'city') {
-          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
-          this.settings.position = 'map_' + this.item.cityCode
-          this.extend.geo.map = 'map_' + this.item.cityCode
+          if (this.item.cityCode) {
+            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
+            this.settings.position = 'map_' + this.item.cityCode
+            this.extend.geo.map = 'map_' + this.item.cityCode
+          }
         } else if (newV === 'province') {
-          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
-          this.settings.position = 'map_' + this.item.provinceCode
-          this.extend.geo.map = 'map_' + this.item.provinceCode
+          if (this.item.provinceCode) {
+            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
+            this.settings.position = 'map_' + this.item.provinceCode
+            this.extend.geo.map = 'map_' + this.item.provinceCode
+          }
         } else {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
@@ -340,7 +344,10 @@ export default {
     formatData (newV) {
       var mapData = []
       newV.forEach((item) => {
-        let _value = this.geoCoordMap[item.name].concat(item.value)
+        let _value = []
+        if (this.geoCoordMap[item.name]) {
+          _value = this.geoCoordMap[item.name].concat(item.value)
+        }
         let obj = { name: item.name, value: _value }
         mapData.push(obj)
       })

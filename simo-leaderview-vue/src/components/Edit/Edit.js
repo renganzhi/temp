@@ -342,7 +342,7 @@ export default {
       })
     },
     clearAlertMap () {
-      console.log('清空初始化数据点')
+      // console.log('清空初始化数据点')
       this.alertMapData = []
       this.selectedItem.chartData = [{ name: this.areaArr[0].name, value: 2 }]
       this.$nextTick(() => {
@@ -353,8 +353,13 @@ export default {
     },
     initLevelData (areaData) {
       // 区域分布图给前三项赋默认值
-      var arr = areaData || this.areaArr
-      console.log('初始化前三条默认数据')
+      var arr = []
+      if (areaData) {
+        arr = areaData
+      } else {
+        arr = this.areaArr
+      }
+      // console.log('初始化前三条默认数据')
       this.selectMapData = {}
       var tempData = []
       let len = arr.length < 3 ? arr.length : 3
@@ -382,7 +387,7 @@ export default {
     // 改变展示范围
     chgMapLevel () {
       // 这里会先于watch mapLevel触发
-      console.log('-------selfMapLevel: true------')
+      // console.log('-------selfMapLevel: true------')
       this.selfMapLevel = true
     },
     chgMapGrad (index) {
@@ -554,9 +559,10 @@ export default {
       }
     },
     chgAreaName (name, index) {
-      // console.log('chgAreaName:' + name)
       if (name) {
-        this.selectedPositn[index] = name
+        this.$set(this.selectedPositn, index, name)
+        let temp = this.alertMapData.pop()
+        this.alertMapData.push(temp)
       }
       // 数组需要更换
     },
@@ -625,18 +631,20 @@ export default {
             this.paintInput.height = this.paintObj.height
             this.changeHomeData(this.paintObj) // vuex保存画布大小
           }
+          let tempNum = this.chartNum
           if (res.obj.composeObj) {
             this.combinList = JSON.parse(res.obj.composeObj)
-            let tempNum = this.chartNum.concat(this.combinList)
-            for (let i = 0, len = tempNum.length; i < len; i++) {
-              tempNum[i].zIndex > this.maxIndex
-                ? (this.maxIndex = tempNum[i].zIndex)
-                : ''
-              tempNum[i].zIndex < this.minIndex
-                ? (this.minIndex = tempNum[i].zIndex)
-                : ''
-            }
+            tempNum = this.chartNum.concat(this.combinList)
           }
+          for (let i = 0, len = tempNum.length; i < len; i++) {
+            tempNum[i].zIndex > this.maxIndex
+              ? (this.maxIndex = tempNum[i].zIndex)
+              : ''
+            tempNum[i].zIndex < this.minIndex
+              ? (this.minIndex = tempNum[i].zIndex)
+              : ''
+          }
+
           this.formatVersion()
         } else {
           this.chartNum = []
@@ -702,8 +710,15 @@ export default {
       // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
       this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
-      if (value.chartType === 'v-map') {
-        this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
+      if (value.chartType === 'v-map' || value.chartType === 'v-scatter') {
+        this.areaArr = this.provinceArr
+        if (value.chartType === 'v-map') {
+          this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
+          this.editPieces = JSON.parse(JSON.stringify(obj.piecesData))
+        }
+        if (value.chartType === 'v-scatter') {
+          this.alertMapData = _.cloneDeep(obj.chartData)
+        }
       }
       if (value.chartType === 'progress') {
         this.progressObj.height = 16
@@ -2862,7 +2877,7 @@ export default {
   watch: {
     'selectedItem.mapLevel': function (newValue, oldV) {
       if (!this.selfMapLevel) {
-        console.log('切换元件导致的mapLevel更改') // 不同地图元件的改变不触发watch
+        // console.log('切换元件导致的mapLevel更改') // 不同地图元件的改变不触发watch
         return
       }
       if (oldV) {
@@ -2880,7 +2895,7 @@ export default {
       } else if (newValue === 'city') {
         var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000'] // 直辖市自治区没有三级地图
         if (oldV === 'country') {
-          console.log('从国家级到市级') // 从国家级到市级
+          // console.log('从国家级到市级') // 从国家级到市级
           if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
             this.selectedItem.provinceCode = 510000 // 默认选中一个位置
           }

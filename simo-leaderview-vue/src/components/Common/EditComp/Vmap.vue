@@ -207,14 +207,18 @@ export default {
       // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
     },
     'item.mapLevel': function (newV, oldV) {
-      console.log('v-map mapLevel:' + oldV + ' to ' + newV)
+      // console.log('v-map mapLevel:' + oldV + ' to ' + newV)
       this.$nextTick(() => {
         if (newV === 'city') {
-          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
-          this.settings.position = 'map_' + this.item.cityCode
+          if (this.item.cityCode) {
+            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
+            this.settings.position = 'map_' + this.item.cityCode
+          }
         } else if (newV === 'province') {
-          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
-          this.settings.position = 'map_' + this.item.provinceCode
+          if (this.item.provinceCode) {
+            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
+            this.settings.position = 'map_' + this.item.provinceCode
+          }
         } else {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
@@ -224,7 +228,7 @@ export default {
     },
     'item.provinceCode': function (newV) {
       if (this.item.mapLevel === 'province') {
-        console.log('v-map procode:' + newV)
+        // console.log('v-map procode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000

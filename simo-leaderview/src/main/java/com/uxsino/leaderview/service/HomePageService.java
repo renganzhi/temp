@@ -298,7 +298,12 @@ public class HomePageService {
         String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
         JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
         String userRole = userObj.getString("departmentId");
-        List<HomePage> AllhomePage = findAllWithoutConf(SessionUtils.getCurrentUserIdFromSession(session));
+        List<HomePage> AllhomePage = Lists.newArrayList();
+        try {
+            AllhomePage = findAllWithoutConf(SessionUtils.getCurrentUserIdFromSession(session));
+        }catch (Exception e){
+            log.error("获取页面失败", e);
+        }
         List<HomePage> result = Lists.newArrayList();
         AllhomePage.forEach(homePage -> {
             JSONObject obj = new JSONObject();
