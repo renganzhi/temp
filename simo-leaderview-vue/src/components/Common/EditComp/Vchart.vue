@@ -553,8 +553,8 @@ export default {
             },
             yAxis: {
               type: 'value',
-              position: 'left',
-              name: _this.item.chartData.unit, // 单位
+              // position: 'left',
+              // name: _this.item.chartData.unit, // 单位
               max: _this.item.chartData.unit === '%' ? _this.getYaxiosMax(_this.item.chartData) : null,
               axisTick: {
                 show: true,
@@ -634,6 +634,17 @@ export default {
               }
             }
           })
+          if (_this.item.subType === 'doubleAxis') {
+            // CPU平均利用率
+            obj.settings = $.extend(obj.settings, {
+              axisSite: { right: ['CPU平均利用率'] },
+              // yAxisType: ['KMB', 'KMB'],
+              yAxisName: ['CPU平均利用率', 'CPU平均利用率']
+            })
+          } else {
+            obj.extend.yAxis.position = 'left'
+            obj.extend.yAxis.name = _this.item.chartData.unit // 单位
+          }
         },
         've-ring': function () {
           obj.settings = $.extend(obj.settings, {

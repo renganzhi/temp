@@ -293,6 +293,15 @@ var compsArr = [{
   showPoint: 'true' // 是否标点
 },
 {
+  text: '双轴曲线图',
+  imgClass: 'icon-n-line',
+  chartType: 've-line',
+  subType: 'doubleAxis',
+  chartData: morenData.time,
+  lineArea: false, // 是否为区域图
+  showPoint: 'true' // 是否标点
+},
+{
   text: '雷达图',
   imgClass: 'icon-n-radar',
   chartType: 've-radar',

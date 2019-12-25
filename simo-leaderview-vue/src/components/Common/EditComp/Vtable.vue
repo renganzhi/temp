@@ -33,8 +33,9 @@
             <td v-for="(tdText, ind, i) in tr"
                 :key="ind"
                 :title="tdText">
-                <span v-if="i === 0" :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
-                <span v-else>{{tdText}}</span>
+              <span v-if="i === 0"
+                    :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
+              <span v-else>{{tdText}}</span>
             </td>
           </tr>
         </tbody>
@@ -44,6 +45,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { gbs } from '@/config/settings'
 export default {
   name: 'vtable',
   props: ['item'],
@@ -82,7 +84,7 @@ export default {
       }
     }
   },
-  methods:  {
+  methods: {
     alertColor: function (type, ind) {
       if (ind !== '状态') {
         return ''
@@ -99,7 +101,9 @@ export default {
     }
   },
   mounted: function () {
-    titleShow('bottom', $(this.$el))
+    if (!gbs.inDev) {
+      titleShow('bottom', $(this.$el))
+    }
   },
   destroyed: function () {
     if ($(this.$el).find('.tooltip').length > 0) {
