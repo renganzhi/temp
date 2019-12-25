@@ -5,7 +5,7 @@
     <input v-model="pwd"
            placeholder="请输入密码" /><br>
     <img :src="baseUrl + '/verification'" />
-    <input v-model="code" /><button @click='login'>登录</button>
+    <input v-model="code" @keyup.enter="login"/><button @click='login'>登录</button>
   </div>
 </template>
 <script>

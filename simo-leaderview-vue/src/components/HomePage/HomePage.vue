@@ -330,6 +330,7 @@ export default {
     /* 刷新页面相关 */
     refresh: function () {
       this.refreshFn()
+      this.refreshCompose()
     },
     stopRefreshTimer: function () {
       this.refreshTimer && clearTimeout(this.refreshTimer)
@@ -348,6 +349,7 @@ export default {
           return
         }
         ct.refreshFn()
+        ct.refreshCompose()
         ct.refreshTimer = setTimeout(freshFn, ct.refreshTime * 1000)
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
@@ -406,6 +408,13 @@ export default {
         ct.setScale()
       })
     },
+    refreshCompose: function () {
+      if (this.combinList && this.combinList.length > 0) {
+        this.combinList.forEach((list) => {
+          this.refreshFn(list.child)
+        })
+      }
+    },
 
     /* 缩放setScale */
     setScale: function () {
@@ -423,8 +432,6 @@ export default {
           h = $el.height()
         }
       }
-      // var _app = $('#app')
-      // console.log('width:' + w + '  height: ' + h)
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
       var paintW = (this.paintConf && this.paintConf.width) || 1920
       var paintH = (this.paintConf && this.paintConf.height) || 1080
@@ -510,6 +517,9 @@ export default {
       }
       this.refreshFn(newV)
       this.initRefreshTimer()
+    },
+    combinList: function () {
+      this.refreshCompose()
     }
   },
   beforeMount: function () {

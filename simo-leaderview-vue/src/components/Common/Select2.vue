@@ -1,7 +1,6 @@
 <template>
   <select v-if="mapSelect && sameName">
-    <!-- :disabled="disData.indexOf(subv.name) === -1" -->
-    <option v-for="(subv,index) in obj"
+      <option v-for="(subv,index) in obj"
             :value="subv.name"
             :disabled="disData.indexOf(subv.name) !== -1"
             :key="index">{{subv.name}}</option>
@@ -44,6 +43,11 @@ export default {
       // console.log('change select')
       vm.$emit('input', $(this).val())
     }).on('select2:selecting', function (e) {
+      if (vm.mapSelect && vm.sameName && e.params && e.params.args && e.params.args.data) {
+        if (vm.disData && vm.disData.indexOf(e.params.args.data.id) != -1) {
+          return e.preventDefault()
+        }
+      }
       if ((vm.obj.type === 'multi-select' || vm.multip) && e.params && e.params.args && e.params.args.data) {
         var v = $(this).val()
         // 这里设置最多可选项
@@ -104,11 +108,12 @@ export default {
         }
       }
     },
-    // disData: function (oldV, newV) {
-    //   // if (!_.isEqual(newV, oldV)) {
-    //   //   // console.log(newV)
-    //   // }
-    // },
+    disData: function (oldV, newV) {
+      //   // if (!_.isEqual(newV, oldV)) {
+      //   //   // console.log(newV)
+      //   // }
+      // },
+    },
     'obj': function (newV) {
       if (this.mapSelect) {
         var _this = this

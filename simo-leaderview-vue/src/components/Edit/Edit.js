@@ -561,6 +561,8 @@ export default {
     chgAreaName (name, index) {
       if (name) {
         this.$set(this.selectedPositn, index, name)
+        let temp = this.alertMapData.pop()
+        this.alertMapData.push(temp)
       }
       // 数组需要更换
     },
@@ -629,18 +631,20 @@ export default {
             this.paintInput.height = this.paintObj.height
             this.changeHomeData(this.paintObj) // vuex保存画布大小
           }
+          let tempNum = this.chartNum
           if (res.obj.composeObj) {
             this.combinList = JSON.parse(res.obj.composeObj)
-            let tempNum = this.chartNum.concat(this.combinList)
-            for (let i = 0, len = tempNum.length; i < len; i++) {
-              tempNum[i].zIndex > this.maxIndex
-                ? (this.maxIndex = tempNum[i].zIndex)
-                : ''
-              tempNum[i].zIndex < this.minIndex
-                ? (this.minIndex = tempNum[i].zIndex)
-                : ''
-            }
+            tempNum = this.chartNum.concat(this.combinList)
           }
+          for (let i = 0, len = tempNum.length; i < len; i++) {
+            tempNum[i].zIndex > this.maxIndex
+              ? (this.maxIndex = tempNum[i].zIndex)
+              : ''
+            tempNum[i].zIndex < this.minIndex
+              ? (this.minIndex = tempNum[i].zIndex)
+              : ''
+          }
+
           this.formatVersion()
         } else {
           this.chartNum = []
@@ -1602,6 +1606,9 @@ export default {
         var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
         this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
       }
+    },
+    reverseColor (index) {
+      this.selectedItem.ctColors[index].reverse()
     },
     chgDataSource: function ($event, flag) {
       // 改变数据来源

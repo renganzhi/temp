@@ -161,33 +161,36 @@ public class HomePageUserConfService {
             int index = conf.getPageIndex();
             int lastIndex = i==0 ? 0 : lastConf.getPageIndex();
             if (index - 1 != lastIndex){
-                boolean visible = conf.isVisible();
+                conf.setPageIndex(i + 1);
+                update(conf.getId(),conf);
+                //先不进行复杂交换，保证顺序正确就行了
+                /*boolean visible = conf.isVisible();
                 boolean lastVisible = lastConf.isVisible();
                 boolean lastShared = lastConf.isShared();
                 // 上一个页面是可见的，不用交换位置
                 if (lastVisible){
-                    conf.setPageIndex(lastIndex + 1);
+                    conf.setPageIndex(i + 1);
                     update(conf.getId(),conf);
                 }else {
                     // 上一个页面不可见，当前页面可见，需换位置
                     if (visible){
-                        conf.setPageIndex(lastIndex);
+                        conf.setPageIndex(i);
                         update(conf.getId(),conf);
-                        lastConf.setPageIndex(lastIndex + 1);
+                        lastConf.setPageIndex(i + 1);
                         update(lastConf.getId(),lastConf);
                     }else {
                         // 上一个页面不是被分享的，不用交换位置
                         if (!lastShared){
-                            conf.setPageIndex(lastIndex + 1);
+                            conf.setPageIndex(i + 1);
                             update(conf.getId(),conf);
                         } else {
-                            conf.setPageIndex(lastIndex);
+                            conf.setPageIndex(i);
                             update(conf.getId(),conf);
-                            lastConf.setPageIndex(lastIndex + 1);
+                            lastConf.setPageIndex(i + 1);
                             update(lastConf.getId(),lastConf);
                         }
                     }
-                }
+                }*/
             }
             lastConf = conf;
         }

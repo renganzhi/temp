@@ -66,7 +66,7 @@ public class HomeCarouselService {
         int correction = 1;
         for (HomePageUserConf homePageUserConf : noVisibleList) {
             if (homePageUserConf.isShared()){
-                homePageUserConfDao.leftPageIndex(visibleCount + correction, countAll, userId);
+                homePageUserConfDao.leftPageIndex(visibleCount + correction + 1, countAll, userId);
                 homePageUserConf.setPageIndex(countAll);
                 homePageUserConfDao.update(homePageUserConf.getId(), homePageUserConf);
             }

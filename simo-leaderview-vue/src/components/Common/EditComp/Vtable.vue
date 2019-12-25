@@ -53,6 +53,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { gbs } from '@/config/settings'
 export default {
   name: 'vtable',
   props: ['item'],
@@ -117,10 +118,12 @@ export default {
     }
   },
   mounted: function () {
+    if (!gbs.inDev) {
+      titleShow('bottom', $(this.$el))
+    }
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    titleShow('bottom', $(this.$el))
   },
   destroyed: function () {
     if ($(this.$el).find('.tooltip').length > 0) {

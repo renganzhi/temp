@@ -270,6 +270,13 @@ public class HomePageController {
         result.put("pages", homePageService.findVisible(userId));
         // 判断是不是一个页面都没有的全新用户
         Boolean isNewUser = false;
+        for (int i = 1 ; i <= homePageUserConfService.getMaxPageByUserId(userId); i++) {
+            try {
+                homePageUserConfService.findOneByIndexAndUserId(i,userId);
+            }catch (Exception e){
+                homePageUserConfService.RescueConfSort(userId);
+            }
+        }
         try {
             isNewUser = ObjectUtils.isEmpty(homePageUserConfService.findOneByIndexAndUserId(1, userId));
         }catch (Exception e){
