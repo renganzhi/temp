@@ -1,0 +1,20 @@
+{
+	"module": "viewer",
+	"menus": [
+		{
+			"modelName": "viewer",
+			"orderNumber": 10,
+			"appId": "SIMO",
+			"name": "大屏展示",
+			"range": [
+				"Super_Admin"
+			],
+			"id": "VIEW01",
+			"beClass": true,
+			"iclass": "icon-ux-sys",
+			"parentId": "SIMO",
+			"access": {"R": "只读", "RW": "读写"},
+			"url": ""
+		}
+	]
+}
