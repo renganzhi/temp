@@ -21,6 +21,8 @@
              style="height:560px;position: relative;overflow: hidden;">
           <div class="wrap">
             <div class="paintBox"
+                 :style="bgColrStyle"></div>
+            <div class="paintBox"
                  :style="paintStyle"></div>
             <div class="full-height box"
                  style="transform-origin:0 0; -webkit-transform-origin:0 0; -moz-transform-origin:0 0; -ms-transform-origin:0 0;">
@@ -71,12 +73,17 @@ export default {
       // 关闭模态框时触发
       _this.$emit('hidePreview')
     })
-    // alert(this.homeData.height)
   },
   computed: {
+    bgColrStyle: function () {
+      var paintData = this.paintObj || this.paintConf
+      if (!paintData) return ''
+      return {
+        backgroundColor: paintData.bgColor
+      }
+    },
     paintStyle: function () {
       var paintData = this.paintObj || this.paintConf
-      // if (!this.paintObj) return
       if (!paintData) return
       var type = paintData.bgStyle
       if (type === '1') {
@@ -90,7 +97,6 @@ export default {
         backgroundImage: paintData.bgImg
           ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
-        backgroundColor: paintData.bgColor,
         backgroundSize: backgroundSize,
         opacity: paintData.opacity / 100
       }

@@ -221,7 +221,6 @@ export default {
       return {
         backgroundImage: this.paintObj.bgImg
           ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
-        backgroundColor: this.paintObj.bgColor,
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
