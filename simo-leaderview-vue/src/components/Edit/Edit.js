@@ -934,8 +934,8 @@ export default {
         // 切换选中的元件
         this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id
-        if (ev === 'down' && item.ctDataSource === 'system') {
-          this.getUrlByType(true)
+        if (ev === 'down' && item.ctDataSource === 'system' && !this.showStyleTab) {
+          this.getUrlByType(true) // 优化单击元件时的选中延迟
         }
       }
       if (!gbs.inDev) {
@@ -1016,6 +1016,12 @@ export default {
           })
         }
       }
+      this.showStyleTab = true // 这样会快一些，不会被延迟
+      // this.$nextTick(() => {
+      //   if (!this.showStyleTab && this.selectedItem.ctDataSource === 'system') {
+      //     this.getUrlByType(true)
+      //   }
+      // })
     },
     setMaxItemInfo () {
       if (this.chooseIndexs.concat(this.chooseCompIndexs).length <= 1) {
@@ -2874,6 +2880,17 @@ export default {
     }
   },
   watch: {
+    showStyleTab: function (newV) {
+      if (!newV && this.selectedItem.ctDataSource === 'system') {
+        if (this.oldCheckId !== this.selectedItem.id) {
+          this.getUrlByType(true)
+        } else {
+          if (this.syst.curUrl.length < 1) {
+            this.getUrlByType(true)
+          }
+        }
+      }
+    },
     'selectedItem.mapLevel': function (newValue, oldV) {
       if (!this.selfMapLevel) {
         // console.log('切换元件导致的mapLevel更改') // 不同地图元件的改变不触发watch
