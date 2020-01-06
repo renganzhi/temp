@@ -193,11 +193,6 @@ export default {
       this.combinList = []
       this.pageIndex = 0
       this.$router.push('/editPage')
-      // $.comps.editHome.open({
-      //   exitCb: function () {
-      //     _this.getPage();
-      //   }
-      // });
     },
     fullScreen: function () { // 切换全屏
       if (this.pageList.length === 0) {
@@ -214,6 +209,8 @@ export default {
       }
       var ct = this
       Public.checkFull() ? this.exitFull() : this.full()
+      $('.tp-tip').remove()
+      $('.tooltip.in').remove()
       // this.isFullScreen ? this.exitFull() : this.full()
       $(window).on('resize.home', function () {
         !Public.checkFull() && ct.exitFull()
@@ -248,18 +245,19 @@ export default {
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
       }
-      if (this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj) {
-        this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
+      if (nowPageObj.composeObj) {
+        this.combinList = JSON.parse(nowPageObj.composeObj)
       } else {
         this.combinList = []
       }
-      if (this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj) {
-        this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      if (nowPageObj.paintObj) {
+        this.paintConf = JSON.parse(nowPageObj.paintObj)
       } else {
         this.paintConf = {}
       }
       this.setPaint()
-      this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
+      this.nowPage = JSON.parse(nowPageObj.viewConf)
       this.isFullScreen && this.interTimer()
     },
     setPaint: function () {
@@ -303,18 +301,21 @@ export default {
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.pageIndex++
-      if (this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj) {
-        this.combinList = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].composeObj)
+      var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
+      if (nowPageObj.composeObj) {
+        this.combinList = JSON.parse(nowPageObj.composeObj)
       } else {
         this.combinList = []
       }
-      if (this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj) {
-        this.paintConf = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].paintObj)
+      if (nowPageObj.paintObj) {
+        this.paintConf = JSON.parse(nowPageObj.paintObj)
       } else {
         this.paintConf = {}
       }
       this.setPaint()
-      this.nowPage = JSON.parse(this.pageList[(this.pageIndex - 1) % this.pageSize].viewConf)
+      this.nowPage = JSON.parse(nowPageObj.viewConf)
+      $('.tp-tip').remove()
+      $('.tooltip.in').remove()
     },
     stopTimer: function () {
       this.timer && clearTimeout(this.timer)
