@@ -9,8 +9,9 @@
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
-                :key="index"
-                :title="title">{{title}}</th>
+                :key="index"><span data-toggle='tooltip'
+                    title
+                    :data-original-title="title">{{title}}</span></th>
           </tr>
         </thead>
         <tbody>
@@ -32,11 +33,16 @@
               v-for="(tr, id) in item.chartData.rows"
               :key="id">
             <td v-for="(tdText, ind, i) in tr"
-                :key="ind"
-                :title="tdText">
+                :key="ind">
               <span v-if="i === 0"
+                    data-toggle='tooltip'
+                    title
+                    :data-original-title="tdText"
                     :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
-              <span v-else>{{tdText}}</span>
+              <span data-toggle='tooltip'
+                    title
+                    :data-original-title="tdText"
+                    v-else>{{tdText}}</span>
             </td>
           </tr>
         </tbody>
@@ -118,11 +124,11 @@ export default {
     }
   },
   mounted: function () {
-    if (!gbs.inDev) {
-      titleShow('bottom', $(this.$el))
-    }
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
+    }
+    if (!gbs.inDev) {
+      titleShow('bottom', $(this.$el))
     }
   },
   destroyed: function () {
