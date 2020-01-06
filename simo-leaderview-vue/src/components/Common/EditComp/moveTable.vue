@@ -95,6 +95,7 @@
   </div>
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   name: 'moveTable',
   props: ['item'],
@@ -271,7 +272,9 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    titleShow('bottom', $(this.$el))
+    if (!gbs.inDev) {
+      titleShow('bottom', $(this.$el))
+    }
   },
   beforeDestroy: function () {
     if (this.intervalId) {

@@ -23,7 +23,8 @@
     </div>
 
     <div class="portlet light bordered flex-1"
-         id="mainbox">
+         id="paintWrap">
+      <div id="mainbox"></div>
       <div class="home_wrapBox">
         <div class="full-height pagebox">
           <LookItem v-for="(item,index) in nowPage"
@@ -265,10 +266,14 @@ export default {
       if (this.paintConf) {
         if (this.paintConf.bgImg) {
           $('#mainbox').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf.bgImg + ')')
-        } else if (this.paintConf.bgColor) {
-          $('#mainbox').css('background', this.paintConf.bgColor)
         } else {
           $('#mainbox').css('background', '')
+        }
+        $('#mainbox').css('opacity', this.paintConf.opacity / 100)
+        if (this.paintConf.bgColor) {
+          $('#paintWrap').css('background', this.paintConf.bgColor)
+        } else {
+          $('#paintWrap').css('background', '')
         }
         if (this.paintConf.bgStyle) {
           var type = this.paintConf.bgStyle
@@ -591,7 +596,6 @@ export default {
   display: none;
 }
 .newDrag {
-  /* z-index: 100 !important; */
   opacity: 1;
   background: transparent;
 }
@@ -658,6 +662,13 @@ export default {
 
 #home-html .btm-tools.full .btn-box:hover {
   opacity: 1;
+}
+#home-html #mainbox {
+  width: 100%;
+  height: 100% !important;
+  position: absolute;
+  top: 0px;
+  height: 0px;
 }
 
 html[data-theme="blackWhite"],
