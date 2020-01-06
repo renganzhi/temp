@@ -235,6 +235,14 @@ var compsArr = [{
   subType: 'groupHistogram',
   chartData: morenData.line
 },
+{
+  text: '堆叠柱图',
+  imgClass: 'icon-n-grouphistogram',
+  chartType: 've-histogram',
+  subType: 'groupHistogram',
+  thirdType: 'stackHistogram',
+  chartData: morenData.line
+},
 /* {
   text:'山峰柱状图',
   imgClass:'icon-n-histogram',
@@ -280,6 +288,15 @@ var compsArr = [{
   text: '曲线图',
   imgClass: 'icon-n-line',
   chartType: 've-line',
+  chartData: morenData.time,
+  lineArea: false, // 是否为区域图
+  showPoint: 'true' // 是否标点
+},
+{
+  text: '双轴曲线图',
+  imgClass: 'icon-n-line',
+  chartType: 've-line',
+  subType: 'doubleAxis',
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   showPoint: 'true' // 是否标点

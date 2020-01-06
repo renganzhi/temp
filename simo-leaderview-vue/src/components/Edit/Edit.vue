@@ -645,7 +645,7 @@
                                     </div>
                                     <div class="form-group" v-for="(v,index) in selectedItem.ctColors" :key="index">
                                         <span class="colorOrder">{{index+1}}</span>
-                                        <div class="gradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
+                                        <div class="gradient" @click="reverseColor(index)" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
                                           <div class="color-w15">
                                               <Vcolor :data="selectedItem.ctColors[index][0]" :index="index" @getdata="getColorStart"></Vcolor>
                                           </div>
