@@ -15,7 +15,9 @@
               :z="item.zIndex || 500"
               :item="item"
               @dragging="dragging"
+              @dragstop="dragstop"
               @resizing="resizing"
+              @resizestop="resizestop"
               @bodyDown="bodyDown"
               @bodymove="bodymove"
               @dbclick="vdbclick"
@@ -84,7 +86,10 @@ export default {
   components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
-
+      oldW: 0,
+      oldH: 0,
+      oldX: 0,
+      oldY: 0
     }
   },
   methods: {
@@ -94,6 +99,20 @@ export default {
     dragging (chgX, chgY, attr) {
       this.$emit('draged', chgX, chgY, attr)
     },
+    dragstop (item, attr) {
+      item.x = attr.left
+      item.y = attr.top
+      if (Number(attr.left) !== Number(this.oldX) || Number(attr.top) !== Number(this.oldY)) {
+        this.$emit('changeStop', this.index)
+      }
+    },
+    resizestop (item, attr) {
+      item.width = attr.width
+      item.height = attr.height
+      if (Number(attr.width) !== Number(this.oldW) || Number(attr.height) !== Number(this.oldH)) {
+        this.$emit('changeStop', this.index)
+      }
+    },
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height
@@ -101,7 +120,12 @@ export default {
       this.$emit('resized', attr)
     },
     bodyDown (item, attr) { // 点击
+      this.oldW = item.width
+      this.oldH = item.height
+      this.oldX = item.x
+      this.oldY = item.y
       this.$emit('selected', item, 'down', 'item', this.index)
+      this.$emit('bodyDown')
     },
     bodymove (item, attr) {
       item.x = attr.left

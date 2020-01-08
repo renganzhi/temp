@@ -22,6 +22,7 @@
 <script>
 import { gbs } from '@/config/settings'
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 export default {
   name: 'vscatter',
   props: ['item'],

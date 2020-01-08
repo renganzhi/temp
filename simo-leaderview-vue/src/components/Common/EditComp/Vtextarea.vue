@@ -16,6 +16,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import _ from 'lodash'
 export default {
   name: 'vtextarea',
   props: ['item', 'disabled'],

@@ -196,6 +196,7 @@ import { gbs } from '@/config/settings'
 import Confirm from './../Common/Confirm'
 import Select2 from './../Common/Select2'
 import { Notification } from 'element-ui'
+import _ from 'lodash'
 export default {
   name: 'editPage',
   components: { AddPage, PreView, PageSetting, Confirm, Select2, Notification },

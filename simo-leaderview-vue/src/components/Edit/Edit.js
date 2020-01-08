@@ -10,7 +10,7 @@ import { Slider, Notification } from 'element-ui'
 import { mapActions, mapGetters } from 'vuex'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
 import qs from 'qs'
-import lodash from 'lodash'
+import _ from 'lodash'
 
 export default {
   name: 'edit',
@@ -186,6 +186,9 @@ export default {
         posX: 0,
         posY: 0
       },
+      itemHistoryObj: [],
+      historyArr: [],
+      tempHisObj: {},
       tempVideoUrl: '' // 用户输入的视频URL
     }
   },
@@ -254,11 +257,75 @@ export default {
       'changeHomeData',
       'changeAreaData'
     ]),
+    saveHistory (type) {
+      /** 全部保存 */
+      if (type) {
+        // 保存画布
+        this.historyArr.push({
+          type: 'paint',
+          paintObj: JSON.stringify(this.paintObj)
+        })
+      } else {
+        this.historyArr.push({
+          type: 'item',
+          chartNum: JSON.stringify(this.chartNum),
+          compose: JSON.stringify(this.combinList)
+        })
+      }
+    },
+    bodyDown () {
+      // 选中元件
+      this.tempHisObj = {
+        type: 'item',
+        chartNum: JSON.stringify(this.chartNum),
+        compose: JSON.stringify(this.combinList)
+      }
+    },
+    // 撤销
+    Revoke () {
+      // this.itemHistoryObj.pop() // 最后一条是当前的
+      // var tempObj = this.itemHistoryObj.pop() // 倒数第二条才是历史记录
+      // if (!tempObj) {
+      //   return
+      // }
+      // this.selectedItem = {}
+      // this.chooseCompIndexs = []
+      // this.chooseIndexs = []
+      // // this.$set(this.chartNum, tempObj.index, JSON.parse(JSON.stringify(tempObj.oldObj)))
+      // tempObj.oldObj.slted = false
+      // this.chartNum.splice(tempObj.index, 1, JSON.parse(JSON.stringify(tempObj.oldObj)))
+      /** 全部保存 */
+      var oldObj = this.historyArr.pop()
+      if (!oldObj) return alert('没有历史记录了')
+      if (oldObj.type === 'item') {
+        this.selectedItem = {}
+        this.chooseCompIndexs = []
+        this.chooseIndexs = []
+        this.chartNum = JSON.parse(oldObj.chartNum)
+        this.combinList = JSON.parse(oldObj.compose)
+      } else {
+        this.paintObj = JSON.parse(oldObj.paintObj)
+      }
+    },
+    // 单元件change
+    changeStop (index) {
+      // this.itemHistoryObj.push({
+      //   type: 'item',
+      //   index: index, // 改成id
+      //   oldObj: JSON.parse(JSON.stringify(this.chartNum[index]))
+      // })
+      // this.saveHistory() // 应该保存之前的数据
+      this.historyArr.push(this.tempHisObj)
+      this.tempHisObj = {}
+      console.log(this.historyArr.length)
+    },
     scrollLeft (x) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+        this.saveHistory()
         this.minXItem.x += x
         this.changeTarget('x')
       } else {
+        this.saveHistory()
         this.testObj.x += x
       }
       /* x = x || 10
@@ -271,9 +338,11 @@ export default {
     },
     scrollTop (y) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+        this.saveHistory()
         this.minXItem.y += y
         this.changeTarget('y')
       } else {
+        this.saveHistory()
         this.testObj.y += y
       }
       /* // 画布移动
@@ -648,6 +717,7 @@ export default {
         } else {
           this.chartNum = []
         }
+        this.saveHistory()
       })
     },
     formatVersion () {
@@ -678,25 +748,26 @@ export default {
     initChart (value) {
       this.showStyleTab = true
       this.showWindowBtn = false // 隐藏部件弹窗按钮
+      this.saveHistory()
       var obj = $.extend(
         true, {}, {
-        id: new Date().getTime(),
-        ctName: value.text,
-        ctLegendShow: 'true',
-        x: 400,
-        y: 100,
-        width: 350,
-        height: 350,
-        zIndex: ++this.maxIndex,
-        colorType: 'defalut',
-        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-        ctDataSource: 'static', // 数据来源system\static，默认static
-        url: '', // 请求接口
-        params: {}, // 请求接口参数
-        bdpx: 1, // 边框线宽
-        fontSize: 12, // 字号
-        lineArea: false // 折线是否为区域
-      },
+          id: new Date().getTime(),
+          ctName: value.text,
+          ctLegendShow: 'true',
+          x: 400,
+          y: 100,
+          width: 350,
+          height: 350,
+          zIndex: ++this.maxIndex,
+          colorType: 'defalut',
+          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctDataSource: 'static', // 数据来源system\static，默认static
+          url: '', // 请求接口
+          params: {}, // 请求接口参数
+          bdpx: 1, // 边框线宽
+          fontSize: 12, // 字号
+          lineArea: false // 折线是否为区域
+        },
         value
       )
 
@@ -1304,6 +1375,7 @@ export default {
     },
     // 下移
     downward: function () {
+      this.saveHistory()
       if (this.childResize) {
         var z = this.selectedItem.zIndex
         if (z > 1) {
@@ -1330,6 +1402,7 @@ export default {
     },
     // 上移
     upward: function () {
+      this.saveHistory()
       if (this.childResize) {
         var maxIndex = this.combinList[this.parentId].child.length
         var z = this.selectedItem.zIndex
@@ -1356,6 +1429,7 @@ export default {
       }
     },
     toBottom: function () {
+      this.saveHistory()
       if (this.childResize) {
         var z = this.selectedItem.zIndex
         if (z && z > 1) {
@@ -1385,6 +1459,7 @@ export default {
       }
     },
     toTop: function () {
+      this.saveHistory()
       if (this.childResize) {
         var z = this.selectedItem.zIndex
         var maxIndex = this.combinList[this.parentId].child.length
@@ -1431,6 +1506,7 @@ export default {
     },
     // 左对齐
     alignLeft: function () {
+      this.saveHistory()
       var itemArr = this.indexToItem()
       var minLeftItem = _.minBy(itemArr, function (item) { return Number(item.x) })
       var minLeft = minLeftItem.x
@@ -1440,6 +1516,7 @@ export default {
     },
     // 右对齐
     alignRight: function () {
+      this.saveHistory()
       var itemArr = this.indexToItem()
       var maxRightItem = _.maxBy(itemArr, function (item) { return Number(item.x) + Number(item.width) })
       var maxRight = Number(maxRightItem.x) + Number(maxRightItem.width)
@@ -1449,6 +1526,7 @@ export default {
     },
     // 上对齐
     alignTop: function () {
+      this.saveHistory()
       var itemArr = this.indexToItem()
       var minTopItem = _.minBy(itemArr, function (item) { return Number(item.y) })
       var minTop = minTopItem.y
@@ -2416,6 +2494,7 @@ export default {
       }
     },
     del: function () {
+      this.saveHistory()
       if (this.chooseIndexs.length === 0 && this.chooseCompIndexs.length === 0) {
         return
       }
@@ -2517,6 +2596,7 @@ export default {
       this.selectedIndex = null
     }, */
     copy: function () {
+      this.saveHistory()
       if (this.chooseIndexs.length > 0) {
         if (this.chooseIndexs.length === 1 && this.chooseCompIndexs.length === 0) {
           this.copyOne('item', this.chooseIndexs, true)
@@ -2608,14 +2688,17 @@ export default {
       this.uploadFile('img', formData, function (data) {
         if (!_this.selectedItem.chartType) {
           // 上传画布图片
+          _this.saveHistory(true)
           _this.paintObj.bgImg =
             '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
         if (_this.selectedItem.chartType === 'image') {
+          _this.saveHistory()
           _this.selectedItem.imgSrc =
             '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         } else if (_this.selectedItem.subType === 'pictorialBar') {
+          _this.saveHistory()
           _this.selectedItem.symbolImg =
             '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         }
@@ -2848,6 +2931,12 @@ export default {
         if (window.event.ctrlKey && this.paintObj.scale <= 195) {
           this.paintObj.scale += 5
         }
+      }
+      if (window.event.ctrlKey && key === 90) {
+        // ctrl + z
+        e.preventDefault()
+        e.returnValue = false
+        this.Revoke()
       }
     },
     handleKeyUp (e) {

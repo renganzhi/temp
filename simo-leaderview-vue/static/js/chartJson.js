@@ -413,6 +413,7 @@ var compsArr = [{
   width: 300,
   height: 300,
   imgSrc: '',
+  showType: '1',
   chartData: {}
 },
 {

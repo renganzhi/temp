@@ -439,7 +439,7 @@ export default {
     bodyUp () {
       this.bodyDrag = false
       // this.$emit('dragging', this.item, this.rect)
-      this.$emit('dragstop', this.rect)
+      this.$emit('dragstop', this.item, this.rect)
 
       this.stickStartPos = { mouseX: 0, mouseY: 0, x: 0, y: 0, w: 0, h: 0 }
       this.limits = {
@@ -652,7 +652,7 @@ export default {
       this.stickAxis = null
 
       // this.$emit('resizing', this.rect);
-      // this.$emit('resizestop', this.rect);
+      this.$emit('resizestop', this.item, this.rect)
     },
 
     aspectRatioCorrection () {
