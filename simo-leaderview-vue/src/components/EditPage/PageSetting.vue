@@ -129,6 +129,7 @@
 import qs from 'qs'
 import { gbs } from '@/config/settings'
 import { Notification } from 'element-ui'
+import _ from 'lodash'
 export default {
   name: 'pageSetting',
   props: ['showModal'],
@@ -250,7 +251,7 @@ export default {
         }
         for (var j = index - 1; j >= 0; j--) {
           if (this.tableData[j].visible) {
-           return this.tableData.splice(j + 1, 0, temp)
+            return this.tableData.splice(j + 1, 0, temp)
           }
         }
         this.tableData.unshift(temp)

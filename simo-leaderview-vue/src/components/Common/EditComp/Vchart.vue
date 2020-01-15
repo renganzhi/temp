@@ -20,6 +20,7 @@
   </component>
 </template>
 <script>
+import _ from 'lodash'
 export default {
   name: 'vchart',
   props: ['item'],
@@ -256,6 +257,23 @@ export default {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
         this.extend.color = this.getColors(this.item.ctColors)
       }
+      if (this.item.chartType === 've-radar') {
+        if (newV && newV.columns) {
+          var indicatorArr = []
+          var names = newV.columns.slice(1, newV.columns.length)
+          if (newV.rows) {
+            names.forEach((key) => {
+              var maxItem = _.maxBy(newV.rows, function (item) { return item[key] })
+              let maxVal = Number(maxItem[key]) > 100 ? Number(maxItem[key]) : 100
+              indicatorArr.push({
+                name: key,
+                max: maxVal
+              })
+            })
+          }
+          this.extend.radar.indicator = indicatorArr
+        }
+      }
       if (this.item.thirdType === 'stackHistogram') {
         var _key = this.item.chartData.columns[0]
         var _value = this.item.chartData.columns.slice(1, this.item.chartData.columns.length)
@@ -438,9 +456,6 @@ export default {
           }
         },
         've-histogram': function () {
-          //  if(_this.item.subType === 'groupHistogram'){
-          //      // 分组柱状图
-          //  }
           var barW = Math.floor((_this.item.width - 60) * 0.7 / _this.item.chartData.rows.length)
           var strLen = Math.round(barW / 10)
           obj.extend = $.extend(obj.extend, {
@@ -638,7 +653,6 @@ export default {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
               axisSite: { right: ['CPU平均利用率'] },
-              // yAxisType: ['KMB', 'KMB'],
               yAxisName: ['CPU平均利用率', 'CPU平均利用率']
             })
           } else {
@@ -856,7 +870,6 @@ export default {
                   },
                   splitLine: {
                     show: false
-
                   },
                   axisTick: {
                     show: true,
@@ -885,10 +898,26 @@ export default {
           }
         },
         've-radar': function () {
+          var indicatorArr = []
+          if (_this.item.chartData && _this.item.chartData.columns) {
+            var names = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
+            if (_this.item.chartData.rows) {
+              names.forEach((key) => {
+                var maxItem = _.maxBy(_this.item.chartData.rows, function (item) { return item[key] })
+                let maxVal = Number(maxItem[key]) > 100 ? Number(maxItem[key]) : 100
+                indicatorArr.push({
+                  name: key,
+                  max: maxVal
+                })
+              })
+            }
+          }
           obj.extend = $.extend(obj.extend, {
             radar: {
-              shape: 'polygon',
+              shape: 'polygon', // circle
               splitNumber: 1,
+              max: 100,
+              indicator: indicatorArr.length > 0 ? indicatorArr : '',
               splitArea: {
                 areaStyle: {
                   color: 'transparent'
@@ -921,201 +950,6 @@ export default {
               gap: 1
             }
           })
-        },
-        've-map': function () {
-          if (_this.item.secondType === 'scatter') {
-            obj.settings = $.extend(obj.settings, {
-              // position: 'province/sichuan',
-              position: 'china',
-              dimension: '位置',
-              metrics: ['资源', '告警'],
-              dataType: {
-                '资源': 'KMB'
-              }
-            })
-            obj.extend = $.extend(obj.extend, {
-              tooltip: {
-                trigger: 'item'
-              },
-              visualMap: {
-                type: 'piecewise', // 分段显示值
-                realtime: false,
-                calculable: true,
-                // backgroundColor: 'gray' // 柱状框的背景色
-                inRange: {
-                  color: ['pink', 'yellow', '#dd7e6b'] // 按照值的范围给的不同颜色
-                },
-                outOfRange: {
-                  // color: ['pink', 'yellow', 'orange']
-                },
-                // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
-                splitNumber: 3, // 几种颜色值及取值范围
-                pieces: [
-                  { min: 1000, label: '自定义', color: 'orange' },
-                  { min: 100, max: 999 },
-                  { max: 99 }
-                ], // 默认取data中最后一个维度
-                color: ['#E0022B', '#E09107', '#A3E00B'],
-                // itemSymbol: 'none',
-                show: true, // 是否显示取值范围颜色段
-                hoverLink: true,
-                // showMaxLabel: true,
-                showLabel: true,
-                textStyle: {
-                  color: '#fff'
-                },
-                controller: {
-                }
-              },
-              series: {
-                type: 'scatter',
-                // name: '人口',
-                // roam: true, // 允许鼠标缩放地图
-                selectedMode: 'single',
-                // 图形上的文本标签
-                itemStyle: {
-                  normal: {
-                    areaColor: '#1d324e', // 地图区域的颜色!
-                    borderColor: '#f0f0f0' // 区域分割线颜色!
-                  }
-                },
-                // 选中之后的状态
-                emphasis: {
-                  label: {
-                    show: true,
-                    textStyle: {
-                      color: '#000' // 选中之后的字体颜色!
-                    }
-                  },
-                  itemStyle: {
-                    areaColor: '#0573bf', // 选中之后的颜色值
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 2
-                  }
-                }
-              }
-            })
-          } else {
-            // 区域分布图
-            // obj.settings = $.extend(obj.settings, {
-            //   // position: 'province/sichuan',
-            //   // position: 'china',
-            //   dimension: '位置',
-            //   metrics: ['资源', '告警'],
-            //   dataType: {
-            //     '资源': 'KMB'
-            //   }
-            // })
-            obj.extend = $.extend(obj.extend, {
-              tooltip: {
-                trigger: 'item'
-              },
-              visualMap: {
-                type: 'piecewise', // 分段显示值
-                realtime: false,
-                calculable: true,
-                // backgroundColor: 'gray' // 柱状框的背景色
-                inRange: {
-                  color: ['pink', 'yellow', '#dd7e6b'] // 按照值的范围给的不同颜色
-                },
-                outOfRange: {
-                  // color: ['pink', 'yellow', 'orange']
-                },
-                // piecewise分段设置 https://echarts.apache.org/zh/option.html#visualMap-piecewise.pieces
-                splitNumber: 3, // 几种颜色值及取值范围
-                pieces: [
-                  { min: 1000, label: '自定义', color: 'orange' },
-                  { min: 100, max: 999 },
-                  { max: 99 }
-                ], // 默认取data中最后一个维度
-                color: ['#E0022B', '#E09107', '#A3E00B'],
-                // itemSymbol: 'none',
-                show: true, // 是否显示取值范围颜色段
-                hoverLink: true,
-                // showMaxLabel: true,
-                // text: ['高', '低'], // 文本，默认为数值文本
-                showLabel: true,
-                textStyle: {
-                  color: '#fff'
-                },
-                controller: {
-                }
-              },
-              series: {
-                type: 'map',
-                name: '',
-                data: [],
-                // name: '人口',
-                // roam: true, // 允许鼠标缩放地图
-                selectedMode: 'single',
-                // 图形上的文本标签
-                label: {
-                  normal: {
-                    // show: true, // 省份文字最开始不显示，选中之后再显示
-                    textStyle: {
-                      // fontWeight:'bold',
-                      // backgroundColor: 'pink', // 文字背景色
-                      // color: '#231816' // 默认的字体颜色! auto
-                    }
-                  }
-                },
-                itemStyle: {
-                  normal: {
-                    // color: 'red', // 展示指标及圆点的颜色
-                    areaColor: '#294671', // 地图区域的颜色!
-                    borderColor: '#f0f0f0' // 区域分割线颜色!
-                    // color: 'green', // 图例的颜色!
-                    // borderColor: 'pink', // 各区域分界线!
-                    // borderWidth: 2
-                  }
-                },
-                // 选中之后的状态
-                emphasis: {
-                  label: {
-                    show: false, // 选中区域的文字展示
-                    textStyle: {
-                      color: '#000' // 选中之后的字体颜色!
-                    }
-                  },
-                  itemStyle: {
-                    areaColor: '#0573bf', // 选中之后的颜色值
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 0
-                  }
-                }
-              }
-            })
-          }
-        },
-        've-scatter': function () {
-          obj.settings = $.extend(obj.settings, {
-            // position: 'province/sichuan',
-            // position: 'china',
-            // type: 'map', // 散点图
-            geo: {
-              type: 'scatter',
-              map: 'china',
-              label: {
-                emphasis: {
-                  show: false
-                }
-              },
-              itemStyle: {
-                normal: {
-                  areaColor: '#323c48',
-                  borderColor: '#111'
-                },
-                emphasis: {
-                  areaColor: '#2a333d'
-                }
-              }
-            }
-          })
-          obj.extend = {
-            series: {
-              type: 'scatter'
-            }
-          }
         }
       }
       typeof Fn[this.item.chartType] === 'function' && Fn[this.item.chartType]()

@@ -4,7 +4,7 @@
          v-if="!item.imgSrc">请上传图片</div>
     <img :src="baseUrl + item.imgSrc"
          v-else
-         style="width: 100%;height:100%;" />
+         :style="imgSctyle" />
   </div>
 </template>
 <script>
@@ -27,10 +27,21 @@ export default {
   computed: {
     boxStyle: function () {
       return {
-        textAlign: 'center',
         maxWidth: this.item.width + 'px',
         height: this.item.height + 'px',
         overflow: 'hidden'
+      }
+    },
+    imgSctyle: function () {
+      if (this.item.showType && this.item.showType === '1') {
+        return {
+          maxWidth: '100%',
+          maxHeight: '100%'
+        }
+      }
+      return {
+        width: '100%',
+        height: '100%'
       }
     }
   },

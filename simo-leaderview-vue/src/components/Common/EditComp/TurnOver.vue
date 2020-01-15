@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import _ from 'lodash'
 export default {
   name: 'turnOver', // 数字翻牌器
   props: ['item', 'nextNum', 'numHeight', 'numWidth', 'bgClr'],

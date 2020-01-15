@@ -60,6 +60,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { gbs } from '@/config/settings'
+import _ from 'lodash'
 export default {
   name: 'vtable',
   props: ['item'],

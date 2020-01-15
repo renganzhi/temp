@@ -21,6 +21,7 @@
             <span class="fr">|</span>
             <a class="fr simoLink icon-n-keyboard edit-opt" @mouseover="showKeybd = true" @mouseout="showKeybd = false">快捷键</a>
             <h4 class="edit-title" @click.self="clickPaint($event)">{{pageName}}</h4>
+            <a class="fr simoLink icon-n-revoke edit-opt" @click="Revoke">撤销</a>
         </div>
         <div class="edit-keyboard" v-show="showKeybd" @mouseover="showKeybd = true" @mouseout="showKeybd = false">
           <span class="keybd-arrow"><i class="icon-n-arrowUp" style="font-size: 40px;"></i></span>
@@ -83,7 +84,7 @@
                   <div class="paint-bg" :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor}">
                     <div class="paint" :style="paintStyle"></div>
                     <div id="chooseWrap" :class="{gridBg: paintObj.showGrid}" @click.self="clickPaint($event)">
-                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context" @palyErr="palyErr">
+                        <DragBox v-for="(item,index) in chartNum" :index="index" :item="item" :parentW="paintObj.width" :parentH="paintObj.height" :editable="editable" @draged="draged" @selected="selected" @resized="resized" :key="item.id" @context="context" @changeStop="changeStop" @bodyDown="bodyDown" @palyErr="palyErr">
                         </DragBox>
                         <Compose v-for="(list, index1) in combinList" :index="index1" :key="list.id" :list="list" :editable="ceditable" :parentW="paintObj.width" :parentH="paintObj.height" @draged="draged" @resized="resized" @selected="selected" @childSelect="childSelect" @childResize="resized" @context="context" @palyErr="palyErr"></Compose>
                     </div>
@@ -421,7 +422,16 @@
                                   </select>
                                 </div>
                             </div>
-
+                            <!-- 图片元件 -->
+                            <div v-if="selectedItem.chartType=='image'">
+                              <div class="form-group cols2">
+                                  <label>缩放方式</label>
+                                  <select v-model="selectedItem.showType">
+                                    <option value="1">按比例缩放</option>
+                                    <option value="2">自由缩放</option>
+                                  </select>
+                                </div>
+                            </div>
                             <!--进度条-->
                             <div v-if="selectedItem.chartType=='progress'">
                                 <div class="form-group cols2">
