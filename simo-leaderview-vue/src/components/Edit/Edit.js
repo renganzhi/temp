@@ -42,16 +42,15 @@ export default {
       pageId: 0,
       value2: 0.5,
       oldCheckId: '', // 优化每次选中都会触发请求接口，仅在切换元件时才请求
+      lastKeyId: '',
       viewPage: false,
       pageData: '',
       composeData: '',
       compsArr: compsArr,
-      isFlase: false,
       editable: true, // 操作flag,编辑为true,查看为false
       showStyleTab: true,
       pageName: '', // 页面名称
       showDataConf: false, // 展示系统数据配置
-      isFull: false,
       selectedItem: {},
       selectedIndex: null,
       chartNum: [],
@@ -751,23 +750,23 @@ export default {
       this.saveHistory()
       var obj = $.extend(
         true, {}, {
-          id: new Date().getTime(),
-          ctName: value.text,
-          ctLegendShow: 'true',
-          x: 400,
-          y: 100,
-          width: 350,
-          height: 350,
-          zIndex: ++this.maxIndex,
-          colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
-          ctDataSource: 'static', // 数据来源system\static，默认static
-          url: '', // 请求接口
-          params: {}, // 请求接口参数
-          bdpx: 1, // 边框线宽
-          fontSize: 12, // 字号
-          lineArea: false // 折线是否为区域
-        },
+        id: new Date().getTime(),
+        ctName: value.text,
+        ctLegendShow: 'true',
+        x: 400,
+        y: 100,
+        width: 350,
+        height: 350,
+        zIndex: ++this.maxIndex,
+        colorType: 'defalut',
+        ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+        ctDataSource: 'static', // 数据来源system\static，默认static
+        url: '', // 请求接口
+        params: {}, // 请求接口参数
+        bdpx: 1, // 边框线宽
+        fontSize: 12, // 字号
+        lineArea: false // 折线是否为区域
+      },
         value
       )
 
@@ -894,6 +893,7 @@ export default {
         this.updateMinXitem()
         return
       } else {
+        this.lastKeyId = this.testObj.id
         // 增加选中
         item.slted = this.editable && true
         if (item.chartType === 'video') {
@@ -2035,9 +2035,8 @@ export default {
       return a
     },
     _getJsonValue: function (a, c) {
-      var d = 'randomId_' + parseInt(1E9 * Math.random()),
-        b
-      b = '' + ('function ' + d + '(root){') + ('return root.' + c + '')
+      var d = 'randomId_' + parseInt(1E9 * Math.random())
+      var b = '' + ('function ' + d + '(root){') + ('return root.' + c + '')
       b += '}'
       b += ''
       var e = document.createElement('script')
@@ -2054,7 +2053,24 @@ export default {
     // isObject: function(a) {
     //   return 'object' === typeof a && '[object object]' === Object.prototype.toString.call(a).toLowerCase()
     // },
+    saveDataChange () {
+      if (this.historyArr.length === 0) {
+        console.log('data change 了0')
+        this.saveHistory()
+      } else {
+        let tempObj = {
+          type: 'item',
+          chartNum: JSON.stringify(this.chartNum),
+          compose: JSON.stringify(this.combinList)
+        }
+        if (!_.isEqual(tempObj, this.historyArr[this.historyArr.length - 1])) {
+          console.log('data change 了')
+          this.saveHistory()
+        }
+      }
+    },
     dataChange () {
+      this.saveDataChange() // 系统数据存历史
       if (this.selectedItem.ctDataSource === 'system') {
         this.getUrlData()
       } else if (this.selectedItem.chartType === 'v-map') {
@@ -3046,6 +3062,25 @@ export default {
       this.changeAreaData(newObj)
     },
     'testObj.width': function (newValue, oldValue) {
+      // console.log(oldValue)
+      console.log(this.testObj.id, this.lastKeyId)
+      if (this.testObj.id === this.lastKeyId && oldValue !== newValue) {
+        // 这里才保存历史
+        var _this = this
+        var oldChart = JSON.parse(JSON.stringify(this.chartNum))
+        let itemIndex = _.findLastIndex(oldChart, function (item) {
+          return item.id === _this.testObj.id
+        })
+        console.log(oldChart[itemIndex].chartType)
+        oldChart[itemIndex].width = oldValue
+        let tempObj = {
+          type: 'item',
+          chartNum: JSON.stringify(oldChart),
+          compose: JSON.stringify(this.combinList)
+        }
+        this.historyArr.push(tempObj)
+        console.log('保存一次历史')
+      }
       this.testObjChange('width', newValue)
     },
     'testObj.height': function (newValue, oldValue) {
