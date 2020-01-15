@@ -141,12 +141,16 @@ export default {
 }
 </script>
 <style>
-.home-table .table tr,
-.home-table .table td,
-.home-table .table th {
+.home-table .table {
+  background: transparent;
+}
+.home-table .table tbody tr,
+.home-table .table tbody td,
+.home-table .table tbody th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   background: none;
+  background: transparent !important;
 }
 </style>
