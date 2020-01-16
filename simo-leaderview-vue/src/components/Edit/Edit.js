@@ -18,6 +18,8 @@ export default {
   props: [],
   data: function () {
     return {
+      chooseSameFlag: false, // 是否选中同样的元件
+      selectChange: false, // 是否改变的选中的元件
       baseUrl: gbs.host,
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
@@ -256,6 +258,22 @@ export default {
       'changeHomeData',
       'changeAreaData'
     ]),
+    ifSameItems () {
+      if (this.chooseCompIndexs.length > 0 || this.chooseIndexs.length < 2) {
+        this.chooseSameFlag = false
+        return false
+      }
+      let itemType = this.chartNum[this.chooseIndexs[0]].chartType
+      for (let i = 0, len = this.chooseIndexs.length; i < len; i++) {
+        if (this.chartNum[this.chooseIndexs[i]].chartType !== itemType) {
+          this.chooseSameFlag = false
+          return false
+        }
+      }
+      this.showStyleTab = true
+      this.chooseSameFlag = true
+      return true
+    },
     saveHistory (type) {
       /** 全部保存 */
       if (type) {
@@ -454,7 +472,6 @@ export default {
     // 改变展示范围
     chgMapLevel () {
       // 这里会先于watch mapLevel触发
-      // console.log('-------selfMapLevel: true------')
       this.selfMapLevel = true
     },
     chgMapGrad (index) {
@@ -549,10 +566,27 @@ export default {
         mapData.push({
           value: mapJson.features[i].id,
           name: mapJson.features[i].properties.name,
-          geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
+          geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates)
+          // geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
         })
       }
       return mapData
+    },
+    // 计算地市级地图的中心点
+    getCenterPoint (data) {
+      let index = data.length - 1
+      var tempObj = data[index][0]
+      if (tempObj) {
+        let totalX = 0, totalY = 0
+        tempObj.forEach((item) => {
+          totalX += item[0]
+          totalY += item[1]
+        })
+        let _length = tempObj.length
+        return [totalX / _length, totalY / _length]
+      } else {
+        return data[0][0][0]
+      }
     },
     // 删除实时图数据点
     delAlertLevel (index) {
@@ -800,19 +834,41 @@ export default {
       }
     },
     chgColorType: function () {
-      if (this.selectedItem.colorType === 'defalut') {
-        this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-        if (this.selectedItem.chartType === 'v-map') {
-          this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
+      if (!this.selectChange && this.chooseSameFlag) {
+        if (this.selectedItem.colorType === 'defalut') {
+          this.chooseIndexs.forEach((i) => {
+            this.chartNum[i]['ctColors'].splice(0, 8)
+          })
+          if (this.selectedItem.chartType === 'v-map') {
+            this.chooseIndexs.forEach((i) => {
+              this.$set(this.chartNum[i], 'ctColors', this.defMapColors.concat())
+            })
+          } else {
+            this.chooseIndexs.forEach((i) => {
+              this.$set(this.chartNum[i], 'ctColors', this.defalutColors.concat())
+            })
+          }
         } else {
-          this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
+          if (this.selectedItem.chartType !== 'v-map') {
+            this.chooseIndexs.forEach((i) => {
+              this.$set(this.chartNum[i], 'ctColors', JSON.parse(JSON.stringify(this.defGradColors)))
+            })
+          }
         }
       } else {
-        if (this.selectedItem.chartType !== 'v-map') {
+        if (this.selectedItem.colorType === 'defalut') {
           this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-          // var newColors = this.setDefColor()
-          let newColors = JSON.parse(JSON.stringify(this.defGradColors))
-          this.$set(this.selectedItem, 'ctColors', newColors)
+          if (this.selectedItem.chartType === 'v-map') {
+            this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
+          } else {
+            this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
+          }
+        } else {
+          if (this.selectedItem.chartType !== 'v-map') {
+            this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
+            let newColors = JSON.parse(JSON.stringify(this.defGradColors))
+            this.$set(this.selectedItem, 'ctColors', newColors)
+          }
         }
       }
     },
@@ -891,45 +947,53 @@ export default {
         }
         // 更新多选情况下的x，y
         this.updateMinXitem()
+        if (this.chooseCompIndexs.length === 0) {
+          if (this.chooseIndexs.length > 0) {
+            let index = this.chooseIndexs[this.chooseIndexs.length - 1]
+            this.selectedItem = this.chartNum[index]
+          }
+        }
+        this.ifSameItems()
         return
       } else {
-        this.lastKeyId = this.testObj.id
-        // 增加选中
-        item.slted = this.editable && true
-        if (item.chartType === 'video') {
-          this.tempVideoUrl = item.videoSrc
-        }
-        if (item.chartType === 'v-map') {
-          this.selectedItem = {} // 避免触发三级下拉的监听
-        }
-        this.selectedItem = item
-        if (item.chartType === 'progress') {
-          this.progressObj.height = item.proHeight || 16
-          this.progressObj.radius = (item.radius === 0) ? 0 : (item.radius || 8)
-        }
-        this.testObj = JSON.parse(JSON.stringify(item))
-        if (type === 'compose') {
-          this.combinList[i].slted = this.editable && true
-          if (this.chooseCompIndexs.indexOf(i) === -1) {
-            this.chooseCompIndexs.push(i)
-          }
-        } else {
-          if (this.chooseIndexs.indexOf(i) === -1) {
-            this.chooseIndexs.push(i)
-            // this.chooseItems.push(this.chartNum[i])
-          }
-        }
-        // 设置多选情况下的x，y
-        if (item.x < this.minXItem.x) {
-          // this.minXItem = item
-          this.minXItem.x = item.x
-          this.minXItem.y = item.y
-          this.minXItem.id = item.id
-          this.selectArea.left = item.x // 不变的最小值
-          this.selectArea.top = item.y
-        }
         if (ev !== 'move') {
+          this.lastKeyId = this.testObj.id
+          // 增加选中
+          item.slted = this.editable && true
+          if (item.chartType === 'video') {
+            this.tempVideoUrl = item.videoSrc
+          }
+          if (item.chartType === 'v-map') {
+            this.selectedItem = {} // 避免触发三级下拉的监听
+          }
+          this.selectedItem = item
+          if (item.chartType === 'progress') {
+            this.progressObj.height = item.proHeight || 16
+            this.progressObj.radius = (item.radius === 0) ? 0 : (item.radius || 8)
+          }
+          this.testObj = JSON.parse(JSON.stringify(item))
+          if (type === 'compose') {
+            this.combinList[i].slted = this.editable && true
+            if (this.chooseCompIndexs.indexOf(i) === -1) {
+              this.chooseCompIndexs.push(i)
+            }
+          } else {
+            if (this.chooseIndexs.indexOf(i) === -1) {
+              this.chooseIndexs.push(i)
+              // this.chooseItems.push(this.chartNum[i])
+            }
+          }
+          // 设置多选情况下的x，y
+          if (item.x < this.minXItem.x) {
+            // this.minXItem = item
+            this.minXItem.x = item.x
+            this.minXItem.y = item.y
+            this.minXItem.id = item.id
+            this.selectArea.left = item.x // 不变的最小值
+            this.selectArea.top = item.y
+          }
           this.setMaxItemInfo()
+          this.ifSameItems()
         }
       }
 
@@ -1659,8 +1723,13 @@ export default {
     },
     addColor (index) {
       // 添加颜色
-      this.selectedItem.ctColors.splice(index, 0, ['#c23531', '#c23531'])
-      // this.selectedItem.ctColors.push(['#c23531', '#c23531'])
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(index, 0, ['#c23531', '#c23531'])
+        })
+      } else {
+        this.selectedItem.ctColors.splice(index, 0, ['#c23531', '#c23531'])
+      }
     },
     delColor (index) {
       // 删除自定义颜色
@@ -1676,22 +1745,48 @@ export default {
         }
         return
       }
-      this.selectedItem.ctColors.splice(index, 1)
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(index, 1)
+        })
+      } else {
+        this.selectedItem.ctColors.splice(index, 1)
+      }
     },
     moveUp (index) {
       if (index !== 0) {
-        var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
-        this.selectedItem.ctColors.splice(index - 1, 0, tempColor)
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            let tempColor = this.chartNum[i]['ctColors'].splice(index, 1)[0]
+            this.chartNum[i]['ctColors'].splice(index - 1, 0, tempColor)
+          })
+        } else {
+          var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
+          this.selectedItem.ctColors.splice(index - 1, 0, tempColor)
+        }
       }
     },
     moveDown (index) {
       if (index !== this.selectedItem.ctColors.length - 1) {
-        var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
-        this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            let tempColor = this.chartNum[i]['ctColors'].splice(index, 1)[0]
+            this.chartNum[i]['ctColors'].splice(index + 1, 0, tempColor)
+          })
+        } else {
+          var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
+          this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
+        }
       }
     },
     reverseColor (index) {
-      this.selectedItem.ctColors[index].reverse()
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'][index].reverse()
+        })
+      } else {
+        this.selectedItem.ctColors[index].reverse()
+      }
     },
     chgDataSource: function ($event, flag) {
       // 改变数据来源
@@ -2778,31 +2873,51 @@ export default {
       this.$set(this.selectedItem, 'bgClr', data.color)
     },
     getMapColor (data) {
-      if (data.type !== undefined) {
-        this.selectedItem[data.type] = data.color
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(data.index, 1, data.color)
+        })
       } else {
-        // var oldColor = this.selectedItem.ctColors[data.index]
-        // oldColor = data.color
-        this.selectedItem.ctColors.splice(data.index, 1, data.color)
+        if (data.type !== undefined) {
+          this.selectedItem[data.type] = data.color
+        } else {
+          this.selectedItem.ctColors.splice(data.index, 1, data.color)
+        }
       }
     },
     getColorStart (data) {
-      if (data.type !== undefined) {
-        this.selectedItem[data.type][0] = data.color
-      } else {
+      if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
         oldColor[0] = data.color
-        this.selectedItem.ctColors.splice(data.index, 1, oldColor)
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(data.index, 1, oldColor)
+        })
+      } else {
+        if (data.type !== undefined) {
+          this.selectedItem[data.type][0] = data.color
+        } else {
+          var oldColor = this.selectedItem.ctColors[data.index]
+          oldColor[0] = data.color
+          this.selectedItem.ctColors.splice(data.index, 1, oldColor)
+        }
       }
     },
     // 渐变色颜色改变
     getGradColor (data) {
-      if (data.type !== undefined) {
-        this.selectedItem[data.type][1] = data.color
-      } else {
+      if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
         oldColor[1] = data.color
-        this.selectedItem.ctColors.splice(data.index, 1, oldColor)
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(data.index, 1, oldColor)
+        })
+      } else {
+        if (data.type !== undefined) {
+          this.selectedItem[data.type][1] = data.color
+        } else {
+          var oldColor = this.selectedItem.ctColors[data.index]
+          oldColor[1] = data.color
+          this.selectedItem.ctColors.splice(data.index, 1, oldColor)
+        }
       }
     },
     getBarClr (data) {
@@ -2982,9 +3097,22 @@ export default {
       } else if (e.detail) { // Firefox
         event.returnValue = false
       }
+    },
+    changeTogether (key, newV) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((item) => {
+          this.chartNum[item][key] = newV
+        })
+      }
     }
   },
   watch: {
+    selectedItem: function () {
+      this.selectChange = true
+      this.$nextTick(() => {
+        this.selectChange = false
+      })
+    },
     showStyleTab: function (newV) {
       if (!newV && this.selectedItem.ctDataSource === 'system') {
         if (this.oldCheckId !== this.selectedItem.id) {
@@ -2995,6 +3123,63 @@ export default {
           }
         }
       }
+    },
+    'selectedItem.bgClr': function (newV) {
+      this.changeTogether('bgClr', newV)
+    },
+    'selectedItem.barClrs': function (newV) {
+      this.changeTogether('barClrs', newV)
+    },
+    'selectedItem.clr': function (newV) {
+      this.changeTogether('clr', newV)
+    },
+    'selectedItem.fontSize': function (newV) {
+      this.changeTogether('fontSize', newV)
+    },
+    'selectedItem.proHeight': function (newV) {
+      this.changeTogether('proHeight', newV)
+    },
+    'selectedItem.radius': function (newV) {
+      this.changeTogether('radius', newV)
+    },
+    'selectedItem.ctLegendShow': function (newV) {
+      this.changeTogether('ctLegendShow', newV)
+    },
+    'selectedItem.visualPosition': function (newV) {
+      this.changeTogether('visualPosition', newV)
+    },
+    'selectedItem.colorType': function (newV) {
+      this.changeTogether('colorType', newV)
+    },
+    'selectedItem.colorful': function (newV) {
+      this.changeTogether('colorful', newV)
+    },
+    'selectedItem.hdBgClr': function (newV) {
+      this.changeTogether('hdBgClr', newV)
+    },
+    'selectedItem.bdClr': function (newV) {
+      this.changeTogether('bdClr', newV)
+    },
+    'selectedItem.bdpx': function (newV) {
+      this.changeTogether('bdpx', newV)
+    },
+    'selectedItem.direction': function (newV) {
+      this.changeTogether('direction', newV)
+    },
+    'selectedItem.speed': function (newV) {
+      this.changeTogether('speed', newV)
+    },
+    'selectedItem.showType': function (newV) {
+      this.changeTogether('showType', newV)
+    },
+    'selectedItem.timeType': function (newV) {
+      this.changeTogether('timeType', newV)
+    },
+    'selectedItem.fontFamily': function (newV) {
+      this.changeTogether('fontFamily', newV)
+    },
+    'selectedItem.themeType': function (newV) {
+      this.changeTogether('themeType', newV)
     },
     'selectedItem.mapLevel': function (newValue, oldV) {
       if (!this.selfMapLevel) {

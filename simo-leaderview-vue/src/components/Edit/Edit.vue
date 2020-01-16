@@ -104,7 +104,7 @@
                         <div class="m-tab" :class="{active:showStyleTab}" @click="showStyleTab=true">样式</div>
                         <div class="m-tab" :class="{active:!showStyleTab}" @click="showStyleTab=false">数据</div>
                     </div>
-                    <div class="paintWrap chooseMore full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">
+                    <div class="paintWrap chooseMore" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">
                       <div class="full-height m-style">
                         <div class="e-base">
                           <div class="m-gap form-group set-map">样式</div>
@@ -255,14 +255,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
+                    <div class="m-tabMain full-height flex-1" v-show="chooseSameFlag || (chooseIndexs.length === 1 && chooseCompIndexs.length === 0)">
                         <div v-show="showStyleTab" class="full-height m-style">
-                            <!-- <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
-                                <div class="form-group">
-                                    <input v-model="selectedItem.ctName">
-                                </div>
-                            </div> -->
-                            <div class="e-base">
+                            <div class="e-base" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                                 <div class="m-gap form-group">基础属性</div>
                                 <div class="form-group" style="height: 30px;">
                                     <div class="fl" style="position: relative;">
