@@ -322,6 +322,8 @@ var compsArr = [{
   imgClass: 'icon-n-table',
   chartType: 'table',
   hdBgClr: '#1c2132',
+  hdClr: '',
+  hdfontSize: 12,
   bgClr: '',
   clr: '#919cc1',
   bdClr: '#c2c6d7',
@@ -380,6 +382,7 @@ var compsArr = [{
   barClr: '#1fc3ce',
   barClrs: ['#1fc3ce', '#1fc3ce'],
   clr: '#1fc3ce',
+  colorful: false,
   chartData: morenData.single,
   proHeight: 16,
   radius: 8

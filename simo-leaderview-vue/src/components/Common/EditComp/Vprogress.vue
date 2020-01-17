@@ -40,7 +40,7 @@ export default {
         width: (this.persent === '暂无数据' ? 0 : this.persent) + '%',
         height: (this.item.proHeight || 16) + 'px',
         // backgroundColor: this.item.barClr,
-        background: this.item.barClrs ? 'linear-gradient(45deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(45deg, ' + this.item.barClr + ', ' + this.item.barClr + ')',
+        background: this.item.colorful === 'false' ? this.item.barClr : 'linear-gradient(45deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')',
         position: 'relative',
         borderRadius: this.item.radius === 0 ? '0px' : (this.item.radius || 8) + 'px',
         left: 0,

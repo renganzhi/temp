@@ -702,7 +702,7 @@ export default {
         this.selectedItem.radius = this.progressObj.radius
       }
     },
-    colorToAll (color) {
+    colorToAll () {
       var _colors = this.selectedItem.ctColors
       this.chartNum.forEach((item) => {
         if (item.chartType.indexOf('ve-') !== -1) {
@@ -759,8 +759,11 @@ export default {
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
         }
-        if (item.chartType === 'progress' && !item.barClrs) {
-          this.$set(item, 'barClrs', [item.barClr, item.barClr])
+        if (item.chartType === 'progress') {
+          this.$set(item, 'colorful', 'true')
+          if (!item.barClrs) {
+            this.$set(item, 'barClrs', [item.barClr, item.barClr])
+          }
         }
         if (item.chartType === 'border' && !item.borderType) {
           this.$set(item, 'borderType', 'simple')
@@ -769,14 +772,22 @@ export default {
         if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
           this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
         }
+        if (item.chartType === 'table' || item.chartType === 'moveTable') {
+          this.$set(item, 'hdClr', item.clr || '')
+          this.$set(item, 'hdfontSize', item.fontSize || 12)
+        }
       })
-      // this.combinList.forEach((item) => {
-      //   item.child.forEach((list) => {
-      //     if (list.chartType === 've-gauge' && !item.bgClr) {
-      //       this.$set(list, 'bgClr', '#657992')
-      //     }
-      //   })
-      // })
+      this.combinList.forEach((item) => {
+        item.child.forEach((list) => {
+          if (list.chartType === 'table' || list.chartType === 'moveTable') {
+            this.$set(list, 'hdClr', list.clr || '')
+            this.$set(list, 'hdfontSize', list.fontSize || 12)
+          }
+          if (list.chartType === 'progress') {
+            this.$set(list, 'colorful', 'true')
+          }
+        })
+      })
     },
     initChart (value) {
       this.showStyleTab = true
@@ -3126,6 +3137,9 @@ export default {
     },
     'selectedItem.bgClr': function (newV) {
       this.changeTogether('bgClr', newV)
+    },
+    'selectedItem.barClr': function (newV) {
+      this.changeTogether('barClr', newV)
     },
     'selectedItem.barClrs': function (newV) {
       this.changeTogether('barClrs', newV)
