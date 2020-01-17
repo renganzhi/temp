@@ -129,12 +129,15 @@ export default {
     },
     theadTrStyle: function () {
       return {
-        backgroundColor: this.item.hdBgClr + ' !important' // 表头背景色
+        backgroundColor: this.item.hdBgClr + ' !important', // 表头背景色
+        color: this.item.hdClr + ' !important',
+        fontSize: this.item.hdfontSize + 'px !important'
       }
     },
     tbodyTrStyle: function () {
       return {
-        backgroundColor: this.item.bgClr + ' !important' // 表体背景色
+        backgroundColor: this.item.bgClr + ' !important', // 表体背景色
+        borderTop: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
       }
     },
     scrollStyle: function () {

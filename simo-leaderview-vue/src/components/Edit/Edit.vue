@@ -104,7 +104,7 @@
                         <div class="m-tab" :class="{active:showStyleTab}" @click="showStyleTab=true">样式</div>
                         <div class="m-tab" :class="{active:!showStyleTab}" @click="showStyleTab=false">数据</div>
                     </div>
-                    <div class="paintWrap chooseMore full-height flex-1" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">
+                    <div class="paintWrap chooseMore" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">
                       <div class="full-height m-style">
                         <div class="e-base">
                           <div class="m-gap form-group set-map">样式</div>
@@ -255,14 +255,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="m-tabMain full-height flex-1" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
+                    <div class="m-tabMain full-height flex-1" v-show="chooseSameFlag || (chooseIndexs.length === 1 && chooseCompIndexs.length === 0)">
                         <div v-show="showStyleTab" class="full-height m-style">
-                            <!-- <div class="e-name" v-if="selectedItem.chartType=='text' || selectedItem.chartType=='marquee'">
-                                <div class="form-group">
-                                    <input v-model="selectedItem.ctName">
-                                </div>
-                            </div> -->
-                            <div class="e-base">
+                            <div class="e-base" v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
                                 <div class="m-gap form-group">基础属性</div>
                                 <div class="form-group" style="height: 30px;">
                                     <div class="fl" style="position: relative;">
@@ -323,6 +318,18 @@
                                     <div class="color-w200">
                                         <Vcolor :data="selectedItem.hdBgClr" :key="1" type="hdBgClr" @getdata="getColor"></Vcolor>
                                     </div>
+                                </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
+                                    <label>表头文字颜色</label>
+                                    <div class="color-w200">
+                                        <Vcolor :data="selectedItem.hdClr" :key="17" type="hdClr" @getdata="getColor"></Vcolor>
+                                    </div>
+                                </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
+                                    <label>表头字号</label>
+                                    <select v-model="selectedItem.hdfontSize">
+                                        <option v-for="item in defaultFontSize" :key="item">{{item}}</option>
+                                    </select>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='border'">
                                     <label>边框类型</label>
@@ -443,10 +450,14 @@
                                 </div>
                                 <div class="form-group cols2">
                                     <label>进度条色</label>
-                                    <!-- <div class="color-w200">
+                                    <select v-model="selectedItem.colorful" style="width: 68px !important; margin-left: 3px;">
+                                        <option value="false">单色</option>
+                                        <option value="true">多色</option>
+                                    </select>
+                                    <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
-                                    </div> -->
-                                    <div class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                    </div>
+                                    <div v-show="selectedItem.colorful === 'true'" class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
