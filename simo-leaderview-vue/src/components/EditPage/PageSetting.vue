@@ -68,7 +68,7 @@
                   <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
-                    <td>{{tr.name}}</td>
+                    <td class="titleS"><span>{{tr.name}}</span></td>
                     <td>
                       <div :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
                         <div></div>
@@ -348,6 +348,9 @@ export default {
       if (newV) {
         this.getTableData()
         $('#homeSetting-modal').modal('show')
+        this.$nextTick(() => {
+          titleShow('bottom', $('.titleS'))
+        })
       }
     }
   },
@@ -356,6 +359,9 @@ export default {
     $('.modal-backdrop').remove()
   },
   destroyed: function () {
+    if ($('.tooltip').length > 0) {
+      $(this.$el).find('[title]').tooltip('destroy')
+    }
   }
 }
 </script>
