@@ -247,9 +247,14 @@ export default {
         return
       }
       if (this.item.chartType === 've-line') {
-        this.extend.yAxis.name = newV.unit
         if (newV.unit === '%') {
-          this.extend.yAxis.max = this.getYaxiosMax(newV)
+          if (this.item.subType && this.item.subType === 'doubleAxis') {
+            // 双轴曲线的坐标轴最大值
+            this.settings.max = this.getYaxiosMaxs(newV)
+          } else {
+            this.extend.yAxis.name = newV.unit
+            this.extend.yAxis.max = this.getYaxiosMax(newV)
+          }
         } else {
           this.extend.yAxis.max = null
         }
@@ -308,6 +313,25 @@ export default {
       } else {
         return (parseInt(maxData / 100) * 100 + 100)
       }
+    },
+    // 如果有不止两条曲线的情况需要和后端确认并修改次函数
+    getYaxiosMaxs: function (obj) {
+      var rowData = obj.rows
+      var maxData = []
+      for (let i = 1, len = obj.columns.length; i < len; i++) {
+        var key = obj.columns[i]
+        var maxItem = _.maxBy(rowData, function (item) { return item[key] })
+        if (maxItem && maxItem[key]) {
+          let tempData = maxItem[key]
+          if (parseInt(tempData / 100) === (tempData / 100)) {
+            // 整百
+            maxData.push(tempData)
+          } else {
+            maxData.push(parseInt(tempData / 100) * 100 + 100)
+          }
+        }
+      }
+      return maxData
     },
     getColors: function (tempArr) {
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring') {
@@ -570,7 +594,7 @@ export default {
               type: 'value',
               // position: 'left',
               // name: _this.item.chartData.unit, // 单位
-              max: _this.item.chartData.unit === '%' ? _this.getYaxiosMax(_this.item.chartData) : null,
+              // max: (_this.item.chartData.unit === '%' && _this.item.subType !== 'doubleAxis') ? _this.getYaxiosMax(_this.item.chartData) : null,
               axisTick: {
                 show: true,
                 lineStyle: {
@@ -652,12 +676,15 @@ export default {
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
-              axisSite: { right: ['CPU平均利用率'] },
-              yAxisName: ['CPU平均利用率', 'CPU平均利用率']
+              axisSite: { right: [_this.item.chartData.columns[2]] },
+              // yAxisType: ['KMB', 'percent'],
+              max: _this.getYaxiosMaxs(_this.item.chartData), // 设置双轴的最大值 [100,200]
+              yAxisName: [_this.item.chartData.columns[1], _this.item.chartData.columns[2]]
             })
           } else {
             obj.extend.yAxis.position = 'left'
             obj.extend.yAxis.name = _this.item.chartData.unit // 单位
+            obj.extend.yAxis.max = _this.getYaxiosMax(_this.item.chartData)
           }
         },
         've-ring': function () {
