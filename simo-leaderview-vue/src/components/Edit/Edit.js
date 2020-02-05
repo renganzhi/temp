@@ -156,6 +156,7 @@ export default {
         height: 16,
         radius: 8
       },
+      borderRadius: 0,
       proHeightErr: false,
       radiusErr: false,
       minXItem: {
@@ -667,6 +668,14 @@ export default {
       }
       // 数组需要更换
     },
+    radiusChange () {
+      if (this.borderRadius <= this.selectedItem.height / 2) {
+        this.selectedItem.radius = this.borderRadius
+      } else {
+        this.selectedItem.radius = this.selectedItem.height / 2
+        this.borderRadius = this.selectedItem.radius
+      }
+    },
     changeProHeight () {
       // 改变进度条元件的高度
       var proHeight = Math.floor(this.progressObj.height)
@@ -973,6 +982,12 @@ export default {
           item.slted = this.editable && true
           if (item.chartType === 'video') {
             this.tempVideoUrl = item.videoSrc
+          }
+          if (item.chartType === 'border') {
+            if (!item.radius) {
+              this.$set(item, 'radius', 0)
+            }
+            this.borderRadius = item.radius || 0
           }
           if (item.chartType === 'v-map') {
             this.selectedItem = {} // 避免触发三级下拉的监听

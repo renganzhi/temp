@@ -392,6 +392,10 @@
                                         <option v-for="item in 10" :key="item" :value="item">{{item}}</option>
                                     </select>
                                 </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType==='border'">
+                                    <label>圆角</label>
+                                    <input class="color-w200" type="number" placeholder="圆角最大值为高度的一半" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' @change="radiusChange" v-model="borderRadius">
+                                </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='border'">
                                     <label>字体颜色</label>
                                     <div class="color-w200">
