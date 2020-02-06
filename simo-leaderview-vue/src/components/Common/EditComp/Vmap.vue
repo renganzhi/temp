@@ -280,6 +280,9 @@ export default {
   },
   methods: {
     formatPieces (piecesData) {
+      for (let i = 0, len = piecesData.length; i < len - 2; i++) {
+        piecesData[i].max = Number(piecesData[i].max)
+      }
       piecesData[piecesData.length - 1].gte = piecesData[piecesData.length - 1].min
       return piecesData
     }
