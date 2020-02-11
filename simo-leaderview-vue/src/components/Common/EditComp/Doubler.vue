@@ -92,7 +92,7 @@ export default {
   watch: {
     'item.fontSize': function () {
       let key = 'f' + this.item.fontSize
-      this.numWidth =this.defConf[key][0]
+      this.numWidth = this.defConf[key][0]
       this.numHeight = this.defConf[key][1]
       // this.getPageScale()
       // this.$nextTick(() => {
@@ -117,7 +117,7 @@ export default {
   },
   mounted () {
     let key = 'f' + this.item.fontSize
-    this.numWidth =this.defConf[key][0]
+    this.numWidth = this.defConf[key][0]
     this.numHeight = this.defConf[key][1]
   },
   destroyed: function () {

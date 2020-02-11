@@ -36,7 +36,7 @@
                 <option value="1">默认</option>
               </select>
             </div>
-            <div class="form-group col-md-6">
+            <!-- <div class="form-group col-md-6">
               <label class="showSet">刷新周期</label>
               <div style="display: inline-block">
                 <input name="refreshTime"
@@ -46,7 +46,7 @@
               <label class="error"
                      v-show="showErr"
                      style="margin-left: 10px;margin-top: 5px;">{{errMsg}}</label>
-            </div>
+            </div> -->
           </form>
           <!-- 表格数据 -->
           <div class="bootstrap-table home-table"
@@ -186,7 +186,7 @@ export default {
         if (data.success) {
           this.intervalTime = res.intervalTime || '10'
           this.specialEffects = res.specialEffects || '1'
-          this.refreshTime = res.refreshTime || 3
+          // this.refreshTime = res.refreshTime || 3
           var datas = res.pages.sort(this.visibleSort)
           this.tableData = datas
           this.visibleNum = this.getVisiableNum()
@@ -297,7 +297,7 @@ export default {
       var datas = {
         intervalTime: this.intervalTime,
         specialEffects: this.specialEffects,
-        refreshTime: this.refreshTime,
+        // refreshTime: this.refreshTime,
         pages: JSON.stringify(this.tableData)
       }
       this.axios({
@@ -333,7 +333,7 @@ export default {
     tableData: function () {
       this.visibleNum = this.getVisiableNum()
     },
-    refreshTime: function (newV) {
+    /* refreshTime: function (newV) {
       if (!newV) {
         this.errMsg = '必填项'
         this.showErr = true
@@ -343,7 +343,7 @@ export default {
       } else {
         this.showErr = false
       }
-    },
+    }, */
     showModal: function (newV) {
       if (newV) {
         this.getTableData()

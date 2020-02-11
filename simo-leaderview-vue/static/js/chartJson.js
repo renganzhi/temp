@@ -425,6 +425,7 @@ var compsArr = [{
   chartType: 'border',
   borderType: 'simple', // 内置stable, 简单simple
   imgSrc: '',
+  radius: 0,
   width: 300,
   height: 300,
   bdpx: 1,

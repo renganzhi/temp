@@ -735,6 +735,13 @@
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                               </Select2>
                                         </div>
+                                        <div class="form-group cols2" v-if="selectedItem.ctDataSource == 'system'">
+                                    <div class="form-group" style="position: relative">
+                                      <label>刷新周期</label>
+                                      <input class="color-w200" type="number" placeholder="刷新周期" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-model="selectedItem.refreshTm">
+                                    <label class="error" v-if="freshVali" style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
+                                    </div>
+                                </div>
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>

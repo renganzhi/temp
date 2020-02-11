@@ -56,6 +56,7 @@ export default {
       selectedItem: {},
       selectedIndex: null,
       chartNum: [],
+      oldChartNum: '', // chartNum更改之前的历史
       miniW: 20,
       minIndex: 501, // 当前最低层级
       maxIndex: 500, // 当前最高层级
@@ -136,6 +137,7 @@ export default {
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
+      freshVali: false, 
       widthVali: {
         isShowError: false,
         errorMsg: ''
@@ -293,6 +295,7 @@ export default {
     },
     bodyDown () {
       // 选中元件
+      // console.log('这里暂存一次选中元件')
       this.tempHisObj = {
         type: 'item',
         chartNum: JSON.stringify(this.chartNum),
@@ -322,6 +325,8 @@ export default {
         this.chartNum = JSON.parse(oldObj.chartNum)
         this.combinList = JSON.parse(oldObj.compose)
       } else {
+        // console.log('type 不是item')
+        // console.log(oldObj.paintObj)
         this.paintObj = JSON.parse(oldObj.paintObj)
       }
     },
@@ -335,7 +340,6 @@ export default {
       // this.saveHistory() // 应该保存之前的数据
       this.historyArr.push(this.tempHisObj)
       this.tempHisObj = {}
-      console.log(this.historyArr.length)
     },
     scrollLeft (x) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
@@ -765,6 +769,9 @@ export default {
     formatVersion () {
       // 新增字段的监听需要对以前版本进行兼容
       this.chartNum.forEach((item) => {
+        if (!item.refreshTm) {
+          this.$set(item, 'refreshTm', 3)
+        }
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
         }
@@ -811,6 +818,7 @@ export default {
         y: 100,
         width: 350,
         height: 350,
+        refreshTm: 3, // 刷新周期
         zIndex: ++this.maxIndex,
         colorType: 'defalut',
         ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
@@ -2241,9 +2249,9 @@ export default {
     saveConf: function (event, cb) {
       // 保存
       if (!(!this.widthVali.isShowError &&
-        !this.heightVali.isShowError &&
-        !this.xVali.isShowError &&
-        !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr
+        !this.heightVali.isShowError && !this.xVali.isShowError &&
+        !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr &&
+        !this.freshVali
       )) {
         if (gbs.inDev) {
           Notification({
@@ -3133,7 +3141,13 @@ export default {
     }
   },
   watch: {
-    selectedItem: function () {
+    chartNum: {
+      handler (newV, oldV) {
+        this.oldChartNum = JSON.stringify(oldV)
+      },
+      deep: true
+    },
+    selectedItem: function (newV, oldV) {
       this.selectChange = true
       this.$nextTick(() => {
         this.selectChange = false
@@ -3148,6 +3162,13 @@ export default {
             this.getUrlByType(true)
           }
         }
+      }
+    },
+    'selectedItem.refreshTm': function (newV) {
+      if (newV < 3) {
+        this.freshVali = true
+      } else {
+        this.freshVali = false
       }
     },
     'selectedItem.bgClr': function (newV) {
@@ -3173,6 +3194,11 @@ export default {
     },
     'selectedItem.ctLegendShow': function (newV) {
       this.changeTogether('ctLegendShow', newV)
+      this.tempHisObj = {
+        type: 'item',
+        chartNum: this.oldChartNum,
+        compose: JSON.stringify(this.combinList)
+      }
     },
     'selectedItem.visualPosition': function (newV) {
       this.changeTogether('visualPosition', newV)
