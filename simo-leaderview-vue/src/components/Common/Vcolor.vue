@@ -68,7 +68,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.colorsConf {
+.gradient {
   .sp-dd {
     display: none;
   }

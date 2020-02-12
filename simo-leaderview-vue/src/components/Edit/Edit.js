@@ -772,6 +772,13 @@ export default {
         if (!item.refreshTm) {
           this.$set(item, 'refreshTm', 3)
         }
+        if (item.chartType.includes('ve-') && !item.ifGradual) {
+          if (item.colorType === 'custom') {
+            this.$set(item, 'ifGradual', 'true')
+          } else {
+            this.$set(item, 'ifGradual', 'false')
+          }
+        }
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
         }
@@ -881,6 +888,7 @@ export default {
             this.chooseIndexs.forEach((i) => {
               this.$set(this.chartNum[i], 'ctColors', JSON.parse(JSON.stringify(this.defGradColors)))
             })
+            this.changeTogether('ifGradual', 'true')
           }
         }
       } else {
@@ -896,6 +904,7 @@ export default {
             this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
             let newColors = JSON.parse(JSON.stringify(this.defGradColors))
             this.$set(this.selectedItem, 'ctColors', newColors)
+            this.selectedItem.ifGradual = 'true'
           }
         }
       }
@@ -1757,12 +1766,22 @@ export default {
     },
     addColor (index) {
       // 添加颜色
-      if (!this.selectChange && this.chooseSameFlag) {
-        this.chooseIndexs.forEach((i) => {
-          this.chartNum[i]['ctColors'].splice(index, 0, ['#c23531', '#c23531'])
-        })
+      if (this.selectedItem.ifGradual === 'false') {
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            this.chartNum[i]['ctColors'].splice(index, 0, '#c23531')
+          })
+        } else {
+          this.selectedItem.ctColors.splice(index, 0, '#c23531')
+        }
       } else {
-        this.selectedItem.ctColors.splice(index, 0, ['#c23531', '#c23531'])
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            this.chartNum[i]['ctColors'].splice(index, 0, ['#c23531', '#c23531'])
+          })
+        } else {
+          this.selectedItem.ctColors.splice(index, 0, ['#c23531', '#c23531'])
+        }
       }
     },
     delColor (index) {
@@ -2954,6 +2973,9 @@ export default {
         }
       }
     },
+    getSingleColor (data) {
+      this.selectedItem.ctColors.splice(data.index, 1, data.color)
+    },
     getBarClr (data) {
       this.selectedItem.barClrs.splice(data.index, 1, data.color)
     },
@@ -3161,6 +3183,26 @@ export default {
           if (this.syst.curUrl.length < 1) {
             this.getUrlByType(true)
           }
+        }
+      }
+    },
+    'selectedItem.ifGradual': function (newV) {
+      // 对象类型不能统一赋值
+      if (!this.selectChange && this.chooseSameFlag) {
+        if (newV === 'true') {
+          this.chooseIndexs.forEach((item) => {
+            this.chartNum[item]['ctColors'] = JSON.parse(JSON.stringify(this.defGradColors))
+          })
+        } else {
+          this.chooseIndexs.forEach((item) => {
+            this.chartNum[item]['ctColors'] = this.defalutColors.slice(0,8)
+          })
+        }
+      } else {
+        if (newV === 'true') {
+          this.selectedItem.ctColors = JSON.parse(JSON.stringify(this.defGradColors))
+        } else {
+          this.selectedItem.ctColors = this.defalutColors.slice(0,8)
         }
       }
     },
