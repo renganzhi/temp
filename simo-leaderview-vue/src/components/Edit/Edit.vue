@@ -446,6 +446,13 @@
                             <!--进度条-->
                             <div v-if="selectedItem.chartType=='progress'">
                                 <div class="form-group cols2">
+                                    <label>图例可见性</label>
+                                    <select v-model="selectedItem.ctLegendShow">
+                                        <option value="true">显示</option>
+                                        <option value="false">隐藏</option>
+                                    </select>
+                                </div>
+                                <div class="form-group cols2">
                                     <label>底色</label>
                                     <div class="color-w200">
                                         <Vcolor :data="selectedItem.bgClr" :key="5" type="bgClr" @getdata="getColor"></Vcolor>
@@ -465,7 +472,7 @@
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
-                                      <div class="color-w70" style="float: right">
+                                      <div class="color-w15" style="float: right">
                                           <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
                                       </div>
                                     </div>

@@ -68,7 +68,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.gradient {
+.gradient,
+.barGradient {
   .sp-dd {
     display: none;
   }
