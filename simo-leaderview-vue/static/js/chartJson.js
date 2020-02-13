@@ -194,12 +194,14 @@ var compsArr = [{
   text: '饼图',
   imgClass: 'icon-n-pie',
   chartType: 've-pie',
+  ifGradual: 'true',
   chartData: morenData.pie
 },
 {
   text: '南丁格尔图',
   imgClass: 'icon-n-ndge',
   chartType: 've-pie',
+  ifGradual: 'true',
   chartData: morenData.pie,
   roseType: 'area' // 与饼图的区别
 },
@@ -207,6 +209,7 @@ var compsArr = [{
   text: '环形图',
   imgClass: 'icon-n-ring',
   chartType: 've-ring',
+  ifGradual: 'true',
   chartData: morenData.pie
 },
 {
@@ -215,6 +218,7 @@ var compsArr = [{
   height: 200,
   imgClass: 'icon-n-percent',
   chartType: 've-gauge',
+  ifGradual: 'true',
   subType: 'progress',
   bgClr: '#657992',
   fontSize: 24,
@@ -226,12 +230,14 @@ var compsArr = [{
   colorful: false,
   imgClass: 'icon-n-histogram',
   chartType: 've-histogram',
+  ifGradual: 'true',
   chartData: morenData.pie
 },
 {
   text: '分组柱图',
   imgClass: 'icon-n-grouphistogram',
   chartType: 've-histogram',
+  ifGradual: 'true',
   subType: 'groupHistogram',
   chartData: morenData.line
 },
@@ -241,6 +247,7 @@ var compsArr = [{
   chartType: 've-histogram',
   subType: 'groupHistogram',
   thirdType: 'stackHistogram',
+  ifGradual: 'true',
   chartData: morenData.line
 },
 /* {
@@ -281,6 +288,7 @@ var compsArr = [{
   text: '条形图',
   imgClass: 'icon-n-bar',
   chartType: 've-bar',
+  ifGradual: 'true',
   colorful: false,
   chartData: morenData.pie
 },
@@ -288,6 +296,7 @@ var compsArr = [{
   text: '曲线图',
   imgClass: 'icon-n-line',
   chartType: 've-line',
+  ifGradual: 'true',
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   showPoint: 'true' // 是否标点
@@ -296,6 +305,7 @@ var compsArr = [{
   text: '双轴曲线图',
   imgClass: 'icon-n-line',
   chartType: 've-line',
+  ifGradual: 'true',
   subType: 'doubleAxis',
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
@@ -305,6 +315,7 @@ var compsArr = [{
   text: '雷达图',
   imgClass: 'icon-n-radar',
   chartType: 've-radar',
+  ifGradual: 'true',
   width: 500,
   height: 380,
   chartData: morenData.line
@@ -313,6 +324,7 @@ var compsArr = [{
   text: '仪表盘',
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
+  ifGradual: 'true',
   ctLegendShow: false,
   bgClr: '#657992',
   chartData: morenData.single
@@ -425,6 +437,7 @@ var compsArr = [{
   chartType: 'border',
   borderType: 'simple', // 内置stable, 简单simple
   imgSrc: '',
+  radius: 0,
   width: 300,
   height: 300,
   bdpx: 1,

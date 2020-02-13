@@ -118,6 +118,8 @@ export default {
       refreshTime: 3, // 刷新时间
       intervalTime: 5, // 定时器时间默认5s
       timer: null, // 轮播定时器
+      freshInterval: null, // 定时器
+      nowTime: 0, // 当前页面已停留多少秒
       // autoPlay:true,
       item: {
         chartType: 've-gauge',
@@ -332,6 +334,14 @@ export default {
         ct.timer = setTimeout(test, ct.intervalTime * 1000)
       }, ct.intervalTime * 1000)
     },
+    autoFresh: function () {
+      var ct = this
+      this.freshInterval = setTimeout(function fresh () {
+        ct.nowTime += 1
+        ct.refreshTargetFn()
+        ct.freshInterval = setTimeout(fresh, 1000)
+      }, 1000)
+    },
 
     /* 刷新页面相关 */
     refresh: function () {
@@ -359,6 +369,56 @@ export default {
         ct.refreshTimer = setTimeout(freshFn, ct.refreshTime * 1000)
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
+    },
+    refreshTargetFn: function (newV) { // 刷新本页数据
+      newV = newV || this.nowPage
+      var ct = this
+      $.each(newV, function (i, d) {
+        let freshTime = d.refreshTm ? d.refreshTm : 3 // 这里是刷新周期
+        if (ct.nowTime % freshTime === 0 && d.chartType === 'topo') {
+          ct.$set(d, 'time', new Date().getTime())
+        }
+
+        if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
+          $.each(d.params, function (i, o) {
+            d.params[i] = $.isArray(o) ? o.join(',') : o
+          })
+          $.ajax({
+            url: gbs.host + d.url,
+            data: d.params,
+            type: d.method || 'get',
+            ascyn: false,
+            success: function (res) {
+              res.obj = res.obj || []
+              if (res.obj.colors) {
+                d.ctColors = res.obj.colors
+              }
+              if (d.chartType === 'marquee' || d.chartType === 'text') {
+                d.ctName = res.obj.info
+              }
+              if (d.chartType !== 'marquee') {
+                d.chartData = res.obj
+              }
+            },
+            error: function (xhr) {
+              if (xhr.status != 776) {
+                if (gbs.inDev) {
+                  Notification({
+                    message: '连接错误！',
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', '连接错误！', 'error')
+                }
+              }
+            }
+          })
+        }
+      })
+      // this.$nextTick(() => {
+      //   ct.setScale()
+      // })
     },
     refreshFn: function (newV) { // 刷新本页数据
       newV = newV || this.nowPage
@@ -522,7 +582,7 @@ export default {
         return []
       }
       this.refreshFn(newV)
-      this.initRefreshTimer()
+      // this.initRefreshTimer() 取消整页刷新
     },
     combinList: function () {
       this.refreshCompose()
@@ -557,10 +617,12 @@ export default {
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
+    this.autoFresh()
     $('#screen').addClass('disShow')
   },
   beforeDestroy: function () {
     $('#screen').removeClass('disShow')
+    clearTimeout(this.freshInterval)
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {

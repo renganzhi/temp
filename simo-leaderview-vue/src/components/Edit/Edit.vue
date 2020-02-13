@@ -456,7 +456,7 @@
                                     <label>进度条色</label>
                                     <select v-model="selectedItem.colorful" style="width: 68px !important; margin-left: 3px;">
                                         <option value="false">单色</option>
-                                        <option value="true">多色</option>
+                                        <option value="true">渐变</option>
                                     </select>
                                     <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
@@ -465,7 +465,7 @@
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
-                                      <div class="color-w15" style="float: right">
+                                      <div class="color-w70" style="float: right">
                                           <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
                                       </div>
                                     </div>
@@ -659,7 +659,14 @@
                                         <option value="true">多色</option>
                                     </select>
                                 </div>
-                                <div class="colorsConf" v-if="selectedItem.colorType=='custom'">
+                                <div class="form-group cols2" v-show="selectedItem.secondType !== 'liquidfill' && selectedItem.colorType === 'custom'">
+                                  <label>方式</label>
+                                  <select v-model="selectedItem.ifGradual">
+                                    <option value="true">渐变</option>
+                                    <option value="false">单色</option>
+                                  </select>
+                                </div>
+                                <div v-if="selectedItem.colorType=='custom'">
                                     <div class="form-group">
                                         <span>序号</span>
                                         <!-- <span class="color-w70 text">系列</span> -->
@@ -667,14 +674,19 @@
                                         <span @click="colorToAll" style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
                                         <!-- <i class="icon-n-add" @click="addColor"></i> -->
                                     </div>
-                                    <div class="form-group" v-for="(v,index) in selectedItem.ctColors" :key="index">
+                                    <div class="form-group colorsConf" v-for="(v,index) in selectedItem.ctColors" :key="index">
                                         <span class="colorOrder">{{index+1}}</span>
-                                        <div class="gradient" @click="reverseColor(index)" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
+                                        <div class="gradient" v-if="selectedItem.ifGradual==='true'" @click="reverseColor(index)" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
                                           <div class="color-w15">
                                               <Vcolor :data="selectedItem.ctColors[index][0]" :index="index" @getdata="getColorStart"></Vcolor>
                                           </div>
                                           <div class="color-w15" style="float: right">
                                               <Vcolor :data="selectedItem.ctColors[index][1]" :index="index" @getdata="getGradColor"></Vcolor>
+                                          </div>
+                                        </div>
+                                        <div v-else>
+                                            <div class="color-w200" style="float: left; width: 140px;">
+                                              <Vcolor :data="selectedItem.ctColors[index]" type="ctColors" :index="index" @getdata="getSingleColor"></Vcolor>
                                           </div>
                                         </div>
                                         <i class="icon-n-add" @click="addColor(index + 1)"></i>
@@ -735,6 +747,13 @@
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                               </Select2>
                                         </div>
+                                        <div class="form-group cols2" v-if="selectedItem.ctDataSource == 'system'">
+                                    <div class="form-group" style="position: relative">
+                                      <label>刷新周期</label>
+                                      <input class="color-w200" type="number" placeholder="刷新周期" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-model="selectedItem.refreshTm">
+                                    <label class="error" v-if="freshVali" style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
+                                    </div>
+                                </div>
                                     </div>
                                     <!-- <button @click="getUrlData">请求数据</button>-->
                                 </div>
