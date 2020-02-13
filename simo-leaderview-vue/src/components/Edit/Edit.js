@@ -821,6 +821,7 @@ export default {
         id: new Date().getTime(),
         ctName: value.text,
         ctLegendShow: 'true',
+        legendColor: '#828bac',
         x: 400,
         y: 100,
         width: 350,

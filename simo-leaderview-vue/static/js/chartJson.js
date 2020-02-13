@@ -194,14 +194,14 @@ var compsArr = [{
   text: '饼图',
   imgClass: 'icon-n-pie',
   chartType: 've-pie',
-  ifGradual: 'true',
+  ifGradual: 'false',
   chartData: morenData.pie
 },
 {
   text: '南丁格尔图',
   imgClass: 'icon-n-ndge',
   chartType: 've-pie',
-  ifGradual: 'true',
+  ifGradual: 'false',
   chartData: morenData.pie,
   roseType: 'area' // 与饼图的区别
 },
@@ -209,7 +209,7 @@ var compsArr = [{
   text: '环形图',
   imgClass: 'icon-n-ring',
   chartType: 've-ring',
-  ifGradual: 'true',
+  ifGradual: 'false',
   chartData: morenData.pie
 },
 {
@@ -218,7 +218,7 @@ var compsArr = [{
   height: 200,
   imgClass: 'icon-n-percent',
   chartType: 've-gauge',
-  ifGradual: 'true',
+  ifGradual: 'false',
   subType: 'progress',
   bgClr: '#657992',
   fontSize: 24,
@@ -230,14 +230,20 @@ var compsArr = [{
   colorful: false,
   imgClass: 'icon-n-histogram',
   chartType: 've-histogram',
-  ifGradual: 'true',
+  ifGradual: 'false',
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   chartData: morenData.pie
 },
 {
   text: '分组柱图',
   imgClass: 'icon-n-grouphistogram',
   chartType: 've-histogram',
-  ifGradual: 'true',
+  ifGradual: 'false',
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   subType: 'groupHistogram',
   chartData: morenData.line
 },
@@ -247,7 +253,10 @@ var compsArr = [{
   chartType: 've-histogram',
   subType: 'groupHistogram',
   thirdType: 'stackHistogram',
-  ifGradual: 'true',
+  ifGradual: 'false',
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   chartData: morenData.line
 },
 /* {
@@ -288,15 +297,21 @@ var compsArr = [{
   text: '条形图',
   imgClass: 'icon-n-bar',
   chartType: 've-bar',
-  ifGradual: 'true',
+  ifGradual: 'false',
   colorful: false,
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   chartData: morenData.pie
 },
 {
   text: '曲线图',
   imgClass: 'icon-n-line',
   chartType: 've-line',
-  ifGradual: 'true',
+  ifGradual: 'false',
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   showPoint: 'true' // 是否标点
@@ -305,8 +320,11 @@ var compsArr = [{
   text: '双轴曲线图',
   imgClass: 'icon-n-line',
   chartType: 've-line',
-  ifGradual: 'true',
+  ifGradual: 'false',
   subType: 'doubleAxis',
+  splitShow: 'false',
+  splitColor: '#333849',
+  splitSize: 1,
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   showPoint: 'true' // 是否标点
@@ -315,7 +333,7 @@ var compsArr = [{
   text: '雷达图',
   imgClass: 'icon-n-radar',
   chartType: 've-radar',
-  ifGradual: 'true',
+  ifGradual: 'false',
   width: 500,
   height: 380,
   chartData: morenData.line
@@ -324,7 +342,7 @@ var compsArr = [{
   text: '仪表盘',
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
-  ifGradual: 'true',
+  ifGradual: 'false',
   ctLegendShow: false,
   bgClr: '#657992',
   chartData: morenData.single

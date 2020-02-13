@@ -84,7 +84,7 @@ export default {
           // color:this.item.ctColors,
           color: this.getColors(this.item.ctColors),
           textStyle: {
-            color: '#666f8b'
+            color: this.item.legendColor || '#666f8b'
           },
           xAxis: $.extend({}, setings.axis, {
             position: 'bottom'
@@ -155,6 +155,43 @@ export default {
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
+      }
+    },
+    'item.splitShow': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.splitLine.show = newV === 'true'
+      }
+      if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
+        this.extend.yAxis.splitLine.show = newV === 'true'
+      }
+    },
+    'item.splitColor': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.splitLine.lineStyle.color = newV
+      } else if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
+        this.extend.yAxis.splitLine.lineStyle.color = newV
+        if (this.item.chartType === 've-line') {
+          this.extend.xAxis.axisLine.lineStyle.color = newV
+          this.extend.yAxis.axisLine.lineStyle.color = newV
+        }
+      }
+    },
+    'item.splitSize': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.splitLine.lineStyle.width = Number(newV)
+      }
+      if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
+        this.extend.yAxis.splitLine.lineStyle.width = Number(newV)
+      }
+    },
+    'item.legendColor': function (newV) {
+      if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
+        this.extend.textStyle.color = newV
+      } else if (this.item.chartType === 've-gauge') {
+        this.settings.seriesMap.p.title.textStyle.color = newV
+      } else {
+        this.extend.xAxis.axisLabel.textStyle.color = newV
+        this.extend.yAxis.axisLabel.textStyle.color = newV
       }
     },
     'item.ctLegendShow': function (newV) {
@@ -429,10 +466,17 @@ export default {
             },
             xAxis: {
               splitLine: {
-                show: false
+                show: _this.item.splitShow === 'true',
+                lineStyle: {
+                  color: _this.item.splitColor || '#333849',
+                  width: _this.item.splitSize || 1
+                }
               },
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 formatter: function (value) {
                   if (value >= 1000) {
                     return (value / 1000 + 'k')
@@ -447,6 +491,9 @@ export default {
                 interval: 0,
                 showMinLabel: true,
                 showMaxLabel: true,
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 formatter: function (params, index) {
                   return params.length > 5 ? params.substr(0, 5) + '...' : params
                 }
@@ -488,6 +535,9 @@ export default {
                 interval: 0,
                 showMinLabel: true,
                 showMaxLabel: true,
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 formatter: function (params, index) {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
                 }
@@ -495,10 +545,17 @@ export default {
             },
             yAxis: {
               splitLine: {
-                show: false
+                show: _this.item.splitShow === 'true',
+                lineStyle: {
+                  color: _this.item.splitColor || '#333849',
+                  width: _this.item.splitSize || 1
+                }
               },
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 formatter: function (value) {
                   if (value >= 1000) {
                     return (value / 1000 + 'k')
@@ -596,7 +653,7 @@ export default {
               // name: _this.item.chartData.unit, // 单位
               // max: (_this.item.chartData.unit === '%' && _this.item.subType !== 'doubleAxis') ? _this.getYaxiosMax(_this.item.chartData) : null,
               axisTick: {
-                show: true,
+                show: false,
                 lineStyle: {
                   color: '#333849', // 坐标轴刻度
                   width: 1
@@ -605,19 +662,22 @@ export default {
               axisLine: {
                 show: true,
                 lineStyle: {
-                  color: '#333849', // 坐标轴颜色
-                  width: 1
+                  color: _this.item.splitColor || '#333849', // 坐标轴颜色
+                  width: _this.item.splitSize || 1
                 }
               },
               splitLine: {
-                show: false,
+                show: _this.item.splitShow === 'true',
                 lineStyle: {
-                  color: '#333849', // 修改网格线颜色
-                  width: 1
+                  color: _this.item.splitColor || '#333849', // 修改网格线颜色
+                  width: _this.item.splitSize || 1
                 }
               },
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 formatter: function (value) {
                   if (value >= 1000) {
                     return (value / 1000 + 'k')
@@ -641,14 +701,17 @@ export default {
               axisLine: {
                 show: true,
                 lineStyle: {
-                  color: '#333849', // 坐标轴颜色
-                  width: 1
+                  color: _this.item.splitColor || '#333849', // 坐标轴颜色
+                  width: _this.item.splitSize || 1
                 }
               },
               splitLine: {
                 show: false
               },
               axisLabel: {
+                textStyle: {
+                  color: _this.item.legendColor || '#828bac'
+                },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
               }
             },
@@ -759,7 +822,7 @@ export default {
                   title: {
                     offsetCenter: [0, '120%'], //  x,  y，单位px
                     textStyle: {
-                      color: '#666f8b',
+                      color: _this.item.legendColor || '#666f8b',
                       fontSize: 14
                     }
                   },
@@ -837,7 +900,7 @@ export default {
                   title: {
                     offsetCenter: [0, '60%'], //  x,  y，单位px
                     textStyle: {
-                      color: '#666f8b',
+                      color: _this.item.legendColor || '#666f8b',
                       fontSize: 14
                     }
                   },
