@@ -720,6 +720,9 @@ $headHeight: 50px;
     border: solid 1px #3d445a;
     color: #3d445a;
   }
+  .m-gap {
+    font-weight: bold;
+  }
 }
 
 // 不同皮肤下的样式
@@ -790,6 +793,7 @@ html[data-theme="blueWhite"] {
     color:#026bf4;
   }
 }
+
 html[data-theme="blackWhite"]{
   .m-right .active, .set-map {
     color: #026bfe;

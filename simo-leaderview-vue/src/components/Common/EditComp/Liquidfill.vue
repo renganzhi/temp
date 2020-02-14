@@ -5,7 +5,8 @@
          ref="liquidfill"
          :style="boxStyle"></div>
     <div class="name"
-         v-show="item.ctLegendShow != 'false'">{{item.chartData.name}}</div>
+         v-show="item.ctLegendShow != 'false'"
+         :style="{'color': item.legendColor}">{{item.chartData.name}}</div>
   </div>
   <div class="v-charts-data-empty"
        v-else
@@ -75,7 +76,7 @@ export default {
         this.empty = true
         return
       }
-      if (!this.item.chartData.value && this.item.chartData.value!==0) {
+      if (!this.item.chartData.value && this.item.chartData.value !== 0) {
         this.empty = true
         return
       }
@@ -158,15 +159,15 @@ export default {
         ]
       }
       // if (this.item.chartData.unit.trim() === '%') {
-        this.option.series[0].label.formatter = this.item.chartData.value + this.item.chartData.unit
-        let val = Number(this.item.chartData.value)
-        if (val === val && val > 0) {
-          // 非NaN
-          let data = parseInt(val * 100) / 10000
-          this.option.series[0].data = [data, data - 0.05]
-        } else {
-          this.option.series[0].data = [-1]
-        }
+      this.option.series[0].label.formatter = this.item.chartData.value + this.item.chartData.unit
+      let val = Number(this.item.chartData.value)
+      if (val === val && val > 0) {
+        // 非NaN
+        let data = parseInt(val * 100) / 10000
+        this.option.series[0].data = [data, data - 0.05]
+      } else {
+        this.option.series[0].data = [-1]
+      }
       // }
       if (this.chart) {
         this.chart.setOption(this.option)
@@ -174,7 +175,7 @@ export default {
     }
   },
   mounted () {
-    if ((this.item.chartData.rows && this.item.chartData.rows.length === 0) || (!this.item.chartData.value && this.item.chartData.value!==0)) {
+    if ((this.item.chartData.rows && this.item.chartData.rows.length === 0) || (!this.item.chartData.value && this.item.chartData.value !== 0)) {
       this.empty = true
     } else {
       this.initBall()

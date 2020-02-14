@@ -14,7 +14,8 @@
       </TurnOver>
     </div>
     <div v-show="showTitle"
-         style="margin-top: 10px;color: #828bac;font-size: 12px;">{{item.chartData.name}}{{ comUnit}}</div>
+         class="doublerName"
+         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{ comUnit}}</div>
   </div>
 </template>
 <script>
@@ -137,5 +138,10 @@ export default {
   top: 0px;
   left: 0px;
   opacity: 0;
+}
+.doublerName {
+  margin-top: 10px;
+  color: #828bac;
+  font-size: 12px;
 }
 </style>

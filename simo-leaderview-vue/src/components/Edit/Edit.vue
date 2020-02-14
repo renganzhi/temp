@@ -295,24 +295,11 @@
                                         <label class="error" v-if="yVali.isShowError" style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                                     </div>
                                 </div>
-                                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
-                                    <label>折线图类型</label>
-                                    <select v-model="selectedItem.lineArea">
-                                        <option value="false">折线图</option>
-                                        <option value="true">区域图</option>
-                                    </select>
-                                </div>
-                                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
-                                    <label>是否标点</label>
-                                    <select v-model="selectedItem.showPoint">
-                                        <option value="false">否</option>
-                                        <option value="true">是</option>
-                                    </select>
-                                </div>
                             </div>
 
                             <!--表格\文本框配置-->
                             <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time' || selectedItem.secondType == 'liquidfill'">
+                                <div class="m-gap form-group" v-show="selectedItem.secondType!=='liquidfill'">图表样式</div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='table'">
                                     <label>表头背景色</label>
                                     <div class="color-w200">
@@ -359,7 +346,7 @@
 
                                 <div class="form-group cols2" v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                                    <div class="form-group cols2" v-if="selectedItem.secondType==='liquidfill'">
-                                     <div class="m-gap form-group">图例</div>
+                                     <div class="m-gap form-group">图例配置</div>
                                       <label>可见性</label>
                                       <select v-model="selectedItem.ctLegendShow">
                                           <option value="true">显示</option>
@@ -445,6 +432,14 @@
                             </div>
                             <!--进度条-->
                             <div v-if="selectedItem.chartType=='progress'">
+                                <div class="m-gap form-group">图表样式</div>
+                                <div class="form-group cols2">
+                                    <label>图例可见性</label>
+                                    <select v-model="selectedItem.ctLegendShow">
+                                        <option value="true">显示</option>
+                                        <option value="false">隐藏</option>
+                                    </select>
+                                </div>
                                 <div class="form-group cols2">
                                     <label>底色</label>
                                     <div class="color-w200">
@@ -465,7 +460,7 @@
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
-                                      <div class="color-w70" style="float: right">
+                                      <div class="color-w15" style="float: right">
                                           <Vcolor :data="selectedItem.barClrs[1]" :key="14" :index="1" @getdata="getBarClr"></Vcolor>
                                       </div>
                                     </div>
@@ -498,6 +493,7 @@
 
                             <!--数字翻牌器-->
                             <div v-if="selectedItem.chartType=='doubler' || selectedItem.chartType=='number'">
+                                <div class="m-gap form-group">图表样式</div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType=='doubler'">
                                     <label>背景色</label>
                                     <div class="color-w200">
@@ -532,6 +528,12 @@
                                         <option value="false">隐藏</option>
                                     </select>
                                 </div>
+                                <div class="form-group cols2">
+                                    <label>图表文字颜色</label>
+                                    <div class="color-w200">
+                                      <Vcolor :data="selectedItem.legendColor" :key="20" type="legendColor" @getdata="getColor"></Vcolor>
+                                  </div>
+                                </div>
                             </div>
                             <div v-if="selectedItem.chartType=='number'">
                               <div class="m-gap form-group">字体样式</div>
@@ -544,7 +546,7 @@
 
                             <div class="e-legend" v-if="selectedItem.chartType=='v-scatter'">
                               <div>
-                                  <div class="m-gap form-group">图例</div>
+                                  <div class="m-gap form-group">图例配置</div>
                                   <div class="form-group cols2">
                                       <label>可见性</label>
                                       <select v-model="selectedItem.ctLegendShow">
@@ -563,7 +565,7 @@
                             </div>
                             <div class="e-legend" v-if="selectedItem.chartType=='v-map'">
                               <div>
-                                  <div class="m-gap form-group">图例</div>
+                                  <div class="m-gap form-group">图例配置</div>
                                   <div class="form-group cols2">
                                       <label>可见性</label>
                                       <select v-model="selectedItem.ctLegendShow">
@@ -613,7 +615,7 @@
                             <!--图例-->
                             <div class="e-legend" v-if="isEcharts">
                                 <div v-show="showLengendConf">
-                                    <div class="m-gap form-group">图例</div>
+                                    <div class="m-gap form-group">图例配置</div>
                                     <div class="form-group cols2">
                                         <label>可见性</label>
                                         <select v-model="selectedItem.ctLegendShow">
@@ -627,9 +629,32 @@
                                             <option>底部居中</option>
                                         </select>
                                     </div>
+                                    <div v-if="selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
+                                      <div class="form-group cols2">
+                                          <label>背景线可见性</label>
+                                          <select v-model="selectedItem.splitShow">
+                                              <option value="true">显示</option>
+                                              <option value="false">隐藏</option>
+                                          </select>
+                                      </div>
+                                      <div class="form-group cols2">
+                                          <label>背景线颜色</label>
+                                          <div class="color-w200">
+                                            <Vcolor :data="selectedItem.splitColor" :key="18" type="splitColor" @getdata="getColor"></Vcolor>
+                                        </div>
+                                      </div>
+                                      <div class="form-group cols2">
+                                          <label>线条粗细</label>
+                                          <select v-model="selectedItem.splitSize">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                          </select>
+                                      </div>
+                                    </div>
                                 </div>
                                 <div class="form-group cols2" v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
-                                  <div class="m-gap form-group">图例</div>
+                                  <div class="m-gap form-group">图例配置</div>
                                     <div class="form-group cols2" v-if="selectedItem.subType==='progress'">
                                       <label>可见性</label>
                                       <select v-model="selectedItem.ctLegendShow">
@@ -647,6 +672,27 @@
                                     <div class="color-w200">
                                         <Vcolor :data="selectedItem.bgClr" :key="12" type="bgClr" @getdata="getGaugeCl"></Vcolor>
                                     </div>
+                                </div>
+                                <div class="form-group cols2">
+                                    <label>图表文字颜色</label>
+                                    <div class="color-w200">
+                                      <Vcolor :data="selectedItem.legendColor" :key="19" type="legendColor" @getdata="getColor"></Vcolor>
+                                  </div>
+                                </div>
+                                <div class="m-gap form-group" v-show="selectedItem.secondType!=='liquidfill'">图表样式</div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
+                                    <label>折线图类型</label>
+                                    <select v-model="selectedItem.lineArea">
+                                        <option value="false">折线图</option>
+                                        <option value="true">区域图</option>
+                                    </select>
+                                </div>
+                                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
+                                    <label>是否标点</label>
+                                    <select v-model="selectedItem.showPoint">
+                                        <option value="false">否</option>
+                                        <option value="true">是</option>
+                                    </select>
                                 </div>
                                 <div class="form-group cols2" v-show="selectedItem.secondType !== 'liquidfill'">
                                     <label>配色<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>

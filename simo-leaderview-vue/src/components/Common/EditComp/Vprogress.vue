@@ -1,7 +1,8 @@
 <template>
   <div>
     <div :style="barValueStyle">
-      <span class="fl">{{item.chartData.name}}</span>{{persent}}<span v-show="persent !== '暂无数据'">{{item.chartData.unit}}</span></div>
+      <span class="fl"
+            v-show="item.ctLegendShow !== 'false'">{{item.chartData.name}}</span>{{persent}}<span v-show="persent !== '暂无数据'">{{item.chartData.unit}}</span></div>
     <div :style="barBoxStyle">
       <div :style="barStyle"></div>
     </div>

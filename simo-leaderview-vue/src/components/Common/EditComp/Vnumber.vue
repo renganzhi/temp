@@ -4,7 +4,7 @@
       <span :style="numStyle">{{numStr}}</span>
     </div>
     <div v-show="showTitle"
-         style="color: #828bac; font-size: 12px;">{{item.chartData.name}}{{ comUnit}}</div>
+         :style="{'font-size': '12px', 'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{ comUnit}}</div>
   </div>
 </template>
 <script>
