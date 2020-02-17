@@ -182,6 +182,8 @@ export default {
       }
       if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
         this.extend.yAxis.splitLine.lineStyle.width = Number(newV)
+        this.extend.yAxis.axisLine.lineStyle.width = Number(newV)
+        this.extend.xAxis.axisLine.lineStyle.width = Number(newV)
       }
     },
     'item.legendColor': function (newV) {
@@ -721,7 +723,7 @@ export default {
                 var nameArr = []
                 var time = params[0].data[0]
                 var showHtm = time + '<br>'
-                params.forEach(element => {
+                params.forEach((element, i) => {
                   var name = element.seriesName
                   if (nameArr.indexOf(name) === -1) {
                     nameArr.push(name)
@@ -729,7 +731,11 @@ export default {
                     if (typeof (value) !== 'number' || value !== value) {
                       value = '--'
                     }
-                    showHtm += name + '：' + value + (_this.item.chartData.unit || '') + '<br>'
+                    if (_this.item.subType === 'doubleAxis') {
+                      showHtm += name + '：' + value + (_this.item.chartData.unit[i] || '') + '<br>'
+                    } else {
+                      showHtm += name + '：' + value + (_this.item.chartData.unit || '') + '<br>'
+                    }
                   }
                 })
                 return showHtm

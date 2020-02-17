@@ -102,6 +102,41 @@ var morenData = {
     }
     ]
   },
+  times: {
+    columns: ['日期', 'CPU核心利用率', 'CPU平均利用率'],
+    unit: ['%', '%'],
+    rows: [{
+      日期: '2018-01-01',
+      CPU核心利用率: 15,
+      CPU平均利用率: 15
+    },
+    {
+      日期: '2018-01-02',
+      CPU核心利用率: 80,
+      CPU平均利用率: 50
+    },
+    {
+      日期: '2018-01-03',
+      CPU核心利用率: 40,
+      CPU平均利用率: 6
+    },
+    {
+      日期: '2018-01-05',
+      CPU核心利用率: 45,
+      CPU平均利用率: 70
+    },
+    {
+      日期: '2018-01-06',
+      CPU核心利用率: 10,
+      CPU平均利用率: 40
+    },
+    {
+      日期: '2018-01-07',
+      CPU核心利用率: 95,
+      CPU平均利用率: 50
+    }
+    ]
+  },
   guage: {
     columns: ['type', 'value'],
     rows: [{
@@ -325,7 +360,7 @@ var compsArr = [{
   splitShow: 'false',
   splitColor: '#333849',
   splitSize: 1,
-  chartData: morenData.time,
+  chartData: morenData.times,
   lineArea: false, // 是否为区域图
   showPoint: 'true' // 是否标点
 },

@@ -216,22 +216,22 @@
                           <div class="form-group" style="height: 200px;">
                             <label>背景图片</label>
                             <div class="fl">
-                              <div v-if="paintObj.bgImg" @click="paintObj.bgImg = ''" class="chooseBgImg">
+                              <div v-if="paintObj.bgImg" @click="delPaintImg" class="chooseBgImg">
                                 <i class="icon-n-delete" style="color: #7d8eb9;"></i><br>删除图片
                               </div>
                               <div v-else class="chooseBgImg">
                                 <i class="icon-n-exportPicture"></i><br>点击选择图片
                                 <input type="file" class="uploadBg" style="height: 120px !important;" accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml" @change='changeImg'/>
                               </div>
-                              <input type="radio" name="bgType" value='1' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
-                              <input type="radio" name="bgType" value='2' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
-                              <input type="radio" name="bgType" value='3' :disabled="paintObj.bgImg===''" v-model="paintObj.bgStyle">全屏铺满</input>
+                              <input type="radio" name="bgType" value='1' :disabled="paintObj.bgImg===''" @click="saveHistory('paint')" v-model="paintObj.bgStyle">等比缩放宽度铺满</input><br>
+                              <input type="radio" name="bgType" value='2' :disabled="paintObj.bgImg===''" @click="saveHistory('paint')" v-model="paintObj.bgStyle">等比缩放高度铺满</input><br>
+                              <input type="radio" name="bgType" value='3' :disabled="paintObj.bgImg===''" @click="saveHistory('paint')" v-model="paintObj.bgStyle">全屏铺满</input>
                             </div>
                           </div>
                           <div class="form-group">
                             <label>不透明度</label>
                             <div class="fl" style="width: 200px; margin-top: -2px;">
-                              <Slider v-model="paintObj.opacity" :min="0" :max="100" :step="1"></Slider>
+                              <Slider @change="opacityChg" v-model="paintObj.opacity" :min="0" :max="100" :step="1"></Slider>
                             </div>
                           </div>
                           <div class="form-group">
@@ -243,7 +243,7 @@
                           <div class="form-group">
                             <label>显示网格</label>
                             <div class="fl">
-                              <div :class="{'u-switch': true, 'u-switch-on': paintObj.showGrid, 'u-switch-off': !paintObj.showGrid}" @click="paintObj.showGrid = !paintObj.showGrid"><div></div></div>
+                              <div :class="{'u-switch': true, 'u-switch-on': paintObj.showGrid, 'u-switch-off': !paintObj.showGrid}" @click="gridChg"><div></div></div>
                             </div>
                           </div>
                           <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
@@ -713,7 +713,7 @@
                                   </select>
                                 </div>
                                 <div v-if="selectedItem.colorType=='custom'">
-                                    <div class="form-group">
+                                    <div class="form-group colorsConf">
                                         <span>序号</span>
                                         <!-- <span class="color-w70 text">系列</span> -->
                                         <span class="color-w70 text">颜色</span>
