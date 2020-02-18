@@ -1016,7 +1016,7 @@ export default {
           if (item.chartType === 'v-map') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
-          // this.s 
+          // this.s
           this.selectedItem = item
           if (item.chartType === 'progress') {
             this.progressObj.height = item.proHeight || 16
@@ -1058,7 +1058,7 @@ export default {
           }
         }
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
-          this.oldCheckId = item.id
+          // this.oldCheckId = item.id
           // console.log('切换元件，重新计算地图~')
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
@@ -1088,7 +1088,7 @@ export default {
           this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
           this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
           // 地图元件重新加载右边的区域数据
-          this.oldCheckId = item.id
+          // this.oldCheckId = item.id
           console.log('选中地图: ' + this.selectedItem.mapLevel)
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
@@ -2126,7 +2126,13 @@ export default {
               _this.selectedItem.ctColors = _this.defalutColors.concat()
             }
           }
-          _this.selectedItem.chartData = data.obj
+          if (_this.selectedItem.chartType === 'v-map') {
+            _this.selectMapData = data.obj
+            _this.mapDataToChart()
+            _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+          } else {
+            _this.selectedItem.chartData = data.obj
+          }
           _this.selectedItem.url = curConf.url
           _this.selectedItem.method = curConf.method
           _this.selectedItem.params = param
@@ -2136,6 +2142,9 @@ export default {
               _this.selectedItem.chartData = data.obj
             }
           }
+          // else if (_this.selectedItem.chartType === 'v-scatter') {
+          //   _this.selectedItem.chartData = JSON.parse(JSON.stringify(_this.alertMapData))
+          // }
         },
         error: function () {
           if (gbs.inDev) {

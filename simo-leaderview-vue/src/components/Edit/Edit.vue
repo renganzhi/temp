@@ -776,7 +776,8 @@
                                     <label>数据来源</label>
                                     <select @change="chgDataSource" v-model="selectedItem.ctDataSource">
                                       <option value="static">静态数据</option>
-                                        <option v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'" value="system">系统数据</option>
+                                      <option value="system">系统数据</option>
+                                      <!-- v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'"  -->
                                     </select>
                                 </div>
                                 <div v-show="selectedItem.ctDataSource == 'system'">
@@ -827,12 +828,12 @@
                                     <label>市</label>
                                     <Select2 v-model="selectedItem.cityCode" :mapSelect="true" :obj="cityArr" @input="chgCity(selectedItem.cityCode)"></Select2>
                                   </div>
-                                  <div class="form-group cols2" v-if="selectedItem.chartType==='v-scatter'">
+                                  <div class="form-group cols2" v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
                                     <label class="e-legend">数据设置<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData" @click="addAlertLevel">添加数据点</button>
                                     <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                                   </div>
 
-                                  <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter'">
+                                  <div class="form-group cols2" v-show="selectedItem.chartType!=='v-scatter' && selectedItem.ctDataSource == 'static'">
                                     <label class="e-legend">数据设置<i class="icon-n-tip" style="font-size: 16px; position: relative; top: 1px; left: 3px;" title="设置每个地区的分布数量"></i></label>
                                     <div class="setMapData" style="height: 180px;">
                                       <div class="area-item" v-for="(area, index) in areaArr" :key="index"><span class="area-name">{{area.name}}</span><input class="w-90" autocomplete="off" oninput="value=value.replace(/[^\d]/g,'')" v-model="selectMapData[area.name]" :name="area.name"></div>
@@ -860,7 +861,7 @@
                                     <button type="button" class="colorToall" @click="addMapLevel">添加量级</button>
                                   </div>
                                 </div>
-                                <div class="setMapData" v-if="selectedItem.chartType==='v-scatter'">
+                                <div class="setMapData" v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
                                   <div class="area-item" v-for="(item, index) in alertMapData" :key="index">
                                     <span class="area-index">{{index + 1}}</span>
                                     <Select2 v-model="alertMapData[index].name" :disData="selectedPositn" :key="selectedItem.id + index" :mapSelect="true" :sameName="true" :obj="areaArr" @input="chgAreaName(alertMapData[index].name, index)"></Select2>
