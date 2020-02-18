@@ -776,7 +776,7 @@ export default {
       // 新增字段的监听需要对以前版本进行兼容
       this.chartNum.forEach((item) => {
         if (!item.refreshTm) {
-          this.$set(item, 'refreshTm', 3)
+          this.$set(item, 'refreshTm', 5)
         }
         if (item.chartType.includes('ve-') && !item.ifGradual) {
           if (item.colorType === 'custom') {
@@ -832,7 +832,7 @@ export default {
         y: 100,
         width: 350,
         height: 350,
-        refreshTm: 3, // 刷新周期
+        refreshTm: 5, // 刷新周期
         zIndex: ++this.maxIndex,
         colorType: 'defalut',
         ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
@@ -2101,7 +2101,7 @@ export default {
         param.windows = null
       }
       if (this.selectedItem.chartType === 'topo') {
-        this.saveTopoConf(param)
+        this.saveTopoConf(param, curConf)
         return
       }
       var datas = {}
@@ -2159,7 +2159,7 @@ export default {
         }
       })
     },
-    saveTopoConf: function (param) {
+    saveTopoConf: function (param, curConf) {
       // 拓扑与其他组件不同，需要特殊处理
       if (this.selectedItem.tpId === param.topoId) {
         this.$set(this.selectedItem, 'refresh', true)
@@ -2167,6 +2167,11 @@ export default {
           this.selectedItem.refresh = false
         })
       } else {
+        if (curConf.url.includes('domainTopo')) {
+          this.$set(this.selectedItem, 'tptype', 'domain')
+        } else {
+          this.$set(this.selectedItem, 'tptype', 'business')
+        }
         this.selectedItem.tpId = param.topoId
       }
     },

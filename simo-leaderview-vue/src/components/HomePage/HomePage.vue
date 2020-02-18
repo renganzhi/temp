@@ -374,7 +374,7 @@ export default {
       newV = newV || this.nowPage
       var ct = this
       $.each(newV, function (i, d) {
-        let freshTime = d.refreshTm ? d.refreshTm : 3 // 这里是刷新周期
+        let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
         if (ct.nowTime % freshTime === 0 && d.chartType === 'topo') {
           ct.$set(d, 'time', new Date().getTime())
         }

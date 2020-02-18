@@ -10,6 +10,7 @@
 </template>
 <script>
 import MainTp from '#/js/topo/mainTopo'
+import initBusTp from '#/js/businessTopo/businessTopostart'
 export default {
   name: 'topo',
   props: ['item'],
@@ -39,13 +40,19 @@ export default {
         this.topo && this.topo.refreshTp()
         return
       }
-      this.topo = new MainTp({
-        el: this.$el,
-        tpId: this.item.tpId,
-        width: Number(this.item.width),
-        height: Number(this.item.height)
-        // viewBox:viewbox
-      })
+      if (this.item.tptype !== 'business') {
+        // 网络拓扑
+        this.topo = new MainTp({
+          el: this.$el,
+          tpId: this.item.tpId,
+          width: Number(this.item.width),
+          height: Number(this.item.height)
+          // viewBox:viewbox
+        })
+      } else {
+        // 业务拓扑 'cd520898-231c-4fae-959a-2287643ad6ec'
+        initBusTp({ 'businessId': this.item.tpId, el: this.$el })
+      }
       // 拓扑内部图片跨域
       this.$nextTick(() => {
         // console.log($(this.$el).find('img'))
