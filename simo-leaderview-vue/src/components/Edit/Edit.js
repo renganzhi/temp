@@ -137,7 +137,7 @@ export default {
       dataApiParams: {}, // 请求数据传给后端的数据结构
       chainParams: {}, // 存放需要联动的指标
       testObj: {}, // 测试验证
-      freshVali: false, 
+      freshVali: false,
       widthVali: {
         isShowError: false,
         errorMsg: ''
@@ -316,8 +316,10 @@ export default {
       // tempObj.oldObj.slted = false
       // this.chartNum.splice(tempObj.index, 1, JSON.parse(JSON.stringify(tempObj.oldObj)))
       /** 全部保存 */
+      console.log(this.historyArr)
       var oldObj = this.historyArr.pop()
       if (!oldObj) return alert('没有历史记录了')
+      console.log('撤销一步')
       if (oldObj.type === 'item') {
         this.selectedItem = {}
         this.chooseCompIndexs = []
@@ -328,6 +330,7 @@ export default {
         // console.log('type 不是item')
         // console.log(oldObj.paintObj)
         this.paintObj = JSON.parse(oldObj.paintObj)
+        this.paintInput = JSON.parse(oldObj.paintObj)
       }
     },
     // 单元件change
@@ -717,6 +720,9 @@ export default {
     },
     colorToAll () {
       var _colors = this.selectedItem.ctColors
+      if (this.chartNum.length) {
+        this.saveHistory()
+      }
       this.chartNum.forEach((item) => {
         if (item.chartType.indexOf('ve-') !== -1) {
           if (
@@ -1010,6 +1016,7 @@ export default {
           if (item.chartType === 'v-map') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
+          // this.s 
           this.selectedItem = item
           if (item.chartType === 'progress') {
             this.progressObj.height = item.proHeight || 16
@@ -1455,6 +1462,7 @@ export default {
     },
     // 取消组合
     itemSplit: function () {
+      this.saveHistory()
       var index = this.selectedIndex
       // var tempArr = _.sortBy(this.combinList[index].child, function (o) { return o.zIndex })
       var tempArr = this.combinList[index].child
@@ -2814,6 +2822,17 @@ export default {
     hideContext: function () {
       $(this.$refs.contextMenu).toggle(false)
     },
+    gridChg: function (data) {
+      this.saveHistory('paint')
+      this.paintObj.showGrid = !this.paintObj.showGrid
+    },
+    opacityChg: function (data) {
+      // console.log('opachg:' + data)
+    },
+    delPaintImg: function () {
+      this.saveHistory('paint')
+      this.paintObj.bgImg = ''
+    },
     /* 图片 */
     changeImg: function (e) {
       if (e.value === '') {
@@ -2853,9 +2872,8 @@ export default {
       this.uploadFile('img', formData, function (data) {
         if (!_this.selectedItem.chartType) {
           // 上传画布图片
-          _this.saveHistory(true)
-          _this.paintObj.bgImg =
-            '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.saveHistory('paint')
+          _this.paintObj.bgImg = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
         if (_this.selectedItem.chartType === 'image') {
@@ -2912,9 +2930,11 @@ export default {
       this.showPlayErr = true
     },
     getPaintCl (data) {
+      this.saveHistory('paint')
       this.paintObj.bgColor = data.color
     },
     getColor (data) {
+      this.saveHistory()
       if (data.type !== undefined) {
         this.selectedItem[data.type] = data.color
       } else {
@@ -2924,9 +2944,11 @@ export default {
       }
     },
     getGaugeCl (data) {
+      this.saveHistory()
       this.$set(this.selectedItem, 'bgClr', data.color)
     },
     getMapColor (data) {
+      this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
           this.chartNum[i]['ctColors'].splice(data.index, 1, data.color)
@@ -2940,6 +2962,7 @@ export default {
       }
     },
     getColorStart (data) {
+      this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
         oldColor[0] = data.color
@@ -2958,6 +2981,7 @@ export default {
     },
     // 渐变色颜色改变
     getGradColor (data) {
+      this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
         oldColor[1] = data.color
@@ -2975,9 +2999,11 @@ export default {
       }
     },
     getSingleColor (data) {
+      this.saveHistory()
       this.selectedItem.ctColors.splice(data.index, 1, data.color)
     },
     getBarClr (data) {
+      this.saveHistory()
       this.selectedItem.barClrs.splice(data.index, 1, data.color)
     },
     testObjChange (direct, newValue) {
@@ -3065,6 +3091,7 @@ export default {
       if (this.paintInput[key] < 500 || this.paintInput[key] > 10000) {
         this.paintInput[key] = this.paintObj[key]
       } else {
+        this.saveHistory('paint')
         this.paintObj[key] = Number(this.paintInput[key])
       }
       this.changeHomeData(this.paintObj)
@@ -3161,15 +3188,55 @@ export default {
           this.chartNum[item][key] = newV
         })
       }
+    },
+    saveOldData (tempId, key, oldV) {
+      // let tempId = this.selectedItem.id
+      let chgIndex = _.findIndex(this.chartNum, function (i) { return i.id === tempId })
+      if (chgIndex !== -1) {
+        var tempChartNum = JSON.parse(JSON.stringify(this.chartNum))
+        tempChartNum[chgIndex][key] = oldV
+        let tempHisObj = {
+          type: 'item',
+          chartNum: JSON.stringify(tempChartNum),
+          compose: JSON.stringify(this.combinList)
+        }
+        this.historyArr.push(tempHisObj)
+        console.log('保存一次：' + chgIndex)
+      } else {
+        var tempCombin = JSON.parse(JSON.stringify(this.combinList))
+        var _index = -1
+        for (let n = 0, len = tempCombin.length; n < len; n++) {
+          _index = _.findIndex(tempCombin[n].child, function (i) { return i.id === tempId })
+          if (_index !== -1) {
+            tempCombin[n].child[_index][key] = oldV
+            break
+          }
+        }
+        if (_index !== -1) {
+          console.log('保存一次组合：' + _index)
+          let tempHisObj = {
+            type: 'item',
+            chartNum: JSON.stringify(this.chartNum),
+            compose: JSON.stringify(tempCombin)
+          }
+          this.historyArr.push(tempHisObj)
+        }
+      }
     }
   },
   watch: {
-    chartNum: {
+    /* chartNum: {
       handler (newV, oldV) {
-        this.oldChartNum = JSON.stringify(oldV)
+          // this.oldChartNum = JSON.stringify(oldV)
+          console.log('chartNum change')
+          this.historyArr.push({
+            type: 'item',
+            chartNum: JSON.stringify(oldV),
+            compose: JSON.stringify(this.combinList)
+          })
       },
       deep: true
-    },
+    }, */
     selectedItem: function (newV, oldV) {
       this.selectChange = true
       this.$nextTick(() => {
@@ -3186,6 +3253,9 @@ export default {
           }
         }
       }
+    },
+    'paintObj.opacity': function (newV, oldV) {
+      // console.log(newV, oldV)
     },
     'selectedItem.ifGradual': function (newV) {
       // 对象类型不能统一赋值
@@ -3214,6 +3284,40 @@ export default {
         this.freshVali = false
       }
     },
+    'selectedItem.legendColor': function (newV, oldV) {
+      this.changeTogether('legendColor', newV)
+    },
+    'selectedItem.splitShow': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'splitShow', oldV)
+      }
+      this.changeTogether('splitShow', newV)
+    },
+    'selectedItem.splitColor': function (newV) {
+      this.changeTogether('splitColor', newV)
+    },
+    'selectedItem.splitSize': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'splitSize', oldV)
+      }
+      this.changeTogether('splitSize', newV)
+    },
+    'selectedItem.lineArea': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'lineArea', oldV)
+      }
+      this.changeTogether('lineArea', newV)
+    },
+    'selectedItem.showPoint': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'showPoint', oldV)
+      }
+      this.changeTogether('showPoint', newV)
+    },
     'selectedItem.bgClr': function (newV) {
       this.changeTogether('bgClr', newV)
     },
@@ -3226,30 +3330,54 @@ export default {
     'selectedItem.clr': function (newV) {
       this.changeTogether('clr', newV)
     },
-    'selectedItem.fontSize': function (newV) {
+    'selectedItem.fontSize': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'fontSize', oldV)
+      }
       this.changeTogether('fontSize', newV)
     },
-    'selectedItem.proHeight': function (newV) {
+    'selectedItem.proHeight': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'proHeight', oldV)
+      }
       this.changeTogether('proHeight', newV)
     },
-    'selectedItem.radius': function (newV) {
+    'selectedItem.radius': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'radius', oldV)
+      }
       this.changeTogether('radius', newV)
     },
-    'selectedItem.ctLegendShow': function (newV) {
-      this.changeTogether('ctLegendShow', newV)
-      this.tempHisObj = {
-        type: 'item',
-        chartNum: this.oldChartNum,
-        compose: JSON.stringify(this.combinList)
+    'selectedItem.ctLegendShow': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'ctLegendShow', oldV)
       }
+      this.changeTogether('ctLegendShow', newV)
+      // this.tempHisObj = {
+      //   type: 'item',
+      //   chartNum: this.oldChartNum,
+      //   compose: JSON.stringify(this.combinList)
+      // }
     },
     'selectedItem.visualPosition': function (newV) {
       this.changeTogether('visualPosition', newV)
     },
-    'selectedItem.colorType': function (newV) {
+    'selectedItem.colorType': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'colorType', oldV)
+      }
       this.changeTogether('colorType', newV)
     },
-    'selectedItem.colorful': function (newV) {
+    'selectedItem.colorful': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'colorful', oldV)
+      }
       this.changeTogether('colorful', newV)
     },
     'selectedItem.hdBgClr': function (newV) {
@@ -3258,25 +3386,53 @@ export default {
     'selectedItem.bdClr': function (newV) {
       this.changeTogether('bdClr', newV)
     },
-    'selectedItem.bdpx': function (newV) {
+    'selectedItem.bdpx': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'bdpx', oldV)
+      }
       this.changeTogether('bdpx', newV)
     },
-    'selectedItem.direction': function (newV) {
+    'selectedItem.direction': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'direction', oldV)
+      }
       this.changeTogether('direction', newV)
     },
-    'selectedItem.speed': function (newV) {
+    'selectedItem.speed': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'speed', oldV)
+      }
       this.changeTogether('speed', newV)
     },
-    'selectedItem.showType': function (newV) {
+    'selectedItem.showType': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'showType', oldV)
+      }
       this.changeTogether('showType', newV)
     },
-    'selectedItem.timeType': function (newV) {
+    'selectedItem.timeType': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'timeType', oldV)
+      }
       this.changeTogether('timeType', newV)
     },
-    'selectedItem.fontFamily': function (newV) {
+    'selectedItem.fontFamily': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'fontFamily', oldV)
+      }
       this.changeTogether('fontFamily', newV)
     },
-    'selectedItem.themeType': function (newV) {
+    'selectedItem.themeType': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'themeType', oldV)
+      }
       this.changeTogether('themeType', newV)
     },
     'selectedItem.mapLevel': function (newValue, oldV) {
