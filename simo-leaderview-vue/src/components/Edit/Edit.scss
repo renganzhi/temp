@@ -104,6 +104,10 @@ $headHeight: 50px;
     &.act {
       border: 1px solid #0088cc;
     }
+    & img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
 
   .card-case {
@@ -521,6 +525,7 @@ $headHeight: 50px;
   .barGradient {
     float: right;
     position: relative;
+    cursor: pointer;
     width: 100px;
     height: 10px;
     right: 9px;

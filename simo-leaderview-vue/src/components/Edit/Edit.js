@@ -983,6 +983,24 @@ export default {
       }
       this.childResize = false
       if (ev !== 'context' && ev !== 'move' && !window.event.ctrlKey) {
+        // 判断是否拖拽，若已选中多个元件则不会取消
+        if (type === 'compose') {
+          var _id = this.chooseCompIndexs.indexOf(i)
+          if (_id !== -1) {
+            if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+              this.selectedItem = item
+              return
+            }
+          }
+        } else {
+          _id = this.chooseIndexs.indexOf(i)
+          if (_id !== -1) {
+            if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+              this.selectedItem = item
+              return
+            }
+          }
+        }
         this.cancelSelected()
       }
       if (ev === 'move') {
@@ -1308,7 +1326,7 @@ export default {
       }
       // 上边界的处理
       var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
-      if (window.event.ctrlKey) {
+      if (false && window.event.ctrlKey) {
         // 拖拽情况下被拖拽元件不再手动更新值
         this.chooseIndexs.forEach((i) => {
           if (this.chartNum[i].id !== this.selectedItem.id) {
@@ -1749,7 +1767,7 @@ export default {
       chgX = Number(chgX)
       chgY = Number(chgY)
       // if (this.selectedItem.id === this.minXItem.id) return
-      if (window.event.ctrlKey) {
+      if (true || window.event.ctrlKey) {
         if (chgX !== 0) {
           if (this.selectedItem.id === this.minXItem.id) {
             this.minXItem.x = Number(attr.left)

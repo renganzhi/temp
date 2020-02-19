@@ -59,6 +59,18 @@ var settings = {
       {
         mini: '/leaderview/border/titleMini2.png',
         imgSrc: '/leaderview/border/titleBg2.png'
+      },
+      {
+        mini: '/leaderview/border/titleBg3.png',
+        imgSrc: '/leaderview/border/titleBg3.png'
+      },
+      {
+        mini: '/leaderview/border/titleBg4.png',
+        imgSrc: '/leaderview/border/titleBg4.png'
+      },
+      {
+        mini: '/leaderview/border/titleBg5.png',
+        imgSrc: '/leaderview/border/titleBg5.png'
       }
     ]
   }
