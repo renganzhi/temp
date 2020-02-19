@@ -3054,7 +3054,13 @@ export default {
     },
     getSingleColor (data) {
       this.saveHistory()
-      this.selectedItem.ctColors.splice(data.index, 1, data.color)
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(data.index, 1, data.color)
+        })
+      } else {
+        this.selectedItem.ctColors.splice(data.index, 1, data.color)
+      }
     },
     getBarClr (data) {
       this.saveHistory()
@@ -3282,6 +3288,11 @@ export default {
           this.historyArr.push(tempHisObj)
         }
       }
+    },
+    chgImgSrc (imgSrc) {
+      this.saveHistory()
+      this.selectedItem.imgSrc = imgSrc
+      this.changeTogether('imgSrc', imgSrc)
     }
   },
   watch: {

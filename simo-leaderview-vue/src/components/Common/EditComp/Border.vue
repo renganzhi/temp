@@ -18,18 +18,28 @@ export default {
   },
   computed: {
     imgStyle: function () {
+      if (this.item.showType && this.item.showType === '1') {
+        return {
+          maxWidth: '100%',
+          maxHeight: '100%'
+        }
+      }
       return {
         width: '100%',
-        height: this.typeCard ? '100%' : 'auto',
-        maxHeight: this.typeCard ? '' : '100%'
+        height: '100%'
       }
+      // return {
+      //   width: '100%',
+      //   height: this.typeCard ? '100%' : 'auto',
+      //   maxHeight: this.typeCard ? '' : '100%'
+      // }
     },
     boxStyle: function () {
       return {
         width: this.item.width + 'px',
         height: this.item.height + 'px',
         borderRadius: this.item.radius + 'px',
-        //background: this.item.barClrs ? 'linear-gradient(180deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(0deg, ' + this.item.bgClr + ', ' + this.item.bgClr + ')',
+        // background: this.item.barClrs ? 'linear-gradient(180deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : 'linear-gradient(0deg, ' + this.item.bgClr + ', ' + this.item.bgClr + ')',
         background: this.item.colorful === 'true' ? 'linear-gradient(180deg, ' + this.item.barClrs[0] + ', ' + this.item.barClrs[1] + ')' : this.item.bgClr,
         border: this.item.bdpx + 'px solid ' + this.item.bdClr
       }
