@@ -158,6 +158,7 @@ var businessViewTopo = {
   reset: function () {
     // $('#businessMainTopo').off()
     $(busData.el).off()
+    $(busData.el).empty()
     // $(document).off('click.contextMenu')
     // $.contextMenu('destroy', {
     //   selector: busData.el

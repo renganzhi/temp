@@ -21,7 +21,8 @@
             <span class="fr">|</span>
             <a class="fr simoLink icon-n-keyboard edit-opt" @mouseover="showKeybd = true" @mouseout="showKeybd = false">快捷键</a>
             <h4 class="edit-title" @click.self="clickPaint($event)">{{pageName}}</h4>
-            <a class="fr simoLink icon-n-revoke edit-opt" @click="Revoke">撤销</a>
+            <a class="fr simoLink icon-n-revoke edit-opt" v-if="historyArr.length > 0" @click="Revoke">撤销</a>
+            <a class="fr simoLink icon-n-revoke edit-opt" style="color:#666F8B;" v-else>撤销</a>
         </div>
         <div class="edit-keyboard" v-show="showKeybd" @mouseover="showKeybd = true" @mouseout="showKeybd = false">
           <span class="keybd-arrow"><i class="icon-n-arrowUp" style="font-size: 40px;"></i></span>
@@ -354,7 +355,14 @@
                                       </select>
                                     </div>
                                     <label>填充色</label>
-                                    <div class="barGradient" v-if="selectedItem.barClrs" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                    <select v-model="selectedItem.colorful" style="width: 68px !important; margin-left: 3px;">
+                                        <option value="false">单色</option>
+                                        <option value="true">渐变</option>
+                                    </select>
+                                    <!-- <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
+                                        <Vcolor :data="selectedItem.barClr" :key="22" type="barClr" @getdata="getColor"></Vcolor>
+                                    </div> -->
+                                    <div class="barGradient" v-if="selectedItem.colorful === 'true'" @click="reverseClr" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="15" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>
@@ -362,7 +370,7 @@
                                           <Vcolor :data="selectedItem.barClrs[1]" :key="16" :index="1" @getdata="getBarClr"></Vcolor>
                                       </div>
                                     </div>
-                                    <div class="color-w200" v-else>
+                                    <div class="color-w200" style="width: 100px;" v-else>
                                         <Vcolor :data="selectedItem.bgClr" :key="2" type="bgClr" @getdata="getColor"></Vcolor>
                                     </div>
                                 </div>
@@ -456,7 +464,7 @@
                                     <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
                                         <Vcolor :data="selectedItem.barClr" :key="6" type="barClr" @getdata="getColor"></Vcolor>
                                     </div>
-                                    <div v-show="selectedItem.colorful === 'true'" class="barGradient" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
+                                    <div v-show="selectedItem.colorful === 'true'" class="barGradient" @click="reverseClr" :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                                       <div class="color-w15">
                                           <Vcolor :data="selectedItem.barClrs[0]" :key="13" :index="0" @getdata="getBarClr"></Vcolor>
                                       </div>

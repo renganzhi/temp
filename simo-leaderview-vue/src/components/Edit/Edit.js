@@ -279,6 +279,9 @@ export default {
     },
     saveHistory (type) {
       /** 全部保存 */
+      if (this.historyArr && this.historyArr.length >= 20) {
+        this.historyArr.shift()
+      }
       if (type) {
         // 保存画布
         this.historyArr.push({
@@ -316,9 +319,19 @@ export default {
       // tempObj.oldObj.slted = false
       // this.chartNum.splice(tempObj.index, 1, JSON.parse(JSON.stringify(tempObj.oldObj)))
       /** 全部保存 */
-      console.log(this.historyArr)
       var oldObj = this.historyArr.pop()
-      if (!oldObj) return alert('没有历史记录了')
+      if (!oldObj) {
+        if (gbs.inDev) {
+          Notification({
+            message: '已撤销至最大限制！',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '已撤销至最大限制！', 'info')
+        }
+        return
+      }
       console.log('撤销一步')
       if (oldObj.type === 'item') {
         this.selectedItem = {}
@@ -769,7 +782,7 @@ export default {
         } else {
           this.chartNum = []
         }
-        this.saveHistory()
+        // this.saveHistory()
       })
     },
     formatVersion () {
@@ -798,8 +811,11 @@ export default {
           this.$set(item, 'borderType', 'simple')
           this.$set(item, 'imgSrc', '')
         }
-        if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
-          this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+        if (item.chartType === 'border' && item.borderType === 'simple') {
+          this.$set(item, 'colorful', 'true')
+          if (!item.barClrs) {
+            this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+          }
         }
         if (item.chartType === 'table' || item.chartType === 'moveTable') {
           this.$set(item, 'hdClr', item.clr || '')
@@ -1841,6 +1857,15 @@ export default {
         }
       }
     },
+    reverseClr () {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['barClrs'].reverse()
+        })
+      } else {
+        this.selectedItem.barClrs.reverse()
+      }
+    },
     reverseColor (index) {
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
@@ -2103,6 +2128,21 @@ export default {
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param, curConf)
         return
+      }
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {
+        let names = _.map(this.areaArr, 'name')
+        let areaName = '中国'
+        // console.log(names.join(','))
+        var _id = -1
+        if (this.selectedItem.mapLevel === 'province') {
+          _id = _.findIndex(_this.provinceArr, function (o) { return o.value == _this.selectedItem.provinceCode })
+          areaName = _this.provinceArr[_id].name
+        } else if (this.selectedItem.mapLevel === 'city') {
+          _id = _.findIndex(_this.cityArr, function (o) { return o.value == _this.selectedItem.cityCode })
+          areaName = _this.cityArr[_id].name
+        }
+        param.names = names.join(',')
+        param.areaName = areaName
       }
       var datas = {}
       var reg = /^\//
@@ -3214,6 +3254,9 @@ export default {
           chartNum: JSON.stringify(tempChartNum),
           compose: JSON.stringify(this.combinList)
         }
+        if (this.historyArr && this.historyArr.length >= 20) {
+          this.historyArr.shift()
+        }
         this.historyArr.push(tempHisObj)
         console.log('保存一次：' + chgIndex)
       } else {
@@ -3232,6 +3275,9 @@ export default {
             type: 'item',
             chartNum: JSON.stringify(this.chartNum),
             compose: JSON.stringify(tempCombin)
+          }
+          if (this.historyArr && this.historyArr.length >= 20) {
+            this.historyArr.shift()
           }
           this.historyArr.push(tempHisObj)
         }
@@ -3273,21 +3319,23 @@ export default {
     },
     'selectedItem.ifGradual': function (newV) {
       // 对象类型不能统一赋值
-      if (!this.selectChange && this.chooseSameFlag) {
-        if (newV === 'true') {
-          this.chooseIndexs.forEach((item) => {
-            this.chartNum[item]['ctColors'] = JSON.parse(JSON.stringify(this.defGradColors))
-          })
+      if (newV && !this.selectChange) {
+        if (this.chooseSameFlag) {
+          if (newV === 'true') {
+            this.chooseIndexs.forEach((item) => {
+              this.chartNum[item]['ctColors'] = JSON.parse(JSON.stringify(this.defGradColors))
+            })
+          } else {
+            this.chooseIndexs.forEach((item) => {
+              this.chartNum[item]['ctColors'] = this.defalutColors.slice(0, 8)
+            })
+          }
         } else {
-          this.chooseIndexs.forEach((item) => {
-            this.chartNum[item]['ctColors'] = this.defalutColors.slice(0,8)
-          })
-        }
-      } else {
-        if (newV === 'true') {
-          this.selectedItem.ctColors = JSON.parse(JSON.stringify(this.defGradColors))
-        } else {
-          this.selectedItem.ctColors = this.defalutColors.slice(0,8)
+          if (newV === 'true') {
+            this.selectedItem.ctColors = JSON.parse(JSON.stringify(this.defGradColors))
+          } else {
+            this.selectedItem.ctColors = this.defalutColors.slice(0, 8)
+          }
         }
       }
     },
@@ -3530,6 +3578,9 @@ export default {
           type: 'item',
           chartNum: JSON.stringify(oldChart),
           compose: JSON.stringify(this.combinList)
+        }
+        if (this.historyArr && this.historyArr.length >= 20) {
+          this.historyArr.shift()
         }
         this.historyArr.push(tempObj)
         console.log('保存一次历史')

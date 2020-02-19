@@ -494,6 +494,7 @@ var compsArr = [{
   width: 300,
   height: 300,
   bdpx: 1,
+  colorful: false,
   bgClr: 'rgba(255, 255, 255, 0.02)',
   barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
   bdClr: '#175278'
