@@ -404,6 +404,8 @@ var compsArr = [{
   speed: 2,
   pageNum: 5,
   hdBgClr: '#1c2132',
+  hdClr: '',
+  hdfontSize: 12,
   bgClr: '',
   clr: '#919cc1',
   bdClr: '#c2c6d7',
@@ -494,6 +496,8 @@ var compsArr = [{
   width: 300,
   height: 300,
   bdpx: 1,
+  showType: '1',
+  colorful: false,
   bgClr: 'rgba(255, 255, 255, 0.02)',
   barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
   bdClr: '#175278'

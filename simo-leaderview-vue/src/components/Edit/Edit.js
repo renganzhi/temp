@@ -279,6 +279,9 @@ export default {
     },
     saveHistory (type) {
       /** 全部保存 */
+      if (this.historyArr && this.historyArr.length >= 20) {
+        this.historyArr.shift()
+      }
       if (type) {
         // 保存画布
         this.historyArr.push({
@@ -316,9 +319,19 @@ export default {
       // tempObj.oldObj.slted = false
       // this.chartNum.splice(tempObj.index, 1, JSON.parse(JSON.stringify(tempObj.oldObj)))
       /** 全部保存 */
-      console.log(this.historyArr)
       var oldObj = this.historyArr.pop()
-      if (!oldObj) return alert('没有历史记录了')
+      if (!oldObj) {
+        if (gbs.inDev) {
+          Notification({
+            message: '已撤销至最大限制！',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '已撤销至最大限制！', 'info')
+        }
+        return
+      }
       console.log('撤销一步')
       if (oldObj.type === 'item') {
         this.selectedItem = {}
@@ -769,14 +782,14 @@ export default {
         } else {
           this.chartNum = []
         }
-        this.saveHistory()
+        // this.saveHistory()
       })
     },
     formatVersion () {
       // 新增字段的监听需要对以前版本进行兼容
       this.chartNum.forEach((item) => {
         if (!item.refreshTm) {
-          this.$set(item, 'refreshTm', 3)
+          this.$set(item, 'refreshTm', 5)
         }
         if (item.chartType.includes('ve-') && !item.ifGradual) {
           if (item.colorType === 'custom') {
@@ -798,8 +811,11 @@ export default {
           this.$set(item, 'borderType', 'simple')
           this.$set(item, 'imgSrc', '')
         }
-        if (item.chartType === 'border' && item.borderType === 'simple' && !item.barClrs) {
-          this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+        if (item.chartType === 'border' && item.borderType === 'simple') {
+          this.$set(item, 'colorful', 'true')
+          if (!item.barClrs) {
+            this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
+          }
         }
         if (item.chartType === 'table' || item.chartType === 'moveTable') {
           this.$set(item, 'hdClr', item.clr || '')
@@ -832,7 +848,7 @@ export default {
         y: 100,
         width: 350,
         height: 350,
-        refreshTm: 3, // 刷新周期
+        refreshTm: 5, // 刷新周期
         zIndex: ++this.maxIndex,
         colorType: 'defalut',
         ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
@@ -967,6 +983,24 @@ export default {
       }
       this.childResize = false
       if (ev !== 'context' && ev !== 'move' && !window.event.ctrlKey) {
+        // 判断是否拖拽，若已选中多个元件则不会取消
+        if (type === 'compose') {
+          var _id = this.chooseCompIndexs.indexOf(i)
+          if (_id !== -1) {
+            if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+              this.selectedItem = item
+              return
+            }
+          }
+        } else {
+          _id = this.chooseIndexs.indexOf(i)
+          if (_id !== -1) {
+            if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
+              this.selectedItem = item
+              return
+            }
+          }
+        }
         this.cancelSelected()
       }
       if (ev === 'move') {
@@ -1016,7 +1050,7 @@ export default {
           if (item.chartType === 'v-map') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
-          // this.s 
+          // this.s
           this.selectedItem = item
           if (item.chartType === 'progress') {
             this.progressObj.height = item.proHeight || 16
@@ -1058,7 +1092,7 @@ export default {
           }
         }
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
-          this.oldCheckId = item.id
+          // this.oldCheckId = item.id
           // console.log('切换元件，重新计算地图~')
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
@@ -1088,7 +1122,7 @@ export default {
           this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
           this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
           // 地图元件重新加载右边的区域数据
-          this.oldCheckId = item.id
+          // this.oldCheckId = item.id
           console.log('选中地图: ' + this.selectedItem.mapLevel)
           if (this.selectedItem.mapLevel === 'country') {
             this.areaArr = this.provinceArr
@@ -1292,7 +1326,7 @@ export default {
       }
       // 上边界的处理
       var changes = parseInt(this.minXItem[xy] - this.selectArea[left])
-      if (window.event.ctrlKey) {
+      if (false && window.event.ctrlKey) {
         // 拖拽情况下被拖拽元件不再手动更新值
         this.chooseIndexs.forEach((i) => {
           if (this.chartNum[i].id !== this.selectedItem.id) {
@@ -1733,7 +1767,7 @@ export default {
       chgX = Number(chgX)
       chgY = Number(chgY)
       // if (this.selectedItem.id === this.minXItem.id) return
-      if (window.event.ctrlKey) {
+      if (true || window.event.ctrlKey) {
         if (chgX !== 0) {
           if (this.selectedItem.id === this.minXItem.id) {
             this.minXItem.x = Number(attr.left)
@@ -1839,6 +1873,15 @@ export default {
           var tempColor = this.selectedItem.ctColors.splice(index, 1)[0]
           this.selectedItem.ctColors.splice(index + 1, 0, tempColor)
         }
+      }
+    },
+    reverseClr () {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['barClrs'].reverse()
+        })
+      } else {
+        this.selectedItem.barClrs.reverse()
       }
     },
     reverseColor (index) {
@@ -2101,8 +2144,23 @@ export default {
         param.windows = null
       }
       if (this.selectedItem.chartType === 'topo') {
-        this.saveTopoConf(param)
+        this.saveTopoConf(param, curConf)
         return
+      }
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {
+        let names = _.map(this.areaArr, 'name')
+        let areaName = '中国'
+        // console.log(names.join(','))
+        var _id = -1
+        if (this.selectedItem.mapLevel === 'province') {
+          _id = _.findIndex(_this.provinceArr, function (o) { return o.value == _this.selectedItem.provinceCode })
+          areaName = _this.provinceArr[_id].name
+        } else if (this.selectedItem.mapLevel === 'city') {
+          _id = _.findIndex(_this.cityArr, function (o) { return o.value == _this.selectedItem.cityCode })
+          areaName = _this.cityArr[_id].name
+        }
+        param.names = names.join(',')
+        param.areaName = areaName
       }
       var datas = {}
       var reg = /^\//
@@ -2126,7 +2184,13 @@ export default {
               _this.selectedItem.ctColors = _this.defalutColors.concat()
             }
           }
-          _this.selectedItem.chartData = data.obj
+          if (_this.selectedItem.chartType === 'v-map') {
+            _this.selectMapData = data.obj
+            _this.mapDataToChart()
+            _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+          } else {
+            _this.selectedItem.chartData = data.obj
+          }
           _this.selectedItem.url = curConf.url
           _this.selectedItem.method = curConf.method
           _this.selectedItem.params = param
@@ -2136,6 +2200,9 @@ export default {
               _this.selectedItem.chartData = data.obj
             }
           }
+          // else if (_this.selectedItem.chartType === 'v-scatter') {
+          //   _this.selectedItem.chartData = JSON.parse(JSON.stringify(_this.alertMapData))
+          // }
         },
         error: function () {
           if (gbs.inDev) {
@@ -2150,7 +2217,7 @@ export default {
         }
       })
     },
-    saveTopoConf: function (param) {
+    saveTopoConf: function (param, curConf) {
       // 拓扑与其他组件不同，需要特殊处理
       if (this.selectedItem.tpId === param.topoId) {
         this.$set(this.selectedItem, 'refresh', true)
@@ -2158,6 +2225,11 @@ export default {
           this.selectedItem.refresh = false
         })
       } else {
+        if (curConf.url.includes('domainTopo')) {
+          this.$set(this.selectedItem, 'tptype', 'domain')
+        } else {
+          this.$set(this.selectedItem, 'tptype', 'business')
+        }
         this.selectedItem.tpId = param.topoId
       }
     },
@@ -3000,7 +3072,13 @@ export default {
     },
     getSingleColor (data) {
       this.saveHistory()
-      this.selectedItem.ctColors.splice(data.index, 1, data.color)
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i]['ctColors'].splice(data.index, 1, data.color)
+        })
+      } else {
+        this.selectedItem.ctColors.splice(data.index, 1, data.color)
+      }
     },
     getBarClr (data) {
       this.saveHistory()
@@ -3200,6 +3278,9 @@ export default {
           chartNum: JSON.stringify(tempChartNum),
           compose: JSON.stringify(this.combinList)
         }
+        if (this.historyArr && this.historyArr.length >= 20) {
+          this.historyArr.shift()
+        }
         this.historyArr.push(tempHisObj)
         console.log('保存一次：' + chgIndex)
       } else {
@@ -3219,9 +3300,17 @@ export default {
             chartNum: JSON.stringify(this.chartNum),
             compose: JSON.stringify(tempCombin)
           }
+          if (this.historyArr && this.historyArr.length >= 20) {
+            this.historyArr.shift()
+          }
           this.historyArr.push(tempHisObj)
         }
       }
+    },
+    chgImgSrc (imgSrc) {
+      this.saveHistory()
+      this.selectedItem.imgSrc = imgSrc
+      this.changeTogether('imgSrc', imgSrc)
     }
   },
   watch: {
@@ -3259,21 +3348,23 @@ export default {
     },
     'selectedItem.ifGradual': function (newV) {
       // 对象类型不能统一赋值
-      if (!this.selectChange && this.chooseSameFlag) {
-        if (newV === 'true') {
-          this.chooseIndexs.forEach((item) => {
-            this.chartNum[item]['ctColors'] = JSON.parse(JSON.stringify(this.defGradColors))
-          })
+      if (newV && !this.selectChange) {
+        if (this.chooseSameFlag) {
+          if (newV === 'true') {
+            this.chooseIndexs.forEach((item) => {
+              this.chartNum[item]['ctColors'] = JSON.parse(JSON.stringify(this.defGradColors))
+            })
+          } else {
+            this.chooseIndexs.forEach((item) => {
+              this.chartNum[item]['ctColors'] = this.defalutColors.slice(0, 8)
+            })
+          }
         } else {
-          this.chooseIndexs.forEach((item) => {
-            this.chartNum[item]['ctColors'] = this.defalutColors.slice(0,8)
-          })
-        }
-      } else {
-        if (newV === 'true') {
-          this.selectedItem.ctColors = JSON.parse(JSON.stringify(this.defGradColors))
-        } else {
-          this.selectedItem.ctColors = this.defalutColors.slice(0,8)
+          if (newV === 'true') {
+            this.selectedItem.ctColors = JSON.parse(JSON.stringify(this.defGradColors))
+          } else {
+            this.selectedItem.ctColors = this.defalutColors.slice(0, 8)
+          }
         }
       }
     },
@@ -3516,6 +3607,9 @@ export default {
           type: 'item',
           chartNum: JSON.stringify(oldChart),
           compose: JSON.stringify(this.combinList)
+        }
+        if (this.historyArr && this.historyArr.length >= 20) {
+          this.historyArr.shift()
         }
         this.historyArr.push(tempObj)
         console.log('保存一次历史')
