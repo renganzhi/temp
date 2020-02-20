@@ -3410,6 +3410,12 @@ export default {
         this.freshVali = false
       }
     },
+    'selectedItem.hdClr': function (newV) {
+      this.changeTogether('hdClr', newV)
+    },
+    'selectedItem.hdfontSize': function (newV) {
+      this.changeTogether('hdfontSize', newV)
+    },
     'selectedItem.legendColor': function (newV, oldV) {
       this.changeTogether('legendColor', newV)
     },
