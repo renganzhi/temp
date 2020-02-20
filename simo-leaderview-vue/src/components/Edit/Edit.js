@@ -788,21 +788,34 @@ export default {
     formatVersion () {
       // 新增字段的监听需要对以前版本进行兼容
       this.chartNum.forEach((item) => {
+        if (!item.legendColor) {
+          this.$set(item, 'legendColor', '#828bac')
+        }
         if (!item.refreshTm) {
           this.$set(item, 'refreshTm', 5)
         }
-        if (item.chartType.includes('ve-') && !item.ifGradual) {
-          if (item.colorType === 'custom') {
-            this.$set(item, 'ifGradual', 'true')
-          } else {
-            this.$set(item, 'ifGradual', 'false')
+        if (item.chartType.includes('ve-')) {
+          if (!item.ifGradual) {
+            if (item.colorType === 'custom') {
+              this.$set(item, 'ifGradual', 'true')
+            } else {
+              this.$set(item, 'ifGradual', 'false')
+            }
+          }
+          if (item.chartType === 've-line' || item.chartType === 've-bar' || item.chartType === 've-histogram') {
+            if (!item.splitColor) {
+              this.$set(item, 'splitColor', '#333849')
+            }
           }
         }
+        // 以上为四期新增
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
         }
         if (item.chartType === 'progress') {
-          this.$set(item, 'colorful', 'true')
+          if (!item.colorful) {
+            this.$set(item, 'colorful', 'true')
+          }
           if (!item.barClrs) {
             this.$set(item, 'barClrs', [item.barClr, item.barClr])
           }
@@ -812,7 +825,9 @@ export default {
           this.$set(item, 'imgSrc', '')
         }
         if (item.chartType === 'border' && item.borderType === 'simple') {
-          this.$set(item, 'colorful', 'true')
+          if (!item.colorful) {
+            this.$set(item, 'colorful', 'true')
+          }
           if (!item.barClrs) {
             this.$set(item, 'barClrs', [item.bgClr, item.bgClr])
           }
@@ -830,6 +845,26 @@ export default {
           }
           if (list.chartType === 'progress') {
             this.$set(list, 'colorful', 'true')
+          }
+          if (!list.legendColor) {
+            this.$set(list, 'legendColor', '#828bac')
+          }
+          if (!list.refreshTm) {
+            this.$set(list, 'refreshTm', 5)
+          }
+          if (list.chartType.includes('ve-')) {
+            if (!list.ifGradual) {
+              if (list.colorType === 'custom') {
+                this.$set(list, 'ifGradual', 'true')
+              } else {
+                this.$set(list, 'ifGradual', 'false')
+              }
+            }
+            if (list.chartType === 've-line' || list.chartType === 've-bar' || list.chartType === 've-histogram') {
+              if (!list.splitColor) {
+                this.$set(list, 'splitColor', '#333849')
+              }
+            }
           }
         })
       })
