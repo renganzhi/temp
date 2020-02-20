@@ -651,6 +651,7 @@ export default {
             },
             yAxis: {
               type: 'value',
+              offset: -10,
               // position: 'left',
               // name: _this.item.chartData.unit, // 单位
               // max: (_this.item.chartData.unit === '%' && _this.item.subType !== 'doubleAxis') ? _this.getYaxiosMax(_this.item.chartData) : null,
