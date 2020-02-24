@@ -717,6 +717,7 @@
               </div>
               <!-- 图片元件 -->
               <div v-if="selectedItem.chartType=='image'">
+                <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2">
                   <label>缩放方式</label>
                   <select v-model="selectedItem.showType">
