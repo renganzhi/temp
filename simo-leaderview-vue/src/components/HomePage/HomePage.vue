@@ -25,7 +25,7 @@
     <div class="portlet light bordered flex-1"
          id="paintWrap">
       <div id="mainbox"
-           v-if="pageList.length >= 1"></div>
+           v-show="pageList.length >= 1"></div>
       <div class="home_wrapBox">
         <div class="full-height pagebox">
           <LookItem v-for="(item,index) in nowPage"
