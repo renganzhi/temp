@@ -323,6 +323,7 @@ export default {
         var _value = this.item.chartData.columns.slice(1, this.item.chartData.columns.length)
         this.settings.stack = { _key: _value }
       }
+      this.keyId = new Date().getTime() + parseInt(Math.random() * 10000)
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
