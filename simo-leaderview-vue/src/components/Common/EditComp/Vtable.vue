@@ -149,11 +149,11 @@ export default {
 }
 .home-table .table tbody tr,
 .home-table .table tbody td,
-.home-table .table tbody th {
+.home-table .table th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: none;
   background: transparent !important;
+  border-bottom: none !important;
 }
 </style>
