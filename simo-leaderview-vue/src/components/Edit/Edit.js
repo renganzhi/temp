@@ -822,6 +822,14 @@ export default {
             }
           }
         }
+        if (item.chartType === 'v-map') {
+          if (!item.cityShow) {
+            this.$set(item, 'cityShow', 'false')
+          }
+          if (!item.cityColor) {
+            this.$set(item, 'cityColor', '#828bac')
+          }
+        }
         // 以上为四期新增
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
@@ -877,6 +885,14 @@ export default {
             if (list.chartType === 've-line' || list.chartType === 've-bar' || list.chartType === 've-histogram') {
               if (!list.splitColor) {
                 this.$set(list, 'splitColor', '#333849')
+              }
+            }
+            if (list.chartType === 'v-map') {
+              if (!list.cityShow) {
+                this.$set(list, 'cityShow', 'false')
+              }
+              if (!list.cityColor) {
+                this.$set(list, 'cityColor', '#828bac')
               }
             }
             if (list.chartType === 've-radar') {
