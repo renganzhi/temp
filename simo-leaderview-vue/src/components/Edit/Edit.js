@@ -810,6 +810,17 @@ export default {
               this.$set(item, 'splitColor', '#333849')
             }
           }
+          if (item.chartType === 've-radar') {
+            if (!item.splitColor) {
+              this.$set(item, 'splitColor', 'rgba(117, 124, 137, 0.2)')
+            }
+            if (!item.splitShow) {
+              this.$set(item, 'splitShow', 'true')
+            }
+            if (!item.splitSize) {
+              this.$set(item, 'splitSize', 1)
+            }
+          }
         }
         // 以上为四期新增
         if (item.chartType === 've-gauge' && !item.bgClr) {
@@ -866,6 +877,17 @@ export default {
             if (list.chartType === 've-line' || list.chartType === 've-bar' || list.chartType === 've-histogram') {
               if (!list.splitColor) {
                 this.$set(list, 'splitColor', '#333849')
+              }
+            }
+            if (list.chartType === 've-radar') {
+              if (!list.splitColor) {
+                this.$set(list, 'splitColor', 'rgba(117, 124, 137, 0.2)')
+              }
+              if (!list.splitShow) {
+                this.$set(list, 'splitShow', 'true')
+              }
+              if (!list.splitSize) {
+                this.$set(list, 'splitSize', 1)
               }
             }
           }

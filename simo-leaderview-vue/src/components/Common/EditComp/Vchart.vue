@@ -160,9 +160,10 @@ export default {
     'item.splitShow': function (newV) {
       if (this.item.chartType === 've-bar') {
         this.extend.xAxis.splitLine.show = newV === 'true'
-      }
-      if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
+      } else if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
         this.extend.yAxis.splitLine.show = newV === 'true'
+      } else if (this.item.chartType === 've-radar') {
+        this.extend.radar.splitLine.show = newV === 'true'
       }
     },
     'item.splitColor': function (newV) {
@@ -174,16 +175,19 @@ export default {
           this.extend.xAxis.axisLine.lineStyle.color = newV
           this.extend.yAxis.axisLine.lineStyle.color = newV
         }
+      } else if (this.item.chartType === 've-radar') {
+        this.extend.radar.splitLine.lineStyle.color = newV
       }
     },
     'item.splitSize': function (newV) {
       if (this.item.chartType === 've-bar') {
         this.extend.xAxis.splitLine.lineStyle.width = Number(newV)
-      }
-      if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
+      } else if (this.item.chartType === 've-line' || this.item.chartType === 've-histogram') {
         this.extend.yAxis.splitLine.lineStyle.width = Number(newV)
         this.extend.yAxis.axisLine.lineStyle.width = Number(newV)
         this.extend.xAxis.axisLine.lineStyle.width = Number(newV)
+      } else if (this.item.chartType === 've-radar') {
+        this.extend.radar.splitLine.lineStyle.width = Number(newV)
       }
     },
     'item.legendColor': function (newV) {
@@ -1022,9 +1026,10 @@ export default {
                 }
               },
               splitLine: {
+                show: _this.item.splitShow === 'true',
                 lineStyle: {
-                  color: '#757c89',
-                  opacity: 0.2
+                  color: _this.item.splitColor || 'rgba(117, 124, 137, 0.2)',
+                  width: _this.item.splitSize || 1
                 }
               },
               axisLabel: {

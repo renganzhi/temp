@@ -369,6 +369,9 @@ var compsArr = [{
   imgClass: 'icon-n-radar',
   chartType: 've-radar',
   ifGradual: 'false',
+  splitShow: 'true',
+  splitColor: 'rgba(117, 124, 137, 0.2)',
+  splitSize: 1,
   width: 500,
   height: 380,
   chartData: morenData.line

@@ -591,6 +591,18 @@
                     </select>
                   </div>
                   <div class="form-group cols2"
+                       v-if="selectedItem.secondType==='liquidfill'">
+                    <label>图例文字颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.legendColor"
+                              :key="19"
+                              type="legendColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div v-show="selectedItem.secondType==='liquidfill'"
+                       class="m-gap form-group">图表样式</div>
+                  <div class="form-group cols2"
                        v-if="selectedItem.chartType==='border'">
                     <label>填充色</label>
                     <select v-model="selectedItem.colorful"
@@ -728,7 +740,7 @@
               </div>
               <!--进度条-->
               <div v-if="selectedItem.chartType=='progress'">
-                <div class="m-gap form-group">图表样式</div>
+                <div class="m-gap form-group">图例配置</div>
                 <div class="form-group cols2">
                   <label>图例可见性</label>
                   <select v-model="selectedItem.ctLegendShow">
@@ -736,6 +748,23 @@
                     <option value="false">隐藏</option>
                   </select>
                 </div>
+                <div class="form-group cols2">
+                  <label>字体颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.clr"
+                            :key="7"
+                            type="clr"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>字号</label>
+                  <select v-model="selectedItem.fontSize">
+                    <option v-for="(item, index) in defaultFontSize"
+                            :key="index">{{item}}</option>
+                  </select>
+                </div>
+                <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2">
                   <label>底色</label>
                   <div class="color-w200">
@@ -781,23 +810,6 @@
                   </div>
                   <!-- <input type="color" v-model="selectedItem.barClr"/> -->
                 </div>
-                <div class="form-group cols2">
-                  <label>字体颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.clr"
-                            :key="7"
-                            type="clr"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                  <!-- <input type="color" v-model="selectedItem.clr"/> -->
-                </div>
-                <div class="form-group cols2">
-                  <label>字号</label>
-                  <select v-model="selectedItem.fontSize">
-                    <option v-for="(item, index) in defaultFontSize"
-                            :key="index">{{item}}</option>
-                  </select>
-                </div>
                 <div class="form-group cols2"
                      style="margin-bottom: 30px">
                   <label>高度</label>
@@ -827,6 +839,23 @@
 
               <!--数字翻牌器-->
               <div v-if="selectedItem.chartType=='doubler' || selectedItem.chartType=='number'">
+                <div class="m-gap form-group">图例配置</div>
+                <div class="form-group cols2">
+                  <label>图例可见性</label>
+                  <select v-model="selectedItem.ctLegendShow">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>图例文字颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.legendColor"
+                            :key="20"
+                            type="legendColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
                 <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='doubler'">
@@ -837,7 +866,6 @@
                             type="bgClr"
                             @getdata="getColor"></Vcolor>
                   </div>
-                  <!-- <input type="color" v-model="selectedItem.bgClr"/> -->
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='doubler'">
@@ -848,7 +876,6 @@
                             type="bdClr"
                             @getdata="getColor"></Vcolor>
                   </div>
-                  <!-- <input type="color" v-model="selectedItem.bdClr"/> -->
                 </div>
                 <div class="form-group cols2">
                   <label>字号</label>
@@ -863,23 +890,6 @@
                     <Vcolor :data="selectedItem.clr"
                             :key="10"
                             type="clr"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                  <!-- <input type="color" v-model="selectedItem.clr"/> -->
-                </div>
-                <div class="form-group cols2">
-                  <label>图例可见性</label>
-                  <select v-model="selectedItem.ctLegendShow">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>图例文字颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.legendColor"
-                            :key="20"
-                            type="legendColor"
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
@@ -909,6 +919,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
+                  <div class="m-gap form-group">图表样式</div>
                   <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
@@ -936,6 +947,7 @@
                       <option value="right">底部靠右</option>
                     </select>
                   </div>
+                  <div class="m-gap form-group">图表样式</div>
                   <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
@@ -996,7 +1008,7 @@
                       <option>底部居中</option>
                     </select>
                   </div>
-                  <div v-if="selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
+                  <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
                     <div class="form-group cols2">
                       <label>背景线可见性</label>
                       <select v-model="selectedItem.splitShow">
@@ -1035,8 +1047,10 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group cols2">
-                  <label>图例文字颜色</label>
+                <div class="form-group cols2"
+                     v-if="selectedItem.secondType!=='liquidfill'">
+                  <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字颜色</label>
+                  <label v-else>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
                             :key="19"
