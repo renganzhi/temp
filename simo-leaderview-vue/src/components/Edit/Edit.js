@@ -21,6 +21,7 @@ export default {
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
       baseUrl: gbs.host,
+      revokeStep: 5, // 撤销步数
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
@@ -279,7 +280,7 @@ export default {
     },
     saveHistory (type) {
       /** 全部保存 */
-      if (this.historyArr && this.historyArr.length >= 20) {
+      if (this.historyArr && this.historyArr.length >= this.revokeStep) {
         this.historyArr.shift()
       }
       if (type) {
@@ -333,7 +334,7 @@ export default {
         return
       }
       console.log('撤销一步')
-      if (oldObj.type === 'item') {
+      if (oldObj.type !== 'paint') {
         this.selectedItem = {}
         this.chooseCompIndexs = []
         this.chooseIndexs = []
@@ -341,7 +342,6 @@ export default {
         this.combinList = JSON.parse(oldObj.compose)
       } else {
         // console.log('type 不是item')
-        // console.log(oldObj.paintObj)
         this.paintObj = JSON.parse(oldObj.paintObj)
         this.paintInput = JSON.parse(oldObj.paintObj)
       }
@@ -354,8 +354,11 @@ export default {
       //   oldObj: JSON.parse(JSON.stringify(this.chartNum[index]))
       // })
       // this.saveHistory() // 应该保存之前的数据
+      if (this.historyArr && this.historyArr.length >= this.revokeStep) {
+        this.historyArr.shift()
+      }
       this.historyArr.push(this.tempHisObj)
-      this.tempHisObj = {}
+      this.bodyDown()
     },
     scrollLeft (x) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
@@ -1822,6 +1825,7 @@ export default {
       }
     },
     resized: function (item) {
+      // this.moving = true
       if (item.id === this.testObj.id) {
         this.testObj.width = Number(item.width)
         this.testObj.height = Number(item.height)
@@ -3129,6 +3133,7 @@ export default {
       } else {
         defData = isWidth ? this.paintObj.width : this.paintObj.height
       }
+      let oldV = Number(this.selectedItem[direct])
       var selectData = isWidth ? this.selectedItem.x : this.selectedItem.y // 选中元素的x,y
       var limitValue = defData - selectData + allowOverflow // 可设置的最大值
       // not Number
@@ -3146,6 +3151,9 @@ export default {
           this.testObj[direct] = limitValue
         }
       } else {
+        if (oldV !== newValue) {
+          this.saveOldData(this.selectedItem.id, direct, oldV)
+        }
         this[valiType].isShowError = false
         this.$set(this.selectedItem, direct, newValue)
       }
@@ -3164,6 +3172,7 @@ export default {
         defData = isX ? this.paintObj.width : this.paintObj.height // 画布的宽高
       }
       selectData = isX ? this.selectedItem.width : this.selectedItem.height // 选中元素的宽高
+      let oldV = Number(this.selectedItem[position])
       if (selectData > defData) {
         // 这里暂不需要判断宽高的限制
         // this[valiType].isShowError = true
@@ -3193,6 +3202,9 @@ export default {
         }
       }
       // not Number
+      if (oldV !== Number(this.selectedItem[position])) {
+        this.saveOldData(this.selectedItem.id, position, oldV)
+      }
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
     // 改变画布大小
@@ -3313,7 +3325,7 @@ export default {
           chartNum: JSON.stringify(tempChartNum),
           compose: JSON.stringify(this.combinList)
         }
-        if (this.historyArr && this.historyArr.length >= 20) {
+        if (this.historyArr && this.historyArr.length >= this.revokeStep) {
           this.historyArr.shift()
         }
         this.historyArr.push(tempHisObj)
@@ -3335,7 +3347,7 @@ export default {
             chartNum: JSON.stringify(this.chartNum),
             compose: JSON.stringify(tempCombin)
           }
-          if (this.historyArr && this.historyArr.length >= 20) {
+          if (this.historyArr && this.historyArr.length >= this.revokeStep) {
             this.historyArr.shift()
           }
           this.historyArr.push(tempHisObj)
@@ -3634,7 +3646,7 @@ export default {
     },
     'testObj.width': function (newValue, oldValue) {
       // console.log(oldValue)
-      console.log(this.testObj.id, this.lastKeyId)
+      /* console.log(this.testObj.id, this.lastKeyId)
       if (this.testObj.id === this.lastKeyId && oldValue !== newValue) {
         // 这里才保存历史
         var _this = this
@@ -3649,12 +3661,12 @@ export default {
           chartNum: JSON.stringify(oldChart),
           compose: JSON.stringify(this.combinList)
         }
-        if (this.historyArr && this.historyArr.length >= 20) {
+        if (this.historyArr && this.historyArr.length >= this.revokeStep) {
           this.historyArr.shift()
         }
         this.historyArr.push(tempObj)
         console.log('保存一次历史')
-      }
+      } */
       this.testObjChange('width', newValue)
     },
     'testObj.height': function (newValue, oldValue) {

@@ -875,7 +875,7 @@
                   </select>
                 </div>
                 <div class="form-group cols2">
-                  <label>图表文字颜色</label>
+                  <label>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
                             :key="20"
@@ -1034,24 +1034,9 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2"
-                       v-if="selectedItem.subType==='progress'">
-                    <label>字号</label>
-                    <select v-model="selectedItem.fontSize">
-                      <option v-for="item in proFontSize"
-                              :key="item">{{item}}</option>
-                    </select>
-                  </div>
-                  <label>底色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.bgClr"
-                            :key="12"
-                            type="bgClr"
-                            @getdata="getGaugeCl"></Vcolor>
-                  </div>
                 </div>
                 <div class="form-group cols2">
-                  <label>图表文字颜色</label>
+                  <label>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
                             :key="19"
@@ -1076,6 +1061,24 @@
                     <option value="false">否</option>
                     <option value="true">是</option>
                   </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.subType==='progress' && !selectedItem.secondType">
+                  <label>字号</label>
+                  <select v-model="selectedItem.fontSize">
+                    <option v-for="item in proFontSize"
+                            :key="item">{{item}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
+                  <label>底色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.bgClr"
+                            :key="12"
+                            type="bgClr"
+                            @getdata="getGaugeCl"></Vcolor>
+                  </div>
                 </div>
                 <div class="form-group cols2"
                      v-show="selectedItem.secondType !== 'liquidfill'">
