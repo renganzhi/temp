@@ -293,12 +293,17 @@ export default {
 }
 </script>
 <style>
-.home-table .table tr,
-.home-table .table td,
+.home-table .table {
+  background: transparent;
+}
+.home-table .table tbody tr,
+.home-table .table tbody td,
 .home-table .table th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: transparent !important;
+  border-bottom: none !important;
 }
 /* 向右移动 */
 /* .table-fadeout-leave {
