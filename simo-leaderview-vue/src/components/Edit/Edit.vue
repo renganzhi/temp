@@ -1008,7 +1008,7 @@
                       <option>底部居中</option>
                     </select>
                   </div>
-                  <div v-if="selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
+                  <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
                     <div class="form-group cols2">
                       <label>背景线可见性</label>
                       <select v-model="selectedItem.splitShow">
