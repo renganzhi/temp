@@ -557,6 +557,9 @@ var compsArr = [{
   provinceCode: '',
   cityCode: '',
   visualPosition: 'left',
+  fontSize: 10,
+  cityShow: false,
+  cityColor: '#828bac',
   themeType: '1', // 1深色 2浅色
   piecesData: [
     { min: 0, max: 50 },

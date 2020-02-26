@@ -108,10 +108,15 @@ export default {
           // 图形上的文本标签
           label: {
             normal: {
-              show: false, // 省份文字最开始不显示，选中之后再显示 // 测试地图是否准确
+              show: this.item.cityShow === 'true', // 省份文字
               textStyle: {
-                // color: '#231816' // 默认的字体颜色! auto
+                lineHeight: 16,
+                fontSize: this.item.fontSize || 8,
+                color: this.item.cityColor || '#828bac' // 默认的字体颜色! auto
               }
+              // formatter: function (param) {
+              //   return param.name + '\n' + (param.value || 0)
+              // }
             }
           },
           itemStyle: {
@@ -183,6 +188,16 @@ export default {
     }
   },
   watch: {
+    'item.cityColor': function (newV) {
+      this.extend.series.label.normal.textStyle.color = newV
+    },
+    'item.cityShow': function (newV) {
+      this.extend.series.label.normal.show = newV === 'true'
+      this.extend.emphasis.label.normal.show = newV === 'true'
+    },
+    'item.fontSize': function (newV) {
+      this.extend.series.label.normal.textStyle.fontSize = newV
+    },
     'item.themeType': function (newV) {
       this.extend.series.itemStyle.normal.areaColor = newV === '1' ? '#121a33' : '#cfd9e3'
       this.extend.series.itemStyle.normal.borderColor = newV === '1' ? '#38597b' : '#a2b1c0'

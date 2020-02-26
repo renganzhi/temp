@@ -949,6 +949,32 @@
                   </div>
                   <div class="m-gap form-group">图表样式</div>
                   <div class="form-group cols2">
+                    <label>地名可见性</label>
+                    <select v-model="selectedItem.cityShow">
+                      <option value="true">显示</option>
+                      <option value="false">隐藏</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>地名颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.cityColor"
+                              :key="23"
+                              type="cityColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>字号</label>
+                    <select v-model="selectedItem.fontSize">
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="12">12</option>
+                      <option value="13">13</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
                       <option value="1">深色</option>
@@ -1246,7 +1272,7 @@
                          v-if="selectedItem.ctDataSource == 'system'">
                       <div class="form-group"
                            style="position: relative">
-                        <label>刷新周期</label>
+                        <label>刷新周期(s)</label>
                         <input class="color-w200"
                                type="number"
                                placeholder="刷新周期"
