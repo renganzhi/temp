@@ -1272,7 +1272,7 @@
                          v-if="selectedItem.ctDataSource == 'system'">
                       <div class="form-group"
                            style="position: relative">
-                        <label>刷新周期</label>
+                        <label>刷新周期(s)</label>
                         <input class="color-w200"
                                type="number"
                                placeholder="刷新周期"

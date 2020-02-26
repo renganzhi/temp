@@ -374,6 +374,7 @@ export default {
     refreshTargetFn: function (newV) { // 刷新本页数据
       newV = newV || this.nowPage
       var ct = this
+      if (!newV) return
       $.each(newV, function (i, d) {
         let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
         if (ct.nowTime % freshTime === 0 && d.chartType === 'topo') {
