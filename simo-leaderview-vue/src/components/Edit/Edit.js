@@ -2061,6 +2061,7 @@ export default {
       this.$nextTick(function () {
         var api = (_this.syst.curUrl = urlsel.params)
         var reg = /^\//
+        if (!api) return
         $.each(api, function (i, d) {
           if (d.dataType === 'remote') {
             // 需要通过请求拿数据
