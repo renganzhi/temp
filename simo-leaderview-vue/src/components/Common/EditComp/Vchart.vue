@@ -290,16 +290,16 @@ export default {
         return
       }
       if (this.item.chartType === 've-line') {
-        if (newV.unit === '%') {
-          if (this.item.subType && this.item.subType === 'doubleAxis') {
-            // 双轴曲线的坐标轴最大值
-            this.settings.max = this.getYaxiosMaxs(newV)
-          } else {
-            this.extend.yAxis.name = newV.unit
-            this.extend.yAxis.max = this.getYaxiosMax(newV)
-          }
+        if (this.item.subType && this.item.subType === 'doubleAxis') {
+          // 双轴曲线的坐标轴最大值
+          this.settings.max = this.getYaxiosMaxs(newV)
         } else {
-          this.extend.yAxis.max = null
+          this.extend.yAxis.name = newV.unit
+          if (newV.unit === '%') {
+            this.extend.yAxis.max = this.getYaxiosMax(newV)
+          } else {
+            this.extend.yAxis.max = null
+          }
         }
       }
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
