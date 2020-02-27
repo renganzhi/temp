@@ -1524,7 +1524,6 @@
                   <Select2 v-model="syst.windowData[i].ne[index].component"
                            :mapSelect="true"
                            :multip="syst.windowData[i].ne[index].multipleComponent"
-                           :maxLength="5"
                            :obj="item.component"></Select2>
                 </div>
               </div>
