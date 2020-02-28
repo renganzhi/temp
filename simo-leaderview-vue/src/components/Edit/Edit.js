@@ -2687,6 +2687,9 @@ export default {
         }
       })
       this.updateMinXitem()
+      if (this.ifSameItems()) {
+        this.selectedItem = this.chartNum[this.chooseIndexs[this.chooseIndexs.length - 1]]
+      }
     },
     itemInChoose: function (left, right, top, bottom, item) {
       // 判断是否在框选区域内
