@@ -290,16 +290,19 @@ export default {
         return
       }
       if (this.item.chartType === 've-line') {
-        if (newV.unit === '%') {
-          if (this.item.subType && this.item.subType === 'doubleAxis') {
-            // 双轴曲线的坐标轴最大值
-            this.settings.max = this.getYaxiosMaxs(newV)
-          } else {
-            this.extend.yAxis.name = newV.unit
-            this.extend.yAxis.max = this.getYaxiosMax(newV)
-          }
+        if (this.item.subType && this.item.subType === 'doubleAxis') {
+          // 双轴曲线的坐标轴最大值
+          this.settings.max = this.getYaxiosMaxs(newV)
+          this.settings.axisSite.left = [newV.columns[1]]
+          this.settings.axisSite.right = [newV.columns[2]]
+          this.settings.yAxisName = [newV.columns[1], newV.columns[2]]
         } else {
-          this.extend.yAxis.max = null
+          this.extend.yAxis.name = newV.unit
+          if (newV.unit === '%') {
+            this.extend.yAxis.max = this.getYaxiosMax(newV)
+          } else {
+            this.extend.yAxis.max = null
+          }
         }
       }
       if (this.item.chartType === 've-pie' || this.item.chartType === 've-ring' || this.item.chartType === 've-radar') {
@@ -751,7 +754,10 @@ export default {
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
-              axisSite: { right: [_this.item.chartData.columns[2]] },
+              axisSite: {
+                left: [_this.item.chartData.columns[1]],
+                right: [_this.item.chartData.columns[2]]
+              },
               // yAxisType: ['KMB', 'percent'],
               max: _this.getYaxiosMaxs(_this.item.chartData), // 设置双轴的最大值 [100,200]
               yAxisName: [_this.item.chartData.columns[1], _this.item.chartData.columns[2]]
