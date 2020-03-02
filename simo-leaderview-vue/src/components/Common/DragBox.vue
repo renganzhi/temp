@@ -33,7 +33,8 @@
     <Border v-else-if="item.chartType=='border'"
             :item="item"></Border>
     <moveTable v-else-if="item.chartType=='table' && item.thirdType=='moveTable'"
-               :item="item"></moveTable>
+               :item="item"
+               :moving="false"></moveTable>
     <Vtable v-else-if="item.chartType=='table'"
             :item="item"></Vtable>
     <Vprogress v-else-if="item.chartType=='progress'"
