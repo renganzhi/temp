@@ -584,7 +584,7 @@
                   <div class="form-group cols2"
                        v-if="selectedItem.secondType==='liquidfill'">
                     <div class="m-gap form-group">图例配置</div>
-                    <label>可见性</label>
+                    <label>图例可见性</label>
                     <select v-model="selectedItem.ctLegendShow">
                       <option value="true">显示</option>
                       <option value="false">隐藏</option>
@@ -913,7 +913,7 @@
                 <div>
                   <div class="m-gap form-group">图例配置</div>
                   <div class="form-group cols2">
-                    <label>可见性</label>
+                    <label>图例可见性</label>
                     <select v-model="selectedItem.ctLegendShow">
                       <option value="true">显示</option>
                       <option value="false">隐藏</option>
@@ -934,14 +934,14 @@
                 <div>
                   <div class="m-gap form-group">图例配置</div>
                   <div class="form-group cols2">
-                    <label>可见性</label>
+                    <label>图例可见性</label>
                     <select v-model="selectedItem.ctLegendShow">
                       <option value="true">显示</option>
                       <option value="false">隐藏</option>
                     </select>
                   </div>
                   <div class="form-group cols2">
-                    <label>位置</label>
+                    <label>图例位置</label>
                     <select v-model="selectedItem.visualPosition">
                       <option value="left">底部靠左</option>
                       <option value="right">底部靠右</option>
@@ -1022,14 +1022,14 @@
                 <div v-show="showLengendConf">
                   <div class="m-gap form-group">图例配置</div>
                   <div class="form-group cols2">
-                    <label>可见性</label>
+                    <label>图例可见性</label>
                     <select v-model="selectedItem.ctLegendShow">
                       <option value="true">显示</option>
                       <option value="false">隐藏</option>
                     </select>
                   </div>
                   <div class="form-group cols2">
-                    <label>位置</label>
+                    <label>图例位置</label>
                     <select>
                       <option>底部居中</option>
                     </select>
@@ -1066,7 +1066,7 @@
                   <div class="m-gap form-group">图例配置</div>
                   <div class="form-group cols2"
                        v-if="selectedItem.subType==='progress'">
-                    <label>可见性</label>
+                    <label>图例可见性</label>
                     <select v-model="selectedItem.ctLegendShow">
                       <option value="true">显示</option>
                       <option value="false">隐藏</option>
