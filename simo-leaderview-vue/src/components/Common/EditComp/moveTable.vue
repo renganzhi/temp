@@ -98,7 +98,7 @@
 import { gbs } from '@/config/settings'
 export default {
   name: 'moveTable',
-  props: ['item'],
+  props: ['item', 'moving'],
   data () {
     return {
       tableMove: true,
@@ -197,6 +197,7 @@ export default {
           totalPage--
         }
         // let nowPage = 0
+        if (!this.moving || this.moving === 'false') return
         this.intervalId = setInterval(() => {
           this.nowPage++
           if (this.nowPage > totalPage) {
@@ -218,6 +219,7 @@ export default {
         if (totalPage === this.item.chartData.rows.length / this.pageNum) {
           totalPage--
         }
+        if (!this.moving || this.moving === 'false') return
         this.intervalId = setInterval(() => {
           this.tableMove = !this.tableMove
           if (this.tableMove) {
@@ -228,7 +230,7 @@ export default {
             this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
             this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
           }
-        }, 3000)
+        }, this.intervalTime)
       }
     },
     initMove () {
