@@ -3164,6 +3164,11 @@ export default {
     getBarClr (data) {
       this.saveHistory()
       this.selectedItem.barClrs.splice(data.index, 1, data.color)
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i].barClrs.splice(data.index, 1, data.color)
+        })
+      }
     },
     testObjChange (direct, newValue) {
       var defData = 0
@@ -3510,9 +3515,6 @@ export default {
     'selectedItem.barClr': function (newV) {
       this.changeTogether('barClr', newV)
     },
-    'selectedItem.barClrs': function (newV) {
-      this.changeTogether('barClrs', newV)
-    },
     'selectedItem.clr': function (newV) {
       this.changeTogether('clr', newV)
     },
@@ -3563,6 +3565,14 @@ export default {
       if (!this.selectChange && newV !== oldV) {
         let tempId = this.selectedItem.id
         this.saveOldData(tempId, 'colorful', oldV)
+        if (this.selectedItem.chartType === 'progress') {
+          this.selectedItem.barClrs = ['#8feee5', '#1bbcae']
+          if (!this.selectChange && this.chooseSameFlag) {
+            this.chooseIndexs.forEach((i) => {
+              this.chartNum[i].barClrs = ['#8feee5', '#1bbcae']
+            })
+          }
+        }
       }
       this.changeTogether('colorful', newV)
     },
