@@ -2541,7 +2541,7 @@ export default {
             })
             .then(res => {
               canvas.remove() // 这里是作为回调函数，canvas没有传过去
-              _canvas.style.background = 'transparent'
+              // _canvas.style.background = 'transparent'
               if (cThis.paintObj.showGrid) {
                 $('#chooseWrap').addClass('gridBg')
               }
