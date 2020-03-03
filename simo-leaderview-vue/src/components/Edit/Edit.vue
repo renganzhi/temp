@@ -1510,7 +1510,6 @@
                   <Select2 v-model="syst.windowData[i].fields"
                            :mapSelect="true"
                            :multip="list.indicator.multipleField"
-                           :maxLength="5"
                            :obj="list.fields"></Select2>
                 </div>
               </div>
