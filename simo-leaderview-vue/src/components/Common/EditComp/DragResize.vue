@@ -20,6 +20,7 @@
 </template>
 <script>
 // var overflowPx = 20 // 可溢出范围
+import { mapGetters } from 'vuex'
 const stickSize = 6
 const styleMapping = {
   y: {
@@ -420,6 +421,25 @@ export default {
         if (this.rawTop === this.rect.top) {
           chgY = newTop - this.rawTop
         }
+        if (!this.onlyOneItem) {
+          // console.log('-----这里是多元件拖拽的边界判断-----')
+          if (this.limitItem.minX + chgX < -20) {
+            newLeft = this.rawLeft + (-20 - this.limitItem.minX)
+            chgX = newLeft - this.rawLeft
+          } else if (this.limitItem.maxX + chgX > this.homeData.width + 20) {
+            newLeft = this.rawLeft + (this.homeData.width + 20 - this.limitItem.maxX)
+            chgX = (this.homeData.width + 20 - this.limitItem.maxX)
+          }
+          if (this.limitItem.minY + chgY < -20) {
+            newTop = this.rawTop + (-20 - this.limitItem.minY)
+            chgY = newTop - this.rawTop
+          } else if (this.limitItem.maxY + chgY > this.homeData.height + 20) {
+            chgY = (this.homeData.height + 20 - this.limitItem.maxY)
+            newTop = this.rawTop + chgY
+          }
+          newBottom = parentHeight - height - newTop
+          newRight = parentWidth - width - newLeft
+        }
         this.$emit('dragging', chgX, chgY, this.rect)
       }
 
@@ -690,6 +710,11 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'onlyOneItem',
+      'limitItem',
+      'homeData'
+    ]),
     left1: {
       get: function () {
         return this.x
