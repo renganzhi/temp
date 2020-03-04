@@ -14,6 +14,12 @@ const mutations = {
   },
   initVideoTims (state, data) {
     state.videoTims = data
+  },
+  changeItemChoose (state, data) {
+    state.onlyOneItem = data
+  },
+  changeLimitItem (state, data) {
+    state.limitItem = data
   }
 }
 export default mutations
