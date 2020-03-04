@@ -56,8 +56,8 @@
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
       <transition name="table-fadeout">
         <table class="table table-hover"
-               v-show="tableMove"
-               style="table-layout: fixed; position: absolute; top:0px;">
+               v-if="tableMove"
+               style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
             <tr :style="[trStyle,tbodyTrStyle]"
                 v-for="(tr, id) in page1Data"
@@ -71,8 +71,8 @@
       </transition>
       <transition name="table-fadein">
         <table class="table table-hover"
-               v-show="!tableMove"
-               style="table-layout: fixed; position: absolute; top:0px;">
+               v-if="!tableMove"
+               style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
             <tr :style="[trStyle,tbodyTrStyle]"
                 v-for="(tr, id) in page2Data"
@@ -225,9 +225,11 @@ export default {
           if (this.tableMove) {
             this.nowPage++
             if (this.nowPage === totalPage) {
-              this.nowPage = 0
+              this.nowPage = -1
+              this.page1Data = this.item.chartData.rows.slice(this.pageNum * totalPage, this.pageNum * (totalPage + 1))
+            } else {
+              this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
             }
-            this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
             this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
           }
         }, this.intervalTime)
@@ -365,12 +367,12 @@ export default {
     transform: translateX(0);
   }
   to {
-    transform: translateX(100%);
+    transform: translateX(-100%);
   }
 }
 @keyframes table-left-in {
   from {
-    transform: translateX(-100%);
+    transform: translateX(100%);
   }
   to {
     transform: translateX(0);
