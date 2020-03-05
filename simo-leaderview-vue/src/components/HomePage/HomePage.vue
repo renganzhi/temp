@@ -337,7 +337,13 @@ export default {
     },
     autoFresh: function () {
       var ct = this
+      this.stopRefreshTimer()
+      this.nowTime = 0
       this.freshInterval = setTimeout(function fresh () {
+        if (!$('#home-html').length) {
+          ct.clearPage()
+          return
+        }
         ct.nowTime += 1
         ct.refreshTargetFn()
         ct.freshInterval = setTimeout(fresh, 1000)
@@ -350,8 +356,10 @@ export default {
       this.refreshCompose()
     },
     stopRefreshTimer: function () {
+      this.freshInterval && clearTimeout(this.freshInterval)
+      this.freshInterval = null // 每秒刷新——触发单个元件刷新
       this.refreshTimer && clearTimeout(this.refreshTimer)
-      this.refreshTimer = null
+      this.refreshTimer = null // 整页刷新
     },
     initRefreshTimer: function () {
       var ct = this
@@ -584,6 +592,7 @@ export default {
         return []
       }
       this.refreshFn(newV)
+      this.autoFresh()
       // this.initRefreshTimer() 取消整页刷新
     },
     combinList: function () {
@@ -624,7 +633,7 @@ export default {
   },
   beforeDestroy: function () {
     $('#screen').removeClass('disShow')
-    clearTimeout(this.freshInterval)
+    this.stopRefreshTimer()
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
