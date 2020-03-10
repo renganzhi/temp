@@ -882,14 +882,14 @@ export default {
           }
         }
         if (item.chartType === 'table' || item.chartType === 'moveTable') {
-          this.$set(item, 'hdClr', item.clr || '')
+          this.$set(item, 'hdClr', item.clr || '#cad6dd')
           this.$set(item, 'hdfontSize', item.fontSize || 12)
         }
       })
       this.combinList.forEach((item) => {
         item.child.forEach((list) => {
           if (list.chartType === 'table' || list.chartType === 'moveTable') {
-            this.$set(list, 'hdClr', list.clr || '')
+            this.$set(list, 'hdClr', list.clr || '#cad6dd')
             this.$set(list, 'hdfontSize', list.fontSize || 12)
           }
           if (list.chartType === 'progress') {
