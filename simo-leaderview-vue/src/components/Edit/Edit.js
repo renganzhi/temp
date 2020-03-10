@@ -21,7 +21,7 @@ export default {
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
       baseUrl: gbs.host,
-      revokeStep: 5, // 撤销步数
+      revokeStep: 20, // 撤销步数
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
@@ -707,7 +707,15 @@ export default {
       }
       // 数组需要更换
     },
+    // 边框圆角
     radiusChange () {
+      var radius = Math.floor(this.borderRadius)
+      if (radius === 0) {
+        this.borderRadius = 0 // -e
+      }
+      if (isNaN(radius) || radius < 0) {
+        this.borderRadius = this.selectedItem.radius
+      }
       if (this.borderRadius <= this.selectedItem.height / 2) {
         this.selectedItem.radius = this.borderRadius
       } else {
@@ -740,6 +748,9 @@ export default {
     // 改变进度条元件的圆角
     changeRadius () {
       var radius = Math.floor(this.progressObj.radius)
+      if (radius === 0) {
+        this.progressObj.radius = 0
+      }
       if (isNaN(radius) || radius < 0) {
         this.progressObj.radius = this.selectedItem.radius
       }
