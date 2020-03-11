@@ -3279,6 +3279,12 @@ export default {
         this[valiType].isShowError = false
         this.$set(this.selectedItem, direct, newValue)
       }
+      if (!isWidth && this.selectedItem.chartType === 'border') {
+        if (parseInt(this.selectedItem.height / 2) < this.selectedItem.radius) {
+          this.selectedItem.radius = Number(this.selectedItem.height / 2)
+          this.borderRadius = parseInt(this.selectedItem.height / 2)
+        }
+      }
     },
     testObjPosChange (position, newValue) {
       var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
