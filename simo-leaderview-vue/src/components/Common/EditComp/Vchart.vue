@@ -198,6 +198,7 @@ export default {
       } else {
         this.extend.xAxis.axisLabel.textStyle.color = newV
         this.extend.yAxis.axisLabel.textStyle.color = newV
+        this.extend.yAxis.nameTextStyle.color = newV
       }
     },
     'item.ctLegendShow': function (newV) {
@@ -655,11 +656,15 @@ export default {
               }
             },
             label: {
-              show: _this.item.showPoint === 'true'
+              show: _this.item.showPoint === 'true',
+              color: '#828bac' // 标点的文字颜色
             },
             yAxis: {
               type: 'value',
               offset: -10,
+              nameTextStyle: {
+                color: _this.item.legendColor || '#828bac'
+              },
               // position: 'left',
               // name: _this.item.chartData.unit, // 单位
               // max: (_this.item.chartData.unit === '%' && _this.item.subType !== 'doubleAxis') ? _this.getYaxiosMax(_this.item.chartData) : null,
