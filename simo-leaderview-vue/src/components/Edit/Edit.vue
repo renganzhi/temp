@@ -1074,12 +1074,12 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.secondType!=='liquidfill'">
+                     v-if="selectedItem.secondType!=='liquidfill' && selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字颜色</label>
                   <label v-else>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
-                            :key="19"
+                            :key="24"
                             type="legendColor"
                             @getdata="getColor"></Vcolor>
                   </div>
@@ -1118,6 +1118,16 @@
                             :key="12"
                             type="bgClr"
                             @getdata="getGaugeCl"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType==='ve-pie' || selectedItem.chartType==='ve-ring' || selectedItem.chartType==='ve-radar'">
+                  <label>图表文字颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.legendColor"
+                            :key="25"
+                            type="legendColor"
+                            @getdata="getColor"></Vcolor>
                   </div>
                 </div>
                 <div class="form-group cols2"
