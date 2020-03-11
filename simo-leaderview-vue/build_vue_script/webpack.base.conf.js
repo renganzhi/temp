@@ -28,6 +28,7 @@ module.exports = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
+    jsonpFunction: 'leaderViewJsonP',
     publicPath:
       process.env.NODE_ENV === 'production'
         ? config.build.assetsPublicPath
