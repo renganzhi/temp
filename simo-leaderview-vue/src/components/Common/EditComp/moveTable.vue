@@ -15,7 +15,7 @@
         </thead>
       </table>
     </div>
-    <div class="fixed-table-body"
+    <!-- <div class="fixed-table-body"
          v-if="item.direction === 'top'"
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden;">
@@ -34,27 +34,11 @@
           </tbody>
         </table>
       </transition>
-      <!-- <transition name="table-fadein">
-        <table class="table table-hover"
-               v-show="!tableMove"
-               style="table-layout: fixed; position: relative; float: left;">
-          <tbody>
-            <tr :style="[trStyle,tbodyTrStyle]"
-                v-for="(tr, id) in page2Data"
-                :key="id">
-              <td v-for="(tdText, ind) in tr"
-                  :key="ind"
-                  :title="tdText">{{tdText}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </transition> -->
-    </div>
+    </div> -->
     <div class="fixed-table-body"
-         v-else
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
-      <transition name="table-fadeout">
+      <transition :name="item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
         <table class="table table-hover"
                v-if="tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
@@ -69,7 +53,7 @@
           </tbody>
         </table>
       </transition>
-      <transition name="table-fadein">
+      <transition :name="item.direction === 'top' ? 'table-tpfadein': 'table-fadein'">
         <table class="table table-hover"
                v-if="!tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
@@ -158,21 +142,20 @@ export default {
       } else {
         this.tableEmpty = false
       }
-      if (this.item.direction === 'left') {
-        this.initLeftMove()
-      } else {
-        this.initTopMove()
-      }
+      // if (this.item.direction === 'left') {
+      //   this.initLeftMove()
+      // } else {
+      //   this.initTopMove()
+      // }
+      this.initLeftMove()
     },
     'item.direction': function (val) {
-      if (val === 'left') {
-        this.initLeftMove()
-      } else {
-        this.initTopMove()
-      }
-      // this.$nextTick(() => {
-      //   this.initMove()
-      // })
+      // if (val === 'left') {
+      //   this.initLeftMove()
+      // } else {
+      //   this.initTopMove()
+      // }
+      this.initLeftMove()
     },
     'item.speed': function (newV) {
       if (newV === '1') {
@@ -182,7 +165,7 @@ export default {
       } else {
         this.intervalTime = 6000
       }
-      this.initTopMove()
+      this.initLeftMove()
     }
   },
   methods: {
@@ -271,11 +254,12 @@ export default {
     } else {
       this.intervalTime = 4000
     }
-    if (this.item.direction === 'left') {
-      this.initLeftMove()
-    } else {
-      this.initTopMove()
-    }
+    // if (this.item.direction === 'left') {
+    //   this.initLeftMove()
+    // } else {
+    //   this.initTopMove()
+    // }
+    this.initLeftMove()
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
@@ -309,59 +293,29 @@ export default {
   background: transparent !important;
   border-bottom: none !important;
 }
-/* 向右移动 */
-/* .table-fadeout-leave {
-  transform: translateX(0);
-}
-.table-fadeout-leave-active {
-  transition: all 0.6s ease;
-}
-.table-fadeout-leave-to {
-  transform: translateX(100%);
-}
-.table-fadein-enter {
-  transform: translateX(-100%);
-}
-.table-fadein-enter-active {
-  transition: all 0.6s ease;
-}
-.table-fadein-enter-to {
-  transform: translateX(0);
-} */
-/* 向上移动 */
-/* .table-fadeout-leave-active {
-  transition: all 0.6s ease;
-  transform: translateY(-100%);
-  animation: table-leave 1s;
-  animation-timing-function: linear;
-}
-.table-fadein-enter-active {
-  transition: all 0.6s ease;
-  transform: translateY(-100%);
-  animation: table-leave 1s;
-  animation-timing-function: linear;
-} */
-/* 向下移动 */
-/* .table-fadeout-leave-active {
-  animation: table-leave 1s reverse;
-}
-.table-fadein-enter-active {
-  animation: table-leave 1s reverse;
-} */
+
+/* 左右移动 */
 .table-fadeout-leave-active {
   animation: table-left-leave 1s;
 }
 .table-fadein-enter-active {
   animation: table-left-in 1s;
 }
-@keyframes table-leave {
+/* 上下轮播 */
+.table-tpfadeout-leave-active {
+  animation: table-top-leave 1s;
+}
+.table-tpfadein-enter-active {
+  animation: table-top-in 1s;
+}
+/* @keyframes table-leave {
   from {
     transform: translateY(0);
   }
   to {
     transform: translateY(-100%);
   }
-}
+} */
 @keyframes table-left-leave {
   from {
     transform: translateX(0);
@@ -376,6 +330,22 @@ export default {
   }
   to {
     transform: translateX(0);
+  }
+}
+@keyframes table-top-leave {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes table-top-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 </style>
