@@ -3067,21 +3067,6 @@ export default {
       if (e.value === '') {
         return
       }
-      var reg = /jfif$/
-      if (reg.test(e.target.files[0].name)) {
-        // 不支持的格式
-        if (gbs.inDev) {
-          Notification({
-            message: '不支持该图片格式',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '不支持该图片格式', 'info')
-        }
-        e.target.value = ''
-        return
-      }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
         if (gbs.inDev) {
           Notification({
