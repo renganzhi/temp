@@ -20,6 +20,7 @@ export default {
     return {
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
+      animationType: ['ve-pie', 've-ring', 've-histogram', 've-bar', 've-line', 've-radar'],
       baseUrl: gbs.host,
       revokeStep: 20, // 撤销步数
       refreshData: true,

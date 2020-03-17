@@ -31,7 +31,7 @@
           <LookItem v-for="(item,index) in nowPage"
                     :index="index"
                     :item="item"
-                    :key="(pageIndex+index)"></LookItem>
+                    :key="item.id"></LookItem>
           <LookCompose v-for="(list, index1) in combinList"
                        :index="index1"
                        :key="list.id"
@@ -143,7 +143,8 @@ export default {
         y: 43,
         ctColors: ['#37a2da', '#32c5e9', '#67e0e3', '#9fe6b8', '#ffdb5c', '#ff9f7f', '#fb7293', '#e062ae', '#e690d1', '#e7bcf3', '#9d96f5', '#8378ea', '#96bfff'],
         chartData: { name: '繁忙度', unit: '%', value: 60 }
-      }
+      },
+      animationType: ['ve-pie', 've-ring', 've-histogram', 've-bar', 've-line', 've-radar']
     }
   },
   computed: {
@@ -346,6 +347,7 @@ export default {
         }
         ct.nowTime += 1
         ct.refreshTargetFn()
+        ct.refreshCompose()
         ct.freshInterval = setTimeout(fresh, 1000)
       }, 1000)
     },
@@ -424,6 +426,11 @@ export default {
               }
             }
           })
+        } else if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
+          let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
+          if (ct.nowTime % freshTime === 0) {
+            ct.$set(d, 'id', new Date().getTime() + parseInt(Math.random() * 10000))
+          }
         }
       })
       // this.$nextTick(() => {
@@ -487,7 +494,7 @@ export default {
     refreshCompose: function () {
       if (this.combinList && this.combinList.length > 0) {
         this.combinList.forEach((list) => {
-          this.refreshFn(list.child)
+          this.refreshTargetFn(list.child)
         })
       }
     },
@@ -591,12 +598,13 @@ export default {
       if (!newV) {
         return []
       }
-      this.refreshFn(newV)
+      // this.refreshFn(newV)
+      this.setScale()
       this.autoFresh()
       // this.initRefreshTimer() 取消整页刷新
     },
     combinList: function () {
-      this.refreshCompose()
+      // this.refreshCompose()
     }
   },
   beforeMount: function () {
