@@ -20,6 +20,7 @@
   </component>
 </template>
 <script>
+import echarts from 'echarts'
 import _ from 'lodash'
 export default {
   name: 'vchart',
@@ -212,6 +213,9 @@ export default {
         this.extend.legend.show = newV === 'true'
       }
     },
+    'item.smooth': function (newV) {
+      this.extend.series.smooth = newV === 'true'
+    },
     'item.lineArea': function (newV, oldValue) {
       this.settings.area = newV === 'true'
     },
@@ -295,8 +299,12 @@ export default {
           // 双轴曲线的坐标轴最大值
           this.settings.max = this.getYaxiosMaxs(newV)
           this.settings.axisSite.left = [newV.columns[1]]
-          this.settings.axisSite.right = [newV.columns[2]]
-          this.settings.yAxisName = [newV.columns[1], newV.columns[2]]
+          if (newV.columns[1] !== newV.columns[2]) {
+            this.settings.axisSite.right = [newV.columns[2]]
+          } else {
+            if (this.settings.axisSite.right) delete this.settings.axisSite.right
+          }
+          this.settings.yAxisName = newV.columns[1] === newV.columns[2] ? [newV.columns[1], ''] : [newV.columns[1], newV.columns[2]]
         } else {
           this.extend.yAxis.name = newV.unit
           if (newV.unit === '%') {
@@ -646,6 +654,7 @@ export default {
           obj.extend = $.extend(obj.extend, {
             series: {
               type: 'line',
+              smooth: _this.item.smooth ? _this.item.smooth === 'true' : true, // 折线/曲线
               showAllSymbol: false,
               itemStyle: {
                 normal: {
@@ -760,13 +769,15 @@ export default {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
               axisSite: {
-                left: [_this.item.chartData.columns[1]],
-                right: [_this.item.chartData.columns[2]]
+                left: [_this.item.chartData.columns[1]]
               },
               // yAxisType: ['KMB', 'percent'],
               max: _this.getYaxiosMaxs(_this.item.chartData), // 设置双轴的最大值 [100,200]
-              yAxisName: [_this.item.chartData.columns[1], _this.item.chartData.columns[2]]
+              yAxisName: _this.item.chartData.columns[1] === _this.item.chartData.columns[2] ? [_this.item.chartData.columns[1], ''] : [_this.item.chartData.columns[1], _this.item.chartData.columns[2]]
             })
+            if (_this.item.chartData.columns[1] !== _this.item.chartData.columns[2]) {
+              obj.settings.axisSite.right = [_this.item.chartData.columns[2]]
+            }
           } else {
             obj.extend.yAxis.position = 'left'
             obj.extend.yAxis.name = _this.item.chartData.unit // 单位

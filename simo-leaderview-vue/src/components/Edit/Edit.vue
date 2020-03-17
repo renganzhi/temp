@@ -1094,6 +1094,13 @@
                     <option value="true">区域图</option>
                   </select>
                 </div>
+                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
+                  <label>线条类型</label>
+                  <select v-model="selectedItem.smooth">
+                      <option value="true">曲线</option>
+                      <option value="false">折线</option>
+                  </select>
+                </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
                   <label>是否标点</label>

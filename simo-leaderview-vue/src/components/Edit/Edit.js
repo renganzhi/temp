@@ -832,9 +832,17 @@ export default {
               this.$set(item, 'ifGradual', 'false')
             }
           }
-          if (item.chartType === 've-line' || item.chartType === 've-bar' || item.chartType === 've-histogram') {
+          if (item.chartType === 've-bar' || item.chartType === 've-histogram') {
             if (!item.splitColor) {
               this.$set(item, 'splitColor', '#333849')
+            }
+          }
+          if (item.chartType === 've-line') {
+            if (!item.splitColor) {
+              this.$set(item, 'splitColor', '#333849')
+            }
+            if (!item.smooth) {
+              this.$set(item, 'smooth', 'true')
             }
           }
           if (item.chartType === 've-radar') {
@@ -909,9 +917,17 @@ export default {
                 this.$set(list, 'ifGradual', 'false')
               }
             }
-            if (list.chartType === 've-line' || list.chartType === 've-bar' || list.chartType === 've-histogram') {
+            if (list.chartType === 've-bar' || list.chartType === 've-histogram') {
               if (!list.splitColor) {
                 this.$set(list, 'splitColor', '#333849')
+              }
+            }
+            if (list.chartType === 've-line') {
+              if (!list.splitColor) {
+                this.$set(list, 'splitColor', '#333849')
+              }
+              if (!list.smooth) {
+                this.$set(list, 'smooth', 'true')
               }
             }
             if (list.chartType === 'v-map') {
