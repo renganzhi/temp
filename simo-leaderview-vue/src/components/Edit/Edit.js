@@ -832,9 +832,17 @@ export default {
               this.$set(item, 'ifGradual', 'false')
             }
           }
-          if (item.chartType === 've-line' || item.chartType === 've-bar' || item.chartType === 've-histogram') {
+          if (item.chartType === 've-bar' || item.chartType === 've-histogram') {
             if (!item.splitColor) {
               this.$set(item, 'splitColor', '#333849')
+            }
+          }
+          if (item.chartType === 've-line') {
+            if (!item.splitColor) {
+              this.$set(item, 'splitColor', '#333849')
+            }
+            if (!item.smooth) {
+              this.$set(item, 'smooth', 'true')
             }
           }
           if (item.chartType === 've-radar') {
@@ -909,9 +917,17 @@ export default {
                 this.$set(list, 'ifGradual', 'false')
               }
             }
-            if (list.chartType === 've-line' || list.chartType === 've-bar' || list.chartType === 've-histogram') {
+            if (list.chartType === 've-bar' || list.chartType === 've-histogram') {
               if (!list.splitColor) {
                 this.$set(list, 'splitColor', '#333849')
+              }
+            }
+            if (list.chartType === 've-line') {
+              if (!list.splitColor) {
+                this.$set(list, 'splitColor', '#333849')
+              }
+              if (!list.smooth) {
+                this.$set(list, 'smooth', 'true')
               }
             }
             if (list.chartType === 'v-map') {
@@ -3065,21 +3081,6 @@ export default {
     /* 图片 */
     changeImg: function (e) {
       if (e.value === '') {
-        return
-      }
-      var reg = /jfif$/
-      if (reg.test(e.target.files[0].name)) {
-        // 不支持的格式
-        if (gbs.inDev) {
-          Notification({
-            message: '不支持该图片格式',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '不支持该图片格式', 'info')
-        }
-        e.target.value = ''
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
