@@ -1094,11 +1094,12 @@
                     <option value="true">区域图</option>
                   </select>
                 </div>
-                <div class="form-group cols2" v-if="selectedItem.chartType=='ve-line'">
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
                   <label>线条类型</label>
                   <select v-model="selectedItem.smooth">
-                      <option value="true">曲线</option>
-                      <option value="false">折线</option>
+                    <option value="true">曲线</option>
+                    <option value="false">折线</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
@@ -1257,6 +1258,21 @@
                     <option value="system">系统数据</option>
                     <!-- v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'"  -->
                   </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.ctDataSource == 'static' && animationType.indexOf(selectedItem.chartType) !== -1">
+                  <div class="form-group"
+                       style="position: relative">
+                    <label>刷新周期(s)</label>
+                    <input class="color-w200"
+                           type="number"
+                           placeholder="刷新周期"
+                           onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
+                           v-model="selectedItem.refreshTm">
+                    <label class="error"
+                           v-if="freshVali"
+                           style="margin-left: 88px;">刷新周期最小值为3</label>
+                  </div>
                 </div>
                 <div v-show="selectedItem.ctDataSource == 'system'">
                   <div class="form-group cols2">

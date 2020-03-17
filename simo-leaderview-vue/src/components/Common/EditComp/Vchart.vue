@@ -7,8 +7,7 @@
              :height="comHeight"
              :settings="settings"
              :extend="extend"
-             :key="keyId"
-             :judge-width="true">
+             :key="keyId">
     <div class="v-charts-data-empty"
          v-if="empty"
          style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
@@ -92,7 +91,9 @@ export default {
           }),
           yAxis: $.extend({}, setings.axis, {
             position: 'left'
-          })
+          }),
+          animation: true,
+          animationDuration: 500
         }
       }
       this.dealCompsData(obj)
@@ -670,7 +671,6 @@ export default {
             },
             yAxis: {
               type: 'value',
-              offset: -10,
               nameTextStyle: {
                 color: _this.item.legendColor || '#828bac'
               },
@@ -802,6 +802,7 @@ export default {
           }
           obj.extend = $.extend(obj.extend, {
             series: {
+              type: 'pie',
               center: ['50%', '45%'],
               radius: [0, '55%']
             }
