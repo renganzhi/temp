@@ -40,12 +40,12 @@ var businessViewTopo = {
     }, false)
     _this = null
   },
-  getTpInfo: function (el) {
+  getTpInfo: function (tp, rg, el) {
     var _this = this
     businessApi.businessMainTopo(topoBaseData, function (data) {
       businessViewTopo.nodes = data.nodes || []
       businessViewTopo.links = data.links || []
-      _this.initTopo(el)
+      _this.initTopo(tp, rg, el)
       _this = null
     }, function (data) {
       var menu = $('#menu_left ul.sub-menu').find('li.active').attr('name')
@@ -53,12 +53,12 @@ var businessViewTopo = {
       _this = null
     })
   },
-  initTopo: function (el) {
+  initTopo: function (tp, rg, el) {
     this.initToolBar()
     tp.addNodes(businessViewTopo.nodes)
     tp.addLinks(businessViewTopo.links)
     tp.update()
-    if (el != 'refresh') {			// 当前操作是刷新页面时，不改变svg的viewBox
+    if (el != 'refresh') { // 当前操作是刷新页面时，不改变svg的viewBox
       setTimeout(function () {
         tp.setMaxCavWH(rg.minRgX, rg.maxRgX, rg.minRgY, rg.maxRgY)
       }, 0)
@@ -134,7 +134,7 @@ var businessViewTopo = {
     })
     return result
   },
-  getRegions: function () {
+  getRegions: function (tp, rg) {
     businessApi.getRegion(topoBaseData, function (res) {
       rg.init(res)
       // viewTools.dblClickRgText()
@@ -157,6 +157,7 @@ var businessViewTopo = {
   },
   reset: function () {
     // $('#businessMainTopo').off()
+    $('body').find('.tp-tip').addClass('hide') // 否则每次都会新增
     $(busData.el).off()
     $(busData.el).empty()
     // $(document).off('click.contextMenu')
@@ -175,7 +176,7 @@ var businessViewTopo = {
 //   }
 // })
 // 新增----------
-function initBusTp (bussData) {
+function initBusTp (bussData, refresh) {
   busData = bussData
   topoBaseData = busData.businessId
   businessViewTopo.reset()
@@ -192,8 +193,10 @@ function initBusTp (bussData) {
     selector: tp.regionWrap,
     dragFn: viewTools.dragFn
   })
-  businessViewTopo.getTpInfo()
-  businessViewTopo.getRegions()
+
+  businessViewTopo.getTpInfo(tp, rg, refresh)
+  businessViewTopo.getRegions(tp, rg)
+  // return businessViewTopo
 }
 // 新增----------
 // businessViewTopo.reset()

@@ -2316,6 +2316,9 @@ export default {
       }
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param, curConf)
+        _this.selectedItem.url = curConf.url
+        _this.selectedItem.method = curConf.method
+        _this.selectedItem.params = param
         return
       }
       if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {

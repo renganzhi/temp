@@ -389,9 +389,7 @@ export default {
         let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
         if (ct.nowTime % freshTime === 0 && d.chartType === 'topo') {
           ct.$set(d, 'time', new Date().getTime())
-        }
-
-        if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
+        } else if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
