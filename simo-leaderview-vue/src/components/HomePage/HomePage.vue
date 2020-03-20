@@ -213,7 +213,7 @@ export default {
       }
       var ct = this
       Public.checkFull() ? this.exitFull() : this.full()
-      $('.tp-tip').remove()
+      $('.tp-tip').addClass('hide')
       $('.tooltip.in').remove()
       // this.isFullScreen ? this.exitFull() : this.full()
       $(window).on('resize.home', function () {
@@ -381,13 +381,23 @@ export default {
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
     },
+    mapDataToChart (datas, oldData) {
+      for (var k in datas) {
+        for (var i in oldData) {
+          if (oldData[i]['位置'] === k) {
+            oldData[i]['告警'] = datas[k]
+          }
+        }
+      }
+      return oldData
+    },
     refreshTargetFn: function (newV) { // 刷新本页数据
       newV = newV || this.nowPage
       var ct = this
       if (!newV) return
       $.each(newV, function (i, d) {
         let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
-        if (ct.nowTime % freshTime === 0 && d.chartType === 'topo') {
+        if (ct.nowTime % freshTime === 0 && d.chartType === 'topo' && d.tptype !== 'maptp') {
           ct.$set(d, 'time', new Date().getTime())
         } else if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
           $.each(d.params, function (i, o) {
@@ -407,7 +417,11 @@ export default {
                 d.ctName = res.obj.info
               }
               if (d.chartType !== 'marquee') {
-                d.chartData = res.obj
+                if (d.chartType === 'v-map') {
+                  d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
+                } else {
+                  d.chartData = res.obj
+                }
               }
             },
             error: function (xhr) {

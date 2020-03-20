@@ -1,735 +1,983 @@
 .notClick{
-    color: #625e5e;
-    pointer-events: none;
+  color: #625e5e;
+  pointer-events: none;
 }
 
 /*topo左侧导航栏*/
-#network_attention{
-    height: 100%;
-}
-#tp-tree-wrap{
-    position: absolute;
-    width: 160px;
-    height: calc(100% - 60px);
-    z-index: 2;
-    left: 15px;
-    margin-top: 29px;
-    background: rgba(0,0,0,0.3);
-    display: block;
+#map_attention{
+  height: 100%;
+  z-index: 2;
 }
 
-#tp-tree-wrap.close-tree{
-    display: none;
+#map_attention.close-tree .portletTitle{
+  display: none;
+}
+  
+#map-tree-wrap{
+  height: calc(100% - 78px);
+}
+#map-tree-wrap .ztree li span {
+  display: inline-block;
+  line-height: 30px;
+  max-width: 118px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.close-tree #map-tree-wrap{
+  display: none;
 }
 
-#tp-tree-wrap.tplink .add-tree-btn,#tp-tree-wrap.tplink .total { /* 链路管理*/
-    display:none;
+#map-tree-wrap.tplink .add-tree-btn,#map-tree-wrap.tplink .total { /* 链路管理*/
+  display:none;
 }
 
 
 .topotreeHeight{
-    height: calc(100% - 30px);
+  height: 98%;
+  overflow: auto;
 }
 
 .closetree{
-     width: 40px !important;
+   width: 40px !important;
 }
 .nomsg{
-	margin: 1%;
+margin: 1%;
 }
 .nodata{
-	font-size: 133px;
+font-size: 100px;
 }
 
 /* 对拓扑模块单独处理 */
 body.showtopo .page-container .page-sidebar-wrapper {
-   display: none !important;
+ display: none !important;
 }
 /*
 body.showtopo .margin-left-150{
-    padding:0;
+  padding:0;
 }
 */
 
 .boxLeft{
-    margin-left: 0px !important;
+  margin-left: 0px !important;
 }
 /*  */
 .nodataIcon{
-   margin-top: 13%;
+ margin-top: 13%;
 }
 .noprompt{
-	font-size: 16px;
-    display: block;
+font-size: 14px;
+  display: block;
 }
 
-#topotree{
-    border-right: none;
-    position: relative;
-    padding: 0px !important;
+#topoMapTree{
+  border-right: none;
+  position: relative;
+  padding: 0px 10px 0px 10px !important;
 }
 
-#topotree.ztree li,.add-tree-wrap {
-    line-height: 30px;
-    position:relative;
-    padding: 0px;
+#topoMapTree.ztree li,.add-tree-wrap {
+  line-height: 30px;
+  position:relative;
+  padding: 0px;
 }
 
-#topotree.ztree li:hover .config-btn{
-    display:block;
-    cursor:pointer;
+#topoMapTree.ztree li{
+  overflow: hidden;
 }
-#tp-tree-wrap .add-tree-wrap span {
-    margin-left: 15px;
-    font-weight: bold;
+
+#map-tree-wrap ul>li a:hover .config-btn{
+  display:block;
+  cursor:pointer;
+}
+#map-tree-wrap .add-tree-wrap span {
+  margin-left: 15px;
+  font-weight: bold;
 }
 
 .tree-open-btn{
-    height: 30px;
-    line-height: 26px;
-    background-color: rgb(20, 21, 36);
-    text-align: center;
-    width: 160px;
-    position: absolute;
-    top: 15px;
-    padding-top: 3px;
-    left: 15px;
-    z-index:2;
-    color: #0088cc;
-    font-weight: bold;
+  height: 30px;
+  line-height: 30px;
+  background-color: rgb(20, 21, 36);
+  text-align: center;
+  width: 160px;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index:2;
+  color: #0088cc;
+  font-weight: bold;
 }
 
-#tp-tree-wrap .add-tree-btn{
-   position: absolute;
-    right: 12px;
-    top: 8px;
-}
+#map-tree-wrap .add-tree-btn{
+ position: absolute;
+  right: 12px;
+  top: 8px;
+}  
 
-#tp-tree-wrap .config-btn{
-   /* float:right;*/
-    position: absolute;
-    right: 0;
-    margin-top:-21px;
-    display:none;
-    color: #a7c5e1; 
-    font-size: 14px; 
-}
+#map-tree-wrap .config-btn{ 
+ /* float:right;*/
+  position: absolute;
+  right: -10px;
+  margin-top:-21px;
+  display:none;
+  color: #a7c5e1; 
+  font-size: 14px;
+  width: 22px;
+  text-align: right;
+  /* background: #1c2132; */
+  top: 30px;
+} 
 
 .setBox {
-    position: fixed;
-    /*left: 140px;*/
-    left: 336px;
-    background-color:#262f34;
-    width: 80px;
-    text-align: center;
-    display:none;
-    box-shadow: 4px 4px 12px rgba(17,33,50, 0.5);
+  position: fixed;
+  /*left: 140px;*/
+  left: 336px;
+  background-color:#262f34;
+  width: 80px;
+  text-align: center;
+  display:none;
+  box-shadow: 4px 4px 12px rgba(17,33,50, 0.5);
 }
 
 .setBox li {
-    cursor: pointer;
-    height: 30px;
-    line-height: 30px;
-    color: #fff;
-    background-color: #24374b;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+  color: #fff;
+  background-color: #24374b;
 }
 
 .setBox li:hover {
-    background-color: #112132;
+  background-color: #112132;
 }
 
 
-#network_topo_wrap {
-    text-align:center; 
-    position: absolute;
-    width:calc(100% - 30px);
-    top: 15px;
-    bottom: 15px;
-    left: 15px;
-    user-select:none;
-    -ms-user-select:none;
-    -moz-user-select:none;
-    -webkit-user-select:none;
+#map_topo_wrap {
+  text-align:center; 
+  position: absolute;
+  width:calc(100% - 30px);
+  top: 15px;
+  bottom: 15px;
+  left: 15px;
+  user-select:none;
+  -ms-user-select:none;
+  -moz-user-select:none;
+  -webkit-user-select:none;
 }
 
 .topo-tree-body {
-    /*width:150px;*/
-    width: 160px;
-    display:none;
-    height: 100%;
-    display:inline-block;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background:#1c2132;
+  width: 100%;
+  height: 99%;
+  display: inline-block;
 }
-
-.total .ztree li span {
-    margin-left:12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-block;
-    max-width: 90px;
-}
-.total .ztree li ul li span {
-    margin-left:16px;
-    max-width: 84px;
-}
-.total .ztree li ul li ul li span {
-    margin-left:20px;
-    max-width: 76px;
-}
-.total .ztree li ul li ul li ul li span  {
-    margin-left:25px;
-    max-width: 70px;
-}
-.total .ztree li ul li ul li ul li ul li span {
-    margin-left:30px;
-    max-width: 65px;
-}
-#topotree a{
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-#topotree li>span.switch.button {
-    display: none;
-}
-
-.ztree a {
-    height: 30px !important;
-    padding:0;
-    width:100%;
-    position: relative;
-}
-
-.ztree li ul a{
-    width: 100%;
-    height: 30px;
-}
-.ztree li ul{
-    padding:0;   
-}
-
-.ztree ul span {
-    line-height: 30px;
+#topoMapTree a{
+  text-decoration: none;
+  width: 100%;
 }
 .addTree{
-    position: absolute;
-    top: 50%;
-    font-size: 30px;
+  position: absolute;
+  top: 50%;
+  font-size: 30px;
 }
-.ztree>li>i{
-    margin-top: 8px;
-    font-weight: bold; 
-}
+/*#map-tree-wrap .ztree>li>i{
+  margin-top: 8px;
+  font-weight: bold; 
+}*/
 
-#topotree li a.clickNode:before,/*#networkLinkManager.clickNode:before,*/#tp-tree-wrap .add-tree-wrap.clickNode:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0px;
-    width: 5px;
-    height: 30px;
-    left: 0px;
-    background-color: #0088cc;
-}
 
 /********************拓扑********************************/
-#networkTopo {
-    width: 100%;
-    height:100%;
-    position: relative;
-    overflow: hidden; /* scroll */
+#networkMapTopo {
+  width: 100%;
+  height:100%;
+  position: relative;
+  overflow: hidden; /* scroll */
 }
 
-#networkTopo #test.noshowUse use[href="#liquid"]{
-    display:none;
+#networkMapTopo #test.noshowUse use[href="#liquid"]{
+  display:none;
 }
 
 .empty-span {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    height: 30px;
-    line-height: 30px;
-    left: 0;
-    top: calc(54% - 0px);
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  height: 30px;
+  line-height: 30px;
+  left: 0;
+  top: calc(54% - 0px);
 }
 
 #topochange .portlet-body {
-    padding: 0;
+  padding: 0;
 }
 
 .thumbnailbox {
-    width: 100%;
+  width: 100%;
 }
 
 .boutlun {
-    position: absolute;
-    right: 200px;
-    top: 10px;
+  position: absolute;
+  right: 200px;
+  top: 10px;
 }
 
 .formtitle {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    z-index: 10;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
 }
 
-#networkTopo .zoom-background{
-    cursor:move; 
+#networkMapTopo .zoom-background{
+  cursor:move; 
 }
 
 .cursorMove{
-    cursor:move;
+  cursor:move;
 }
 .cursorAuto{
-     cursor: auto;
+   cursor: auto;
 }
 .cursorPoniter{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .link {
-    stroke-linejoin: bevel;
-    fill: none; 
-    cursor: pointer;
-    stroke:#0096ff;
-    pointer-events: stroke;
+  stroke-linejoin: bevel;
+  fill: none; 
+  cursor: pointer;
+  stroke:#0096ff;
+  pointer-events: stroke;
 }
 
-.link:hover{
-    stroke-width:8px;
+/* .link:hover{
+  stroke-width:8px;
+}  */
+.linkR:hover{
+ stroke-width:8px;
+} 
+.linkId{
+  stroke-width:8px;
+  opacity: 0;
+ 
 }
 
 .link.Enable{   /* 正常 */
-    stroke:#00e510;
+  stroke:#00e510;
+  background-color:#00e510;
 }
 
 .link.Unkown{/*未知*/
-	stroke:#a0a0a0;
+  stroke:#a0a0a0;
+  background-color:#a0a0a0;
 }
 
 .link.Alert{ /*告警*/
-    stroke:#ff9900;
+  stroke:#ff9900;
+  background-color:#ff9900;
 }
 
 .link.Disconnect{/*断开*/
-    stroke:#fa0019;
+  stroke:#fa0019;
+  background-color:#fa0019;
 }
 
 .link.Cancelmonitor{ /*未监控*/
-    stroke:#495872;
+  stroke:#495872;
+  background-color:#495872;
 }
 .link.Unconnection{ /*未连接*/
-     stroke:#fa0019;
+   stroke:#fa0019;
+   background-color:#fa0019;
 }
 
 path.link.selected{
-    stroke-width:8px;
+  stroke-width:8px;
 }
 
 path.link.dragline {
-    pointer-events: none;
-    stroke:#0096ff;
-    fill:#0096ff;
+  pointer-events: none;
+  stroke:#0096ff;
+  fill:#0096ff;
 }
 
 path.link.hidden {
-    stroke-width: 0;
+  stroke-width: 0;
 }
 
 .link_error {
-    stroke: red;
-    stroke-linejoin: bevel;
-    stroke-width: 1px;
-    fill: none;
+  stroke: red;
+  stroke-linejoin: bevel;
+  stroke-width: 1px;
+  fill: none;
 }
 
 .pathText {
-    font-size:14px;
-    text-anchor:middle;
-    fill: rgb(20, 169, 236);
+  font-size:14px;
+  text-anchor:middle;
+  fill: rgb(20, 169, 236);
 }
 
 .nodetext {
-    -webkit-user-select: none;
-    -moze-user-select: none;
-    stroke-linejoin: bevel;
-    font-family: "微软雅黑", Verdana, Geneva, sans-serif;
+  -webkit-user-select: none;
+  -moze-user-select: none;
+  stroke-linejoin: bevel;
+  font-family: "微软雅黑", Verdana, Geneva, sans-serif;
 }
 
 .node{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .nodeRect {
-    fill: rgba(211, 211, 211, 0);
+  fill: rgba(211, 211, 211, 0);
 }
 
 .node:hover .nodeRect,.node.selected .nodeRect{
-    fill: rgba(211, 211, 211, 0.15);
+  fill: rgba(211, 211, 211, 0.15);
 }
 
 .regionWrap{
-    cursor:crosshair;
+  cursor:crosshair;
 }
 
 .marqueeRect{
-    fill:rgba(89, 101, 122, 0.2);
+  fill:rgba(89, 101, 122, 0.2);
 }
 
 .tp-tip{
-    position:fixed;
-    background:#000;
-    z-index:9999;
-    pointer-events: none;
-    text-align:left;
-    padding:4px;
-   white-space: pre-line;
+  position:fixed;
+  background:#000;
+  z-index:9999;
+  pointer-events: none;
+  text-align:left;
+  padding:4px;
+ white-space: pre-line;
+}
+.defaultMp{
+  font-size: 12px;
+  margin-left: 10px;
 }
 
 
 /*****************************拓扑绘图工具***********************************/
-#topoTool{
-    position: absolute;
-   /*  right: 20px;
-    top: 15px; */
-    right:0;
-    top:15px;
-    height: 30px;
-    padding:3px 5px;
-    background: rgb(20, 21, 36);
-    z-index:1;
-    cursor:pointer;
-    border-radius: 4px !important;
+#mapTopoTool{
+  right:0;
+  top:15px;
+  height: 30px;
+  padding:3px 5px;
+  background: rgb(20, 21, 36);
+  z-index:1;
+  cursor:pointer;
+  border-radius: 4px !important;
 }
 
-#topoTool [class^="icon-n"]{
-    font-size:14px;
-    color:#d3d3d3;
+#mapTopoTool [class^="icon-n"]{
+  font-size:14px;
+  color:#d3d3d3;
 }
 
-#topoTool .tl-gap,#topoTool.tl-closed [data-tlclick="tlClose"]{
-    display: block;
+#mapTopoTool .tl-gap,#mapTopoTool.tl-closed [data-tlclick="tlClose"]{
+  display: block;
 }
-#topoTool [data-tlclick="tlOpen"]{
-    display: none;
-}
-
-#topoTool.tl-closed .tl-gap,#topoTool.tl-closed [data-tlclick="tlClose"]{
-    display:none;
+#mapTopoTool [data-tlclick="tlOpen"]{
+  display: none;
 }
 
-#topoTool.tl-closed [data-tlclick="tlOpen"]{
-    display:block;
+#mapTopoTool.tl-closed .tl-gap,#mapTopoTool.tl-closed [data-tlclick="tlClose"]{
+  display:none;
 }
 
-#topoTool .tl-gap{
-    height:100%;
-    float:left;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:0 8px;
-    position:relative;
-}
-#topoTool #tl-line{
-    padding-left:0;
-    border-left: 1px solid rgba(255,255,255,0.1);
+#mapTopoTool.tl-closed [data-tlclick="tlOpen"]{
+  display:block;
 }
 
-#topoTool #tl-operation{
-    border:none;
+#mapTopoTool .tl-gap{
+  height:100%;
+  float:left;
+  border-right:1px solid rgba(255,255,255,0.1);
+  padding:0 8px;
+  position:relative;
+}
+#mapTopoTool #tl-line{
+  padding-left:0;
+  border-left: 1px solid rgba(255,255,255,0.1);
 }
 
-.tl-btn.active,.tl-btn.active:hover,.sub-tl [data-val].active,.sub-tl [data-val].active:hover{
-    background:rgba(255,255,255,0.3);
+#mapTopoTool #tl-operation{
+  border:none;
 }
 
 .tl-btn {
-    height: 24px;
-    width: 30px;
-    position: relative;
-    line-height:24px;
-    float:left;
+  height: 24px;
+  width: 30px;
+  position: relative;
+  line-height:24px;
+  float:left;
 }
 
 .sub-tl {
-    position: absolute;
-    top: 36px;
-    background: rgb(13, 14, 18);
-    padding: 4px;
-    display:none;
-    border-radius: 3px !important;
+  position: absolute;
+  top: 36px;
+  background: rgb(13, 14, 18);
+  padding: 4px;
+  display:none;
+  border-radius: 3px !important;
 }
 
 .sub-tl:before{
-    width: 0px;
-    height: 0px;
-    content: '';
-    position: absolute;
-    border-width: 0 6px 6px;
-    border-style: solid;
-    border-color: transparent transparent rgb(13, 14, 18);
-    top: -6px;
-    left: calc(50% - 6px);
+  width: 0px;
+  height: 0px;
+  content: '';
+  position: absolute;
+  border-width: 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent rgb(13, 14, 18);
+  top: -6px;
+  left: calc(50% - 6px);
 }
 
 .sub-tl li{
-    text-align:left;
-    min-width:26px;
-    height:22px;
-    line-height:22px;
-    padding:0 6px;
+  text-align:left;
+  min-width:26px;
+  height:22px;
+  line-height:22px;
+  padding:0 6px;
 }
 
 .sub-tl.lineType{
-    left:26px;   
+  left:26px;   
 }
 
 .sub-tl.lineStroke{
-    left:52px;   
+  left:52px;   
+}
+.sub-tl.strokeDash{
+  left: 90px;   
 }
 
-.sub-tl.strokeDash,.sub-tl.layout{
-    right:0;
+.sub-tl.picSppot,.sub-tl.layout{
+  right:0;
 }
 
 .sub-tl.fontSize{
-    left:28px;
+  left:28px;
 }
 
 .sub-tl.addRg{
-    left: 6px;
+  left: 6px;
 }
 
 .sub-tl.alignment{
-    width: 76px;
-    left: -13px;
+  width: 76px;
+  left: -13px;
 }
 
-#topoTool #colorWrap .sp-replacer{
-    visibility: hidden;
-    position: absolute;
-    left: 0;
-    height: 24px;
+#mapTopoTool #colorWrap .sp-replacer{
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  height: 24px;
 }
 
-#topoTool .icon-n-delete{
-    color: #D5E8F7;
+#mapTopoTool .icon-n-delete{
+  color: #D5E8F7;
 }
 
 .tl-btn[data-name]:after{
-    position: absolute;
-    content: "";
-    bottom: 2px;
-    right: 2px;
-    width: 0;
-    height: 0;
-    border-width: 0 0 4px 4px;
-    border-style: solid;
-    border-color: transparent transparent #d3d3d3  transparent;
+  position: absolute;
+  content: "";
+  bottom: 2px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-width: 0 0 4px 4px;
+  border-style: solid;
+  border-color: transparent transparent #d3d3d3  transparent;
 }
 
-#topoTool .sp-replacer,#topoTool .sp-replacer:hover{
-    color:transparent;
-    padding:0;
-    background:none;
-    border:none;
+#mapTopoTool .sp-replacer,#mapTopoTool .sp-replacer:hover{
+  color:transparent;
+  padding:0;
+  background:none;
+  border:none;
 }
 
 /* 全屏 */
-body.tpFull .page-header,body.tpFull #tp-tree-wrap,body.tpFull .topozoom,body.tpFull #moreTools{
-    display:none !important;
+body.tpFull .page-header,body.tpFull #map-tree-wrap,body.tpFull .topozoom,body.tpFull #moreTools{
+  display:none !important;
 }
 
-body.tpFull #topoTool div,body.tpFull .topoSearch{
-    display:none;
+body.tpFull #mapTopoTool div,body.tpFull .topoSearch{
+  display:none;
 }
 
-body.tpFull #topoTool div[data-tlclick="fullScreen"],body.tpFull #topoTool div#tl-operation{
-    display:block;
+body.tpFull #mapTopoTool div[data-tlclick="fullScreen"],body.tpFull #mapTopoTool div#tl-operation{
+  display:block;
 }
-body.tpFull #network_topo_wrap{
-    z-index: 10000;
-    position: fixed;
-    top: 0;
-    left: 0;
+body.tpFull #map_topo_wrap{
+  z-index: 10000;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-body.tpFull #topoTool{
-    top:26px;
-    right:8px;
+body.tpFull #mapTopoTool{
+  top:26px;
+  right:8px;
 }
 
 /*****************************拓扑设置工具***********************************/
-#topoOptTools{
-    position: absolute;
-    font-weight: bold;
-    right: 14px;
-    bottom: 10px;
-    width: 42px;
-    background: #1d7394;;
-    z-index: 1;
-    border-radius: 69px !important;
-    padding: 11px 0;
-    height: 42px;
+#mapTopoOptTools{
+  position: absolute;
+  font-weight: bold;
+  right: 14px;
+  bottom: 10px;
+  width: 42px;
+  background: #1d7394;;
+  z-index: 1;
+  border-radius: 69px !important;
+  padding: 11px 0;
+  height: 42px;
+  cursor: pointer;
 }
 #tpoptTools{
-	position: absolute;
-    right: 0;
-    bottom: 53px;
-    width: 73px;
-    background: #24374b;;
-    z-index: 1;
-    padding: 11px 0;
-    cursor: pointer;
+position: absolute;
+  right: 0;
+  bottom: 53px;
+  width: 85px;
+  background: #24374b;;
+  z-index: 1;
+  padding: 11px 0;
+  cursor: pointer;
 }
 #tpoptTools .tl-opt-btn{
-    display: block;
-    height: 24px;
-    line-height: 24px;
+  display: block;
+  height: 24px;
+  line-height: 24px;
 }
 .tpoptTools{
-	display:none;
+display:none;
 }
 .tpshow{
-	 display: block;
-}
-#tpoptTools .tl-opt-btn:hover,.tl-select-wrap:hover,.tl-btn:hover,ul.sub-tl li:hover{
-    background:rgba(72, 57, 92, 0.5);
+ display: block;
 }
 
 /*****************************拓扑区域工具***********************************/
 .rg-inp {
-    z-index: 999;
-    width: 200px;
-    height:78px !important;
-    position: fixed;
-    background: rgba(36,34,34) !important;
+  z-index: 999;
+  width: 200px;
+  height:78px !important;
+  position: fixed;
+  background: rgba(36,34,34) !important;
 }
 
 .rgPoint,.linePoint {
-    fill: rgb(255, 255, 255);
-    stroke: #0088cc;
-    stroke-width: 1;
+  fill: rgb(255, 255, 255);
+  stroke: #0088cc;
+  stroke-width: 1;
 }
 
 .lineWrap{
-    display:none;
+  display:none;
 }
 
 .ployN .linePoint{
-    cursor: n-resize;
+  cursor: n-resize;
 }
 
 .ployZ .linePoint{
-    cursor: w-resize;
+  cursor: w-resize;
 }
 
 .regionDragRect {
-    width: 100%;
-    height: 100%;
-    fill: transparent;
+  width: 100%;
+  height: 100%;
+  fill: transparent;
 }
 
 .rgPoint.rgP0,.rgPoint.rgP2{  /* 左上 */
-    cursor: nw-resize;
+  cursor: nw-resize;
 }
 
 .rgPoint.rgP1,.rgPoint.rgP3{  /* 右上 */
-    cursor: ne-resize;
+  cursor: ne-resize;
 }
 
 g#region .rgPoint{
-    visibility: hidden;
+  visibility: hidden;
 }
 
 g#region .selected .rgPoint{
-   visibility: visible;
+ visibility: visible;
 }
 
 text.rgText{
-  white-space: pre;
+white-space: pre;
 }
 
 text.rgText:hover,text.rgText.selected{
-  text-decoration: underline;  
+text-decoration: underline;  
 }
 
 /*****************************拓扑搜索***********************************/
-.topoSearch{
-   position: absolute;
-    left: 180px;
-   width:230px !important;
+.toolbar-wrapper{
+  height: 30px;
+  position: absolute;
+  right: 0px;
+  top: 15px;
 }
-.topoSearch .input-group{
-    top: 15px;
+.topoSearch{
+  width: 200px;
+  z-index: 99;
+  margin-right: 9px;
+  height: 30px;
+}
+.topoSearch input{
+  width: 200px !important;
 }
 
 .close-tree .topoSearch{
-    left: 50px;
+  left: 50px;
 }
 
 input.rg-searchInp {
-    width:200px;
-    z-index: 999;
-    background-color: rgb(35, 39, 57) !important;
+  width:200px;
+  z-index: 999;
+  background-color: rgb(35, 39, 57) !important;
 }
-
 .input-group-addon{
-     background: rgba(0,0,0,0.3);
+   background: rgba(0,0,0,0.3);
 }
 .rg-search {
-    color: #D5E8F7;
-    margin-left: 0px;
-    border-radius: 2px !important;
-    /*background: rgba(0,0,0,0.3);*/
+  color: #D5E8F7;
+  margin-left: 0px;
+  border-radius: 2px !important;
+  /*background: rgba(0,0,0,0.3);*/
 }
 
 .tp_searchList {
-    left: 30px;
-    top: 30px;
-    width: 270px;
-    background: #0a0e1a;
-    color: #fff;
-    text-align: left;
-    overflow: hidden;
-    max-height: 210px;
-    overflow: auto;
+  left: 30px;
+  top: 30px;
+  width: 200px;
+  margin-top: 15px;
+  background: #0a0e1a;
+  color: #fff;
+  text-align: left;
+  overflow: hidden;
+  max-height: 210px;
+  overflow: auto;
 }
 
 .topoSearch .rg-search{
-	margin-left: -19px;
-    color: #b1b4bf;
-    position: absolute;
-    right: 8px;
-    top: 8px;
+margin-left: -19px;
+  color: #b1b4bf;
+  position: absolute;
+  right: 8px;
+  top: 8px;
 }
 
 .tp_allRes{
-    font-size:13px;
-    height: 22px;
-    cursor: pointer;
-    color: #fff;
-    line-height: 22px;
-    padding: 0 4px;
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  font-size:13px;
+  height: 22px;
+  cursor: pointer;
+  color: #fff;
+  line-height: 22px;
+  padding: 0 4px;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .tp_allRes:hover {
-    background: #112132;
+  background: #112132;
 }
 
-#networkTopo .confData {
-    width: 270px !important;
-    height: 120px !important;
-    overflow: auto;
-    white-space:  pre;
-    border: 1px solid #3d445a;
-    text-align: left;
-    color: #cad6dd;
+#networkMapTopo .confData {
+  width: 270px !important;
+  height: 120px !important;
+  overflow: auto;
+  white-space:  pre;
+  border: 1px solid #3d445a;
+  text-align: left;
+  color: #cad6dd;
+}
+.shareUl{
+  display:none;
+}
+.shareUser{
+  padding: 5px 5px 0px 11px;
+  cursor:pointer;
+  line-height: 20px;
+}
+.shareUser .unfold{
+  font-size: 12px;
+  padding-right: 2px;
+}
+.mptText{
+  display: none;
+  pointer-events: none
+}
+.containerData{
+  transform: translate(1px, -2px);
+}
+#networkMapTopo .sport{
+  stroke: #cad6dd;
+}
+path.provincesCopy {
+  stroke: #10518c;
+  stroke-width: 4px;
+}
+.sportFour{
+  fill: rgba(211, 211, 211, 0);
+}
+.sportTwo{
+  animation: myfirst 4s infinite;
+  opacity: 0; 
+  animation-delay: 1.5s;
+  stroke-width: 2;
+  fill: none;
+}
+.sportOne{
+  animation: myfirst 4s infinite;
+  opacity: 0;
+  stroke-width:2;
+  fill: none;
+}
+@keyframes myfirst{
+  0% {r:3;opacity: 0;}
+  60% {opacity: 0.8;}
+  100% {r:8;opacity: 0;}
+}
+#picSportChange{
+  position: absolute;
+  right: 0px;
+  top: 57px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+
+/*地图拓扑链路资源弹框*/
+
+#map_linkmanagement{
+  z-index: 1;
+  width: 0px;
+  margin-left: 10px;
+}
+.linkmanagement{
+  width: 250px !important;
+}
+#map_linkmanagement .manageTitle{
+  height: 6%;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+#map_linkmanagement .linkbackcolor{
+  background-color: rgba(51, 60, 87, 0.67);
+}
+#map_linkmanagement .manageTitle div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#map_linkmanagement .manage-choose ul li{
+  width: 50%;
+}
+#map_linkmanagement .manage-choose ul li a{
+  text-align: center;
+}
+
+#map_linkmanagement .manageBody{
+  height: 94%;
+}
+#map_linkmanagement .manageBody .manage-choose {
+  height: 40px;
+}
+#map_linkmanagement .manageBody .manage-box {
+  padding-bottom: 30px;
+  height: calc(100% - 41px);
+}
+#map_linkmanagement .manage-box{
+  background-color: rgb(34, 39, 57,0.5);
+}
+#map_linkmanagement .nav-tabs{
+  margin-bottom: 0px
+}
+#map_linkmanagement .manage-box .resourcesNum{
+  height: 30%;
+}
+#map_linkmanagement .resourcesNum div{
+  height: 50%;
+  width: 100%;
+}
+#map_linkmanagement .manage-box .resourcesList{
+  height: 70%;
+}
+#map_linkmanagement .resourcesNum label{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#map_linkmanagement .MonitorSize label{
+  width: 100%;
+  height: 50%;
+}
+.monitNum{
+  font-size: 28px;
+  padding-top: 10px;
+  font-family: asn !important;
+}
+.neNodataIcon{
+  color:#333849;
+  margin-top: 13%;
+}
+#map_linkmanagement .MonitorNum div{
+  width: 33%;
+  height: 100%;
+  float: left;
+}
+#map_linkmanagement .MonitorNum div label{
+  width: 100%;
+  height: 50%;
+}
+#map_linkmanagement .hidden{
+  display: none;
+}
+#map_linkmanagement .listmanage{
+  width: 248px;
+  left: 188px;
+}
+#map_linkmanagement .resourcesList label{
+  width: 100%;
+  height: 40px;
+  line-height: 50px;
+  padding: 5px;
+  font-size: 14px;
+}
+#map_linkmanagement .resourcesList .resourcesListul{
+  padding-top: 50px;
+  margin-top: -50px;
+}
+#map_linkmanagement .resourcesList ul{
+  overflow: auto;
+}
+#map_linkmanagement .resourcesList ul li{
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  padding: 0 5px;
+}
+#map_linkmanagement .topTenlink{
+  overflow: auto;
+}
+#map_linkmanagement .topTenlink .linkList{
+  width: 100%;
+  height: 70px;
+}
+#map_linkmanagement .topTenlink .linkList .linkList-top{
+  height: 50%;
+  position: relative;
+  padding: 0 10px;
+}
+#map_linkmanagement .topTenlink .linkList-botton{
+  height: 50%;
+  padding: 8px 0;
+  color: #666f8b;
+}
+#map_linkmanagement .topTenlink .linkList-botton span{
+  color: #A9ACA4;
+}
+#map_linkmanagement .linkList .linkList-botton{
+  text-align: center;
+}
+#map_linkmanagement .linkList-top .tipsnum{
+  border-width: 0px;
+  width: 23px;
+  height: 17px;
+  font-size: 10px;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  border-radius: 5px;
+  background-color: #0099ff;
+}
+#map_linkmanagement .linkList-top .linkList-line{
+  position: absolute;
+  bottom: 0;
+  margin-left: 30px;
+  font-size: 14px;
+}
+#map_linkmanagement .linkList .line-box{
+  width: 140px;
+  height: 12px;
+  padding: 5px 8px;
+  display: inline-block;
+}
+#map_linkmanagement .linkList .link{
+  position: relative;
+}
+#map_linkmanagement .linkList .bluecircular{
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+  border-radius: 100%;
+  background-color: #3399ff;
+  margin-top: -3px;
+  position: relative;
+}
+#map_linkmanagement .linkList .bgcolorwhite{
+  background-color: #ffffff;
+  height: 4px;
+  width: 4px;
+  margin-top: -1px;
+  position: absolute;
+}
+#map_linkmanagement .manage-box .active{
+  display: block !important;
+}
+#map_linkmanagement .linkList .isok .bgcolorwhite{
+  animation: linedraw 4s linear infinite;
+}
+@keyframes linedraw {
+  0%{
+      left: 0%;
+  }
+  100%{
+      left: 100%;
+  }
+}
+.linkList-line{
+  align-items: center;
+  height: 70px;
+  padding: 5px;
+}
+.tenTextBox{
+  width: 42px;
+  overflow: hidden;
+}
+.tipsnum{
+  width: 16px;
+}
+.totalFlow,.linkutilization {
+  text-align: center;
+}
+.unAvailable{
+  display: inline-block;
+  padding-left: 10px;
+}
+#mapResourceTable .icon-n-attention {
+  color: #b58904;
+}
+.linkmanagement{
+  border: 1px solid #3d445a;
+}
+.addHt{
+  height:105% !important;
 }

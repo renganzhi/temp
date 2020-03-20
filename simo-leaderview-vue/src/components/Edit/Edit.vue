@@ -1322,6 +1322,30 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
+                <div class="form-group cols2"
+                     v-show="selectedItem.thirdType==='moveTable'">
+                  <label>每页展示条数</label>
+                  <select v-model="selectedItem.pageNum">
+                    <option v-for="i in 15"
+                            :key="'tbNum' + i"
+                            :value="i">{{i}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.ctDataSource == 'system'">
+                  <div class="form-group"
+                       style="position: relative">
+                    <label>刷新周期(s)</label>
+                    <input class="color-w200"
+                           type="number"
+                           placeholder="刷新周期"
+                           onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
+                           v-model="selectedItem.refreshTm">
+                    <label class="error"
+                           v-if="freshVali"
+                           style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
+                  </div>
+                </div>
                 <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                   <div class="form-group cols2">
                     <label>展示范围</label>
@@ -1438,30 +1462,6 @@
                     <i class="icon-n-deleteNew"
                        v-if="alertMapData.length > 1"
                        @click="delAlertLevel(index)"></i>
-                  </div>
-                </div>
-                <div class="form-group cols2"
-                     v-show="selectedItem.thirdType==='moveTable'">
-                  <label>每页展示条数</label>
-                  <select v-model="selectedItem.pageNum">
-                    <option v-for="i in 15"
-                            :key="'tbNum' + i"
-                            :value="i">{{i}}</option>
-                  </select>
-                </div>
-                <div class="form-group cols2"
-                     v-if="selectedItem.ctDataSource == 'system'">
-                  <div class="form-group"
-                       style="position: relative">
-                    <label>刷新周期(s)</label>
-                    <input class="color-w200"
-                           type="number"
-                           placeholder="刷新周期"
-                           onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
-                           v-model="selectedItem.refreshTm">
-                    <label class="error"
-                           v-if="freshVali"
-                           style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
                   </div>
                 </div>
                 <button @click="dataChange">更新视图</button>
