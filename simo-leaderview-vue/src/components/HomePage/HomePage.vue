@@ -168,6 +168,7 @@ export default {
       this.axios.get('/leaderview/home/homePage').then((data) => {
         if (data.success) {
           this.initPage(data.obj)
+          this.autoFresh()
         } else {
           this.loadAll = true
         }
@@ -355,7 +356,8 @@ export default {
     /* 刷新页面相关 */
     refresh: function () {
       this.refreshFn()
-      this.refreshCompose()
+      this.refreshCompose(true)
+      this.autoFresh()
     },
     stopRefreshTimer: function () {
       this.freshInterval && clearTimeout(this.freshInterval)
@@ -453,16 +455,14 @@ export default {
       newV = newV || this.nowPage
       var ct = this
       $.each(newV, function (i, d) {
-        if (d.chartType === 'topo') {
+        if (d.chartType === 'topo' && d.tptype !== 'maptp') {
           ct.$set(d, 'time', new Date().getTime())
           /* var tpid = d.tpId
           d.tpId = '';
           ct.$nextTick(function(){
               d.tpId = tpid;
           }) */
-        }
-
-        if (d.ctDataSource == 'system' && d.url) {
+        } else if (d.ctDataSource == 'system' && d.url) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
@@ -480,7 +480,11 @@ export default {
                 d.ctName = res.obj.info
               }
               if (d.chartType !== 'marquee') {
-                d.chartData = res.obj
+                if (d.chartType === 'v-map') {
+                  d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
+                } else {
+                  d.chartData = res.obj
+                }
               }
             },
             error: function (xhr) {
@@ -503,10 +507,14 @@ export default {
         ct.setScale()
       })
     },
-    refreshCompose: function () {
+    refreshCompose: function (flag) {
       if (this.combinList && this.combinList.length > 0) {
         this.combinList.forEach((list) => {
-          this.refreshTargetFn(list.child)
+          if (flag) {
+            this.refreshFn(list.child)
+          } else {
+            this.refreshTargetFn(list.child)
+          }
         })
       }
     },
@@ -612,7 +620,7 @@ export default {
       }
       // this.refreshFn(newV)
       this.setScale()
-      this.autoFresh()
+      this.refresh() // 整页刷新
       // this.initRefreshTimer() 取消整页刷新
     },
     combinList: function () {
@@ -648,7 +656,6 @@ export default {
     if (!gbs.inDev) {
       titleShow('top', $('#home-html'))
     }
-    this.autoFresh()
     $('#screen').addClass('disShow')
   },
   beforeDestroy: function () {
