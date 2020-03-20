@@ -344,14 +344,23 @@ export default {
     },
     formatData (newV) {
       var mapData = []
-      newV.forEach((item) => {
-        let _value = []
-        if (this.geoCoordMap[item.name]) {
-          _value = this.geoCoordMap[item.name].concat(item.value)
-        }
-        let obj = { name: item.name, value: _value }
-        mapData.push(obj)
-      })
+      if ($('#home-html').length) {
+        // 大屏展示更新
+        mapData = JSON.parse(JSON.stringify(this.item.scatterPoint))
+        mapData.forEach((item) => {
+          let id = _.findIndex(newV, function (o) { return o.name == item.name })
+          item.value[2] = newV[id].value
+        })
+      } else {
+        newV.forEach((item) => {
+          let _value = []
+          if (this.geoCoordMap[item.name]) {
+            _value = this.geoCoordMap[item.name].concat(item.value)
+          }
+          let obj = { name: item.name, value: _value }
+          mapData.push(obj)
+        })
+      }
       return mapData
       // if (this.geoCoordMap && this.geoCoordMap.length > 0) {
 
