@@ -737,6 +737,23 @@ public class HomePageController {
         return mcService.findAllUserByRoleId("SESSION=" + session , adminRoles);
     }
 
+    @ApiOperation("查询可用的用户-大屏下拉框格式")
+    @GetMapping(value = "/getUsersForDropDown")
+    public JsonModel getUsersForDropDown(){
+        List<String> all = userRedis.getAll();
+        JSONArray result = new JSONArray();
+        all.forEach(str -> {
+            JSONObject user = JSONObject.parseObject(str);
+            if (Objects.equals("OK", user.getString("status"))) {
+                JSONObject itm = new JSONObject();
+                itm.put("name", user.getString("userName"));
+                itm.put("value", user.getLong("id"));
+                result.add(itm);
+            }
+        });
+        return new JsonModel().success(result);
+    }
+
     /**
      * 用于判断某个页面是否已被分享给当前用户，用于页面显示
      * @param homePage
