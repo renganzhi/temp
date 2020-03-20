@@ -2316,10 +2316,12 @@ export default {
       }
       if (this.selectedItem.chartType === 'topo') {
         this.saveTopoConf(param, curConf)
-        _this.selectedItem.url = curConf.url
-        _this.selectedItem.method = curConf.method
-        _this.selectedItem.params = param
-        return
+        if (this.selectedItem.tptype !== 'maptp') {
+          _this.selectedItem.url = curConf.url
+          _this.selectedItem.method = curConf.method
+          _this.selectedItem.params = param
+          return
+        }
       }
       if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {
         let names = _.map(this.areaArr, 'name')
@@ -2393,16 +2395,21 @@ export default {
     },
     saveTopoConf: function (param, curConf) {
       // 拓扑与其他组件不同，需要特殊处理
+      let oldTpid = this.selectedItem.tpId
       if (this.selectedItem.tpId === param.topoId) {
-        this.$set(this.selectedItem, 'refresh', true)
-        this.$nextTick(() => {
-          this.selectedItem.refresh = false
-        })
+        if (oldTpid) {
+          this.$set(this.selectedItem, 'refresh', true)
+          this.$nextTick(() => {
+            this.selectedItem.refresh = false
+          })
+        }
       } else {
         if (curConf.url.includes('domainTopo')) {
           this.$set(this.selectedItem, 'tptype', 'domain')
-        } else {
+        } else if (curConf.url.includes('business')) {
           this.$set(this.selectedItem, 'tptype', 'business')
+        } else {
+          this.$set(this.selectedItem, 'tptype', 'maptp')
         }
         this.selectedItem.tpId = param.topoId
       }

@@ -13,13 +13,13 @@ var tp = null
 var rg = null
 var viewTools = {
   dragFn: function () {
-    console.log(111)
+    // console.log(111)
   }
 }
 // baseData.business.curTp
 // baseData.business.curConfig
-clearInterval(baseData.business.refreshTimer)
-baseData.business.refreshTimer = null // 定时刷新控制器
+// clearInterval(baseData.business.refreshTimer)
+// baseData.business.refreshTimer = null // 定时刷新控制器
 window.draging = false // 全局变量，判断是否是拖动操作
 
 var businessViewTopo = {
@@ -196,31 +196,12 @@ function initBusTp (bussData, refresh) {
 
   businessViewTopo.getTpInfo(tp, rg, refresh)
   businessViewTopo.getRegions(tp, rg)
-  // return businessViewTopo
+  // judgeBindBusEvent(busData.el)
+  return businessViewTopo
 }
-// 新增----------
-// businessViewTopo.reset()
-// businessViewTopo.getTpConfig()
 
-// var tp = new businessTopology({
-//   selector: '#businessMainTopo',
-//   config: baseData.business.config,
-//   dragFn: viewTools.dragFn
-// }, topoBaseData)
-
-// var rg = new Region({
-//   selector: tp.regionWrap,
-//   dragFn: viewTools.dragFn
-// })
-// businessViewTopo.getTpInfo()
-// businessViewTopo.getRegions()
-
-// if (!$('body').hasClass('onlyRead')) {
-//   judgeBindBusEvent()
-// }
-
-function judgeBindBusEvent () {
-  $('#businessMainTopo').off('click.hidetl').on('click.hidetl', function (e) {
+function judgeBindBusEvent (el) {
+  $(el).off('click.hidetl').on('click.hidetl', function (e) {
     if (tp.isMarquee) {
       tp.isMarquee = false
     } else {
@@ -229,7 +210,7 @@ function judgeBindBusEvent () {
     $('#viewTool .sub-tl').hide()
   })
 
-  $('#businessMainTopo').off('click.tp').on('click.tp', '.node,.link,.rgText,.circleG,.rectG', function (e) {
+  $(el).off('click.tp').on('click.tp', '.node,.link,.rgText,.circleG,.rectG', function (e) {
     $('#viewTool #tl-color').spectrum('hide')
     var o_this = d3.select(this)
     var isSelected = o_this.classed('selected')
@@ -253,35 +234,35 @@ function judgeBindBusEvent () {
     $('.context-menu-list').trigger('contextmenu:hide')
   })
 
-  $.contextMenu({
-    selector: '#businessMainTopo',
-    appendTo: '#business_attention',
-    build: function ($trigger, e) {
-      if ($('body').attr('isShare') != 'share') {
-        tp.hideTip()
-        viewTools.selectedEle(e.target)
-        //   console.log(e.target)
-        var $target = $(e.target)
-        var type = topoContextMenu.buildItemsByTarget($target)
-        return {
-          callback: function (key, options) {
-            if (key.indexOf('setNetSize') == -1 && key.indexOf('netDef') == -1) {
-              topoContextMenu.cb[type][key]($target)
-            } else if (key.indexOf('netDef') != -1) {
-              topoContextMenu.cb[type]['netDef']($target)
-            } else {
-              topoContextMenu.cb[type]['setNetSize']($target, key.replace('setNetSize', ''))
-            }
-          },
-          items: topoContextMenu[type]
-        }
-      }
-    }
-  })
+  // $.contextMenu({
+  //   selector: '#businessMainTopo',
+  //   appendTo: '#business_attention',
+  //   build: function ($trigger, e) {
+  //     if ($('body').attr('isShare') != 'share') {
+  //       tp.hideTip()
+  //       viewTools.selectedEle(e.target)
+  //       //   console.log(e.target)
+  //       var $target = $(e.target)
+  //       var type = topoContextMenu.buildItemsByTarget($target)
+  //       return {
+  //         callback: function (key, options) {
+  //           if (key.indexOf('setNetSize') == -1 && key.indexOf('netDef') == -1) {
+  //             topoContextMenu.cb[type][key]($target)
+  //           } else if (key.indexOf('netDef') != -1) {
+  //             topoContextMenu.cb[type]['netDef']($target)
+  //           } else {
+  //             topoContextMenu.cb[type]['setNetSize']($target, key.replace('setNetSize', ''))
+  //           }
+  //         },
+  //         items: topoContextMenu[type]
+  //       }
+  //     }
+  //   }
+  // })
 
-  tp.svgContainer.on('contextmenu', null).on('contextmenu', function () {
-    baseData.business.menuXY = d3.mouse(this)
-  })
+  // tp.svgContainer.on('contextmenu', null).on('contextmenu', function () {
+  //   baseData.business.menuXY = d3.mouse(this)
+  // })
 }
 
 // $(function () {

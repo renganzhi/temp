@@ -772,3 +772,30 @@ body.page-sidebar-closed > .moniModal.modal {
     font-family: 'number4';
     src: url('../font/numberFont/RobotoSlab-Regular.ttf');
 }
+/* 地图拓扑样式，在theme.css */
+.province {
+  stroke: #0252ba;
+  stroke-width: 1px;
+  fill: #101A3F; }
+
+.hoverMp {
+  fill: #2992d9;
+  stroke: #000;
+  stroke-opacity: 0.25;
+  stroke-width: 5px; }
+
+.mptText {
+  fill: #c2c6d7; }
+
+.southsea {
+  stroke: black;
+  stroke-width: 1px;
+  fill: #ccc; }
+
+.route {
+  stroke: black;
+  stroke-width: 3px;
+  fill: black; }
+
+.cityDiv {
+  background-color: #1f2434; }
