@@ -18,6 +18,9 @@ export default {
   },
   computed: {
     numStr: function () {
+      if (this.item.chartData.value !== 0 && !this.item.chartData.value) {
+        return '--'
+      }
       var num = Math.round(this.item.chartData.value * 100) / 100
       if (num != num) {
         return '--'
