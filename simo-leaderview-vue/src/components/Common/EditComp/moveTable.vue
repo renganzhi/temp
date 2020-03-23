@@ -10,7 +10,9 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
-                :title="title">{{title}}</th>
+                data-toggle='tooltip'
+                title
+                :data-original-title="tdText">{{title}}</th>
           </tr>
         </thead>
       </table>
@@ -48,7 +50,9 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  :title="tdText">{{tdText}}</td>
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="tdText">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
@@ -63,7 +67,9 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  :title="tdText">{{tdText}}</td>
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="tdText">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
@@ -79,7 +85,7 @@
   </div>
 </template>
 <script>
-import { gbs } from '@/config/settings'
+import { titleShowFn } from '#/js/public'
 export default {
   name: 'moveTable',
   props: ['item', 'moving'],
@@ -197,6 +203,13 @@ export default {
       this.nowPage = 0
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
+      this.$nextTick(() => {
+        if ($('#home-html').length > 0) {
+          titleShowFn('bottom', $('#home-html'), '#home-html')
+        } else {
+          titleShowFn('bottom', $(this.$el), this.$el)
+        }
+      })
       if (this.item.chartData.rows.length > this.pageNum) {
         let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
         if (totalPage === this.item.chartData.rows.length / this.pageNum) {
@@ -215,6 +228,13 @@ export default {
             }
             this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
           }
+          this.$nextTick(() => {
+            if ($('#home-html').length > 0) {
+              titleShowFn('bottom', $('#home-html'), '#home-html')
+            } else {
+              titleShowFn('bottom', $(this.$el), this.$el)
+            }
+          })
         }, this.intervalTime)
       }
     },
@@ -262,9 +282,6 @@ export default {
     this.initLeftMove()
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
-    }
-    if (!gbs.inDev) {
-      titleShow('bottom', $(this.$el))
     }
   },
   beforeDestroy: function () {

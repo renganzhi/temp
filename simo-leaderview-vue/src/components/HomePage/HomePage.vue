@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div v-if="loadAll">
+    <div v-show="loadAll" id="homeTips">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
         <div class="fl btn-box"
@@ -50,23 +50,33 @@
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
           <span @click="refresh"
                 class="ring-icon"
-                :title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+                data-toggle='tooltip'
+                title
+                :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
           <span @click="fullScreen"
                 class="ring-icon"
-                :title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+                data-toggle='tooltip'
+                title
+                :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
         </div>
         <div class="fr btn-box"
              v-show="pageSize>1">
           <span @click="prev"
                 class="ring-icon"
-                :title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+                data-toggle='tooltip'
+                title
+                :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
           <span @click="togglePlay"
                 class="ring-icon"
-                :title="!timer ? '开启轮播' : '暂停轮播'"
+                data-toggle='tooltip'
+                title
+                :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
                 v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
           <span @click="next"
                 class="ring-icon"
-                :title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+                data-toggle='tooltip'
+                title
+                :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
         </div>
       </div>
 
@@ -83,7 +93,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -91,7 +100,7 @@
 import { baseData, gbs } from '@/config/settings'
 import LookItem from './../Common/LookItem'
 import LookCompose from './../Common/LookCompose'
-import Public from '#/js/public'
+import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions, mapGetters } from 'vuex'
@@ -653,9 +662,7 @@ export default {
       videoTims[i] = 0
     }
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
-    if (!gbs.inDev) {
-      titleShow('top', $('#home-html'))
-    }
+    titleShowFn('top', $('#homeTips'), '#homeTips')
     $('#screen').addClass('disShow')
   },
   beforeDestroy: function () {
