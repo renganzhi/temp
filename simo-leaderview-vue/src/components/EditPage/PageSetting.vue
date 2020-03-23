@@ -68,7 +68,9 @@
                   <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
-                    <td class="titleS"><span>{{tr.name}}</span></td>
+                    <td><span data-toggle='tooltip'
+                        title
+                        :data-original-title="tr.name">{{tr.name}}</span></td>
                     <td>
                       <div :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
                         <div></div>
@@ -82,7 +84,7 @@
                 </tbody>
               </table>
             </div>
-            <div class="fixed-table-body"
+            <div class="bootstrap-table fixed-table-body"
                  style="padding-bottom: 26px;">
               <table class="table table-hover"
                      style="table-layout: fixed;">
@@ -90,7 +92,12 @@
                   <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
-                    <td class="titleS"><span>{{tr.name}}</span></td>
+                    <td>
+                      <span data-toggle='tooltip'
+                        title
+                        :data-original-title="tr.name">{{tr.name}}
+                      </span>
+                    </td>
                     <td>
                       <div @click="changeVisiable(index, tr.visible)"
                            :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
@@ -129,6 +136,7 @@
 import qs from 'qs'
 import { gbs } from '@/config/settings'
 import { Notification } from 'element-ui'
+import { titleShowFn } from '#/js/public'
 import _ from 'lodash'
 export default {
   name: 'pageSetting',
@@ -202,7 +210,7 @@ export default {
           }
         }
         this.$nextTick(() => {
-          titleShow('bottom', $('.titleS'))
+          titleShowFn('bottom', $(this.$el), this.$el)
         })
       })
     },

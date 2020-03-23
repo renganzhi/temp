@@ -53,4 +53,23 @@ const Public = {
   }
 }
 // module.exports = Public
-export default Public
+function titleShowFn (placement, $ele, id) {
+  $('.tooltip.fade.in').remove()
+  if ($ele) {
+    $ele = $ele.find('[title]')
+  } else {
+    $ele = $('[title]')
+  }
+  if (!id) {
+    id = 'body'
+  }
+  $ele.tooltip({
+    trigger: 'hover',
+    placement: placement || 'bottom',
+    container: id,
+    html: true
+  })
+  $ele = null
+}
+module.exports = { Public, titleShowFn }
+// export default Public

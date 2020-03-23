@@ -59,7 +59,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { gbs } from '@/config/settings'
+import { titleShowFn } from '#/js/public'
 import _ from 'lodash'
 export default {
   name: 'vtable',
@@ -109,6 +109,11 @@ export default {
       } else {
         this.tableEmpty = false
       }
+      if ($('#home-html').length > 0) {
+        titleShowFn('bottom', $('#home-html'), '#home-html')
+      } else {
+        titleShowFn('bottom', $(this.$el), this.$el)
+      }
     }
   },
   methods: {
@@ -131,8 +136,10 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    if (!gbs.inDev) {
-      titleShow('bottom', $(this.$el))
+    if ($('#home-html').length > 0) {
+      titleShowFn('bottom', $('#home-html'), '#home-html')
+    } else {
+      titleShowFn('bottom', $(this.$el), this.$el)
     }
   },
   destroyed: function () {
