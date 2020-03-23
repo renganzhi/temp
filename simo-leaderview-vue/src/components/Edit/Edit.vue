@@ -1275,7 +1275,7 @@
                   </div>
                 </div>
                 <div v-show="selectedItem.ctDataSource == 'system'">
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" contenteditable="false">
                     <label>选择接口</label>
                     <select ref="urlSel"
                             v-model="syst.curConf.url"
@@ -1309,14 +1309,14 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-show="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
+                     v-if="selectedItem.ctDataSource != 'system' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.chartData}}</div>
                 </div>
                 <div class="form-group"
-                     v-show="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                     v-if="selectedItem.ctDataSource != 'system' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
                   <div ref="textarea"
                        class="confData"
                        v-if="refreshData"
@@ -1334,6 +1334,7 @@
                 <div class="form-group cols2"
                      v-if="selectedItem.ctDataSource == 'system'">
                   <div class="form-group"
+                       contenteditable="false"
                        style="position: relative">
                     <label>刷新周期(s)</label>
                     <input class="color-w200"
