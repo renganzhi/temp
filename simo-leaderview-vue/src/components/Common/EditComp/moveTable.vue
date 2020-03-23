@@ -12,7 +12,7 @@
                 :key="index"
                 data-toggle='tooltip'
                 title
-                :data-original-title="tdText">{{title}}</th>
+                :data-original-title="title">{{title}}</th>
           </tr>
         </thead>
       </table>
@@ -40,7 +40,7 @@
     <div class="fixed-table-body"
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
-      <transition :name="item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
+      <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
         <table class="table table-hover"
                v-if="tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
@@ -57,7 +57,7 @@
           </tbody>
         </table>
       </transition>
-      <transition :name="item.direction === 'top' ? 'table-tpfadein': 'table-fadein'">
+      <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadein': 'table-fadein'">
         <table class="table table-hover"
                v-if="!tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
@@ -77,7 +77,7 @@
     </div>
     <div class="v-charts-data-empty"
          v-if="tableEmpty"
-         style="width: 100%; text-align: center; font-size: 12px;">
+         style="width: 100%; position:absolute; top: 50%; text-align: center; font-size: 12px;">
       <div>
         <p>抱歉，没有数据可供展示...</p>
       </div>
@@ -143,6 +143,8 @@ export default {
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
       if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
         this.tableEmpty = true
+        this.page1Data = []
+        this.page2Data = []
         this.intervalId && clearInterval(this.intervalId)
         return
       } else {
@@ -300,6 +302,7 @@ export default {
 <style>
 .home-table .table {
   background: transparent;
+  position: relative;
 }
 .home-table .table tbody tr,
 .home-table .table tbody td,
