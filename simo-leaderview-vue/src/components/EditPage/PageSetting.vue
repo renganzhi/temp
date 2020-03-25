@@ -34,6 +34,9 @@
               <select name="specialEffects"
                       v-model="specialEffects">
                 <option value="1">默认</option>
+                <option value="scale">缩放过渡</option>
+                <option value="left">左右平滑过渡</option>
+                <option value="top">上下平滑过渡</option>
               </select>
             </div>
             <!-- <div class="form-group col-md-6">

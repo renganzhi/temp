@@ -21,24 +21,48 @@
       <AddPage :showModal="addPage"
                @hideModal="hideModal"></AddPage>
     </div>
-
-    <div class="portlet light bordered flex-1"
-         id="paintWrap">
-      <div id="mainbox"
-           v-show="pageList.length >= 1"></div>
-      <div class="home_wrapBox">
-        <div class="full-height pagebox">
-          <LookItem v-for="(item,index) in nowPage"
-                    :index="index"
-                    :item="item"
-                    :key="item.id"></LookItem>
-          <LookCompose v-for="(list, index1) in combinList"
-                       :index="index1"
-                       :key="list.id"
-                       :list="list"></LookCompose>
+    <transition :name="moveBox1">
+      <div class="portlet light bordered flex-1"
+          v-show="moveFlag"
+          id="paintWrap">
+        <div id="mainbox"
+            v-show="pageList.length >= 1"></div>
+        <div class="home_wrapBox">
+          <div class="full-height pagebox">
+            <LookItem v-for="(item,index) in nowPage"
+                      :index="index"
+                      :item="item"
+                      :key="item.id"></LookItem>
+            <LookCompose v-for="(list, index1) in combinList"
+                        :index="index1"
+                        :key="list.id"
+                        :list="list"></LookCompose>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
+    <!-- 下一页 -->
+    <transition :name="moveBox2">
+      <div class="portlet light bordered flex-1"
+          v-show="!moveFlag"
+          id="paintWrap2">
+        <div id="mainbox2"
+            v-show="pageList.length >= 1"></div>
+        <div class="home_wrapBox">
+          <div class="full-height pagebox">
+            <LookItem v-for="(item,index) in nowPage2"
+                      :index="index"
+                      :item="item"
+                      :key="item.id"></LookItem>
+            <LookCompose v-for="(list, index1) in combinList2"
+                        :index="index1"
+                        :key="list.id"
+                        :list="list"></LookCompose>
+          </div>
+        </div>
+      </div>
+    </transition>
+    <!-- 下一页 -->
     <div v-show="loadAll" id="homeTips">
       <div class="btm-tools"
            :class="isFullScreen?'full':''">
@@ -109,6 +133,9 @@ export default {
   components: { Notification, LookItem, LookCompose, AddPage },
   data () {
     return {
+      moveBox1: 'moveLeft1',
+      moveBox2: 'moveLeft2',
+      moveFlag: true,
       defTheme: true, // 默认主题
       isFullScreen: false,
       editable: false,
@@ -119,11 +146,14 @@ export default {
       loadAll: false, // 请求完成之后再展示页面
       pageList: [],
       combinList: [],
+      combinList2: [],
       paintConf: {},
+      paintConf2: {},
       nowPage: [],
+      nowPage2: [],
       pageSize: 0,
       pageIndex: 0,
-      refreshType: 'Automatic',
+      refreshType: '1',
       refreshTimer: null, // 每页的刷新定时器
       refreshTime: 3, // 刷新时间
       intervalTime: 5, // 定时器时间默认5s
@@ -191,9 +221,11 @@ export default {
       this.loadAll = true
       this.intervalTime = res.intervalTime || 5
       this.refreshTime = res.refreshTime || 3
+      this.refreshType = res.specialEffects
       // this.refreshType = res.refreshType;
       if (this.pageSize) {
-        this.timeFn()
+        // this.timeFn()
+        this.loadFirstPage()
         this.$nextTick(() => {
           this.setScale()
         })
@@ -204,6 +236,8 @@ export default {
       this.stopRefreshTimer()
       this.pageList = []
       this.nowPage = []
+      this.nowPage2 = []
+      this.combinList2 = []
       this.combinList = []
       this.pageIndex = 0
       this.$router.push('/editPage')
@@ -254,7 +288,49 @@ export default {
       this.isFullScreen = true
       this.interTimer()
     },
+    prevMove: function () { // 上一页
+      this.pageIndex--
+      if (this.pageIndex === 0) {
+        this.pageIndex = this.pageSize
+      }
+      if (this.refreshType === 'left') {
+        this.moveBox1 = 'moveRight1'
+        this.moveBox2 = 'moveRight2'
+      } else if (this.refreshType === 'top') {
+        this.moveBox1 = 'moveBottom1'
+        this.moveBox2 = 'moveBottom2'
+      }
+      var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
+      if (nowPageObj.composeObj) {
+        this.combinList2 = JSON.parse(nowPageObj.composeObj)
+      } else {
+        this.combinList2 = []
+      }
+      if (nowPageObj.paintObj) {
+        this.paintConf2 = JSON.parse(nowPageObj.paintObj)
+      } else {
+        this.paintConf2 = {}
+      }
+      this.setPaint()
+      this.nowPage2 = JSON.parse(nowPageObj.viewConf)
+      // 下面是move
+      this.moveFlag = !this.moveFlag // false
+      setTimeout(() => {
+        this.nowPage = JSON.parse(JSON.stringify(this.nowPage2))
+        this.combinList = JSON.parse(JSON.stringify(this.combinList2))
+        this.paintConf = JSON.parse(JSON.stringify(this.paintConf2))
+        this.setPaint()
+        this.$nextTick(() => {
+          this.moveFlag = !this.moveFlag // true
+        })
+      }, 1010)
+      this.isFullScreen && this.interTimer()
+    },
     prev: function () { // 上一页
+      if (this.refreshType != '1') {
+        this.prevMove()
+        return
+      }
       this.pageIndex--
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
@@ -304,6 +380,36 @@ export default {
         $('#mainbox').css('background', '')
         $('#mainbox').css('background-size', '')
       }
+      // add
+      if (this.paintConf2) {
+        if (this.paintConf2.bgImg) {
+          $('#mainbox2').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf2.bgImg + ')')
+        } else {
+          $('#mainbox2').css('background', '')
+        }
+        $('#mainbox2').css('opacity', this.paintConf2.opacity / 100)
+        if (this.paintConf2.bgColor) {
+          $('#paintWrap2').css('background', this.paintConf2.bgColor)
+        } else {
+          $('#paintWrap2').css('background', '')
+        }
+        if (this.paintConf2.bgStyle) {
+          var type2 = this.paintConf2.bgStyle
+          if (type2 === '1') {
+            var backgroundSize2 = '100% auto'
+          } else if (type === '2') {
+            backgroundSize2 = 'auto 100%'
+          } else {
+            backgroundSize2 = '100% 100%'
+          }
+          $('#mainbox2').css('background-size', backgroundSize2)
+        } else {
+          $('#mainbox2').css('background-size', '')
+        }
+      } else {
+        $('#mainbox2').css('background', '')
+        $('#mainbox2').css('background-size', '')
+      }
     },
     togglePlay: function () { // 开启/暂停
       this.timer ? this.stopTimer() : this.interTimer()
@@ -312,8 +418,43 @@ export default {
       this.timeFn()
       this.isFullScreen && this.interTimer()
     },
+    // 加载第一页大屏
+    loadFirstPage: function () {
+      this.pageIndex++
+      var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
+      if (nowPageObj.composeObj) {
+        this.combinList = JSON.parse(nowPageObj.composeObj)
+      } else {
+        this.combinList = []
+      }
+      if (nowPageObj.paintObj) {
+        this.paintConf = JSON.parse(nowPageObj.paintObj)
+      } else {
+        this.paintConf = {}
+      }
+      this.nowPage = JSON.parse(nowPageObj.viewConf)
+      if (this.refreshType !== '1') {
+        var nowPageObj2 = this.pageList[this.pageIndex % this.pageSize]
+        if (nowPageObj2.composeObj) {
+          this.combinList2 = JSON.parse(nowPageObj2.composeObj)
+        } else {
+          this.combinList2 = []
+        }
+        if (nowPageObj2.paintObj) {
+          this.paintConf2 = JSON.parse(nowPageObj2.paintObj)
+        } else {
+          this.paintConf2 = {}
+        }
+        this.nowPage2 = JSON.parse(nowPageObj2.viewConf)
+      }
+      this.setPaint()
+    },
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
+      if (this.refreshType != '1') {
+        this.timeFnMove()
+        return
+      }
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
@@ -330,6 +471,43 @@ export default {
       this.nowPage = JSON.parse(nowPageObj.viewConf)
       $('.tp-tip').remove()
       $('.tooltip.in').remove()
+    },
+    timeFnMove: function () { // 轮播
+      if (!this.moveFlag) return // 正在轮播中
+      if (this.refreshType === 'left') {
+        this.moveBox1 = 'moveLeft1'
+        this.moveBox2 = 'moveLeft2'
+      } else if (this.refreshType === 'top') {
+        this.moveBox1 = 'moveTop1'
+        this.moveBox2 = 'moveTop2'
+      } else if (this.refreshType === 'scale') {
+        this.moveBox1 = 'moveScale1'
+        this.moveBox2 = 'moveScale2'
+      }
+      var nowPageObj2 = this.pageList[this.pageIndex % this.pageSize]
+      if (nowPageObj2.composeObj) {
+        this.combinList2 = JSON.parse(nowPageObj2.composeObj)
+      } else {
+        this.combinList2 = []
+      }
+      if (nowPageObj2.paintObj) {
+        this.paintConf2 = JSON.parse(nowPageObj2.paintObj)
+      } else {
+        this.paintConf2 = {}
+      }
+      this.setPaint()
+      this.nowPage2 = JSON.parse(nowPageObj2.viewConf)
+      $('.tp-tip').remove()
+      $('.tooltip.in').remove()
+      this.moveFlag = !this.moveFlag // false
+      setTimeout(() => {
+        this.nowPage = JSON.parse(JSON.stringify(this.nowPage2))
+        this.combinList = JSON.parse(JSON.stringify(this.combinList2))
+        this.paintConf = JSON.parse(JSON.stringify(this.paintConf2))
+        this.setPaint()
+        this.moveFlag = !this.moveFlag // true
+      }, 1010)
+      this.pageIndex++
     },
     stopTimer: function () {
       this.timer && clearTimeout(this.timer)
@@ -771,7 +949,8 @@ export default {
 #home-html .btm-tools.full .btn-box:hover {
   opacity: 1;
 }
-#home-html #mainbox {
+#home-html #mainbox,
+#home-html #mainbox2 {
   width: 100%;
   height: 100% !important;
   position: absolute;
@@ -791,6 +970,129 @@ html[data-theme="blueWhite"] {
   }
   #home-html .ring-icon [class*="icon-n-"] {
     color: #0089ff;
+  }
+}
+// add 轮播相关
+.portlet {
+  position: absolute;
+  top:0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+// 向左移动
+.moveLeft1-leave-active {
+  animation: box-left-leave 1s;
+}
+.moveLeft2-enter-active {
+  animation: box-left-in 1s;
+}
+@keyframes box-left-leave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes box-left-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+// 向右移动
+.moveRight1-leave-active {
+  animation: box-right-leave 1s;
+}
+.moveRight2-enter-active {
+  animation: box-right-in 1s;
+}
+@keyframes box-right-leave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes box-right-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+// 向上移动
+.moveTop1-leave-active {
+  animation: box-top-leave 1s;
+}
+.moveTop2-enter-active {
+  animation: box-top-in 1s;
+}
+@keyframes box-top-leave {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes box-top-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+// 向下移动
+.moveBottom1-leave-active {
+  animation: box-bottom-leave 1s;
+}
+.moveBottom2-enter-active {
+  animation: box-bottom-in 1s;
+}
+@keyframes box-bottom-leave {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes box-bottom-in {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+// 缩放效果
+.moveScale1-leave-active {
+  animation: box-scale-leave 1s;
+}
+.moveScale2-enter-active {
+  animation: box-scale-in 1s;
+}
+@keyframes box-scale-leave {
+   from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+@keyframes box-scale-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
   }
 }
 </style>
