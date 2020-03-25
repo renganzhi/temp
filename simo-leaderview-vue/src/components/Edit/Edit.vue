@@ -1331,22 +1331,6 @@
                             :value="i">{{i}}</option>
                   </select>
                 </div>
-                <div class="form-group cols2"
-                     v-if="selectedItem.ctDataSource == 'system'">
-                  <div class="form-group"
-                       contenteditable="false"
-                       style="position: relative">
-                    <label>刷新周期(s)</label>
-                    <input class="color-w200"
-                           type="number"
-                           placeholder="刷新周期"
-                           onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
-                           v-model="selectedItem.refreshTm">
-                    <label class="error"
-                           v-if="freshVali"
-                           style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
-                  </div>
-                </div>
                 <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
                   <div class="form-group cols2">
                     <label>展示范围</label>
@@ -1400,49 +1384,65 @@
                                :name="area.name"></div>
                     </div>
                   </div>
-                  <div class="form-group cols2"
-                       v-show="selectedItem.chartType!=='v-scatter'"
-                       style="position: relative;">
-                    <!-- editPieces -->
-                    <div class="levelTips"
-                         v-show="levelTipsShow"
-                         :style="{'top': (60 + 40*this.levelChangeIndex) + 'px'}">
-                      <i class="icon-n-arrowUp"
-                         style="font-size: 30px;"></i>
-                      <div>与其余量级区间重合，是否合并为一个量级?</div>
-                      <span class="tipbtn"
-                            @click="sureLevelTips">是</span><span class="tipbtn"
-                            @click="cancelLevelTips">否</span>
-                    </div>
-                    <label class="e-legend">数据量级<i class="icon-n-tip"
-                         style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                         title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"></i></label>
-                    <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
-                                      <span>量级一</span>
-                                      <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -
-                                      <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].max">
-                                    </div> -->
-                    <div class="setMapGrad"
-                         v-for="(item, index) in editPieces"
-                         :key="index">
-                      <span>量级{{index + 1}}</span>
-                      <input class="w-90"
-                             type="number"
-                             disabled
-                             v-model="editPieces[index].min"> -
-                      <input class="w-90"
-                             type="number"
-                             :disabled="index===(editPieces.length-1)"
-                             @change="chgMapGrad(index)"
-                             v-model="editPieces[index].max">
-                      <i v-if="index===(editPieces.length-1) && index > 2"
-                         class="icon-n-deleteNew"
-                         @click="delMapLevel"></i>
-                    </div>
-                    <button type="button"
-                            class="colorToall"
-                            @click="addMapLevel">添加量级</button>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.ctDataSource == 'system'">
+                  <div class="form-group"
+                       contenteditable="false"
+                       style="position: relative">
+                    <label>刷新周期(s)</label>
+                    <input class="color-w200"
+                           type="number"
+                           placeholder="刷新周期"
+                           onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'
+                           v-model="selectedItem.refreshTm">
+                    <label class="error"
+                           v-if="freshVali"
+                           style="margin-left: 88px;margin-top: 5px;">刷新周期最小值为3</label>
                   </div>
+                </div>
+                <div class="form-group cols2"
+                      v-show="selectedItem.chartType==='v-map'"
+                      style="position: relative;">
+                  <!-- editPieces -->
+                  <div class="levelTips"
+                        v-show="levelTipsShow"
+                        :style="{'top': (60 + 40*this.levelChangeIndex) + 'px'}">
+                    <i class="icon-n-arrowUp"
+                        style="font-size: 30px;"></i>
+                    <div>与其余量级区间重合，是否合并为一个量级?</div>
+                    <span class="tipbtn"
+                          @click="sureLevelTips">是</span><span class="tipbtn"
+                          @click="cancelLevelTips">否</span>
+                  </div>
+                  <label class="e-legend">数据量级<i class="icon-n-tip"
+                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"
+                        title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"></i></label>
+                  <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
+                                    <span>量级一</span>
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -
+                                    <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].max">
+                                  </div> -->
+                  <div class="setMapGrad"
+                        v-for="(item, index) in editPieces"
+                        :key="index">
+                    <span>量级{{index + 1}}</span>
+                    <input class="w-90"
+                            type="number"
+                            disabled
+                            v-model="editPieces[index].min"> -
+                    <input class="w-90"
+                            type="number"
+                            :disabled="index===(editPieces.length-1)"
+                            @change="chgMapGrad(index)"
+                            v-model="editPieces[index].max">
+                    <i v-if="index===(editPieces.length-1) && index > 2"
+                        class="icon-n-deleteNew"
+                        @click="delMapLevel"></i>
+                  </div>
+                  <button type="button"
+                          class="colorToall"
+                          @click="addMapLevel">添加量级</button>
                 </div>
                 <div class="setMapData"
                      v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
