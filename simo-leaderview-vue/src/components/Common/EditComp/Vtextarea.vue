@@ -9,6 +9,7 @@
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
     </div>
     <textarea :style="textStyle"
+              class="homeText"
               v-model="item.ctName"
               ref="vtextarea"
               :disabled="dis"></textarea>
@@ -28,11 +29,14 @@ export default {
     }
   },
   methods: {
-    getMessage (vtextarea) {
+    getMessage () {
       // vtextarea.$el.focus() // 双击穿透，使文本框获得焦点
       if (this.item.ctDataSource === 'static') {
         this.$refs.vtextarea.focus()
       }
+    },
+    getBlur () {
+      this.$refs.vtextarea.blur()
     },
     updateHeight () {
       if (this.item.ctDataSource === 'system') {
@@ -94,8 +98,7 @@ export default {
         width: this.item.width + 'px !important',
         height: this.textHeight + 'px !important',
         color: this.item.clr + ' !important',
-        fontSize: this.item.fontSize + 'px !important',
-        border: 'none !important'
+        fontSize: this.item.fontSize + 'px !important'
       }
     }
   },
@@ -127,5 +130,10 @@ html[data-theme="blueWhite"] {
     background: transparent !important;
     background-color: transparent !important;
   }
+}
+.homeText {
+  border: none !important;
+  position: relative;
+  z-index: 1;
 }
 </style>

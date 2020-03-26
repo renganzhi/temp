@@ -333,7 +333,9 @@ export default {
       }
 
       ev.stopPropagation()
-      ev.preventDefault()
+      if (this.item.chartType !== 'text' || this.item.ctDataSource !== 'static') {
+        ev.preventDefault()
+      }
 
       this.bodyDrag = true
 

@@ -1082,12 +1082,11 @@ export default {
     }
   },
   beforeDestroy: function () {
-    // 销毁echarts
     var _echarts = $(this.$el).find('div')[0]
     var instance = $(_echarts).attr('_echarts_instance_')
     if (instance) {
-      // var chart = echarts.getInstanceById(instance) // 不知道什么原因，这里获取不到对象，后续需要解决
-      // chart.dispose() // 销毁
+      var chart = echarts.getInstanceById(instance) // 要在本页引入echarts才生效
+      chart.dispose() // 销毁
     }
   },
   destroyed: function () {
