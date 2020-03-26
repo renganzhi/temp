@@ -3610,6 +3610,13 @@ export default {
       }
       this.changeTogether('lineArea', newV)
     },
+    'selectedItem.smooth': function (newV, oldV) {
+      if (!this.selectChange && newV !== oldV) {
+        let tempId = this.selectedItem.id
+        this.saveOldData(tempId, 'smooth', oldV)
+      }
+      this.changeTogether('smooth', newV)
+    },
     'selectedItem.showPoint': function (newV, oldV) {
       if (!this.selectChange && newV !== oldV) {
         let tempId = this.selectedItem.id
