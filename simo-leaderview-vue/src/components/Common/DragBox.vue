@@ -21,6 +21,7 @@
               @bodyDown="bodyDown"
               @bodymove="bodymove"
               @dbclick="vdbclick"
+              @deactivated="deactivated"
               @contextMenu="contextMenu">
     <Vtextarea v-if="item.chartType=='text'"
                :item="item"
@@ -107,6 +108,11 @@ export default {
         this.$emit('changeStop', this.index)
       }
     },
+    deactivated () {
+      if (this.item.chartType === 'text') {
+        this.$refs.childtext.getBlur()
+      }
+    },
     resizestop (item, attr) {
       item.width = attr.width
       item.height = attr.height
@@ -134,8 +140,9 @@ export default {
       this.$emit('selected', item, 'move', 'item', this.index)
     },
     vdbclick () { // 双击
-      if (this.item.chartType === 'text' || this.item.chartType === 'marquee') {
-        this.$refs.childtext.getMessage(this.$refs.childtext)
+      // this.item.chartType === 'text'
+      if (this.item.chartType === 'marquee') {
+        this.$refs.childtext.getMessage()
       }
     },
     contextMenu (item, ev) {
