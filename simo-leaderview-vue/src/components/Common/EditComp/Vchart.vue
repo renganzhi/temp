@@ -274,6 +274,12 @@ export default {
       } else if (newV.rows && newV.rows.length > 0) {
         this.empty = false
       } else {
+        if (this.item.chartData.columns) {
+          this.item.chartData.columns = []
+        }
+        if (this.item.chartData.unit) {
+          this.item.chartData.unit = ''
+        }
         this.empty = true
       }
       if (this.item.chartType === 've-histogram') {
@@ -341,6 +347,10 @@ export default {
         this.settings.stack = { _key: _value }
       }
       this.keyId = new Date().getTime() + parseInt(Math.random() * 10000)
+      if (this.item.chartType === 've-line') {
+        this.extend.xAxis.axisLine.show = !this.empty
+        this.extend.yAxis.axisLine.show = !this.empty
+      }
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
@@ -351,6 +361,16 @@ export default {
   beforeMount: function () {
     if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
       this.empty = true
+      if (this.item.chartData.columns) {
+        this.item.chartData.columns = []
+      }
+      if (this.item.chartData.unit) {
+        this.item.chartData.unit = ''
+      }
+      if (this.item.chartType === 've-line') {
+        this.extend.xAxis.axisLine.show = !this.empty
+        this.extend.yAxis.axisLine.show = !this.empty
+      }
     }
   },
   methods: {
