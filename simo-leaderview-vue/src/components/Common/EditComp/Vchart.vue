@@ -326,6 +326,10 @@ export default {
       }
       if (this.item.chartType === 've-radar') {
         if (newV && newV.columns) {
+          if (newV.columns.length < 2) {
+            this.item.chartData.rows = []
+            this.item.chartData.columns = []
+          }
           var indicatorArr = []
           var names = newV.columns.slice(1, newV.columns.length)
           if (newV.rows) {
@@ -359,7 +363,11 @@ export default {
     }
   },
   beforeMount: function () {
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+    if (this.item.chartType === 've-gauge') {
+      if (!this.item.chartData.value && this.item.chartData.value != 0) {
+        this.empty = true
+      }
+    } else if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
       this.empty = true
       if (this.item.chartData.columns) {
         this.item.chartData.columns = []
