@@ -363,7 +363,11 @@ export default {
     }
   },
   beforeMount: function () {
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
+    if (this.item.chartType === 've-gauge') {
+      if (!this.item.chartData.value && this.item.chartData.value != 0) {
+        this.empty = true
+      }
+    } else if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length === 0) {
       this.empty = true
       if (this.item.chartData.columns) {
         this.item.chartData.columns = []
