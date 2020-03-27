@@ -21,7 +21,7 @@
       <AddPage :showModal="addPage"
                @hideModal="hideModal"></AddPage>
     </div>
-    <transition :name="moveBox1">
+    <transition v-else :name="moveBox1">
       <div class="portlet light bordered flex-1"
           v-show="moveFlag"
           id="paintWrap">
