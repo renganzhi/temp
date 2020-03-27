@@ -326,6 +326,10 @@ export default {
       }
       if (this.item.chartType === 've-radar') {
         if (newV && newV.columns) {
+          if (newV.columns.length < 2) {
+            this.item.chartData.rows = []
+            this.item.chartData.columns = []
+          }
           var indicatorArr = []
           var names = newV.columns.slice(1, newV.columns.length)
           if (newV.rows) {
