@@ -363,6 +363,7 @@ var compsArr = [{
   splitSize: 1,
   chartData: morenData.times,
   lineArea: false, // 是否为区域图
+  smooth: 'true',
   showPoint: 'true' // 是否标点
 },
 {
