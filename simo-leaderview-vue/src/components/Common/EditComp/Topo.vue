@@ -33,16 +33,10 @@ export default {
   },
   methods: {
     initTp: function () {
-      if (this.item.tpId === '') {
+      if (!this.item.tptype) {
         return
       }
-      if (this.topo) {
-        /* var viewbox = this.topo.tp.svgContainer.attr('viewBox');
-         this.topo.tp.destoryed();
-         this.topo = this.topo.tp = null; */
-        this.topo && this.topo.refreshTp() // 刷新网络拓扑
-        return
-      }
+      $(this.$el).css('opacity', '1')
       if (this.item.tptype == 'business') {
         // 业务拓扑 'cd520898-231c-4fae-959a-2287643ad6ec'
         if (this.busTp) {
@@ -55,6 +49,10 @@ export default {
         // initMapTopo({el: this.$el, mapCode: '510000', mpId: '34f820b1-3fd2-4fa3-9ddb-1c87fd7654fc', userId: ''})
         initMapTopo({el: this.$el, mapCode: this.item.chartData.mapCode, mpId: this.item.chartData.mpId, userId: this.item.chartData.userId})
       } else {
+        if (this.topo) {
+          this.topo && this.topo.refreshTp() // 刷新网络拓扑
+          return
+        }
         // 网络拓扑 domain
         this.topo = new MainTp({
           el: this.$el,
@@ -67,8 +65,11 @@ export default {
     },
     clearTp: function () {
       if (this.topo) {
-        this.topo.tp.destoryed()
-        this.topo = this.topo.tp = null
+        if (this.topo.tp) {
+          this.topo.tp.destoryed()
+          this.topo.tp = null
+        }
+        this.topo = null
       }
       if (this.busTp) {
         this.busTp = null
@@ -77,16 +78,23 @@ export default {
     }
   },
   mounted: function () {
-    this.initTp()
+    if (this.item.tptype !== 'maptp' && !this.item.tpId) {
+    } else {
+      this.initTp()
+    }
   },
   watch: {
     'item.chartData': function () {
       this.clearTp()
       this.initTp()
     },
-    'item.tpId': function () {
+    'item.tpId': function (newV) {
       this.clearTp()
       this.initTp()
+      if (this.item.tptype !== 'maptp' && !newV) {
+        $(this.$el).css('opacity', '1')
+        $(this.$el).append('<div class="v-charts-data-empty">请选择拓扑</div>')
+      }
     },
     'item.refresh': function (newV) {
       if (newV) {
