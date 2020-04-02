@@ -479,6 +479,7 @@ var compsArr = [{
   width: 300,
   height: 300,
   tpId: '',
+  cityColor: '',
   chartData: {}
 },
 {

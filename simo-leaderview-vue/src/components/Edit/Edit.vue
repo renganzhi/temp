@@ -505,6 +505,20 @@
                 </div>
               </div>
 
+              <!-- 地图拓扑背景色 -->
+              <div v-if="selectedItem.chartType=='topo' && selectedItem.tptype === 'maptp'">
+                <div class="m-gap form-group"
+                     >图表样式</div>
+                <div class="form-group cols2">
+                  <label>地图背景色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.cityColor"
+                            :key="26"
+                            type="cityColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+              </div>
               <!--表格\文本框配置-->
               <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time' || selectedItem.secondType == 'liquidfill'">
                 <div class="m-gap form-group"

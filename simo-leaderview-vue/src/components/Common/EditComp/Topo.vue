@@ -1,6 +1,6 @@
 <template>
   <div :style="barBoxStyle"
-       class="main_topo">
+       class="main_topo" :class="'map' + item.id">
     <div class="v-charts-data-empty"
          v-if="!item.tpId">请选择拓扑</div>
     <div width="100%"
@@ -81,12 +81,21 @@ export default {
     if (this.item.tptype !== 'maptp' && !this.item.tpId) {
     } else {
       this.initTp()
+      if (this.item.cityColor) {
+        $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
+      }
     }
   },
   watch: {
+    'item.cityColor': function (newV) {
+      $('.map' + this.item.id).find('.province').css('fill', newV)
+    },
     'item.chartData': function () {
       this.clearTp()
       this.initTp()
+      if (this.item.tptype === 'maptp' && this.item.cityColor) {
+        $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
+      }
     },
     'item.tpId': function (newV) {
       this.clearTp()
