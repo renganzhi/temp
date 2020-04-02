@@ -866,6 +866,9 @@ export default {
             this.$set(item, 'cityColor', '#828bac')
           }
         }
+        if (item.chartType === 'topo' && !item.cityColor) {
+          this.$set(item, 'cityColor', '')
+        }
         // 以上为四期新增
         if (item.chartType === 've-gauge' && !item.bgClr) {
           this.$set(item, 'bgClr', '#657992')
@@ -938,6 +941,9 @@ export default {
               if (!list.cityColor) {
                 this.$set(list, 'cityColor', '#828bac')
               }
+            }
+            if (list.chartType === 'topo' && !list.cityColor) {
+              this.$set(list, 'cityColor', '')
             }
             if (list.chartType === 've-radar') {
               if (!list.splitColor) {
