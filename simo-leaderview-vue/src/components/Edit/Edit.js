@@ -2365,34 +2365,43 @@ export default {
         data: datas,
         type: curConf.method,
         success: function (data) {
-          data.obj = data.obj || {}
-          if (data.obj.colors) {
-            _this.selectedItem.ctColors = data.obj.colors
-            _this.selectedItem.colorType = 'defalut'
-          } else {
-            if (_this.selectedItem.colorType === 'defalut') {
-              _this.selectedItem.ctColors = _this.defalutColors.concat()
+          if (data.success) {
+            data.obj = data.obj || {}
+            if (data.obj.colors) {
+              _this.selectedItem.ctColors = data.obj.colors
+              _this.selectedItem.colorType = 'defalut'
+            } else {
+              if (_this.selectedItem.colorType === 'defalut') {
+                _this.selectedItem.ctColors = _this.defalutColors.concat()
+              }
             }
-          }
-          if (_this.selectedItem.chartType === 'v-map') {
-            _this.selectMapData = data.obj
-            _this.mapDataToChart()
-            _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
-          } else {
-            _this.selectedItem.chartData = data.obj
-          }
-          _this.selectedItem.url = curConf.url
-          _this.selectedItem.method = curConf.method
-          _this.selectedItem.params = param
-          if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
-            _this.selectedItem.ctName = data.obj.info
-            if (_this.selectedItem.chartType === 'text') {
+            if (_this.selectedItem.chartType === 'v-map') {
+              _this.selectMapData = data.obj
+              _this.mapDataToChart()
+              _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+            } else {
               _this.selectedItem.chartData = data.obj
             }
+            _this.selectedItem.url = curConf.url
+            _this.selectedItem.method = curConf.method
+            _this.selectedItem.params = param
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+              _this.selectedItem.ctName = data.obj.info
+              if (_this.selectedItem.chartType === 'text') {
+                _this.selectedItem.chartData = data.obj
+              }
+            }
+          } else {
+            if (gbs.inDev) {
+              Notification({
+                message: data.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', data.msg, 'error')
+            }
           }
-          // else if (_this.selectedItem.chartType === 'v-scatter') {
-          //   _this.selectedItem.chartData = JSON.parse(JSON.stringify(_this.alertMapData))
-          // }
         },
         error: function () {
           if (gbs.inDev) {
