@@ -2396,10 +2396,10 @@ export default {
               Notification({
                 message: data.msg,
                 position: 'bottom-right',
-                customClass: 'toast toast-error'
+                customClass: 'toast toast-info'
               })
             } else {
-              tooltip('', data.msg, 'error')
+              tooltip('', data.msg, 'info')
             }
           }
         },
