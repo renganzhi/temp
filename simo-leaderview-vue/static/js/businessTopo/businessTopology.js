@@ -101,16 +101,18 @@ businessTopology.prototype = {
     } else {
       this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
     }
-    this.svgImage = d3.select(this.ele).append('img').attr({
-      'src': gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
-      'width': '100%',
-      'height': '100%',
-      'class': 'backgroundImage'
-    }).style({
-      'position': 'absolute',
-      'left': '0',
-      'top': '0'
-    })
+    if (this.config.backgroundIconId || this.config.backgroundIconIdDefault) {
+      this.svgImage = d3.select(this.ele).append('img').attr({
+        'src': gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
+        'width': '100%',
+        'height': '100%',
+        'class': 'backgroundImage'
+      }).style({
+        'position': 'absolute',
+        'left': '0',
+        'top': '0'
+      })
+    }
 
     this.svgContainer = d3.select(this.ele).append('svg:svg').attr({
       'width': '100%',
