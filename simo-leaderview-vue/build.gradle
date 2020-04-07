@@ -22,10 +22,10 @@ dependencies {
   testCompile "junit:junit:4.12"
 }
 
-task domesticNpmInstall(type: NpmTask) {
-  group = 'node'
-  args = ['ci']
-}
+// task domesticNpmInstall(type: NpmTask) {
+//  group = 'node'
+//  args = ['ci']
+// }
 
 
 task npmBuild(type: NpmTask, dependsOn: domesticNpmInstall) {
