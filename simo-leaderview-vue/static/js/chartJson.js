@@ -440,7 +440,7 @@ var compsArr = [{
   bgClr: '',
   direction: 'left',
   speed: 2,
-  clr: '#c2c6d7',
+  clr: '#666f8b',
   bdClr: '',
   ctName: '这是一个跑马灯的演示demo，双击可对文案进行编辑'
 },
