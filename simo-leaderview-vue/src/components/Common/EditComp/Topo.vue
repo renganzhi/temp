@@ -74,7 +74,7 @@ export default {
       if (this.busTp) {
         this.busTp = null
       }
-      // $(this.$el).empty()
+      $(this.$el).empty()
     }
   },
   mounted: function () {
@@ -95,6 +95,14 @@ export default {
       this.initTp()
       if (this.item.tptype === 'maptp' && this.item.cityColor) {
         $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
+      }
+    },
+    'item.tptype': function (newV) {
+      this.clearTp()
+      this.initTp()
+      if (this.item.tptype !== 'maptp' && !this.item.tpId) {
+        $(this.$el).css('opacity', '1')
+        $(this.$el).append('<div class="v-charts-data-empty">请选择拓扑</div>')
       }
     },
     'item.tpId': function (newV) {

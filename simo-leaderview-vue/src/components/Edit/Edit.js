@@ -2434,7 +2434,7 @@ export default {
         } else {
           this.$set(this.selectedItem, 'tptype', 'maptp')
         }
-        this.selectedItem.tpId = param.topoId
+        this.$set(this.selectedItem, 'tpId', param.topoId)
       }
     },
     // 以下为静态数据的输入校验
