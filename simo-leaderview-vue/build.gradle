@@ -28,12 +28,12 @@ dependencies {
 // }
 
 
-task npmBuild(type: NpmTask, dependsOn: domesticNpmInstall) {
+task npmBuild(type: NpmTask) {
   group = 'node'
   args = ['run', 'build']
 }
 
-task npmDev(type: NpmTask, dependsOn: domesticNpmInstall) {
+task npmDev(type: NpmTask) {
   group = 'node'
   args = ['run', 'dev']
 }
