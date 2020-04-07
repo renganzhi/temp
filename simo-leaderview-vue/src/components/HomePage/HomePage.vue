@@ -609,7 +609,7 @@ export default {
                 if (d.chartType === 'v-map') {
                   d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
                 } else {
-                  d.chartData = res.obj
+                  d.chartData = res.obj // 会触发刷新
                 }
               }
             },
@@ -688,6 +688,9 @@ export default {
               }
             }
           })
+        }
+        if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
+          ct.$set(d, 'id', new Date().getTime() + parseInt(Math.random() * 10000))
         }
       })
       this.$nextTick(() => {
