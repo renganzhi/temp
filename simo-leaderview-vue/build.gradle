@@ -22,18 +22,18 @@ dependencies {
   testCompile "junit:junit:4.12"
 }
 
-// task domesticNpmInstall(type: NpmTask) {
-//  group = 'node'
-//  args = ['ci']
-// }
+task domesticNpmInstall(type: NpmTask) {
+  group = 'node'
+  args = ['ci']
+}
 
 
-task npmBuild(type: NpmTask) {
+task npmBuild(type: NpmTask, dependsOn: domesticNpmInstall) {
   group = 'node'
   args = ['run', 'build']
 }
 
-task npmDev(type: NpmTask) {
+task npmDev(type: NpmTask, dependsOn: domesticNpmInstall) {
   group = 'node'
   args = ['run', 'dev']
 }
