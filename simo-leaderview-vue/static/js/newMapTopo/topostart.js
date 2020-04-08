@@ -140,6 +140,9 @@ function newDomainTopo (mapId, userId, callback) { // 地图拓扑数据加载
 
 function initMapTopo (data) {
   // mpTopo.reset()
+  if (!data.mapCode) {
+    return
+  }
   var mapTp = new mapTopology({
     selector: data.el,
     isShow: true,
