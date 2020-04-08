@@ -106,6 +106,9 @@ MainTp.prototype = {
     var _this = this
     var tp = this.tp
     var rg = this.rg
+    if (!tp) {
+      return
+    }
     tp.addNodes(this.nodes)
     tp.addLinks(this.links)
     tp.update()
