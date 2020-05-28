@@ -5,7 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
-import levelMapName from './enum'
+// import levelMapName from './enum'
 function Topology (opt, topoId) {
   this.defaultConfig = {
     width: 64,
@@ -71,6 +71,11 @@ function addUnit (value, unit, index) {
   }
 }
 
+function timestampformat (timestamp) {
+  if (timestamp) {
+    return (new Date(timestamp)).format('yyyy-MM-dd hh:mm:ss')
+  }
+}
 // 保留两位小数，byte 转换 成其他
 function bytesToSize (bytes, index) {
   if (bytes === 'undefined' || bytes === 'NaN' || bytes === 'null' || bytes === false) {
@@ -755,6 +760,7 @@ Topology.prototype = {
   },
   nodeTip: function (d) { // TODO 添加异步请求数据显示
     d.alertLevel = null
+    d.alertLevelText = ''
     var label = [{
       name: '名称',
       key: 'name'
@@ -780,7 +786,7 @@ Topology.prototype = {
       unit: '%'
     }, {
       name: '告警等级',
-      key: 'alertLevel'
+      key: 'alertLevelText'
     }]
     if (d.nodeType == 'NE') {
       var indicatorNames = []
@@ -804,6 +810,7 @@ Topology.prototype = {
             if (res.success == true) {
               var data = res.obj
               d.alertLevel = data.alertLevel || d.alertLevel
+              d.alertLevelText = data.alertLevelText || d.alertLevelText
               if (data.indicators) {
                 $
                   .each(
@@ -860,6 +867,7 @@ Topology.prototype = {
           if (res.success == true) {
             var data = res.obj
             d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
           }
         }
       })
@@ -874,7 +882,7 @@ Topology.prototype = {
         key: 'runStatusText'
       }, {
         name: '告警等级',
-        key: 'alertLevel'
+        key: 'alertLevelText'
       }]
     }
 
@@ -884,12 +892,12 @@ Topology.prototype = {
       }
       var unit = [o.unit] || ''
       var v = addUnit(d[o.key], unit)
-      if (o.key == 'alertLevel') {
-        v = levelMapName[parseInt(v)]
-      }
+      // if (o.key == 'alertLevel') {
+      //   v = levelMapName[parseInt(v)]
+      // }
       v = ((v || v === 0) ? v : '--')
       if (d.runStatus == 'Unknow' &&
-                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevel')) { // 资源状态为未知，不展示cpu、内存、告警
+                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
         v = '--'
       }
       str += (o.name + '：' + v + '\n')
@@ -908,6 +916,7 @@ Topology.prototype = {
           if (res.success == true) {
             var data = res.obj
             d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
           }
         }
       })
@@ -939,7 +948,7 @@ Topology.prototype = {
       unit: '%'
     }, {
       name: '告警等级',
-      key: 'alertLevel'
+      key: 'alertLevelText'
     }]
     var str = ''
     $.each(label, function (i, o) {
@@ -950,9 +959,9 @@ Topology.prototype = {
         var v = addUnit(d[o.key], unit)
       }
 
-      if (o.key == 'alertLevel') {
-        v = levelMapName[parseInt(v)]
-      }
+      // if (o.key == 'alertLevel') {
+      //   v = levelMapName[parseInt(v)]
+      // }
       if (o.key == 'source' || o.key == 'target') {
         if (d[o.key].nodeType == 'SubnetTopo') {
           v = d[o.key + 'NeName'] + '[' + d[o.key + 'Ip'] + ']'
