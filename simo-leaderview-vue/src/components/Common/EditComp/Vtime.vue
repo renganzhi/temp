@@ -3,8 +3,9 @@
        :style="timeStyle">{{showTime}}</div>
 </template>
 <script>
-let moment = require('moment')
 // import moment from 'moment'
+import { mapGetters } from 'vuex'
+let moment = require('moment')
 export default {
   name: 'vtime',
   props: ['item'],
@@ -13,7 +14,7 @@ export default {
       showTime: '',
       serverceTime: '',
       refreshTime: 1, // 设置为1误差最小
-      timeoutId: 0,
+      timeoutId: null,
       sizeObj: {
         'f12': { w: 44, h: 17 },
         'f13': { w: 48, h: 18 },
@@ -29,6 +30,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'pageVisiable'
+    ]),
     timeStyle: function () {
       return {
         width: this.item.width + 'px',
@@ -108,6 +112,18 @@ export default {
     }
   },
   watch: {
+    pageVisiable: function (newV) {
+      if (newV) {
+        if (this.item.timeSource === 'system') {
+          this.serviceTimeFn()
+        } else {
+          this.localTimeFn()
+        }
+      } else {
+        this.timeoutId && clearTimeout(this.timeoutId)
+        this.timeoutId = null
+      }
+    },
     'item.timeSource': function (newV, oldV) {
       this.timeoutId && clearTimeout(this.timeoutId)
       // if (newV === 'system') {
@@ -162,6 +178,8 @@ export default {
   },
   beforeDestroy () {
     this.timeoutId && clearTimeout(this.timeoutId)
+    this.timeoutId = null
+    this.sizeObj = null
   },
   destroyed: function () {
   }

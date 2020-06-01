@@ -20,6 +20,7 @@
   </component>
 </template>
 <script>
+import echarts from 'echarts'
 import { gbs } from '@/config/settings'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
@@ -374,8 +375,8 @@ export default {
     var _echarts = $(this.$el).find('div')[0]
     var instance = $(_echarts).attr('_echarts_instance_')
     if (instance) {
-      // var chart = echarts.getInstanceById(instance) // 不知道什么原因，这里获取不到对象，后续需要解决
-      // chart.dispose() // 销毁
+      var chart = echarts.getInstanceById(instance)
+      chart.dispose() // 销毁
     }
   },
   destroyed: function () {

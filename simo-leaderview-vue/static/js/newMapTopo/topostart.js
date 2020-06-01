@@ -7,7 +7,7 @@ var mpTopo = {
   initTopo: function (mapTp, userId, mpId, el) {
     // this.initToolBar()
     this.getNedata(mapTp, userId, mpId)
-    this.setRefreshTimer(mapTp)
+    // this.setRefreshTimer(mapTp)
   },
   setRefreshTimer: function (mapTp) { // 设置全局刷新定时器
     // clearInterval(baseData.mapTopo.refreshTimer);

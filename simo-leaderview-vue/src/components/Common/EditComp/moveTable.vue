@@ -86,6 +86,7 @@
 </template>
 <script>
 import { titleShowFn } from '#/js/public'
+import { mapGetters } from 'vuex'
 export default {
   name: 'moveTable',
   props: ['item', 'moving'],
@@ -102,6 +103,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'pageVisiable'
+    ]),
     boxStyle: function () {
       return {
         width: this.item.width + 'px !important',
@@ -138,6 +142,14 @@ export default {
     }
   },
   watch: {
+    pageVisiable: function (newV) {
+      if (newV) {
+        this.initLeftMove()
+      } else {
+        this.intervalId && clearTimeout(this.intervalId)
+        this.intervalId = null
+      }
+    },
     'item.chartData': function (newV, oldV) {
       this.pageNum = Number(this.item.pageNum)
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
@@ -145,7 +157,7 @@ export default {
         this.tableEmpty = true
         this.page1Data = []
         this.page2Data = []
-        this.intervalId && clearInterval(this.intervalId)
+        this.intervalId && clearTimeout(this.intervalId)
         return
       } else {
         this.tableEmpty = false
@@ -179,7 +191,7 @@ export default {
   methods: {
     initTopMove () {
       if (this.intervalId) {
-        clearInterval(this.intervalId)
+        clearTimeout(this.intervalId)
       }
       this.nowPage = 0
       if (this.item.chartData.rows.length > this.pageNum) {
@@ -200,14 +212,21 @@ export default {
     initLeftMove () {
       // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
-        clearInterval(this.intervalId)
+        clearTimeout(this.intervalId)
       }
+      var _this = this
       this.nowPage = 0
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
+      if ($(this.$el).find('[title]').length > 0) {
+        $(this.$el).find('[title]').tooltip('destroy')
+      }
+      if ($('#paintWrap').find('[title]').length > 0) {
+        $('#paintWrap').find('[title]').tooltip('destroy')
+      }
       this.$nextTick(() => {
         if ($('#home-html').length > 0) {
-          titleShowFn('bottom', $('#home-html'), '#home-html')
+          titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
         } else {
           titleShowFn('bottom', $(this.$el), this.$el)
         }
@@ -218,32 +237,39 @@ export default {
           totalPage--
         }
         if (!this.moving || this.moving === 'false') return
-        this.intervalId = setInterval(() => {
-          this.tableMove = !this.tableMove
-          if (this.tableMove) {
-            this.nowPage++
-            if (this.nowPage === totalPage) {
-              this.nowPage = -1
-              this.page1Data = this.item.chartData.rows.slice(this.pageNum * totalPage, this.pageNum * (totalPage + 1))
+        this.intervalId = setTimeout(function tableFn () {
+          _this.tableMove = !_this.tableMove
+          if (_this.tableMove) {
+            _this.nowPage++
+            if (_this.nowPage === totalPage) {
+              _this.nowPage = -1
+              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
             } else {
-              this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
+              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
             }
-            this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
+            _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
           }
-          this.$nextTick(() => {
+          if ($(_this.$el).find('[title]').length > 0) {
+            $(_this.$el).find('[title]').tooltip('destroy')
+          }
+          if ($('#paintWrap').find('[title]').length > 0) {
+            $('#paintWrap').find('[title]').tooltip('destroy')
+          }
+          _this.$nextTick(() => {
             if ($('#home-html').length > 0) {
-              titleShowFn('bottom', $('#home-html'), '#home-html')
+              titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
             } else {
-              titleShowFn('bottom', $(this.$el), this.$el)
+              titleShowFn('bottom', $(_this.$el), _this.$el)
             }
           })
-        }, this.intervalTime)
+          _this.intervalId = setTimeout(tableFn, _this.intervalTime)
+        }, _this.intervalTime)
       }
     },
     initMove () {
       // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
-        clearInterval(this.intervalId)
+        clearTimeout(this.intervalId)
       }
       if (this.item.chartData.rows.length > this.pageNum) {
         let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
@@ -288,14 +314,12 @@ export default {
   },
   beforeDestroy: function () {
     if (this.intervalId) {
-      clearInterval(this.intervalId)
+      clearTimeout(this.intervalId)
+      this.intervalId = null
     }
-  },
-  destroyed: function () {
-    if ($(this.$el).find('.tooltip').length > 0) {
+    if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
-    // this.$destroy(true)
   }
 }
 </script>

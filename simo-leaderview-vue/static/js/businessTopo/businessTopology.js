@@ -5,7 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
-import levelMapName from './../topo/enum'
+// import levelMapName from './../topo/enum'
 function businessTopology (opt, businessId) {
   this.defaultConfig = {
     width: 64,
@@ -638,7 +638,7 @@ businessTopology.prototype = {
     	var str = ''
     if (d.nodeType == 'NE') {
         	var label = [{name: '名称', key: 'name'}, {name: 'IP地址', key: 'ip'}, {name: '资源状态', key: 'runStatusText'}, /* {name:'设备类型',key:'neClass'},{name:'厂商',key:'vendor'},
-                         {name:'设备状态',key:'runStatusText'},{name:'CPU利用率',key:'cpuAvg',unit:'%'},{name:'内存利用率',key:'memoryAvg',unit:'%'}, */{name: '告警等级', key: 'alertLevel'}]
+                         {name:'设备状态',key:'runStatusText'},{name:'CPU利用率',key:'cpuAvg',unit:'%'},{name:'内存利用率',key:'memoryAvg',unit:'%'}, */{name: '告警等级', key: 'alertLevelText'}]
       var indicatorNames = []
       if (d.baseNeClass == 'host') {
         indicatorNames = ['cpu_usage_avg', 'physical_memory']
@@ -655,6 +655,7 @@ businessTopology.prototype = {
           if (res.success == true) {
             var data = res.obj
             d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
             if (data.indicators) {
               $.each(data.indicators, function (idx, idc) {
                 if (!idc.indicatorValue) {
@@ -693,24 +694,26 @@ businessTopology.prototype = {
       $.each(label, function (i, o) {
         var unit = [o.unit] || ''
         var v = addUnit(d[o.key], unit)
-        if (o.key == 'alertLevel') {
-          v = levelMapName[parseInt(v)]
-        }
+        // if (o.key == 'alertLevel') {
+        //   v = levelMapName[parseInt(v)]
+        // }
         v = ((v || v === 0) ? v : '--')
-        if (d.runStatus == 'Unknow' && (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevel')) { // 资源状态为未知，不展示cpu、内存、告警
+        if (d.runStatus == 'Unknow' && (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
           v = '--'
         }
         str += (o.name + '：' + v + '\n')
       })
     } else if (d.nodeType == 'Business') {
         	var label = [{name: '健康度', key: 'health'}, {name: '可用率', key: 'availableRate', unit: '%'}, {name: '不可用次数', key: 'downTimes'}, /* {name:'不可用时长',key:'unavailableTime'}, */
-        {name: '繁忙度', key: 'busy_rate', unit: '%'}, {name: 'MTTR', key: 'MTTR'}, {name: 'MTBF', key: 'MTBF'}, {name: '告警等级', key: 'alertLevel'}, {name: '责任人', key: 'liableUser'}]
+        {name: '繁忙度', key: 'busy_rate', unit: '%'}, {name: 'MTTR', key: 'MTTR'}, {name: 'MTBF', key: 'MTBF'}, {name: '告警等级', key: 'alertLevelText'}, {name: '责任人', key: 'liableUser'}]
       busTopoApi.bnsTipInfo(d.neId, function (datas) {
         		$.each(label, function (i, o) {
         			var v = datas[o.key]
-          if (o.key == 'alertLevel') {
-            v = v && v.maxLevel && v.maxLevel != 0 ? levelMapName[v.maxLevel] : '--'
-          } else if (o.key == 'liableUser') {
+          // if (o.key == 'alertLevel') {
+          //   // v = v && v.maxLevel && v.maxLevel != 0 ? levelMapName[v.maxLevel] : '--'
+          //   v = v && v.maxLevelText || '--'
+          // } else
+          if (o.key == 'liableUser') {
             v = v ? (v.userName + '（' + v.employeeCode + '）') : '--'
           } else {
             v = v && v != '' ? v : '--'
@@ -1345,6 +1348,12 @@ function addUnit (value, unit, index) {
       } else {
         return '--'
       }
+  }
+}
+
+function timestampformat (timestamp) {
+  if (timestamp) {
+    return (new Date(timestamp)).format('yyyy-MM-dd hh:mm:ss')
   }
 }
 

@@ -4,7 +4,7 @@
  *  config:{}   //全局设置
  * }
  * */
-import levelMapName from './../topo/enum'
+// import levelMapName from './../topo/enum'
 import { gbs } from '@/config/settings'
 function mapTopology (opt) {
   this.defaultConfig = {
@@ -390,6 +390,7 @@ mapTopology.prototype = {
   },
   nodeTip: function (d) { // TODO 添加异步请求数据显示
     d.alertLevel = null
+    d.alertLevelText = ''
     var label = [{
       name: '名称',
       key: 'name'
@@ -415,7 +416,7 @@ mapTopology.prototype = {
       unit: '%'
     }, {
       name: '告警等级',
-      key: 'alertLevel'
+      key: 'alertLevelText'
     }]
     if (d.nodeType == 'NE') {
       var indicatorNames = []
@@ -495,6 +496,7 @@ mapTopology.prototype = {
           if (res.success == true) {
             var data = res.obj
             d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
           }
         }
       })
@@ -507,12 +509,12 @@ mapTopology.prototype = {
       }
       var unit = [o.unit] || ''
       var v = addUnit(d[o.key], unit)
-      if (o.key == 'alertLevel') {
-        v = levelMapName[parseInt(v)]
-      }
+      // if (o.key == 'alertLevel') {
+      //   v = levelMapName[parseInt(v)]
+      // }
       v = ((v || v === 0) ? v : '--')
       if (d.runStatus == 'Unknow' &&
-                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevel')) { // 资源状态为未知，不展示cpu、内存、告警
+                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
         v = '--'
       }
       str += (o.name + '：' + v + '\n')
@@ -531,6 +533,7 @@ mapTopology.prototype = {
           if (res.success == true) {
             var data = res.obj
             d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
           }
         }
       })
@@ -562,7 +565,7 @@ mapTopology.prototype = {
       unit: '%'
     }, {
       name: '告警等级',
-      key: 'alertLevel'
+      key: 'alertLevelText'
     }]
     var str = ''
     $.each(label, function (i, o) {
@@ -573,9 +576,9 @@ mapTopology.prototype = {
         var v = addUnit(d[o.key], unit)
       }
 
-      if (o.key == 'alertLevel') {
-        v = levelMapName[parseInt(v)]
-      }
+      // if (o.key == 'alertLevel') {
+      //   v = levelMapName[parseInt(v)]
+      // }
       if (o.key == 'source' || o.key == 'target') {
         if (d[o.key].nodeType == 'SubnetTopo') {
           v = d[o.key + 'NeName'] + '[' + d[o.key + 'Ip'] + ']'
@@ -1054,6 +1057,12 @@ function addUnit (value, unit, index) {
       } else {
         return '--'
       }
+  }
+}
+
+function timestampformat (timestamp) {
+  if (timestamp) {
+    return (new Date(timestamp)).format('yyyy-MM-dd hh:mm:ss')
   }
 }
 
