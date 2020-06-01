@@ -39,7 +39,7 @@
                     title
                     :data-original-title="tdText"
                     :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
-              <span data-toggle='tooltip'
+                <span data-toggle='tooltip'
                     title
                     :data-original-title="tdText"
                     v-else>{{tdText}}</span>
@@ -104,14 +104,23 @@ export default {
   },
   watch: {
     'item.chartData': function (newV, oldV) {
+      if (JSON.stringify(newV) === JSON.stringify(oldV)) {
+        return
+      }
       if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
         this.tableEmpty = true
       } else {
         this.tableEmpty = false
       }
       if ($('#home-html').length > 0) {
-        titleShowFn('bottom', $('#home-html'), '#home-html')
+        if ($('#paintWrap').find('[title]').length > 0) {
+          $('#paintWrap').find('[title]').tooltip('destroy')
+        }
+        titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
       } else {
+        if ($(this.$el).find('[title]').length > 0) {
+          $(this.$el).find('[title]').tooltip('destroy')
+        }
         titleShowFn('bottom', $(this.$el), this.$el)
       }
     }
@@ -137,13 +146,13 @@ export default {
       this.tableEmpty = true
     }
     if ($('#home-html').length > 0) {
-      titleShowFn('bottom', $('#home-html'), '#home-html')
+      titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
     } else {
       titleShowFn('bottom', $(this.$el), this.$el)
     }
   },
-  destroyed: function () {
-    if ($(this.$el).find('.tooltip').length > 0) {
+  beforeDestroy: function () {
+    if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
     // this.$destroy(true)

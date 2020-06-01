@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'marquee',
   props: ['item', 'disabled'],
@@ -161,6 +162,7 @@ export default {
     },
     stopmove () {
       this.intervalId && clearTimeout(this.intervalId)
+      this.intervalId = null
     },
     checkEnter (e) {
       // 禁止换行
@@ -176,6 +178,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'pageVisiable'
+    ]),
     dis () {
       return !this.disabled
     },
@@ -257,6 +262,13 @@ export default {
     }
   },
   watch: {
+    pageVisiable: function (newV) {
+      if (newV) {
+        this.initMove()
+      } else {
+        this.stopmove()
+      }
+    },
     textWidth: function () {
       if (this.stop) return
       this.$nextTick(() => {
@@ -311,7 +323,7 @@ export default {
     this.initMove()
   },
   beforeDestroy: function () {
-    // this.stopmove()
+    this.stopmove()
   },
   destroyed: function () {
   }

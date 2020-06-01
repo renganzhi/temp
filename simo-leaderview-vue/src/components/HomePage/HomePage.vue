@@ -144,6 +144,7 @@ export default {
       addPage: false,
       access: 'r',
       loadAll: false, // 请求完成之后再展示页面
+      xhrArr: [], // 刷新数据的ajax请求，离开页面时取消
       pageList: [],
       combinList: [],
       combinList2: [],
@@ -188,13 +189,15 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'pageVisiable',
       'videoTims'
     ])
   },
   methods: {
     ...mapActions([
       'changeAlertInfo',
-      'initVideoTims'
+      'initVideoTims',
+      'changePageVisiable'
     ]),
     hideModal (data) {
       this.addPage = false
@@ -212,6 +215,14 @@ export default {
           this.loadAll = true
         }
       })
+    },
+    cancleRequest: function () {
+      this.xhrArr.forEach((xhr) => {
+        if (xhr.status !== 200) {
+          xhr.abort() // 取消当前所有请求
+        }
+      })
+      this.xhrArr = []
     },
     initPage: function (res) {
       this.pageSize = res.pages.length
@@ -327,6 +338,7 @@ export default {
       this.isFullScreen && this.interTimer()
     },
     prev: function () { // 上一页
+      this.cancleRequest()
       if (this.refreshType != '1') {
         this.prevMove()
         return
@@ -451,6 +463,7 @@ export default {
     },
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
+      this.cancleRequest()
       if (this.refreshType != '1') {
         this.timeFnMove()
         return
@@ -534,6 +547,9 @@ export default {
           return
         }
         ct.nowTime += 1
+        if (ct.xhrArr.length > 50) {
+          ct.xhrArr.splice(0, 10) // 防止数组中保存的xhr对象过多而导致内存泄漏
+        }
         ct.refreshTargetFn()
         ct.refreshCompose()
         ct.freshInterval = setTimeout(fresh, 1000)
@@ -542,6 +558,7 @@ export default {
 
     /* 刷新页面相关 */
     refresh: function () {
+      this.cancleRequest() // 取消还未结束的请求
       this.refreshFn()
       this.refreshCompose(true)
       this.autoFresh()
@@ -552,6 +569,7 @@ export default {
       this.refreshTimer && clearTimeout(this.refreshTimer)
       this.refreshTimer = null // 整页刷新
     },
+    // 整页刷新，未调用
     initRefreshTimer: function () {
       var ct = this
       this.stopRefreshTimer()
@@ -592,7 +610,7 @@ export default {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
-          $.ajax({
+          let xhrobj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
             type: d.method || 'get',
@@ -614,7 +632,12 @@ export default {
               }
             },
             error: function (xhr) {
-              if (xhr.status != 776) {
+              if (xhr.status === 776) {
+                // 776 取消页面刷新
+                ct.freshInterval && clearTimeout(ct.freshInterval)
+                ct.freshInterval = null
+              }
+              if (xhr.status != 776 && xhr.statusText !== 'abort') {
                 if (gbs.inDev) {
                   Notification({
                     message: '连接错误！',
@@ -627,6 +650,7 @@ export default {
               }
             }
           })
+          ct.xhrArr.push(xhrobj)
         } else if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
           if (ct.nowTime % freshTime === 0) {
@@ -653,7 +677,7 @@ export default {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
-          $.ajax({
+          let xhrObj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
             type: d.method || 'get',
@@ -675,7 +699,12 @@ export default {
               }
             },
             error: function (xhr) {
-              if (xhr.status != 776) {
+              if (xhr.status === 776) {
+                // 776 取消页面刷新
+                ct.freshInterval && clearTimeout(ct.freshInterval)
+                ct.freshInterval = null
+              }
+              if (xhr.status != 776 && xhr.statusText !== 'abort') {
                 if (gbs.inDev) {
                   Notification({
                     message: '连接错误！',
@@ -688,6 +717,7 @@ export default {
               }
             }
           })
+          ct.xhrArr.push(xhrObj)
         }
         if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           ct.$set(d, 'id', new Date().getTime() + parseInt(Math.random() * 10000))
@@ -797,13 +827,49 @@ export default {
           }
         })
       }
+    },
+    browerKernel () {
+      var result;
+      ['webkit', 'moz', 'o', 'ms'].forEach(function (prefix) {
+        if (typeof document[ prefix + 'Hidden' ] !== 'undefined') {
+          result = prefix
+        }
+      })
+      return result
+    },
+    onVisibilityChange (e) {
+      var prefix = this.browerKernel()
+      if (document[ prefix + 'VisibilityState' ] === 'hidden') {
+        this.changePageVisiable(false)
+      } else if (document[ prefix + 'VisibilityState' ] === 'visible') {
+        this.changePageVisiable(true)
+      }
+    },
+    pageVisibInit () {
+      var prefix = this.browerKernel()
+      document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
     }
   },
   watch: {
+    pageVisiable: function (newV) {
+      if (newV) {
+        this.autoFresh()
+        if (Public.checkFull()) {
+          this.interTimer() // 全屏自动轮播
+        }
+      } else {
+        this.stopRefreshTimer()
+        this.stopTimer()
+        this.cancleRequest()
+      }
+    },
     nowPage: function (newV) {
-      $(this.$el).find('.pagebox').css({
-        transform: 'scale(1)'
-      })
+      // $(this.$el).find('.pagebox').css({
+      //   transform: 'scale(1)'
+      // })
+      if ($('#paintWrap').find('[title]').length > 0) {
+        $('#paintWrap').find('[title]').tooltip('destroy') // 取消本页的表格tips
+      }
       this.stopRefreshTimer()
       if (!newV) {
         return []
@@ -812,10 +878,10 @@ export default {
       this.setScale()
       this.refresh() // 整页刷新
       // this.initRefreshTimer() 取消整页刷新
-    },
-    combinList: function () {
-      // this.refreshCompose()
     }
+    // combinList: function () {
+    //   // this.refreshCompose()
+    // }
   },
   beforeMount: function () {
     this.axios.get('/alert/currencyAlertmanager/findAlertLevelList').then((res) => {
@@ -842,6 +908,7 @@ export default {
     for (let i in videoTims) {
       videoTims[i] = 0
     }
+    this.pageVisibInit()
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
     $('#screen').addClass('disShow')
@@ -849,10 +916,18 @@ export default {
   beforeDestroy: function () {
     $('#screen').removeClass('disShow')
     this.stopRefreshTimer()
+    this.xhrArr.forEach((xhr) => {
+      if (xhr.status !== 200) {
+        xhr.abort() // 取消当前所有请求
+      }
+    })
+    this.xhrArr = null
+    var prefix = this.browerKernel()
+    document.removeEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
   },
   destroyed: function () {
-    if ($('.tooltip').length > 0) {
-      $(this.$el).find('[title]').tooltip('destroy')
+    if ($('#paintWrap').find('[title]').length > 0) {
+      $('#paintWrap').find('[title]').tooltip('destroy')
     }
   }
 }

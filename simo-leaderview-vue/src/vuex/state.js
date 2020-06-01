@@ -12,7 +12,8 @@ const state = {
   onlyOneItem: true, // 编辑页是否只选中一个元件
   alertInfo: [],
   areaData: [], // 地图实时图的可选数据点的区域信息
-  videoTims: {} // 视频的播放位置
+  videoTims: {}, // 视频的播放位置
+  pageVisiable: true // 当前页是否处于激活状态
 }
 
 export default state

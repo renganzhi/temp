@@ -19,3 +19,6 @@ export const changeItemChoose = function ({ commit, state }, newData) {
 export const changeLimitItem = function ({ commit, state }, newData) {
   commit('changeLimitItem', newData)
 }
+export const changePageVisiable = function ({commit, satte}, newData) {
+  commit('changePageVisiable', newData)
+}
