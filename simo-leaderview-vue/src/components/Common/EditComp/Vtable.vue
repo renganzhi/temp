@@ -3,7 +3,7 @@
        :style="boxStyle">
     <div class="fixed-table-header"
          style="height: 36px;">
-      <table class="table table-hover"
+      <table class="table"
              style="table-layout: fixed;"
              :style="theadTrStyle">
         <thead :style="theadTrStyle">
@@ -26,7 +26,7 @@
     </div>
     <div class="fixed-table-body"
          style="padding-bottom: 26px;">
-      <table class="table table-hover"
+      <table class="table"
              style="table-layout: fixed;">
         <tbody>
           <tr :style="[trStyle,tbodyTrStyle]"

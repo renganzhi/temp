@@ -139,6 +139,7 @@ export default {
       // 设置位移
       var _this = this
       this.intervalId = setTimeout(function test () {
+        clearTimeout(_this.intervalId)
         _this.distance = _this.distance - 1
         // 如果位移超过文字宽度，则从末尾开始移动
         if (-_this.distance >= _this.textWidth) {
@@ -291,7 +292,7 @@ export default {
     },
     'item.direction': function (val) {
       if (val === 'left') {
-        var text = this.$refs.hideText.innerText
+        let text = this.$refs.hideText.innerText
         this.item.ctName = text
       }
       if (this.stop) return

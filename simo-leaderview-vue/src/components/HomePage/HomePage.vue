@@ -324,6 +324,7 @@ export default {
       }
       this.setPaint()
       this.nowPage2 = JSON.parse(nowPageObj.viewConf)
+      nowPageObj = null
       // 下面是move
       this.moveFlag = !this.moveFlag // false
       setTimeout(() => {
@@ -339,6 +340,7 @@ export default {
     },
     prev: function () { // 上一页
       this.cancleRequest()
+      window.$.cache = {}
       if (this.refreshType != '1') {
         this.prevMove()
         return
@@ -360,6 +362,7 @@ export default {
       }
       this.setPaint()
       this.nowPage = JSON.parse(nowPageObj.viewConf)
+      nowPageObj = null
       this.isFullScreen && this.interTimer()
     },
     setPaint: function () {
@@ -460,10 +463,13 @@ export default {
         this.nowPage2 = JSON.parse(nowPageObj2.viewConf)
       }
       this.setPaint()
+      nowPageObj = null
+      nowPageObj2 = null
     },
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.cancleRequest()
+      window.$.cache = {}
       if (this.refreshType != '1') {
         this.timeFnMove()
         return
@@ -482,6 +488,7 @@ export default {
       }
       this.setPaint()
       this.nowPage = JSON.parse(nowPageObj.viewConf)
+      nowPageObj = null
       $('.tp-tip').remove()
       $('.tooltip.in').remove()
     },
@@ -510,6 +517,7 @@ export default {
       }
       this.setPaint()
       this.nowPage2 = JSON.parse(nowPageObj2.viewConf)
+      nowPageObj2 = null
       $('.tp-tip').remove()
       $('.tooltip.in').remove()
       this.moveFlag = !this.moveFlag // false
@@ -533,6 +541,7 @@ export default {
         return
       }
       this.timer = setTimeout(function test () {
+        clearTimeout(ct.timer) // 这里清除一下定时器
         ct.timeFn()
         ct.timer = setTimeout(test, ct.intervalTime * 1000)
       }, ct.intervalTime * 1000)
@@ -552,6 +561,7 @@ export default {
         }
         ct.refreshTargetFn()
         ct.refreshCompose()
+        clearTimeout(ct.freshInterval)
         ct.freshInterval = setTimeout(fresh, 1000)
       }, 1000)
     },
@@ -578,6 +588,7 @@ export default {
       } */
       // 定时器
       this.refreshTimer = setTimeout(function freshFn () {
+        clearTimeout(ct.refreshTimer)
         if (!$('#home-html').length) {
           ct.clearPage()
           return
@@ -589,8 +600,8 @@ export default {
       }, this.refreshTime * 1000)
     },
     mapDataToChart (datas, oldData) {
-      for (var k in datas) {
-        for (var i in oldData) {
+      for (let k in datas) {
+        for (let i in oldData) {
           if (oldData[i]['位置'] === k) {
             oldData[i]['告警'] = datas[k]
           }
@@ -614,6 +625,7 @@ export default {
             url: gbs.host + d.url,
             data: d.params,
             type: d.method || 'get',
+            cache: false,
             ascyn: false,
             success: function (res) {
               res.obj = res.obj || []
@@ -648,6 +660,9 @@ export default {
                   tooltip('', '连接错误！', 'error')
                 }
               }
+            },
+            complete: function (XHR, textStatus) {
+              XHR = null
             }
           })
           ct.xhrArr.push(xhrobj)
@@ -681,6 +696,7 @@ export default {
             url: gbs.host + d.url,
             data: d.params,
             type: d.method || 'get',
+            cache: false,
             ascyn: false,
             success: function (res) {
               res.obj = res.obj || []
@@ -715,6 +731,9 @@ export default {
                   tooltip('', '连接错误！', 'error')
                 }
               }
+            },
+            complete: function (XHR, textStatus) {
+              XHR = null
             }
           })
           ct.xhrArr.push(xhrObj)
@@ -742,10 +761,10 @@ export default {
     /* 缩放setScale */
     setScale: function () {
       // var $el = document.getElementById('home-html')
-      var $el = $('#home-html')
-      var w = $el.width()
+      let $el = $('#home-html')
+      let w = $el.width()
       // var h = $el.height()
-      var pageContainer = $('#page_container')
+      let pageContainer = $('#page_container')
       if (this.isFullScreen) {
         var h = $el.height()
       } else {
@@ -756,19 +775,19 @@ export default {
         }
       }
       // console.log('app width:' + _app.width() + '  app height: ' + _app.height())
-      var paintW = (this.paintConf && this.paintConf.width) || 1920
-      var paintH = (this.paintConf && this.paintConf.height) || 1080
-      var scaleX = w / paintW // 这里需要改成设置的画布的大小
-      var scaleY = h / paintH
-      var scale = Math.min(scaleX, scaleY)
-      var mrg = 0
+      let paintW = (this.paintConf && this.paintConf.width) || 1920
+      let paintH = (this.paintConf && this.paintConf.height) || 1080
+      let scaleX = w / paintW // 这里需要改成设置的画布的大小
+      let scaleY = h / paintH
+      let scale = Math.min(scaleX, scaleY)
+      let mrg = 0
       // if (scaleX <= 1) {
       // var _width = this.paintConf.width || baseData.home.w
       // mrg = [0, (w - _width * scale) / 2 + 'px'].join(' ')
       mrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
       // }
       if (this.isFullScreen) {
-        var boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
+        let boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
           width: paintW + 'px',
@@ -829,7 +848,7 @@ export default {
       }
     },
     browerKernel () {
-      var result;
+      let result;
       ['webkit', 'moz', 'o', 'ms'].forEach(function (prefix) {
         if (typeof document[ prefix + 'Hidden' ] !== 'undefined') {
           result = prefix
@@ -838,7 +857,7 @@ export default {
       return result
     },
     onVisibilityChange (e) {
-      var prefix = this.browerKernel()
+      let prefix = this.browerKernel()
       if (document[ prefix + 'VisibilityState' ] === 'hidden') {
         this.changePageVisiable(false)
       } else if (document[ prefix + 'VisibilityState' ] === 'visible') {
@@ -846,7 +865,7 @@ export default {
       }
     },
     pageVisibInit () {
-      var prefix = this.browerKernel()
+      let prefix = this.browerKernel()
       document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
     }
   },
@@ -900,11 +919,11 @@ export default {
         })
       })
     })
-    var theme = $('html').attr('data-theme')
+    let theme = $('html').attr('data-theme')
     if (theme !== 'default') {
       this.defTheme = false
     }
-    var videoTims = this.videoTims
+    let videoTims = this.videoTims
     for (let i in videoTims) {
       videoTims[i] = 0
     }
@@ -922,7 +941,7 @@ export default {
       }
     })
     this.xhrArr = null
-    var prefix = this.browerKernel()
+    let prefix = this.browerKernel()
     document.removeEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
   },
   destroyed: function () {
