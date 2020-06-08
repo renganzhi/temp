@@ -98,6 +98,7 @@ export default {
         var _this = this
         this.timeoutId = setTimeout(function test () {
           _this.initServiceTime(_this.item.timeType)
+          clearTimeout(_this.timeoutId)
           _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
         }, this.refreshTime * 1000)
       })
@@ -107,6 +108,7 @@ export default {
       var _this = this
       this.timeoutId = setTimeout(function test () {
         _this.initTime(_this.item.timeType)
+        clearTimeout(_this.timeoutId)
         _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
       }, this.refreshTime * 1000)
     }

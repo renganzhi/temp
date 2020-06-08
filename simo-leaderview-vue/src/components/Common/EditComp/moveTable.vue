@@ -3,7 +3,7 @@
        :style="boxStyle">
     <div class="fixed-table-header"
          style="height: 36px;">
-      <table class="table table-hover"
+      <table class="table"
              :style="theadTrStyle"
              style="table-layout: fixed;">
         <thead :style="theadTrStyle">
@@ -22,7 +22,7 @@
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden;">
       <transition>
-        <table class="table table-hover"
+        <table class="table"
                :style="scrollStyle"
                style="table-layout: fixed; transition: all 0.6s ease;">
           <tbody>
@@ -41,7 +41,7 @@
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
-        <table class="table table-hover"
+        <table class="table"
                v-if="tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
@@ -58,7 +58,7 @@
         </table>
       </transition>
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadein': 'table-fadein'">
-        <table class="table table-hover"
+        <table class="table"
                v-if="!tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
@@ -189,26 +189,26 @@ export default {
     }
   },
   methods: {
-    initTopMove () {
-      if (this.intervalId) {
-        clearTimeout(this.intervalId)
-      }
-      this.nowPage = 0
-      if (this.item.chartData.rows.length > this.pageNum) {
-        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-          totalPage--
-        }
-        // let nowPage = 0
-        if (!this.moving || this.moving === 'false') return
-        this.intervalId = setInterval(() => {
-          this.nowPage++
-          if (this.nowPage > totalPage) {
-            this.nowPage = 0
-          }
-        }, this.intervalTime)
-      }
-    },
+    // initTopMove () {
+    //   if (this.intervalId) {
+    //     clearTimeout(this.intervalId)
+    //   }
+    //   this.nowPage = 0
+    //   if (this.item.chartData.rows.length > this.pageNum) {
+    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+    //       totalPage--
+    //     }
+    //     // let nowPage = 0
+    //     if (!this.moving || this.moving === 'false') return
+    //     this.intervalId = setInterval(() => {
+    //       this.nowPage++
+    //       if (this.nowPage > totalPage) {
+    //         this.nowPage = 0
+    //       }
+    //     }, this.intervalTime)
+    //   }
+    // },
     initLeftMove () {
       // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
@@ -262,36 +262,37 @@ export default {
               titleShowFn('bottom', $(_this.$el), _this.$el)
             }
           })
+          clearTimeout(_this.intervalId)
           _this.intervalId = setTimeout(tableFn, _this.intervalTime)
         }, _this.intervalTime)
       }
-    },
-    initMove () {
-      // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
-      if (this.intervalId) {
-        clearTimeout(this.intervalId)
-      }
-      if (this.item.chartData.rows.length > this.pageNum) {
-        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-          totalPage--
-        }
-        let nowPage = 0
-        this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
-        this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
-        this.intervalId = setInterval(() => {
-          this.tableMove = !this.tableMove
-          if (this.tableMove) {
-            nowPage++
-            if (nowPage === totalPage) {
-              nowPage = 0
-            }
-            this.page1Data = this.item.chartData.rows.slice(this.pageNum * nowPage, this.pageNum * (nowPage + 1))
-            this.page2Data = this.item.chartData.rows.slice(this.pageNum * (nowPage + 1), this.pageNum * (nowPage + 2))
-          }
-        }, 3000)
-      }
     }
+    // initMove () {
+    //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
+    //   if (this.intervalId) {
+    //     clearTimeout(this.intervalId)
+    //   }
+    //   if (this.item.chartData.rows.length > this.pageNum) {
+    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+    //       totalPage--
+    //     }
+    //     let nowPage = 0
+    //     this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
+    //     this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
+    //     this.intervalId = setInterval(() => {
+    //       this.tableMove = !this.tableMove
+    //       if (this.tableMove) {
+    //         nowPage++
+    //         if (nowPage === totalPage) {
+    //           nowPage = 0
+    //         }
+    //         this.page1Data = this.item.chartData.rows.slice(this.pageNum * nowPage, this.pageNum * (nowPage + 1))
+    //         this.page2Data = this.item.chartData.rows.slice(this.pageNum * (nowPage + 1), this.pageNum * (nowPage + 2))
+    //       }
+    //     }, 3000)
+    //   }
+    // }
   },
   mounted: function () {
     this.pageNum = Number(this.item.pageNum)
@@ -320,6 +321,8 @@ export default {
     if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
+    this.page1Data = null
+    this.page2Data = null
   }
 }
 </script>

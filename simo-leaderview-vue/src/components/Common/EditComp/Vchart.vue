@@ -26,9 +26,9 @@ export default {
   props: ['item'],
   data: function () {
     // 这里没有直接定义，所以component里调用了data属性的都会先报错，但不会影响页面渲染，后续需要改进
-    var obj = {}
+    let obj = {}
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
-      var setings = {
+      let setings = {
         grid: {
           left: '10%',
           right: 10,
@@ -118,15 +118,15 @@ export default {
       // 弧形柱图
       //     return []
       // }
-      var d = this.item.chartData
+      let d = this.item.chartData
       // if (!_.isObject(d) && !_.isArray(d)) {
       //   this.empty = true
       //   return {}
       // }
       // this.empty = false
       if (this.item.chartType === 've-gauge' && typeof d.value !== 'undefined') {
-        var outer = { name: 'outerpro' }
-        var rows = [
+        let outer = { name: 'outerpro' }
+        let rows = [
           { name: 'p' },
           { name: 'pro', value: d.value, unit: d.unit, dataName: d.name }
         ]
@@ -138,6 +138,7 @@ export default {
           rows: rows
         }
       }
+      d = null
       return this.item.chartData
     }
   },
@@ -152,8 +153,8 @@ export default {
     },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
-        var barW = Math.floor((newV - 60) * 0.7 / this.item.chartData.rows.length)
-        var strLen = Math.round(barW / 10)
+        let barW = Math.floor((newV - 60) * 0.7 / this.item.chartData.rows.length)
+        let strLen = Math.round(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
@@ -251,12 +252,12 @@ export default {
       this.extend.color = this.getColors(newV)
     },
     'item.colorful': function (newV) {
-      var _this = this
+      let _this = this
       // 页面中判断了只有条形图和柱状图才会触发改变
       if (newV === 'true') {
         this.extend.series.itemStyle.normal.color = function (params) {
-          var colorList = _this.extend.color
-          var len = colorList.length
+          let colorList = _this.extend.color
+          let len = colorList.length
           return colorList[params.dataIndex % len]
         }
       } else {
@@ -283,8 +284,8 @@ export default {
         this.empty = true
       }
       if (this.item.chartType === 've-histogram') {
-        var barW = Math.floor((this.item.width - 60) * 0.7 / newV.rows.length)
-        var strLen = Math.round(barW / 10)
+        let barW = Math.floor((this.item.width - 60) * 0.7 / newV.rows.length)
+        let strLen = Math.round(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
@@ -330,11 +331,11 @@ export default {
             this.item.chartData.rows = []
             this.item.chartData.columns = []
           }
-          var indicatorArr = []
-          var names = newV.columns.slice(1, newV.columns.length)
+          let indicatorArr = []
+          let names = newV.columns.slice(1, newV.columns.length)
           if (newV.rows) {
             names.forEach((key) => {
-              var maxItem = _.maxBy(newV.rows, function (item) { return item[key] })
+              let maxItem = _.maxBy(newV.rows, function (item) { return item[key] })
               let maxVal = Number(maxItem[key]) > 100 ? Number(maxItem[key]) : 100
               indicatorArr.push({
                 name: key,
@@ -346,8 +347,8 @@ export default {
         }
       }
       if (this.item.thirdType === 'stackHistogram') {
-        var _key = this.item.chartData.columns[0]
-        var _value = this.item.chartData.columns.slice(1, this.item.chartData.columns.length)
+        let _key = this.item.chartData.columns[0]
+        let _value = this.item.chartData.columns.slice(1, this.item.chartData.columns.length)
         this.settings.stack = { _key: _value }
       }
       this.keyId = new Date().getTime() + parseInt(Math.random() * 10000)
@@ -383,15 +384,16 @@ export default {
   },
   methods: {
     getYaxiosMax: function (obj) {
-      var rowData = obj.rows
-      var maxData = 0
+      let rowData = obj.rows
+      let maxData = 0
       for (let i = 1, len = obj.columns.length; i < len; i++) {
-        var key = obj.columns[i]
-        var maxItem = _.maxBy(rowData, function (item) { return item[key] })
+        let key = obj.columns[i]
+        let maxItem = _.maxBy(rowData, function (item) { return item[key] })
         if (maxItem && maxItem[key] > maxData) {
           maxData = maxItem[key]
         }
       }
+      rowData = null
       if (parseInt(maxData / 100) === (maxData / 100)) {
         // 整百
         return maxData
@@ -401,11 +403,11 @@ export default {
     },
     // 如果有不止两条曲线的情况需要和后端确认并修改次函数
     getYaxiosMaxs: function (obj) {
-      var rowData = obj.rows
-      var maxData = []
+      let rowData = obj.rows
+      let maxData = []
       for (let i = 1, len = obj.columns.length; i < len; i++) {
-        var key = obj.columns[i]
-        var maxItem = _.maxBy(rowData, function (item) { return item[key] })
+        let key = obj.columns[i]
+        let maxItem = _.maxBy(rowData, function (item) { return item[key] })
         if (maxItem && maxItem[key]) {
           let tempData = maxItem[key]
           if (parseInt(tempData / 100) === (tempData / 100)) {
@@ -416,6 +418,7 @@ export default {
           }
         }
       }
+      rowData = null
       return maxData
     },
     getColors: function (tempArr) {
@@ -457,9 +460,9 @@ export default {
         }
       }
       // 以上为校验是否是全为0的值
-      var type = this.item.chartType
+      let type = this.item.chartType
       // LinearGradient: 右 下 左 上
-      var direct = [0, 0, 1, 0]
+      let direct = [0, 0, 1, 0]
       if (type === 've-histogram') {
         direct = [0, 1, 0, 0]
       } else if (type === 've-pie') {
@@ -468,11 +471,12 @@ export default {
         direct = [0, 1, 0, 0]
       }
       if (Array.isArray(tempArr[0])) {
-        var colorArr = []
-        for (var i = 0, len = tempArr.length; i < len; i++) {
-          var tempColor = new echarts.graphic.LinearGradient(direct[0], direct[1], direct[2], direct[3], [{ offset: 0, color: tempArr[i][0] }, { offset: 1, color: tempArr[i][1] }])
+        let colorArr = []
+        for (let i = 0, len = tempArr.length; i < len; i++) {
+          let tempColor = new echarts.graphic.LinearGradient(direct[0], direct[1], direct[2], direct[3], [{ offset: 0, color: tempArr[i][0] }, { offset: 1, color: tempArr[i][1] }])
           // 径向： new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [{ offset: 0, color: tempArr[i][0] }, { offset: 1, color: tempArr[i][1]}])
           colorArr.push(tempColor)
+          tempColor = null
         }
         return colorArr
       } else {
@@ -489,8 +493,8 @@ export default {
       }
     },
     dealCompsData: function (obj) {
-      var _this = this
-      var Fn = {
+      let _this = this
+      let Fn = {
         've-bar': function () {
           obj.settings.xAxisType = [0]
           obj.extend = $.extend(obj.extend, {
@@ -505,8 +509,8 @@ export default {
               itemStyle: {
                 normal: {
                   color: _this.item.colorful && _this.item.colorful === 'true' ? function (params) {
-                    var colorList = _this.extend.color
-                    var len = colorList.length
+                    let colorList = _this.extend.color
+                    let len = colorList.length
                     return colorList[params.dataIndex % len]
                   } : null
                 }
@@ -575,8 +579,8 @@ export default {
           }
         },
         've-histogram': function () {
-          var barW = Math.floor((_this.item.width - 60) * 0.7 / _this.item.chartData.rows.length)
-          var strLen = Math.round(barW / 10)
+          let barW = Math.floor((_this.item.width - 60) * 0.7 / _this.item.chartData.rows.length)
+          let strLen = Math.round(barW / 10)
           obj.extend = $.extend(obj.extend, {
             xAxis: {
               axisLabel: {
@@ -615,8 +619,8 @@ export default {
             }
           })
           if (_this.item.thirdType === 'stackHistogram') {
-            var _key = _this.item.chartData.columns[0]
-            var _value = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
+            let _key = _this.item.chartData.columns[0]
+            let _value = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
             obj.settings.stack = { _key: _value }
           }
           if (_this.item.subType === 'pictorialBar') {
@@ -666,8 +670,8 @@ export default {
                 itemStyle: {
                   normal: {
                     color: _this.item.colorful && _this.item.colorful === 'true' ? function (params) {
-                      var colorList = _this.extend.color
-                      var len = colorList.length
+                      let colorList = _this.extend.color
+                      let len = colorList.length
                       return colorList[params.dataIndex % len]
                     } : null
                   }
@@ -771,14 +775,14 @@ export default {
             tooltip: {
               trigger: 'axis',
               formatter: function (params, ticket, callback) {
-                var nameArr = []
-                var time = params[0].data[0]
-                var showHtm = time + '<br>'
+                let nameArr = []
+                let time = params[0].data[0]
+                let showHtm = time + '<br>'
                 params.forEach((element, i) => {
-                  var name = element.seriesName
+                  let name = element.seriesName
                   if (nameArr.indexOf(name) === -1) {
                     nameArr.push(name)
-                    var value = element.data[1]
+                    let value = element.data[1]
                     if (typeof (value) !== 'number' || value !== value) {
                       value = '--'
                     }
@@ -844,7 +848,7 @@ export default {
             color = _this.item.ctColors[0]
             fontColor = _this.item.ctColors[0]
           }
-          var data = _this.item.chartData
+          let data = _this.item.chartData
           if (data.rows) {
             data.name = data.rows[1].dataName
             data.unit = data.rows[1].unit
@@ -1049,14 +1053,15 @@ export default {
               }
             }
           }
+          color = null // 手动置空一下
         },
         've-radar': function () {
-          var indicatorArr = []
+          let indicatorArr = []
           if (_this.item.chartData && _this.item.chartData.columns) {
-            var names = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
+            let names = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
             if (_this.item.chartData.rows) {
               names.forEach((key) => {
-                var maxItem = _.maxBy(_this.item.chartData.rows, function (item) { return item[key] })
+                let maxItem = _.maxBy(_this.item.chartData.rows, function (item) { return item[key] })
                 let maxVal = Number(maxItem[key]) > 100 ? Number(maxItem[key]) : 100
                 indicatorArr.push({
                   name: key,
@@ -1110,11 +1115,12 @@ export default {
     }
   },
   beforeDestroy: function () {
-    var _echarts = $(this.$el).find('div')[0]
-    var instance = $(_echarts).attr('_echarts_instance_')
+    let _echarts = $(this.$el).find('div')[0]
+    let instance = $(_echarts).attr('_echarts_instance_')
     if (instance) {
-      var chart = echarts.getInstanceById(instance) // 要在本页引入echarts才生效
+      let chart = echarts.getInstanceById(instance) // 要在本页引入echarts才生效
       chart.dispose() // 销毁
+      chart = null
     }
   },
   destroyed: function () {
