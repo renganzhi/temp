@@ -340,7 +340,7 @@ export default {
     },
     prev: function () { // 上一页
       this.cancleRequest()
-      window.$.cache = {}
+      // window.$.cache = {}
       if (this.refreshType != '1') {
         this.prevMove()
         return
@@ -469,7 +469,7 @@ export default {
     /* 轮播切换相关 */
     timeFn: function () { // 轮播
       this.cancleRequest()
-      window.$.cache = {}
+      // window.$.cache = {}
       if (this.refreshType != '1') {
         this.timeFnMove()
         return
