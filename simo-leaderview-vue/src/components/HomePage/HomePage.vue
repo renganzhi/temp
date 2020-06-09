@@ -335,6 +335,9 @@ export default {
         this.$nextTick(() => {
           this.moveFlag = !this.moveFlag // true
         })
+        this.nowPage2 = []
+        this.combinList2 = []
+        this.paintConf2 = {}
       }, 1010)
       this.isFullScreen && this.interTimer()
     },
@@ -527,6 +530,9 @@ export default {
         this.paintConf = JSON.parse(JSON.stringify(this.paintConf2))
         this.setPaint()
         this.moveFlag = !this.moveFlag // true
+        this.nowPage2 = []
+        this.combinList2 = []
+        this.paintConf2 = {}
       }, 1010)
       this.pageIndex++
     },
