@@ -218,19 +218,21 @@ export default {
       this.nowPage = 0
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
-      if ($(this.$el).find('[title]').length > 0) {
-        $(this.$el).find('[title]').tooltip('destroy')
-      }
-      if ($('#paintWrap').find('[title]').length > 0) {
-        $('#paintWrap').find('[title]').tooltip('destroy')
-      }
-      this.$nextTick(() => {
-        if ($('#home-html').length > 0) {
-          titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-        } else {
-          titleShowFn('bottom', $(this.$el), this.$el)
-        }
-      })
+      // 这里不用注释
+      // if ($(this.$el).find('[title]').length > 0) {
+      //   $(this.$el).find('[title]').tooltip('destroy')
+      // }
+      // if ($('#paintWrap').find('[title]').length > 0) {
+      //   $('#paintWrap').find('[title]').tooltip('destroy')
+      // }
+      // this.$nextTick(() => {
+      //   if ($('#home-html').length > 0) {
+      //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+      //   } else {
+      //     titleShowFn('bottom', $(this.$el), this.$el)
+      //   }
+      // })
+      // 这里不用注释
       if (this.item.chartData.rows.length > this.pageNum) {
         let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
         if (totalPage === this.item.chartData.rows.length / this.pageNum) {
@@ -249,19 +251,21 @@ export default {
             }
             _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
           }
-          if ($(_this.$el).find('[title]').length > 0) {
-            $(_this.$el).find('[title]').tooltip('destroy')
-          }
-          if ($('#paintWrap').find('[title]').length > 0) {
-            $('#paintWrap').find('[title]').tooltip('destroy')
-          }
-          _this.$nextTick(() => {
-            if ($('#home-html').length > 0) {
-              titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-            } else {
-              titleShowFn('bottom', $(_this.$el), _this.$el)
-            }
-          })
+          // 这里不用注释
+          // if ($(_this.$el).find('[title]').length > 0) {
+          //   $(_this.$el).find('[title]').tooltip('destroy')
+          // }
+          // if ($('#paintWrap').find('[title]').length > 0) {
+          //   $('#paintWrap').find('[title]').tooltip('destroy')
+          // }
+          // _this.$nextTick(() => {
+          //   if ($('#home-html').length > 0) {
+          //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+          //   } else {
+          //     titleShowFn('bottom', $(_this.$el), _this.$el)
+          //   }
+          // })
+          // 这里不用注释
           clearTimeout(_this.intervalId)
           _this.intervalId = setTimeout(tableFn, _this.intervalTime)
         }, _this.intervalTime)

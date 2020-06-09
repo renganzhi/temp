@@ -112,17 +112,19 @@ export default {
       } else {
         this.tableEmpty = false
       }
-      if ($('#home-html').length > 0) {
-        if ($('#paintWrap').find('[title]').length > 0) {
-          $('#paintWrap').find('[title]').tooltip('destroy')
-        }
-        titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-      } else {
-        if ($(this.$el).find('[title]').length > 0) {
-          $(this.$el).find('[title]').tooltip('destroy')
-        }
-        titleShowFn('bottom', $(this.$el), this.$el)
-      }
+      // 这里不用注释
+      // if ($('#home-html').length > 0) {
+      //   if ($('#paintWrap').find('[title]').length > 0) {
+      //     $('#paintWrap').find('[title]').tooltip('destroy')
+      //   }
+      //   titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+      // } else {
+      //   if ($(this.$el).find('[title]').length > 0) {
+      //     $(this.$el).find('[title]').tooltip('destroy')
+      //   }
+      //   titleShowFn('bottom', $(this.$el), this.$el)
+      // }
+      // 这里不用注释
     }
   },
   methods: {
@@ -145,11 +147,13 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    if ($('#home-html').length > 0) {
-      titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-    } else {
-      titleShowFn('bottom', $(this.$el), this.$el)
-    }
+    // 这里不用注释
+    // if ($('#home-html').length > 0) {
+    //   titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+    // } else {
+    //   titleShowFn('bottom', $(this.$el), this.$el)
+    // }
+    // 这里不用注释
   },
   beforeDestroy: function () {
     if ($(this.$el).find('[title]').length > 0) {
