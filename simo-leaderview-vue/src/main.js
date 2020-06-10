@@ -7,19 +7,21 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './vuex/store'
-// import 'jquery'
 
 import VueAxios from 'vue-axios'
 import VCharts from 'v-charts'
 import axios from './../config/axios-init'
 import '#/icon/iconfont.css'
 import '#/font/asn/icon.css'
+import { VTooltip } from 'v-tooltip'
 // import { Slider, Notification, Tooltip, Dialog } from 'element-ui'
 Vue.use(VueAxios, axios)
 Vue.use(VCharts)
 Vue.use(ElementUI)
+// https://github.com/Akryum/v-tooltip#usage
+Vue.directive('tooltip', VTooltip)
 Vue.config.productionTip = false
-
+Vue.config.performance = true
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
