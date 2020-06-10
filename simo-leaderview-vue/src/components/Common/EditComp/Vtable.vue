@@ -34,15 +34,13 @@
               :key="id">
             <td v-for="(tdText, ind, i) in tr"
                 :key="ind">
+                <!-- template: '<div class=\'tooltip\' role=\'tooltip\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>'  -->
               <span v-if="i === 0"
-                    data-toggle='tooltip'
-                    title
-                    :data-original-title="tdText"
-                    :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
-                <span data-toggle='tooltip'
-                    title
-                    :data-original-title="tdText"
-                    v-else>{{tdText}}</span>
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}"
+                  :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
+              <span
+                v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}"
+                v-else>{{tdText}}</span>
             </td>
           </tr>
         </tbody>
@@ -59,7 +57,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { titleShowFn } from '#/js/public'
+// import { titleShowFn } from '#/js/public'
 import _ from 'lodash'
 export default {
   name: 'vtable',

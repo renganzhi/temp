@@ -10,9 +10,8 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
-                data-toggle='tooltip'
-                title
-                :data-original-title="title">{{title}}</th>
+                v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
+              >{{title}}</th>
           </tr>
         </thead>
       </table>
@@ -50,9 +49,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  data-toggle='tooltip'
-                  title
-                  :data-original-title="tdText">{{tdText}}</td>
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
@@ -67,9 +64,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  data-toggle='tooltip'
-                  title
-                  :data-original-title="tdText">{{tdText}}</td>
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
@@ -85,7 +80,7 @@
   </div>
 </template>
 <script>
-import { titleShowFn } from '#/js/public'
+// import { titleShowFn } from '#/js/public'
 import { mapGetters } from 'vuex'
 export default {
   name: 'moveTable',
