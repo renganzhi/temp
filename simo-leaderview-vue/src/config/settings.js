@@ -16,10 +16,6 @@ var settings = {
     },
     // 指标器的可选字体
     fontFaces: [
-      // {
-      //   fontFace: 'SourceHanSansCN-Regular',
-      //   fontName: '0123456789'
-      // },
       {
         fontFace: 'number1',
         fontName: '0123456789'
@@ -34,6 +30,14 @@ var settings = {
       },
       {
         fontFace: 'number4',
+        fontName: '0123456789'
+      },
+      {
+        fontFace: 'asn',
+        fontName: '0123456789'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Regular',
         fontName: '0123456789'
       }
     ],

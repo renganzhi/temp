@@ -90,7 +90,9 @@ export default {
         paddingLeft: '10px',
         paddingTop: '10px',
         color: this.item.clr + ' !important',
-        fontSize: this.item.fontSize + 'px !important'
+        fontSize: this.item.fontSize + 'px !important',
+        fontWeight: this.item.fontWeight + ' !important',
+        fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : '',
       }
     },
     textStyle: function () {
@@ -98,7 +100,9 @@ export default {
         width: this.item.width + 'px !important',
         height: this.textHeight + 'px !important',
         color: this.item.clr + ' !important',
-        fontSize: this.item.fontSize + 'px !important'
+        fontSize: this.item.fontSize + 'px !important',
+        fontWeight: this.item.fontWeight + ' !important',
+        fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : '',
       }
     }
   },
