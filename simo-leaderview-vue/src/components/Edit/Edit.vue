@@ -714,6 +714,14 @@
                   </select>
                 </div>
                 <div class="form-group cols2"
+                     v-show="selectedItem.chartType==='text'">
+                  <label>字体粗细</label>
+                  <select v-model="selectedItem.fontWeight">
+                    <option v-for="item in fontWeights"
+                            :key="item">{{item}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
                      v-show="selectedItem.chartType==='marquee' || selectedItem.thirdType==='moveTable'">
                   <label>轮播方向</label>
                   <select v-model="selectedItem.direction">
@@ -908,7 +916,7 @@
                   </div>
                 </div>
               </div>
-              <div v-if="selectedItem.chartType=='number'">
+              <div v-if="selectedItem.chartType=='number' || selectedItem.chartType=='text'">
                 <div class="m-gap form-group">字体样式</div>
                 <div class="form-group"
                      style="height: 30px;">

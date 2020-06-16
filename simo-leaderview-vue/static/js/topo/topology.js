@@ -128,8 +128,8 @@ function duringTime (t, unit) {
 Topology.prototype = {
   constructor: Topology,
   resetCanvasPoint: function () { // 重置画布最大最小值
-    this.maxCanvasWidth = this.canvasWidth
-    this.maxCanvasHeight = this.canvasHeight
+    this.maxCanvasWidth = 0
+    this.maxCanvasHeight = 0
     this.minCanvasWidth = 0
     this.minCanvasHeight = 0
   },
@@ -176,7 +176,7 @@ Topology.prototype = {
   createMainSvg: function () {
     var _this = this
     this.inp = d3.select(this.ele).append('div').classed('rg-inp input-sm confData hide', true)
-      .attr({ 'contenteditable': 'true' })
+      .attr({'contenteditable':'true','id':'textRg'})
     // this.tip = d3.select(this.ele).append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
     if ($('#home-html').length > 0) {
       this.tip = d3.select('#home-html').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
@@ -185,8 +185,8 @@ Topology.prototype = {
     }
     this.svgImage = d3.select(this.ele).append('img').attr({
       'src': gbs.host + '/monitor/topo/getIcon/' +
-                (this.config.backgroundIconId || this.config.backgroundIconIdDefault) +
-                '/Loading',
+        (this.config.backgroundIconId || this.config.backgroundIconIdDefault) +
+        '/Loading',
       'width': '100%',
       'height': '100%',
       'class': 'backgroundImage'
@@ -200,7 +200,8 @@ Topology.prototype = {
       'width': '100%',
       'height': '100%',
       'id': 'test',
-      'pointer-events': 'all'
+      'pointer-events': 'all',
+      'text-rendering' : 'geometricPrecision'
       // 'preserveAspectRatio':'xMidYMid slice'
     }).style({
       'position': 'relative',
@@ -233,7 +234,7 @@ Topology.prototype = {
   setBackground: function (iconId) {
     this.config.backgroundIconId = iconId || this.config.backgroundIconId
     this.svgImage.attr('src', gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId) +
-            '/Loading')
+      '/Loading')
   },
   createZoom: function () {
     var _this = this
@@ -273,7 +274,7 @@ Topology.prototype = {
         } else if (e.type == 'wheel' || typeof e.wheelDelta === 'number') { // 缩放计算,调整wh
           var xy = d3.mouse(this)
           var _viewBoxPoint = [_this.scaleCoor(viewBoxPoint[0], xy, dscale),
-            _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
+          _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
           var _x = _viewBoxPoint[0][0]
           var _y = _viewBoxPoint[0][1]
           var _width = _viewBoxPoint[1][0] - _viewBoxPoint[0][0]
@@ -317,14 +318,17 @@ Topology.prototype = {
       } else {
         currHeight = currWidth * this.canvasHeight / this.canvasWidth
       }
-      this.canvasWidth = currWidth
+    } else {
+      currWidth = Math.round(this.maxCanvasWidth)
+      currHeight = Math.round(this.maxCanvasHeight)
+    }
+    this.canvasWidth = currWidth
       this.canvasHeight = currHeight
       var visBox = _this.vis.node().getBBox()
       this.svgContainer.attr('viewBox', function () {
         return _this.setViewBox((visBox.width - currWidth) / 2 + visBox.x,
           (visBox.height - currHeight) / 2 + visBox.y, currWidth, currHeight)
       })
-    }
   },
   addNode: function (node, x, y) { // 增加节点
     var index = this.findNodeIndex(node.id)
@@ -347,9 +351,9 @@ Topology.prototype = {
     var length = nodes.length
     var gap = 150
     /*
-                 * var minh = Math.round(this.canvasHeight / gap)-1; var minw =
-                 * Math.floor(this.canvasWidth / gap);
-                 */
+                                                             * var minh = Math.round(this.canvasHeight / gap)-1; var minw =
+                                                             * Math.floor(this.canvasWidth / gap);
+                                                             */
     var minh = 6
     var minw = 20
     var hw = Math.round(Math.sqrt(nodes.length))
@@ -458,11 +462,19 @@ Topology.prototype = {
     var oldLink = _.find(this.links, ['id', link.id])
     if (oldLink) {
       oldLink.handSpeed = null
+      delete oldLink.downBps
+      delete oldLink.upBps
+      delete oldLink.speedUsage
+      if (oldLink.sourceId == link.targetId) {
+        var oldSourseValue = oldLink.sourceIp
+        oldLink.sourceIp = oldLink.targetIp
+        oldLink.targetIp = oldSourseValue
+      }
     }
     var o = this.changeLinkData(source, target, link)
     if (oldLink) {
-      o = $.extend(true, _.cloneDeep(oldLink), o)
-      _.remove(this.links, ['id', link.id])
+        o = $.extend(true, _.cloneDeep(oldLink), o)
+        _.remove(this.links, ['id', link.id])
     }
     return o
   },
@@ -538,13 +550,13 @@ Topology.prototype = {
   },
   setEnable: function () {
     /*
-                     * var use = this.vis.selectAll('use')[0];
-                     *
-                     * $.each(use,function(i,d){ var id = $(this).attr('class'); var path =
-                     * anime.path('.link#'+id); anime({ targets: this, translateX:
-                     * path('x'), translateY: path('y'), rotate: path('angle'), easing:
-                     * 'linear', duration: 1000, loop: true }); })
-                     */
+    * var use = this.vis.selectAll('use')[0];
+    *
+    * $.each(use,function(i,d){ var id = $(this).attr('class'); var path =
+    * anime.path('.link#'+id); anime({ targets: this, translateX:
+    * path('x'), translateY: path('y'), rotate: path('angle'), easing:
+    * 'linear', duration: 1000, loop: true }); })
+    */
   },
   _addLink: function (callback) {
     var _this = this
@@ -619,6 +631,11 @@ Topology.prototype = {
     link.enter().insert('svg:path', 'g.node').attr('class', 'link').attr('id', function (d) {
       return d.id
     }).on('mouseenter', function (d) {
+      if ($('#home-html').length > 0) {
+        _this.tip = d3.select('#home-html').append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
+      } else {
+        _this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
+      }
       if (_this.showTip && d.networkLinkId) {
         _this.tip.html(_this.linkTip(d)).classed('hide', false)
         _this.tipRange(d3.event.pageX + 20, d3.event.pageY + 20)
@@ -711,7 +728,7 @@ Topology.prototype = {
         }
         if (label == 'Traffic') {
           var str = bytesToSize(d.upBps) ? '↑ ' + bytesToSize(d.upBps) + 'ps ↓' +
-                        bytesToSize(d.downBps) + 'ps' : '↑-- ↓--'
+            bytesToSize(d.downBps) + 'ps' : '↑-- ↓--'
           return str
         }
         return ''
@@ -720,12 +737,12 @@ Topology.prototype = {
     return this
   },
   /*
-           * enterEnableLink:function(parent,d){ var use =
-           * parent.append('svg:use').attr({ 'width':2, 'height':2, 'x':0, 'y':-10,
-           * 'href':'#liquid', 'id':d.id }) var motion =
-           * use.append("animateMotion").attr({ dur : "3s", rotate : "auto",
-           * repeatCount : "indefinite" }) },
-           */
+                                 * enterEnableLink:function(parent,d){ var use =
+                                 * parent.append('svg:use').attr({ 'width':2, 'height':2, 'x':0, 'y':-10,
+                                 * 'href':'#liquid', 'id':d.id }) var motion =
+                                 * use.append("animateMotion").attr({ dur : "3s", rotate : "auto",
+                                 * repeatCount : "indefinite" }) },
+                                 */
   enterNodes: function () {
     var _this = this
     var nodes = this.nodes
@@ -738,6 +755,11 @@ Topology.prototype = {
     svg.append('svg:image').classed('nodeImg', true).on('mouseenter', function (d) {
       if (!_this.showTip || (d.nodeType !== 'NE' && d.nodeType !== 'SubnetTopo')) { // 子网
         return
+      }
+      if ($('#home-html').length > 0) {
+        _this.tip = d3.select('#home-html').append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
+      } else {
+        _this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
       }
       _this.tip.text(_this.nodeTip(d)).classed('hide', false)
       _this.tipRange(d3.event.pageX + 20, d3.event.pageY + 20)
@@ -822,28 +844,28 @@ Topology.prototype = {
                       if (idc.indicatorName == 'physical_memory') {
                         if (Array.isArray(idc.indicatorValue)) {
                           idc.indicatorValue.length > 0 &&
-                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                            (d.memoryAvg = idc.indicatorValue[0].memory_usage)
                         } else {
                           d.memoryAvg = idc.indicatorValue.memory_usage
                         }
                       } else if (idc.indicatorName == 'cpu_usage_avg') {
                         if (Array.isArray(idc.indicatorValue)) {
                           idc.indicatorValue.length > 0 &&
-                                                        (d.cpuAvg = idc.indicatorValue[0].result)
+                            (d.cpuAvg = idc.indicatorValue[0].result)
                         } else {
                           d.cpuAvg = idc.indicatorValue.result
                         }
                       } else if (idc.indicatorName == 'network_memory') {
                         if (Array.isArray(idc.indicatorValue)) {
                           idc.indicatorValue.length > 0 &&
-                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                            (d.memoryAvg = idc.indicatorValue[0].memory_usage)
                         } else {
                           d.memoryAvg = idc.indicatorValue.memory_usage
                         }
                       } else if (idc.indicatorName == 'network_cpu') {
                         if (Array.isArray(idc.indicatorValue)) {
                           idc.indicatorValue.length > 0 &&
-                                                        (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
+                            (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
                         } else {
                           d.cpuAvg = idc.indicatorValue.used_cpu_usage
                         }
@@ -897,7 +919,7 @@ Topology.prototype = {
       // }
       v = ((v || v === 0) ? v : '--')
       if (d.runStatus == 'Unknow' &&
-                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
+        (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
         v = '--'
       }
       str += (o.name + '：' + v + '\n')
@@ -1020,10 +1042,10 @@ Topology.prototype = {
             id: d.targetNodeId
           })[0]
           if (s &&
-                        t &&
-                        ((!_this.dragNodeId && !_this.dragLinkId) ||
-                            _this.dragNodeId.indexOf(s.id) !== -1 ||
-                            _this.dragNodeId.indexOf(t.id) !== -1 || _this.dragLinkId == d.id)) {
+            t &&
+            ((!_this.dragNodeId && !_this.dragLinkId) ||
+              _this.dragNodeId.indexOf(s.id) !== -1 ||
+              _this.dragNodeId.indexOf(t.id) !== -1 || _this.dragLinkId == d.id)) {
             d = $.extend(d, _this.changeLinkData(s, t, d))
             this.__data__ = d
             var path = _this.polygonalLine(s, t, d)
@@ -1035,9 +1057,9 @@ Topology.prototype = {
     _this.nodeLine.selectAll('use').each(
       function (d) {
         if ((!_this.dragNodeId && !_this.dragLinkId) ||
-                    _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
-                    _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
-                    _this.dragLinkId == d.id) {
+          _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
+          _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
+          _this.dragLinkId == d.id) {
           var id = d3.select(this).attr('id')
           var path = _this.nodeLine.selectAll('.link[id="' + id + '"]').attr('d')
           d3.select(this).select('animateMotion').attr('path', path)
@@ -1047,9 +1069,9 @@ Topology.prototype = {
     _this.nodeLine.selectAll('.lineWrap').each(
       function (d) {
         if ((!_this.dragNodeId && !_this.dragLinkId) ||
-                    _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
-                    _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
-                    _this.dragLinkId == d.id) {
+          _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
+          _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
+          _this.dragLinkId == d.id) {
           d3.select(this).attr('class', 'lineWrap ' + d.linkClass.lineType)
           _this.updatePoint(this)
         }
@@ -1088,24 +1110,24 @@ Topology.prototype = {
               }
             }
             /*   if(d.source.x < d.target.x) {
-                                                                   d3.select(this).attr('href', '#' + d.id);
-                                                               } else {
-                                                                   var link = _this.nodeLine.select('.link[id="' + d.id + '"]');
-                                                                   var point = link.data()[0].linkClass.point
-                                                                   var d_link = _this.nodeLine.select('[id="d_link_' + d.id + '"]');
-                                                                   if(d_link.size() == 0) {
-                                                                       _this.nodeLine.append('path').attr('id', 'd_link_' + d.id)
-                                                                               .attr('d', function() {
-                                                                                   return _this.lineC(point.reverse());
-                                                                               }).style('fill', 'none');
-                                                                   } else {
-                                                                       d_link.attr('d', function() {
-                                                                           return _this.lineC(point.reverse());
-                                                                       });
-                                                                   }
-                                                                   d3.select(this).attr('href', '#d_link_' + d.id);
-                                                               }
-                                                               return; */
+                                                                                                                                                                                                       d3.select(this).attr('href', '#' + d.id);
+                                                                                                                                                                                                   } else {
+                                                                                                                                                                                                       var link = _this.nodeLine.select('.link[id="' + d.id + '"]');
+                                                                                                                                                                                                       var point = link.data()[0].linkClass.point
+                                                                                                                                                                                                       var d_link = _this.nodeLine.select('[id="d_link_' + d.id + '"]');
+                                                                                                                                                                                                       if(d_link.size() == 0) {
+                                                                                                                                                                                                           _this.nodeLine.append('path').attr('id', 'd_link_' + d.id)
+                                                                                                                                                                                                                   .attr('d', function() {
+                                                                                                                                                                                                                       return _this.lineC(point.reverse());
+                                                                                                                                                                                                                   }).style('fill', 'none');
+                                                                                                                                                                                                       } else {
+                                                                                                                                                                                                           d_link.attr('d', function() {
+                                                                                                                                                                                                               return _this.lineC(point.reverse());
+                                                                                                                                                                                                           });
+                                                                                                                                                                                                       }
+                                                                                                                                                                                                       d3.select(this).attr('href', '#d_link_' + d.id);
+                                                                                                                                                                                                   }
+                                                                                                                                                                                                   return; */
           } else if (d.linkClass.lineType == 'ployZ') {
             d3.select(this).attr('href', '#' + d.id)
             if (d.source.y > d.target.y && d.source.x > d.target.x) {
@@ -1138,30 +1160,30 @@ Topology.prototype = {
               }
             }
             /*      if(d.source.y > d.target.y) {
-                                                                      d3.select(this).attr('href', '#' + d.id);
-                                                                  } else {
-                                                                      var link = _this.nodeLine.select('.link[id="' + d.id + '"]');
-                                                                      var point = link.data()[0].linkClass.point
-                                                                      var d_link = _this.nodeLine.select('[id="d_link_' + d.id + '"]');
-                                                                      if(d_link.size() == 0) {
-                                                                          _this.nodeLine.append('path').attr('id', 'd_link_' + d.id)
-                                                                                  .attr('d', function() {
-                                                                                      return _this.lineC(point.reverse());
-                                                                                  }).style('fill', 'none');
-                                                                      } else {
-                                                                          d_link.attr('d', function() {
-                                                                              return _this.lineC(point.reverse());
-                                                                          });
-                                                                      }
-                                                                      d3.select(this).attr('href', '#d_link_' + d.id);
-                                                                  }
-                                                                  return; */
+                                                                                                                                                                                                          d3.select(this).attr('href', '#' + d.id);
+                                                                                                                                                                                                      } else {
+                                                                                                                                                                                                          var link = _this.nodeLine.select('.link[id="' + d.id + '"]');
+                                                                                                                                                                                                          var point = link.data()[0].linkClass.point
+                                                                                                                                                                                                          var d_link = _this.nodeLine.select('[id="d_link_' + d.id + '"]');
+                                                                                                                                                                                                          if(d_link.size() == 0) {
+                                                                                                                                                                                                              _this.nodeLine.append('path').attr('id', 'd_link_' + d.id)
+                                                                                                                                                                                                                      .attr('d', function() {
+                                                                                                                                                                                                                          return _this.lineC(point.reverse());
+                                                                                                                                                                                                                      }).style('fill', 'none');
+                                                                                                                                                                                                          } else {
+                                                                                                                                                                                                              d_link.attr('d', function() {
+                                                                                                                                                                                                                  return _this.lineC(point.reverse());
+                                                                                                                                                                                                              });
+                                                                                                                                                                                                          }
+                                                                                                                                                                                                          d3.select(this).attr('href', '#d_link_' + d.id);
+                                                                                                                                                                                                      }
+                                                                                                                                                                                                      return; */
           }
         }
         if (d != undefined) {
           if (!_this.dragNodeId ||
-                        (_this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId
-                          .indexOf(d.targetNodeId) !== -1)) {
+            (_this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId
+              .indexOf(d.targetNodeId) !== -1)) {
             if ((d.target.x - d.source.x) < 0) {
               var b_box = d3.select(this.parentNode).node().getBBox()
               var x = b_box.x + b_box.width / 2
@@ -1178,7 +1200,7 @@ Topology.prototype = {
   enterLinePoint: function () {
     var polyLine = this.links.filter(function (d) {
       if (d.linkClass && (d.linkClass.lineType == 'ployZ' || d.linkClass.lineType == 'ployN') &&
-                d.linkClass.point) {
+        d.linkClass.point) {
         return d.id
       }
     })
@@ -1215,10 +1237,10 @@ Topology.prototype = {
     })
   },
   /*
-           * straightLine:function(s,t,d){ //直线 var x1 = s.x + s.width/2; var y1 = s.y
-           * +s.height/2; var x2 = t.x +t.width/2; var y2 = t.y +t.height/2; return
-           * this.lineC([[x1,y1],[x2,y2]]); },
-           */
+                                 * straightLine:function(s,t,d){ //直线 var x1 = s.x + s.width/2; var y1 = s.y
+                                 * +s.height/2; var x2 = t.x +t.width/2; var y2 = t.y +t.height/2; return
+                                 * this.lineC([[x1,y1],[x2,y2]]); },
+                                 */
   polygonalLine: function (s, t, d) { // 折线
     var sx = s.x + s.width / 2
     var sy = s.y + s.height / 2
@@ -1369,12 +1391,12 @@ Topology.prototype = {
 
       // 调整使文字图片居中对齐
       /* if(box.width > $img.attr('width')) { // 文字长
-                            d.imgDx = box.width / 2 - $img.attr('width') / 2;
-                            $img.attr('x', d.imgDx);
-                        } else { // 图大
-                            var textW = $text.node().getBBox().width;
-                            $text.attr('x', box.width / 2 - textW / 2);
-                        } */
+                                                                                              d.imgDx = box.width / 2 - $img.attr('width') / 2;
+                                                                                              $img.attr('x', d.imgDx);
+                                                                                          } else { // 图大
+                                                                                              var textW = $text.node().getBBox().width;
+                                                                                              $text.attr('x', box.width / 2 - textW / 2);
+                                                                                          } */
       var imgw = $img.attr('width')
       var textw = $text.node().getBBox().width
       if (imgw > textw) {
@@ -1472,7 +1494,7 @@ Topology.prototype = {
         _this.setForce(true)
         _this.force.on('tick', null)
         _this.nodeTick()
-        // _this.setMaxCavWH();
+        _this.setMaxCavWH()
       }
     })
   },

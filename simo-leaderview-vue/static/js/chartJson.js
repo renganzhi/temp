@@ -428,6 +428,8 @@ var compsArr = [{
   clr: '#666f8b',
   bdClr: '#3d445a',
   ctName: '请输入文本框内容',
+  fontWeight: 'normal',
+  fontFamily: '',
   chartData: {}
 },
 {
