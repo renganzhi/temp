@@ -3,16 +3,15 @@
        :style="boxStyle">
     <div class="fixed-table-header"
          style="height: 36px;">
-      <table class="table table-hover"
+      <table class="table"
              :style="theadTrStyle"
              style="table-layout: fixed;">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
-                data-toggle='tooltip'
-                title
-                :data-original-title="title">{{title}}</th>
+                v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
+              >{{title}}</th>
           </tr>
         </thead>
       </table>
@@ -22,7 +21,7 @@
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden;">
       <transition>
-        <table class="table table-hover"
+        <table class="table"
                :style="scrollStyle"
                style="table-layout: fixed; transition: all 0.6s ease;">
           <tbody>
@@ -41,7 +40,7 @@
          :style="{'max-height': pageNum * 36 + 'px'}"
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
-        <table class="table table-hover"
+        <table class="table"
                v-if="tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
@@ -50,15 +49,13 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  data-toggle='tooltip'
-                  title
-                  :data-original-title="tdText">{{tdText}}</td>
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
       </transition>
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadein': 'table-fadein'">
-        <table class="table table-hover"
+        <table class="table"
                v-if="!tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
@@ -67,9 +64,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  data-toggle='tooltip'
-                  title
-                  :data-original-title="tdText">{{tdText}}</td>
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
@@ -85,7 +80,8 @@
   </div>
 </template>
 <script>
-import { titleShowFn } from '#/js/public'
+// import { titleShowFn } from '#/js/public'
+import { mapGetters } from 'vuex'
 export default {
   name: 'moveTable',
   props: ['item', 'moving'],
@@ -102,6 +98,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'pageVisiable'
+    ]),
     boxStyle: function () {
       return {
         width: this.item.width + 'px !important',
@@ -138,6 +137,14 @@ export default {
     }
   },
   watch: {
+    pageVisiable: function (newV) {
+      if (newV) {
+        this.initLeftMove()
+      } else {
+        this.intervalId && clearTimeout(this.intervalId)
+        this.intervalId = null
+      }
+    },
     'item.chartData': function (newV, oldV) {
       this.pageNum = Number(this.item.pageNum)
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
@@ -145,7 +152,7 @@ export default {
         this.tableEmpty = true
         this.page1Data = []
         this.page2Data = []
-        this.intervalId && clearInterval(this.intervalId)
+        this.intervalId && clearTimeout(this.intervalId)
         return
       } else {
         this.tableEmpty = false
@@ -177,95 +184,114 @@ export default {
     }
   },
   methods: {
-    initTopMove () {
-      if (this.intervalId) {
-        clearInterval(this.intervalId)
-      }
-      this.nowPage = 0
-      if (this.item.chartData.rows.length > this.pageNum) {
-        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-          totalPage--
-        }
-        // let nowPage = 0
-        if (!this.moving || this.moving === 'false') return
-        this.intervalId = setInterval(() => {
-          this.nowPage++
-          if (this.nowPage > totalPage) {
-            this.nowPage = 0
-          }
-        }, this.intervalTime)
-      }
-    },
+    // initTopMove () {
+    //   if (this.intervalId) {
+    //     clearTimeout(this.intervalId)
+    //   }
+    //   this.nowPage = 0
+    //   if (this.item.chartData.rows.length > this.pageNum) {
+    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+    //       totalPage--
+    //     }
+    //     // let nowPage = 0
+    //     if (!this.moving || this.moving === 'false') return
+    //     this.intervalId = setInterval(() => {
+    //       this.nowPage++
+    //       if (this.nowPage > totalPage) {
+    //         this.nowPage = 0
+    //       }
+    //     }, this.intervalTime)
+    //   }
+    // },
     initLeftMove () {
       // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
-        clearInterval(this.intervalId)
+        clearTimeout(this.intervalId)
       }
+      var _this = this
       this.nowPage = 0
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
-      this.$nextTick(() => {
-        if ($('#home-html').length > 0) {
-          titleShowFn('bottom', $('#home-html'), '#home-html')
-        } else {
-          titleShowFn('bottom', $(this.$el), this.$el)
-        }
-      })
+      // 这里不用注释
+      // if ($(this.$el).find('[title]').length > 0) {
+      //   $(this.$el).find('[title]').tooltip('destroy')
+      // }
+      // if ($('#paintWrap').find('[title]').length > 0) {
+      //   $('#paintWrap').find('[title]').tooltip('destroy')
+      // }
+      // this.$nextTick(() => {
+      //   if ($('#home-html').length > 0) {
+      //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+      //   } else {
+      //     titleShowFn('bottom', $(this.$el), this.$el)
+      //   }
+      // })
+      // 这里不用注释
       if (this.item.chartData.rows.length > this.pageNum) {
         let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
         if (totalPage === this.item.chartData.rows.length / this.pageNum) {
           totalPage--
         }
         if (!this.moving || this.moving === 'false') return
-        this.intervalId = setInterval(() => {
-          this.tableMove = !this.tableMove
-          if (this.tableMove) {
-            this.nowPage++
-            if (this.nowPage === totalPage) {
-              this.nowPage = -1
-              this.page1Data = this.item.chartData.rows.slice(this.pageNum * totalPage, this.pageNum * (totalPage + 1))
+        this.intervalId = setTimeout(function tableFn () {
+          _this.tableMove = !_this.tableMove
+          if (_this.tableMove) {
+            _this.nowPage++
+            if (_this.nowPage === totalPage) {
+              _this.nowPage = -1
+              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
             } else {
-              this.page1Data = this.item.chartData.rows.slice(this.pageNum * this.nowPage, this.pageNum * (this.nowPage + 1))
+              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
             }
-            this.page2Data = this.item.chartData.rows.slice(this.pageNum * (this.nowPage + 1), this.pageNum * (this.nowPage + 2))
+            _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
           }
-          this.$nextTick(() => {
-            if ($('#home-html').length > 0) {
-              titleShowFn('bottom', $('#home-html'), '#home-html')
-            } else {
-              titleShowFn('bottom', $(this.$el), this.$el)
-            }
-          })
-        }, this.intervalTime)
-      }
-    },
-    initMove () {
-      // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
-      if (this.intervalId) {
-        clearInterval(this.intervalId)
-      }
-      if (this.item.chartData.rows.length > this.pageNum) {
-        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-          totalPage--
-        }
-        let nowPage = 0
-        this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
-        this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
-        this.intervalId = setInterval(() => {
-          this.tableMove = !this.tableMove
-          if (this.tableMove) {
-            nowPage++
-            if (nowPage === totalPage) {
-              nowPage = 0
-            }
-            this.page1Data = this.item.chartData.rows.slice(this.pageNum * nowPage, this.pageNum * (nowPage + 1))
-            this.page2Data = this.item.chartData.rows.slice(this.pageNum * (nowPage + 1), this.pageNum * (nowPage + 2))
-          }
-        }, 3000)
+          // 这里不用注释
+          // if ($(_this.$el).find('[title]').length > 0) {
+          //   $(_this.$el).find('[title]').tooltip('destroy')
+          // }
+          // if ($('#paintWrap').find('[title]').length > 0) {
+          //   $('#paintWrap').find('[title]').tooltip('destroy')
+          // }
+          // _this.$nextTick(() => {
+          //   if ($('#home-html').length > 0) {
+          //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+          //   } else {
+          //     titleShowFn('bottom', $(_this.$el), _this.$el)
+          //   }
+          // })
+          // 这里不用注释
+          clearTimeout(_this.intervalId)
+          _this.intervalId = setTimeout(tableFn, _this.intervalTime)
+        }, _this.intervalTime)
       }
     }
+    // initMove () {
+    //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
+    //   if (this.intervalId) {
+    //     clearTimeout(this.intervalId)
+    //   }
+    //   if (this.item.chartData.rows.length > this.pageNum) {
+    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+    //       totalPage--
+    //     }
+    //     let nowPage = 0
+    //     this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
+    //     this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
+    //     this.intervalId = setInterval(() => {
+    //       this.tableMove = !this.tableMove
+    //       if (this.tableMove) {
+    //         nowPage++
+    //         if (nowPage === totalPage) {
+    //           nowPage = 0
+    //         }
+    //         this.page1Data = this.item.chartData.rows.slice(this.pageNum * nowPage, this.pageNum * (nowPage + 1))
+    //         this.page2Data = this.item.chartData.rows.slice(this.pageNum * (nowPage + 1), this.pageNum * (nowPage + 2))
+    //       }
+    //     }, 3000)
+    //   }
+    // }
   },
   mounted: function () {
     this.pageNum = Number(this.item.pageNum)
@@ -288,14 +314,14 @@ export default {
   },
   beforeDestroy: function () {
     if (this.intervalId) {
-      clearInterval(this.intervalId)
+      clearTimeout(this.intervalId)
+      this.intervalId = null
     }
-  },
-  destroyed: function () {
-    if ($(this.$el).find('.tooltip').length > 0) {
+    if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
-    // this.$destroy(true)
+    this.page1Data = null
+    this.page2Data = null
   }
 }
 </script>

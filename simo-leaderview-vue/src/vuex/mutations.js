@@ -20,6 +20,9 @@ const mutations = {
   },
   changeLimitItem (state, data) {
     state.limitItem = data
+  },
+  changePageVisiable (state, data) {
+    state.pageVisiable = data
   }
 }
 export default mutations

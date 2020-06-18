@@ -181,8 +181,9 @@ export default {
       this.initBall()
     }
   },
-  beforeDestroyed () {
+  beforeDestroy () {
     this.chart.dispose()
+    this.chart = null
   },
   destroyed () {
   }

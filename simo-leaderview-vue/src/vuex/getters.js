@@ -4,3 +4,4 @@ export const alertInfo = state => state.alertInfo
 export const videoTims = state => state.videoTims
 export const onlyOneItem = state => state.onlyOneItem
 export const limitItem = state => state.limitItem
+export const pageVisiable = state => state.pageVisiable

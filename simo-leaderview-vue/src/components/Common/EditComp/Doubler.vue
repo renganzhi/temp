@@ -120,9 +120,9 @@ export default {
     let key = 'f' + this.item.fontSize
     this.numWidth = this.defConf[key][0]
     this.numHeight = this.defConf[key][1]
-  },
-  destroyed: function () {
   }
+  // destroyed: function () {
+  // }
 }
 </script>
 <style scoped>
