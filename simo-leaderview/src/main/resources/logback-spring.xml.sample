@@ -1,41 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>simo_files/log/${modulename}.log</File>
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>simo_files/log/simo-leaderview.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-          <FileNamePattern>
-        simo_files/loghistory/${modulename}-%d.%i.log.gz
-          </FileNamePattern>
-          <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-            <MaxFileSize>10MB</MaxFileSize>
-          </TimeBasedFileNamingAndTriggeringPolicy>
+            <FileNamePattern> simo_files/loghistory/simo-leaderview-%d.%i.log.gz 
+            </FileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-          <Pattern>%date %level [%thread] %logger %msg%n</Pattern>
+            <Pattern>%date %level [%thread] %logger %msg%n</Pattern>
         </encoder>
     </appender>
-   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</pattern>
-                 <charset>UTF-8</charset>
-             </encoder>
-             <target>System.out</target>
-     </appender>
-           <logger name="javax.net" level="warn"/>
-           <logger name="javax.management" level="warn"/>
-           <logger name="org.springframework" level="warn"/>
-           <logger name="org.compass" level="warn"/>
-           <logger name="org.tuckey" level="warn"/>
-           <logger name="com.uxsino" level="info" />
-           <springProfile name="dev">
-                <root level="info">
-                   <appender-ref ref="STDOUT" />
-                   <appender-ref ref="ROLLING" />
-                </root>
-           </springProfile>
-           <springProfile name="prod">
-                <root level="info">
-                   <appender-ref ref="ROLLING" />
-                </root>
-           </springProfile>
+    <appender name="START" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>simo_files/log/simo-leaderview-start.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern> simo_files/loghistory/simo-leaderview-start-%d.%i.log.gz 
+            </FileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</Pattern>
+        </encoder>
+    </appender>
+    <appender name="ERROR" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <target>System.out</target>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <target>System.out</target>
+    </appender>
+    <logger name="com.uxsino" level="info"/>
+    <logger name="com.uxsino.LeaderViewApplication" level="info">
+        <appender-ref ref="START"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.uxsino.leaderview.LeaderViewInit" level="info">
+        <appender-ref ref="START"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root level="warn">
+        <appender-ref ref="ROLLING"/>
+        <appender-ref ref="ERROR"/>
+    </root>
 </configuration>

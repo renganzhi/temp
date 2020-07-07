@@ -2,11 +2,6 @@ server:
   port: 11100 
   tomcat: 
     uri-encoding: UTF-8
-logging:
-  level:
-    root: WARN
-    com:
-      uxsino: INFO
 security:
   oauth2:
     resource:
@@ -18,12 +13,12 @@ banner:
 spring:
 #log mode ,in development enviroument set to 'dev' and set to 'prod' in production environment
   profiles:
-    active: ${logmode}
+    active: dev
   application: 
     name: leaderview 
   redis: 
-    host: ${redishost}
-    port: ${redisport}
+    host: 127.0.0.1
+    port: 6379
     password: uxsino@2016
   servlet:
     multipart:
@@ -39,10 +34,10 @@ spring:
     encoding: UTF-8
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: ${dburl}
-    username: ${dbusername}
-    password: ${dbpassword}
-    driverClassName: ${dbdriver}
+    url: jdbc:uxdb://localhost:5432/simo_dev
+    username: uxsino
+    password: Uxs!nO10
+    driverClassName: com.uxsino.uxdb.Driver
     initialSize: 5
     minIdle: 5
     maxActive: 20
@@ -63,12 +58,12 @@ spring:
           slowSqlMillis: 5000
     useGlobalDataSourceStat: true
   jpa: 
-    database: ${dbtype}
+    database: DEFAULT
     show-sql: false
     generate-ddl: true   
     hibernate: 
       naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy  
-    database-platform: ${dbdialect}
+    database-platform: com.uxsino.uxdb.UXDBDialect
     properties: 
       hibernate: 
         hbm2ddl: 
@@ -77,7 +72,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${servicecenterhost}:${servicecenterport}/eureka/
+      defaultZone: http://localhost:10086/eureka/
   instance:
     ip-address: 127.0.0.1
     hostname: 127.0.0.1
@@ -97,7 +92,7 @@ simo:
     allow: 127.0.0.1
   mq:
     broker: 
-      url: ${activemqfailover}tcp://${activemqhost}:${activemqport}
+      url: failover:tcp://localhost:61616
 
 heartbeat:
     send_interval: 20000
@@ -107,15 +102,15 @@ web:
     file:
       path: simo_file
 
-service-mc: ${servicemc}
-service-useradmin: ${serviceuseradmin}
-service-workflow: ${serviceworkflow}
-service-alert: ${servicealert}
-service-monitoring: ${servicemonitoring}
-service-patrol: ${servicepatrol}
-service-report: ${servicereport}
-service-cmdb: ${servicecmdb}
-service-business: ${servicebusiness}
-service-knowledgebase: ${serviceknowledgebase}
-service-msg: ${servicemsg}
-service-leaderview: ${serviceleaderview}
+service-mc: mc
+service-useradmin: useradmin
+service-workflow: workflow
+service-alert: alert
+service-monitoring: monitoring
+service-patrol: patrol
+service-report: report
+service-cmdb: cmdb
+service-business: business
+service-knowledgebase: knowledgebase
+service-msg: msg
+service-leaderview: leaderview

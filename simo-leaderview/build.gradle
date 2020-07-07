@@ -1,27 +1,12 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "net.saliman.properties"
+apply plugin: "org.springframework.boot"
+apply plugin: 'io.spring.dependency-management'
 
-def buildType = System.properties.build ? System.properties.build : "app"
-if (buildType == "app") {
-    apply plugin: "org.springframework.boot"
-    apply plugin: 'io.spring.dependency-management'
-	dependencyManagement {
-		imports { 
-			mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
-		}
-	}
-}
-
-sourceSets {
-	main{
-		java{
-			if (buildType != "app") {
-    			   println "exclude patrol conf"
-					exclude "com/uxsino/LeaderViewApplication.java"
-					exclude "com/uxsino/leaderview/security/conf/*WebSecurityConfig.java"
-				}
-			}
+dependencyManagement {
+	imports { 
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
 	}
 }
 
