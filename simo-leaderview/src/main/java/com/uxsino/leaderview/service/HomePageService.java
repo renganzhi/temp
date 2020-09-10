@@ -293,7 +293,7 @@ public class HomePageService {
     public List<HomePage> getByAuthority(HttpSession session){
         boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
         String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
-        //获取当前用户所拥有的角色
+        //获取当前用户所拥有的角色 
         JSONArray userRole = SessionUtils.getSessionUserRoleIdArr(session);
         //JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
         //String userRole = userObj.getString("departmentId");
