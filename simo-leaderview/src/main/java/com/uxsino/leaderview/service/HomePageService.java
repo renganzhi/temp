@@ -1,29 +1,26 @@
 package com.uxsino.leaderview.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.SessionUtils;
+import com.uxsino.leaderview.dao.IHomePageDao;
+import com.uxsino.leaderview.entity.HomePage;
 import com.uxsino.leaderview.entity.HomePageVo;
 import com.uxsino.leaderview.model.ShareState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.uxsino.leaderview.dao.IHomePageDao;
-import com.uxsino.leaderview.entity.HomePage;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HomePageService {
@@ -296,8 +293,10 @@ public class HomePageService {
     public List<HomePage> getByAuthority(HttpSession session){
         boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
         String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
-        JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
-        String userRole = userObj.getString("departmentId");
+        //获取当前用户所拥有的角色 
+        JSONArray userRole = SessionUtils.getSessionUserRoleIdArr(session);
+        //JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
+        //String userRole = userObj.getString("departmentId");
         List<HomePage> AllhomePage = Lists.newArrayList();
         try {
             AllhomePage = findAllWithoutConf(SessionUtils.getCurrentUserIdFromSession(session));
@@ -334,7 +333,7 @@ public class HomePageService {
      * @param userRole
      * @return
      */
-    private int validSharedorAuthor(HomePage homePage, String userId, String userRole) {
+    private int validSharedorAuthor(HomePage homePage, String userId, JSONArray userRole) {
         JSONObject shareConf = JSONObject.parseObject(homePage.getShareConf());
         Long handoverId = homePage.getHandoverId();
         Long createUserId = homePage.getCreateUserId();
@@ -346,8 +345,18 @@ public class HomePageService {
             return ShareState.INDEPENDENT.getValue();
         }
         JSONArray shareUids = shareConf.getJSONArray("uids");
+        List<String> shareUidList =
+                shareUids != null ? shareUids.stream().map(s -> s.toString()).collect(Collectors.toList()) : null;
+        if (shareUidList != null && shareUidList.contains(userId)) {
+            return ShareState.IS_BE_SHARED.getValue();
+        }
         JSONArray shareRoles = shareConf.getJSONArray("roles");
-        for (int i = 0; i < shareUids.size(); i++) {
+        List<String> shareRoleList =
+                shareRoles != null ? shareRoles.stream().map(sr -> sr.toString()).collect(Collectors.toList()) : null;
+        if (shareRoleList != null && CollectionUtils.containsAny(userRole,shareRoleList)) {
+            return ShareState.IS_BE_SHARED.getValue();
+        }
+       /* for (int i = 0; i < shareUids.size(); i++) {
             if (userId.equals(shareUids.get(i).toString())){
                 return ShareState.IS_BE_SHARED.getValue();
             }
@@ -356,7 +365,7 @@ public class HomePageService {
             if (userRole.equals(shareRoles.get(i).toString())){
                 return ShareState.IS_BE_SHARED.getValue();
             }
-        }
+        }*/
         return ShareState.INDEPENDENT.getValue();
     }
 }
