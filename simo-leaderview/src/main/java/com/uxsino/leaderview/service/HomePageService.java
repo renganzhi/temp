@@ -368,4 +368,8 @@ public class HomePageService {
         }*/
         return ShareState.INDEPENDENT.getValue();
     }
+
+    public void saveAll(List<HomePage> homePages) {
+        homePageDao.saveAll(homePages);
+    }
 }
