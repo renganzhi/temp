@@ -1095,10 +1095,28 @@ export default {
                 show: false
               }
             },
+            series (v) {  //解决：ve-radar为svg时，渐变在直线上失效问题
+              let colorArr = _this.extend.color
+              let columns = _this.dealChartData.columns
+              v.forEach(d => {
+                d.itemStyle = { normal: { areaStyle: { type: 'default' } } }
+                d.symbolSize = 0
+                if(columns.length === 3 && _this.item.ifGradual === 'true' && d.data.length){
+                  d.data.forEach((o,i) => {
+                    o.lineStyle = {
+                      color:colorArr[i].colorStops[0].color //默认取渐变的0%的颜色
+                    }
+                  })
+                }
+              })
+              return v
+            }
+            /*
             series: {
               itemStyle: { normal: { areaStyle: { type: 'default' } } },
               symbolSize: 0
             }
+            */
           })
         },
         've-funnel': function () {
