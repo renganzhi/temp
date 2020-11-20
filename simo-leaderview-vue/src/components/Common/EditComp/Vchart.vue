@@ -1100,7 +1100,9 @@ export default {
               let columns = _this.dealChartData.columns
               v.forEach(d => {
                 d.itemStyle = { normal: { areaStyle: { type: 'default' } } }
-                d.symbolSize = 0
+                if (columns.length > 2) {  //解决：雷达图只有一个指标时，无信息展示问题，此情况露出圆点
+                  d.symbolSize = 0
+                }
                 if(columns.length === 3 && _this.item.ifGradual === 'true' && d.data.length){
                   d.data.forEach((o,i) => {
                     o.lineStyle = {
