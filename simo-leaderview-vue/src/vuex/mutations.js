@@ -23,6 +23,12 @@ const mutations = {
   },
   changePageVisiable (state, data) {
     state.pageVisiable = data
-  }
+  },
+  changeThirdUser (state, data) {
+    state.thirdUser = data
+  },
+  changeThirdConf (state, data) {
+    state.thirdConf = data
+  },
 }
 export default mutations

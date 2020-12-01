@@ -1,6 +1,6 @@
 <template>
   <div :style="wrapStyle">
-    <div v-if="item.ctDataSource === 'system' && item.chartData && item.chartData.state"
+    <div v-if="item.ctDataSource !== 'static' && item.chartData && item.chartData.state"
          ref="titleBox"
          :style="titleStyle">
       <span :style="stateSty"
@@ -39,7 +39,7 @@ export default {
       this.$refs.vtextarea.blur()
     },
     updateHeight () {
-      if (this.item.ctDataSource === 'system') {
+      if (this.item.ctDataSource !== 'static') {
         this.$nextTick(() => {
           this.titleHeight = this.$refs.titleBox ? this.$refs.titleBox.getBoundingClientRect().height : 0
           this.textHeight = this.item.height - this.titleHeight
@@ -112,7 +112,7 @@ export default {
       this.updateColor()
     },
     'item.chartData': function () {
-      if (this.item.ctDataSource === 'system') {
+      if (this.item.ctDataSource !== 'static') {
         this.updateColor()
       }
     },

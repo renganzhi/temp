@@ -1,4 +1,5 @@
 import { gbs } from '@/config/settings'
+import { newAjax } from '@/config/thirdLoginMix'
 // 告警统计口径枚举
 var alertStatisticsScopes = {
   1: '资源名称',
@@ -77,7 +78,7 @@ var bAltMapIcon = {
 //     }
 //   }
 // })
-$.ajax({
+newAjax({
   dataType: 'json',
   url: gbs.host + 'alert/currencyAlertmanager/enum',
   data: {},

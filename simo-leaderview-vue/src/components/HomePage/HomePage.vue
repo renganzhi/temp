@@ -128,9 +128,11 @@ import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions, mapGetters } from 'vuex'
+import {checkLogin} from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage },
+  // mixins:[thirdLoginMix],
   data () {
     return {
       moveBox1: 'moveLeft1',
@@ -619,14 +621,20 @@ export default {
       newV = newV || this.nowPage
       var ct = this
       if (!newV) return
-      $.each(newV, function (i, d) {
+      $.each(newV, async function (i, d) {
         let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
         if (ct.nowTime % freshTime === 0 && d.chartType === 'topo' && d.tptype !== 'maptp') {
           ct.$set(d, 'time', new Date().getTime())
-        } else if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
+        } else if (d.ctDataSource !== 'static' && d.url && ct.nowTime % freshTime === 0) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
+          // if(!ct.thirdUser && d.ctDataSource !== 'system') {  //第三方系统：检查是否需要登录
+          //   let curUrl = d.url.split('://')[1].split('/')[0]
+          //   if(!(await checkLogin(curUrl))) return false  //登录失败：跳出循环
+          // }
+          ct.sentReq(d)
+          /*
           let xhrobj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
@@ -672,6 +680,7 @@ export default {
             }
           })
           ct.xhrArr.push(xhrobj)
+          */
         } else if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
           if (ct.nowTime % freshTime === 0) {
@@ -682,6 +691,61 @@ export default {
       // this.$nextTick(() => {
       //   ct.setScale()
       // })
+    },
+    //发送请求
+    sentReq(d){
+      let ct = this
+      let xhrobj = $.ajax({
+        url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url,  //第三方的ur已经拼接好host
+        data: d.params,
+        type: d.method || 'get',
+        cache: false,
+        ascyn: false,
+        success: function (res) {
+          res.obj = res.obj || []
+          if (res.obj.colors) {
+            d.ctColors = res.obj.colors
+          }
+          if (d.chartType === 'marquee' || d.chartType === 'text') {
+            d.ctName = res.obj.info
+          }
+          if (d.chartType !== 'marquee') {
+            if (d.chartType === 'v-map') {
+              d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
+            } else {
+              d.chartData = res.obj // 会触发刷新
+            }
+          }
+        },
+        error: async function (xhr) {
+          if (xhr.status === 776) {
+            if(d.ctDataSource !== 'static' && d.ctDataSource !== 'system') {  //第三方登录过期:重新登录后再请求
+              ct.xhrArr.pop()
+              let curUrl = d.url.split('://')[1].split('/')[0]
+              await checkLogin(curUrl) && ct.sentReq(d)
+              return false
+            }
+            // 776 取消页面刷新
+            ct.freshInterval && clearTimeout(ct.freshInterval)
+            ct.freshInterval = null
+          }
+          if (xhr.status != 776 && xhr.statusText !== 'abort') {
+            if (gbs.inDev) {
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', '连接错误！', 'error')
+            }
+          }
+        },
+        complete: function (XHR, textStatus) {
+          XHR = null
+        }
+      })
+      ct.xhrArr.push(xhrobj)
     },
     refreshFn: function (newV) { // 刷新本页数据
       newV = newV || this.nowPage
@@ -694,10 +758,12 @@ export default {
           ct.$nextTick(function(){
               d.tpId = tpid;
           }) */
-        } else if (d.ctDataSource == 'system' && d.url) {
+        } else if (d.ctDataSource !== 'static' && d.url) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
+          ct.sentReq(d)
+          /*
           let xhrObj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
@@ -743,6 +809,7 @@ export default {
             }
           })
           ct.xhrArr.push(xhrObj)
+          */
         }
         if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           ct.$set(d, 'id', new Date().getTime() + parseInt(Math.random() * 10000))

@@ -1,6 +1,7 @@
 import businessTopology from './businessTopology'
 import Region from './../topo/regionText'
 import { gbs } from '@/config/settings'
+import { newAjax } from '@/config/thirdLoginMix'
 var topoBaseData = '45f44be9-ebc8-4f6e-b3f8-fcc18f2b6db7' // sessionStorage.getItem('businessId')
 var busData = {}
 var baseData = {
@@ -376,7 +377,7 @@ function judgeBindBusEvent (el) {
 // 新增
 var businessApi = {
   topoConfig: function (tpId, callback, isAsync) { // 获取拓扑全局设置
-    $.ajax({
+    newAjax({
       url: gbs.host + '/business/topology/backgroundSet/' + tpId,
       type: 'GET',
       async: isAsync && true,
@@ -389,7 +390,7 @@ var businessApi = {
   },
   businessMainTopo: function (businessId, successCb, errorCb) { // 根据业务ID 获取拓扑图中的节点、连线、链路信息
     var nodesInfo = []
-    $.ajax({
+    newAjax({
       url: gbs.host + '/business/topology/' + businessId,
       type: 'GET',
       success: function (data) {
@@ -405,7 +406,7 @@ var businessApi = {
   },
   //* *区域**//*
   getRegion: function (businessId, callback) {
-    $.ajax({
+    newAjax({
       url: gbs.host + '/business/topology/region/' + businessId,
       type: 'GET',
       async: false,
