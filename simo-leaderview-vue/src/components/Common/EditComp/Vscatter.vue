@@ -307,12 +307,17 @@ export default {
         this.extend.series.data = this.formatData(newV)
         this.item.scatterPoint = this.extend.series.data
       }
+    },
+    alertInfo: function(){
+      this.handlePieces()
     }
   },
   beforeMount: function () {
 
   },
   mounted: function () {
+    this.handlePieces()
+    /*
     var piecesArr = []
     if (this.alertInfo && this.alertInfo.length > 0) {
       _.forEach(this.alertInfo, function (item) {
@@ -321,6 +326,7 @@ export default {
       })
       this.extend.visualMap.pieces = piecesArr
     }
+    */
     if (this.item.mapLevel === 'country') {
       this.item.provinceCode = ''
       this.item.cityCode = ''
@@ -339,6 +345,16 @@ export default {
     // }, 5000)
   },
   methods: {
+    handlePieces(){
+      var piecesArr = []
+      if (this.alertInfo && this.alertInfo.length > 0) {
+        _.forEach(this.alertInfo, function (item) {
+          let obj = { 'value': item.level, color: item.color, label: item.name }
+          piecesArr.push(obj)
+        })
+        this.extend.visualMap.pieces = piecesArr
+      }
+    },
     formatPieces (piecesData) {
       piecesData[piecesData.length - 1].gte = piecesData[piecesData.length - 1].min
       return piecesData

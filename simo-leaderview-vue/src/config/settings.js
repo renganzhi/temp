@@ -53,6 +53,10 @@ var settings = {
       {
         mini: '/leaderview/border/cardMini3.png',
         imgSrc: '/leaderview/border/cardBg3.png'
+      },
+      {
+        mini: '/leaderview/border/cardBg4.png',
+        imgSrc: '/leaderview/border/cardBg4.png'
       }
     ],
     titleCase: [

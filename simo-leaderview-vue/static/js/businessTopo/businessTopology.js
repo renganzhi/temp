@@ -5,6 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
+import { newAjax, getTopoIcon } from '@/config/thirdLoginMix'
 // import levelMapName from './../topo/enum'
 function businessTopology (opt, businessId) {
   this.defaultConfig = {
@@ -102,18 +103,24 @@ businessTopology.prototype = {
       this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
     }
     if (this.config.backgroundIconId || this.config.backgroundIconIdDefault) {
-      this.svgImage = d3.select(this.ele).append('img').attr({
-        'src': gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
-        'width': '100%',
-        'height': '100%',
-        'class': 'backgroundImage'
-      }).style({
-        'position': 'absolute',
-        'left': '0',
-        'top': '0'
+      getTopoIcon({
+        curThis: this,
+        url: gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
+        callback: function(curThis,src){
+          curThis.svgImage = d3.select(curThis.ele).append('img').attr({
+            // 'src': gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
+            'src': src,
+            'width': '100%',
+            'height': '100%',
+            'class': 'backgroundImage'
+          }).style({
+            'position': 'absolute',
+            'left': '0',
+            'top': '0'
+          })
+        }
       })
     }
-
     this.svgContainer = d3.select(this.ele).append('svg:svg').attr({
       'width': '100%',
       'height': '100% ',
@@ -152,8 +159,15 @@ businessTopology.prototype = {
     return this
   },
   setBackground: function (iconId) {
+    var _this = this
     this.config.backgroundIconId = iconId || this.config.backgroundIconId
-    this.svgImage.attr('src', gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId) + '/Good')
+    getTopoIcon({
+      curThis:this,
+      url: gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId) + '/Good',
+      callback: function(curThis,src){
+        curThis.svgImage.attr('src', src)
+      }
+    })
   },
   createZoom: function () {
     var _this = this
@@ -645,7 +659,7 @@ businessTopology.prototype = {
       } else if (d.baseNeClass == 'network') {
         indicatorNames = ['network_cpu', 'network_memory']
       }
-      $.ajax({
+      newAjax({
         url: gbs.host + '/monitor/ne/view/' + d.neId,
         dataType: 'json',
         data: {indicatorNames: indicatorNames.length > 0 ? indicatorNames.join(',') : ''},
@@ -1113,11 +1127,17 @@ businessTopology.prototype = {
     var _this = this
     var nodes = selection || this.vis.selectAll('.node')
     nodes.each(function (d) {
-      d3.select(this).select('.nodeImg').attr({
-        'width': d.width,
-        'height': d.height,
-        'id': d.id,
-        'href': _this.setNodeImg(d)
+      getTopoIcon({
+        curThis: this,
+        url: _this.setNodeImg(d),
+        callback: function(curThis,src){
+          d3.select(curThis).select('.nodeImg').attr({
+            'width': d.width,
+            'height': d.height,
+            'id': d.id,
+            'href':src
+          })
+        }
       })
     })
     _this = nodes = null
@@ -1308,7 +1328,7 @@ businessTopology.prototype = {
 
 var busTopoApi = {
   bnsTipInfo: function (businessId, callback, isAsync) {
-    $.ajax({
+    newAjax({
       url: gbs.host + '/business/topology/bnsTipInfo/' + businessId,
       type: 'GET',
       async: isAsync && true,
