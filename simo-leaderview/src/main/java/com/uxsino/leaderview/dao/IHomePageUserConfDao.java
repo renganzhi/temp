@@ -4,6 +4,7 @@ import com.uxsino.commons.db.repository.ICustomRepository;
 import com.uxsino.leaderview.entity.HomePageUserConf;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -42,4 +43,9 @@ public interface IHomePageUserConfDao extends ICustomRepository<HomePageUserConf
     @Modifying
     @Transactional
     void deleteByPageId(Long pageId);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "update simo_mc_home_page_user_conf set page_id = :target where page_id = :origin")
+    void updatePageId(@Param("origin") Long origin, @Param("target") Long target);
 }

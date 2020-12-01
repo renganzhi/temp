@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 模板图片的操作方法
@@ -110,4 +111,14 @@ public class HomeTemplateImgService {
     public HomeTemplateImg getById(Long id) {
         return imgDao.findOne(id);
     }
+
+    public Integer getMaxId() {
+        return imgDao.getMaxId();
+    }
+
+    @Transactional
+    public void saveAll(List<HomeTemplateImg> imgs){
+        imgDao.saveAll(imgs);
+    }
+
 }

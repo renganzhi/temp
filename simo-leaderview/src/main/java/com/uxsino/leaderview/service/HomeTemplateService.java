@@ -106,4 +106,17 @@ public class HomeTemplateService {
 	public HomeTemplate one(Long id) {
 		return templateDao.findOne(id);
 	}
+
+    public Long count() {
+        return templateDao.count();
+    }
+
+    public HomeTemplate save(HomeTemplate homeTemplate){
+        return templateDao.save(homeTemplate);
+    }
+
+    public List<HomeTemplate> findAll(){
+		return templateDao.findAll();
+	}
+
 }
