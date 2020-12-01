@@ -22,3 +22,9 @@ export const changeLimitItem = function ({ commit, state }, newData) {
 export const changePageVisiable = function ({commit, satte}, newData) {
   commit('changePageVisiable', newData)
 }
+export const changeThirdUser = function ({commit, satte}, newData) {
+  commit('changeThirdUser', newData)
+}
+export const changeThirdConf = function ({commit, satte}, newData) {
+  commit('changeThirdConf', newData)
+}

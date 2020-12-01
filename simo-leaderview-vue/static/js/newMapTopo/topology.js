@@ -6,6 +6,7 @@
  * */
 // import levelMapName from './../topo/enum'
 import { gbs } from '@/config/settings'
+import { newAjax, getTopoIcon } from '@/config/thirdLoginMix'
 function mapTopology (opt) {
   this.defaultConfig = {
     width: 24,
@@ -62,7 +63,7 @@ mapTopology.prototype = {
       var num = mpCode.substring(0, 2)
       selectMapNum = num + '0000/' + mpCode
     }
-    $.ajax({
+    newAjax({
       url: gbs.host + '/resources/data/mapJson/' + selectMapNum + '.geoJson',
       async: false,
       success: function (data) {
@@ -150,7 +151,8 @@ mapTopology.prototype = {
         d.isBind = false
         d3.select(this).attr({
           x: p[0],
-          y: p[1]
+          y: p[1],
+          idName:d.id
         })
       })
     // });
@@ -160,7 +162,18 @@ mapTopology.prototype = {
       'class': 'link dragline hidden'
     })
     this.createLiquid()
-    _this = null
+    // _this = null
+    if(selectMapNum === '100000'){ //全国地图加九段线
+      d3.xml("/resources/img/topo/southchinasea.svg", function(error, xmlDocument) {
+        var taiwan = _this.svgContainer.select('[idName="tai_wan"]')
+        _this.svgContainer.append('g').attr("transform","translate("+(Number(taiwan.attr('x'))+30)+","+(taiwan.attr('y'))+")scale(1)").attr('class','southsea').html(function (d) {
+            return xmlDocument.getElementsByTagName("g")[0].outerHTML;
+        })
+        _this = null
+      })
+    }else{
+      _this = null
+    }
     return this
   },
   flagGoe: function (code) { // 判断地图上下是否过长
@@ -189,11 +202,17 @@ mapTopology.prototype = {
     var nodes = selection || this.china.selectAll('.node')
     nodes.each(function (d) {
       if (_this.iconChange) {
-        d3.select(this).select('.nodeImg').attr({
-          'width': d.width,
-          'height': d.height,
-          'id': d.id,
-          'href': _this.setNodeImg(d)
+        getTopoIcon({
+          curThis: _this,
+          url: _this.setNodeImg(d),
+          callback: function(curThis,src){
+            d3.select(curThis).select('.nodeImg').attr({
+              'width': d.width,
+              'height': d.height,
+              'id': d.id,
+              'href': src
+            })
+          }
         })
       } else {
         d3.select(this).select('.sport').attr({
@@ -425,8 +444,7 @@ mapTopology.prototype = {
       } else if (d.baseNeClass == 'network') {
         indicatorNames = ['network_cpu', 'network_memory']
       }
-      $
-        .ajax({
+      newAjax({
           url: gbs.host + '/monitor/ne/view/' + d.neId,
           dataType: 'json',
           data: {
@@ -487,7 +505,7 @@ mapTopology.prototype = {
           }
         })
     } else if (d.nodeType == 'SubnetTopo' && d.runStatus == 'Warning') {
-      $.ajax({
+      newAjax({
         url: gbs.host + '/monitor/topo/view/' + d.neId,
         dataType: 'json',
         type: 'post',
@@ -524,7 +542,7 @@ mapTopology.prototype = {
   linkTip: function (d) {
     d.alertLevel = null
     if (d.linkStatus == 'Alert' || d.linkStatus == 'Unconnection') {
-      $.ajax({
+      newAjax({
         url: gbs.host + '/monitor/topo/linkView/' + d.networkLinkId,
         dataType: 'json',
         type: 'post',

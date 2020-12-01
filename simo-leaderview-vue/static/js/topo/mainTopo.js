@@ -1,6 +1,7 @@
 import { gbs } from '@/config/settings'
 import Topology from './topology'
 import Region from './regionText'
+import { newAjax} from '@/config/thirdLoginMix'
 function MainTp (opt) {
   this.opt = opt
   $(opt.el)
@@ -45,7 +46,7 @@ MainTp.prototype = {
     //   false
     // )
     // topoConfig:function(tpId,callback,isAsync){   //获取拓扑全局设置
-    $.ajax({
+    newAjax({
       url: gbs.host + '/monitor/topo/findTopoBackgroundSetByTopoId?topoId=' + this.opt.tpId,
       type: 'GET',
       async: false,
@@ -84,7 +85,7 @@ MainTp.prototype = {
     //   }
     // )
     // 获取拓扑图中的节点、连线、链路信息
-    $.ajax({
+    newAjax({
       url: gbs.host + '/monitor/topo/domainTopo/' + this.opt.tpId,
       type: 'GET',
       success: function (data) {
@@ -132,7 +133,7 @@ MainTp.prototype = {
     //   _this = null
     // })
     // 区域
-    $.ajax({
+    newAjax({
       url: gbs.host + '/monitor/topo/getTopoRegionByTopoId/' + this.opt.tpId,
       type: 'GET',
       success: function (data) {

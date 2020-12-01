@@ -45,10 +45,10 @@ public class HomeTemplateService {
 		templateImgService.init();
 		// 查看表是否存在数据
 		long count = templateDao.count();
-		if (count > 0) {
-			return;
-		}
 		try {
+			if (count > 0) {
+				delAll();
+			}
 			new ClassPathResourceWalker(FILEPATH).forEach(file -> {
 				InputStream in;
 				try {

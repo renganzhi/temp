@@ -2,6 +2,7 @@
 // baseData.mapTopo.refreshTimer = null; //定时刷新控制器
 import mapTopology from './topology'
 import { gbs } from '@/config/settings'
+import { newAjax } from '@/config/thirdLoginMix'
 // var mapTp = ''
 var mpTopo = {
   initTopo: function (mapTp, userId, mpId, el) {
@@ -122,7 +123,7 @@ function judgeBindMapEvent (mapTp) {
 }
 
 function newDomainTopo (mapId, userId, callback) { // 地图拓扑数据加载
-  $.ajax({
+  newAjax({
     method: 'post',
     url: gbs.host + '/monitor/topo/mapTopoDomain',
     async: false,
