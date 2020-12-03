@@ -1248,17 +1248,22 @@
                   </div>
                 </div>
               </div>
-              <template v-if="selectedItem.chartType == 'video'">
+              <template v-if="['video', 'ppt'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >
                     <label>{{item.name}}</label>
-                    <select v-model="selectedItem[item.key]">
-                      <option v-for="(option, optIndex) in item.options" :key="`${option.name}_${optIndex}`"
-                      :value="option.value" 
-                      >{{option.name}}</option>
-                    </select>
+                    <template v-if="item.tag == 'select'">
+                      <select v-model="selectedItem[item.key]">
+                        <option v-for="(option, optIndex) in item.options" :key="`${option.name}_${optIndex}`"
+                        :value="option.value" 
+                        >{{option.name}}</option>
+                      </select>
+                    </template>
+                    <template v-else-if="item.tag == 'input'">
+                      <input class="w-90" :type="item.type" v-model="selectedItem[item.key]"> {{ item.unit || '' }}
+                    </template>
                   </div>
               </template>
             </div>
@@ -1266,7 +1271,7 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div v-show="selectedItem.chartType == 'image'">
+              <div v-show="['image', 'ppt'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
@@ -1283,8 +1288,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;"
-                   v-show="(selectedItem.chartType!=='image' && selectedItem.chartType!=='border' && selectedItem.chartType!=='time'&& selectedItem.chartType!=='video')">
+              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -1537,6 +1541,19 @@
                 <button @click="videoChange"
                         style="margin-top: 30px">更新视图</button>
               </div>
+              <template v-if="selectedItem.chartType == 'ppt'">
+                <div class="form-group cols2 img_src_list" @click="deleteSrcList($event)">
+                  <SlickList axis="y" v-model="selectedItem.srcList" :pressDelay="200">
+                    <SlickItem v-for="(item, index) in selectedItem.srcList" :key="index" 
+                    :index="index" :item="item "
+                    class="src_item"
+                    >
+                      {{item.name}}
+                      <span class="delete_text" :data-index="index" >删除</span>
+                    </SlickItem>
+                  </SlickList>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -1615,4 +1632,20 @@ import './Edit.scss'
 export default EditJs
 </script>
 <style lang="scss">
+.img_src_list {
+  .src_item {
+    // padding-left: 8px;
+    line-height: 25px;
+    // color: red;
+    cursor:move;
+  }
+  .delete_text {
+    cursor: pointer;
+    color: #0088cc;
+  }
+}
+.src_item {
+  z-index:100;
+}
+
 </style>

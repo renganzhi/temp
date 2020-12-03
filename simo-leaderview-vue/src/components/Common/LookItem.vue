@@ -36,12 +36,17 @@
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
+    <template v-else-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item"></component>
+    </template>
     <Vchart v-else
             :item="item"></Vchart>
   </div>
 </template>
 <script>
+import dynamicList from './dynamicList'
 import components from './chartComponents'
+import { capitalize } from '@/utils'
 
 export default {
   name: 'lookItem',
@@ -49,6 +54,7 @@ export default {
   components,
   data () {
     return {
+      dynamicList,
       editable: false
     }
   },
@@ -62,6 +68,9 @@ export default {
         zIndex: this.item.zIndex || 500
       }
     }
+  },
+  methods: {
+    capitalize
   }
 }
 </script>

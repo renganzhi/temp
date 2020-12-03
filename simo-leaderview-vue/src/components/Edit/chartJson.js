@@ -1,4 +1,6 @@
 import config from './config.json'
+// 改造过渡
+import ppt from '@/components/Common/EditComp/ppt/config.json'
 
 var morenData = {
   pie: {
@@ -496,6 +498,7 @@ var compsArr = [{
   showType: '1',
   chartData: {}
 },
+ppt.item,
 {
   text: '边框',
   imgClass: 'icon-n-rect',

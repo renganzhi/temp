@@ -59,13 +59,18 @@
     <Player v-else-if="item.chartType=='video'"
             @palyErr="palyErr"
             :item="item"></Player>
+    <template v-else-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item"></component>
+    </template>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
 </template>
 <script>
 import DragResize from './EditComp/DragResize' // drag拖拽组件
+import dynamicList from './dynamicList'
 import components from './chartComponents'
+import { capitalize } from '@/utils'
 
 export default {
   name: 'dragBox',
@@ -76,6 +81,7 @@ export default {
   },
   data () {
     return {
+      dynamicList,
       oldW: 0,
       oldH: 0,
       oldX: 0,
@@ -83,6 +89,7 @@ export default {
     }
   },
   methods: {
+    capitalize,
     palyErr () {
       this.$emit('palyErr')
     },

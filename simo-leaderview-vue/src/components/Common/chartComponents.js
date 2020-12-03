@@ -1,6 +1,7 @@
 import Vtextarea from "./EditComp/Vtextarea"; // 文本
 import Vprogress from "./EditComp/Vprogress"; // 进度条
 import Vimg from "./EditComp/Vimg";
+import Ppt from "./EditComp/ppt"
 import Doubler from "./EditComp/Doubler"; // 数字翻牌器
 import Border from "./EditComp/Border"; // 边框
 import Vchart from "./EditComp/Vchart";
@@ -19,6 +20,7 @@ export default {
     Vtextarea,
     Vprogress,
     Vimg,
+    Ppt,
     Doubler,
     Border,
     Vchart,
