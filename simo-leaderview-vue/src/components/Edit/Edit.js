@@ -1,4 +1,4 @@
-import compsArr from '#/js/chartJson'
+import compsArr from './chartJson'
 import DragBox from './../Common/DragBox'
 import Compose from './../Common/Compose'
 import Select2 from './../Common/Select2'
@@ -12,6 +12,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { checkLogin, newAjax } from '@/config/thirdLoginMix'
 import qs from 'qs'
 import _ from 'lodash'
+import config from './config.json'
 
 export default {
   name: 'edit',
@@ -20,6 +21,7 @@ export default {
   props: [],
   data: function () {
     return {
+      config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
       animationType: ['ve-pie', 've-ring', 've-histogram', 've-bar', 've-line', 've-radar'],

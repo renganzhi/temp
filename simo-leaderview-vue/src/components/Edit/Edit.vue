@@ -1248,6 +1248,19 @@
                   </div>
                 </div>
               </div>
+              <template v-if="selectedItem.chartType == 'video'">
+                <!-- <div class="m-gap form-group">基础样式</div> -->
+                <div class="form-group cols2"
+                    v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
+                  >
+                    <label>{{item.name}}</label>
+                    <select v-model="selectedItem[item.key]">
+                      <option v-for="(option, optIndex) in item.options" :key="`${option.name}_${optIndex}`"
+                      :value="option.value" 
+                      >{{option.name}}</option>
+                    </select>
+                  </div>
+              </template>
             </div>
 
             <!--数据-->

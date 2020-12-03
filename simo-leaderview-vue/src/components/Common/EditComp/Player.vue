@@ -7,8 +7,8 @@
            :width="item.width"
            :height="item.height"
            ref="videoItem"
-           loop="loop"
-           autoplay="autoplay"
+           :loop="item.loop"
+           :autoplay="item.autoplay"
            @error="playError"
            controls
            controlsList='nodownload'
@@ -105,7 +105,7 @@ export default {
     // this.item.videoSrc = require('../../../assets/video/video1.mp4')
     var audio = this.$refs.videoItem
     audio['disablePictureInPicture'] = true
-    if (this.item.videoSrc) {
+    if (this.item.videoSrc && this.item.autoplay) {
       if (document.getElementById('home-html')) {
         var time = this.videoTims[this.item.id]
         this.autoPaly(time)

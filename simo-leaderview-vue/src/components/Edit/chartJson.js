@@ -1,3 +1,5 @@
+import config from './config.json'
+
 var morenData = {
   pie: {
     columns: ['告警级别', '数量'],
@@ -589,15 +591,16 @@ var compsArr = [{
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData
 },
-{
-  text: '视频流',
-  imgClass: 'icon-n-video',
-  chartType: 'video',
-  width: 300,
-  height: 300,
-  videoType: 'local',
-  videoSrc: ''
-}
+config.video.item
+// {
+//   text: '视频流',
+//   imgClass: 'icon-n-video',
+//   chartType: 'video',
+//   width: 300,
+//   height: 300,
+//   videoType: 'local',
+//   videoSrc: ''
+// }
   // {
   //   text: '地图',
   //   imgClass: 'icon-n-radar',
