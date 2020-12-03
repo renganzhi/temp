@@ -1,4 +1,7 @@
-import compsArr from '#/js/chartJson'
+// 拖拽排序
+import { SlickList, SlickItem } from 'vue-slicksort'
+
+import compsArr from './chartJson'
 import DragBox from './../Common/DragBox'
 import Compose from './../Common/Compose'
 import Select2 from './../Common/Select2'
@@ -12,14 +15,22 @@ import { mapActions, mapGetters } from 'vuex'
 import { checkLogin, newAjax } from '@/config/thirdLoginMix'
 import qs from 'qs'
 import _ from 'lodash'
+import oldConfig from './config.json'
+
+// 改造， 过渡， 主要用于编辑页面右侧的样式和数据
+let config = {
+  ...oldConfig,
+  ppt: require('@/components/Common/EditComp/ppt/config.json')
+}
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider },
+  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
     return {
+      config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
       animationType: ['ve-pie', 've-ring', 've-histogram', 've-bar', 've-line', 've-radar'],
@@ -3287,6 +3298,13 @@ export default {
       this.saveHistory('paint')
       this.paintObj.bgImg = ''
     },
+    deleteSrcList ($event) {
+      let target = $event.target;
+      if (target.className == 'delete_text') {
+        let index = target.dataset.index;
+        this.selectedItem.srcList.splice(index, 1);
+      }
+    },
     /* 图片 */
     changeImg: function (e) {
       if (e.value === '') {
@@ -3305,6 +3323,7 @@ export default {
         e.target.value = ''
         return
       }
+      const name = e.target.files[0].name;
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
@@ -3315,14 +3334,19 @@ export default {
           _this.paintObj.bgImg = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
-        if (_this.selectedItem.chartType === 'image') {
-          _this.saveHistory()
-          _this.selectedItem.imgSrc =
-            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const chartType = _this.selectedItem.chartType
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        _this.saveHistory()
+        if (_this.selectedItem.chartType == 'image' ) {
+          _this.selectedItem.imgSrc = curSrc
         } else if (_this.selectedItem.subType === 'pictorialBar') {
-          _this.saveHistory()
-          _this.selectedItem.symbolImg =
-            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.selectedItem.symbolImg = curSrc
+        } else if (chartType == 'ppt') {
+          // 列表顶部添加
+          _this.selectedItem.srcList.unshift({
+            name,
+            src: curSrc
+          })
         }
       })
       e.target.value = ''
