@@ -191,10 +191,10 @@
 import qs from 'qs'
 import AddPage from './AddPage'
 import PageSetting from './PageSetting'
-import PreView from './../PreView/PreView'
+import PreView from '@/components/PreView/PreView'
 import { gbs } from '@/config/settings'
-import Confirm from './../Common/Confirm'
-import Select2 from './../Common/Select2'
+import Confirm from '@/components/Common/Confirm'
+import Select2 from '@/components/Common/Select2'
 import { Notification } from 'element-ui'
 import _ from 'lodash'
 export default {
@@ -228,7 +228,6 @@ export default {
       viewKey: new Date().getTime() + parseInt(Math.random() * 70)
     }
   },
-
   methods: {
     backHome () {
       this.$router.push('/')

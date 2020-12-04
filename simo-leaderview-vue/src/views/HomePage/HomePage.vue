@@ -70,7 +70,7 @@
              v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
-                title="编辑"
+                title="设置"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
           <span @click="refresh"
                 class="ring-icon"
@@ -83,23 +83,30 @@
                 title
                 :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
         </div>
-        <div class="fr btn-box"
-             v-show="pageSize>1">
+        <div class="fr btn-box">
           <span @click="prev"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
+                v-show="showPagination"
                 :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
           <span @click="togglePlay"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
                 :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
-                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+                v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+          <span @click="toEditPage()"
+                class="ring-icon"
+                data-toggle='tooltip'
+                title
+                data-original-title="编辑"
+                v-show="!isFullScreen"><i class="el-icon-edit"></i></span>
           <span @click="next"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
+                v-show="showPagination"
                 :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
         </div>
       </div>
@@ -122,12 +129,12 @@
 
 <script>
 import { baseData, gbs } from '@/config/settings'
-import LookItem from './../Common/LookItem'
-import LookCompose from './../Common/LookCompose'
+import LookItem from '@/components/Common/LookItem'
+import LookCompose from '@/components/Common/LookCompose'
 import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 import {checkLogin} from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
@@ -192,15 +199,25 @@ export default {
   computed: {
     ...mapGetters([
       'pageVisiable',
-      'videoTims'
-    ])
+      'videoTims',
+      'editId'
+    ]),
+    showPagination () { return this.pageSize>1 }
   },
   methods: {
     ...mapActions([
       'changeAlertInfo',
       'initVideoTims',
-      'changePageVisiable'
+      'changePageVisiable',
     ]),
+    ...mapMutations([
+      'changeEditId'
+    ]),
+    toEditPage () {
+      const id = this.pageList[(this.pageIndex-1) % this.pageSize].id;
+      this.changeEditId(id)
+      this.$router.push(`/edit/${id}`)
+    },
     hideModal (data) {
       this.addPage = false
       if (data.ifAdd) {
@@ -228,8 +245,19 @@ export default {
     },
     initPage: function (res) {
       this.pageSize = res.pages.length
-      this.pageIndex = 0
       this.pageList = res.pages
+      if (this.editId){
+        // 遍历list
+        for (var i = 0; i < this.pageList.length; i++) {
+          if (this.pageList[i].id == this.editId) {
+            this.pageIndex = i;
+            break;
+          }
+        }
+      } else {
+        this.pageIndex = 0
+      }
+      // this.pageIndex = 0
       this.isNewUser = res.isNewUser
       this.loadAll = true
       this.intervalTime = res.intervalTime || 5
@@ -253,6 +281,7 @@ export default {
       this.combinList2 = []
       this.combinList = []
       this.pageIndex = 0
+      this.changeEditId(null)
       this.$router.push('/editPage')
     },
     fullScreen: function () { // 切换全屏

@@ -2,12 +2,12 @@
 import { SlickList, SlickItem } from 'vue-slicksort'
 
 import compsArr from './chartJson'
-import DragBox from './../Common/DragBox'
-import Compose from './../Common/Compose'
-import Select2 from './../Common/Select2'
-import Vcolor from './../Common/Vcolor'
-import PreView from './../PreView/PreView'
-import Confirm from './../Common/Confirm'
+import DragBox from '@/components/Common/DragBox'
+import Compose from '@/components/Common/Compose'
+import Select2 from '@/components/Common/Select2'
+import Vcolor from '@/components/Common/Vcolor'
+import PreView from '@/components/PreView/PreView'
+import Confirm from '@/components/Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
 import { mapActions, mapGetters } from 'vuex'
@@ -233,7 +233,8 @@ export default {
     ...mapGetters([
       'alertInfo',
       'onlyOneItem',
-      'thirdUser'
+      'thirdUser',
+      'editId'
     ]),
     alertLevels: function () {
       if (this.alertInfo && this.alertInfo.length > 0) {
@@ -2940,7 +2941,11 @@ export default {
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
-        this.$router.push('/editPage')
+        if (this.editId) {
+          this.$router.push('/')
+        } else {
+          this.$router.push('/editPage')
+        }
       }
     },
     /* 统一右键 */
