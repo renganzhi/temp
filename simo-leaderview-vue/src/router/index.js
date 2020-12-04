@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import HomePage from '@/components/HomePage/HomePage'
-// import EditPage from '@/components/EditPage/EditPage'
-// import Edit from '@/components/Edit/Edit.vue'
-// import Login from '@/components/Login/Login.vue'
+// import HomePage from '@/views/HomePage/HomePage'
+// import EditPage from '@/views/EditPage/EditPage'
+// import Edit from '@/views/Edit/Edit.vue'
+// import Login from '@/views/Login/Login.vue'
 
 Vue.use(Router)
 
@@ -13,22 +13,22 @@ export default new Router({
     {
       path: '/',
       name: 'HomePage',
-      component: (resolve) => require(['@/components/HomePage/HomePage'], resolve)
+      component: (resolve) => require(['@/views/HomePage/HomePage'], resolve)
     },
     {
       path: '/editPage',
       name: 'EditPage',
-      component: (resolve) => require(['@/components/EditPage/EditPage'], resolve)
+      component: (resolve) => require(['@/views/EditPage/EditPage'], resolve)
     },
     {
       path: '/edit/:id',
       name: 'edit',
-      component: (resolve) => require(['@/components/Edit/Edit.vue'], resolve)
+      component: (resolve) => require(['@/views/Edit/Edit.vue'], resolve)
     },
     {
       path: '/login',
       name: 'Login',
-      component: (resolve) => require(['@/components/Login/Login.vue'], resolve)
+      component: (resolve) => require(['@/views/Login/Login.vue'], resolve)
     }
   ]
 })

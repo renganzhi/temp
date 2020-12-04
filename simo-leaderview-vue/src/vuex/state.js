@@ -15,7 +15,8 @@ const state = {
   videoTims: {}, // 视频的播放位置
   pageVisiable: true, // 当前页是否处于激活状态
   thirdUser: '',  //当前第三方系统的用户信息
-  thirdConf: {} //当前第三方系统配置
+  thirdConf: {}, //当前第三方系统配置
+  editId: null // 编辑id
 }
 
 export default state

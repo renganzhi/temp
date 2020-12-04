@@ -30,5 +30,8 @@ const mutations = {
   changeThirdConf (state, data) {
     state.thirdConf = data
   },
+  changeEditId (state, data) {
+    state.editId = data
+  }
 }
 export default mutations
