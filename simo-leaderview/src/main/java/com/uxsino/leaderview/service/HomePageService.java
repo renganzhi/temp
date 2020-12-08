@@ -550,4 +550,9 @@ public class HomePageService {
         }
         return map;
     }
+
+    public void saveAll(List<HomePage> homePages) {
+        homePageDao.saveAll(homePages);
+    }
+
 }
