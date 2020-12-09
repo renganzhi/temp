@@ -32,6 +32,9 @@ const mutations = {
   },
   changeEditId (state, data) {
     state.editId = data
+  },
+  changeNowPage (state, data) {
+    state.nowPageId = data
   }
 }
 export default mutations

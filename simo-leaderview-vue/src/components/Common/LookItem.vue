@@ -2,7 +2,9 @@
   <div class="itemWrapBox newDrag"
        :id="'p_view'+index"
        :key="item.id"
-       :style="boxStyle">
+       :style="boxStyle"
+       @click="handleClick"
+       >
     <Vtextarea v-if="item.chartType==='text'"
                :item="item"
                :disabled="editable"></Vtextarea>
@@ -46,6 +48,7 @@
 <script>
 import dynamicList from './dynamicList'
 import components from './chartComponents'
+import { mapMutations } from 'vuex'
 import { capitalize } from '@/utils'
 
 export default {
@@ -59,18 +62,28 @@ export default {
     }
   },
   computed: {
-    boxStyle: function () {
-      return {
+    boxStyle () {
+      let style = {
         width: Number(this.item.width) + 'px',
         height: Number(this.item.height) + 'px',
         left: Number(this.item.x) + 'px',
         top: Number(this.item.y) + 'px',
         zIndex: this.item.zIndex || 500
       }
+      style.cursor = this.item.linkId > -1 ? 'pointer' : 'default'
+      return style
     }
   },
   methods: {
-    capitalize
+    ...mapMutations([
+      'changeNowPage'
+    ]),
+    capitalize,
+    handleClick () {
+      if (this.item.linkId > -1) {
+        this.changeNowPage(this.item.linkId)
+      }
+    }
   }
 }
 </script>

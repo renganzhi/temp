@@ -30,6 +30,7 @@ export default {
   props: [],
   data: function () {
     return {
+      allPageList,
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
@@ -305,6 +306,11 @@ export default {
       'changeLimitItem',
       'changeThirdConf'
     ]),
+    getAllPage () {
+        this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+          this.allPageList = res.obj
+        })
+      },
     ifSameItems () {
       if (this.chooseCompIndexs.length > 0 || this.chooseIndexs.length < 2) {
         this.chooseSameFlag = false
@@ -4111,6 +4117,7 @@ export default {
     // } // W3C
     // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
+    this.getAllPage()
   },
   beforeDestroy: function () {
     $('#header').show()
