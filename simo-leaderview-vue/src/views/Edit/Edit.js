@@ -30,7 +30,7 @@ export default {
   props: [],
   data: function () {
     return {
-      allPageList,
+      allPageList: [],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
