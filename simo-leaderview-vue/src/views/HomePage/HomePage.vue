@@ -200,7 +200,8 @@ export default {
     ...mapGetters([
       'pageVisiable',
       'videoTims',
-      'editId'
+      'editId',
+      'nowPageId'
     ]),
     showPagination () { return this.pageSize>1 }
   },
@@ -211,7 +212,7 @@ export default {
       'changePageVisiable',
     ]),
     ...mapMutations([
-      'changeEditId'
+      'changeEditId',
     ]),
     toEditPage () {
       const id = this.pageList[(this.pageIndex-1) % this.pageSize].id;
@@ -969,9 +970,51 @@ export default {
     pageVisibInit () {
       let prefix = this.browerKernel()
       document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
-    }
+    },
+    getPageConf (id) {
+      return this.axios.get(`/leaderview/home/homePage/getById/${id}`);
+    },
+    // 跳转大屏之后，修改pageIndex
+    updatePageIndex(id) {
+      for(let i = 0; i < this.pageSize; i++) {
+        if (this.pageList[i].id === id) {
+          this.pageIndex = i + 1
+          break
+        }
+      }
+      if (this.pageIndex === 0) {
+        this.pageIndex = this.pageSize
+      }
+    },
   },
   watch: {
+    nowPageId: function(newV, oldV) {
+      if (newV !== -1) {
+        this.getPageConf(newV).then((res) => {
+          var nowPageObj = res.obj;
+          if (nowPageObj.composeObj) {
+            this.combinList = JSON.parse(nowPageObj.composeObj)
+          } else {
+            this.combinList = []
+          }
+          if (nowPageObj.paintObj) {
+            this.paintConf = JSON.parse(nowPageObj.paintObj)
+          } else {
+            this.paintConf = {}
+          }
+          this.setPaint()
+          if (nowPageObj.viewConf) {
+            this.nowPage = JSON.parse(nowPageObj.viewConf)
+          } else {
+            this.nowPage = []
+          }
+          nowPageObj = null
+          this.updatePageIndex(newV)
+        })
+        $('.tp-tip').remove()
+        $('.tooltip.in').remove()
+      }
+    },
     pageVisiable: function (newV) {
       if (newV) {
         this.autoFresh()

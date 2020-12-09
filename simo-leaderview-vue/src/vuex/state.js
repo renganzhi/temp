@@ -16,7 +16,8 @@ const state = {
   pageVisiable: true, // 当前页是否处于激活状态
   thirdUser: '',  //当前第三方系统的用户信息
   thirdConf: {}, //当前第三方系统配置
-  editId: null // 编辑id
+  editId: null, // 编辑id
+  nowPageId: ''
 }
 
 export default state

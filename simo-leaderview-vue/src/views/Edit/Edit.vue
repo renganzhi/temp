@@ -1271,6 +1271,15 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
+              <div class="form-group cols2" v-show="['image', 'text'].includes(selectedItem.chartType)">
+                  <label>跳转大屏</label>
+                  <select v-model="selectedItem.linkId">
+                    <option value="">无跳转</option>
+                    <option v-for="item in allPageList"
+                            :key="item.id"
+                            :value="item.id">{{item.name}}</option>
+                  </select>
+              </div>
               <div v-show="['image', 'ppt'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>

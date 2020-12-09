@@ -434,6 +434,7 @@ var compsArr = [{
   ctName: '请输入文本框内容',
   fontWeight: 'normal',
   fontFamily: '',
+  linkId: '',
   chartData: {}
 },
 {
@@ -496,6 +497,7 @@ var compsArr = [{
   height: 300,
   imgSrc: '',
   showType: '1',
+  linkId: '',
   chartData: {}
 },
 ppt.item,
