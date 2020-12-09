@@ -15,6 +15,8 @@ import Vscatter from "./EditComp/Vscatter"; // 散点图
 import Liquidfill from "./EditComp/Liquidfill"; // 水波图
 import Player from "./EditComp/Player"; // 视频流
 import moveTable from "./EditComp/moveTable"; // 轮播表格
+import Heatmap from "./EditComp/heatmap"; //
+import PolarBar from "./EditComp/polarBar"; //
 
 export default {
     Vtextarea,
@@ -33,5 +35,7 @@ export default {
     Vscatter,
     Liquidfill,
     Player,
-    moveTable
+    moveTable,
+    Heatmap,
+    PolarBar
 };

@@ -1,6 +1,7 @@
 import config from './config.json'
 // 改造过渡
 import ppt from '@/components/Common/EditComp/ppt/config.json'
+import polarBar from '@/components/Common/EditComp/polarBar/config.js'
 
 var morenData = {
   pie: {
@@ -370,6 +371,7 @@ var compsArr = [{
   smooth: 'true',
   showPoint: 'true' // 是否标点
 },
+polarBar.item,
 {
   text: '雷达图',
   imgClass: 'icon-n-radar',
