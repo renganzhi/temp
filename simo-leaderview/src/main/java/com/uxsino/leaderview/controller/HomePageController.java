@@ -100,6 +100,32 @@ public class HomePageController {
 	@Autowired
 	private VideoFileService videoFileService;
 
+	@Value("${datasource.source:#{null}}")
+	private String datasource;
+
+	@ApiOperation("获取数据来源接口")
+	@RequestMapping(value = "/getDatasource", method = RequestMethod.GET)
+	public JsonModel getDatasource() {
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		if (!StringUtils.isNotBlank(datasource)) {
+			return new JsonModel(true, map);
+		}
+		String[] datasources = datasource.split(",");
+		for (int i = 0; i < datasources.length; i++) {
+			String datasourceStr = datasources[i];
+			if (!StringUtils.isNotBlank(datasourceStr)) {
+				continue;
+			}
+			String[] parts = datasourceStr.split(":");
+			if (parts.length > 2) {
+				map.put(parts[0], parts[1] + ":" + parts[2]);
+			} else if (parts.length == 1) {
+				map.put(parts[0], "");
+			}
+		}
+		return new JsonModel(true, map);
+	}
+
 
 	@ApiOperation("获取可用数据接口")
 	@RequestMapping(value = "/getUrl", method = RequestMethod.GET)
