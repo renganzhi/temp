@@ -2,6 +2,7 @@
 import { SlickList, SlickItem } from 'vue-slicksort'
 
 import compsArr from './chartJson'
+import ChartStyle from './ChartStyle'
 import DragBox from '@/components/Common/DragBox'
 import Compose from '@/components/Common/Compose'
 import Select2 from '@/components/Common/Select2'
@@ -25,7 +26,7 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem },
+  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -237,6 +238,7 @@ export default {
       'thirdUser',
       'editId'
     ]),
+    curChartType () { return this.selectedItem.chartType},
     alertLevels: function () {
       if (this.alertInfo && this.alertInfo.length > 0) {
         return _.forEach(this.alertInfo, function (item) {
@@ -306,6 +308,11 @@ export default {
       'changeLimitItem',
       'changeThirdConf'
     ]),
+    changeChartStyle (key, val) {
+      this.selectedItem[key] = val;
+      console.info('change-config', key, val)
+      // this.$set('selectedItem', key, val )
+    },
     getAllPage () {
         this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
           this.allPageList = res.obj
