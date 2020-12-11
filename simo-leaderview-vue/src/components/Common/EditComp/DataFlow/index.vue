@@ -163,7 +163,7 @@ export default {
           period: _this.item.effectperiod, // 箭头指向速度，值越小速度越快
           trailLength: _this.item.effecttrailLength * 1, // 特效尾迹长度[0,1]值越大，尾迹越长重
           // symbol: _this.item.imgSrc === '' ? planePath : 'image://' + 'http://localhost:8080/api/leaderview/home/getImg/true/1199', // 箭头图标
-          symbol: 'image://' + require('./FlowPic/111111.png') || planePath, // 箭头图标
+          symbol: planePath, // 箭头图标   'image://' + require('./FlowPic/111111.png')
           symbolSize: _this.item.effectsymbolSize // 图标大小
         },
         lineStyle: {
