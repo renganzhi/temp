@@ -5,3 +5,7 @@ export const videoTims = state => state.videoTims
 export const onlyOneItem = state => state.onlyOneItem
 export const limitItem = state => state.limitItem
 export const pageVisiable = state => state.pageVisiable
+export const thirdUser = state => state.thirdUser
+export const thirdConf = state => state.thirdConf
+export const editId = state => state.editId
+export const nowPageId = state => state.nowPageId

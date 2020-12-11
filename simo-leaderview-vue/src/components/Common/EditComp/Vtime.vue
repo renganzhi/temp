@@ -157,7 +157,8 @@ export default {
         this.timeoutId && clearTimeout(this.timeoutId)
         this.serviceTimeFn()
       } else {
-        this.initTime(newV)
+        this.localTimeFn()
+        // this.initTime(newV)
       }
       if (newV > oldV) {
         let len = this.showTime.length

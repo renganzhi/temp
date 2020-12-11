@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.uxsino.leaderview.dao.IUploadedFileDao;
 import com.uxsino.leaderview.entity.UploadedFile;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class UploadedFileService {
@@ -30,5 +32,10 @@ public class UploadedFileService {
     public UploadedFile findById(Long id) {
         return uploadedFileDao.findOne(id);
     }
+
+    public List<UploadedFile> findByIds(List<Long> ids){
+        return uploadedFileDao.getByIdIn(ids);
+    }
+
 
 }

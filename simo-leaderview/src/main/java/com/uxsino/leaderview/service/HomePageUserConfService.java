@@ -40,6 +40,10 @@ public class HomePageUserConfService {
         homePageUserConfDao.delete(homePageUserConf);
     }
 
+    public void deleteAll(){
+        homePageUserConfDao.deleteAll();
+    }
+
     public List<HomePageUserConf> findByUserId(Long userId){
         return homePageUserConfDao.findByUserId(userId);
     }
@@ -194,5 +198,10 @@ public class HomePageUserConfService {
             }
             lastConf = conf;
         }
+    }
+
+    @Transactional
+    public void updatePageId(Long origin, Long target) {
+        homePageUserConfDao.updatePageId(origin, target);
     }
 }

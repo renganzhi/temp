@@ -1,3 +1,8 @@
+import config from './config.json'
+// 改造过渡
+import ppt from '@/components/Common/EditComp/ppt/config.json'
+import polarBar from '@/components/Common/EditComp/polarBar/config.js'
+
 var morenData = {
   pie: {
     columns: ['告警级别', '数量'],
@@ -456,6 +461,7 @@ var compsArr = [{
   smooth: 'true',
   showPoint: 'true' // 是否标点
 },
+polarBar.item,
 {
   text: '雷达图',
   imgClass: 'icon-n-radar',
@@ -520,6 +526,7 @@ var compsArr = [{
   ctName: '请输入文本框内容',
   fontWeight: 'normal',
   fontFamily: '',
+  linkId: '',
   chartData: {}
 },
 {
@@ -582,8 +589,10 @@ var compsArr = [{
   height: 300,
   imgSrc: '',
   showType: '1',
+  linkId: '',
   chartData: {}
 },
+ppt.item,
 {
   text: '边框',
   imgClass: 'icon-n-rect',
@@ -679,15 +688,15 @@ var compsArr = [{
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData
 },
-{
-  text: '视频流',
-  imgClass: 'icon-n-video',
-  chartType: 'video',
-  width: 300,
-  height: 300,
-  videoType: 'local',
-  videoSrc: ''
-},
+// {
+//   text: '视频流',
+//   imgClass: 'icon-n-video',
+//   chartType: 'video',
+//   width: 300,
+//   height: 300,
+//   videoType: 'local',
+//   videoSrc: ''
+// },
 {
   text: '3d地图-飞线图',
   imgClass: 'icon-n-video',
@@ -813,7 +822,17 @@ var compsArr = [{
   chartType: 'GradientPie',
   width: 300,
   height: 300
-}
+},
+config.video.item
+// {
+//   text: '视频流',
+//   imgClass: 'icon-n-video',
+//   chartType: 'video',
+//   width: 300,
+//   height: 300,
+//   videoType: 'local',
+//   videoSrc: ''
+// }
   // {
   //   text: '地图',
   //   imgClass: 'icon-n-radar',

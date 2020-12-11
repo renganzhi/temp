@@ -70,7 +70,7 @@
              v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
-                title="编辑"
+                title="设置"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
           <span @click="refresh"
                 class="ring-icon"
@@ -83,23 +83,30 @@
                 title
                 :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
         </div>
-        <div class="fr btn-box"
-             v-show="pageSize>1">
+        <div class="fr btn-box">
           <span @click="prev"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
+                v-show="showPagination"
                 :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
           <span @click="togglePlay"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
                 :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
-                v-show="isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+                v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+          <span @click="toEditPage()"
+                class="ring-icon"
+                data-toggle='tooltip'
+                title
+                data-original-title="编辑"
+                v-show="!isFullScreen"><i class="el-icon-edit"></i></span>
           <span @click="next"
                 class="ring-icon"
                 data-toggle='tooltip'
                 title
+                v-show="showPagination"
                 :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
         </div>
       </div>
@@ -122,15 +129,17 @@
 
 <script>
 import { baseData, gbs } from '@/config/settings'
-import LookItem from './../Common/LookItem'
-import LookCompose from './../Common/LookCompose'
+import LookItem from '@/components/Common/LookItem'
+import LookCompose from '@/components/Common/LookCompose'
 import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
+import {checkLogin} from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage },
+  // mixins:[thirdLoginMix],
   data () {
     return {
       moveBox1: 'moveLeft1',
@@ -190,15 +199,26 @@ export default {
   computed: {
     ...mapGetters([
       'pageVisiable',
-      'videoTims'
-    ])
+      'videoTims',
+      'editId',
+      'nowPageId'
+    ]),
+    showPagination () { return this.pageSize>1 }
   },
   methods: {
     ...mapActions([
       'changeAlertInfo',
       'initVideoTims',
-      'changePageVisiable'
+      'changePageVisiable',
     ]),
+    ...mapMutations([
+      'changeEditId',
+    ]),
+    toEditPage () {
+      const id = this.pageList[(this.pageIndex-1) % this.pageSize].id;
+      this.changeEditId(id)
+      this.$router.push(`/edit/${id}`)
+    },
     hideModal (data) {
       this.addPage = false
       if (data.ifAdd) {
@@ -226,8 +246,19 @@ export default {
     },
     initPage: function (res) {
       this.pageSize = res.pages.length
-      this.pageIndex = 0
       this.pageList = res.pages
+      if (this.editId){
+        // 遍历list
+        for (var i = 0; i < this.pageList.length; i++) {
+          if (this.pageList[i].id == this.editId) {
+            this.pageIndex = i;
+            break;
+          }
+        }
+      } else {
+        this.pageIndex = 0
+      }
+      // this.pageIndex = 0
       this.isNewUser = res.isNewUser
       this.loadAll = true
       this.intervalTime = res.intervalTime || 5
@@ -251,6 +282,7 @@ export default {
       this.combinList2 = []
       this.combinList = []
       this.pageIndex = 0
+      this.changeEditId(null)
       this.$router.push('/editPage')
     },
     fullScreen: function () { // 切换全屏
@@ -619,14 +651,20 @@ export default {
       newV = newV || this.nowPage
       var ct = this
       if (!newV) return
-      $.each(newV, function (i, d) {
+      $.each(newV, async function (i, d) {
         let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
         if (ct.nowTime % freshTime === 0 && d.chartType === 'topo' && d.tptype !== 'maptp') {
           ct.$set(d, 'time', new Date().getTime())
-        } else if (d.ctDataSource == 'system' && d.url && ct.nowTime % freshTime === 0) {
+        } else if (d.ctDataSource !== 'static' && d.url && ct.nowTime % freshTime === 0) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
+          // if(!ct.thirdUser && d.ctDataSource !== 'system') {  //第三方系统：检查是否需要登录
+          //   let curUrl = d.url.split('://')[1].split('/')[0]
+          //   if(!(await checkLogin(curUrl))) return false  //登录失败：跳出循环
+          // }
+          ct.sentReq(d)
+          /*
           let xhrobj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
@@ -672,6 +710,7 @@ export default {
             }
           })
           ct.xhrArr.push(xhrobj)
+          */
         } else if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           let freshTime = d.refreshTm ? d.refreshTm : 5 // 这里是刷新周期
           if (ct.nowTime % freshTime === 0) {
@@ -682,6 +721,61 @@ export default {
       // this.$nextTick(() => {
       //   ct.setScale()
       // })
+    },
+    //发送请求
+    sentReq(d){
+      let ct = this
+      let xhrobj = $.ajax({
+        url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url,  //第三方的ur已经拼接好host
+        data: d.params,
+        type: d.method || 'get',
+        cache: false,
+        ascyn: false,
+        success: function (res) {
+          res.obj = res.obj || []
+          if (res.obj.colors) {
+            d.ctColors = res.obj.colors
+          }
+          if (d.chartType === 'marquee' || d.chartType === 'text') {
+            d.ctName = res.obj.info
+          }
+          if (d.chartType !== 'marquee') {
+            if (d.chartType === 'v-map') {
+              d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
+            } else {
+              d.chartData = res.obj // 会触发刷新
+            }
+          }
+        },
+        error: async function (xhr) {
+          if (xhr.status === 776) {
+            if(d.ctDataSource !== 'static' && d.ctDataSource !== 'system') {  //第三方登录过期:重新登录后再请求
+              ct.xhrArr.pop()
+              let curUrl = d.url.split('://')[1].split('/')[0]
+              await checkLogin(curUrl) && ct.sentReq(d)
+              return false
+            }
+            // 776 取消页面刷新
+            ct.freshInterval && clearTimeout(ct.freshInterval)
+            ct.freshInterval = null
+          }
+          if (xhr.status != 776 && xhr.statusText !== 'abort') {
+            if (gbs.inDev) {
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', '连接错误！', 'error')
+            }
+          }
+        },
+        complete: function (XHR, textStatus) {
+          XHR = null
+        }
+      })
+      ct.xhrArr.push(xhrobj)
     },
     refreshFn: function (newV) { // 刷新本页数据
       newV = newV || this.nowPage
@@ -694,10 +788,12 @@ export default {
           ct.$nextTick(function(){
               d.tpId = tpid;
           }) */
-        } else if (d.ctDataSource == 'system' && d.url) {
+        } else if (d.ctDataSource !== 'static' && d.url) {
           $.each(d.params, function (i, o) {
             d.params[i] = $.isArray(o) ? o.join(',') : o
           })
+          ct.sentReq(d)
+          /*
           let xhrObj = $.ajax({
             url: gbs.host + d.url,
             data: d.params,
@@ -743,6 +839,7 @@ export default {
             }
           })
           ct.xhrArr.push(xhrObj)
+          */
         }
         if (d.ctDataSource === 'static' && ct.animationType.indexOf(d.chartType) !== -1) {
           ct.$set(d, 'id', new Date().getTime() + parseInt(Math.random() * 10000))
@@ -873,9 +970,51 @@ export default {
     pageVisibInit () {
       let prefix = this.browerKernel()
       document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
-    }
+    },
+    getPageConf (id) {
+      return this.axios.get(`/leaderview/home/homePage/getById/${id}`);
+    },
+    // 跳转大屏之后，修改pageIndex
+    updatePageIndex(id) {
+      for(let i = 0; i < this.pageSize; i++) {
+        if (this.pageList[i].id === id) {
+          this.pageIndex = i + 1
+          break
+        }
+      }
+      if (this.pageIndex === 0) {
+        this.pageIndex = this.pageSize
+      }
+    },
   },
   watch: {
+    nowPageId: function(newV, oldV) {
+      if (newV !== -1) {
+        this.getPageConf(newV).then((res) => {
+          var nowPageObj = res.obj;
+          if (nowPageObj.composeObj) {
+            this.combinList = JSON.parse(nowPageObj.composeObj)
+          } else {
+            this.combinList = []
+          }
+          if (nowPageObj.paintObj) {
+            this.paintConf = JSON.parse(nowPageObj.paintObj)
+          } else {
+            this.paintConf = {}
+          }
+          this.setPaint()
+          if (nowPageObj.viewConf) {
+            this.nowPage = JSON.parse(nowPageObj.viewConf)
+          } else {
+            this.nowPage = []
+          }
+          nowPageObj = null
+          this.updatePageIndex(newV)
+        })
+        $('.tp-tip').remove()
+        $('.tooltip.in').remove()
+      }
+    },
     pageVisiable: function (newV) {
       if (newV) {
         this.autoFresh()

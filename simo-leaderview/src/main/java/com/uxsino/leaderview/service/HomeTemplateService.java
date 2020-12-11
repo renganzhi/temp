@@ -45,10 +45,10 @@ public class HomeTemplateService {
 		templateImgService.init();
 		// 查看表是否存在数据
 		long count = templateDao.count();
-		if (count > 0) {
-			return;
-		}
 		try {
+			if (count > 0) {
+				delAll();
+			}
 			new ClassPathResourceWalker(FILEPATH).forEach(file -> {
 				InputStream in;
 				try {
@@ -106,4 +106,17 @@ public class HomeTemplateService {
 	public HomeTemplate one(Long id) {
 		return templateDao.findOne(id);
 	}
+
+    public Long count() {
+        return templateDao.count();
+    }
+
+    public HomeTemplate save(HomeTemplate homeTemplate){
+        return templateDao.save(homeTemplate);
+    }
+
+    public List<HomeTemplate> findAll(){
+		return templateDao.findAll();
+	}
+
 }

@@ -2,7 +2,9 @@
   <div class="itemWrapBox newDrag"
        :id="'p_view'+index"
        :key="item.id"
-       :style="boxStyle">
+       :style="boxStyle"
+       @click="handleClick"
+       >
     <Vtextarea v-if="item.chartType==='text'"
                :item="item"
                :disabled="editable"></Vtextarea>
@@ -36,58 +38,55 @@
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
-    <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
-            :item="item"></TDEarthLine>
-    <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
-            :item="item"></TDEarthBar>
-    <DataFlow v-else-if="item.chartType=='DataFlow'"
-            :item="item"></DataFlow>
-    <GradientPie v-else-if="item.chartType=='GradientPie'"
-            :item="item"></GradientPie>
+    <template v-else-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item"></component>
+    </template>
     <Vchart v-else
             :item="item"></Vchart>
   </div>
 </template>
 <script>
-import Vtextarea from './EditComp/Vtextarea' // 文本
-import Vprogress from './EditComp/Vprogress' // 进度条
-import Vimg from './EditComp/Vimg'
-import Doubler from './EditComp/Doubler' // 数字翻牌器
-import Border from './EditComp/Border' // 边框
-import Vchart from './EditComp/Vchart'
-import Vtable from './EditComp/Vtable' // 表格
-import Topo from './EditComp/Topo' // 拓扑
-import Marquee from './EditComp/Marquee' // 跑马灯
-import Vtime from './EditComp/Vtime' // 时间器
-import Vnumber from './EditComp/Vnumber' // 指标展示
-import Vmap from './EditComp/Vmap' // 地图
-import Vscatter from './EditComp/Vscatter' // 散点图
-import Liquidfill from './EditComp/Liquidfill' // 水波图
-import Player from './EditComp/Player' // 视频流
-import moveTable from './EditComp/moveTable' // 轮播表格
+import dynamicList from './dynamicList'
+import components from './chartComponents'
+import { mapMutations } from 'vuex'
+import { capitalize } from '@/utils'
 
-import TDEarthLine from './EditComp/TDEarthLine' // 3D地图-飞线图
-import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
-import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
-import GradientPie from './EditComp/GradientPie' // 3D地图-柱状图
+// import TDEarthLine from './EditComp/TDEarthLine' // 3D地图-飞线图
+// import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
+// import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
+// import GradientPie from './EditComp/GradientPie' // 3D地图-柱状图
 
 export default {
   name: 'lookItem',
   props: ['item', 'index'],
-  components: { Vtextarea, Vprogress, Vimg, Doubler, TDEarthLine, TDEarthBar, DataFlow, GradientPie, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components,
   data () {
     return {
+      dynamicList,
       editable: false
     }
   },
   computed: {
-    boxStyle: function () {
-      return {
+    boxStyle () {
+      let style = {
         width: Number(this.item.width) + 'px',
         height: Number(this.item.height) + 'px',
         left: Number(this.item.x) + 'px',
         top: Number(this.item.y) + 'px',
         zIndex: this.item.zIndex || 500
+      }
+      style.cursor = this.item.linkId > -1 ? 'pointer' : 'default'
+      return style
+    }
+  },
+  methods: {
+    ...mapMutations([
+      'changeNowPage'
+    ]),
+    capitalize,
+    handleClick () {
+      if (this.item.linkId > -1) {
+        this.changeNowPage(this.item.linkId)
       }
     }
   }

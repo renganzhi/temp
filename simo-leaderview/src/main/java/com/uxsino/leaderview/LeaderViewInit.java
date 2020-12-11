@@ -60,6 +60,7 @@ public class LeaderViewInit implements InitializingBean {
 		ev.onLineTimeMillis = System.currentTimeMillis();
 		_outbox.onNext(ev);
 		// 初始化主页大屏的模板信息
+		homeTemplateService.delAll();
 		homeTemplateService.init();
 		// 订阅大屏展示API注册
 		try {

@@ -5,6 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
+import { newAjax,getTopoIcon } from '@/config/thirdLoginMix'
 // import levelMapName from './enum'
 function Topology (opt, topoId) {
   this.defaultConfig = {
@@ -183,17 +184,21 @@ Topology.prototype = {
     } else {
       this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
     }
-    this.svgImage = d3.select(this.ele).append('img').attr({
-      'src': gbs.host + '/monitor/topo/getIcon/' +
-        (this.config.backgroundIconId || this.config.backgroundIconIdDefault) +
-        '/Loading',
-      'width': '100%',
-      'height': '100%',
-      'class': 'backgroundImage'
-    }).style({
-      'position': 'absolute',
-      'left': '0',
-      'top': '0'
+    getTopoIcon({
+      curThis:this,
+      url:gbs.host + '/monitor/topo/getIcon/' +(this.config.backgroundIconId || this.config.backgroundIconIdDefault) +'/Loading',
+      callback: function(curThis,src){
+        curThis.svgImage = d3.select(curThis.ele).append('img').attr({
+          'src':src,
+          'width': '100%',
+          'height': '100%',
+          'class': 'backgroundImage'
+        }).style({
+          'position': 'absolute',
+          'left': '0',
+          'top': '0'
+        })
+      }
     })
 
     this.svgContainer = d3.select(this.ele).append('svg:svg').attr({
@@ -233,8 +238,13 @@ Topology.prototype = {
   },
   setBackground: function (iconId) {
     this.config.backgroundIconId = iconId || this.config.backgroundIconId
-    this.svgImage.attr('src', gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId) +
-      '/Loading')
+    getTopoIcon({
+      curThis:this,
+      url:gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId) +'/Loading',
+      callback:function(curThis,src){
+        curThis.svgImage.attr('src', src)
+      }
+    })
   },
   createZoom: function () {
     var _this = this
@@ -817,8 +827,7 @@ Topology.prototype = {
       } else if (d.baseNeClass == 'network') {
         indicatorNames = ['network_cpu', 'network_memory']
       }
-      $
-        .ajax({
+      newAjax({
           url: gbs.host + '/monitor/ne/view/' + d.neId,
           dataType: 'json',
           data: {
@@ -1415,11 +1424,17 @@ Topology.prototype = {
     var _this = this
     var nodes = selection || this.vis.selectAll('.node')
     nodes.each(function (d) {
-      d3.select(this).select('.nodeImg').attr({
-        'width': d.width,
-        'height': d.height,
-        'id': d.id,
-        'href': _this.setNodeImg(d)
+      getTopoIcon({
+        curThis:this,
+        url:_this.setNodeImg(d),
+        callback:function(curThis,src){
+          d3.select(curThis).select('.nodeImg').attr({
+            'width': d.width,
+            'height': d.height,
+            'id': d.id,
+            'href': src
+          })
+        }
       })
     })
     _this = nodes = null

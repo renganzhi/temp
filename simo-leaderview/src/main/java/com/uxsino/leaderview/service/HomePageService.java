@@ -1,26 +1,37 @@
 package com.uxsino.leaderview.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.SessionUtils;
-import com.uxsino.leaderview.dao.IHomePageDao;
-import com.uxsino.leaderview.entity.HomePage;
-import com.uxsino.leaderview.entity.HomePageVo;
+import com.uxsino.leaderview.entity.*;
 import com.uxsino.leaderview.model.ShareState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.uxsino.leaderview.dao.IHomePageDao;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class HomePageService {
@@ -30,6 +41,16 @@ public class HomePageService {
     private IHomePageDao homePageDao;
     @Autowired
     private SiteUserRedis userRedis;
+    @Autowired
+    private HomeTemplateImgService homeTemplateImgService;
+    @Autowired
+    private UploadedFileService uploadedFileService;
+    @Autowired
+    private HomeTemplateService homeTemplateService;
+    @Autowired
+    private HomePageUserConfService homePageUserConfService;
+
+    private static Set<String> videoSet = Sets.newHashSet();
 
     @Transactional
     public void add(HomePage homePage) {
@@ -53,7 +74,7 @@ public class HomePageService {
 
     /**
      * 保存大屏页面配置
-     * 
+     *
      * @param homePage
      */
     @Transactional
@@ -236,7 +257,7 @@ public class HomePageService {
 
     /**
      * 查询指定用户的首页配置信息
-     * 
+     *
      * @param employeeId
      * @return
      */
@@ -246,7 +267,7 @@ public class HomePageService {
 
     /**
      * 查询指定角色的首页配置信息
-     * 
+     *
      * @param userIds
      * @return
      */
@@ -256,7 +277,7 @@ public class HomePageService {
 
     /**
      * 查询指定用户的首页指定序号配置信息
-     * 
+     *
      * @param employeeId
      * @param index
      * @return
@@ -267,7 +288,7 @@ public class HomePageService {
 
     /**
      * 查询指定角色的首页指定序号配置信息
-     * 
+     *
      * @param pageIndex
      * @return
      */
@@ -293,7 +314,7 @@ public class HomePageService {
     public List<HomePage> getByAuthority(HttpSession session){
         boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
         String userId = SessionUtils.getCurrentUserIdFromSession(session).toString();
-        //获取当前用户所拥有的角色 
+        //获取当前用户所拥有的角色
         JSONArray userRole = SessionUtils.getSessionUserRoleIdArr(session);
         //JSONObject userObj = JSONObject.parseObject(userRedis.get(userId));
         //String userRole = userObj.getString("departmentId");
@@ -356,7 +377,7 @@ public class HomePageService {
         if (shareRoleList != null && CollectionUtils.containsAny(userRole,shareRoleList)) {
             return ShareState.IS_BE_SHARED.getValue();
         }
-       /* for (int i = 0; i < shareUids.size(); i++) {
+        /*for (int i = 0; i < shareUids.size(); i++) {
             if (userId.equals(shareUids.get(i).toString())){
                 return ShareState.IS_BE_SHARED.getValue();
             }
@@ -369,7 +390,183 @@ public class HomePageService {
         return ShareState.INDEPENDENT.getValue();
     }
 
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public String makeTemplate(HomePage page) {
+        Integer num = homeTemplateImgService.getMaxId();
+        JSONObject viewConf = templateImgTransform(page.getViewConf(),num);
+        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getInteger("num"));
+        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getInteger("num"));
+        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getInteger("num"));
+        HomeTemplate homeTemplate = new HomeTemplate();
+        homeTemplate.setLastUpdateTime(new Date());
+        homeTemplate.setPaintObj(paintObj.getString("str"));
+        homeTemplate.setComposeObj(composeObj.getString("str"));
+        homeTemplate.setViewImage(viewImage.getString("str"));
+        homeTemplate.setViewConf(viewConf.getString("str"));
+        homeTemplate.setName(page.getName());
+        String name = page.getName();
+        String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
+                + "', now() ,'" + viewConf.getString("str")
+                + "', '" + viewImage.getString("str")
+                + "', '" + paintObj.getString("str")
+                + "', '" + composeObj.getString("str")
+                + "');";
+        System.out.println(sql);
+        homeTemplateService.save(homeTemplate);
+        return sql;
+    }
+
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public Set<String> makeTemplate(HomePage page, List list) {
+        if (!videoSet.isEmpty()){
+            videoSet = Sets.newHashSet();
+        }
+        Integer num = homeTemplateImgService.getMaxId();
+        JSONObject viewConf = templateImgTransform(page.getViewConf(),num);
+        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getInteger("num"));
+        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getInteger("num"));
+        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getInteger("num"));
+        HomeTemplate homeTemplate = new HomeTemplate();
+        homeTemplate.setLastUpdateTime(new Date());
+        homeTemplate.setPaintObj(paintObj.getString("str"));
+        homeTemplate.setComposeObj(composeObj.getString("str"));
+        homeTemplate.setViewImage(viewImage.getString("str"));
+        homeTemplate.setViewConf(viewConf.getString("str"));
+        homeTemplate.setName(page.getName());
+        String name = page.getName();
+        String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
+                + "', now() ,'" + viewConf.getString("str")
+                + "', '" + viewImage.getString("str")
+                + "', '" + paintObj.getString("str")
+                + "', '" + composeObj.getString("str")
+                + "');";
+        System.out.println(sql);
+        homeTemplateService.save(homeTemplate);
+        return videoSet;
+    }
+
+    public void outputVideo(Set<String> sets, String url) {
+        for (String fileName: sets) {
+            log.info(url + fileName);
+        }
+    }
+
+    private JSONObject templateImgTransform(String str, Integer num){
+        JSONObject result = new JSONObject();
+        List<String> list = new ArrayList<>();
+        List<Long> ids = Lists.newArrayList();
+        Map<Long,Integer> map = Maps.newHashMap();
+        Pattern strPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
+        Pattern numPattern = Pattern.compile("[^0-9]");
+        Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
+        Matcher m = strPattern.matcher(str);
+        while (m.find()){
+            if (list.contains(m.group())){
+                continue;
+            }
+            list.add(m.group());
+            //System.out.println(m.group());
+            Matcher m2 = numPattern.matcher(m.group());
+            ids.add(Long.valueOf(m2.replaceAll("").trim()));
+        }
+        Matcher vm = strPattern.matcher(str);
+        while (vm.find()){
+            videoSet.add(vm.group());
+        }
+        //System.out.println(str);
+        for (String string : list) {
+            str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
+            Matcher m2 = numPattern.matcher(string);
+            map.put(Long.valueOf(m2.replaceAll("").trim()), num);
+        }
+        //System.out.println(str);
+        List<UploadedFile> uploadedFiles = uploadedFileService.findByIds(ids);
+        List<HomeTemplateImg> imgs = Lists.newArrayList();
+        for (UploadedFile uploadedFile: uploadedFiles) {
+            String name = "templateCustom_" + map.get(uploadedFile.getId()) + "." + uploadedFile.getExtension();
+            HomeTemplateImg img = new HomeTemplateImg();
+            img.setExtension(uploadedFile.getExtension());
+            img.setId(Long.valueOf(map.get(uploadedFile.getId()).toString()));
+            img.setName(name);
+            img.setFileStream(uploadedFile.getFileStream());
+            String uploadPath = this.getClass().getClassLoader().getResource("img").getFile();
+            saveToFile(uploadPath + "/home/templateCustom/" + name, uploadedFile.getFileStream());
+            imgs.add(img);
+        }
+        homeTemplateImgService.saveAll(imgs);
+        result.put("list", list);
+        result.put("str", str);
+        result.put("num", num);
+        return result;
+    }
+
+    private static Boolean saveToFile(String fName, byte[] data){
+        OutputStream fos = null;
+        try {
+            File file = new File(fName);
+            File parent = file.getParentFile();
+            if ((!parent.exists()) && (!parent.mkdirs())) {
+                return false;
+            }
+            fos = new FileOutputStream(file);
+            fos.write(data);
+            fos.flush();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Transactional
+    public void updateId(Long origin, Long target){
+        homePageDao.updateId(origin, target);
+    }
+
+    @Transactional
+    public Map<Long,Long> createAllTemplate(List<HomeTemplate> list, Boolean deleteOrigin,String name) {
+        if (deleteOrigin){
+            homePageDao.deleteAll();
+            homePageUserConfService.deleteAll();
+        }
+        Map<Long,Long> map = Maps.newLinkedHashMap();
+        for (HomeTemplate template: list) {
+            HomePage page = new HomePage();
+            if (Strings.isNullOrEmpty(name)){
+                page.setName(template.getName());
+            }else {
+                page.setName(name + " " + template.getName());
+            }
+            page.setViewConf(template.getViewConf());
+            page.setViewImage(template.getViewImage());
+            page.setPaintObj(template.getPaintObj());
+            page.setComposeObj(template.getComposeObj());
+            page.setCreateUserId(1L);
+            page.setUserId(1L);
+            page.setHandoverId(1L);
+            Long pageId = addAndGetId(page);
+            map.put(pageId,template.getId());
+            HomePageUserConf homePageUserConf = new HomePageUserConf();
+            homePageUserConf.setPageId(pageId);
+            homePageUserConf.setUserId(1L);
+            homePageUserConf.setVisible(true);
+            homePageUserConfService.add(homePageUserConf, true, null);
+        }
+        return map;
+    }
+
     public void saveAll(List<HomePage> homePages) {
         homePageDao.saveAll(homePages);
     }
+
 }

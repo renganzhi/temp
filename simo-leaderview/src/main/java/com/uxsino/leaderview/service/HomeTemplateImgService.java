@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 模板图片的操作方法
@@ -36,10 +37,10 @@ public class HomeTemplateImgService {
     public void init() {
         // 如果表中存在数据则不进行插入数据的操作
         long count = imgDao.count();
-        if (count > 0) {
-            return;
-        }
         try {
+            if (count > 0) {
+                delAll();
+            }
             new ClassPathResourceWalker(FILEPATH).forEach(file -> {
                 InputStream in;
                 try {
@@ -108,6 +109,16 @@ public class HomeTemplateImgService {
 
 
     public HomeTemplateImg getById(Long id) {
-        return imgDao.getOne(id);
+        return imgDao.findOne(id);
     }
+
+    public Integer getMaxId() {
+        return imgDao.getMaxId();
+    }
+
+    @Transactional
+    public void saveAll(List<HomeTemplateImg> imgs){
+        imgDao.saveAll(imgs);
+    }
+
 }

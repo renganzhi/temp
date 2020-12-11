@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.uxsino.commons.db.repository.ICustomRepository;
 import com.uxsino.leaderview.entity.HomePage;
+import org.springframework.data.repository.query.Param;
 
 public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
 
@@ -51,4 +52,8 @@ public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
         value = "update simo_mc_home_page set page_index=page_index-1 where page_index>=?1 and page_index<=?2")
     void leftPageIndex(int startIndex, int endIndex);
 
+    @Modifying
+    @Query(nativeQuery = true,
+        value = "update simo_mc_home_page set id = :target where id = :origin")
+    void updateId(@Param("origin") Long origin, @Param("target") Long target);
 }

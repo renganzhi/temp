@@ -97,6 +97,9 @@ simo:
 heartbeat:
     send_interval: 20000
 
+datasource: 
+  source: 
+
 web:
   upload:
     file:

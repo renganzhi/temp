@@ -1,23 +1,37 @@
-import compsArr from '#/js/chartJson'
-import DragBox from './../Common/DragBox'
-import Compose from './../Common/Compose'
-import Select2 from './../Common/Select2'
-import Vcolor from './../Common/Vcolor'
-import PreView from './../PreView/PreView'
-import Confirm from './../Common/Confirm'
+// 拖拽排序
+import { SlickList, SlickItem } from 'vue-slicksort'
+
+import compsArr from './chartJson'
+import DragBox from '@/components/Common/DragBox'
+import Compose from '@/components/Common/Compose'
+import Select2 from '@/components/Common/Select2'
+import Vcolor from '@/components/Common/Vcolor'
+import PreView from '@/components/PreView/PreView'
+import Confirm from '@/components/Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
 import { mapActions, mapGetters } from 'vuex'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
+import { checkLogin, newAjax } from '@/config/thirdLoginMix'
 import qs from 'qs'
 import _ from 'lodash'
+import oldConfig from './config.json'
+
+// 改造， 过渡， 主要用于编辑页面右侧的样式和数据
+let config = {
+  ...oldConfig,
+  ppt: require('@/components/Common/EditComp/ppt/config.json')
+}
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider },
+  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem },
+  // mixins:[thirdLoginMix],
   props: [],
   data: function () {
     return {
+      allPageList: [],
+      config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
       animationType: ['ve-pie', 've-ring', 've-histogram', 've-bar', 've-line', 've-radar'],
@@ -209,13 +223,19 @@ export default {
       itemHistoryObj: [],
       historyArr: [],
       tempHisObj: {},
-      tempVideoUrl: '' // 用户输入的视频URL
+      tempVideoUrl: '', // 用户输入的视频URL
+      isThird: false, // 当前数据来源是否为第三方数据
+      dataSource: {}, // 数据来源对象
+      curDataHost: gbs.host, // 当前数据来源的host,默认为gbs.host
+      thirdIpPort: '' // 第三方数据的ip和port
     }
   },
   computed: {
     ...mapGetters([
       'alertInfo',
-      'onlyOneItem'
+      'onlyOneItem',
+      'thirdUser',
+      'editId'
     ]),
     alertLevels: function () {
       if (this.alertInfo && this.alertInfo.length > 0) {
@@ -266,20 +286,31 @@ export default {
         this.selectedItem &&
         this.selectedItem.chartData &&
         this.selectedItem.chartData.colors &&
-        this.selectedItem.ctDataSource === 'system'
+        this.selectedItem.ctDataSource !== 'static'
       ) {
         return false
       }
       return true
     }
   },
+  created () {
+    this.axios.get('/leaderview/home/getDatasource').then(res => {
+      this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}
+    })
+  },
   methods: {
     ...mapActions([
       'changeHomeData',
       'changeAreaData',
       'changeItemChoose',
-      'changeLimitItem'
+      'changeLimitItem',
+      'changeThirdConf'
     ]),
+    getAllPage () {
+      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+        this.allPageList = res.obj
+      })
+    },
     ifSameItems () {
       if (this.chooseCompIndexs.length > 0 || this.chooseIndexs.length < 2) {
         this.chooseSameFlag = false
@@ -773,7 +804,7 @@ export default {
           if (
             item.chartData &&
             item.chartData.colors &&
-            item.ctDataSource === 'system'
+            item.ctDataSource !== 'static'
           ) {
             // 接口返回的系统默认颜色不做修改
           } else {
@@ -1302,7 +1333,8 @@ export default {
         // 切换选中的元件
         this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id
-        if (ev === 'down' && item.ctDataSource === 'system' && !this.showStyleTab) {
+        if (ev === 'down' && item.ctDataSource !== 'static' && !this.showStyleTab) {
+          this.handleHost()
           this.getUrlByType(true) // 优化单击元件时的选中延迟
         }
       }
@@ -1503,17 +1535,6 @@ export default {
       }
       this.changeLimitItem(this.aroundItem)
       if (false && window.event.ctrlKey) {
-        // 拖拽情况下被拖拽元件不再手动更新值
-        this.chooseIndexs.forEach((i) => {
-          if (this.chartNum[i].id !== this.selectedItem.id) {
-            this.chartNum[i][xy] = Number(this.chartNum[i][xy]) + changes
-          }
-        })
-        this.chooseCompIndexs.forEach((i) => {
-          if (this.combinList[i].id !== this.selectedItem.id) {
-            this.combinList[i][xy] = Number(this.combinList[i][xy]) + changes
-          }
-        })
       } else {
         this.chooseIndexs.forEach((i) => {
           if (Number(this.chartNum[i][xy]) + changes <= -this.allowOverflow) {
@@ -2078,14 +2099,28 @@ export default {
         this.selectedItem.ctColors[index].reverse()
       }
     },
-    chgDataSource: function ($event, flag) {
-      // 改变数据来源
-      $event &&
-        this.selectedItem.ctDataSource === 'system' &&
+    // 改变数据来源
+    chgDataSource: async function ($event, flag) {
+      this.handleHost()
+      let curKey = this.selectedItem.ctDataSource
+      if (['static', 'system'].indexOf(curKey) !== -1) {
+        curKey === 'system' ? this.getUrlByType() : this.showWindowBtn = false
+      } else { // 第三方系统
+        if (!(await checkLogin(this.thirdIpPort))) return false // 登录失败：跳出循环
         this.getUrlByType()
-      if (this.selectedItem.ctDataSource === 'static') {
-        this.showWindowBtn = false
       }
+    },
+    handleHost () {
+      let curKey = this.selectedItem.ctDataSource
+      if (['static', 'system'].indexOf(curKey) !== -1) {
+        this.curDataHost = gbs.host
+        this.isThird = false
+      } else { // 第三方系统
+        this.isThird = true
+        this.thirdIpPort = this.dataSource[curKey] || ''
+        this.curDataHost = 'http://' + this.thirdIpPort
+      }
+      this.changeThirdConf({isThird: this.isThird, curDataHost: this.curDataHost, thirdIpPort: this.thirdIpPort})
     },
     dealTypeStr: function () {
       // 根据需求传值给后端对应的接口
@@ -2100,22 +2135,32 @@ export default {
       }
       return type
     },
+    // 根据选中图标类型获取可以配置的接口
     getUrlByType (flag) {
-      // 根据选中图标类型获取可以配置的接口
       var _this = this
-      $.ajax({
+      newAjax({
         url: gbs.host + '/leaderview/home/getUrl',
-        data: {
-          typeStr: this.dealTypeStr()
-        },
+        // url: _this.curDataHost + '/leaderview/home/getUrl',
+        data: {typeStr: this.dealTypeStr()},
         async: false,
         success: function (data) {
-          _this.$set(_this.syst, 'urlSel', data.obj || [])
+          let arr = data.obj || []
+          if (_this.isThird) { // 第三方数据：把host和_token_u_拼接到url上去
+            arr = arr.filter(d => {
+              d.url = _this.curDataHost + (/^\//.test(d.url) ? d.url : '/' + d.url) + (d.url.indexOf('?') !== -1 ? '&' : '?') + '_token_u_=token'
+              return d
+            })
+          }
+          _this.$set(_this.syst, 'urlSel', arr)
           _this.$nextTick(function () {
             _this.syst.urlSel.length && _this.chgUrl(flag)
           })
         },
-        error: function () {
+        errorCallback: async function (xhr) {
+          // if ( _this.isThird && xhr.status === 776 ) { //第三方登录过期->重新登录->重新请求当前接口
+          //   await checkLogin(_this.thirdIpPort) && _this.getUrlByType (flag)
+          //   return false
+          // }
           if (gbs.inDev) {
             Notification({
               message: '连接错误！',
@@ -2187,7 +2232,8 @@ export default {
               _this.showWindowBtn = true
               _this.syst.windowData = JSON.parse(selectedP.windows)
             }
-            $.ajax({
+            // _this.sentReq(d, postData, selectedP)  //发送请求
+            newAjax({
               url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
               async: false,
               data: postData,
@@ -2208,7 +2254,7 @@ export default {
                 }
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
-              error: function () {
+              errorCallback: function (xhr) {
                 if (gbs.inDev) {
                   Notification({
                     message: '连接错误！',
@@ -2228,6 +2274,47 @@ export default {
           this.$nextTick(() => {
             titleShow('bottom', $('.e-legend'))
           })
+        }
+      })
+    },
+    // 发送接口下拉框改变时请求
+    sentReq (d, postData, selectedP) {
+      let _this = this
+      $.ajax({
+        url: /^\//.test(d.dataUrl) ? _this.curDataHost + d.dataUrl : _this.curDataHost + '/' + d.dataUrl,
+        async: false,
+        data: postData,
+        type: d.method || 'get',
+        success: function (data) {
+          d.data = data.obj || []
+          if (data.msg === 'windows') {
+            if (_this.isArray(data.obj) && data.obj.length > 0) {
+              _this.syst.windowObj = data.obj
+              // if (!_this.isArray(_this.syst.windowData) || _this.syst.windowData.length < 1) {
+              _this.syst.windowData = _this.initWindowData(data.obj)
+              // 初始化弹窗赋值并展示
+              // }
+              _this.showWindowBtn = true
+            } else {
+              _this.showWindowBtn = false
+            }
+          }
+          $.isEmptyObject(selectedP) && _this.setFirstV(d)
+        },
+        error: async function (xhr) {
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
+            await checkLogin(_this.thirdIpPort) && _this.sentReq(d, postData, selectedP)
+            return false
+          }
+          if (gbs.inDev) {
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', '连接错误！', 'error')
+          }
         }
       })
     },
@@ -2264,7 +2351,8 @@ export default {
           if (flag) {
             return false
           }
-          $.ajax({
+          // _this.sentSelectsReq(d, postData)  //发送请求
+          newAjax({
             url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
             async: false,
             data: postData,
@@ -2282,6 +2370,33 @@ export default {
             }
           })
           _this.$set(_this.syst.curUrl, grp.index(), $.extend(true, {}, d))
+        }
+      })
+    },
+    // 发送下拉选择改变时请求
+    sentSelectsReq (d, postData) {
+      let _this = this
+      $.ajax({
+        // url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
+        url: /^\//.test(d.dataUrl) ? _this.curDataHost + d.dataUrl : _this.curDataHost + '/' + d.dataUrl,
+        async: false,
+        data: postData,
+        success: function (data) {
+          data.obj = data.obj || []
+          if (_this.isArray(d.data)) {
+            d.data.splice(0, d.data.length)
+          }
+          d.data = data.obj
+          // 判断是否是获取的多资源的部件和属性
+          if (data.msg === 'windows') {
+            _this.getWindowObj(data)
+          }
+          //  console.log(v.key,d.dataUrl,postData);
+        },
+        error: async function (xhr) {
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
+            await checkLogin(_this.thirdIpPort) && _this.sentSelectsReq(d, postData)
+          }
         }
       })
     },
@@ -2361,6 +2476,8 @@ export default {
       // if (_this.syst.windowData.length > 0) {
       //   datas.windows = JSON.stringify(_this.syst.windowData)
       // }
+      this.sentViewReq(curConf, datas, param) // 发送请求
+      /*
       $.ajax({
         url: reg.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url,
         data: datas,
@@ -2405,6 +2522,70 @@ export default {
           }
         },
         error: function () {
+          if (gbs.inDev) {
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', '连接错误！', 'error')
+          }
+        }
+      })
+      */
+    },
+    // 发送更新视图的请求
+    sentViewReq (curConf, datas, param) {
+      let _this = this
+      $.ajax({
+        url: this.isThird ? curConf.url : (/^\//.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url),
+        data: datas,
+        type: curConf.method,
+        success: function (data) {
+          if (data.success) {
+            data.obj = data.obj || {}
+            if (data.obj.colors) {
+              _this.selectedItem.ctColors = data.obj.colors
+              _this.selectedItem.colorType = 'defalut'
+            } else {
+              if (_this.selectedItem.colorType === 'defalut') {
+                _this.selectedItem.ctColors = _this.defalutColors.concat()
+              }
+            }
+            if (_this.selectedItem.chartType === 'v-map') {
+              _this.selectMapData = data.obj
+              _this.mapDataToChart()
+              _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+            } else {
+              _this.selectedItem.chartData = data.obj
+            }
+            _this.selectedItem.url = curConf.url
+            _this.selectedItem.method = curConf.method
+            _this.selectedItem.params = param
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+              _this.selectedItem.ctName = data.obj.info
+              if (_this.selectedItem.chartType === 'text') {
+                _this.selectedItem.chartData = data.obj
+              }
+            }
+          } else {
+            if (gbs.inDev) {
+              Notification({
+                message: data.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-info'
+              })
+            } else {
+              tooltip('', data.msg, 'info')
+            }
+          }
+        },
+        error: async function (xhr) {
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
+            await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
+            return false
+          }
           if (gbs.inDev) {
             Notification({
               message: '连接错误！',
@@ -2505,7 +2686,7 @@ export default {
     },
     dataChange () {
       this.saveDataChange() // 系统数据存历史
-      if (this.selectedItem.ctDataSource === 'system') {
+      if (this.selectedItem.ctDataSource !== 'static') {
         this.getUrlData()
       } else if (this.selectedItem.chartType === 'v-map') {
         this.mapDataToChart()
@@ -2755,7 +2936,11 @@ export default {
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
-        this.$router.push('/editPage')
+        if (this.editId) {
+          this.$router.push('/')
+        } else {
+          this.$router.push('/editPage')
+        }
       }
     },
     /* 统一右键 */
@@ -3113,6 +3298,13 @@ export default {
       this.saveHistory('paint')
       this.paintObj.bgImg = ''
     },
+    deleteSrcList ($event) {
+      let target = $event.target
+      if (target.className == 'delete_text') {
+        let index = target.dataset.index
+        this.selectedItem.srcList.splice(index, 1)
+      }
+    },
     /* 图片 */
     changeImg: function (e) {
       if (e.value === '') {
@@ -3131,6 +3323,7 @@ export default {
         e.target.value = ''
         return
       }
+      const name = e.target.files[0].name
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
@@ -3141,14 +3334,19 @@ export default {
           _this.paintObj.bgImg = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
-        if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'DataFlow') {
-          _this.saveHistory()
-          _this.selectedItem.imgSrc =
-            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const chartType = _this.selectedItem.chartType
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        _this.saveHistory()
+        if (_this.selectedItem.chartType === 'image') {
+          _this.selectedItem.imgSrc = curSrc
         } else if (_this.selectedItem.subType === 'pictorialBar') {
-          _this.saveHistory()
-          _this.selectedItem.symbolImg =
-            '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+          _this.selectedItem.symbolImg = curSrc
+        } else if (chartType === 'ppt') {
+          // 列表顶部添加
+          _this.selectedItem.srcList.unshift({
+            name,
+            src: curSrc
+          })
         }
       })
       e.target.value = ''
@@ -3559,7 +3757,8 @@ export default {
       })
     },
     showStyleTab: function (newV) {
-      if (!newV && this.selectedItem.ctDataSource === 'system') {
+      if (!newV && this.selectedItem.ctDataSource !== 'static') {
+        this.handleHost()
         if (this.oldCheckId !== this.selectedItem.id) {
           this.getUrlByType(true)
         } else {
@@ -3907,6 +4106,7 @@ export default {
     // } // W3C
     // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
+    this.getAllPage()
   },
   beforeDestroy: function () {
     $('#header').show()
