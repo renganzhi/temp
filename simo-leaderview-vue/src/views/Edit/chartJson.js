@@ -228,7 +228,97 @@ var morenData = {
   },
   mapData: [
     { name: '北京', value: 2 }
-  ]
+  ],
+  TDEarthLineData: {
+    lineArry: [
+      // station 为飞线的起点和重点经纬度  linecolor为线条颜色，scanningcolor为飞线点颜色，不填则使用配置页面配置的颜色
+      {station: [[[145.391881, -6.081689], [-125.7725, 49.082222]]], linecolor: '#ff0000', scanningcolor: '#00ff00'},
+      {station: [[[125.391881, -16.081689], [-125.7725, 54.082222]]]}
+    ]
+  },
+  TDEarthbarData: {
+    barArry: [
+      {
+        value: [34, 50, 1],
+        itemStyle: {
+          color: 'green',
+          opacity: '1'
+        },
+        label: {
+          show: true
+        },
+        labelvalue: {
+          '项目名称': '项目001',
+          '项目地址': '西班牙XXXXXXXXXX',
+          '数据量': 2
+        }
+      },
+      {
+        value: [34, 40, 2],
+        itemStyle: {
+          color: 'red',
+          opacity: '1'
+        }
+      },
+      {
+        value: [116.397128, 39.916527, 1]
+      }
+    ]
+  },
+  DataFlowData: {
+    stationData: [
+      {
+        name: '黑龙江',
+        value: [127.9688, 45.368, 1]
+      }, {
+        name: '内蒙古',
+        value: [110.3467, 41.4899, 2]
+      }, {
+        name: '吉林',
+        value: [125.8154, 44.2584, 4]
+      }, {
+        name: '辽宁',
+        value: [123.1238, 42.1216, 5]
+      }, {
+        name: '河北',
+        value: [114.4995, 38.1006, 7]
+      }, {
+        name: '天津',
+        value: [117.4219, 39.4189, 43]
+      }, {
+        name: '山西',
+        value: [112.3352, 37.9413, 0]
+      }, {
+        name: '陕西',
+        value: [109.1162, 34.2004, 11]
+      }, {
+        name: '甘肃',
+        value: [103.5901, 36.3043, 12]
+      }
+    ],
+    lineData: [
+      [
+        {
+          coord: [127.9688, 45.368],
+          name: '黑龙江→北京',
+          value: 1
+        }, {
+          coord: [116.4551, 40.2539]
+        }
+      ]
+    ],
+    Statistical: [
+      {
+        name: '北京市',
+        value: [116.4551, 40.2539, 20]
+      }, {
+        name: '福建',
+        value: [119.4543, 25.9222, 10]
+      }
+    ],
+    maxValue: 30,
+    minValue: 0
+  }
 }
 var compsArr = [{
   text: '饼图',
@@ -597,6 +687,141 @@ ppt.item,
   visualPosition: 'left',
   scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
   chartData: morenData.mapData
+},
+// {
+//   text: '视频流',
+//   imgClass: 'icon-n-video',
+//   chartType: 'video',
+//   width: 300,
+//   height: 300,
+//   videoType: 'local',
+//   videoSrc: ''
+// },
+{
+  text: '3d地图-飞线图',
+  imgClass: 'icon-n-video',
+  chartType: 'TDEarthLine',
+  width: 300,
+  height: 300,
+  scanningspot: 'true',
+  scanningspeed: 40,
+  scanningradiu: 2,
+  scanninglength: 0.2,
+  scanningopcity: 1,
+  scanningcolor: '#6fa8dc',
+  linewidth: 1,
+  lineColor: '#1c4587',
+  lineoption: 0.8,
+  needrotate: 'true',
+  rotatedirection: 'ccw',
+  rotatespeed: 5,
+  norotatetime: 4,
+  alpha: 25,
+  symbolSize: 5,
+  symbolcolor: 'rgb(50, 250, 150)',
+  symbolopacity: 0.5,
+  displacementScale: 0.03,
+  shadingtype: 'realistic',
+  ambientcolor: '#ffffff',
+  ambientintensity: 0.5,
+  maincolor: '#ffffff',
+  mainintensity: 0.5,
+  mainbeta: 20,
+  mainalpha: 10,
+  chartData: morenData.TDEarthLineData
+},
+{
+  text: '3d地图-柱状图',
+  imgClass: 'icon-n-video',
+  chartType: 'TDEarthBar',
+  width: 600,
+  height: 600,
+  scanningspot: 'true',
+  scanningspeed: 40,
+  scanningradiu: 2,
+  scanninglength: 0.2,
+  scanningopcity: 1,
+  scanningcolor: '#6fa8dc',
+  linewidth: 1,
+  lineColor: '#1c4587',
+  lineoption: 0.8,
+  needrotate: 'true',
+  rotatedirection: 'ccw',
+  rotatespeed: 5,
+  norotatetime: 4,
+  alpha: 25,
+  symbolSize: 5,
+  symbolcolor: 'rgb(50, 250, 150)',
+  symbolopacity: 0.5,
+  displacementScale: 0.03,
+  shadingtype: 'realistic',
+  ambientcolor: '#ffffff',
+  ambientintensity: 0.5,
+  maincolor: '#ffffff',
+  mainintensity: 0.5,
+  barSize: 0.6,
+  itemStyleColor: '#d2ca47',
+  labelColor: '#b4b851',
+  labelSize: 10,
+  labelWeight: 100,
+  labelBorderwidth: 1,
+  labelBorderColor: '#9c8057',
+  labelBorderRadius: 20,
+  labellineHeight: 14,
+  labelbackColor: '#2b3c57',
+  mainbeta: 20,
+  mainalpha: 10,
+  chartData: morenData.TDEarthbarData
+},
+{
+  text: '地图-迁徙图',
+  imgClass: 'icon-n-video',
+  chartType: 'DataFlow',
+  width: 600,
+  height: 600,
+  labelemphasis: 'true',
+  textStyleColor: '#fff',
+  labelfontSize: 20,
+  roam: 'true',
+  normalcolor: 'rgba(51, 69, 89, .5)',
+  normalborderColor: '#516a89',
+  normalborderWidth: 1,
+  emphasis: 'rgba(37, 43, 61, .5)',
+  effectshow: 'true',
+  imgSrc: '',
+  effectperiod: 3,
+  effecttrailLength: 0.6,
+  effectsymbolSize: 15,
+  normalwidth: 1,
+  normalopacity: '1.0',
+  normalcurveness: -0.3,
+  showEffectOn: 'render',
+  rippleEffectbrushType: 'stroke',
+  rippleEffectperiod: 4,
+  rippleEffectscale: 4,
+  normalposition: 'right',
+  normalfontSize: 20,
+  symbolSize: 6,
+  EffectbrushType: 'stroke',
+  Effectscale: 1.6,
+  labelposition: 'right',
+  labelcolor: '#fff',
+  labeltextSize: 20,
+  geosymbolSize: 40,
+  tooltipBackColor: 'rgba(166, 200, 76, 0.82)',
+  tooltipTextColor: '#fff',
+  tooltipTextfontSize: 12,
+  visualMapShow: 'true',
+  calculable: 'true',
+  visualMapTextcolor: '#fff',
+  chartData: morenData.DataFlowData
+},
+{
+  text: '饼图',
+  imgClass: 'icon-n-video',
+  chartType: 'GradientPie',
+  width: 300,
+  height: 300
 },
 config.video.item
 // {
