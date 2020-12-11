@@ -53,6 +53,14 @@
               :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
+    <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
+          :item="item"></TDEarthLine>
+    <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
+          :item="item"></TDEarthBar>
+    <DataFlow v-else-if="item.chartType=='DataFlow'"
+          :item="item"></DataFlow>
+    <GradientPie v-else-if="item.chartType=='GradientPie'"
+          :item="item"></GradientPie>
     <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
@@ -80,11 +88,15 @@ import Vscatter from './EditComp/Vscatter' // 散点图
 import Liquidfill from './EditComp/Liquidfill' // 水波图
 import Player from './EditComp/Player' // 视频流
 import moveTable from './EditComp/moveTable' // 轮播表格
+import TDEarthLine from './EditComp/TDEarthLine' // 轮播表格
+import TDEarthBar from './EditComp/TDEarthBar' // 轮播表格
+import DataFlow from './EditComp/DataFlow' // 轮播表格
+import GradientPie from './EditComp/GradientPie' // 轮播表格
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
 

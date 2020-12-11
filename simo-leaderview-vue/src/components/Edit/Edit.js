@@ -3141,7 +3141,7 @@ export default {
           _this.paintObj.bgImg = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           return
         }
-        if (_this.selectedItem.chartType === 'image') {
+        if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'DataFlow') {
           _this.saveHistory()
           _this.selectedItem.imgSrc =
             '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id

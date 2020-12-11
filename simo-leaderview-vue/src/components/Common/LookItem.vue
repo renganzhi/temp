@@ -36,6 +36,14 @@
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
+    <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
+            :item="item"></TDEarthLine>
+    <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
+            :item="item"></TDEarthBar>
+    <DataFlow v-else-if="item.chartType=='DataFlow'"
+            :item="item"></DataFlow>
+    <GradientPie v-else-if="item.chartType=='GradientPie'"
+            :item="item"></GradientPie>
     <Vchart v-else
             :item="item"></Vchart>
   </div>
@@ -58,10 +66,15 @@ import Liquidfill from './EditComp/Liquidfill' // 水波图
 import Player from './EditComp/Player' // 视频流
 import moveTable from './EditComp/moveTable' // 轮播表格
 
+import TDEarthLine from './EditComp/TDEarthLine' // 3D地图-飞线图
+import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
+import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
+import GradientPie from './EditComp/GradientPie' // 3D地图-柱状图
+
 export default {
   name: 'lookItem',
   props: ['item', 'index'],
-  components: { Vtextarea, Vprogress, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components: { Vtextarea, Vprogress, Vimg, Doubler, TDEarthLine, TDEarthBar, DataFlow, GradientPie, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
       editable: false
