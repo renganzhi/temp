@@ -225,10 +225,10 @@ export default {
       historyArr: [],
       tempHisObj: {},
       tempVideoUrl: '', // 用户输入的视频URL
-      isThird: false, //当前数据来源是否为第三方数据
+      isThird: false, // 当前数据来源是否为第三方数据
       dataSource: {}, // 数据来源对象
       curDataHost: gbs.host, // 当前数据来源的host,默认为gbs.host
-      thirdIpPort: '' //第三方数据的ip和port
+      thirdIpPort: '' // 第三方数据的ip和port
     }
   },
   computed: {
@@ -295,9 +295,9 @@ export default {
       return true
     }
   },
-  created(){
-    this.axios.get('/leaderview/home/getDatasource').then(res=>{
-      this.dataSource = {'静态数据' : '', '系统数据' : '' , ...(res.obj || {})}
+  created () {
+    this.axios.get('/leaderview/home/getDatasource').then(res => {
+      this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}
     })
   },
   methods: {
@@ -314,10 +314,10 @@ export default {
       // this.$set('selectedItem', key, val )
     },
     getAllPage () {
-        this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
-          this.allPageList = res.obj
-        })
-      },
+      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+        this.allPageList = res.obj
+      })
+    },
     ifSameItems () {
       if (this.chooseCompIndexs.length > 0 || this.chooseIndexs.length < 2) {
         this.chooseSameFlag = false
@@ -1542,17 +1542,6 @@ export default {
       }
       this.changeLimitItem(this.aroundItem)
       if (false && window.event.ctrlKey) {
-        // 拖拽情况下被拖拽元件不再手动更新值
-        this.chooseIndexs.forEach((i) => {
-          if (this.chartNum[i].id !== this.selectedItem.id) {
-            this.chartNum[i][xy] = Number(this.chartNum[i][xy]) + changes
-          }
-        })
-        this.chooseCompIndexs.forEach((i) => {
-          if (this.combinList[i].id !== this.selectedItem.id) {
-            this.combinList[i][xy] = Number(this.combinList[i][xy]) + changes
-          }
-        })
       } else {
         this.chooseIndexs.forEach((i) => {
           if (Number(this.chartNum[i][xy]) + changes <= -this.allowOverflow) {
@@ -2121,22 +2110,22 @@ export default {
     chgDataSource: async function ($event, flag) {
       this.handleHost()
       let curKey = this.selectedItem.ctDataSource
-      if(['static','system'].indexOf(curKey) !== -1){  
+      if (['static', 'system'].indexOf(curKey) !== -1) {
         curKey === 'system' ? this.getUrlByType() : this.showWindowBtn = false
-      } else {   //第三方系统
-        if(!(await checkLogin(this.thirdIpPort))) return false //登录失败：跳出循环
+      } else { // 第三方系统
+        if (!(await checkLogin(this.thirdIpPort))) return false // 登录失败：跳出循环
         this.getUrlByType()
       }
     },
-    handleHost(){
+    handleHost () {
       let curKey = this.selectedItem.ctDataSource
-      if(['static','system'].indexOf(curKey) !== -1){  
+      if (['static', 'system'].indexOf(curKey) !== -1) {
         this.curDataHost = gbs.host
         this.isThird = false
-      } else {   //第三方系统
+      } else { // 第三方系统
         this.isThird = true
         this.thirdIpPort = this.dataSource[curKey] || ''
-        this.curDataHost = "http://"+this.thirdIpPort
+        this.curDataHost = 'http://' + this.thirdIpPort
       }
       this.changeThirdConf({isThird: this.isThird, curDataHost: this.curDataHost, thirdIpPort: this.thirdIpPort})
     },
@@ -2163,8 +2152,8 @@ export default {
         async: false,
         success: function (data) {
           let arr = data.obj || []
-          if(_this.isThird){  //第三方数据：把host和_token_u_拼接到url上去
-            arr = arr.filter(d=>{
+          if (_this.isThird) { // 第三方数据：把host和_token_u_拼接到url上去
+            arr = arr.filter(d => {
               d.url = _this.curDataHost + (/^\//.test(d.url) ? d.url : '/' + d.url) + (d.url.indexOf('?') !== -1 ? '&' : '?') + '_token_u_=token'
               return d
             })
@@ -2295,8 +2284,8 @@ export default {
         }
       })
     },
-    //发送接口下拉框改变时请求
-    sentReq(d, postData, selectedP) {
+    // 发送接口下拉框改变时请求
+    sentReq (d, postData, selectedP) {
       let _this = this
       $.ajax({
         url: /^\//.test(d.dataUrl) ? _this.curDataHost + d.dataUrl : _this.curDataHost + '/' + d.dataUrl,
@@ -2320,8 +2309,8 @@ export default {
           $.isEmptyObject(selectedP) && _this.setFirstV(d)
         },
         error: async function (xhr) {
-          if(_this.isThird && xhr.status === 776){ //第三方登录过期->重新登录->重新请求当前接口
-           await checkLogin(_this.thirdIpPort) && _this.sentReq(d, postData, selectedP)
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
+            await checkLogin(_this.thirdIpPort) && _this.sentReq(d, postData, selectedP)
             return false
           }
           if (gbs.inDev) {
@@ -2391,8 +2380,8 @@ export default {
         }
       })
     },
-    //发送下拉选择改变时请求
-    sentSelectsReq(d, postData) {
+    // 发送下拉选择改变时请求
+    sentSelectsReq (d, postData) {
       let _this = this
       $.ajax({
         // url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
@@ -2411,8 +2400,8 @@ export default {
           }
           //  console.log(v.key,d.dataUrl,postData);
         },
-        error: async function(xhr) {
-          if(_this.isThird && xhr.status === 776){ //第三方登录过期->重新登录->重新请求当前接口
+        error: async function (xhr) {
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
             await checkLogin(_this.thirdIpPort) && _this.sentSelectsReq(d, postData)
           }
         }
@@ -2494,7 +2483,7 @@ export default {
       // if (_this.syst.windowData.length > 0) {
       //   datas.windows = JSON.stringify(_this.syst.windowData)
       // }
-      this.sentViewReq(curConf, datas, param)  //发送请求
+      this.sentViewReq(curConf, datas, param) // 发送请求
       /*
       $.ajax({
         url: reg.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url,
@@ -2553,8 +2542,8 @@ export default {
       })
       */
     },
-    //发送更新视图的请求
-    sentViewReq(curConf, datas, param) {
+    // 发送更新视图的请求
+    sentViewReq (curConf, datas, param) {
       let _this = this
       $.ajax({
         url: this.isThird ? curConf.url : (/^\//.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url),
@@ -2600,7 +2589,7 @@ export default {
           }
         },
         error: async function (xhr) {
-          if(_this.isThird && xhr.status === 776){  //第三方登录过期->重新登录->重新请求当前接口
+          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
             await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
             return false
           }
@@ -3317,10 +3306,10 @@ export default {
       this.paintObj.bgImg = ''
     },
     deleteSrcList ($event) {
-      let target = $event.target;
+      let target = $event.target
       if (target.className == 'delete_text') {
-        let index = target.dataset.index;
-        this.selectedItem.srcList.splice(index, 1);
+        let index = target.dataset.index
+        this.selectedItem.srcList.splice(index, 1)
       }
     },
     /* 图片 */
@@ -3341,7 +3330,7 @@ export default {
         e.target.value = ''
         return
       }
-      const name = e.target.files[0].name;
+      const name = e.target.files[0].name
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
@@ -3355,11 +3344,11 @@ export default {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
-        if (_this.selectedItem.chartType == 'image' ) {
+        if (_this.selectedItem.chartType === 'image') {
           _this.selectedItem.imgSrc = curSrc
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg = curSrc
-        } else if (chartType == 'ppt') {
+        } else if (chartType === 'ppt') {
           // 列表顶部添加
           _this.selectedItem.srcList.unshift({
             name,

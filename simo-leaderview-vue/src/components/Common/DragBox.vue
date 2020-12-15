@@ -54,6 +54,14 @@
               :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
+    <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
+          :item="item"></TDEarthLine>
+    <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
+          :item="item"></TDEarthBar>
+    <GradientPie v-else-if="item.chartType=='GradientPie'"
+          :item="item"></GradientPie>
+    <DataFlow v-else-if="item.chartType=='DataFlow'"
+          :item="item"></DataFlow>
     <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill>
     <Player v-else-if="item.chartType=='video'"

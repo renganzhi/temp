@@ -58,7 +58,7 @@ public class LeaderViewInit implements InitializingBean {
 		ev.Module = "viewer";
 		ev.id = "";
 		ev.onLineTimeMillis = System.currentTimeMillis();
-		_outbox.onNext(ev);
+		//_outbox.onNext(ev);
 		// 初始化主页大屏的模板信息
 		homeTemplateService.delAll();
 		homeTemplateService.init();
@@ -69,6 +69,7 @@ public class LeaderViewInit implements InitializingBean {
 		} catch (JMSException e) {
 			logger.error("leader view conn mq error:{}", e);
 		}
+		_outbox.onNext(ev);//先订阅在发送上线消息 否则消息business monitor发送的消息不会被消费
 	}
 
 	@Override

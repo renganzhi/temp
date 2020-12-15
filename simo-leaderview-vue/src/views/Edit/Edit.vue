@@ -858,6 +858,565 @@
                          style="margin-left: 15px; margin-top: 25px; width: auto;">圆角的最大值为{{Math.ceil(this.selectedItem.proHeight / 2)}}</label>
                 </div>
               </div>
+              <!-- 3d地图配置 -->
+              <div v-if="selectedItem.chartType=='TDEarthLine' || selectedItem.chartType=='TDEarthBar'">
+                <div class="m-gap form-group">地球配置</div>
+                <div class="form-group cols2">
+                  <label>地球凹凸感</label>
+                  <input  type="number"
+                          v-model="selectedItem.displacementScale">
+                </div>
+                <div v-if="selectedItem.chartType=='TDEarthLine'">
+                  <div class="m-gap form-group" >线条配置</div>
+                  <div class="form-group cols2">
+                    <label>线条宽度</label>
+                    <select v-model="selectedItem.linewidth">
+                      <option v-for="item in 10"
+                              :key="item">{{item}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>线条颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.lineColor"
+                              :key="10"
+                              type="lineColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                  <label>线条透明度</label>
+                  <select v-model="selectedItem.lineoption">
+                    <option v-for="item in 10"
+                            :key="(item*0.1).toFixed(1)">{{(item*0.1).toFixed(1)}}</option>
+                  </select>
+                  </div>
+                  <div class="m-gap form-group">落地点</div>
+                  <div class="form-group cols2">
+                  <label>落地点大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.symbolSize">
+                  </div>
+                  <div class="form-group cols2">
+                  <label>落地点颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.symbolcolor"
+                            :key="10"
+                            type="symbolcolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                  </div>
+                  <div class="form-group cols2">
+                  <label>落地点透明度</label>
+                  <input  type="number"
+                            v-model="selectedItem.symbolopacity">
+                  </div>
+                  <div class="m-gap form-group">扫描点配置</div>
+                  <div class="form-group cols2">
+                    <label>显示扫描点</label>
+                    <select v-model="selectedItem.scanningspot">
+                      <option value="true">显示</option>
+                      <option value="false">隐藏</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
+                    <label>扫描点速度</label>
+                    <input  type="number"
+                            v-model="selectedItem.scanningspeed">
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
+                    <label>扫描点半径</label>
+                    <select v-model="selectedItem.scanningradiu">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="4">4</option>
+                      <option value="6">6</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
+                    <label>扫描点长度</label>
+                    <select v-model="selectedItem.scanninglength">
+                      <option value="0.1">0.1</option>
+                      <option value="0.2">0.2</option>
+                      <option value="0.3">0.3</option>
+                      <option value="0.4">0.4</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
+                    <label>扫描点透明度</label>
+                    <select v-model="selectedItem.scanningopcity">
+                      <option value="1">1</option>
+                      <option value="0.8">0.8</option>
+                      <option value="0.6">0.6</option>
+                      <option value="0.4">0.4</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
+                    <label>扫描点颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.scanningcolor"
+                              :key="10"
+                              type="scanningcolor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="selectedItem.chartType=='TDEarthBar'">
+                  <div class="m-gap form-group">柱体配置</div>
+                  <div class="form-group cols2">
+                    <label>柱体大小</label>
+                    <input  type="number"
+                            v-model="selectedItem.barSize">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>柱体颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.itemStyleColor"
+                              :key="10"
+                              type="itemStyleColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="m-gap form-group">标签配置</div>
+                  <div class="form-group cols2">
+                    <label>字体颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.labelColor"
+                              :key="10"
+                              type="labelColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>字体大小</label>
+                    <input  type="number"
+                            v-model="selectedItem.labelSize">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>字体宽度</label>
+                    <input  type="number"
+                            v-model="selectedItem.labelWeight">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>边框宽度</label>
+                    <input  type="number"
+                            v-model="selectedItem.labelBorderwidth">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>边框颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.labelBorderColor"
+                              :key="10"
+                              type="labelBorderColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>圆角大小</label>
+                    <input  type="number"
+                            v-model="selectedItem.labelBorderRadius">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>行高</label>
+                    <input  type="number"
+                            v-model="selectedItem.labellineHeight">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>背景颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.labelbackColor"
+                              :key="10"
+                              type="labelbackColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-gap form-group">旋转配置</div>
+                <div class="form-group cols2">
+                  <label>是否旋转</label>
+                  <select v-model="selectedItem.needrotate">
+                    <option value="true">旋转</option>
+                    <option value="false">不旋转</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>旋转方向</label>
+                  <select v-model="selectedItem.rotatedirection">
+                    <option value="ccw">由左往右</option>
+                    <option value="cw">由右往左</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>旋转速度</label>
+                  <input  type="number"
+                          v-model="selectedItem.rotatespeed" placeholder="单位（度/秒）">
+                </div>
+                <div class="form-group cols2">
+                  <label>操作后静止时长</label>
+                  <input  type="number"
+                          v-model="selectedItem.norotatetime" placeholder="鼠标操作后静置多久继续旋转，单位（秒）">
+                </div>
+                <div class="form-group cols2">
+                  <label>地图俯仰角</label>
+                  <input  type="number"
+                          v-model="selectedItem.alpha" placeholder="俯仰角（单位：度）">
+                </div>
+                <div class="m-gap form-group">光照配置</div>
+                <div class="form-group cols2">
+                  <label>光源类型</label>
+                  <select v-model="selectedItem.shadingtype">
+                    <option value="color">平行光</option>
+                    <option value="realistic">自然光</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"  v-if="selectedItem.shadingtype==='realistic'">
+                  <label>环境光颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.ambientcolor"
+                            :key="10"
+                            type="ambientcolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
+                  <label>环境光亮度</label>
+                  <input  type="number"
+                          v-model="selectedItem.ambientintensity">
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
+                  <label>主光源颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.maincolor"
+                            :key="10"
+                            type="maincolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
+                  <label>主光源亮度</label>
+                  <input  type="number"
+                          v-model="selectedItem.mainintensity">
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
+                  <label>主光源y方向角度</label>
+                  <input  type="number"
+                          v-model="selectedItem.mainbeta">
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
+                  <label>主光源x方向角度</label>
+                  <input  type="number"
+                          v-model="selectedItem.mainalpha">
+                </div>
+              </div>
+              <!-- 迁徙图 -->
+              <div v-if="selectedItem.chartType=='DataFlow'">
+                <div class="m-gap form-group">地图配置</div>
+                <div class="form-group cols2">
+                  <label>移入显示地名</label>
+                  <select v-model="selectedItem.labelemphasis">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"  v-if="selectedItem.labelemphasis==='true'">
+                  <label>地名字体颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.textStyleColor"
+                            :key="10"
+                            type="textStyleColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2"  v-if="selectedItem.labelemphasis==='true'">
+                  <label>地名字体大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.labelfontSize">
+                </div>
+                <div class="form-group cols2">
+                  <label>允许缩放拖拽</label>
+                  <select v-model="selectedItem.roam">
+                    <option value="true">允许</option>
+                    <option value="false">不允许</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>地图颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.normalcolor"
+                            :key="10"
+                            type="normalcolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>边界线颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.normalborderColor"
+                            :key="10"
+                            type="normalborderColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>边界线大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.normalborderWidth">
+                </div>
+                <div class="form-group cols2">
+                  <label>悬浮背景颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.emphasis"
+                            :key="10"
+                            type="emphasis"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="m-gap form-group">迁徙线配置</div>
+                <div class="form-group cols2">
+                  <label>线条宽度</label>
+                  <select v-model="selectedItem.normalwidth">
+                    <option v-for="item in 5"
+                        :key="item" :value="item">{{item}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>线条透明度</label>
+                  <select v-model="selectedItem.normalopacity">
+                    <option value="0.001">0.001</option>
+                    <option value="0.01">0.01</option>
+                    <option v-for="item in 5"
+                            :key="(item*0.2).toFixed(1)">{{(item*0.2).toFixed(1)}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>线条弯曲度</label>
+                  <select v-model="selectedItem.normalcurveness">
+                    <option v-for="item in 16"
+                            :key="((item-8)*0.1).toFixed(1)">{{((item-8)*0.1).toFixed(1)}}</option>
+                  </select>
+                </div>
+
+                <div class="m-gap form-group">迁徙图标配置</div>
+                <div class="form-group cols2">
+                  <label>是否显示图标</label>
+                  <select v-model="selectedItem.effectshow">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div v-if="selectedItem.effectshow === 'true'">
+                <!-- <div class="form-group cols2">
+                  <label>图标</label>
+                  <input type="file"
+                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         @change='changeImg' />
+                </div> -->
+                <div class="form-group cols2">
+                  <label>图标运动速度</label>
+                  <select v-model="selectedItem.effectperiod">
+                    <option value="1">特快</option>
+                    <option value="3">快</option>
+                    <option value="6">中</option>
+                    <option value="9">慢</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>图标大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.effectsymbolSize">
+                </div>
+                <div class="form-group cols2">
+                  <label>尾迹长度</label>
+                  <select v-model="selectedItem.effecttrailLength">
+                    <option value="0">无</option>
+                    <option value="0.3">短</option>
+                    <option value="0.6">长</option>
+                    <option value="0.9">特长</option>
+                  </select>
+                </div>
+
+                </div>
+
+                <div class="m-gap form-group">涟漪点配置</div>
+                <div class="form-group cols2">
+                  <label>涟漪点显示时机</label>
+                  <select v-model="selectedItem.showEffectOn">
+                    <option value="emphasis">移入显示</option>
+                    <option value="render">一直显示</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>涟漪类型</label>
+                  <select v-model="selectedItem.rippleEffectbrushType">
+                    <option value="stroke">类型一</option>
+                    <option value="fill">类型二</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>涟漪速度</label>
+                  <select v-model="selectedItem.rippleEffectperiod">
+                    <option :value="2">快</option>
+                    <option :value="4">中</option>
+                    <option :value="6">慢</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>涟漪环数</label>
+                  <select v-model="selectedItem.rippleEffectscale">
+                    <option :value="2">2</option>
+                    <option :value="4">4</option>
+                    <option :value="6">6</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>涟漪大小</label>
+                  <select v-model="selectedItem.symbolSize">
+                    <option :value="3">小</option>
+                    <option :value="6">中</option>
+                    <option :value="9">大</option>
+                    <option :value="20">特大</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>文字位置</label>
+                  <select v-model="selectedItem.normalposition">
+                    <option value="top">上方</option>
+                    <option value="bottom">下方</option>
+                    <option value="left">左方</option>
+                    <option value="right">右方</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>文字大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.normalfontSize">
+                </div>
+                <div class="m-gap form-group">气泡配置</div>
+                <div class="form-group cols2">
+                  <label>气泡类型</label>
+                  <select v-model="selectedItem.EffectbrushType">
+                    <option value="stroke">类型一</option>
+                    <option value="fill">类型二</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>气泡缩放比例</label>
+                  <select v-model="selectedItem.Effectscale">
+                    <option value="1">无</option>
+                    <option value="1.4">小</option>
+                    <option value="1.6">中</option>
+                    <option value="1.8">大</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>气泡大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.geosymbolSize">
+                </div>
+                <div class="form-group cols2">
+                  <label>文字位置</label>
+                  <select v-model="selectedItem.labelposition">
+                    <option value="top">上方</option>
+                    <option value="bottom">下方</option>
+                    <option value="left">左方</option>
+                    <option value="right">右方</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>字体颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.labelcolor"
+                            :key="10"
+                            type="labelcolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>文字大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.labeltextSize">
+                </div>
+                <div class="m-gap form-group">tips配置</div>
+                <div class="form-group cols2">
+                  <label>tips背景颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.tooltipBackColor"
+                            :key="10"
+                            type="tooltipBackColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>tips字体颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.tooltipTextColor"
+                            :key="10"
+                            type="tooltipTextColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>tips字体大小</label>
+                  <input  type="number"
+                          v-model="selectedItem.tooltipTextfontSize">
+                </div>
+
+                <div class="m-gap form-group">图例配置</div>
+                <div class="form-group cols2">
+                  <label>显示图例</label>
+                  <select v-model="selectedItem.visualMapShow">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.visualMapShow==='true'">
+                  <label>显示图例文字</label>
+                  <select v-model="selectedItem.calculable">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.visualMapShow==='true'">
+                  <label>图例字体颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.visualMapTextcolor"
+                            :key="10"
+                            type="visualMapTextcolor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2">
+                  <label>颜色配置</label>
+                  <div class="form-group colorsConf">
+                    <span>序号</span>
+                    <!-- <span class="color-w70 text">系列</span> -->
+                    <span class="color-w70 text">颜色</span>
+                    <!-- <i class="icon-n-add" @click="addColor"></i> -->
+                  </div>
+                  <div class="form-group colorsConf"
+                       v-for="(v,index) in selectedItem.ctColors"
+                       :key="index">
+                    <span class="colorOrder">{{index+1}}</span>
+                    <div>
+                      <div class="color-w200"
+                           style="float: left; width: 140px;">
+                        <Vcolor :data="selectedItem.ctColors[index]"
+                                type="ctColors"
+                                :index="index"
+                                @getdata="getSingleColor"></Vcolor>
+                      </div>
+                    </div>
+                    <i class="icon-n-add"
+                       @click="addColor(index + 1)"></i>
+                    <i class="icon-n-toUp"
+                       @click="moveUp(index)"></i>
+                    <i class="icon-n-putin"
+                       @click="moveDown(index)"></i>
+                    <i class="icon-n-deleteNew"
+                       @click="delColor(index)"></i>
+                  </div>
+                </div>
+              </div>
 
               <!--数字翻牌器-->
               <div v-if="selectedItem.chartType=='doubler' || selectedItem.chartType=='number'">
