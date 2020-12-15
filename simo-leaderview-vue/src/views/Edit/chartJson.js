@@ -1,6 +1,7 @@
 import config from './config.json'
 // 改造过渡
 import ppt from '@/components/Common/EditComp/ppt/config.json'
+import liquidfill from '@/components/Common/EditComp/liquidfill/config.js'
 import polarBar from '@/components/Common/EditComp/polarBar/config.js'
 
 var morenData = {
@@ -639,23 +640,24 @@ ppt.item,
   ctLegendShow: 'true',
   chartData: morenData.single
 },
-{
-  text: '水波图',
-  width: 300,
-  height: 300,
-  imgClass: 'icon-n-waveball',
-  chartType: 've-gauge',
-  subType: 'progress',
-  secondType: 'liquidfill',
-  // chartType: 'liquidfill',
-  bdpx: 4,
-  bgClr: '#156acf',
-  clr: 'rgba(221, 221, 221, 0.9)',
-  bdClr: '#666f8b',
-  fontSize: 28,
-  ctLegendShow: 'true',
-  chartData: morenData.single
-},
+liquidfill.item,
+// {
+//   text: '水波图',
+//   width: 300,
+//   height: 300,
+//   imgClass: 'icon-n-waveball',
+//   chartType: 've-gauge',
+//   subType: 'progress',
+//   secondType: 'liquidfill',
+//   // chartType: 'liquidfill',
+//   bdpx: 4,
+//   bgClr: '#156acf',
+//   clr: 'rgba(221, 221, 221, 0.9)',
+//   bdClr: '#666f8b',
+//   fontSize: 28,
+//   ctLegendShow: 'true',
+//   chartData: morenData.single
+// },
 {
   text: '区域分布图',
   imgClass: 'icon-n-areaMap',
