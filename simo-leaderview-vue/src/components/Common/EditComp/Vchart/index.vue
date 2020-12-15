@@ -264,6 +264,9 @@ export default {
         this.extend.series.itemStyle.normal.color = null
       }
     },
+    'item.rotate'(newV, oldV) {
+      this.extend.xAxis.axisLabel.rotate = newV;
+    },
     'item.chartData': function (newV) {
       if (this.item.chartType === 've-gauge') {
         if (newV.hasOwnProperty('value') && (newV.value || newV.value === 0)) {
@@ -526,6 +529,7 @@ export default {
               },
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
+                rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac'
                 },
@@ -587,13 +591,14 @@ export default {
                 interval: 0,
                 showMinLabel: true,
                 showMaxLabel: true,
+                rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac'
                 },
                 formatter: function (params, index) {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
                 }
-              }
+              },
             },
             yAxis: {
               splitLine: {
@@ -766,11 +771,12 @@ export default {
                 show: false
               },
               axisLabel: {
+                rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac'
                 },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
-              }
+              },
             },
             tooltip: {
               trigger: 'axis',

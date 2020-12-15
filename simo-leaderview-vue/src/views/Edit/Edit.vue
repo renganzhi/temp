@@ -1807,6 +1807,9 @@
                   </div>
                 </div>
               </div>
+
+              <ChartStyle v-if="isEcharts" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+
               <template v-if="['video', 'ppt'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
                 <div class="form-group cols2"

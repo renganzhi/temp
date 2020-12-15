@@ -364,6 +364,7 @@ var compsArr = [{
   splitShow: 'false',
   splitColor: '#333849',
   splitSize: 1,
+  rotate: 0,
   chartData: morenData.pie
 },
 {
@@ -375,6 +376,7 @@ var compsArr = [{
   splitColor: '#333849',
   splitSize: 1,
   subType: 'groupHistogram',
+  rotate: 0,
   chartData: morenData.line
 },
 {
@@ -387,6 +389,7 @@ var compsArr = [{
   splitShow: 'false',
   splitColor: '#333849',
   splitSize: 1,
+  rotate: 0,
   chartData: morenData.line
 },
 /* {
@@ -432,6 +435,7 @@ var compsArr = [{
   splitShow: 'false',
   splitColor: '#333849',
   splitSize: 1,
+  rotate: 0,
   chartData: morenData.pie
 },
 {
@@ -445,7 +449,8 @@ var compsArr = [{
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   smooth: 'true',
-  showPoint: 'true' // 是否标点
+  showPoint: 'true', // 是否标点
+  rotate: 0,
 },
 {
   text: '双轴曲线图',
@@ -459,7 +464,8 @@ var compsArr = [{
   chartData: morenData.times,
   lineArea: false, // 是否为区域图
   smooth: 'true',
-  showPoint: 'true' // 是否标点
+  showPoint: 'true', // 是否标点
+  rotate: 0,
 },
 polarBar.item,
 {
