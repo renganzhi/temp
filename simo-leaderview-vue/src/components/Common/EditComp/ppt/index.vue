@@ -24,6 +24,7 @@ import { gbs } from '@/config/settings'
 export default {
   name: 'ppt',
   props: ['item'],
+  inject: ['editing'],
   data () {
     return {
       activeIndex: 0,
@@ -67,8 +68,11 @@ export default {
     }
   },
   mounted () {
-    console.log(this.item.srcList.length)
-    this.item.autoplay && this.setTimer();
+    // console.log(this.item.srcList.length)
+    // console.log('editing', this.editing)
+    if (this.item.autoplay && !this.editing) {
+      this.setTimer();
+    }
   },
   beforeDestroy () {
     this.clearTimer();
@@ -126,6 +130,9 @@ export default {
       console.log(activeIndex)
       // this.$set('activeIndex', activeIndex)
       this.activeIndex = activeIndex;
+    },
+    setActiveIndex (index) {
+      this.activeIndex = index;
     }
   },
 }
