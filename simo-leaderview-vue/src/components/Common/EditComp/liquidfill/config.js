@@ -8,7 +8,9 @@ export default {
         secondType: 'liquidfill',
         chartType: 'liquidfill',
         bdpx: 4,
+        isLinear: false,
         bgClr: '#156acf',
+        bgClrRange: ['rgba(0, 0, 0, 1)', 'z'],
         clr: 'rgba(221, 221, 221, 0.9)',
         bdClr: '#666f8b',
         fontSize: 28,
@@ -46,9 +48,37 @@ export default {
         ],
         chart: [
             {
+                "name": "填充色方式",
+                "key": "isLinear",
+                "tag": "select",
+                "options": [
+                    {
+                        "name": "渐变",
+                        "value": true
+                    },
+                    {
+                        "name": "单色",
+                        "value": false
+                    }
+                ]
+            },
+            {
                 "name": "填充色",
                 "key": "bgClr",
-                "tag": "singleColor"
+                "tag": "singleColor",
+                dep: {
+                    targetKey: 'isLinear',
+                    targetVal: false
+                }
+            },
+            {
+                "name": "渐变色",
+                "key": "bgClrRange",
+                "tag": "rangeColor",
+                dep: {
+                    targetKey: 'isLinear',
+                    targetVal: true
+                }
             },
             {
                 "name": "边框色",

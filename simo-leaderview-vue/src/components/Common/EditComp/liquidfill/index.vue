@@ -35,6 +35,33 @@ export default {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
       }
+    },
+    curColor () {
+      if (!this.item.isLinear) {
+        return this.item.bgClr
+      } else {
+        let colorSet = [
+            {
+              type: "linear",
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  //填充区渐变色
+                  offset: 0,
+                  color: this.item.bgClrRange[0]
+                },
+                {
+                  offset: 1,
+                  color: this.item.bgClrRange[1]
+                }
+              ]
+            }
+          ]
+        return colorSet
+      }
     }
   },
   watch: {
@@ -53,6 +80,18 @@ export default {
       this.option.series[0].itemStyle.color = newV
       this.option.series[0].emphasis.itemStyle.color = newV
       this.chart.setOption(this.option)
+    },
+    'item.isLinear': function (newV) {
+      // this.chart.clear()
+      // this.option.series[0].itemStyle.color = this.color
+      // this.chart.setOption(this.option)
+    },
+    'item.bgClrRange': function (newV) {
+      // 改变渐变
+      // this.chart.clear()
+      // this.option.series[0].itemStyle.color = newV
+      // this.option.series[0].emphasis.itemStyle.color = newV
+      // this.chart.setOption(this.option)
     },
     'item.clr': function (newV) {
       this.option.series[0].label.color = newV
@@ -91,27 +130,11 @@ export default {
     initBall () {
       // this.chart = echarts.init(document.getElementById('liquidfill-chart'))
       this.chart = echarts.init(this.$refs.liquidfill, null, { renderer: 'svg' })
-      // var option = {
-      //   series: [{
-      //     type: 'liquidFill',
-      // data: [0.5, {
-      //   name: '数据名称',
-      //   value: '0.5',
-      //   direction: 'right',
-      //   itemStyle: {
-      //     normal: {
-      //       color: 'red'
-      //     }
-      //   }
-      // }],
-      //   }]
-      // }
       this.option = {
         series: [
           {
             type: 'liquidFill',
             name: '系列名称',
-            // waveAnimation: false, // 禁止左右波动
             animationDuration: 0,
             animationDurationUpdate: 0, // 更改数值时候的动画时长
             data: [0.8, 0.75],
@@ -124,22 +147,13 @@ export default {
                 color: this.item.bgClr
               }
             },
-            // color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
-            // itemStyle: {
-            //   opacity: 0.6
-            // },
-            // itemStyle: {
-            //   shadowBlur: 30,
-            //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-            // },
+            // color: this.item.bgClr,
             outline: {
               // show: false
               borderDistance: 5,
               itemStyle: {
                 borderWidth: this.item.bdpx,
                 borderColor: this.item.bdClr
-                // shadowBlur: 20,
-                // shadowColor: 'rgba(255, 0, 0, 1)'
               }
             },
             backgroundStyle: {

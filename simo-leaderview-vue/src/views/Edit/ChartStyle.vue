@@ -6,9 +6,10 @@
                     class="form-group cols2"
                     v-for="(item, index) in configOptions[section]"
                     :key="`axis_${index}`"
+                    v-show="judgeShowOption(section, item.key)"
                 >
                     <label>{{ item.name }}</label>
-                    <div class="color-w200">
+                    <div class="color-w200" >
                         <template v-if="item.tag == 'select'">
                             <select :value="configItems[item.key]" @change="change(item.key, 'select', $event)">
                                 <option
@@ -33,6 +34,13 @@
                                 type="bgClr"
                                 @getdata="change(item.key, 'singleColor', $event)"></Vcolor>
                         </template>
+                        <template v-else-if="item.tag == 'rangeColor'">
+                            <RangeColor ></RangeColor>
+                            <!-- :data="configItems[item.key]"
+                                :key="12"
+                                type="ctColors"
+                                @getdata="change(item.key, 'singleColor', $event)" -->
+                        </template>
                     </div>
                 </div>
         </section>
@@ -46,11 +54,12 @@
 // console.log(axis);
 
 import Vcolor from '@/components/Common/Vcolor'
+import RangeColor from '@/components/Common/RangeColor'
 
 export default {
     name: "chartStyle",
     props: ["configItems"],
-    components: {Vcolor},
+    components: {Vcolor, RangeColor},
     data() {
         return {
             sectionMap: {
@@ -95,10 +104,26 @@ export default {
                 const value = event.color;
                 this.$emit("change", key, value);
             } else {
-                const value = event.target.value
+                let value = event.target.value
+                if (value == "true" || value == "false") {
+                    value = value == "true"
+                }
                 // console.log();
                 this.$emit("change", key, value);
             }
+        },
+        judgeShowOption(section, key) {
+            // console.log(section, key, this.configOptions[section][key]);
+            var cur = this.configOptions[section].filter(d => d.key == key)[0]
+            if (cur.hasOwnProperty('dep')) {
+                // && this.configOptions[item.dep.targetKey] == item.dep.targetVal
+                const {targetKey , targetVal} = cur.dep;
+                if (this.configItems[targetKey] != targetVal) {
+                    // console.log(key)
+                    return false
+                }
+            }
+            return true;
         }
     },
     watch: {
