@@ -93,6 +93,8 @@ simo:
   mq:
     broker: 
       url: failover:tcp://localhost:61616
+  leaderview:
+    templateInit: false
 
 heartbeat:
     send_interval: 20000

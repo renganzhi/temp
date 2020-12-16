@@ -21,6 +21,7 @@ import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
+import com.uxsino.utils.ZipUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -99,6 +100,9 @@ public class HomePageController {
 
 	@Autowired
 	private VideoFileService videoFileService;
+
+	@Autowired
+	private ImpExpService impExpService;
 
 	@Value("${datasource.source:#{null}}")
 	private String datasource;
@@ -891,10 +895,9 @@ public class HomePageController {
 
 	@ApiOperation("将多个目标大屏制作成模板数据并且导出资源")
 	@PostMapping(value = "/makeTemplateList")
-	public JsonModel makeTemplateList(@RequestBody Map map){
-		String[] ids = map.get("ids").toString().split(",");
+	public JsonModel makeTemplateList(@RequestParam("ids") String ids, @RequestParam("url") String url){
 		Set<String> sets = Sets.newHashSet();
-		for (String str: ids) {
+		for (String str: ids.split(",")) {
 			Long id = Long.valueOf(str);
 			HomePage page = homePageService.getById(id);
 			if (ObjectUtils.isEmpty(page)){
@@ -903,12 +906,59 @@ public class HomePageController {
 			sets = homePageService.makeTemplate(page,Lists.newArrayList());
 		}
 		try {
-			String url = map.get("url").toString();
 			homePageService.outputVideo(sets,url);
 		}catch (NullPointerException e){
 			logger.info("未传入url");
 		}
 		return new JsonModel(true);
+	}
+
+
+	@ApiOperation("模板导出成zip包")
+	@PostMapping("/exportTemplate")
+	public JsonModel exportTemplate(@RequestParam("ids") String ids){
+		List<HomePage> pages = Lists.newArrayList();
+		for (String str: ids.split(",")) {
+			Long id = Long.valueOf(str);
+			HomePage page = homePageService.getById(id);
+			if (ObjectUtils.isEmpty(page)){
+				return new JsonModel(false, "页面不存在");
+			}
+			pages.add(page);
+		}
+		impExpService.makeTemplate(pages);
+		return new JsonModel(true,"导出完成");
+	}
+
+
+	@ResponseBody
+	@PostMapping("/importTemplate")
+	@ApiOperation("zip模板导入")
+	public JsonModel importTemplate(HttpServletRequest request,
+									MultipartFile file,
+									HttpServletResponse response,
+									@RequestParam(required = false) String name){
+		/*
+		 *创建临时文件夹
+		 * 解压文件
+		 */
+		String fileName = file.getOriginalFilename();
+		File filePath = new File( upload_path + "/zipTemp");
+		File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
+		fileDir.mkdirs();
+		File saveFile = new File(fileDir, fileName);//将压缩包解析到指定位置
+		try {
+			file.transferTo(saveFile);
+			String newFilePath = fileDir + File.separator + fileName;
+			impExpService.processZip(newFilePath, name);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JsonModel(false,"模板导入失败");
+		}
+        //程序结束时，删除临时文件
+		ZipUtils.deleteFiles(fileDir.getPath());//删除压缩包文件夹
+
+		return new JsonModel(true,"导入成功");
 	}
 
 }
