@@ -51,6 +51,9 @@ public class HomePageService {
     private HomePageUserConfService homePageUserConfService;
 
     private static Set<String> videoSet = Sets.newHashSet();
+    private static Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
+    private static Pattern ipPattern = Pattern.compile("http://(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d*)/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
+    private static Pattern localPattern = Pattern.compile("http://localhost:(\\d*)/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
 
     @Transactional
     public void add(HomePage homePage) {
@@ -567,6 +570,25 @@ public class HomePageService {
 
     public void saveAll(List<HomePage> homePages) {
         homePageDao.saveAll(homePages);
+    }
+
+    //处理video保存时的url前缀问题
+    public String processVideoUrl(String viewConf){
+        Set<String> set = Sets.newHashSet();
+        Matcher vm = ipPattern.matcher(viewConf);
+        while (vm.find()){
+            Matcher vm2 = videoPattern.matcher(vm.group());
+            set.add(vm2.replaceAll("").trim());
+        }
+        vm = localPattern.matcher(viewConf);
+        while (vm.find()){
+            Matcher vm2 = videoPattern.matcher(vm.group());
+            set.add(vm2.replaceAll("").trim());
+        }
+        for (String s: set) {
+            viewConf = viewConf.replace(s,"");
+        }
+        return viewConf;
     }
 
 }

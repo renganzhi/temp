@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -52,6 +53,9 @@ public class LeaderViewInit implements InitializingBean {
 	@Autowired
 	private AuthorityService authorityService;
 
+	@Value("${simo.leaderview.templateInit:#{false}}")
+	private Boolean templateInit;
+
 	public void init() {
 		_outbox.setFrom("leaderview");
 		ModuleOnLineEvent ev = new ModuleOnLineEvent();
@@ -60,8 +64,9 @@ public class LeaderViewInit implements InitializingBean {
 		ev.onLineTimeMillis = System.currentTimeMillis();
 		//_outbox.onNext(ev);
 		// 初始化主页大屏的模板信息
-		homeTemplateService.delAll();
-		homeTemplateService.init();
+		if (homeTemplateService.count() == 0 || templateInit){
+			homeTemplateService.init();
+		}
 		// 订阅大屏展示API注册
 		try {
 			rqFactory.createTopicFlux(EventTopicConstants.SIMO_LEADERVIEW_API, String.class).subscribe(
