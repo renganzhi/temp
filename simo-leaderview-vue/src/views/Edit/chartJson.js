@@ -3,6 +3,7 @@ import config from './config.json'
 import ppt from '@/components/Common/EditComp/ppt/config.json'
 import liquidfill from '@/components/Common/EditComp/liquidfill/config.js'
 import polarBar from '@/components/Common/EditComp/polarBar/config.js'
+import pyramid from '@/components/Common/EditComp/pyramid/config.js'
 
 var morenData = {
   pie: {
@@ -578,6 +579,7 @@ polarBar.item,
   ctLegendShow: 'true',
   chartData: morenData.single
 },
+pyramid.item,
 {
   text: '拓扑',
   imgClass: 'icon-n-topo',

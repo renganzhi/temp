@@ -17,6 +17,7 @@ import Player from './EditComp/Player' // 视频流
 import moveTable from './EditComp/moveTable' // 轮播表格
 import Heatmap from './EditComp/heatmap' //
 import PolarBar from './EditComp/polarBar' //
+import Pyramid from './EditComp/pyramid' //
 import TDEarthLine from './EditComp/TDEarthLine' // 3D地图-飞线图
 import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
 import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
@@ -42,6 +43,7 @@ export default {
   moveTable,
   Heatmap,
   PolarBar,
+  Pyramid,
   TDEarthLine,
   TDEarthBar,
   DataFlow,

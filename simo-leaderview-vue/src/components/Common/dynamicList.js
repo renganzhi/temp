@@ -4,5 +4,6 @@ export default [
     'liquidfill',
     'ppt',
     'heatmap',
-    'polarBar'
+    'polarBar',
+    'pyramid'
 ]
