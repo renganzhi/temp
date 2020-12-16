@@ -297,7 +297,7 @@ public class HomePageController {
 		if (existHomePage == null) {
 			return new JsonModel(false, "所配置的页面不存在！");
 		}
-		existHomePage.setViewConf(homePage.getViewConf());
+		existHomePage.setViewConf(homePageService.processVideoUrl(homePage.getViewConf()));
 		existHomePage.setViewImage(homePage.getViewImage());
 		existHomePage.setPaintObj(homePage.getPaintObj());
 		existHomePage.setComposeObj(homePage.getComposeObj());
