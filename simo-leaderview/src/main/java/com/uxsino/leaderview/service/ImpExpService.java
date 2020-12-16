@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.util.*;
@@ -66,7 +67,7 @@ public class ImpExpService {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public void makeTemplate(List<HomePage> pages){
+    public String  makeTemplate(List<HomePage> pages){
         JSONArray json = new JSONArray();
         Set<Long> ids = Sets.newConcurrentHashSet();
         pages.forEach(p -> ids.add(p.getId()));
@@ -82,7 +83,7 @@ public class ImpExpService {
             e.printStackTrace();
         }
         ZipUtils.toZip(zipPath + "/templateZip" + zipNum + "/",fos, true);
-        zipNum++;
+        return zipPath + "/templateZip" + zipNum++ + ".zip";
     }
 
     @Transactional
@@ -488,6 +489,35 @@ public class ImpExpService {
             }
             page.setViewConf(viewConf);
             homePageService.save(page);
+        }
+    }
+
+    public void download(String path, HttpServletResponse response) {
+        try {
+            // path
+            File file = new File(path);
+            // 取得文件名。
+            String filename = file.getName();
+            // 取得文件的后缀名。
+            String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+
+            // 以流的形式下载文件。
+            InputStream fis = new BufferedInputStream(new FileInputStream(path));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            // 设置response的Header
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+            response.addHeader("Content-Length", "" + file.length());
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
