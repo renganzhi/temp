@@ -35,7 +35,7 @@
                                 @getdata="change(item.key, 'singleColor', $event)"></Vcolor>
                         </template>
                         <template v-else-if="item.tag == 'rangeColor'">
-                            <RangeColor ></RangeColor>
+                            <RangeColor :data="configItems[item.key]" @getdata="change(item.key, 'rangeColor', $event)"></RangeColor>
                             <!-- :data="configItems[item.key]"
                                 :key="12"
                                 type="ctColors"
@@ -103,6 +103,9 @@ export default {
             if (tag == 'singleColor') {
                 const value = event.color;
                 this.$emit("change", key, value);
+            } else if (tag == 'rangeColor') {
+                const value = event.color;
+                this.$emit("change", key, value);     
             } else {
                 let value = event.target.value
                 if (value == "true" || value == "false") {

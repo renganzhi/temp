@@ -41,11 +41,11 @@ export default {
             this.emit()
         },
         getColorStart( e) {
-            this.colors[0] = e.color
+            this.$set(this.colors, 0, e.color)
             this.emit()
         },
         getColorEnd( e) {
-            this.colors[1] = e.color
+            this.$set(this.colors, 1, e.color)
             this.emit()
         },
         emit() {

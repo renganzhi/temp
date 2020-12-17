@@ -77,21 +77,19 @@ export default {
     },
     'item.bgClr': function (newV) {
       this.chart.clear()
-      this.option.series[0].itemStyle.color = newV
-      this.option.series[0].emphasis.itemStyle.color = newV
+      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear);
       this.chart.setOption(this.option)
     },
     'item.isLinear': function (newV) {
-      // this.chart.clear()
-      // this.option.series[0].itemStyle.color = this.color
-      // this.chart.setOption(this.option)
+      this.chart.clear()
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV);
+      this.chart.setOption(this.option)
     },
     'item.bgClrRange': function (newV) {
       // 改变渐变
-      // this.chart.clear()
-      // this.option.series[0].itemStyle.color = newV
-      // this.option.series[0].emphasis.itemStyle.color = newV
-      // this.chart.setOption(this.option)
+      this.chart.clear()
+      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear);
+      this.chart.setOption(this.option)
     },
     'item.clr': function (newV) {
       this.option.series[0].label.color = newV
@@ -138,16 +136,7 @@ export default {
             animationDuration: 0,
             animationDurationUpdate: 0, // 更改数值时候的动画时长
             data: [0.8, 0.75],
-            itemStyle: {
-              color: this.item.bgClr
-            },
-            emphasis: {
-              itemStyle: {
-                // opacity: 0.9,
-                color: this.item.bgClr
-              }
-            },
-            // color: this.item.bgClr,
+            color: this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear),
             outline: {
               // show: false
               borderDistance: 5,
@@ -185,6 +174,32 @@ export default {
       // }
       if (this.chart) {
         this.chart.setOption(this.option)
+      }
+    },
+    getColor (color, colorRange, isLinear) {
+      if (isLinear) {
+        return [
+            {
+              type: "linear",
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  //填充区渐变色
+                  offset: 0,
+                  color: colorRange[0]
+                },
+                {
+                  offset: 1,
+                  color: colorRange[1]
+                }
+              ]
+            }
+          ]
+      } else {
+        return [color]
       }
     }
   },

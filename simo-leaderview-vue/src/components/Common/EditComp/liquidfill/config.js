@@ -10,7 +10,7 @@ export default {
         bdpx: 4,
         isLinear: false,
         bgClr: '#156acf',
-        bgClrRange: ['rgba(0, 0, 0, 1)', 'z'],
+        bgClrRange: ['rgba(21,106,207, 1)', 'rgba(255, 255, 255, 0)'],
         clr: 'rgba(221, 221, 221, 0.9)',
         bdClr: '#666f8b',
         fontSize: 28,
