@@ -1,5 +1,11 @@
 <template>
-  <component :is="item.chartType"
+  <div>
+    <div v-if="item.chartData.tabs" class="tab_btn_box">
+      <button v-for="tab in item.chartData.tabs" :key="tab" 
+      :class="{'tab_btn': true, 'tab_active_btn': activeTab == tab}"
+      :style="btnStyle"
+      @click="changeActiveTab(tab)">{{ tab }}</button></div>
+      <component :is="item.chartType"
              :data="dealChartData"
              :width="comWidth"
              v-if="initOption"
@@ -8,15 +14,16 @@
              :settings="settings"
              :extend="extend"
              :key="keyId">
-    <div class="v-charts-data-empty"
-         v-if="empty"
-         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-      <div><i class="icon-n-nodata"
-           style="font-size: 108px;"></i><br>
-        <p>抱歉，没有数据可供展示...</p>
+      <div class="v-charts-data-empty"
+          v-if="empty"
+          style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
       </div>
-    </div>
-  </component>
+    </component>
+  </div>
 </template>
 <script>
 import echarts from 'echarts'
@@ -51,6 +58,7 @@ export default {
         }
       }
       obj = {
+        activeTab: null,
         empty: false,
         keyId: new Date().getTime() + Math.random() * 10000,
         initOption: { renderer: this.item.chartType === 've-line' ? 'canvas' : 'svg' },
@@ -101,6 +109,19 @@ export default {
     return obj
   },
   computed: {
+    btnStyle() {
+      let style = {};
+      if (this.item.labelFontSize) {
+        const size = this.item.labelFontSize;
+        // console.log(size)
+        style = {
+          // color: 'red',
+          'font-size': `${size}px`,
+          height: `${size * 2}px !important`
+        }
+      }
+      return style;
+    },
     comWidth: function () {
       return this.item.width + 'px'
     },
@@ -124,6 +145,10 @@ export default {
       //   return {}
       // }
       // this.empty = false
+      if (['ve-line', 've-bar', 've-histogram'].includes(this.item.chartType) && this.item.chartData.allData) {
+        // console.log(this.activeTab)
+        return this.item.chartData.allData[this.activeTab]
+      }
       if (this.item.chartType === 've-gauge' && typeof d.value !== 'undefined') {
         let outer = { name: 'outerpro' }
         let rows = [
@@ -367,6 +392,9 @@ export default {
     }
   },
   beforeMount: function () {
+    if (this.item.chartData.tabs) {
+      this.activeTab = this.item.chartData.tabs[0]
+    }
     if (this.item.chartType === 've-gauge') {
       if (!this.item.chartData.value && this.item.chartData.value != 0) {
         this.empty = true
@@ -386,6 +414,17 @@ export default {
     }
   },
   methods: {
+    changeActiveTab (tab) {
+      this.activeTab = tab
+      this.updateUnit()
+    },
+     updateUnit () {
+      const item = this.item
+      // 折线图, dealChartData
+      if (item.chartType == 've-line' && item.subType == null) {
+        this.extend.yAxis.name = this.dealChartData.unit || ''
+      }
+    },
     getYaxiosMax: function (obj) {
       let rowData = obj.rows
       let maxData = 0
@@ -819,7 +858,9 @@ export default {
           } else {
             obj.extend.yAxis.position = 'left'
             obj.extend.yAxis.name = _this.item.chartData.unit // 单位
-            obj.extend.yAxis.max = _this.getYaxiosMax(_this.item.chartData)
+            if (_this.item.chartData.unit === '%') {
+              obj.extend.yAxis.max = _this.getYaxiosMax(_this.item.chartData)
+            }
           }
         },
         've-ring': function () {
@@ -1168,5 +1209,28 @@ export default {
 .v-charts-data-empty i,
 .v-charts-data-empty p {
   color: #666f8b;
+}
+</style>
+
+<style lang="scss" scoped>
+.tab_btn_box {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 9999;
+}
+.tab_btn {
+  border-width: 0.667px;
+  border-color: rgb(0, 255, 255);
+  border-style: solid;
+  border-radius: 5px;
+  background-color: transparent;
+}
+.tab_active_btn {
+   border-width: 0.667px;
+  border-color: rgb(0, 255, 255);
+  border-style: solid;
+  border-radius: 5px;
+  background-color: rgba(10, 63, 130, 0.502);
 }
 </style>
