@@ -295,6 +295,9 @@ export default {
       return true
     }
   },
+  provide: {
+    editing: true,
+  },
   created () {
     this.axios.get('/leaderview/home/getDatasource').then(res => {
       this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}

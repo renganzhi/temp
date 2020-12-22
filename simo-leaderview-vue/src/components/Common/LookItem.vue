@@ -34,8 +34,8 @@
               :item="item"></Vscatter>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
-    <Liquidfill v-else-if="item.secondType=='liquidfill'"
-                :item="item"></Liquidfill>
+    <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
+                :item="item"></Liquidfill> -->
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
     <template v-else-if="dynamicList.includes(item.chartType)">

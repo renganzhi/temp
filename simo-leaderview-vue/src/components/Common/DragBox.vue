@@ -62,8 +62,8 @@
           :item="item"></GradientPie>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
-    <Liquidfill v-else-if="item.secondType=='liquidfill'"
-                :item="item"></Liquidfill>
+    <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
+                :item="item"></Liquidfill> -->
     <Player v-else-if="item.chartType=='video'"
             @palyErr="palyErr"
             :item="item"></Player>

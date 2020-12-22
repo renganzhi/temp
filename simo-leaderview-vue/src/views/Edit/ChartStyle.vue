@@ -1,93 +1,142 @@
 <template>
     <div>
-        <!-- <template v-show="lengend.length > 0">
-            <div class="m-gap form-group">图例配置</div>
-            <div class="form-group cols2">
-                <label>图例可见性</label>
-                <select v-model="item.ctLegendShow" @change="change">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                </select>
-            </div>
-        </template> -->
-        <template v-show="axis.length > 0">
-            <div class="m-gap form-group">坐标轴配置</div>
-            <div
-                class="form-group cols2"
-                v-for="(item, index) in axis"
-                :key="`axis_${index}`"
-            >
-                <label>{{ item.name }}</label>
-                <template v-if="item.tag == 'select'">
-                    <select :value="configItems[item.key]" @change="change(item.key, $event)">
-                        <option
-                            v-for="(option, optIndex) in item.options"
-                            :key="`${option.name}_${optIndex}`"
-                            :value="option.value"
-                            >{{ option.name }}</option
-                        >
-                    </select>
-                </template>
-                <!-- <template v-else-if="item.tag == 'input'">
-                    <input
-                        class="w-90"
-                        :type="item.type"
-                        v-model="configItems[item.key]"
-                    />
-                    {{ item.unit || "" }}
-                </template> -->
-            </div>
-        </template>
-        <!-- <template v-show="chart.length > 0">
-            <div class="m-gap form-group">图表样式</div>
-            <div class="form-group cols2">
-                <label>图例可见性</label>
-                <select v-model="item.ctLegendShow" @change="change">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                </select>
-            </div>
-        </template> -->
+        <section v-for="(section, sectionIndex) in ['lengend', 'chart', 'axis']" :key="`section${sectionIndex}`">
+                <div class="m-gap form-group" v-show="configOptions[section] && configOptions[section].length > 0">{{sectionMap[section]}}</div>
+                <div
+                    class="form-group cols2"
+                    v-for="(item, index) in configOptions[section]"
+                    :key="`axis_${index}`"
+                    v-show="judgeShowOption(section, item.key)"
+                >
+                    <label>{{ item.name }}</label>
+                    <div class="color-w200" >
+                        <template v-if="item.tag == 'select'">
+                            <select :value="configItems[item.key]" @change="change(item.key, 'select', $event)">
+                                <option
+                                    v-for="(option, optIndex) in item.options"
+                                    :key="`${option.name}_${optIndex}`"
+                                    :value="option.value"
+                                    >{{ option.name }}</option
+                                >
+                            </select>
+                        </template>
+                        <!-- <template v-else-if="item.tag == 'input'">
+                            <input
+                                class="w-90"
+                                :type="item.type"
+                                v-model="configItems[item.key]"
+                            />
+                            {{ item.unit || "" }}
+                        </template> -->
+                        <template v-else-if="item.tag == 'singleColor'">
+                            <Vcolor :data="configItems[item.key]"
+                                :key="11"
+                                type="bgClr"
+                                @getdata="change(item.key, 'singleColor', $event)"></Vcolor>
+                        </template>
+                        <template v-else-if="item.tag == 'rangeColor'">
+                            <RangeColor :data="configItems[item.key]" @getdata="change(item.key, 'rangeColor', $event)"></RangeColor>
+                            <!-- :data="configItems[item.key]"
+                                :key="12"
+                                type="ctColors"
+                                @getdata="change(item.key, 'singleColor', $event)" -->
+                        </template>
+                    </div>
+                </div>
+        </section>
     </div>
 </template>
 
 <script>
-import { axis } from "@/components/Common/EditComp/Vchart/config";
+// import { axis } from "@/components/Common/EditComp/Vchart/config";
 
-console.log(axis);
+
+// console.log(axis);
+
+import Vcolor from '@/components/Common/Vcolor'
+import RangeColor from '@/components/Common/RangeColor'
+
 export default {
     name: "chartStyle",
     props: ["configItems"],
+    components: {Vcolor, RangeColor},
     data() {
         return {
-            lengend: [],
-            axis: axis,
-            chart: []
+            sectionMap: {
+                lengend: '图例配置',
+                chart: '图表样式',
+                axis: '坐标轴样式',
+            },
+            configOptions: {},
+            // lengend: [],
+            // axis: axis,
+            // chart: []
         };
     },
     computed: {
         curType() {
-            return this.item.chartType;
-        }
+            return this.configItems.chartType;
+        },
+        chart () {
+            return this.configItems.chart || []
+        },
+        lengend () {
+            return this.configItems.lengend || []
+        },
+        axis () {
+            return this.configItems.axis || []
+        },
     },
-    // mounted () {
-    //     if (curType)
-    // },
+    mounted () {
+        this.initOptions(this.curType)
+    },
     methods: {
-        change(key, event) {
+        initOptions (type) {
+            if (type.indexOf('ve-') > -1) {
+                this.configOptions = require(`@/components/Common/EditComp/Vchart/config`).default.styles
+            } else {
+                this.configOptions = require(`@/components/Common/EditComp/${type}/config`).default.styles
+            }
+        },
+        change(key, tag, event) {
             // console.log(event.target.value);
-            const value = event.target.value
-            // console.log();
-            this.$emit("change", key, value);
+            if (tag == 'singleColor') {
+                const value = event.color;
+                this.$emit("change", key, value);
+            } else if (tag == 'rangeColor') {
+                const value = event.color;
+                this.$emit("change", key, value);     
+            } else {
+                let value = event.target.value
+                if (value == "true" || value == "false") {
+                    value = value == "true"
+                }
+                // console.log();
+                this.$emit("change", key, value);
+            }
+        },
+        judgeShowOption(section, key) {
+            // console.log(section, key, this.configOptions[section][key]);
+            var cur = this.configOptions[section].filter(d => d.key == key)[0]
+            if (cur.hasOwnProperty('dep')) {
+                // && this.configOptions[item.dep.targetKey] == item.dep.targetVal
+                const {targetKey , targetVal} = cur.dep;
+                if (this.configItems[targetKey] != targetVal) {
+                    // console.log(key)
+                    return false
+                }
+            }
+            return true;
         }
     },
     watch: {
         // 'item.ctLegendShow' (newVal, oldVal) {
         //     this.$emit('change', 'ctLegendShow', newVal);
         // }
-        // 'item.chartType' (newVal, oldVal) {
-        //     this.axis =
-        // }
+        'configItems.chartType' (newVal, oldVal) {
+            this.initOptions(newVal)
+            console.log('type', newVal, this.configOptions)
+        }
     }
 };
 </script>

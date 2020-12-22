@@ -520,9 +520,8 @@
                 </div>
               </div>
               <!--表格\文本框配置-->
-              <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time' || selectedItem.secondType == 'liquidfill'">
-                <div class="m-gap form-group"
-                     v-show="selectedItem.secondType!=='liquidfill'">图表样式</div>
+              <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
+                <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
                   <label>表头背景色</label>
@@ -595,27 +594,6 @@
 
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
-                  <div class="form-group cols2"
-                       v-if="selectedItem.secondType==='liquidfill'">
-                    <div class="m-gap form-group">图例配置</div>
-                    <label>图例可见性</label>
-                    <select v-model="selectedItem.ctLegendShow">
-                      <option value="true">显示</option>
-                      <option value="false">隐藏</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2"
-                       v-if="selectedItem.secondType==='liquidfill'">
-                    <label>图例文字颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.legendColor"
-                              :key="19"
-                              type="legendColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                  <div v-show="selectedItem.secondType==='liquidfill'"
-                       class="m-gap form-group">图表样式</div>
                   <div class="form-group cols2"
                        v-if="selectedItem.chartType==='border'">
                     <label>填充色</label>
@@ -1643,7 +1621,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
+                     v-if="selectedItem.chartType==='ve-gauge'">
                   <div class="m-gap form-group">图例配置</div>
                   <div class="form-group cols2"
                        v-if="selectedItem.subType==='progress'">
@@ -1655,7 +1633,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.secondType!=='liquidfill' && selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
+                     v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字颜色</label>
                   <label v-else>图例文字颜色</label>
                   <div class="color-w200">
@@ -1665,8 +1643,6 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
-                <div class="m-gap form-group"
-                     v-show="selectedItem.secondType!=='liquidfill'">图表样式</div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
                   <label>折线图类型</label>
@@ -1700,7 +1676,7 @@
                   </select>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.chartType==='ve-gauge' && selectedItem.secondType !== 'liquidfill'">
+                     v-if="selectedItem.chartType==='ve-gauge'">
                   <label>底色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.bgClr"
@@ -1808,7 +1784,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="isEcharts" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video', 'ppt'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->

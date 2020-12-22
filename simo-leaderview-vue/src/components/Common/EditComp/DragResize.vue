@@ -8,13 +8,20 @@
        @touchstart="bodyDown($event)"
        @touchend="up($event)">
     <slot></slot>
-    <div v-for="(stick,index) in sticks"
+    <div class="box_sticks">
+      <div v-for="(stick,index) in sticks"
          :key="index"
          class="vdr-stick"
          :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']"
          @mousedown.stop.prevent="stickDown(stick, $event)"
          @touchstart.stop.prevent="stickDown(stick, $event)"
          :style="vdrStick(stick)">
+      </div>
+    </div>
+    <div class="grid_line" v-if="false">
+      <div class="grid_line_top"></div>
+      <div class="grid_line_left"></div>
+      <div class="grid_line_label">{{x}}, {{y}}</div>
     </div>
   </div>
 </template>
@@ -991,7 +998,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .vdr {
   position: absolute;
   box-sizing: border-box;
@@ -1039,4 +1046,36 @@ export default {
 .vdr-stick.not-resizable {
   display: none;
 }
+
+.grid_line .grid_line_label {
+  visibility: hidden;
+}
+.active {
+  .grid_line {
+    .grid_line_top, .grid_line_left, .grid_line_label {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .grid_line_top {
+      width: 0;
+      height: 10000px;
+      border-left: 1px dashed #0088cc;
+      transform: translateY(-100%);
+    }
+    .grid_line_left {
+      width: 10000px;
+      height: 0;
+      border-top: 1px dashed #0088cc;
+      transform: translateX(-100%);
+    }
+    .grid_line_label {
+      visibility: visible;
+      padding: 4px;
+      color: #0088cc;
+      transform: translate(-100%, -100%);
+    }
+  }
+}
+
 </style>

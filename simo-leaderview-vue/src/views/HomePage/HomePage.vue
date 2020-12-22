@@ -72,6 +72,12 @@
                 class="ring-icon"
                 title="设置"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+          <span @click="toEditPage()"
+                class="ring-icon"
+                data-toggle='tooltip'
+                title
+                data-original-title="编辑当前页"
+                v-show="!isFullScreen"><i class="el-icon-edit"></i></span>
           <span @click="refresh"
                 class="ring-icon"
                 data-toggle='tooltip'
@@ -96,12 +102,6 @@
                 title
                 :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
                 v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-          <span @click="toEditPage()"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                data-original-title="编辑"
-                v-show="!isFullScreen"><i class="el-icon-edit"></i></span>
           <span @click="next"
                 class="ring-icon"
                 data-toggle='tooltip'
