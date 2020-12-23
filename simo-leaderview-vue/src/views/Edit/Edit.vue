@@ -41,6 +41,8 @@
         <a class="fr simoLink"
             @click="downOnePage"
            style="color:#666F8B;">下一页</a>
+        <span class="fr simoLink edit-opt" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前操作元件名称: 组合</span>
+        <span class="fr simoLink edit-opt" v-show="selectedItem.ctName">当前操作元件名称: {{selectedItem.ctName || ''}}</span>
       </div>
       <div class="edit-keyboard"
            v-show="showKeybd"
