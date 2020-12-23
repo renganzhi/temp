@@ -60,6 +60,8 @@
           :item="item"></TDEarthBar>
     <GradientPie v-else-if="item.chartType=='GradientPie'"
           :item="item"></GradientPie>
+    <Sunrise v-else-if="item.chartType=='Sunrise'"
+          :item="item"></Sunrise>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

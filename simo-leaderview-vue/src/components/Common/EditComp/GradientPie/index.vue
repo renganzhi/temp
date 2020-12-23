@@ -1,9 +1,9 @@
 <template>
-  <div class="GradientPie" >
-    <div id="GradientPie2"
+  <div class="GradientPie"  ref='Gradient'>
+    <div id="GradientPie2" ref='Gradient2'
       :style="boxStyle">
     </div>
-    <div id="GradientPie1"
+    <div id="GradientPie1" ref='Gradient1'
       :style="boxStyle">
     </div>
   </div>
@@ -39,35 +39,88 @@ export default {
         this.mychart1.resize()
         this.mychart2.resize()
       })
+    },
+    'item': {
+      handler (newVal, oldVal) {
+        console.log(newVal)
+        this.drawPre()
+      },
+      deep: true
     }
   },
   methods: {
     drawPre () {
-      this.mychart1 = echarts.init(document.getElementById('GradientPie1'))
+      this.mychart1 = echarts.init(this.$refs.Gradient1)
+      let array = this.item.chartData.dataArry
+      let allData = 0
+      array.forEach(element => {
+        allData = allData + element.value
+      })
+      let myseries = []
+      let titleText = ''
+      let AllNum = 100
+      array.forEach((d, index) => {
+        let oneserise = {
+          type: 'bar',
+          data: [d.value * 100 / allData * this.item.PieType],
+          showBackground: true,
+          backgroundStyle: {
+            color: 'transparent'
+          },
+          name: `${d.name}:${d.value}${d.unit || ''}`,
+          coordinateSystem: 'polar',
+          roundCap: true,
+          barGap: this.item.PieSpacing + '%',
+          barWidth: this.item.PieRadius,
+          itemStyle: {
+            normal: {
+              opacity: 1,
+              color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: this.item.ctColors[index][0]
+              }, {
+                offset: 1,
+                color: this.item.ctColors[index][1]
+              }])
+            }
+          }
+        }
+        let myVale = Math.floor(d.value * 100 / allData)
+        if (index === array.length - 1) {
+          myVale = AllNum
+        } else {
+          AllNum = AllNum - myVale
+        }
+        if (this.item.NotesType === 1) {
+          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '\n'
+        } else if (this.item.NotesType === 2) {
+          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '   ' + myVale + '%' + '\n'
+        } else if (this.item.NotesType === 3) {
+          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '----' + myVale + '%' + '\n'
+        }
+        myseries.push(oneserise)
+      })
       let myoption1 = {
-        // title: {
-        //   text: 88 + '分',
-        //   textStyle: {
-        //     color: '#28BCFE',
-        //     fontSize: 40
-        //   },
-        //   subtext: '综合得分',
-        //   subtextStyle: {
-        //     color: '#666666',
-        //     fontSize: 30
-        //   },
-        //   itemGap: 20,
-        //   left: 'center',
-        //   top: '43%'
-        // },
+        title: {
+          show: this.item.tipsNotes,
+          text: titleText,
+          textStyle: {
+            color: this.item.NotesColor,
+            fontSize: this.item.NotesSize,
+            lineHeight: 40
+          },
+          left: this.item.NotesToLeft,
+          top: this.item.NotesToTop
+        },
         tooltip: {
-          formatter: function (params) {
-            return '<span style="color: #fff;">综合得分：' + params.seriesName + '分</span>'
+          show: this.item.tipsShow,
+          formatter: (params) => {
+            return `<span style="color: ${this.item.tipsColor}; font-size: ${this.item.tipsSize}px;">${params.seriesName}</span>`
           }
         },
         angleAxis: {
           max: 100,
-          clockwise: true, // 逆时针
+          clockwise: this.item.direction, // 逆时针
           // 隐藏刻度线
           show: false
         },
@@ -79,7 +132,6 @@ export default {
           },
           axisLine: {
             show: false
-
           },
           axisTick: {
             show: false
@@ -89,68 +141,43 @@ export default {
           center: ['50%', '50%'],
           radius: '100%' // 图形大小
         },
-        series: [{
-          type: 'bar',
-          data: [66 / 4 * 3],
-          showBackground: true,
-          backgroundStyle: {
-            color: 'transparent'
-          },
-          name: '66',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          barWidth: 30,
-          itemStyle: {
-            normal: {
-              opacity: 1,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(250, 141, 118, 0.94)'
-              }, {
-                offset: 1,
-                color: 'rgba(27, 188, 174, 0.97)'
-              }]),
-              shadowBlur: 5,
-              shadowColor: '#2A95F9'
-            }
-          }
-        }, {
-          type: 'bar',
-          data: [77 / 4 * 3],
-          showBackground: true,
-          backgroundStyle: {
-            color: 'transparent'
-          },
-          name: '77',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          barWidth: 30,
-          itemStyle: {
-            normal: {
-              opacity: 1,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgb(24, 183, 142)'
-              }, {
-                offset: 1,
-                color: 'rgb(1, 179, 238)'
-              }]),
-              shadowBlur: 5,
-              shadowColor: '#2A95F9'
-            }
-          }
-        }],
-        legend: {
-          show: true,
-          data: ['Without Round Cap', 'With Round Cap']
-        }
+        series: myseries
       }
+      this.mychart1.clear()
       this.mychart1.setOption(myoption1)
-      this.mychart2 = echarts.init(document.getElementById('GradientPie2'))
+      this.mychart2 = echarts.init(this.$refs.Gradient2)
+      let myseries2 = []
+      array.forEach((d, index) => {
+        let oneserise = {
+          type: 'bar',
+          data: [100 * this.item.PieType],
+          showBackground: true,
+          backgroundStyle: {
+            color: 'transparent'
+          },
+          coordinateSystem: 'polar',
+          roundCap: true,
+          barGap: this.item.PieSpacing + '%',
+          barWidth: this.item.PieRadius,
+          itemStyle: {
+            normal: {
+              opacity: 0.1,
+              color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: this.item.ctColors[index][0]
+              }, {
+                offset: 1,
+                color: this.item.ctColors[index][1]
+              }])
+            }
+          }
+        }
+        myseries2.push(oneserise)
+      })
       let myoption2 = {
         angleAxis: {
           max: 100,
-          clockwise: true, // 逆时针
+          clockwise: this.item.direction, // 逆时针
           // 隐藏刻度线
           show: false
         },
@@ -172,56 +199,9 @@ export default {
           center: ['50%', '50%'],
           radius: '100%' // 图形大小
         },
-        series: [{
-          type: 'bar',
-          data: [100 / 4 * 3],
-          showBackground: true,
-          backgroundStyle: {
-            color: 'transparent'
-          },
-          coordinateSystem: 'polar',
-          roundCap: true,
-          barWidth: 30,
-          itemStyle: {
-            normal: {
-              opacity: 1,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(250, 141, 118, 0.1)'
-              }, {
-                offset: 1,
-                color: 'rgba(27, 188, 174, 0.1)'
-              }]),
-              shadowBlur: 5,
-              shadowColor: '#2A95F9'
-            }
-          }
-        }, {
-          type: 'bar',
-          data: [100 / 4 * 3],
-          showBackground: true,
-          backgroundStyle: {
-            color: 'transparent'
-          },
-          coordinateSystem: 'polar',
-          roundCap: true,
-          barWidth: 30,
-          itemStyle: {
-            normal: {
-              opacity: 1,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgb(24, 183, 142,.1)'
-              }, {
-                offset: 1,
-                color: 'rgb(1, 179, 238,.1)'
-              }]),
-              shadowBlur: 5,
-              shadowColor: '#2A95F9'
-            }
-          }
-        }]
+        series: myseries2
       }
+      this.mychart2.clear()
       this.mychart2.setOption(myoption2)
     }
   },

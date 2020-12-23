@@ -20,42 +20,42 @@
 import Vcolor from '@/components/Common/Vcolor'
 
 export default {
-    name: "RangeColor",
-    components: {Vcolor},
-    props: {
-        data: {
-            type: Array,
-            default () {
-                return ['rgba(0, 0, 0, 1)', 'rgb(255, 255, 255, 1)']
-            }
-        }
-    },
-    data () {
-        return {
-            colors: this.data
-        }
-    },
-    methods: {
-        reverseColor () {
-            this.colors.reverse();
-            this.emit()
-        },
-        getColorStart( e) {
-            this.$set(this.colors, 0, e.color)
-            this.emit()
-        },
-        getColorEnd( e) {
-            this.$set(this.colors, 1, e.color)
-            this.emit()
-        },
-        emit() {
-            this.$emit('getdata', {
-                color: this.colors,
-                // type: this.type,
-                // index: this.index
-            })
-        }
+  name: 'RangeColor',
+  components: {Vcolor},
+  props: {
+    data: {
+      type: Array,
+      default () {
+        return ['rgba(0, 0, 0, 1)', 'rgb(255, 255, 255, 1)']
+      }
     }
+  },
+  data () {
+    return {
+      colors: this.data
+    }
+  },
+  methods: {
+    reverseColor () {
+      this.colors.reverse()
+      this.emit()
+    },
+    getColorStart (e) {
+      this.$set(this.colors, 0, e.color)
+      this.emit()
+    },
+    getColorEnd (e) {
+      this.$set(this.colors, 1, e.color)
+      this.emit()
+    },
+    emit () {
+      this.$emit('getdata', {
+        color: this.colors
+        // type: this.type,
+        // index: this.index
+      })
+    }
+  }
 }
 </script>
 
