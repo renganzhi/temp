@@ -35,12 +35,12 @@
         <a class="fr simoLink icon-n-revoke edit-opt"
            style="color:#666F8B;"
            v-else>撤销</a>
-        <a class="fr simoLink"
-            @click="upOnePage"
-           style="color:#666F8B;">上一页</a>
-        <a class="fr simoLink"
-            @click="downOnePage"
-           style="color:#666F8B;">下一页</a>
+        <span class="fr simoLink edit-opt"
+            @click="preOther(1)"
+           style="color:#666F8B;">下一页</span>
+        <span class="fr simoLink edit-opt"
+            @click="preOther(0)"
+           style="color:#666F8B;">上一页</span>
         <span class="fr simoLink edit-opt" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前操作元件名称: 组合</span>
         <span class="fr simoLink edit-opt" v-show="selectedItem.ctName">当前操作元件名称: {{selectedItem.ctName || ''}}</span>
       </div>

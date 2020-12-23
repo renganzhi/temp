@@ -9,5 +9,6 @@ export default [
   'TDEarthLine',
   'TDEarthBar',
   'DataFlow',
-  'GradientPie'
+  'GradientPie',
+  'Sunrise'
 ]

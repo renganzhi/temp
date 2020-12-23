@@ -19,21 +19,24 @@ import _ from 'lodash'
 import oldConfig from './config.json'
 
 import ChildTag from '@/components/ChildTag/index'
+import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   ...oldConfig,
   ppt: require('@/components/Common/EditComp/ppt/config.json'),
-  GradientPie: require('@/components/Common/EditComp/GradientPie/config.json')
+  GradientPie: require('@/components/Common/EditComp/GradientPie/config.json'),
+  Sunrise: require('@/components/Common/EditComp/Sunrise/config.json')
 }
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
+  components: { DragBox, VueRulerTool, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
     return {
+      presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
@@ -44,6 +47,9 @@ export default {
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
+      guideStation: 'static',
+      AllPageId: [],
+      pageIdIndex: '',
       showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
@@ -74,6 +80,7 @@ export default {
       pageName: '', // 页面名称
       showDataConf: false, // 展示系统数据配置
       selectedItem: {},
+      lineBgColor: '#37a2da',
       selectedIndex: null,
       chartNum: [],
       oldChartNum: '', // chartNum更改之前的历史
@@ -106,8 +113,14 @@ export default {
       chooseItems: [], // ctrl选中的元件
       chooseIndexs: [], // ctrl选中的单个元件在chartNum中的序号
       chooseCompIndexs: [], // ctrl选中的组合元件的序号
+      tempItemArry: [], // ctrl选中的单个元件在chartNum中的序号
+      copyType: '', // ctrl选中的单个元件在chartNum中的序号
+      copyonlyOne: false, // ctrl选中的单个元件在chartNum中的序号
+      // copyIndexs: [], // ctrl选中的单个元件在chartNum中的序号
+      // copyCompIndexs: [], // ctrl选中的单个元件在chartNum中的序号
       onCtrl: false, // 是否按住ctrl
       showBackModal: false, // 离开页面弹窗
+      showNextType: -1, // 页面切换类型
       colorType: 'defalut',
       fontWeights: ['lighter', 'normal', 'bold', 'bolder'],
       defaultFontSize: [12, 13, 14, 16, 18, 20, 24, 26, 28, 30, 36, 40, 48, 54, 60, 72, 84, 88],
@@ -299,11 +312,26 @@ export default {
     }
   },
   provide: {
-    editing: true,
+    editing: true
   },
   created () {
     this.axios.get('/leaderview/home/getDatasource').then(res => {
       this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}
+    })
+    if (window.CrossScreenCope) {
+      this.tempItemArry = window.CrossScreenCope.ItemArry || []
+      this.copyType = window.CrossScreenCope.copyType || ''
+      this.copyonlyOne = window.CrossScreenCope.copyonlyOne || false
+    }
+    this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
+      // var res = data.obj
+      this.AllPageId = []
+      data.obj.pages.forEach((d, index) => {
+        if (d.pageId * 1 === this.pageId * 1) {
+          this.pageIdIndex = index
+        }
+        this.AllPageId.push(d.pageId)
+      })
     })
   },
   methods: {
@@ -314,6 +342,38 @@ export default {
       'changeLimitItem',
       'changeThirdConf'
     ]),
+    upOnePage () {
+      let id = this.pageId
+      if (this.pageIdIndex * 1 === 0) {
+        id = this.AllPageId[this.AllPageId.length - 1]
+      } else {
+        id = this.AllPageId[this.pageIdIndex - 1]
+      }
+      this.pageId = id
+      this.getPageConf(id)
+      sessionStorage.setItem('pageId', id)
+      this.AllPageId.forEach((d, index) => {
+        if (d * 1 === this.pageId * 1) {
+          this.pageIdIndex = index
+        }
+      })
+    },
+    downOnePage () {
+      let id = this.pageId
+      if (this.pageIdIndex * 1 === this.AllPageId.length - 1) {
+        id = this.AllPageId[0]
+      } else {
+        id = this.AllPageId[this.pageIdIndex + 1]
+      }
+      this.pageId = id
+      this.getPageConf(id)
+      sessionStorage.setItem('pageId', id)
+      this.AllPageId.forEach((d, index) => {
+        if (d * 1 === this.pageId * 1) {
+          this.pageIdIndex = index
+        }
+      })
+    },
     changeChartStyle (key, val) {
       this.selectedItem[key] = val
       console.info('change-config', key, val)
@@ -2014,6 +2074,9 @@ export default {
       }
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
+    resetLine () {
+      this.presetLine = []
+    },
     resetPaint () {
       this.paintInput.width = 1920
       this.paintInput.height = 1080
@@ -2863,9 +2926,6 @@ export default {
             .then(res => {
               canvas.remove() // 这里是作为回调函数，canvas没有传过去
               // _canvas.style.background = 'transparent'
-              if (cThis.paintObj.showGrid) {
-                $('#chooseWrap').addClass('gridBg')
-              }
               $('#lead-screen').hide()
               typeof cb === 'function' && cb()
               if (res.success) {
@@ -2944,15 +3004,25 @@ export default {
       this.viewPage = false
     },
     preBack: function () {
+      this.showNextType = -1
+      this.showBackModal = true
+    },
+    preOther: function (data) {
+      this.showNextType = data
       this.showBackModal = true
     },
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
-        if (this.editId) {
-          this.$router.push('/')
+        if (this.showNextType === 0) {
+          this.upOnePage()
+        } else if (this.showNextType === 1) {
+          this.downOnePage()
         } else {
-          this.$router.push('/editPage')
+          if (this.editId) {
+          } else {
+            this.$router.push('/editPage')
+          }
         }
       }
     },
@@ -3266,6 +3336,51 @@ export default {
         this.selectArea.choose = false
         $('.tempDiv').remove()
       }
+      // this.copyIndexs = this.chooseIndexs
+      // this.copyCompIndexs = this.chooseCompIndexs
+    },
+    paste: function () {
+      // console.log(1111111111)
+      // this.saveHistory()
+      // if (this.copyIndexs.length > 0) {
+      //   if (this.copyIndexs.length === 1 && this.copyCompIndexs.length === 0) {
+      //     this.copyOne('item', this.copyIndexs, true)
+      //   } else {
+      //     this.copyOne('item', this.copyIndexs)
+      //   }
+      // }
+      // if (this.copyCompIndexs.length > 0) {
+      //   if (this.copyIndexs.length === 0 && this.copyCompIndexs.length === 1) {
+      //     this.copyOne('compose', this.copyCompIndexs, true)
+      //   } else {
+      //     this.copyOne('compose', this.copyCompIndexs)
+      //   }
+      // }
+      // if (this.selectArea.choose) {
+      //   this.selectArea.choose = false
+      //   $('.tempDiv').remove()
+      // }
+      if (this.copyType === 'item') {
+        var _type = 'chartNum'
+        this.chooseIndexs = []
+      } else {
+        _type = 'combinList'
+        this.chooseCompIndexs = []
+      }
+      this.tempItemArry.forEach(element => {
+        let tempItem = JSON.parse(element)
+        tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
+        this[_type].push(tempItem)
+        if (this.copyType === 'item') {
+          this.chooseIndexs.push(this[_type].length - 1)
+        } else {
+          this.chooseCompIndexs.push(this[_type].length - 1)
+        }
+      })
+      if (this.copyonlyOne) {
+        this.selectedItem = this[_type][this[_type].length - 1]
+      }
+      this.updateMinXitem()
     },
     copyOne: function (type, arr, onlyOne) {
       // 单个元件的复制操作
@@ -3276,6 +3391,9 @@ export default {
         _type = 'combinList'
         this.chooseCompIndexs = []
       }
+      this.tempItemArry = []
+      this.copyType = type
+      this.copyonlyOne = onlyOne
       for (let i = 0, len = arr.length; i < len; i++) {
         this[_type][arr[i]].slted = false
         let tempItem = JSON.parse(JSON.stringify(this[_type][arr[i]]))
@@ -3283,19 +3401,24 @@ export default {
         tempItem.y += 20
         tempItem.slted = true // 复制的元件默认选中
         tempItem.zIndex = ++this.maxIndex
-        tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
-        this[_type].push(tempItem)
-        if (type === 'item') {
-          this.chooseIndexs.push(this[_type].length - 1)
-        } else {
-          this.chooseCompIndexs.push(this[_type].length - 1)
-        }
+        this.tempItemArry.push(JSON.stringify(tempItem))
+        // this[_type].push(tempItem)
+        // if (type === 'item') {
+        //   this.chooseIndexs.push(this[_type].length - 1)
+        // } else {
+        //   this.chooseCompIndexs.push(this[_type].length - 1)
+        // }
       }
       // 只有一个元件时修改当前选中
-      if (onlyOne) {
-        this.selectedItem = this[_type][this[_type].length - 1]
+      // if (onlyOne) {
+      //   this.selectedItem = this[_type][this[_type].length - 1]
+      // }
+      // this.updateMinXitem()
+      window.CrossScreenCope = {
+        ItemArry: this.tempItemArry,
+        copyType: type,
+        copyonlyOne: onlyOne
       }
-      this.updateMinXitem()
     },
     hideContext: function () {
       $(this.$refs.contextMenu).toggle(false)
@@ -3408,6 +3531,15 @@ export default {
     getPaintCl (data) {
       this.saveHistory('paint')
       this.paintObj.bgColor = data.color
+    },
+    getLineCl (data) {
+      let lineArry = document.querySelectorAll('.line')
+      lineArry.forEach(element => {
+        element.style.background = data.color
+      })
+    },
+    changeStation () {
+      document.querySelector('.vue-ruler-wrapper').style.position = this.guideStation
     },
     getColor (data) {
       this.saveHistory()
@@ -3585,6 +3717,7 @@ export default {
     },
     // 改变画布大小
     changePaintSize (type) {
+      this.$refs.rulertool.box()
       var key = 'width'
       if (type === 'h') {
         key = 'height'

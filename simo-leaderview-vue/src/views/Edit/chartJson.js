@@ -5,6 +5,7 @@ import liquidfill from '@/components/Common/EditComp/liquidfill/config.js'
 import polarBar from '@/components/Common/EditComp/polarBar/config.js'
 import pyramid from '@/components/Common/EditComp/pyramid/config.js'
 import GradientPie from '@/components/Common/EditComp/GradientPie/config.json'
+import Sunrise from '@/components/Common/EditComp/Sunrise/config.json'
 
 var morenData = {
   pie: {
@@ -828,6 +829,7 @@ liquidfill.item,
   chartData: morenData.DataFlowData
 },
 GradientPie.item,
+Sunrise.item,
 // {
 //   text: '饼图',
 //   imgClass: 'icon-n-video',
