@@ -4,6 +4,7 @@ import ppt from '@/components/Common/EditComp/ppt/config.json'
 import liquidfill from '@/components/Common/EditComp/liquidfill/config.js'
 import polarBar from '@/components/Common/EditComp/polarBar/config.js'
 import pyramid from '@/components/Common/EditComp/pyramid/config.js'
+import GradientPie from '@/components/Common/EditComp/GradientPie/config.json'
 
 var morenData = {
   pie: {
@@ -452,7 +453,7 @@ var compsArr = [{
   lineArea: false, // 是否为区域图
   smooth: 'true',
   showPoint: 'true', // 是否标点
-  rotate: 0,
+  rotate: 0
 },
 {
   text: '双轴曲线图',
@@ -467,7 +468,7 @@ var compsArr = [{
   lineArea: false, // 是否为区域图
   smooth: 'true',
   showPoint: 'true', // 是否标点
-  rotate: 0,
+  rotate: 0
 },
 polarBar.item,
 {
@@ -826,13 +827,14 @@ liquidfill.item,
   visualMapTextcolor: '#fff',
   chartData: morenData.DataFlowData
 },
-{
-  text: '饼图',
-  imgClass: 'icon-n-video',
-  chartType: 'GradientPie',
-  width: 300,
-  height: 300
-},
+GradientPie.item,
+// {
+//   text: '饼图',
+//   imgClass: 'icon-n-video',
+//   chartType: 'GradientPie',
+//   width: 300,
+//   height: 300
+// },
 config.video.item
 // {
 //   text: '视频流',

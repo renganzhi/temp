@@ -18,15 +18,18 @@ import qs from 'qs'
 import _ from 'lodash'
 import oldConfig from './config.json'
 
+import ChildTag from '@/components/ChildTag/index'
+
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   ...oldConfig,
-  ppt: require('@/components/Common/EditComp/ppt/config.json')
+  ppt: require('@/components/Common/EditComp/ppt/config.json'),
+  GradientPie: require('@/components/Common/EditComp/GradientPie/config.json')
 }
 
 export default {
   name: 'edit',
-  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle },
+  components: { DragBox, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -238,7 +241,7 @@ export default {
       'thirdUser',
       'editId'
     ]),
-    curChartType () { return this.selectedItem.chartType},
+    curChartType () { return this.selectedItem.chartType },
     alertLevels: function () {
       if (this.alertInfo && this.alertInfo.length > 0) {
         return _.forEach(this.alertInfo, function (item) {
@@ -312,7 +315,7 @@ export default {
       'changeThirdConf'
     ]),
     changeChartStyle (key, val) {
-      this.selectedItem[key] = val;
+      this.selectedItem[key] = val
       console.info('change-config', key, val)
       // this.$set('selectedItem', key, val )
     },

@@ -35,6 +35,12 @@
         <a class="fr simoLink icon-n-revoke edit-opt"
            style="color:#666F8B;"
            v-else>撤销</a>
+        <a class="fr simoLink"
+            @click="upOnePage"
+           style="color:#666F8B;">上一页</a>
+        <a class="fr simoLink"
+            @click="downOnePage"
+           style="color:#666F8B;">下一页</a>
       </div>
       <div class="edit-keyboard"
            v-show="showKeybd"
@@ -87,6 +93,12 @@
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
           <li class="context-menu-item context-menu-visible"
+              v-show="tempItemArry"
+              @click="paste"><span>粘贴</span></li>
+          <!-- <li class="context-menu-item context-menu-visible"
+              v-show="!childResize"
+              @click="paste"><span>粘贴</span></li> -->
+          <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="del"><span>删除</span></li>
           <li v-show="chooseCompIndexs.length === 0 && chooseIndexs.length > 1"
@@ -126,9 +138,18 @@
                :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor}">
             <div class="paint"
                  :style="paintStyle"></div>
-            <div id="chooseWrap"
-                 :class="{gridBg: paintObj.showGrid}"
-                 @click.self="clickPaint($event)">
+            <div id="chooseWrap">
+              <vue-ruler-tool
+                ref="rulertool"
+                v-model="presetLine"
+                :step-length="20"
+                :parent="true"
+                :is-scale-revise="true"
+                :visible.sync="paintObj.showGrid"
+                :scale="paintObj.scale"
+                style="height:100%;width100%"
+              >
+              </vue-ruler-tool>
               <DragBox v-for="(item,index) in chartNum"
                        :index="index"
                        :item="item"
@@ -413,13 +434,37 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>显示网格</label>
+                  <label>显示辅助线</label>
                   <div class="fl">
                     <div :class="{'u-switch': true, 'u-switch-on': paintObj.showGrid, 'u-switch-off': !paintObj.showGrid}"
                          @click="gridChg">
                       <div></div>
                     </div>
                   </div>
+                </div>
+                <div class="form-group">
+                  <label>辅助线</label>
+                  <div class="fl">
+                    <button class="reset btn"
+                            @click="resetLine">清空辅助线</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label :class="lineBgColor">辅助线颜色</label>
+                  <div class="color-w70">
+                    <Vcolor :data="lineBgColor"
+                            :key="11"
+                            type="lineBgColor"
+                            @getdata="getLineCl"></Vcolor>
+                  </div>
+                </div>
+
+                <div class="form-group cols2">
+                  <label>辅助线位置</label>
+                  <select v-model="guideStation" @change="changeStation">
+                      <option value="absolute">至于组件下方</option>
+                      <option value="static">至于组件上方</option>
+                  </select>
                 </div>
                 <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
                             <label>缩放比例</label>
@@ -1395,6 +1440,16 @@
                   </div>
                 </div>
               </div>
+              <!-- 3/4饼图 -->
+              <!-- <div v-if="selectedItem.chartType=='GradientPie'">
+                  <div class="form-group cols2">
+                    <label>线条方向</label>
+                    <select v-model="selectedItem.linewidth">
+                      <option value="true">逆时针</option>
+                      <option value="false">顺时针</option>
+                    </select>
+                  </div>
+              </div> -->
 
               <!--数字翻牌器-->
               <div v-if="selectedItem.chartType=='doubler' || selectedItem.chartType=='number'">
@@ -1795,7 +1850,7 @@
                     <template v-if="item.tag == 'select'">
                       <select v-model="selectedItem[item.key]">
                         <option v-for="(option, optIndex) in item.options" :key="`${option.name}_${optIndex}`"
-                        :value="option.value" 
+                        :value="option.value"
                         >{{option.name}}</option>
                       </select>
                     </template>
@@ -1803,6 +1858,14 @@
                       <input class="w-90" :type="item.type" v-model="selectedItem[item.key]"> {{ item.unit || '' }}
                     </template>
                   </div>
+              </template>
+
+              <template v-if="['GradientPie','Sunrise'].includes(selectedItem.chartType)">
+                <div class="form-group cols2"
+                    v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
+                  >
+                  <ChildTag :item="item" :selectedItem="selectedItem"></ChildTag>
+                </div>
               </template>
             </div>
 
@@ -2091,7 +2154,7 @@
               <template v-if="selectedItem.chartType == 'ppt'">
                 <div class="form-group cols2 img_src_list" @click="deleteSrcList($event)">
                   <SlickList axis="y" v-model="selectedItem.srcList" :pressDelay="200">
-                    <SlickItem v-for="(item, index) in selectedItem.srcList" :key="index" 
+                    <SlickItem v-for="(item, index) in selectedItem.srcList" :key="index"
                     :index="index" :item="item "
                     class="src_item"
                     >
@@ -2193,6 +2256,9 @@ export default EditJs
 }
 .src_item {
   z-index:100;
+}
+#chooseWrap .vue-ruler-wrapper {
+  z-index: 50;
 }
 
 </style>
