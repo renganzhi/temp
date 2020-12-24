@@ -2,6 +2,7 @@ package com.uxsino.leaderview.rpc;
 
 
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.rpc.hystrix.MCClientHystrixLeaderview;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;

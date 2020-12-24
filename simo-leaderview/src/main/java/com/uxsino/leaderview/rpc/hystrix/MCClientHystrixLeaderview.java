@@ -1,6 +1,7 @@
-package com.uxsino.leaderview.rpc;
+package com.uxsino.leaderview.rpc.hystrix;
 
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.rpc.MCService;
 import org.springframework.stereotype.Service;
 
 @Service
