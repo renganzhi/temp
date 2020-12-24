@@ -131,7 +131,7 @@ export default {
       if (e.value === '') {
         return
       }
-      console.log('e.target.files[0]: ', e.target.files[0]);
+    //   console.log('e.target.files[0]: ', e.target.files[0]);
       this.file = e.target.files[0]
     },
     changeName () {
@@ -156,17 +156,13 @@ export default {
       this.changeName()
       if (this.showErr) return
       this.getAdminUsers().then(() => {
-          var formdata = new FormData()
-            formdata.append('file', this.file)
-        // var data = {
-        //   name: '',
-        //   file: this.file,
-        // }
+        var formdata = new FormData()
+        formdata.append('file', this.file)
         this.axios({
           method: 'post',
           url: '/leaderview/home/importTemplate',
           data: formdata,
-        headers: { 'content-type': 'application/x-www-form-urlencoded' }
+          headers: { 'content-type': 'application/x-www-form-urlencoded' }
         }).then((res) => {
           $('#importPage-modal').modal('hide')
           if (res.success) {

@@ -23,6 +23,7 @@ import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
 import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
 import GradientPie from './EditComp/GradientPie' // 3D地图-柱状图
 import Sunrise from './EditComp/Sunrise' // 3D地图-柱状图
+import Bubble from './EditComp/bubble' // 3D地图-柱状图
 
 export default {
   Vtextarea,
@@ -49,5 +50,6 @@ export default {
   TDEarthBar,
   DataFlow,
   GradientPie,
-  Sunrise
+  Sunrise,
+  Bubble
 }

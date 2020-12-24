@@ -1841,7 +1841,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill', 'bubble'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video', 'ppt'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
