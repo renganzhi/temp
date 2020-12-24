@@ -131,9 +131,9 @@ public class ImpExpService {
 
     private JSONObject videoProcess(JSONObject result){
         String str = result.getString("str");
-//        if (Strings.isEmpty(str)){
-//            return result;
-//        }
+        if (Strings.isEmpty(str)){
+            return result;
+        }
         Set<String> set = Sets.newHashSet();
         Matcher vm = ipPattern.matcher(str);
         while (vm.find()){
@@ -166,9 +166,9 @@ public class ImpExpService {
 
     private JSONObject imgProcess(JSONObject result, Integer num){
         String str = result.getString("str");
-//        if (Strings.isEmpty(str)){
-//            return result;
-//        }
+        if (Strings.isEmpty(str)){
+            return result;
+        }
         // 自定义图片id处理
         List<String> imgList = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
@@ -228,9 +228,9 @@ public class ImpExpService {
 
     private JSONObject linkProcess(JSONObject result, Set<Long> ids) {
         String str = result.getString("str");
-//        if (Strings.isEmpty(str)){
-//            return result;
-//        }
+        if (Strings.isEmpty(str)){
+            return result;
+        }
         Matcher m = linkPattern.matcher(str);
         Integer i = 0;
         Map<String ,String > map = Maps.newHashMap();
