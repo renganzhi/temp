@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.entity.*;
 import com.uxsino.utils.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -129,6 +131,9 @@ public class ImpExpService {
 
     private JSONObject videoProcess(JSONObject result){
         String str = result.getString("str");
+//        if (Strings.isEmpty(str)){
+//            return result;
+//        }
         Set<String> set = Sets.newHashSet();
         Matcher vm = ipPattern.matcher(str);
         while (vm.find()){
@@ -161,6 +166,9 @@ public class ImpExpService {
 
     private JSONObject imgProcess(JSONObject result, Integer num){
         String str = result.getString("str");
+//        if (Strings.isEmpty(str)){
+//            return result;
+//        }
         // 自定义图片id处理
         List<String> imgList = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
@@ -220,6 +228,9 @@ public class ImpExpService {
 
     private JSONObject linkProcess(JSONObject result, Set<Long> ids) {
         String str = result.getString("str");
+//        if (Strings.isEmpty(str)){
+//            return result;
+//        }
         Matcher m = linkPattern.matcher(str);
         Integer i = 0;
         Map<String ,String > map = Maps.newHashMap();
@@ -328,13 +339,11 @@ public class ImpExpService {
 
     }
 
-    public Boolean processZip(String file, String tempName){
+    public JsonModel processZip(String file, String tempName){
         ZipFile zf = null;
         InputStream in = null;
         JSONArray config = new JSONArray();
-        Boolean success = true;
         Map<Long ,Long > idMap = Maps.newHashMap();
-        JSONArray linkArray = new JSONArray();
         try {
             zf = new ZipFile(file);
             in = new BufferedInputStream(new FileInputStream(file));
@@ -368,9 +377,9 @@ public class ImpExpService {
                             homeTemplateImgService.save(img);
                         }catch (Exception e){
                             log.error("图片解析错误");
+                            new JsonModel(false,"图片解析错误");
                             e.printStackTrace();
                         }finally {
-                            success = false;
                             zfIn.close();
                         }
                     }
@@ -387,7 +396,8 @@ public class ImpExpService {
                             config = JSON.parseArray(sb.toString());
                         }catch (Exception e){
                             log.error("导出配置解析错误");
-                            success = false;
+                            new JsonModel(false,"导出配置解析错误");
+                            e.printStackTrace();
                         }finally {
                             zfIn.close();
                         }
@@ -427,19 +437,19 @@ public class ImpExpService {
                             fileOut.close();
                         }catch (Exception e){
                             log.error("视频解析错误");
-                            success = false;
+                            new JsonModel(false,"视频解析错误");
+                            e.printStackTrace();
                         }finally {
                             zfIn.close();
                         }
                     }else {
                         zfIn.close();
-
+                        new JsonModel(false,"文件内容有误，请检查导入文件是否为正确的模板zip");
                     }
 
                 }
             }
             zin.closeEntry();
-
             //跳转处理
             for (int i = 0; i < config.size(); i++) {
                 JSONObject obj = config.getJSONObject(i);
@@ -468,9 +478,9 @@ public class ImpExpService {
         } catch (Exception e) {
             log.error("解析错误，请检查导入文件是否为正确的模板zip");
             e.printStackTrace();
-            return false;
+            return new JsonModel(false,"解析错误，请检查导入文件是否为正确的模板zip");
         }
-        return success;
+        return new JsonModel(true,"导入成功");
     }
 
     private void linkImpProcess(Map<Long,Long> idMap, JSONArray config) {
@@ -511,8 +521,10 @@ public class ImpExpService {
             // 设置response的Header
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
             response.addHeader("Content-Length", "" + file.length());
+            response.setHeader("Content-Type", "multipart/form-data");
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/octet-stream");
+            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
             toClient.write(buffer);
             toClient.flush();
             toClient.close();
