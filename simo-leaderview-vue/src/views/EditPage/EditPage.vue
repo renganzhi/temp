@@ -7,6 +7,13 @@
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
                  @hideModal="hideSetting"></PageSetting>
+                 
+    <ImportPage :showModal="showImport"
+                 @hideModal="hideImportModal"
+                 :tems="pageList"></ImportPage>
+    <ExportPage :showModal="showExport"
+                 @hideModal="showExport = false"
+                 :tems="pageList"></ExportPage>
     <!-- <SettingPage></SettingPage> -->
     <PreView :showModal="viewPage"
              :viewId="viewId"
@@ -34,6 +41,10 @@
                     @click="add">新增页面</button>
             <button type="button"
                     @click="openSetting">设置</button>
+            <button type="button"
+                    @click="importTemplate">导入</button>
+            <button type="button"
+                    @click="exportTemplate">导出</button>
             <button type="button"
                     class="homeBack"
                     @click="backHome"><i class="icon-n-back"></i> 返回</button>
@@ -191,6 +202,8 @@
 import qs from 'qs'
 import AddPage from './AddPage'
 import PageSetting from './PageSetting'
+import ImportPage from './ImportPage'
+import ExportPage from './ExportPage'
 import PreView from '@/components/PreView/PreView'
 import { gbs } from '@/config/settings'
 import Confirm from '@/components/Common/Confirm'
@@ -199,7 +212,7 @@ import { Notification } from 'element-ui'
 import _ from 'lodash'
 export default {
   name: 'editPage',
-  components: { AddPage, PreView, PageSetting, Confirm, Select2, Notification },
+  components: { AddPage, PreView, PageSetting, ImportPage, ExportPage, Confirm, Select2, Notification },
   data () {
     return {
       baseUrl: gbs.host,
@@ -220,6 +233,8 @@ export default {
       delId: -1,
       addPage: false, // 新增页面
       pageSetting: false, // 设置
+      showExport: false,
+      showImport: false,
       viewPage: false, // 预览
       pageData: '', // 预览的page内容
       viewId: -1, // 预览的id
@@ -460,6 +475,16 @@ export default {
           _this.edit(res)
         }
       }) */
+    },
+    exportTemplate () {
+      this.showExport = true
+    },
+    importTemplate () {
+      this.showImport = true
+    },
+    hideImportModal () {
+      this.showImport = false
+      this.search()
     },
     copy (item) {
       this.getAdminUsers().then(() => {
