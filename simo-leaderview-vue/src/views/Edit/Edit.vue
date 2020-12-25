@@ -1841,7 +1841,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill', 'bubble'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video', 'ppt'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
@@ -1874,7 +1874,7 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div class="form-group cols2" v-show="['image', 'text'].includes(selectedItem.chartType)">
+              <div class="form-group cols2" v-show="['image', 'text', 'hotspot'].includes(selectedItem.chartType)">
                   <label>跳转大屏</label>
                   <select v-model="selectedItem.linkId">
                     <option value="">无跳转</option>

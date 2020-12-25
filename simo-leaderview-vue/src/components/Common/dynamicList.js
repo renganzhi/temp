@@ -10,5 +10,7 @@ export default [
   'TDEarthBar',
   'DataFlow',
   'GradientPie',
-  'Sunrise'
+  'Sunrise',
+  'bubble',
+  'hotspot'
 ]
