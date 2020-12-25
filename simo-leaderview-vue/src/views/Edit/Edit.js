@@ -332,7 +332,9 @@ export default {
         if (d.pageId * 1 === this.pageId * 1) {
           this.pageIdIndex = index
         }
-        this.AllPageId.push(d.pageId)
+        if (d.visible === true) {
+          this.AllPageId.push(d.pageId)
+        }
       })
     })
   },
