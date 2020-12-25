@@ -1,15 +1,15 @@
 import config from './config.json'
 // 改造过渡
-import ppt from '@/components/Common/EditComp/ppt/config.json'
-import liquidfill from '@/components/Common/EditComp/liquidfill/config.js'
-import polarBar from '@/components/Common/EditComp/polarBar/config.js'
-import pyramid from '@/components/Common/EditComp/pyramid/config.js'
-import GradientPie from '@/components/Common/EditComp/GradientPie/config.json'
-import Sunrise from '@/components/Common/EditComp/Sunrise/config.json'
-import Scatter from '@/components/Common/EditComp/Scatter/config.json'
-import bubble from '@/components/Common/EditComp/bubble/config.js'
-import hotspot from '@/components/Common/EditComp/hotspot/config.js'
-import decorator from '@/components/Common/EditComp/decorator/config.js'
+import ppt from '@/components/EditComp/ppt/config.json'
+import liquidfill from '@/components/EditComp/liquidfill/config.js'
+import polarBar from '@/components/EditComp/polarBar/config.js'
+import pyramid from '@/components/EditComp/pyramid/config.js'
+import GradientPie from '@/components/EditComp/GradientPie/config.json'
+import Sunrise from '@/components/EditComp/Sunrise/config.json'
+import Scatter from '@/components/EditComp/Scatter/config.json'
+import bubble from '@/components/EditComp/bubble/config.js'
+import hotspot from '@/components/EditComp/hotspot/config.js'
+import decorator from '@/components/EditComp/decorator/config.js'
 
 var morenData = {
   pie: {

@@ -9,7 +9,7 @@
 </template>
 <script>
 import echarts from 'echarts'
-import china from '../../../../../static/libs/map/100000.json'
+import china from '../../../../static/libs/map/100000.json'
 export default {
   name: 'TDEarth',
   props: ['item'],

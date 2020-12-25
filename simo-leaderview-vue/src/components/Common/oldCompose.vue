@@ -70,18 +70,18 @@
 // import Topo from './Topo' // 拓扑
 // import Marquee from './Marquee' // 跑马灯
 // import Vtime from './Vtime' // 时间器
-import DragResize from './EditComp/DragResize' // drag拖拽组件
-import Vtextarea from './EditComp/Vtextarea' // 文本
-import Vprogress from './EditComp/Vprogress' // 进度条
-import Vimg from './EditComp/Vimg'
-import Doubler from './EditComp/Doubler' // 数字翻牌器
-import Border from './EditComp/Border' // 边框
-import Vchart from './EditComp/Vchart'
-import Vtable from './EditComp/Vtable' // 表格
-import Topo from './EditComp/Topo' // 拓扑
-import Marquee from './EditComp/Marquee' // 跑马灯
-import Vtime from './EditComp/Vtime' // 时间器
-import Vnumber from './EditComp/Vnumber' // 指标展示
+import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
+import Vtextarea from '@/components/EditComp/Vtextarea' // 文本
+import Vprogress from '@/components/EditComp/Vprogress' // 进度条
+import Vimg from '@/components/EditComp/Vimg'
+import Doubler from '@/components/EditComp/Doubler' // 数字翻牌器
+import Border from '@/components/EditComp/Border' // 边框
+import Vchart from '@/components/EditComp/Vchart'
+import Vtable from '@/components/EditComp/Vtable' // 表格
+import Topo from '@/components/EditComp/Topo' // 拓扑
+import Marquee from '@/components/EditComp/Marquee' // 跑马灯
+import Vtime from '@/components/EditComp/Vtime' // 时间器
+import Vnumber from '@/components/EditComp/Vnumber' // 指标展示
 
 // 测试组内编辑
 import DragBox from './DragBox'
