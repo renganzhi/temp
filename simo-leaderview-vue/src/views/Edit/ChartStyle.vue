@@ -48,7 +48,7 @@
 </template>
 
 <script>
-// import { axis } from "@/components/Common/EditComp/Vchart/config";
+// import { axis } from "@/components/EditComp/Vchart/config";
 
 
 // console.log(axis);
@@ -93,9 +93,9 @@ export default {
     methods: {
         initOptions (type) {
             if (type.indexOf('ve-') > -1) {
-                this.configOptions = require(`@/components/Common/EditComp/Vchart/config`).default.styles
+                this.configOptions = require(`@/components/EditComp/Vchart/config`).default.styles
             } else {
-                this.configOptions = require(`@/components/Common/EditComp/${type}/config`).default.styles
+                this.configOptions = require(`@/components/EditComp/${type}/config`).default.styles
             }
         },
         change(key, tag, event) {
