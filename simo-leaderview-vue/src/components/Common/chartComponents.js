@@ -20,9 +20,10 @@ import PolarBar from './EditComp/polarBar' //
 import Pyramid from './EditComp/pyramid' //
 import TDEarthLine from './EditComp/TDEarthLine' // 3D地图-飞线图
 import TDEarthBar from './EditComp/TDEarthBar' // 3D地图-柱状图
-import DataFlow from './EditComp/DataFlow' // 3D地图-柱状图
-import GradientPie from './EditComp/GradientPie' // 3D地图-柱状图
-import Sunrise from './EditComp/Sunrise' // 3D地图-柱状图
+import DataFlow from './EditComp/DataFlow' // 地图-迁徙图
+import GradientPie from './EditComp/GradientPie' // 圆角饼图
+import Sunrise from './EditComp/Sunrise' // 旭日图
+import Scatter from './EditComp/Scatter' // 散点图
 
 export default {
   Vtextarea,
@@ -49,5 +50,6 @@ export default {
   TDEarthBar,
   DataFlow,
   GradientPie,
-  Sunrise
+  Sunrise,
+  Scatter
 }
