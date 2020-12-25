@@ -36,11 +36,9 @@
            style="color:#666F8B;"
            v-else>撤销</a>
         <span class="fr simoLink edit-opt"
-            @click="preOther(1)"
-           style="color:#666F8B;">下一页</span>
+            @click="preOther(1)">下一页</span>
         <span class="fr simoLink edit-opt"
-            @click="preOther(0)"
-           style="color:#666F8B;">上一页</span>
+            @click="preOther(0)">上一页</span>
         <span class="fr simoLink edit-opt" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前操作元件名称: 组合</span>
         <span class="fr simoLink edit-opt" v-show="selectedItem.ctName">当前操作元件名称: {{selectedItem.ctName || ''}}</span>
       </div>
@@ -137,7 +135,7 @@
         <div class="m-main flex-1 auto"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
-               :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor}">
+               :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor, 'z-index':500}">
             <div class="paint"
                  :style="paintStyle"></div>
             <div id="chooseWrap">
@@ -146,6 +144,8 @@
                 v-model="presetLine"
                 :step-length="20"
                 :parent="true"
+                :parentW="paintObj.width"
+                :parentH="paintObj.height"
                 :is-scale-revise="true"
                 :visible.sync="paintObj.showGrid"
                 :scale="paintObj.scale"
@@ -186,6 +186,15 @@
             <div id="inWrap"></div>
             <!-- :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}" -->
           </div>
+          <vue-ruler
+            ref="ruler"
+            v-model="presetLine"
+            v-if="paintObj.showGrid"
+            :scale="paintObj.scale"
+            :parentW="paintObj.width"
+            :parentH="paintObj.height"
+          >
+          </vue-ruler>
         </div>
 
         <div class="scaleBox">
@@ -436,7 +445,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>显示辅助线</label>
+                  <label>辅助线</label>
                   <div class="fl">
                     <div :class="{'u-switch': true, 'u-switch-on': paintObj.showGrid, 'u-switch-off': !paintObj.showGrid}"
                          @click="gridChg">
@@ -444,15 +453,15 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label>辅助线</label>
                   <div class="fl">
                     <button class="reset btn"
                             @click="resetLine">清空辅助线</button>
                   </div>
-                </div>
+                </div> -->
                 <div class="form-group">
-                  <label :class="lineBgColor">辅助线颜色</label>
+                  <label :class="lineBgColor" style="width:60px">辅助线颜色</label>
                   <div class="color-w70">
                     <Vcolor :data="lineBgColor"
                             :key="11"
@@ -461,13 +470,13 @@
                   </div>
                 </div>
 
-                <div class="form-group cols2">
+                <!-- <div class="form-group cols2">
                   <label>辅助线位置</label>
                   <select v-model="guideStation" @change="changeStation">
                       <option value="absolute">至于组件下方</option>
                       <option value="static">至于组件上方</option>
                   </select>
-                </div>
+                </div> -->
                 <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
                             <label>缩放比例</label>
                             <div class="fl" style="width: 200px; margin-top: -3px;">#mainEdit-edit
@@ -1862,7 +1871,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >

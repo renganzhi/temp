@@ -6,6 +6,7 @@ import polarBar from '@/components/Common/EditComp/polarBar/config.js'
 import pyramid from '@/components/Common/EditComp/pyramid/config.js'
 import GradientPie from '@/components/Common/EditComp/GradientPie/config.json'
 import Sunrise from '@/components/Common/EditComp/Sunrise/config.json'
+import Scatter from '@/components/Common/EditComp/Scatter/config.json'
 import bubble from '@/components/Common/EditComp/bubble/config.js'
 import hotspot from '@/components/Common/EditComp/hotspot/config.js'
 
@@ -834,6 +835,7 @@ bubble.item,
 },
 GradientPie.item,
 Sunrise.item,
+Scatter.item,
 // {
 //   text: '饼图',
 //   imgClass: 'icon-n-video',

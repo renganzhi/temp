@@ -20,18 +20,20 @@ import oldConfig from './config.json'
 
 import ChildTag from '@/components/ChildTag/index'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
+import VueRuler from '@/components/helpLine/vue-ruler'
 
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   ...oldConfig,
   ppt: require('@/components/Common/EditComp/ppt/config.json'),
   GradientPie: require('@/components/Common/EditComp/GradientPie/config.json'),
-  Sunrise: require('@/components/Common/EditComp/Sunrise/config.json')
+  Sunrise: require('@/components/Common/EditComp/Sunrise/config.json'),
+  Scatter: require('@/components/Common/EditComp/Scatter/config.json')
 }
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
+  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -373,6 +375,12 @@ export default {
           this.pageIdIndex = index
         }
       })
+    },
+    fatherhorizontalDragRuler () {
+      this.$refs.rulertool.horizontalDragRuler()
+    },
+    fatherverticalDragRuler () {
+      this.$refs.rulertool.verticalDragRuler()
     },
     changeChartStyle (key, val) {
       this.selectedItem[key] = val
@@ -3020,6 +3028,7 @@ export default {
           this.downOnePage()
         } else {
           if (this.editId) {
+            this.$router.push('/')
           } else {
             this.$router.push('/editPage')
           }
@@ -3096,7 +3105,7 @@ export default {
     userChoose: function (e) {
       var _this = this
       var stateBar = document.getElementById('chooseWrap')
-      // _this.cancelSelected()
+      _this.clearAll()
       e = e || window.event
       // 获取鼠标在整个页面的位置
       var posx = e.offsetX
@@ -3235,6 +3244,11 @@ export default {
         $('.tempDiv').remove()
       }
     },
+    clearAll: function () {
+      this.chooseIndexs = []
+      this.selectedItem = {}
+      this.selectedIndex = null
+    },
     deleteOne: function (type, tempArr) {
       var i = 0
       var indexArr = []
@@ -3336,6 +3350,7 @@ export default {
         this.selectArea.choose = false
         $('.tempDiv').remove()
       }
+      this.clearAll()
       // this.copyIndexs = this.chooseIndexs
       // this.copyCompIndexs = this.chooseCompIndexs
     },
@@ -3436,7 +3451,7 @@ export default {
     },
     deleteSrcList ($event) {
       let target = $event.target
-      if (target.className == 'delete_text') {
+      if (target.className === 'delete_text') {
         let index = target.dataset.index
         this.selectedItem.srcList.splice(index, 1)
       }

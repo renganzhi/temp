@@ -62,6 +62,8 @@
           :item="item"></GradientPie>
     <Sunrise v-else-if="item.chartType=='Sunrise'"
           :item="item"></Sunrise>
+    <Scatter v-else-if="item.chartType=='Scatter'"
+          :item="item"></Scatter>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
