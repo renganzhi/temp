@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr :style="trStyle"
+          <tr :style="[trStyle,tbodyTrStyle, warnStyle(index)]"
               v-for="(tr, id) in item.chartData.rows"
               :key="id">
             <td v-for="(tdText, ind) in tr"
@@ -29,9 +29,9 @@
       <table class="table"
              style="table-layout: fixed;">
         <tbody>
-          <tr :style="[trStyle,tbodyTrStyle]"
+          <tr 
               v-for="(tr, id) in item.chartData.rows"
-              :key="id">
+              :key="id" :style="[trStyle,tbodyTrStyle, warnStyle(id)]">
             <td v-for="(tdText, ind, i) in tr"
                 :key="ind">
                 <!-- template: '<div class=\'tooltip\' role=\'tooltip\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>'  -->
@@ -126,6 +126,14 @@ export default {
     }
   },
   methods: {
+    warnStyle (index) {
+      if (this.item.chartData.warnings && this.item.chartData.warnings.includes(index)) {
+        return {
+          "backgroundColor": '#ff3245 !important'
+        }
+      }
+      return {}
+    },
     alertColor: function (type, ind) {
       if (ind !== '状态') {
         return ''

@@ -46,7 +46,7 @@
   </DragResize>
 </template>
 <script>
-import DragResize from './EditComp/DragResize' // drag拖拽组件
+import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
 // 组内编辑
 import InsideDrag from './InsideDrag'
 
