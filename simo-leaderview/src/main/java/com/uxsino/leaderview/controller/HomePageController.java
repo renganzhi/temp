@@ -942,6 +942,7 @@ public class HomePageController {
 									MultipartFile file,
 									HttpServletResponse response,
 									@RequestParam(required = false) String name){
+		JsonModel result = new JsonModel();
 		/*
 		 *创建临时文件夹
 		 * 解压文件
@@ -954,15 +955,25 @@ public class HomePageController {
 		try {
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;
-			impExpService.processZip(newFilePath, name);
+			result = impExpService.processZip(newFilePath, name);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JsonModel(false,"模板导入失败");
 		}
         //程序结束时，删除临时文件
 		ZipUtils.deleteFiles(fileDir.getPath());//删除压缩包文件夹
+		return result;
+	}
 
-		return new JsonModel(true,"导入成功");
+	@GetMapping("/deleteAllForTest")
+	@ApiOperation("删除所有大屏")
+	public JsonModel deleteAllForTest(){
+		List<HomePage> pages = homePageService.findAll();
+		for (HomePage page:pages) {
+			homePageService.delete(page);
+		}
+		homePageUserConfService.deleteAll();
+		return new JsonModel(true,"删除成功");
 	}
 
 }
