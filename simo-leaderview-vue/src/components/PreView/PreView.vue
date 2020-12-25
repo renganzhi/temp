@@ -18,7 +18,7 @@
           </h4>
         </div>
         <div class="modal-body"
-             style="height:560px;position: relative;overflow: hidden;">
+             style="height:860px;position: relative;overflow: hidden;">
           <div class="wrap">
             <div class="paintBox"
                  :style="bgColrStyle"></div>
@@ -170,13 +170,13 @@ export default {
 <style>
 #mainPreview-modal .wrap {
   width: 100%;
-  height: 530px;
+  height: 830px;
   overflow: hidden;
   position: relative;
 }
 #mainPreview-modal .paintBox {
   width: 100%;
-  height: 530px;
+  height: 830px;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -186,5 +186,8 @@ export default {
 }
 #mainPreview-modal .itemWrapBox {
   padding-top: 1px !important;
+}
+.modal-dialog.modal-lg {
+    width: 1500px;
 }
 </style>

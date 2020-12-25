@@ -11,6 +11,7 @@ export default [
   'DataFlow',
   'GradientPie',
   'Sunrise',
+  'Scatter',
   'bubble',
   'hotspot'
 ]

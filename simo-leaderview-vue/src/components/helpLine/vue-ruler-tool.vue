@@ -1,14 +1,12 @@
 <template>
-  <div :style="wrapperStyle" class="vue-ruler-wrapper">
-    <section v-show="rulerToggle">
-      <div ref="horizontalRuler" class="vue-ruler-h" @mousedown.stop="horizontalDragRuler">
-        <span v-for="(item,index) in xScale" :key="index" :style="{left:index * 50 + 2 + 'px'}" class="n">{{ item.id }}</span>
+  <!-- <div :style="wrapperStyle" class="vue-ruler-wrapper"> -->
+    <section v-show="rulerToggle" class="vue-ruler-wrapper">
+      <div ref="horizontalRuler" class="vue-ruler-h" :style="{width:Hstyle}" @mousedown.stop="horizontalDragRuler">
       </div>
-      <div ref="verticalRuler" class="vue-ruler-v" @mousedown.stop="verticalDragRuler">
-        <span v-for="(item,index) in yScale" :key="index" :style="{top:index * 50 + 2 + 'px'}" class="n">{{ item.id }}</span>
+      <div ref="verticalRuler" class="vue-ruler-v" :style="{height:Vstyle}" @mousedown.stop="verticalDragRuler">
       </div>
-      <div :style="{top:verticalDottedTop + 'px'}" class="vue-ruler-ref-dot-h" />
-      <div :style="{left:horizontalDottedLeft + 'px'}" class="vue-ruler-ref-dot-v" />
+      <div :style="{top:verticalDottedTop + 'px',width:Hstyle}" class="vue-ruler-ref-dot-h" />
+      <div :style="{left:horizontalDottedLeft + 'px',height:Vstyle}" class="vue-ruler-ref-dot-v" />
       <div
         v-for="item in lineList"
         :title="item.title"
@@ -16,14 +14,15 @@
         :key="item.id"
         :class="`vue-ruler-ref-line-${item.type}`"
         @mousedown="handleDragLine(item)">
-        <div class="line"></div>
+        <div v-if="item.type==='h'" class="line" :style="{width:Hstyle}"></div>
+        <div v-else class="line" :style="{height:Vstyle}"></div>
       </div>
     </section>
     <!-- <div ref="content" class="vue-ruler-content" :style="contentStyle">
       <slot />
     </div>
     <div v-show="isDrag" class="vue-ruler-content-mask"></div> -->
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -62,6 +61,14 @@ export default {
       type: Number,
       default: 100
     },
+    parentW: {
+      type: Number,
+      default: 1920
+    },
+    parentH: {
+      type: Number,
+      default: 1080
+    },
     stepLength: {
       type: Number,
       default: 50,
@@ -79,6 +86,9 @@ export default {
       topSpacing: 0, // 标尺与窗口上间距
       leftSpacing: 0, //  标尺与窗口左间距
       isDrag: false,
+      Hstyle: '',
+      Vstyle: '',
+      Vheight: '',
       dragFlag: '', // 拖动开始标记，可能值x(从水平标尺开始拖动),y(从垂直标尺开始拖动)
       horizontalDottedLeft: -999, // 水平虚线位置
       verticalDottedTop: -999, // 垂直虚线位置
@@ -125,6 +135,11 @@ export default {
         this.rulerToggle = visible
       },
       immediate: true
+    },
+    scale: {
+      handler () {
+        this.init()
+      }
     }
   },
   mounted () {
@@ -147,6 +162,15 @@ export default {
     init () {
       this.box()
       this.scaleCalc()
+      var ele = document.querySelector('.m-main')
+      if (ele) {
+        this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0] / this.scale * 100).toFixed(0) + 'px'
+        this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0] / this.scale * 100).toFixed(0) + 500 + 'px'
+      } else {
+        this.Hstyle = (this.parentW / this.scale * 100).toFixed(0) + 'px'
+        this.Vstyle = (this.parentH / this.scale * 100).toFixed(0) + 'px'
+      }
+      this.Vheight = 18 / this.scale * 100 + 'px'
     },
     windowResize () {
       this.xScale = []
@@ -154,13 +178,14 @@ export default {
       this.init()
     },
     getLineStyle ({type, top, left}) {
-      return type === 'h' ? {top: top + 'px'} : {left: left + 'px'}
+      return type === 'h' ? {top: top + 'px', width: this.Hstyle} : {left: left + 'px', height: this.Vstyle}
     },
     handleDragLine ({type, id}) {
       return type === 'h' ? this.dragHorizontalLine(id) : this.dragVerticalLine(id)
     },
     box () {
       if (this.$el) {
+        // const style = window.getComputedStyle($('.m-main'), null)
         if (this.isScaleRevise) { // 根据内容部分进行刻度修正
           const style = window.getComputedStyle(this.$el.parentNode, null)
           // const content = this.$refs.content
@@ -184,7 +209,7 @@ export default {
     }, // 获取窗口宽与高
     setSpacing () {
       this.topSpacing = this.$refs.horizontalRuler.getBoundingClientRect().y // .offsetParent.offsetTop
-      this.leftSpacing = this.$refs.verticalRuler.getBoundingClientRect().x// .offsetParent.offsetLeft
+      this.leftSpacing = this.$refs.verticalRuler.getBoundingClientRect().x // .offsetParent.offsetLeft
     },
     scaleCalc () {
       this.getCalc(this.xScale, this.windowWidth)
@@ -348,7 +373,7 @@ export default {
   &-ref-line-h,
   &-ref-dot-h,
   &-ref-dot-v {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     overflow: hidden;
@@ -360,7 +385,7 @@ export default {
   &-ref-line-h,
   &-ref-dot-h,
   &-ref-dot-v {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     overflow: hidden;
@@ -370,21 +395,15 @@ export default {
   &-h {
     width: 100%;
     height: 18px;
-    // left: 18px;
     top: -18px;
     opacity: 1;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAASCAMAAAAuTX21AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAlQTFRFMzMzAAAA////BqjYlAAAACNJREFUeNpiYCAdMDKRCka1jGoBA2JZZGshiaCXFpIBQIABAAplBkCmQpujAAAAAElFTkSuQmCC)
-      repeat-x; /*./image/ruler_h.png*/
   }
 
   &-v {
     width: 18px;
     height: 100%;
-    // top: 18px;
     left: -18px;
     opacity: 1;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAyCAMAAABmvHtTAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAlQTFRFMzMzAAAA////BqjYlAAAACBJREFUeNpiYGBEBwwMTGiAakI0NX7U9aOuHyGuBwgwAH6bBkAR6jkzAAAAAElFTkSuQmCC)
-      repeat-y; /*./image/ruler_v.png*/
   }
 
   &-v .n,
@@ -413,7 +432,6 @@ export default {
   }
 
   &-ref-line-h {
-    width: 100%;
     height: 5px;
     cursor: n-resize; /*url(./image/cur_move_h.cur), move*/
     display: flex;
@@ -428,7 +446,6 @@ export default {
 
   &-ref-line-v {
     width: 5px;
-    height: 100%;
     _height: 9999px;
     cursor: w-resize; /*url(./image/cur_move_v.cur), move*/
     display: flex;

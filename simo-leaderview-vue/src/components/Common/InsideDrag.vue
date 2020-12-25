@@ -63,6 +63,8 @@
           :item="item"></GradientPie>
     <Sunrise v-else-if="item.chartType=='Sunrise'"
           :item="item"></Sunrise>
+    <Scatter v-else-if="item.chartType=='Scatter'"
+          :item="item"></Scatter>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill> -->
     <Player v-else-if="item.chartType=='video'"
@@ -95,11 +97,12 @@ import TDEarthBar from './EditComp/TDEarthBar' // 轮播表格
 import DataFlow from './EditComp/DataFlow' // 轮播表格
 import GradientPie from './EditComp/GradientPie' // 轮播表格
 import Sunrise from './EditComp/Sunrise' // 轮播表格
+import Scatter from './EditComp/Scatter' // 轮播表格
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
 
