@@ -9,6 +9,7 @@ import Sunrise from '@/components/Common/EditComp/Sunrise/config.json'
 import Scatter from '@/components/Common/EditComp/Scatter/config.json'
 import bubble from '@/components/Common/EditComp/bubble/config.js'
 import hotspot from '@/components/Common/EditComp/hotspot/config.js'
+import decorator from '@/components/Common/EditComp/decorator/config.js'
 
 var morenData = {
   pie: {
@@ -608,6 +609,7 @@ pyramid.item,
   chartData: {}
 },
 ppt.item,
+decorator.item,
 {
   text: '边框',
   imgClass: 'icon-n-rect',

@@ -68,6 +68,25 @@ for (let i in new Array(11).fill(0)){
   })
 }
 
+// 装饰器
+let decoratorCase = [];
+
+for (let i in new Array(21).fill(0)){
+  // console.log('i: ', typeof i);
+  let curIndex = 1+Number(i);
+  let type = 'svg';
+  if (curIndex == 13) {
+    type = 'png';
+  } else if (curIndex == 21) {
+    type = 'gif';
+  }
+  const src = `/leaderview/decorator/decoratorBg${curIndex}.${type}`
+  decoratorCase.push({
+    mini: src,
+    imgSrc: src
+  })
+}
+
 
 export const baseData = {
     allowOverflow: 20, // 允许超出画布的范围
@@ -105,4 +124,5 @@ export const baseData = {
     ],
     cardCase,
     titleCase,
+    decoratorCase,
   }

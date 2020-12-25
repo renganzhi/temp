@@ -631,7 +631,6 @@
                          @click="chgImgSrc(item.imgSrc)"
                          :class="{'fl': true, 'font-case': true, 'card-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
                       <img :src="baseUrl + item.mini" />
-                      <!-- <img :src="'../../assets/cardMini' + index +'.png'"/> -->
                     </div>
                   </div>
                   <label style="display: block; clear: both;">标题栏背景</label><br>
@@ -642,12 +641,8 @@
                          :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
                       <img :src="baseUrl + item.mini" />
                     </div>
-                    <!-- <div class="fl font-case">
-                                        <img src='../../assets/titleMini2.png'/>
-                                    </div> -->
                   </div>
                 </div>
-
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
                   <div class="form-group cols2"
@@ -784,7 +779,7 @@
                 </div>
               </div>
               <!-- 图片元件 -->
-              <div v-if="selectedItem.chartType=='image'">
+              <div v-if="['image', 'decorator'].includes(selectedItem.chartType)">
                 <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2">
                   <label>缩放方式</label>
@@ -794,6 +789,14 @@
                   </select>
                 </div>
               </div>
+              <div class="form-group" v-if="selectedItem.chartType=='decorator'">
+                    <div v-for="(item, index) in settingData.decoratorCase"
+                         :key="index"
+                         @click="chgImgSrc(item.imgSrc)"
+                         :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+                      <img :src="baseUrl + item.mini" />
+                    </div>
+                  </div>
               <!--进度条-->
               <div v-if="selectedItem.chartType=='progress'">
                 <div class="m-gap form-group">图例配置</div>
