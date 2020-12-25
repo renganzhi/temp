@@ -26,6 +26,7 @@ import Sunrise from './EditComp/Sunrise' // 旭日图
 import Scatter from './EditComp/Scatter' // 散点图
 import Bubble from './EditComp/bubble' // 3D地图-柱状图
 import Hotspot from './EditComp/hotspot'
+import Decorator from './EditComp/decorator'
 
 export default {
   Vtextarea,
@@ -55,5 +56,6 @@ export default {
   Sunrise,
   Scatter,
   Bubble,
-  Hotspot
+  Hotspot,
+  Decorator
 }

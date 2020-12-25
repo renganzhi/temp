@@ -13,5 +13,6 @@ export default [
   'Sunrise',
   'Scatter',
   'bubble',
-  'hotspot'
+  'hotspot',
+  'decorator'
 ]
