@@ -7,6 +7,8 @@ import pyramid from '@/components/Common/EditComp/pyramid/config.js'
 import GradientPie from '@/components/Common/EditComp/GradientPie/config.json'
 import Sunrise from '@/components/Common/EditComp/Sunrise/config.json'
 import Scatter from '@/components/Common/EditComp/Scatter/config.json'
+import bubble from '@/components/Common/EditComp/bubble/config.js'
+import hotspot from '@/components/Common/EditComp/hotspot/config.js'
 
 var morenData = {
   pie: {
@@ -540,6 +542,7 @@ polarBar.item,
   linkId: '',
   chartData: {}
 },
+hotspot.item,
 {
   text: '跑马灯',
   imgClass: 'icon-n-marquee',
@@ -646,6 +649,7 @@ ppt.item,
   chartData: morenData.single
 },
 liquidfill.item,
+bubble.item,
 // {
 //   text: '水波图',
 //   width: 300,

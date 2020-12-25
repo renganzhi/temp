@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section v-for="(section, sectionIndex) in ['lengend', 'chart', 'axis']" :key="`section${sectionIndex}`">
+        <section v-for="(section, sectionIndex) in ['lengend', 'base', 'axis']" :key="`section${sectionIndex}`">
                 <div class="m-gap form-group" v-show="configOptions[section] && configOptions[section].length > 0">{{sectionMap[section]}}</div>
                 <div
                     class="form-group cols2"
@@ -64,7 +64,7 @@ export default {
         return {
             sectionMap: {
                 lengend: '图例配置',
-                chart: '图表样式',
+                base: '图表样式',
                 axis: '坐标轴样式',
             },
             configOptions: {},
@@ -77,8 +77,8 @@ export default {
         curType() {
             return this.configItems.chartType;
         },
-        chart () {
-            return this.configItems.chart || []
+        base () {
+            return this.configItems.base || []
         },
         lengend () {
             return this.configItems.lengend || []

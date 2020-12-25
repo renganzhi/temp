@@ -1,0 +1,175 @@
+<template>
+  <div class="bubble_box">
+    <div
+      id="circleWrap"
+      ref="circleWrap"
+      class="circle_wrap"
+      data-top="0"
+      :style="{ top: `${top}px` }"
+    ></div>
+  </div>
+</template>
+
+<script>
+import TWEEN from '@tweenjs/tween.js'
+import createBubble from './createBubble'
+
+export default {
+  name: 'BubbleChart',
+  props: ['item'],
+  data() {
+    return {
+      top: 0,
+      targetHeight: 300,
+      canvasBox: {}
+    }
+  },
+  computed: {
+    chartData() {
+      let originData = this.item.chartData.rows
+      const minCount = Math.floor(
+        (this.item.width * this.item.height) / 200 ** 2
+      )
+      if (origin.length < minCount) {
+        let tmp = originData
+        for (let i = 1; i < minCount / origin.length; i++) {
+          originData.push(...tmp)
+        }
+      }
+      return originData.map(d => {
+        let value = d.value
+        if (typeof value !== 'number') {
+          d.value = 0
+        }
+        return d
+      })
+    },
+    len() {
+      return this.chartData.length
+    },
+    speed() {
+      return 40 / this.item.speed
+    }
+    // targetHeight () { return 300 }
+  },
+  watch: {
+    item() {
+      cancelAnimationFrame(this.animate)
+      this.initCanvas()
+    }
+  },
+  mounted() {
+    this.initCanvas()
+  },
+  methods: {
+    initCanvas() {
+      createBubble(this.item.width, this.item.height, this.chartData).then(
+        canvas => {
+          console.log(canvas)
+          const imgUrl = canvas.toDataURL('image/png')
+          let Img = document.createElement('img')
+          Img.style.width = '100%'
+          Img.src = imgUrl
+          this.$refs.circleWrap.innerHTML = null
+          this.$refs.circleWrap.appendChild(Img)
+          this.$refs.circleWrap.appendChild(Img.cloneNode(true))
+          this.targetHeight = canvas.height
+          // console.log(this.targetHeight)
+          this.scroll()
+          this.animate()
+        }
+      )
+    },
+    animate() {
+      requestAnimationFrame(this.animate)
+      TWEEN.update()
+    },
+    scroll() {
+      let initPos = { top: 0 }
+      const targetTop = this.targetHeight
+      this.tween = new TWEEN.Tween(initPos)
+        .to({ top: targetTop }, this.targetHeight * this.speed)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(obj => {
+          // console.log(obj, this.targetHeight)
+          this.top = `-${obj.top}`
+          if (obj.top >= targetTop) {
+            this.scroll()
+          }
+        })
+        .start()
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.bubble_box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  // width: 660px;
+  // height: 300px;
+  color: #fff;
+  overflow: hidden;
+  .circle_wrap {
+    position: relative;
+    text-align: center;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    list-style: none;
+    // animation: animation 10s linear infinite;
+    // @keyframes animation {
+    //   from {
+    //     top: 0;
+    //   }
+    //   to {
+    //     top: -100vh;
+    //   }
+    // }
+  }
+  .circle {
+    display: block !important;
+    border-radius: 50%;
+    text-align: center;
+    overflow-wrap: break-word;
+    float: left;
+    // width: 60px;
+    // height: 60px;
+    // line-height: 60px;
+    // background-color: red
+  }
+
+  .circle_list {
+    background-repeat: no-repeat;
+    width: 100%;
+  }
+
+  .circle_list:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+
+  .text_warp_name,
+  .text_warp_value {
+    display: block;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    font-size: 16px;
+    p {
+      // line-height: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+#test {
+  text-align: left;
+}
+</style>
