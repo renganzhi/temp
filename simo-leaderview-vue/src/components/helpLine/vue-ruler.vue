@@ -94,26 +94,24 @@ export default {
 }
 
   .vue-rulerh {
-    height: 18px;
+    height: 12px;
     position: fixed;
     left: 206px;
     top: 50px;
     overflow: hidden;
     z-index: 999;
     opacity: 1;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAASCAMAAAAuTX21AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAlQTFRFMzMzAAAA////BqjYlAAAACNJREFUeNpiYCAdMDKRCka1jGoBA2JZZGshiaCXFpIBQIABAAplBkCmQpujAAAAAElFTkSuQmCC)
-      repeat-x; /*./image/ruler_h.png*/
+    background: url(./image/ruler_h.jpg) repeat-x; /*./image/ruler_h.png*/
   }
 
   .vue-rulerv {
-    width: 18px;
+    width: 12px;
     position: fixed;
     left: 206px;
     top: 50px;
     overflow: hidden;
     z-index: 999;
     opacity: 1;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAyCAMAAABmvHtTAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAlQTFRFMzMzAAAA////BqjYlAAAACBJREFUeNpiYGBEBwwMTGiAakI0NX7U9aOuHyGuBwgwAH6bBkAR6jkzAAAAAElFTkSuQmCC)
-      repeat-y; /*./image/ruler_v.png*/
+    background:url(./image/ruler_v.jpg) repeat-y; /*./image/ruler_v.png*/
   }
 </style>

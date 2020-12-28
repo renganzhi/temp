@@ -1,6 +1,7 @@
 <template>
   <div class="TDEarthBar" >
     <div class="TDEarthBar"
+      ref="TDEarthBar"
       id="TDEarthBar"
       :style="boxStyle">
     </div>
@@ -159,7 +160,7 @@ export default {
           }
         }
       }]
-      this.mychart = echarts.init(document.getElementById('TDEarthBar'))
+      this.mychart = echarts.init(this.$refs.TDEarthBar)
       var myoption = {
         backgroundColor: '', // 背景颜色  不填为透明
         globe: {

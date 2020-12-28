@@ -28,7 +28,8 @@ let config = {
   ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.json'),
   Sunrise: require('@/components/EditComp/Sunrise/config.json'),
-  Scatter: require('@/components/EditComp/Scatter/config.json')
+  Scatter: require('@/components/EditComp/Scatter/config.json'),
+  KLine: require('@/components/EditComp/KLine/config.json')
 }
 
 export default {
@@ -3561,7 +3562,15 @@ export default {
     getColor (data) {
       this.saveHistory()
       if (data.type !== undefined) {
-        this.selectedItem[data.type] = data.color
+        if (data.ColorNum) {
+          if (data.ColorNum === 1) {
+            this.selectedItem[data.type] = [data.color, this.selectedItem[data.type][1]]
+          } else {
+            this.selectedItem[data.type] = [this.selectedItem[data.type][0], data.color]
+          }
+        } else {
+          this.selectedItem[data.type] = data.color
+        }
       } else {
         // 用来解决不能监听直接赋值的数组变化
         this.selectedItem.ctColors.splice(data.index, 1)

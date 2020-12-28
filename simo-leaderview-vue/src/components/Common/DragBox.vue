@@ -64,6 +64,8 @@
           :item="item"></Sunrise>
     <Scatter v-else-if="item.chartType=='Scatter'"
           :item="item"></Scatter>
+    <KLine v-else-if="item.chartType=='KLine'"
+          :item="item"></KLine>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

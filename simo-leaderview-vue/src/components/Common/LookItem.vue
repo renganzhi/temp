@@ -32,6 +32,8 @@
              :item="item"></Vnumber>
     <Vscatter v-else-if="item.chartType=='v-scatter'"
               :item="item"></Vscatter>
+    <KLine v-else-if="item.chartType=='KLine'"
+              :item="item"></KLine>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
@@ -50,7 +52,6 @@ import dynamicList from './dynamicList'
 import components from './chartComponents'
 import { mapMutations } from 'vuex'
 import { capitalize } from '@/utils'
-
 
 export default {
   name: 'lookItem',
