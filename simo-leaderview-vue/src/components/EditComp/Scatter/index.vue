@@ -1,7 +1,7 @@
 <template>
   <div class="Scatter">
     <div
-      :id="echartId"
+      ref="Scatter"
       :style="boxStyle">
     </div>
   </div>
@@ -14,12 +14,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null,
-      echartId: ''
+      mychart: null
     }
-  },
-  created () {
-    this.echartId = 'Scatter' + document.querySelectorAll('.Scatter').length
   },
   computed: {
     boxStyle: function () {
@@ -49,60 +45,14 @@ export default {
   },
   methods: {
     drawFlow () {
-      this.mychart = echarts.init(document.getElementById(this.echartId))
+      this.mychart = echarts.init(this.$refs.Scatter)
       var data = this.item.chartData.dataArry
-      let myoption = {
-        legend: {
-          show: this.item.openlegend,
-          textStyle: {
-            color: 'red',
-            fontSize: 16
-          },
-          left: 'center',
-          top: 'top'
-        },
-        tooltip: {
-          trigger: 'item',
-          axisPointer: {
-            type: 'cross' // 'none'
-          }
-        },
-        xAxis: {
-          nameRotate: '10',
-          axisLine: {
-            lineStyle: {
-              color: 'red'
-            }
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              type: 'dashed'
-            }
-          }
-        },
-        yAxis: {
-          axisLine: {
-            lineStyle: {
-              color: 'red'
-            }
-          },
-          axisLabel: {
-            color: 'green',
-            rotate: 0,
-            fontSize: 24
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              type: 'dashed'
-            }
-          }
-        },
-        series: [{
-          name: 'scatter',
+      let myseries = []
+      data.forEach((d, index) => {
+        myseries.push({
+          name: d.name,
           type: 'scatter',
-          data: data[0],
+          data: d.points,
           symbolSize: function (data) {
             return (data[2] + 10)
           },
@@ -114,36 +64,75 @@ export default {
             shadowColor: 'rgba(120, 36, 50, 0.5)',
             shadowOffsetY: 5,
             shadowOffsetX: 10,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
               offset: 0,
-              color: 'rgb(129, 27, 28,.5)'
+              color: this.item.ctColors[index][0]
             }, {
               offset: 1,
-              color: 'rgb(25, 13, 207,.8)'
+              color: this.item.ctColors[index][1]
             }])
           }
-        }, {
-          name: 'sssss',
-          type: 'scatter',
-          data: data[1],
-          symbolSize: function (data) {
-            return (data[2] + 10)
+        })
+      })
+      let myoption = {
+        legend: {
+          show: this.item.openlegend,
+          textStyle: {
+            color: this.item.legendColor,
+            fontSize: this.item.legendSize
           },
-          emphasis: {
-            focus: 'self'
+          left: 'center',
+          top: this.item.legendStation
+        },
+        // tooltip: {
+        //   trigger: 'item',
+        //   axisPointer: {
+        //     type: this.item.axisPointer, // 'none'  'cross'
+        //     crossStyle: {
+        //       type: this.item.axisPointerType,
+        //       color: this.item.axisPointerColor
+        //     }
+        //   }
+        // },
+        xAxis: {
+          axisLine: {
+            lineStyle: {
+              color: this.item.axisLinecolor
+            }
           },
-          itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(120, 36, 50, 0.5)',
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgb(129, 227, 238,.5)'
-            }, {
-              offset: 1,
-              color: 'rgb(25, 183, 207,.8)'
-            }])
+          axisLabel: {
+            color: this.item.axisLabelcolor,
+            rotate: this.item.XaxisLabelrotate,
+            fontSize: this.item.axisLabelfontSize
+          },
+          splitLine: {
+            show: this.item.splitLine,
+            lineStyle: {
+              color: this.item.splitLinecolor,
+              type: this.item.splitLinetype
+            }
           }
-        }]
+        },
+        yAxis: {
+          axisLine: {
+            lineStyle: {
+              color: this.item.axisLinecolor
+            }
+          },
+          axisLabel: {
+            color: this.item.axisLabelcolor,
+            rotate: this.item.YaxisLabelrotate,
+            fontSize: this.item.axisLabelfontSize
+          },
+          splitLine: {
+            show: this.item.splitLine,
+            lineStyle: {
+              color: this.item.splitLinecolor,
+              type: this.item.splitLinetype
+            }
+          }
+        },
+        series: myseries
       }
       this.mychart.setOption(myoption)
     }

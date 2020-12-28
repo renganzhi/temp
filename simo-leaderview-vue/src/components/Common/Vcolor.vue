@@ -8,7 +8,7 @@
 import colorSpectrum from '#/js/colorSpectrum.js'
 export default {
   name: 'vcolor',
-  props: ['data', 'type', 'index'],
+  props: ['data', 'type', 'index', 'ColorNum'],
   data () {
     return {
       color: '',
@@ -58,7 +58,8 @@ export default {
       this.$emit('getdata', {
         color: val,
         type: this.type,
-        index: this.index
+        index: this.index,
+        ColorNum: this.ColorNum
       })
     }
   },

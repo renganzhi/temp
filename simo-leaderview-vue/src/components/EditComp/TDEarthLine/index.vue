@@ -1,6 +1,7 @@
 <template>
   <div class="TDEarth" >
     <div class="TDEarth"
+      ref="TDEarth"
       id="TDEarth"
       :style="boxStyle">
     </div>
@@ -167,7 +168,7 @@ export default {
         },
         data: pointArry
       })
-      this.mychart = echarts.init(document.getElementById('TDEarth'))
+      this.mychart = echarts.init(this.$refs.TDEarth)
       var myoption = {
         backgroundColor: '', // 背景颜色  不填为透明
         globe: {

@@ -24,6 +24,7 @@ import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
 import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
 import Scatter from '@/components/EditComp/Scatter' // 散点图
+import KLine from '@/components/EditComp/KLine' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
 import Decorator from '@/components/EditComp/decorator'
@@ -55,6 +56,7 @@ export default {
   GradientPie,
   Sunrise,
   Scatter,
+  KLine,
   Bubble,
   Hotspot,
   Decorator

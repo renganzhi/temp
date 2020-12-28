@@ -35,10 +35,6 @@
         <a class="fr simoLink icon-n-revoke edit-opt"
            style="color:#666F8B;"
            v-else>撤销</a>
-        <span class="fr simoLink edit-opt"
-            @click="preOther(1)">下一页</span>
-        <span class="fr simoLink edit-opt"
-            @click="preOther(0)">上一页</span>
         <span class="fr simoLink edit-opt" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前操作元件名称: 组合</span>
         <span class="fr simoLink edit-opt" v-show="selectedItem.ctName">当前操作元件名称: {{selectedItem.ctName || ''}}</span>
       </div>
@@ -86,6 +82,20 @@
            @click="hideContext">
         <!--  <div class="m-contain full-height">-->
         <!--右键-->
+        <div class="btm-tools">
+          <div class="btn-box">
+            <span @click="preOther(0)"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="' 上一页 '"><i class="icon-n-prev"></i></span>
+            <span @click="preOther(1)"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="' 下一页 '"><i class="icon-n-next"></i></span>
+          </div>
+        </div>
         <ul class="menu-list"
             style="width: 156px;"
             ref="contextMenu">
@@ -1874,7 +1884,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >
@@ -2274,5 +2284,26 @@ export default EditJs
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
 }
-
+.edit-body .btm-tools{
+  margin-bottom: -3px;
+  position: fixed;
+  bottom: 12px;
+  width: 100%;
+  padding-right: 30px;
+  padding-left: 15px;
+  z-index: 999;
+  text-align: center;
+  .ring-icon{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: #15192a;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    opacity: .3;
+    margin: 0 4px;
+    cursor: pointer;
+  }
+}
 </style>

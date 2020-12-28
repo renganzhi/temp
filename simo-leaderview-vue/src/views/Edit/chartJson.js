@@ -7,6 +7,7 @@ import pyramid from '@/components/EditComp/pyramid/config.js'
 import GradientPie from '@/components/EditComp/GradientPie/config.json'
 import Sunrise from '@/components/EditComp/Sunrise/config.json'
 import Scatter from '@/components/EditComp/Scatter/config.json'
+import KLine from '@/components/EditComp/KLine/config.json'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -838,6 +839,7 @@ bubble.item,
 GradientPie.item,
 Sunrise.item,
 Scatter.item,
+KLine.item,
 // {
 //   text: '饼图',
 //   imgClass: 'icon-n-video',
