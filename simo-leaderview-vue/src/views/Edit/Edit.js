@@ -1082,6 +1082,14 @@ export default {
       })
     },
     initChart (value) {
+      // 画布中心位置
+      const editCanvas = this.$refs.editCanvas;
+      const {scrollTop, scrollLeft, clientHeight, clientWidth} = editCanvas;
+      // console.log('width: ', clientHeight, clientWidth);
+      const scale = this.paintObj.scale / 100;
+      const transformX = (clientWidth / 2 + scrollLeft - (value.width || 350) / 2) / scale;
+      const transformY = (clientHeight / 2 + scrollTop - (value.height || 350) / 2) / scale;
+      // console.log(editCanvas.scrollLeft, editCanvas.scrollTop, this.paintObj.scale);
       this.showStyleTab = true
       this.showWindowBtn = false // 隐藏部件弹窗按钮
       this.saveHistory()
@@ -1091,8 +1099,8 @@ export default {
           ctName: value.text,
           ctLegendShow: 'true',
           legendColor: '#828bac',
-          x: 400,
-          y: 100,
+          x: Math.floor(transformX),
+          y: Math.floor(transformY),
           width: 350,
           height: 350,
           refreshTm: 5, // 刷新周期
