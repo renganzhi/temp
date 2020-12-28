@@ -23,7 +23,29 @@
                         @getdata="ChildGetColor"></Vcolor>
             </div>
         </template>
-        <template v-if="item.tag == 'ColorArray'">
+        <template v-if="item.tag === 'GradientColor'">
+            <div class="color-w200">
+              <div class="gradient"
+                    :style="{'background': 'linear-gradient(45deg, ' +  twoColor0  +',' + twoColor1 + ')'}">
+                  <div class="color-w15">
+                    <Vcolor :data="twoColor0"
+                        :key="10"
+                        :type="item.key"
+                        :ColorNum="1"
+                        @getdata="ChildGetColor"></Vcolor>
+                  </div>
+                  <div class="color-w15"
+                      style="float: right">
+                    <Vcolor :data="twoColor1"
+                        :key="10"
+                        :type="item.key"
+                        :ColorNum="2"
+                        @getdata="ChildGetColor"></Vcolor>
+                  </div>
+              </div>
+            </div>
+        </template>
+        <template v-if="item.tag === 'ColorArray'">
             <div class="form-group colorsConf">
               <span>序号</span>
               <span class="color-w70 text">颜色</span>
@@ -84,6 +106,16 @@ export default {
         }
       }
       return canShow
+    },
+    twoColor0: function () {
+      if (this.item.tag === 'TwoColor') {
+        return this.selectedItem[this.item.key][0]
+      }
+    },
+    twoColor1: function () {
+      if (this.item.tag === 'TwoColor') {
+        return this.selectedItem[this.item.key][1]
+      }
     }
   },
   methods: {

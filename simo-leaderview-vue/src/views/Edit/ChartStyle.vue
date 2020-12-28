@@ -50,95 +50,94 @@
 <script>
 // import { axis } from "@/components/EditComp/Vchart/config";
 
-
 // console.log(axis);
 
 import Vcolor from '@/components/Common/Vcolor'
 import RangeColor from '@/components/Common/RangeColor'
 
 export default {
-    name: "chartStyle",
-    props: ["configItems"],
-    components: {Vcolor, RangeColor},
-    data() {
-        return {
-            sectionMap: {
-                lengend: '图例配置',
-                base: '图表样式',
-                axis: '坐标轴样式',
-            },
-            configOptions: {},
-            // lengend: [],
-            // axis: axis,
-            // chart: []
-        };
-    },
-    computed: {
-        curType() {
-            return this.configItems.chartType;
-        },
-        base () {
-            return this.configItems.base || []
-        },
-        lengend () {
-            return this.configItems.lengend || []
-        },
-        axis () {
-            return this.configItems.axis || []
-        },
-    },
-    mounted () {
-        this.initOptions(this.curType)
-    },
-    methods: {
-        initOptions (type) {
-            if (type.indexOf('ve-') > -1) {
-                this.configOptions = require(`@/components/EditComp/Vchart/config`).default.styles
-            } else {
-                this.configOptions = require(`@/components/EditComp/${type}/config`).default.styles
-            }
-        },
-        change(key, tag, event) {
-            // console.log(event.target.value);
-            if (tag == 'singleColor') {
-                const value = event.color;
-                this.$emit("change", key, value);
-            } else if (tag == 'rangeColor') {
-                const value = event.color;
-                this.$emit("change", key, value);     
-            } else {
-                let value = event.target.value
-                if (value == "true" || value == "false") {
-                    value = value == "true"
-                }
-                // console.log();
-                this.$emit("change", key, value);
-            }
-        },
-        judgeShowOption(section, key) {
-            // console.log(section, key, this.configOptions[section][key]);
-            var cur = this.configOptions[section].filter(d => d.key == key)[0]
-            if (cur.hasOwnProperty('dep')) {
-                // && this.configOptions[item.dep.targetKey] == item.dep.targetVal
-                const {targetKey , targetVal} = cur.dep;
-                if (this.configItems[targetKey] != targetVal) {
-                    // console.log(key)
-                    return false
-                }
-            }
-            return true;
-        }
-    },
-    watch: {
-        // 'item.ctLegendShow' (newVal, oldVal) {
-        //     this.$emit('change', 'ctLegendShow', newVal);
-        // }
-        'configItems.chartType' (newVal, oldVal) {
-            this.initOptions(newVal)
-            console.log('type', newVal, this.configOptions)
-        }
+  name: 'chartStyle',
+  props: ['configItems'],
+  components: {Vcolor, RangeColor},
+  data () {
+    return {
+      sectionMap: {
+        lengend: '图例配置',
+        base: '图表样式',
+        axis: '坐标轴样式'
+      },
+      configOptions: {}
+      // lengend: [],
+      // axis: axis,
+      // chart: []
     }
-};
+  },
+  computed: {
+    curType () {
+      return this.configItems.chartType
+    },
+    base () {
+      return this.configItems.base || []
+    },
+    lengend () {
+      return this.configItems.lengend || []
+    },
+    axis () {
+      return this.configItems.axis || []
+    }
+  },
+  mounted () {
+    this.initOptions(this.curType)
+  },
+  methods: {
+    initOptions (type) {
+      if (type.indexOf('ve-') > -1) {
+        this.configOptions = require(`@/components/EditComp/Vchart/config`).default.styles
+      } else {
+        this.configOptions = require(`@/components/EditComp/${type}/config`).default.styles
+      }
+    },
+    change (key, tag, event) {
+      // console.log(event.target.value);
+      if (tag == 'singleColor') {
+        const value = event.color
+        this.$emit('change', key, value)
+      } else if (tag == 'rangeColor') {
+        const value = event.color
+        this.$emit('change', key, value)
+      } else {
+        let value = event.target.value
+        if (value == 'true' || value == 'false') {
+          value = value == 'true'
+        }
+        // console.log();
+        this.$emit('change', key, value)
+      }
+    },
+    judgeShowOption (section, key) {
+      // console.log(section, key, this.configOptions[section][key]);
+      var cur = this.configOptions[section].filter(d => d.key == key)[0]
+      if (cur.hasOwnProperty('dep')) {
+        // && this.configOptions[item.dep.targetKey] == item.dep.targetVal
+        const {targetKey, targetVal} = cur.dep
+        if (this.configItems[targetKey] != targetVal) {
+          // console.log(key)
+          return false
+        }
+      }
+      return true
+    }
+  },
+  watch: {
+    // 'item.ctLegendShow' (newVal, oldVal) {
+    //     this.$emit('change', 'ctLegendShow', newVal);
+    // }
+    'configItems.chartType' (newVal, oldVal) {
+      this.initOptions(newVal)
+      console.log('type', newVal, this.configOptions)
+    }
+  }
+}
 </script>
 
 <style scoped></style>

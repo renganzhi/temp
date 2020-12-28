@@ -12,6 +12,7 @@ export default [
   'GradientPie',
   'Sunrise',
   'Scatter',
+  'KLine',
   'bubble',
   'hotspot',
   'decorator'
