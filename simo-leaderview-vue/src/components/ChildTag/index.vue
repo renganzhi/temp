@@ -108,12 +108,12 @@ export default {
       return canShow
     },
     twoColor0: function () {
-      if (this.item.tag === 'TwoColor') {
+      if (this.item.tag === 'GradientColor') {
         return this.selectedItem[this.item.key][0]
       }
     },
     twoColor1: function () {
-      if (this.item.tag === 'TwoColor') {
+      if (this.item.tag === 'GradientColor') {
         return this.selectedItem[this.item.key][1]
       }
     }
