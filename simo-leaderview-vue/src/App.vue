@@ -30,7 +30,7 @@ export default {
     var _hash = window.location.hash
     if (_hash.split('/')[1]) {
       var _url = window.location.protocol + '//' + window.location.host + '/index'
-      window.location.href = _url
+    //   window.location.href = _url
     }
   }
 }
@@ -90,4 +90,16 @@ body {
 /* .modal-backdrop {
   z-index: 20099;
 } */
+
+/* 气泡图 */
+.clear_float:after {
+  display: block;
+  clear: both;
+  content: '';
+}
+.text_overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
