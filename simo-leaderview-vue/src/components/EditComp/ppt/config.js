@@ -1,4 +1,4 @@
-{
+export default {
     "item": {
         "text": "PPT",
         "imgClass": "el-icon-picture",
@@ -62,6 +62,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "lengend": [],
+        "axis": []
     }
 }

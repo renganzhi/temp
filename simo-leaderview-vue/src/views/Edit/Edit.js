@@ -25,7 +25,7 @@ import VueRuler from '@/components/helpLine/vue-ruler'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   ...oldConfig,
-  ppt: require('@/components/EditComp/ppt/config.json'),
+  // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.json'),
   Sunrise: require('@/components/EditComp/Sunrise/config.json'),
   Scatter: require('@/components/EditComp/Scatter/config.json'),
