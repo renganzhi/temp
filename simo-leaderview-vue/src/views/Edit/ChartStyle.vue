@@ -20,14 +20,15 @@
                                 >
                             </select>
                         </template>
-                        <!-- <template v-else-if="item.tag == 'input'">
+                        <template v-else-if="item.tag == 'input'">
                             <input
                                 class="w-90"
-                                :type="item.type"
-                                v-model="configItems[item.key]"
+                                :type="item.type || text"
+                                :value="configItems[item.key]"
+                                @change="change(item.key, 'input', $event)"
                             />
                             {{ item.unit || "" }}
-                        </template> -->
+                        </template>
                         <template v-else-if="item.tag == 'singleColor'">
                             <Vcolor :data="configItems[item.key]"
                                 :key="11"
@@ -106,11 +107,12 @@ export default {
         const value = event.color
         this.$emit('change', key, value)
       } else {
+        // select, input
         let value = event.target.value
         if (value == 'true' || value == 'false') {
           value = value == 'true'
         }
-        // console.log();
+        console.log(key, value);
         this.$emit('change', key, value)
       }
     },

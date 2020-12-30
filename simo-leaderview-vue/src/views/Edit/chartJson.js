@@ -1,6 +1,6 @@
 import config from './config.json'
 // 改造过渡
-import ppt from '@/components/EditComp/ppt/config.json'
+import ppt from '@/components/EditComp/ppt/config.js'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import polarBar from '@/components/EditComp/polarBar/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
