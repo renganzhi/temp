@@ -12,11 +12,9 @@ import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class RpcProcessService {
@@ -30,7 +28,7 @@ public class RpcProcessService {
         if (!neJsonModel.isSuccess()){
             throw new Exception(neJsonModel.getMsg());
         }
-        return this.toJavaBean(neJsonModel, NetworkEntity.class);
+        return this.toJavaBeanList(neJsonModel, NetworkEntity.class);
     }
 
     public List<NetworkEntity> findNetworkEntityByIdIn(String[] ids) throws Exception{
@@ -38,7 +36,7 @@ public class RpcProcessService {
         if (!neJsonModel.isSuccess()){
             throw new Exception(neJsonModel.getMsg());
         }
-        return this.toJavaBean(neJsonModel, NetworkEntity.class);
+        return this.toJavaBeanList(neJsonModel, NetworkEntity.class);
     }
 
     public List<IndicatorTable> findUsableIndForNe(List<NetworkEntity> neList, List<NeClass> neClasses) throws Exception{
@@ -49,7 +47,7 @@ public class RpcProcessService {
         if (!indJsonModel.isSuccess()){
             throw new Exception(indJsonModel.getMsg());
         }
-        return this.toJavaBean(indJsonModel, IndicatorTable.class);
+        return this.toJavaBeanList(indJsonModel, IndicatorTable.class);
     }
 
     public List<IndicatorTable> findIndByNeClass(List<String> neClasses) throws Exception{
@@ -57,11 +55,26 @@ public class RpcProcessService {
         if (!indJsonModel.isSuccess()){
             throw new Exception(indJsonModel.getMsg());
         }
+        return this.toJavaBeanList(indJsonModel, IndicatorTable.class);
+    }
+
+    public IndicatorTable getIndicatorInfoByName(String indicator) throws Exception{
+        JsonModel indJsonModel = monitorService.getIndicatorInfoByName(indicator);
+        if (!indJsonModel.isSuccess()){
+            throw new Exception(indJsonModel.getMsg());
+        }
         return this.toJavaBean(indJsonModel, IndicatorTable.class);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> toJavaBean(JsonModel jsonModel, Class<T> clazz){
+    public List<Map<String,Object>> findNeComps(List<String> neIds, String indicatorName, String componentName,
+                                                String neName, List<String> neCompIdNotIn, String... keyword) {
+        JsonModel jsonModel = monitorService.findNeComps(neIds, indicatorName, componentName, neName, neCompIdNotIn, keyword);
+        return (List<Map<String,Object>>) jsonModel.getObj();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
         List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
         List<T> ts = Lists.newArrayList();
         for (LinkedHashMap map: list) {
@@ -69,6 +82,11 @@ public class RpcProcessService {
             ts.add(t);
         }
         return ts;
+    }
+
+    public <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
+        LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
+        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
     }
 
 }

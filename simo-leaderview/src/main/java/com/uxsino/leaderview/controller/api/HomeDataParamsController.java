@@ -20,6 +20,7 @@ import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -121,6 +122,34 @@ public class HomeDataParamsController {
                                   @RequestParam(required = false) NeClass neClass) {
         return homeDataParamsService.getIndicatorTopn(neIds, neClass);
 
+    }
+
+    @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
+            @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "指标类型"),
+            @ApiImplicitParam(name = "unit", paramType = "query", dataType = "String", value = "单位类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
+    @RequestMapping(value = "/getIndicatorStr", method = RequestMethod.GET)
+    public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
+                                     @RequestParam(required = false) NeClass neClass) {
+        return homeDataParamsService.getIndicatorStr(neIds,neClass);
+    }
+
+
+    @ApiOperation("根据资源ID和指标名获取部件ID与名称的键值对:用于下拉框")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", allowMultiple = true, value = "资源IDs"),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称") })
+    @RequestMapping(value = "/getComponentName", method = RequestMethod.GET)
+    public JsonModel getComponentName(@RequestParam String[] neIds, @RequestParam String indicators) {
+        try {
+            return homeDataParamsService.getComponentName(neIds, indicators);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
     }
 
 }

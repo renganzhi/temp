@@ -33,4 +33,13 @@ public interface MonitorService {
 
     @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/indicatorTable/findIndByNeClass", consumes = "application/json")
     JsonModel findIndByNeClass(@RequestParam("neClasses") List<String> neClasses);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/indicatorTable/getIndicatorInfoByName", consumes = "application/json")
+    JsonModel getIndicatorInfoByName(@RequestParam("indicatorName") String indicatorName);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/component/findNeComps", consumes = "application/json")
+    JsonModel findNeComps(@RequestParam("neIds") List<String> neIds, @RequestParam("indicatorName") String indicatorName,
+                          @RequestParam("componentName") String componentName, @RequestParam("neName") String neName,
+                          @RequestParam("neCompIdNotIn") List<String> neCompIdNotIn, @RequestParam("keyword") String... keyword);
+
 }

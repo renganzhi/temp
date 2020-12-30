@@ -36,4 +36,14 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     public JsonModel findIndByNeClass(List<String> neClasses) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
+
+    @Override
+    public JsonModel getIndicatorInfoByName(String indicatorName) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeComps(List<String> neIds, String indicatorName, String componentName, String neName, List<String> neCompIdNotIn, String... keyword) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
 }
