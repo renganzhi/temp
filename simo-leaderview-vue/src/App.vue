@@ -30,7 +30,9 @@ export default {
     var _hash = window.location.hash
     if (_hash.split('/')[1]) {
       var _url = window.location.protocol + '//' + window.location.host + '/index'
-      window.location.href = _url
+      if (process.env.NODE_ENV != 'development') {
+        window.location.href = _url
+      }
     }
   }
 }
