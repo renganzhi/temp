@@ -1674,14 +1674,14 @@
                   </div>
                   <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
                     <div class="form-group cols2">
-                      <label>背景线可见性</label>
+                      <label>坐标线可见性</label>
                       <select v-model="selectedItem.splitShow">
                         <option value="true">显示</option>
                         <option value="false">隐藏</option>
                       </select>
                     </div>
                     <div class="form-group cols2">
-                      <label>背景线颜色</label>
+                      <label>坐标线颜色</label>
                       <div class="color-w200">
                         <Vcolor :data="selectedItem.splitColor"
                                 :key="18"
