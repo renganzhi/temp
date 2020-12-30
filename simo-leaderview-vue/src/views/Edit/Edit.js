@@ -29,7 +29,9 @@ let config = {
   GradientPie: require('@/components/EditComp/GradientPie/config.json'),
   Sunrise: require('@/components/EditComp/Sunrise/config.json'),
   Scatter: require('@/components/EditComp/Scatter/config.json'),
-  KLine: require('@/components/EditComp/KLine/config.json')
+  KLine: require('@/components/EditComp/KLine/config.json'),
+  TreeMap: require('@/components/EditComp/TreeMap/config.json'),
+  TDHistogram: require('@/components/EditComp/TDHistogram/config.json')
 }
 
 export default {
@@ -3008,11 +3010,9 @@ export default {
       this.composeData = JSON.stringify(this.combinList)
       this.viewKey = new Date().getTime() + parseInt(Math.random() * 10)
       this.$nextTick(() => {
-        this.viewPage = true
+        // this.viewPage = true
+        this.$refs.PreView.reNewOne()
       })
-    },
-    hidePreview: function () {
-      this.viewPage = false
     },
     preBack: function () {
       this.showNextType = -1

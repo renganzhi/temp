@@ -4,12 +4,17 @@
   <div id="mainEdit-edit"
        class="editPage">
     <!-- style="z-index: 20099" -->
-    <PreView :showModal="viewPage"
+    <!-- <PreView :showModal="viewPage"
              :pageData="pageData"
              :key="viewKey"
              :composeData="composeData"
              :paintObj="paintObj"
-             @hidePreview="hidePreview"></PreView>
+             @hidePreview="hidePreview"></PreView> -->
+    <PreView :pageData="pageData"
+             :key="viewKey"
+             :composeData="composeData"
+             :paintObj="paintObj"
+             ref="PreView"></PreView>
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
              @hideModal="back"></Confirm>
@@ -1884,7 +1889,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >

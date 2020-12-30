@@ -34,6 +34,10 @@
               :item="item"></Vscatter>
     <KLine v-else-if="item.chartType=='KLine'"
               :item="item"></KLine>
+    <TreeMap v-else-if="item.chartType=='TreeMap'"
+              :item="item"></TreeMap>
+    <TDHistogram v-else-if="item.chartType=='TDHistogram'"
+              :item="item"></TDHistogram>
     <Vmap v-else-if="item.chartType=='v-map'"
           :item="item"></Vmap>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

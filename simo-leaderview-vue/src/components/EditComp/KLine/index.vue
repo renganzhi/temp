@@ -38,7 +38,6 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        console.log(newVal)
         this.drawFlow()
       },
       deep: true
@@ -89,8 +88,8 @@ export default {
             data: myData,
             smooth: true,
             showSymbol: false,
+            color: this.item.ctColors[index - 1],
             lineStyle: {
-              color: this.item.ctColors[index - 1],
               width: 1
             }
           })
@@ -186,6 +185,7 @@ export default {
           type: 'inside'
         }]
       }
+      this.mychart.clear()
       this.mychart.setOption(myoption)
     }
   },

@@ -13,6 +13,8 @@ export default [
   'Sunrise',
   'Scatter',
   'KLine',
+  'TreeMap',
+  'TDHistogram',
   'bubble',
   'hotspot',
   'decorator'

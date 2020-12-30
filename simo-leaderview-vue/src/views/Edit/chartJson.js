@@ -8,6 +8,8 @@ import GradientPie from '@/components/EditComp/GradientPie/config.json'
 import Sunrise from '@/components/EditComp/Sunrise/config.json'
 import Scatter from '@/components/EditComp/Scatter/config.json'
 import KLine from '@/components/EditComp/KLine/config.json'
+import TreeMap from '@/components/EditComp/TreeMap/config.json'
+import TDHistogram from '@/components/EditComp/TDHistogram/config.json'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -840,6 +842,8 @@ GradientPie.item,
 Sunrise.item,
 Scatter.item,
 KLine.item,
+TreeMap.item,
+TDHistogram.item,
 // {
 //   text: '饼图',
 //   imgClass: 'icon-n-video',
