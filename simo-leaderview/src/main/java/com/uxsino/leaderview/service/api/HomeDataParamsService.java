@@ -23,6 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -591,6 +592,132 @@ public class HomeDataParamsService {
         }
         return new JsonModel(true, result);
     }
+
+    /**
+     * 查询资源已配置的指标，或者用于TOPN的指标，用于下拉框
+     * @param neIds 资源ID
+     * @param neClass 资源子类型
+     */
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass) {
+        // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
+        List<JSONArray> arrs = new ArrayList<JSONArray>();
+        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        if (!(neIds == null || neIds.length == 0)) {
+            // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
+            List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
+            try {
+                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                for (NetworkEntity ne : neList) {
+                    if (ObjectUtils.isEmpty(ne)) {
+                        return new JsonModel(false, "资源不存在");
+                    }
+                    // 资源所有可配置的指标
+                    List<IndicatorTable> indicatorTables = rpcProcessService.findUsableIndForNe(Lists.newArrayList(ne), Lists.newArrayList(ne.getNeClass()));
+                    JSONArray arr = new JSONArray();
+                    if (CollectionUtils.isNotEmpty(indicatorTables)) {
+                        // 查看资源已经配置的指标
+                        JSONArray neInds = ne.getIndicators();
+                        List<String> indList = neInds == null ? null : neInds.toJavaList(String.class);
+                        indicatorTables.forEach(ind -> {
+                            String indName = ind.getName();
+                            // 如果该指标未包含在资源配置的指标列表中，则跳过
+                            if (indList != null && !indList.contains(indName)) {
+                                return;
+                            }
+                            // 指标类型集合设置
+                            List<String> indTypes = Lists.newArrayList();
+                            indTypes = Lists.newArrayList(INDICATOR_TYPE.STRING.toString(),
+                                    INDICATOR_TYPE.COMPOUND.toString(), INDICATOR_TYPE.LIST.toString(),
+                                    INDICATOR_TYPE.NUMBER.toString(), INDICATOR_TYPE.PERCENT.toString());
+                            // 过滤掉指标类型非String的指标
+                            if (!indTypes.contains(ind.getIndicatorType())) {
+                                return;
+                            }
+                            JSONObject obj = new JSONObject();
+                            if ("NUMBER".equals(ind.getIndicatorType()) || "PERCENT".equals(ind.getIndicatorType())
+                                    || "STRING".equals(ind.getIndicatorType())) {
+                                obj.put("name", ind.getLabel());
+                                obj.put("value", indName);
+                                arr.add(obj);
+                            } else {
+                                JSONArray fields = ind.getFields();
+                                boolean hasStringType = fields.stream().anyMatch(e -> {
+                                    JSONObject field = JSON.parseObject(JSON.toJSONString(e));
+                                    return (Objects.equals(field.getString("fieldType"), FieldType.NUMBER.toString())
+                                            || Objects.equals(field.getString("fieldType"), FieldType.STRING.toString()))
+                                            && !field.containsKey("withoutrule");
+                                });
+                                if (ObjectUtils.isEmpty(fields)) {
+                                    hasStringType = true;
+                                }
+                                // 过滤掉属性中没有String类型的指标
+                                if (!hasStringType) {
+                                    return;
+                                }
+                                obj.put("name", ind.getLabel());
+                                obj.put("value", indName);
+                                arr.add(obj);
+                            }
+                        });
+                        arrs.add(arr);
+                    }
+                }
+            } catch (Exception e) {
+                return new JsonModel(false, e.getMessage());
+            }
+        }
+        // 遍历取指标交集
+        return getIntersection(arrs);
+    }
+
+    /**
+     * 根据资源ID和指标名获取部件ID与名称的键值对:用于下拉框
+     * @param neIds 资源IDs
+     * @param indicators 指标名称
+     * @return
+     */
+    public JsonModel getComponentName(String[] neIds, String indicators) throws Exception{
+        if (neIds.length == 0 || StringUtils.isEmpty(neIds)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        if (Strings.isNullOrEmpty(neIds[0]) || Strings.isNullOrEmpty(indicators)) {
+            return new JsonModel(false, "参数错误");
+        }
+        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        if (ObjectUtils.isEmpty(ind)) {
+            return new JsonModel(false, "未查询到指标");
+        }
+        // 如果是数值或者百分比类型的指标，则无属性
+        if (!validHasFields(ind)) {
+            return new JsonModel(true, new JSONArray());
+        }
+        if ("COMPOUND".equals(ind.getIndicatorType())) {
+            return new JsonModel(true, new JSONArray());
+        }
+        JSONArray result = new JSONArray();
+        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
+                indicators, null, null, null);
+        // 如果有部件，应该对资源进行遍历查询部件
+        if (ObjectUtils.isEmpty(idAndComponent)) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", "无部件数据");
+            obj.put("value", null);
+            result.add(obj);
+        }
+        else {
+            idAndComponent.forEach(map -> {
+                JSONObject obj = new JSONObject();
+                obj.put("name", map.get("componentName"));
+                obj.put("value", map.get("identifier"));
+                result.add(obj);
+            });
+        }
+        return new JsonModel(true, result);
+    }
+
 
     public class NetworkEntityQOModel extends NetworkEntityQO{
         NetworkEntityQOModel setNeQO(HttpSession session, Long domainId){
