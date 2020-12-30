@@ -66,6 +66,10 @@
           :item="item"></Scatter>
     <KLine v-else-if="item.chartType=='KLine'"
           :item="item"></KLine>
+    <TreeMap v-else-if="item.chartType=='TreeMap'"
+          :item="item"></TreeMap>
+    <TDHistogram v-else-if="item.chartType=='TDHistogram'"
+          :item="item"></TDHistogram>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

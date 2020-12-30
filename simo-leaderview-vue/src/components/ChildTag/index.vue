@@ -15,6 +15,8 @@
             <input  :type="item.type || 'number'"
                     v-model="selectedItem[item.key]">
         </template>
+        <template v-if="item.tag == 'Hint'">
+        </template>
         <template v-if="item.tag == 'Color'">
             <div class="color-w200">
                 <Vcolor :data="selectedItem[item.key]"
@@ -24,7 +26,7 @@
             </div>
         </template>
         <template v-if="item.tag === 'GradientColor'">
-            <div class="color-w200">
+            <div class="color-w200" style="margin-top: 8px;">
               <div class="gradient"
                     :style="{'background': 'linear-gradient(45deg, ' +  twoColor0  +',' + twoColor1 + ')'}">
                   <div class="color-w15">

@@ -7,7 +7,7 @@
              @hideModal="hideModal"></AddPage>
     <PageSetting :showModal="pageSetting"
                  @hideModal="hideSetting"></PageSetting>
-                 
+
     <ImportPage :showModal="showImport"
                  @hideModal="hideImportModal"
                  :tems="pageList"></ImportPage>
@@ -15,11 +15,11 @@
                  @hideModal="showExport = false"
                  :tems="pageList"></ExportPage>
     <!-- <SettingPage></SettingPage> -->
-    <PreView :showModal="viewPage"
-             :viewId="viewId"
+    <PreView :viewId="viewId"
              :pageData="pageData"
+             :composeData="composeData"
              :key="viewKey"
-             @hidePreview="hidePreview"></PreView>
+             ref="PreView"></PreView>
     <Confirm :showModal="showDelModal"
              :message="'删除操作不可恢复，是否继续？'"
              :okText="'是'"
@@ -235,7 +235,6 @@ export default {
       pageSetting: false, // 设置
       showExport: false,
       showImport: false,
-      viewPage: false, // 预览
       pageData: '', // 预览的page内容
       viewId: -1, // 预览的id
       editName: '',
@@ -509,12 +508,8 @@ export default {
       this.viewId = item.id
       this.viewKey = new Date().getTime() + parseInt(Math.random() * 70)
       this.$nextTick(() => {
-        this.viewPage = true
+        this.$refs.PreView.reNewOne()
       })
-    },
-    // 关闭预览弹窗
-    hidePreview () {
-      this.viewPage = false
     },
     edit (item) {
       this.$router.push('/edit/' + item.id)

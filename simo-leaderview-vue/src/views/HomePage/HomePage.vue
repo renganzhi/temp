@@ -203,19 +203,19 @@ export default {
       'editId',
       'nowPageId'
     ]),
-    showPagination () { return this.pageSize>1 }
+    showPagination () { return this.pageSize > 1 }
   },
   methods: {
     ...mapActions([
       'changeAlertInfo',
       'initVideoTims',
-      'changePageVisiable',
+      'changePageVisiable'
     ]),
     ...mapMutations([
-      'changeEditId',
+      'changeEditId'
     ]),
     toEditPage () {
-      const id = this.pageList[(this.pageIndex-1) % this.pageSize].id;
+      const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
@@ -247,12 +247,12 @@ export default {
     initPage: function (res) {
       this.pageSize = res.pages.length
       this.pageList = res.pages
-      if (this.editId){
+      if (this.editId) {
         // 遍历list
         for (var i = 0; i < this.pageList.length; i++) {
-          if (this.pageList[i].id == this.editId) {
-            this.pageIndex = i;
-            break;
+          if (this.pageList[i].id === this.editId) {
+            this.pageIndex = i
+            break
           }
         }
       } else {
@@ -376,7 +376,7 @@ export default {
     prev: function () { // 上一页
       this.cancleRequest()
       // window.$.cache = {}
-      if (this.refreshType != '1') {
+      if (this.refreshType !== '1') {
         this.prevMove()
         return
       }
@@ -722,11 +722,11 @@ export default {
       //   ct.setScale()
       // })
     },
-    //发送请求
-    sentReq(d){
+    // 发送请求
+    sentReq (d) {
       let ct = this
       let xhrobj = $.ajax({
-        url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url,  //第三方的ur已经拼接好host
+        url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url, // 第三方的ur已经拼接好host
         data: d.params,
         type: d.method || 'get',
         cache: false,
@@ -749,7 +749,7 @@ export default {
         },
         error: async function (xhr) {
           if (xhr.status === 776) {
-            if(d.ctDataSource !== 'static' && d.ctDataSource !== 'system') {  //第三方登录过期:重新登录后再请求
+            if (d.ctDataSource !== 'static' && d.ctDataSource !== 'system') { // 第三方登录过期:重新登录后再请求
               ct.xhrArr.pop()
               let curUrl = d.url.split('://')[1].split('/')[0]
               await checkLogin(curUrl) && ct.sentReq(d)
@@ -759,7 +759,7 @@ export default {
             ct.freshInterval && clearTimeout(ct.freshInterval)
             ct.freshInterval = null
           }
-          if (xhr.status != 776 && xhr.statusText !== 'abort') {
+          if (xhr.status !== 776 && xhr.statusText !== 'abort') {
             if (gbs.inDev) {
               Notification({
                 message: '连接错误！',
@@ -972,11 +972,11 @@ export default {
       document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
     },
     getPageConf (id) {
-      return this.axios.get(`/leaderview/home/homePage/getById/${id}`);
+      return this.axios.get(`/leaderview/home/homePage/getById/${id}`)
     },
     // 跳转大屏之后，修改pageIndex
-    updatePageIndex(id) {
-      for(let i = 0; i < this.pageSize; i++) {
+    updatePageIndex (id) {
+      for (let i = 0; i < this.pageSize; i++) {
         if (this.pageList[i].id === id) {
           this.pageIndex = i + 1
           break
@@ -985,13 +985,13 @@ export default {
       if (this.pageIndex === 0) {
         this.pageIndex = this.pageSize
       }
-    },
+    }
   },
   watch: {
-    nowPageId: function(newV, oldV) {
+    nowPageId: function (newV, oldV) {
       if (newV !== -1) {
         this.getPageConf(newV).then((res) => {
-          var nowPageObj = res.obj;
+          var nowPageObj = res.obj
           if (nowPageObj.composeObj) {
             this.combinList = JSON.parse(nowPageObj.composeObj)
           } else {
