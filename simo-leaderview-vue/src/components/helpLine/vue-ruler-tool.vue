@@ -162,10 +162,15 @@ export default {
     init () {
       this.box()
       this.scaleCalc()
-      var ele = document.querySelector('.m-main')
+      var ele = document.querySelector('.paint-bg')
       if (ele) {
-        this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0] / this.scale * 100).toFixed(0) + 'px'
-        this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0] / this.scale * 100).toFixed(0) + 500 + 'px'
+        if (this.scale > 100) {
+          this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0]).toFixed(0) + 'px'
+          this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0]).toFixed(0) + 500 + 'px'
+        } else {
+          this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0] / this.scale * 100).toFixed(0) + 'px'
+          this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0] / this.scale * 100).toFixed(0) + 500 + 'px'
+        }
       } else {
         this.Hstyle = (this.parentW / this.scale * 100).toFixed(0) + 'px'
         this.Vstyle = (this.parentH / this.scale * 100).toFixed(0) + 'px'

@@ -108,7 +108,7 @@
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
           <li class="context-menu-item context-menu-visible"
-              v-show="tempItemArry"
+              v-show="tempItemArry.length>0"
               @click="paste"><span>粘贴</span></li>
           <!-- <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
@@ -1889,9 +1889,9 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','VtextArea'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
-                    v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
+                    v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
                   <ChildTag :item="item" :selectedItem="selectedItem"></ChildTag>
                 </div>

@@ -109,10 +109,10 @@ export default {
       } else {
         // select, input
         let value = event.target.value
-        if (value == 'true' || value == 'false') {
-          value = value == 'true'
+        if (value === 'true' || value === 'false') {
+          value = value === 'true'
         }
-        console.log(key, value);
+        console.log(key, value)
         this.$emit('change', key, value)
       }
     },
