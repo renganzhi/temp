@@ -18,7 +18,7 @@ import qs from 'qs'
 import _ from 'lodash'
 import oldConfig from './config.json'
 
-import ChildTag from '@/components/ChildTag/index'
+import ChildTag from '@/components/ChildTag/styleTag'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 
@@ -26,12 +26,13 @@ import VueRuler from '@/components/helpLine/vue-ruler'
 let config = {
   ...oldConfig,
   // ppt: require('@/components/EditComp/ppt/config.json'),
-  GradientPie: require('@/components/EditComp/GradientPie/config.json'),
-  Sunrise: require('@/components/EditComp/Sunrise/config.json'),
-  Scatter: require('@/components/EditComp/Scatter/config.json'),
-  KLine: require('@/components/EditComp/KLine/config.json'),
-  TreeMap: require('@/components/EditComp/TreeMap/config.json'),
-  TDHistogram: require('@/components/EditComp/TDHistogram/config.json')
+  GradientPie: require('@/components/EditComp/GradientPie/config.js'),
+  Sunrise: require('@/components/EditComp/Sunrise/config.js'),
+  Scatter: require('@/components/EditComp/Scatter/config.js'),
+  KLine: require('@/components/EditComp/KLine/config.js'),
+  TreeMap: require('@/components/EditComp/TreeMap/config.js'),
+  TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
+  VtextArea: require('@/components/EditComp/VtextArea/config.js')
 }
 
 export default {
@@ -1088,12 +1089,12 @@ export default {
     },
     initChart (value) {
       // 画布中心位置
-      const editCanvas = this.$refs.editCanvas;
-      const {scrollTop, scrollLeft, clientHeight, clientWidth} = editCanvas;
+      const editCanvas = this.$refs.editCanvas
+      const {scrollTop, scrollLeft, clientHeight, clientWidth} = editCanvas
       // console.log('width: ', clientHeight, clientWidth);
-      const scale = this.paintObj.scale / 100;
-      const transformX = (clientWidth / 2 + scrollLeft - (value.width || 350) / 2) / scale;
-      const transformY = (clientHeight / 2 + scrollTop - (value.height || 350) / 2) / scale;
+      const scale = this.paintObj.scale / 100
+      const transformX = (clientWidth / 2 + scrollLeft - (value.width || 350) / 2) / scale
+      const transformY = (clientHeight / 2 + scrollTop - (value.height || 350) / 2) / scale
       // console.log(editCanvas.scrollLeft, editCanvas.scrollTop, this.paintObj.scale);
       this.showStyleTab = true
       this.showWindowBtn = false // 隐藏部件弹窗按钮

@@ -17,7 +17,6 @@
     <!-- <SettingPage></SettingPage> -->
     <PreView :viewId="viewId"
              :pageData="pageData"
-             :composeData="composeData"
              :key="viewKey"
              ref="PreView"></PreView>
     <Confirm :showModal="showDelModal"

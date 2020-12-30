@@ -4,12 +4,13 @@ import ppt from '@/components/EditComp/ppt/config.js'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import polarBar from '@/components/EditComp/polarBar/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
-import GradientPie from '@/components/EditComp/GradientPie/config.json'
-import Sunrise from '@/components/EditComp/Sunrise/config.json'
-import Scatter from '@/components/EditComp/Scatter/config.json'
-import KLine from '@/components/EditComp/KLine/config.json'
-import TreeMap from '@/components/EditComp/TreeMap/config.json'
-import TDHistogram from '@/components/EditComp/TDHistogram/config.json'
+import GradientPie from '@/components/EditComp/GradientPie/config.js'
+import Sunrise from '@/components/EditComp/Sunrise/config.js'
+import Scatter from '@/components/EditComp/Scatter/config.js'
+import KLine from '@/components/EditComp/KLine/config.js'
+import TreeMap from '@/components/EditComp/TreeMap/config.js'
+import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
+import VtextArea from '@/components/EditComp/VtextArea/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -546,6 +547,7 @@ polarBar.item,
   linkId: '',
   chartData: {}
 },
+VtextArea.item,
 hotspot.item,
 {
   text: '跑马灯',
