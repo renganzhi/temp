@@ -12,7 +12,7 @@ import Vtime from '@/components/EditComp/Vtime' // 时间器
 import Vnumber from '@/components/EditComp/Vnumber' // 指标展示
 import Vmap from '@/components/EditComp/Vmap' // 地图
 import Vscatter from '@/components/EditComp/Vscatter' // 散点图
-import Liquidfill from '@/components/EditComp/Liquidfill' // 水波图
+import Liquidfill from '@/components/EditComp/liquidfill' // 水波图
 import Player from '@/components/EditComp/Player' // 视频流
 import moveTable from '@/components/EditComp/moveTable' // 轮播表格
 import Heatmap from '@/components/EditComp/heatmap' //
