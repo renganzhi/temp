@@ -40,7 +40,7 @@
                     @click="add">新增页面</button>
             <button type="button"
                     @click="openSetting">设置</button>
-            <button type="button"
+            <button v-if="isSuperAdmin" type="button"
                     @click="importTemplate">导入</button>
             <button type="button"
                     @click="exportTemplate">导出</button>
