@@ -76,16 +76,16 @@ public class ImpExpService {
         for (HomePage page: pages) {
             json.add(makeTemplate(page,ids));
         }
-        String jsonPath = zipPath + "/templateZip" + zipNum + "/json/config.json";
+        String jsonPath = zipPath + File.separator + "templateZip" + zipNum + File.separator + "json" + File.separator + "config.json";
         writeConfigJson(json.toJSONString(),jsonPath);
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(new File(zipPath + "/templateZip" + zipNum + ".zip"));
+            fos = new FileOutputStream(new File(zipPath + File.separator +"templateZip" + zipNum + ".zip"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ZipUtils.toZip(zipPath + "/templateZip" + zipNum + "/",fos, true);
-        return zipPath + "/templateZip" + zipNum++ + ".zip";
+        ZipUtils.toZip(zipPath + File.separator +"templateZip" + zipNum + File.separator ,fos, true);
+        return zipPath + File.separator + "templateZip" + zipNum++ + ".zip";
     }
 
     @Transactional
@@ -521,15 +521,16 @@ public class ImpExpService {
             // 设置response的Header
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
             response.addHeader("Content-Length", "" + file.length());
-            response.setHeader("Content-Type", "multipart/form-data");
+//            response.setHeader("Content-Type", "multipart/form-data");
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/octet-stream");
-            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+//            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
             toClient.write(buffer);
             toClient.flush();
             toClient.close();
         } catch (IOException ex) {
             ex.printStackTrace();
+            log.error(ex.getMessage());
         }
     }
 
