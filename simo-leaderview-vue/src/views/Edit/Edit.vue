@@ -1541,7 +1541,7 @@
                 <div class="m-gap form-group">字体样式</div>
                 <div class="form-group"
                      style="height: 30px;">
-                  <div v-for="(item, index) in settingData.fontFaces"
+                  <div v-for="(item, index) in fontFaces"
                        :key="index"
                        @click="selectedItem.fontFamily=item.fontFace"
                        :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===item.fontFace}"

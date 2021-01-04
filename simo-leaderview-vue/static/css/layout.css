@@ -772,6 +772,38 @@ body.page-sidebar-closed > .moniModal.modal {
     font-family: 'number4';
     src: url('../font/numberFont/RobotoSlab-Regular.ttf');
 }
+@font-face {
+    font-family: 'baidu';
+    src: url('../font/百度综艺简体.ttf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Bold';
+    src: url('../font/SourceHanSansCN-Bold.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-ExtraLight';
+    src: url('../font/SourceHanSansCN-ExtraLight.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Heavy';
+    src: url('../font/SourceHanSansCN-Heavy.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Light';
+    src: url('../font/SourceHanSansCN-Light.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Medium';
+    src: url('../font/SourceHanSansCN-Medium.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Normal';
+    src: url('../font/SourceHanSansCN-Normal.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Regular';
+    src: url('../font/SourceHanSansCN-Regular.otf');
+}
 /* 地图拓扑样式，在theme.css */
 .province {
   stroke: #0252ba;

@@ -122,6 +122,40 @@ export const baseData = {
         fontName: '0123456789'
       }
     ],
+    textFontFaces: [
+      {
+        fontFace: 'baidu',
+        fontName: '百度综艺简体'
+      },
+      {
+        fontFace: 'SourceHanSansCN-ExtraLight',
+        fontName: '思源黑体ExtraLight'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Light',
+        fontName: '思源黑体Light'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Normal',
+        fontName: '思源黑体Normal'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Regular',
+        fontName: '思源黑体Regular'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Medium',
+        fontName: '思源黑体Medium'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Bold',
+        fontName: '思源黑体Bold'
+      },
+      {
+        fontFace: 'SourceHanSansCN-Heavy',
+        fontName: '思源黑体Heavy'
+      },
+    ],
     cardCase,
     titleCase,
     decoratorCase,
