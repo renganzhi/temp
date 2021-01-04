@@ -917,21 +917,23 @@ public class HomePageController {
 	@ApiOperation("模板导出成zip包")
 	@GetMapping("/exportTemplate")
 	public void exportTemplate(@RequestParam("ids") String ids, HttpServletResponse response){
-		try {
-			List<HomePage> pages = Lists.newArrayList();
-			for (String str: ids.split(",")) {
-				Long id = Long.valueOf(str);
-				HomePage page = homePageService.getById(id);
-	//			if (ObjectUtils.isEmpty(page)){
-	//				return new JsonModel(false, "页面不存在");
-	//			}
-				pages.add(page);
-			}
-			String path = impExpService.makeTemplate(pages);
-			impExpService.download(path, response);
-		}catch (Exception e){
-			e.printStackTrace();
+//		try {
+		List<HomePage> pages = Lists.newArrayList();
+		for (String str: ids.split(",")) {
+			Long id = Long.valueOf(str);
+			HomePage page = homePageService.getById(id);
+//			if (ObjectUtils.isEmpty(page)){
+//				return new JsonModel(false, "页面不存在");
+//			}
+			pages.add(page);
 		}
+		logger.info("导出开始");
+		String path = impExpService.makeTemplate(pages);
+		logger.info("缓存目标地址： "  + path);
+		impExpService.download(path, response);
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
 	}
 
 

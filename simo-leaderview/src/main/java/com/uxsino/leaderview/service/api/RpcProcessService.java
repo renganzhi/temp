@@ -4,16 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorTable;
 import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
+import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Component
@@ -68,9 +71,30 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<Map<String,Object>> findNeComps(List<String> neIds, String indicatorName, String componentName,
-                                                String neName, List<String> neCompIdNotIn, String... keyword) {
+                                                String neName, List<String> neCompIdNotIn, String... keyword) throws Exception{
         JsonModel jsonModel = monitorService.findNeComps(neIds, indicatorName, componentName, neName, neCompIdNotIn, keyword);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
         return (List<Map<String,Object>>) jsonModel.getObj();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getNeIdsByDomainIds(Long[] domains, HttpSession session) throws Exception{
+        JsonModel jsonModel = monitorService.getNeIdsByDomainIds(domains, "SESSION=" + session.getId());
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return (List<String>) jsonModel.getObj();
+    }
+
+    @SuppressWarnings("unchecked")
+    public PageModel findPage(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
+        JsonModel jsonModel = monitorService.findPage(JSON.toJSONString(temPage), networkLinkModel);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return this.toJavaBean(jsonModel, PageModel.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -88,5 +112,6 @@ public class RpcProcessService {
         LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
     }
+
 
 }
