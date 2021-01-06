@@ -75,12 +75,12 @@ export default {
           itemStyle: {
             normal: {
               opacity: 1,
-              color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              color: this.item.ifGradual === 'false' ? this.item.PieColorArray[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                 offset: 0,
-                color: this.item.ctColors[index][0]
+                color: this.item.DPieColorArray[index][0]
               }, {
                 offset: 1,
-                color: this.item.ctColors[index][1]
+                color: this.item.DPieColorArray[index][1]
               }])
             }
           }
@@ -162,12 +162,12 @@ export default {
           itemStyle: {
             normal: {
               opacity: 0.1,
-              color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              color: this.item.ifGradual === 'false' ? this.item.PieColorArray[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                 offset: 0,
-                color: this.item.ctColors[index][0]
+                color: this.item.DPieColorArray[index][0]
               }, {
                 offset: 1,
-                color: this.item.ctColors[index][1]
+                color: this.item.DPieColorArray[index][1]
               }])
             }
           }

@@ -14,7 +14,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null
+      mychart: null,
+      oldItem: ''
     }
   },
   computed: {
@@ -38,7 +39,13 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawFlow()
+        if (this.oldItem === JSON.stringify(newVal)) {
+
+        } else {
+          this.oldItem = JSON.stringify(newVal)
+          this.drawFlow()
+        }
+        // this.drawFlow()
       },
       deep: true
     }
@@ -47,15 +54,21 @@ export default {
     drawFlow () {
       this.mychart = echarts.init(this.$refs.myTreeMap)
       let mycolorArry = []
-      this.item.ctColors.forEach(element => {
-        mycolorArry.push(this.item.ifGradual === 'false' ? element : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          offset: 0,
-          color: element[0]
-        }, {
-          offset: 1,
-          color: element[1]
-        }]))
-      })
+      if (this.item.ifGradual === 'false') {
+        this.item.TreeMapColorArray.forEach(element => {
+          mycolorArry.push(element)
+        })
+      } else {
+        this.item.DTreeMapColorArray.forEach(element => {
+          mycolorArry.push(new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: element[0]
+          }, {
+            offset: 1,
+            color: element[1]
+          }]))
+        })
+      }
       let myoption = {
         backgroundColor: 'transparent',
         tooltip: {

@@ -32,7 +32,7 @@ let config = {
   KLine: require('@/components/EditComp/KLine/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
-  VtextArea: require('@/components/EditComp/VtextArea/config.js')
+  NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js')
 }
 
 export default {
@@ -2797,7 +2797,7 @@ export default {
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
-      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee') {
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NEWtextArea') {
         this.selectedItem.ctName = this.$refs.textarea.innerText
         this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {

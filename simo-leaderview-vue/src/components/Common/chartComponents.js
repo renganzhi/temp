@@ -26,6 +26,7 @@ import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
 import Scatter from '@/components/EditComp/Scatter' // 散点图
 import KLine from '@/components/EditComp/KLine' // 散点图
 import TreeMap from '@/components/EditComp/TreeMap' // 散点图
+import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
@@ -60,6 +61,7 @@ export default {
   Scatter,
   KLine,
   TreeMap,
+  NEWtextArea,
   TDHistogram,
   Bubble,
   Hotspot,

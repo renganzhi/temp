@@ -12,7 +12,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart1: null
+      mychart1: null,
+      oldItem: ''
     }
   },
   computed: {
@@ -36,20 +37,26 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawPre()
+        if (this.oldItem === JSON.stringify(newVal)) {
+
+        } else {
+          this.oldItem = JSON.stringify(newVal)
+          this.drawFlow()
+        }
+        // this.drawPre()
       },
       deep: true
     }
   },
   mounted () {
-    this.drawPre()
+    this.drawFlow()
   },
   methods: {
-    drawPre () {
+    drawFlow () {
       this.mychart1 = echarts.init(this.$refs.Sunrise)
       let myoption1 = {
         backgroundColor: 'transparent',
-        color: this.item.ctColors,
+        color: this.item.PieColorArray,
         series: {
           type: 'sunburst',
           // highlightPolicy: 'ancestor',

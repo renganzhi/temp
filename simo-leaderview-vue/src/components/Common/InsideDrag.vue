@@ -69,6 +69,9 @@
           :item="item"></KLine>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
           :item="item"></TreeMap>
+    <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
+          :item="item"
+          :disabled="editable"></NEWtextArea>
     <TDHistogram v-else-if="item.chartType=='TDHistogram'"
           :item="item"></TDHistogram>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
@@ -107,11 +110,12 @@ import Scatter from '@/components/EditComp/Scatter' // 轮播表格
 import KLine from '@/components/EditComp/KLine' // 轮播表格
 import TreeMap from '@/components/EditComp/TreeMap' // 轮播表格
 import TDHistogram from '@/components/EditComp/TDHistogram' // 轮播表格
+import NEWtextArea from '@/components/EditComp/NEWtextArea' // 轮播表格
 
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, KLine, TreeMap, TDHistogram, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, KLine, TreeMap, NEWtextArea, TDHistogram, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
 

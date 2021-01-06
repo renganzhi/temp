@@ -14,7 +14,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null
+      mychart: null,
+      oldItem: ''
     }
   },
   computed: {
@@ -38,7 +39,13 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawFlow()
+        if (this.oldItem === JSON.stringify(newVal)) {
+
+        } else {
+          this.oldItem = JSON.stringify(newVal)
+          this.drawFlow()
+        }
+        // this.drawFlow()
       },
       deep: true
     }
@@ -58,14 +65,8 @@ export default {
         }
       })
       let mycolorArry = []
-      this.item.ctColors.forEach(element => {
-        mycolorArry.push(this.item.ifGradual === 'false' ? element : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          offset: 0,
-          color: element[0]
-        }, {
-          offset: 1,
-          color: element[1]
-        }]))
+      this.item.grid3DColorArray.forEach(element => {
+        mycolorArry.push(element)
       })
       let myoption = {
         backgroundColor: 'transparent',
@@ -118,13 +119,6 @@ export default {
           viewControl: {
             projection: 'orthographic',
             autoRotate: false
-          },
-          light: {
-            main: {
-              shadow: true,
-              quality: 'ultra',
-              intensity: 1.5
-            }
           }
         },
         series: [{

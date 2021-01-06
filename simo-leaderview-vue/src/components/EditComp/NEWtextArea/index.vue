@@ -9,9 +9,10 @@
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
     </div>
     <textarea :style="textStyle"
-              class="homeText"
+              :id="!item.ColorType ? 'jianBian':''"
+              :class="item.overflow ? 'homeText':'homeText hiddeLeft'"
               v-model="item.ctName"
-              ref="vtextarea"
+              ref="NEWtextArea"
               :disabled="dis"></textarea>
   </div>
 </template>
@@ -19,7 +20,7 @@
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
-  name: 'vtextarea',
+  name: 'NEWtextArea',
   props: ['item', 'disabled'],
   data () {
     return {
@@ -30,13 +31,13 @@ export default {
   },
   methods: {
     getMessage () {
-      // vtextarea.$el.focus() // 双击穿透，使文本框获得焦点
+      // this.$refs.NEWtextArea.$el.focus() // 双击穿透，使文本框获得焦点
       if (this.item.ctDataSource === 'static') {
-        this.$refs.vtextarea.focus()
+        this.$refs.NEWtextArea.focus()
       }
     },
     getBlur () {
-      this.$refs.vtextarea.blur()
+      this.$refs.NEWtextArea.blur()
     },
     updateHeight () {
       if (this.item.ctDataSource !== 'static') {
@@ -89,20 +90,42 @@ export default {
       return {
         paddingLeft: '10px',
         paddingTop: '10px',
-        color: this.item.clr + ' !important',
+        color: this.item.ColorType ? this.item.clr + ' !important' : '',
         fontSize: this.item.fontSize + 'px !important',
         fontWeight: this.item.fontWeight + ' !important',
         fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
       }
     },
     textStyle: function () {
-      return {
-        width: this.item.width + 'px !important',
-        height: this.textHeight + 'px !important',
-        color: this.item.clr + ' !important',
-        fontSize: this.item.fontSize + 'px !important',
-        fontWeight: this.item.fontWeight + ' !important',
-        fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
+      if (!this.item.ColorType) {
+        return {
+          width: this.item.width - 20 + 'px !important',
+          height: this.textHeight - 20 + 'px !important',
+          backgroundImage: !this.item.ColorType ? '-webkit-linear-gradient(bottom,' + this.item.Gradientclr[0] + ',' + this.item.Gradientclr[1] + ')' : '-webkit-linear-gradient(bottom,' + this.item.clr + ',' + this.item.clr + ')',
+          fontSize: this.item.fontSize + 'px !important',
+          textAlign: this.item.textAlign,
+          lineHeight: this.item.fontLineHeight + 'px',
+          fontWeight: this.item.fontWeight + ' !important',
+          backgroundSize: '100% ' + (this.item.fontSize * 1 + 8) + 'px',
+          margin: '10px !important',
+          padding: '0px !important',
+          letterSpacing: this.item.fontSpaceing + 'px !important',
+          fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
+        }
+      } else {
+        return {
+          width: this.item.width - 20 + 'px !important',
+          height: this.textHeight - 20 + 'px !important',
+          color: this.item.clr + ' !important',
+          fontSize: this.item.fontSize + 'px !important',
+          textAlign: this.item.textAlign,
+          lineHeight: this.item.fontLineHeight + 'px',
+          fontWeight: this.item.fontWeight + ' !important',
+          margin: '10px !important',
+          padding: '0px !important',
+          letterSpacing: this.item.fontSpaceing + 'px !important',
+          fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
+        }
       }
     }
   },
@@ -115,6 +138,12 @@ export default {
       if (this.item.ctDataSource !== 'static') {
         this.updateColor()
       }
+    },
+    'item.ctName': function (val) {
+      // if (this.item.ctDataSource !== 'static') {
+      //   this.updateColor()
+      // }
+      this.item.chartData = val
     },
     'item.fontSize': function () {
       this.updateHeight()
@@ -139,5 +168,10 @@ html[data-theme="blueWhite"] {
   border: none !important;
   position: relative;
   z-index: 1;
+}
+.hiddeLeft::-webkit-scrollbar { width: 0 !important }
+#jianBian{
+  -webkit-background-clip: text; /*必需加前缀 -webkit- 才支持这个text值 */
+  -webkit-text-fill-color: transparent; /*text-fill-color会覆盖color所定义的字体颜色： */
 }
 </style>

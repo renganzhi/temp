@@ -17,6 +17,22 @@ export default {
     'axisLabelfontSize': 12,
     'XaxisLabelrotate': 0,
     'YaxisLabelrotate': 0,
+    'ScatterColor': [
+      '#37a2da',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'],
+    'DScatterColor': [
+      ['#6fcaf7', '#0c79c5'],
+      ['#8feee5', '#1bbcae'],
+      ['#fa8d76', '#db4222'],
+      ['#af8af3', '#874edc'],
+      ['#f5739c', '#f31d53'],
+      ['#ffdf91', '#eeb01b'],
+      ['#5c84e7', '#144fe5'],
+      ['#85f8c0', '#62dc26']
+    ],
     'ifGradual': 'false',
     'chartData': {
       'dataArry': [{
@@ -210,6 +226,16 @@ export default {
       }, {
         'name': '饼图颜色',
         'key': 'ScatterColor',
+        'parentKey': {
+          'ifGradual': 'false'
+        },
+        'tag': 'ColorArray'
+      }, {
+        'name': '饼图颜色',
+        'key': 'DScatterColor',
+        'parentKey': {
+          'ifGradual': 'true'
+        },
         'tag': 'ColorArray'
       }
     ]

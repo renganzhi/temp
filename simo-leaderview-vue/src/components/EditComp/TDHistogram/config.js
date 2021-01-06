@@ -12,6 +12,12 @@ export default {
     'grid3DFontSize': 16,
     'ifGradual': 'false',
     'grid3DlineSize': 16,
+    'grid3DColorArray': [
+      '#37a2da',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'],
     'chartData': {
       'dataArry': [
         [0, 0, 2],

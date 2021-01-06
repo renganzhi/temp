@@ -14,7 +14,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null
+      mychart: null,
+      oldItem: ''
     }
   },
   computed: {
@@ -38,7 +39,13 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawFlow()
+        if (this.oldItem === JSON.stringify(newVal)) {
+
+        } else {
+          this.oldItem = JSON.stringify(newVal)
+          this.drawFlow()
+        }
+        // this.drawFlow()
       },
       deep: true
     }
@@ -64,12 +71,12 @@ export default {
             shadowColor: 'rgba(120, 36, 50, 0.5)',
             shadowOffsetY: 5,
             shadowOffsetX: 10,
-            color: this.item.ifGradual === 'false' ? this.item.ctColors[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            color: this.item.ifGradual === 'false' ? this.item.ScatterColor[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
               offset: 0,
-              color: this.item.ctColors[index][0]
+              color: this.item.DScatterColor[index][0]
             }, {
               offset: 1,
-              color: this.item.ctColors[index][1]
+              color: this.item.DScatterColor[index][1]
             }])
           }
         })

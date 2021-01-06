@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="item.chartData.tabs" class="tab_btn_box">
-      <button v-for="tab in item.chartData.tabs" :key="tab" 
+      <button v-for="tab in item.chartData.tabs" :key="tab"
       :class="{'tab_btn': true, 'tab_active_btn': activeTab == tab}"
       :style="btnStyle"
       @click="changeActiveTab(tab)">{{ tab }}</button></div>
@@ -86,6 +86,7 @@ export default {
             y: 'bottom',
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
+              fontSize: this.item.fontSize,
               color: '#666f8b'
             }
           },
@@ -109,10 +110,10 @@ export default {
     return obj
   },
   computed: {
-    btnStyle() {
-      let style = {};
+    btnStyle () {
+      let style = {}
       if (this.item.labelFontSize) {
-        const size = this.item.labelFontSize;
+        const size = this.item.labelFontSize
         // console.log(size)
         style = {
           // color: 'red',
@@ -120,7 +121,7 @@ export default {
           height: `${size * 2}px !important`
         }
       }
-      return style;
+      return style
     },
     comWidth: function () {
       return this.item.width + 'px'
@@ -223,12 +224,22 @@ export default {
     'item.ctLegendShow': function (newV) {
       if (this.item.subType === 'progress') {
         if (newV === 'true') {
+          console.log(this.settings)
           this.settings.dataName.p = this.item.chartData.name
         } else {
           this.settings.dataName.p = ''
         }
       } else {
         this.extend.legend.show = newV === 'true'
+      }
+    },
+    'item.ctLegendSize': function (newV) {
+      if (this.item.chartType === 've-gauge') {
+        this.settings.seriesMap.p.title.textStyle.fontSize = newV
+      } else {
+        this.extend.legend.textStyle.fontSize = newV
+        this.extend.xAxis.axisLabel.textStyle.fontSize = newV
+        this.extend.yAxis.axisLabel.textStyle.fontSize = newV
       }
     },
     'item.smooth': function (newV) {
@@ -239,6 +250,10 @@ export default {
     },
     'item.showPoint': function (newV, oldValue) {
       this.extend.label.show = newV === 'true'
+      this.keyId = new Date().getTime() // 强制更新视图
+    },
+    'item.PointSize': function (newV) {
+      this.extend.label.fontSize = newV * 1
       this.keyId = new Date().getTime() // 强制更新视图
     },
     'item.bgClr': {
@@ -280,8 +295,8 @@ export default {
         this.extend.series.itemStyle.normal.color = null
       }
     },
-    'item.rotate'(newV, oldV) {
-      this.extend.xAxis.axisLabel.rotate = newV;
+    'item.rotate' (newV, oldV) {
+      this.extend.xAxis.axisLabel.rotate = newV
     },
     'item.chartData': function (newV) {
       if (this.item.chartType === 've-gauge') {
@@ -295,7 +310,7 @@ export default {
         this.empty = false
       } else if (newV.tabs) {
         this.empty = false
-        this.activeTab = newV.tabs[0];
+        this.activeTab = newV.tabs[0]
         this.updateUnit()
       } else {
         if (this.item.chartData.columns) {
@@ -307,7 +322,7 @@ export default {
         this.empty = true
       }
       if (this.item.chartType === 've-histogram') {
-        let rows;
+        let rows
         if (newV.rows) {
           rows = newV.rows
         } else {
@@ -420,7 +435,7 @@ export default {
       this.activeTab = tab
       this.updateUnit()
     },
-     updateUnit () {
+    updateUnit () {
       const item = this.item
       // 折线图, dealChartData
       if (item.chartType == 've-line' && item.subType == null) {
@@ -571,7 +586,8 @@ export default {
                 interval: 'auto', // 采用不重叠的方式展示
                 rotate: _this.item.rotate || 0,
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -588,7 +604,8 @@ export default {
                 showMinLabel: true,
                 showMaxLabel: true,
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 formatter: function (params, index) {
                   return params.length > 5 ? params.substr(0, 5) + '...' : params
@@ -623,7 +640,7 @@ export default {
           }
         },
         've-histogram': function () {
-          let rows;
+          let rows
           if (_this.item.chartData.rows) {
             rows = _this.item.chartData.rows
           } else {
@@ -642,12 +659,13 @@ export default {
                 showMaxLabel: true,
                 rotate: _this.item.rotate || 0,
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 formatter: function (params, index) {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
                 }
-              },
+              }
             },
             yAxis: {
               splitLine: {
@@ -660,7 +678,8 @@ export default {
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -673,7 +692,7 @@ export default {
             }
           })
           if (_this.item.thirdType === 'stackHistogram') {
-            let columns;
+            let columns
             if (_this.item.chartData.columns) {
               columns = _this.item.chartData.columns
             } else {
@@ -761,6 +780,7 @@ export default {
             },
             label: {
               show: _this.item.showPoint === 'true',
+              fontSize: _this.item.PointSize || '14',
               color: '#828bac' // 标点的文字颜色
             },
             yAxis: {
@@ -795,7 +815,8 @@ export default {
               axisLabel: {
                 interval: 'auto', // 采用不重叠的方式展示
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -830,10 +851,11 @@ export default {
               axisLabel: {
                 rotate: _this.item.rotate || 0,
                 textStyle: {
-                  color: _this.item.legendColor || '#828bac'
+                  color: _this.item.legendColor || '#828bac',
+                  fontSize: _this.item.ctLegendSize || '14'
                 },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
-              },
+              }
             },
             tooltip: {
               trigger: 'axis',
@@ -955,7 +977,7 @@ export default {
                     offsetCenter: [0, '120%'], //  x,  y，单位px
                     textStyle: {
                       color: _this.item.legendColor || '#666f8b',
-                      fontSize: 14
+                      fontSize: _this.item.ctLegendSize || 14
                     }
                   },
                   detail: {
@@ -1033,7 +1055,7 @@ export default {
                     offsetCenter: [0, '60%'], //  x,  y，单位px
                     textStyle: {
                       color: _this.item.legendColor || '#666f8b',
-                      fontSize: 14
+                      fontSize: _this.item.ctLegendSize || 14
                     }
                   },
                   detail: {
@@ -1160,18 +1182,18 @@ export default {
                 show: false
               }
             },
-            series (v) {  //解决：ve-radar为svg时，渐变在直线上失效问题
+            series (v) { // 解决：ve-radar为svg时，渐变在直线上失效问题
               let colorArr = _this.extend.color
               let columns = _this.dealChartData.columns
               v.forEach(d => {
                 d.itemStyle = { normal: { areaStyle: { type: 'default' } } }
-                if (columns.length > 2) {  //解决：雷达图只有一个指标时，无信息展示问题，此情况露出圆点
+                if (columns.length > 2) { // 解决：雷达图只有一个指标时，无信息展示问题，此情况露出圆点
                   d.symbolSize = 0
                 }
-                if(columns.length === 3 && _this.item.ifGradual === 'true' && d.data.length){
-                  d.data.forEach((o,i) => {
+                if (columns.length === 3 && _this.item.ifGradual === 'true' && d.data.length) {
+                  d.data.forEach((o, i) => {
                     o.lineStyle = {
-                      color:colorArr[i].colorStops[0].color //默认取渐变的0%的颜色
+                      color: colorArr[i].colorStops[0].color // 默认取渐变的0%的颜色
                     }
                   })
                 }

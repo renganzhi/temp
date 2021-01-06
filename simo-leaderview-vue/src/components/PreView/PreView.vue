@@ -52,7 +52,6 @@ export default {
     },
     paintStyle: function () {
       var paintData = this.paintObj || this.paintConf
-      console.log(paintData)
       if (!paintData) return
       var type = paintData.bgStyle
       if (type === '1') {

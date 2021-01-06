@@ -11,6 +11,12 @@ export default {
     'FontSize': 12,
     'LineWidth': 3,
     'isHollow': 0,
+    'PieColorArray': [
+      '#37a2da',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'],
     'chartData': {
       'dataArry': [{
         'name': 'Grandpa',

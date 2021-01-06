@@ -93,12 +93,12 @@
                   class="ring-icon"
                   data-toggle='tooltip'
                   title
-                  :data-original-title="' 上一页 '"><i class="icon-n-prev"></i></span>
+                  data-original-title="上一页"><i class="icon-n-prev"></i></span>
             <span @click="preOther(1)"
                   class="ring-icon"
                   data-toggle='tooltip'
                   title
-                  :data-original-title="' 下一页 '"><i class="icon-n-next"></i></span>
+                  data-original-title="下一页"><i class="icon-n-next"></i></span>
           </div>
         </div>
         <ul class="menu-list"
@@ -1672,6 +1672,17 @@
                     </select>
                   </div>
                   <div class="form-group cols2">
+                    <label>图例字体大小</label>
+                    <select v-model="selectedItem.ctLegendSize">
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="20">20</option>
+                      <option value="24">24</option>
+                      <option value="28">28</option>
+                      <option value="30">30</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
                     <label>图例位置</label>
                     <select>
                       <option>底部居中</option>
@@ -1717,6 +1728,18 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
+                     v-if="selectedItem.chartType==='ve-gauge'">
+                  <label>图例字体大小</label>
+                  <select v-model="selectedItem.ctLegendSize">
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
                      v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字颜色</label>
                   <label v-else>图例文字颜色</label>
@@ -1749,6 +1772,18 @@
                   <select v-model="selectedItem.showPoint">
                     <option value="false">否</option>
                     <option value="true">是</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                  <label>标点字大小</label>
+                  <select v-model="selectedItem.PointSize">
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
@@ -1889,11 +1924,11 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','VtextArea'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','NEWtextArea'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
-                  <ChildTag :item="item" :selectedItem="selectedItem"></ChildTag>
+                  <ChildTag :item="item" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
                 </div>
               </template>
             </div>
@@ -1901,7 +1936,7 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div class="form-group cols2" v-show="['image', 'text', 'hotspot'].includes(selectedItem.chartType)">
+              <div class="form-group cols2" v-show="['image', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
                   <label>跳转大屏</label>
                   <select v-model="selectedItem.linkId">
                     <option value="">无跳转</option>
@@ -1988,14 +2023,14 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'marquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.chartData}}</div>
                 </div>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'NEWtextArea' || selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
                   <div ref="textarea"
                        class="confData"
                        v-if="refreshData"
@@ -2294,21 +2329,25 @@ export default EditJs
   position: fixed;
   bottom: 12px;
   width: 100%;
-  padding-right: 30px;
+  padding-right: 320px;
   padding-left: 15px;
   z-index: 999;
-  text-align: center;
+  text-align: right;
   .ring-icon{
     display: inline-block;
     width: 30px;
     height: 30px;
-    background: #15192a;
+    background: #101425;
     border-radius: 50%;
     text-align: center;
     line-height: 30px;
     opacity: .3;
     margin: 0 4px;
     cursor: pointer;
+  }
+  .ring-icon:hover{
+    // background: #0f1321;
+    opacity: 1;
   }
 }
 </style>
