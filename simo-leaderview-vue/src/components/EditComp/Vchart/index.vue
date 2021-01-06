@@ -135,16 +135,7 @@ export default {
       }
     },
     dealChartData: function () {
-      // if(this.item.chartType === 've-bar' && this.item.subType === 'category') {
-      // 弧形柱图
-      //     return []
-      // }
       let d = this.item.chartData
-      // if (!_.isObject(d) && !_.isArray(d)) {
-      //   this.empty = true
-      //   return {}
-      // }
-      // this.empty = false
       if (['ve-line', 've-bar', 've-histogram'].includes(this.item.chartType) && this.item.chartData.allData) {
         // console.log(this.activeTab)
         return this.item.chartData.allData[this.activeTab]
@@ -178,7 +169,7 @@ export default {
     },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
-        let barW = Math.floor((newV - 60) * 0.7 / this.item.chartData.rows.length)
+        let barW = Math.floor((newV - 60) * 0.7 / this.dealChartData.rows.length)
         let strLen = Math.round(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -302,6 +293,10 @@ export default {
         }
       } else if (newV.rows && newV.rows.length > 0) {
         this.empty = false
+      } else if (newV.tabs) {
+        this.empty = false
+        this.activeTab = newV.tabs[0];
+        this.updateUnit()
       } else {
         if (this.item.chartData.columns) {
           this.item.chartData.columns = []
@@ -312,7 +307,14 @@ export default {
         this.empty = true
       }
       if (this.item.chartType === 've-histogram') {
-        let barW = Math.floor((this.item.width - 60) * 0.7 / newV.rows.length)
+        let rows;
+        if (newV.rows) {
+          rows = newV.rows
+        } else {
+          this.activeTab = newV.tabs[0]
+          rows = newV.allData[this.activeTab].rows
+        }
+        let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -545,7 +547,6 @@ export default {
             },
             series: {
               type: 'bar',
-              /* barWidth:'35%', */
               barGap: '20%',
               barCategoryGap: '50%',
               itemStyle: {
@@ -622,7 +623,16 @@ export default {
           }
         },
         've-histogram': function () {
-          let barW = Math.floor((_this.item.width - 60) * 0.7 / _this.item.chartData.rows.length)
+          let rows;
+          if (_this.item.chartData.rows) {
+            rows = _this.item.chartData.rows
+          } else {
+            if (!_this.activeTab) {
+              _this.activeTab = _this.item.chartData.tabs[0]
+            }
+            rows = _this.item.chartData.allData[_this.activeTab].rows
+          }
+          let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
           let strLen = Math.round(barW / 10)
           obj.extend = $.extend(obj.extend, {
             xAxis: {
@@ -663,8 +673,17 @@ export default {
             }
           })
           if (_this.item.thirdType === 'stackHistogram') {
-            let _key = _this.item.chartData.columns[0]
-            let _value = _this.item.chartData.columns.slice(1, _this.item.chartData.columns.length)
+            let columns;
+            if (_this.item.chartData.columns) {
+              columns = _this.item.chartData.columns
+            } else {
+              if (!_this.activeTab) {
+                _this.activeTab = _this.item.chartData.tabs[0]
+              }
+              columns = _this.item.chartData.allData[_this.activeTab].columns
+            }
+            let _key = columns[0]
+            let _value = columns.slice(1, columns.length)
             obj.settings.stack = { _key: _value }
           }
           if (_this.item.subType === 'pictorialBar') {
@@ -720,7 +739,6 @@ export default {
                     } : null
                   }
                 }
-                // barWidth:'35%'
               }
             })
           }

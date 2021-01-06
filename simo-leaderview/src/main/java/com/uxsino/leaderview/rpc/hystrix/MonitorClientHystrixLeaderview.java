@@ -1,11 +1,14 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
 import com.alibaba.fastjson.JSON;
+import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
+import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +37,27 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel findIndByNeClass(List<String> neClasses) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getIndicatorInfoByName(String indicatorName) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeComps(List<String> neIds, String indicatorName, String componentName, String neName, List<String> neCompIdNotIn, String... keyword) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getNeIdsByDomainIds(Long[] domainIds, String cookie) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+
+    @Override
+    public JsonModel findPage(String pageModel, NetworkLinkModel networkLinkModel) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

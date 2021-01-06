@@ -315,6 +315,12 @@ export default {
         return false
       }
       return true
+    },
+    fontFaces () {
+      if (this.selectedItem.chartType === 'number') {
+        return this.settingData.fontFaces
+      }
+      return this.settingData.textFontFaces
     }
   },
   provide: {
