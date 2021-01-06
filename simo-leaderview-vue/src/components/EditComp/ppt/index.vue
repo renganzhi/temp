@@ -73,9 +73,13 @@ export default {
     if (this.item.autoplay && !this.editing) {
       this.setTimer();
     }
+    this.$EventBus.$on('activeSrcList', (data) => {
+      this.activeIndex = data
+    })
   },
   beforeDestroy () {
-    this.clearTimer();
+    this.clearTimer()
+    this.$EventBus.$off('activeSrcList')
   },
   watch: {
     'item.srcList' (newV, oldV) {

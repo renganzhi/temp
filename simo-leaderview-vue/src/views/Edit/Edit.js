@@ -1,5 +1,5 @@
 // 拖拽排序
-import { SlickList, SlickItem } from 'vue-slicksort'
+// import { SlickList, SlickItem } from 'vue-slicksort'
 
 import compsArr from './chartJson'
 import ChartStyle from './ChartStyle'
@@ -11,6 +11,7 @@ import PreView from '@/components/PreView/PreView'
 import Confirm from '@/components/Common/Confirm'
 import { baseData, gbs } from '@/config/settings'
 import { Slider, Notification } from 'element-ui'
+import draggable from 'vuedraggable'
 import { mapActions, mapGetters } from 'vuex'
 // import html2canvas from 'html2canvas' // 图片的层级总是要高一些
 import { checkLogin, newAjax } from '@/config/thirdLoginMix'
@@ -37,7 +38,7 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, SlickList, SlickItem, ChartStyle, ChildTag },
+  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -3467,12 +3468,12 @@ export default {
       this.saveHistory('paint')
       this.paintObj.bgImg = ''
     },
-    deleteSrcList ($event) {
-      let target = $event.target
-      if (target.className === 'delete_text') {
-        let index = target.dataset.index
-        this.selectedItem.srcList.splice(index, 1)
-      }
+    activeSrcList (index) {
+      // console.log('index: ', index);
+      this.$EventBus.$emit('activeSrcList', index)
+    },
+    deleteSrcList (index) {
+      this.selectedItem.srcList.splice(index, 1)
     },
     /* 图片 */
     changeImg: function (e) {
@@ -3516,6 +3517,7 @@ export default {
             name,
             src: curSrc
           })
+          _this.$EventBus.$emit('activeSrcList', 0)
         }
       })
       e.target.value = ''

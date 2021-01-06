@@ -2181,17 +2181,12 @@
                         style="margin-top: 30px">更新视图</button>
               </div>
               <template v-if="selectedItem.chartType == 'ppt'">
-                <div class="form-group cols2 img_src_list" @click="deleteSrcList($event)">
-                  <SlickList axis="y" v-model="selectedItem.srcList" :pressDelay="200">
-                    <SlickItem v-for="(item, index) in selectedItem.srcList" :key="index"
-                    :index="index" :item="item "
-                    class="src_item"
-                    >
-                      {{item.name}}
-                      <span class="delete_text" :data-index="index" >删除</span>
-                    </SlickItem>
-                  </SlickList>
-                </div>
+                <draggable class="img_src_list" v-model="selectedItem.srcList" handle=".handle">
+                  <div v-for="(item, index) in selectedItem.srcList" :key="index">
+                    <span class="src_item handle" @click="activeSrcList(index)">{{item.name}}</span>
+                    <span class="delete_text" @click="deleteSrcList(index)">删除</span>
+                    </div>
+                </draggable>
               </template>
             </div>
           </div>
@@ -2277,6 +2272,8 @@ export default EditJs
     line-height: 25px;
     // color: red;
     cursor:move;
+        display: inline-block;
+    width: calc(100% - 37px);
   }
   .delete_text {
     cursor: pointer;
