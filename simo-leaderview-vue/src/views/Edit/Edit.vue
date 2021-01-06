@@ -40,8 +40,6 @@
         <a class="fr simoLink icon-n-revoke edit-opt"
            style="color:#666F8B;"
            v-else>撤销</a>
-        <span class="fr simoLink edit-opt" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前操作元件名称: 组合</span>
-        <span class="fr simoLink edit-opt" v-show="selectedItem.ctName">当前操作元件名称: {{selectedItem.ctName || ''}}</span>
       </div>
       <div class="edit-keyboard"
            v-show="showKeybd"
@@ -221,6 +219,8 @@
 
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
+          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{selectedItem.ctName || ''}}</div>
+          <div class="handle_label" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前元件: 组合</div>
           <div class="base-item"
                v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
             <div class="m-tab"
@@ -2265,6 +2265,20 @@ import EditJs from './Edit.js'
 import './Edit.scss'
 export default EditJs
 </script>
+<style lang="scss" scoped>
+.handle_label {
+  width: 100%;
+  height: 38px;
+  line-height: 38px;
+  padding: 0 15px;
+  border-bottom: solid 1px #383f54;
+  color: #898da8;
+  font-size: 12px;
+      overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>
 <style lang="scss">
 .img_src_list {
   .src_item {
