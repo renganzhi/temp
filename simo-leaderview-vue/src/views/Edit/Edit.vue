@@ -1889,7 +1889,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','VtextArea'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','NEWtextArea'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
@@ -1901,7 +1901,7 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div class="form-group cols2" v-show="['image', 'text', 'hotspot'].includes(selectedItem.chartType)">
+              <div class="form-group cols2" v-show="['image', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
                   <label>跳转大屏</label>
                   <select v-model="selectedItem.linkId">
                     <option value="">无跳转</option>
@@ -1988,14 +1988,14 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text' && selectedItem.chartType != 'marquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'marquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.chartData}}</div>
                 </div>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'NEWtextArea' || selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
                   <div ref="textarea"
                        class="confData"
                        v-if="refreshData"
