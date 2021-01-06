@@ -23,7 +23,6 @@ export default {
     }
   },
   styles: {
-    base: [],
     lengend: [
       {
         'name': '图例可见性',
@@ -46,7 +45,7 @@ export default {
         'tag': 'singleColor'
       }
     ],
-    chart: [
+    base: [
       {
         'name': '填充色方式',
         'key': 'isLinear',
