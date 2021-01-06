@@ -21,6 +21,7 @@
                 <div class="page-lable-content">
                   <input type="file"
                          accept=".zip"
+                         ref="file"
                          @change='changeFile' />
                   <label class="error"
                          v-show="showErr"
@@ -178,6 +179,8 @@ export default {
               tooltip('', '上传成功！', 'success')
             }
             $('#importPage-modal').modal('hide')
+            // reset
+            this.$refs.file.value = ''
           } else {
             if (gbs.inDev) {
               Notification({

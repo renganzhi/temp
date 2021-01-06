@@ -9,7 +9,8 @@ export default Vue.component('hotspot', {
                 width: this.item.width + 'px !important',
                 height: this.item.height + 'px !important',
             }
-            if (this.$route.name == 'edit') {
+            // console.log(this.$parent.$parent._name == '<PreView>');
+            if (this.$route.name == 'edit' && this.$parent.$parent._name != '<PreView>' ) {
                 style.backgroundColor = this.item.linkId ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)'
               }
               return style

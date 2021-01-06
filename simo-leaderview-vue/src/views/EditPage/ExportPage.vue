@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="editHomePage-modal"
+    <div id="exportPage-modal"
          style="z-index: 20100"
          class="modal in"
          role="dialog"
@@ -80,6 +80,7 @@
 import { gbs } from '@/config/settings'
 import { Notification } from 'element-ui'
 import qs from 'qs'
+import { download } from '@/utils'
 export default {
   name: 'exportPage',
   props: ['showModal', 'tems'],
@@ -103,9 +104,9 @@ export default {
     var _this = this
     // this.getTemps()
     if (this.showModal) {
-      $('#editHomePage-modal').modal('show')
+      $('#exportPage-modal').modal('show')
     }
-    $('#editHomePage-modal').on('hide.bs.modal', function () {
+    $('#exportPage-modal').on('hide.bs.modal', function () {
       // 关闭模态框时触发
       _this.$emit('hideModal', { ifAdd: _this.addOne, addId: _this.addId })
       _this.addOne = false
@@ -114,7 +115,7 @@ export default {
   watch: {
     showModal: function (newV) {
       if (newV) {
-        $('#editHomePage-modal').modal('show')
+        $('#exportPage-modal').modal('show')
         // this.temId = ''
         this.temId = []
         this.name = ''
@@ -186,13 +187,11 @@ export default {
           method: 'get',
           url: '/leaderview/home/exportTemplate',
           params: data,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json; charset=utf-8',
-            withCredentials: true,
-          }
+          responseType: 'blob'
         }).then((res) => {
-          $('#editHomePage-modal').modal('hide')
+          $('#exportPage-modal').modal('hide')
+          // console.log(res);
+          download(`${this.name}.zip`, res)
           // if (res.success) {
           //   this.addOne = true
           //   this.addId = res.obj.id
@@ -205,7 +204,7 @@ export default {
           //   } else {
           //     tooltip('', '操作成功！', 'success')
           //   }
-          //   $('#editHomePage-modal').modal('hide')
+          //   $('#exportPage-modal').modal('hide')
           // } else {
           //   if (gbs.inDev) {
           //     Notification({
@@ -231,7 +230,7 @@ export default {
     }
   },
   beforeDestroy: function () {
-    $('#editHomePage-modal').modal('hide')
+    $('#exportPage-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
   destroyed: function () {
@@ -240,45 +239,47 @@ export default {
 </script>
 <style scoped lang="scss">
 /* 新建页面-弹窗样式 */
-#editHomePage-modal .defPages {
+#exportPage-modal .defPages {
   flex-wrap: wrap;
   height: 400px;
   overflow: auto;
   margin-left: -10px;
 }
 
-#editHomePage-modal .flex-item {
-  width: 31%;
-  height: 152px;
+#exportPage-modal .flex-item {
+  // width: 31%;
+  // height: 152px;
+  width: 310px;
+  height: 165px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
 }
 
-#editHomePage-modal .flex-item:nth-child(3n + 0) {
+#exportPage-modal .flex-item:nth-child(3n + 0) {
   margin-right: 0px !important;
 }
 
-#editHomePage-modal .first-item {
+#exportPage-modal .first-item {
   text-align: center;
   line-height: 152px;
 }
 
-#editHomePage-modal .active {
+#exportPage-modal .active {
   outline: 2px solid #0088cc;
 }
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
-  #editHomePage-modal .flex-item {
+  #exportPage-modal .flex-item {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   }
 }
 html[data-theme="blueWhite"] {
-  #editHomePage-modal .active {
+  #exportPage-modal .active {
     outline: 2px solid #60abff;
   }
 }
 html[data-theme="blackWhite"] {
-  #editHomePage-modal .active {
+  #exportPage-modal .active {
     outline: 2px solid #026bf4;
   }
 }
