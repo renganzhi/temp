@@ -67,27 +67,39 @@
               </div>
             </div>
         </template>
+        <template v-if="item.tag === 'fontFamily'">
+            <div class="form-group"
+                  style="height: 30px;">
+              <div v-for="(fontitem, index) in settingData.fontFaces"
+                    :key="index"
+                    @click="setFontFamily(fontitem.fontFace)"
+                    :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===fontitem.fontFace}"
+                    :style="{'font-family': fontitem.fontFace}">
+                {{fontitem.fontName}}
+              </div>
+            </div>
+        </template>
         <template v-if="item.tag === 'ColorArray'">
             <div class="form-group colorsConf">
               <span>序号</span>
               <span class="color-w70 text">颜色</span>
             </div>
             <div class="form-group colorsConf"
-                v-for="(v,index) in selectedItem.ctColors"
+                v-for="(v,index) in selectedItem[item.key]"
                 :key="index">
             <span class="colorOrder">{{index+1}}</span>
             <div class="gradient"
                     v-if="selectedItem.ifGradual==='true'"
                     @click="myreverseColor(index)"
-                    :style="{'background': 'linear-gradient(45deg, ' + selectedItem.ctColors[index][0]  +',' + selectedItem.ctColors[index][1] + ')'}">
+                    :style="{'background': 'linear-gradient(45deg, ' + selectedItem[item.key][index][0]  +',' + selectedItem[item.key][index][1] + ')'}">
                 <div class="color-w15">
-                <Vcolor :data="selectedItem.ctColors[index][0]"
+                <Vcolor :data="selectedItem[item.key][index][0]"
                         :index="index"
                         @getdata="mygetColorStart"></Vcolor>
                 </div>
                 <div class="color-w15"
                     style="float: right">
-                <Vcolor :data="selectedItem.ctColors[index][1]"
+                <Vcolor :data="selectedItem[item.key][index][1]"
                         :index="index"
                         @getdata="mygetGradColor"></Vcolor>
                 </div>
@@ -95,8 +107,8 @@
             <div v-else>
                 <div class="color-w200"
                     style="float: left; width: 140px;">
-                <Vcolor :data="selectedItem.ctColors[index]"
-                        type="ctColors"
+                <Vcolor :data="selectedItem[item.key][index]"
+                        :type="item.key"
                         :index="index"
                         @getdata="mygetSingleColor"></Vcolor>
                 </div>
@@ -115,14 +127,15 @@
 </template>
 <script>
 import Vcolor from '@/components/Common/Vcolor'
-import { gbs } from '@/config/settings'
+import { baseData, gbs } from '@/config/settings'
 export default {
   name: 'ChildTag',
   components: {Vcolor},
-  props: ['item', 'selectedItem'],
+  props: ['item', 'selectedItem', 'selectChange', 'chooseSameFlag'],
   data () {
     return {
       baseUrl: '',
+      settingData: baseData,
       picSrc: ''
     }
   },
@@ -154,6 +167,9 @@ export default {
     }
   },
   methods: {
+    setFontFamily: function (val) {
+      this.selectedItem.fontFamily = val
+    },
     changeImg: function (e) {
       if (e.value === '') {
         return
@@ -179,7 +195,6 @@ export default {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.$parent.saveHistory()
-        console.log(name, chartType, curSrc)
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
       })
@@ -189,28 +204,127 @@ export default {
       this.$parent.getColor(data)
     },
     mygetSingleColor (data) {
-      this.$parent.getSingleColor(data)
-    },
-    addColor (data) {
-      this.$parent.addColor(data)
-    },
-    moveUp (data) {
-      this.$parent.moveUp(data)
+      this.$parent.saveHistory()
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(data.index, 1, data.color)
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(data.index, 1, data.color)
+      }
     },
     mygetColorStart (data) {
-      this.$parent.getColorStart(data)
+      this.$parent.saveHistory()
+      if (!this.selectChange && this.chooseSameFlag) {
+        var oldColor = this.selectedItem[this.item.key][data.index]
+        oldColor[0] = data.color
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(data.index, 1, oldColor)
+        })
+      } else {
+        if (data.type !== undefined) {
+          this.selectedItem[data.type][0] = data.color
+        } else {
+          var oldColor = this.selectedItem[this.item.key][data.index]
+          oldColor[0] = data.color
+          this.selectedItem[this.item.key].splice(data.index, 1, oldColor)
+        }
+      }
     },
-    myreverseColor (data) {
-      this.$parent.reverseColor(data)
+    myreverseColor (index) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key][index].reverse()
+        })
+      } else {
+        this.selectedItem[this.item.key][index].reverse()
+      }
     },
     mygetGradColor (data) {
-      this.$parent.getGradColor(data)
+      this.$parent.saveHistory()
+      if (!this.selectChange && this.chooseSameFlag) {
+        var oldColor = this.selectedItem[this.item.key][data.index]
+        oldColor[1] = data.color
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(data.index, 1, oldColor)
+        })
+      } else {
+        if (data.type !== undefined) {
+          this.selectedItem[data.type][1] = data.color
+        } else {
+          var oldColor = this.selectedItem[this.item.key][data.index]
+          oldColor[1] = data.color
+          this.selectedItem[this.item.key].splice(data.index, 1, oldColor)
+        }
+      }
     },
-    moveDown (data) {
-      this.$parent.moveDown(data)
+    addColor (index) {
+      // 添加颜色
+      if (this.selectedItem.ifGradual === 'false') {
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            this.chartNum[i][this.item.key].splice(index, 0, '#c23531')
+          })
+        } else {
+          this.selectedItem[this.item.key].splice(index, 0, '#c23531')
+        }
+      } else {
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            this.chartNum[i][this.item.key].splice(index, 0, ['#c23531', '#c23531'])
+          })
+        } else {
+          this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
+        }
+      }
     },
-    delColor (data) {
-      this.$parent.delColor(data)
+    delColor (index) {
+      // 删除自定义颜色
+      if (this.selectedItem[this.item.key].length === 1) {
+        if (gbs.inDev) {
+          Notification({
+            message: '至少配置一种颜色',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '至少配置一种颜色', 'info')
+        }
+        return
+      }
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(index, 1)
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(index, 1)
+      }
+    },
+    moveUp (index) {
+      if (index !== 0) {
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            let tempColor = this.chartNum[i][this.item.key].splice(index, 1)[0]
+            this.chartNum[i][this.item.key].splice(index - 1, 0, tempColor)
+          })
+        } else {
+          var tempColor = this.selectedItem[this.item.key].splice(index, 1)[0]
+          this.selectedItem[this.item.key].splice(index - 1, 0, tempColor)
+        }
+      }
+    },
+    moveDown (index) {
+      if (index !== this.selectedItem[this.item.key].length - 1) {
+        if (!this.selectChange && this.chooseSameFlag) {
+          this.chooseIndexs.forEach((i) => {
+            let tempColor = this.chartNum[i][this.item.key].splice(index, 1)[0]
+            this.chartNum[i][this.item.key].splice(index + 1, 0, tempColor)
+          })
+        } else {
+          var tempColor = this.selectedItem[this.item.key].splice(index, 1)[0]
+          this.selectedItem[this.item.key].splice(index + 1, 0, tempColor)
+        }
+      }
     }
     // {
     //     "name": "背景上传",

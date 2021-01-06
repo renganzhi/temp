@@ -22,6 +22,22 @@ export default {
     'breadcrumbBackColor': 'white',
     'breadcrumbColor': 'black',
     'breadcrumbsize': 12,
+    'TreeMapColorArray': [
+      '#37a2da',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'],
+    'DTreeMapColorArray': [
+      ['#6fcaf7', '#0c79c5'],
+      ['#8feee5', '#1bbcae'],
+      ['#fa8d76', '#db4222'],
+      ['#af8af3', '#874edc'],
+      ['#f5739c', '#f31d53'],
+      ['#ffdf91', '#eeb01b'],
+      ['#5c84e7', '#144fe5'],
+      ['#85f8c0', '#62dc26']
+    ],
     'chartData': {
       'name': '这是示例数据',
       'dataArry': [{
@@ -272,6 +288,16 @@ export default {
       }, {
         'name': '矩形颜色',
         'key': 'TreeMapColorArray',
+        'parentKey': {
+          'ifGradual': 'false'
+        },
+        'tag': 'ColorArray'
+      }, {
+        'name': '矩形颜色',
+        'key': 'DTreeMapColorArray',
+        'parentKey': {
+          'ifGradual': 'true'
+        },
         'tag': 'ColorArray'
       }
     ]

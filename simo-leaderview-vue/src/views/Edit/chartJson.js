@@ -10,7 +10,7 @@ import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
 import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
-import VtextArea from '@/components/EditComp/VtextArea/config.js'
+import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -337,6 +337,7 @@ var compsArr = [{
   imgClass: 'icon-n-pie',
   chartType: 've-pie',
   ifGradual: 'false',
+  ctLegendSize: '16',
   chartData: morenData.pie
 },
 {
@@ -344,6 +345,7 @@ var compsArr = [{
   imgClass: 'icon-n-ndge',
   chartType: 've-pie',
   ifGradual: 'false',
+  ctLegendSize: '16',
   chartData: morenData.pie,
   roseType: 'area' // 与饼图的区别
 },
@@ -352,6 +354,7 @@ var compsArr = [{
   imgClass: 'icon-n-ring',
   chartType: 've-ring',
   ifGradual: 'false',
+  ctLegendSize: '16',
   chartData: morenData.pie
 },
 {
@@ -365,6 +368,7 @@ var compsArr = [{
   bgClr: '#657992',
   fontSize: 24,
   ctLegendShow: 'true',
+  ctLegendSize: '16',
   chartData: morenData.single
 },
 {
@@ -374,6 +378,7 @@ var compsArr = [{
   chartType: 've-histogram',
   ifGradual: 'false',
   splitShow: 'false',
+  ctLegendSize: '16',
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -387,6 +392,7 @@ var compsArr = [{
   splitShow: 'false',
   splitColor: '#333849',
   splitSize: 1,
+  ctLegendSize: '14',
   subType: 'groupHistogram',
   rotate: 0,
   chartData: morenData.line
@@ -399,6 +405,7 @@ var compsArr = [{
   thirdType: 'stackHistogram',
   ifGradual: 'false',
   splitShow: 'false',
+  ctLegendSize: '16',
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -445,6 +452,7 @@ var compsArr = [{
   ifGradual: 'false',
   colorful: false,
   splitShow: 'false',
+  ctLegendSize: '16',
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -456,12 +464,14 @@ var compsArr = [{
   chartType: 've-line',
   ifGradual: 'false',
   splitShow: 'false',
+  ctLegendSize: '16',
   splitColor: '#333849',
   splitSize: 1,
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   smooth: 'true',
   showPoint: 'true', // 是否标点
+  PointSize: '14',
   rotate: 0
 },
 {
@@ -471,12 +481,14 @@ var compsArr = [{
   ifGradual: 'false',
   subType: 'doubleAxis',
   splitShow: 'false',
+  ctLegendSize: '16',
   splitColor: '#333849',
   splitSize: 1,
   chartData: morenData.times,
   lineArea: false, // 是否为区域图
   smooth: 'true',
   showPoint: 'true', // 是否标点
+  PointSize: '14',
   rotate: 0
 },
 polarBar.item,
@@ -497,6 +509,7 @@ polarBar.item,
   imgClass: 'icon-n-gauge',
   chartType: 've-gauge',
   ifGradual: 'false',
+  ctLegendSize: '16',
   ctLegendShow: false,
   bgClr: '#657992',
   chartData: morenData.single
@@ -531,23 +544,23 @@ polarBar.item,
   bdpx: 0,
   chartData: morenData.table
 },
-{
-  text: '文本框',
-  imgClass: 'icon-n-text',
-  chartType: 'text',
-  width: 200,
-  height: 50,
-  bdpx: 0,
-  bgClr: '',
-  clr: '#666f8b',
-  bdClr: '#3d445a',
-  ctName: '请输入文本框内容',
-  fontWeight: 'normal',
-  fontFamily: '',
-  linkId: '',
-  chartData: {}
-},
-VtextArea.item,
+// {
+//   text: '文本框',
+//   imgClass: 'icon-n-text',
+//   chartType: 'text',
+//   width: 200,
+//   height: 50,
+//   bdpx: 0,
+//   bgClr: '',
+//   clr: '#666f8b',
+//   bdClr: '#3d445a',
+//   ctName: '请输入文本框内容',
+//   fontWeight: 'normal',
+//   fontFamily: '',
+//   linkId: '',
+//   chartData: {}
+// },
+NEWtextArea.item,
 hotspot.item,
 {
   text: '跑马灯',

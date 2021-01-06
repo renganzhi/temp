@@ -1,16 +1,21 @@
 export default{
   'item': {
-    'text': '文本框2',
+    'text': '文本框',
     'imgClass': 'icon-n-text',
-    'chartType': 'VtextArea',
+    'chartType': 'NEWtextArea',
     'width': 200,
     'height': 50,
     'bdpx': 0,
+    'fontLineHeight': 16,
     'bgClr': '',
     'clr': '#666f8b',
+    'overflow': true,
     'bdClr': '#3d445a',
+    'ColorType': true,
+    'textAlign': 'left',
     'ctName': '请输入文本框内容',
     'fontWeight': 'normal',
+    'Gradientclr': ['rgba(255, 38, 38, 0.44)', '#dc4908'],
     'fontFamily': '',
     'fontSize': 12,
     'linkId': '',
@@ -84,13 +89,75 @@ export default{
         ]
       },
       {
+        'name': '显示滚动条',
+        'key': 'overflow',
+        'tag': 'select',
+        'options': [{
+          'name': '隐藏',
+          'value': false
+        },
+        {
+          'name': '显示',
+          'value': true
+        }
+        ]
+      },
+      {
+        'name': '颜色类型',
+        'key': 'ColorType',
+        'tag': 'select',
+        'options': [{
+          'name': '单色',
+          'value': true
+        },
+        {
+          'name': '渐变',
+          'value': false
+        }
+        ]
+      },
+      {
+        'name': '文本对齐',
+        'key': 'textAlign',
+        'tag': 'select',
+        'options': [{
+          'name': '左对齐',
+          'value': 'left'
+        },
+        {
+          'name': '居中',
+          'value': 'center'
+        },
+        {
+          'name': '右对其',
+          'value': 'right'
+        }
+        ]
+      },
+      {
         'name': '字体颜色',
-        'key': 'fontColor',
+        'key': 'clr',
+        'parentKey': {
+          'ColorType': true
+        },
         'tag': 'Color'
+      },
+      {
+        'name': '字体颜色',
+        'key': 'Gradientclr',
+        'parentKey': {
+          'ColorType': false
+        },
+        'tag': 'GradientColor'
       },
       {
         'name': '字号',
         'key': 'fontSize',
+        'tag': 'input'
+      },
+      {
+        'name': '行间距',
+        'key': 'fontLineHeight',
         'tag': 'input'
       },
       {
