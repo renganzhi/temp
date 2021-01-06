@@ -22,6 +22,12 @@ export default {
     'borderColorYang': 'rgba(59, 56, 56, 0.75)',
     'borderColorYing': 'rgba(58, 102, 58, 0.65)',
     'ifGradual': false,
+    'LinerColor': [
+      '#37a2da',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'],
     'chartData': {
       'dataArry': {
         'name': ['K线数据1', '直线数据1'],

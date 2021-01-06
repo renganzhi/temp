@@ -36,6 +36,9 @@
               :item="item"></KLine>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
               :item="item"></TreeMap>
+    <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
+              :item="item"
+              :disabled="editable"></NEWtextArea>
     <TDHistogram v-else-if="item.chartType=='TDHistogram'"
               :item="item"></TDHistogram>
     <Vmap v-else-if="item.chartType=='v-map'"

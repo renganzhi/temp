@@ -68,6 +68,10 @@
           :item="item"></KLine>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
           :item="item"></TreeMap>
+    <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
+          :item="item"
+          ref="childtext"
+          :disabled="editable"></NEWtextArea>
     <TDHistogram v-else-if="item.chartType=='TDHistogram'"
           :item="item"></TDHistogram>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
@@ -122,7 +126,7 @@ export default {
       }
     },
     deactivated () {
-      if (this.item.chartType === 'text') {
+      if (this.item.chartType === 'text' || this.item.chartType === 'NEWtextArea') {
         this.$refs.childtext.getBlur()
       }
     },
@@ -146,6 +150,9 @@ export default {
       this.oldY = item.y
       this.$emit('selected', item, 'down', 'item', this.index)
       this.$emit('bodyDown')
+      // if (this.item.chartType === 'NEWtextArea') {
+      //   this.$refs.childtext.getMessage()
+      // }
     },
     bodymove (item, attr) {
       item.x = attr.left

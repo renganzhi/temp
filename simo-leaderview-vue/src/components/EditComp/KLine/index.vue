@@ -14,7 +14,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null
+      mychart: null,
+      oldItem: ''
     }
   },
   computed: {
@@ -38,7 +39,12 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawFlow()
+        if (this.oldItem === JSON.stringify(newVal)) {
+
+        } else {
+          this.oldItem = JSON.stringify(newVal)
+          this.drawFlow()
+        }
       },
       deep: true
     }
@@ -88,7 +94,7 @@ export default {
             data: myData,
             smooth: true,
             showSymbol: false,
-            color: this.item.ctColors[index - 1],
+            color: this.item.LinerColor[index - 1],
             lineStyle: {
               width: 1
             }

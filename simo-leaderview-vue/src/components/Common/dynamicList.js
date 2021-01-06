@@ -14,6 +14,7 @@ export default [
   'Scatter',
   'KLine',
   'TreeMap',
+  'NEWtextArea',
   'TDHistogram',
   'bubble',
   'hotspot',
