@@ -3121,10 +3121,23 @@ export default {
       }
       return true
     },
+    clearAll: function () {
+      $.each(this.chartNum, function (i, d) {
+        d.slted = false
+      })
+      $.each(this.combinList, function (i, d) {
+        d.slted = false
+      })
+      this.chooseIndexs = []
+      this.selectedItem = {}
+      this.selectedIndex = null
+    },
     userChoose: function (e) {
+      if (e.button === 0) {
+        this.clearAll() // 取消所有的选中
+      }
       var _this = this
       var stateBar = document.getElementById('chooseWrap')
-      _this.clearAll()
       e = e || window.event
       // 获取鼠标在整个页面的位置
       var posx = e.offsetX
@@ -3263,11 +3276,6 @@ export default {
         $('.tempDiv').remove()
       }
     },
-    clearAll: function () {
-      this.chooseIndexs = []
-      this.selectedItem = {}
-      this.selectedIndex = null
-    },
     deleteOne: function (type, tempArr) {
       var i = 0
       var indexArr = []
@@ -3369,7 +3377,6 @@ export default {
         this.selectArea.choose = false
         $('.tempDiv').remove()
       }
-      this.clearAll()
       // this.copyIndexs = this.chooseIndexs
       // this.copyCompIndexs = this.chooseCompIndexs
     },
