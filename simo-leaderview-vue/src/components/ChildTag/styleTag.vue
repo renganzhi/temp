@@ -70,7 +70,7 @@
         <template v-if="item.tag === 'fontFamily'">
             <div class="form-group"
                   style="height: 30px;">
-              <div v-for="(fontitem, index) in settingData.fontFaces"
+              <div v-for="(fontitem, index) in settingData.textFontFaces"
                     :key="index"
                     @click="setFontFamily(fontitem.fontFace)"
                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===fontitem.fontFace}"

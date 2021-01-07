@@ -13,7 +13,7 @@
         :style="getLineStyle(item)"
         :key="item.id"
         :class="`vue-ruler-ref-line-${item.type}`"
-        @mousedown="handleDragLine(item)">
+        @mousedown.stop="handleDragLine(item)">
         <div v-if="item.type==='h'" class="line" :style="{width:Hstyle}"></div>
         <div v-else class="line" :style="{height:Vstyle}"></div>
       </div>
@@ -326,7 +326,7 @@ export default {
         })
       }
     },
-    horizontalDragRuler () {
+    horizontalDragRuler (e) {
       this.newLine('x')
     }, // 水平标尺处按下鼠标
     verticalDragRuler () {

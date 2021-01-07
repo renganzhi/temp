@@ -343,8 +343,7 @@ export default {
       // if (this.item.chartType !== 'text' || this.item.ctDataSource !== 'static') {
       //   ev.preventDefault()
       // }
-      console.log('文本框替换了')
-      if (this.item.chartType !== 'NEWtextArea' || this.item.ctDataSource !== 'static') {
+      if (!(this.item.chartType === 'NEWtextArea' || this.item.chartType === 'text') || this.item.ctDataSource !== 'static') {
         ev.preventDefault()
       }
 
