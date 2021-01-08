@@ -470,6 +470,9 @@ var compsArr = [{
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   smooth: 'true',
+  LineType: 'solid',
+  symbolSrc: '',
+  symbolSize: 20,
   showPoint: 'true', // 是否标点
   PointSize: '14',
   rotate: 0
@@ -487,6 +490,9 @@ var compsArr = [{
   chartData: morenData.times,
   lineArea: false, // 是否为区域图
   smooth: 'true',
+  LineType: 'solid',
+  symbolSrc: '',
+  symbolSize: 20,
   showPoint: 'true', // 是否标点
   PointSize: '14',
   rotate: 0

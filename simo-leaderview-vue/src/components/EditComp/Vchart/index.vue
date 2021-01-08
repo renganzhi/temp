@@ -27,6 +27,7 @@
 </template>
 <script>
 import echarts from 'echarts'
+import { gbs } from '@/config/settings'
 import _ from 'lodash'
 export default {
   name: 'vchart',
@@ -244,6 +245,20 @@ export default {
     },
     'item.smooth': function (newV) {
       this.extend.series.smooth = newV === 'true'
+    },
+    'item.symbolSrc': function (newV) {
+      var reg = /^\/api/
+      var baseUrl = ''
+      if (!reg.test(this.item.symbolSrc)) {
+        baseUrl = gbs.host
+      }
+      this.extend.series.symbol = `image://${baseUrl}${newV}`
+    },
+    'item.symbolSize': function (newV) {
+      this.extend.series.symbolSize = newV
+    },
+    'item.LineType': function (newV) {
+      this.extend.series.itemStyle.normal.lineStyle.type = newV
     },
     'item.lineArea': function (newV, oldValue) {
       this.settings.area = newV === 'true'
@@ -765,15 +780,23 @@ export default {
         've-line': function () {
           obj.settings.area = _this.item.lineArea === 'true'
           // obj.settings.xAxisType = 'time'
+          var reg = /^\/api/
+          var baseUrl = ''
+          if (!reg.test(_this.item.symbolSrc)) {
+            baseUrl = gbs.host
+          }
           obj.extend = $.extend(obj.extend, {
             series: {
               type: 'line',
               smooth: _this.item.smooth ? _this.item.smooth === 'true' : true, // 折线/曲线
               showAllSymbol: false,
+              symbol: _this.item.symbolSrc ? `image://${baseUrl}${_this.item.symbolSrc}` : 'circle',
+              symbolSize: _this.item.symbolSize,
               itemStyle: {
                 normal: {
                   lineStyle: {
-                    width: 1 // 设置线条粗细
+                    width: 1, // 设置线条粗细
+                    type: _this.item.LineType || 'solid'
                   }
                 }
               }

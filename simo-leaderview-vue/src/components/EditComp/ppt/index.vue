@@ -2,7 +2,7 @@
   <div :style="boxStyle">
     <div class="v-charts-data-empty"
          v-if="!item.srcList.length">请上传图片</div>
-    <div v-else class="img_card" 
+    <div v-else class="img_card"
         :style="{...imgSctyle, 'background': `url(${imgSrc})`}"
         @click="toLinkPage">
       <template v-if="!item.autoplay">
@@ -28,7 +28,7 @@ export default {
   data () {
     return {
       activeIndex: 0,
-      baseUrl: '',
+      baseUrl: ''
       // imgSrc: ''
     }
   },
@@ -55,10 +55,10 @@ export default {
       }
     },
     imgSrc () {
-      const src = this.item.srcList[this.activeIndex].src;
-      return `${this.baseUrl}${src}`;
+      const src = this.item.srcList[this.activeIndex].src
+      return `${this.baseUrl}${src}`
     },
-    maxIndex () { return this.item.srcList.length - 1; }
+    maxIndex () { return this.item.srcList.length - 1 }
   },
   beforeMount () {
     var reg = /^\/api/
@@ -71,7 +71,7 @@ export default {
     // console.log(this.item.srcList.length)
     // console.log('editing', this.editing)
     if (this.item.autoplay && !this.editing) {
-      this.setTimer();
+      this.setTimer()
     }
     this.$EventBus.$on('activeSrcList', (data) => {
       this.activeIndex = data
@@ -99,46 +99,46 @@ export default {
       }
     },
     setTimer () {
-      this.interval = this.item.interval || 2;
+      this.interval = this.item.interval || 2
       // console.log(this.interval);
       this.timer = setInterval(() => {
         // 仅一张图时不轮播
         if (this.item.srcList.length < 2) {
           return
         }
-        let activeIndex = this.activeIndex + 1;
+        let activeIndex = this.activeIndex + 1
         if (activeIndex == this.item.srcList.length - 1) {
-          !this.item.loop && this.clearTimer();
-          activeIndex = 0;
+          !this.item.loop && this.clearTimer()
+          activeIndex = 0
         }
-        this.activeIndex = activeIndex;
-      }, this.interval * 1000);
+        this.activeIndex = activeIndex
+      }, this.interval * 1000)
     },
     clearTimer () {
-      this.timer && clearTimeout(this.timer);
+      this.timer && clearTimeout(this.timer)
     },
     change (num) {
-      let activeIndex = this.activeIndex + num;
+      let activeIndex = this.activeIndex + num
       if (activeIndex > this.maxIndex) {
         if (!this.item.loop) {
-          return;
+          return
         }
         activeIndex = 0
       }
       if (activeIndex < 0) {
         if (!this.item.loop) {
-          return;
+          return
         }
         activeIndex = this.maxIndex
       }
       console.log(activeIndex)
       // this.$set('activeIndex', activeIndex)
-      this.activeIndex = activeIndex;
+      this.activeIndex = activeIndex
     },
     setActiveIndex (index) {
-      this.activeIndex = index;
+      this.activeIndex = index
     }
-  },
+  }
 }
 </script>
 <style scoped lang="scss">
