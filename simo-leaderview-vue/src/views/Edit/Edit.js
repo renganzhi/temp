@@ -3517,6 +3517,8 @@ export default {
           _this.selectedItem.imgSrc = curSrc
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg = curSrc
+        } if (_this.selectedItem.chartType === 've-line') {
+          _this.selectedItem.symbolSrc = curSrc
         } else if (chartType === 'ppt') {
           // 列表顶部添加
           _this.selectedItem.srcList.unshift({

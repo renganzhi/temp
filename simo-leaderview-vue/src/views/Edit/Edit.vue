@@ -1768,6 +1768,35 @@
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
+                  <label>数据线类型</label>
+                  <select v-model="selectedItem.LineType">
+                    <option value="solid">实线</option>
+                    <option value="dashed">虚线</option>
+                    <option value="dotted">数据点</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                    <label>数据点图片</label>
+                    <input type="file"
+                           accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                           @change='changeImg' />
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                    <label>数据点大小</label>
+                    <select v-model="selectedItem.symbolSize">
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="20">20</option>
+                      <option value="24">24</option>
+                      <option value="28">28</option>
+                      <option value="30">30</option>
+                    </select>
+                </div>
+
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
                   <label>是否标点</label>
                   <select v-model="selectedItem.showPoint">
                     <option value="false">否</option>
