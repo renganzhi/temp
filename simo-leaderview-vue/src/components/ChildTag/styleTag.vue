@@ -1,5 +1,5 @@
 <template>
-    <div v-if="itemsShow" :class="item.tag === 'ImgFile'?'bigBox':''">
+    <div v-if="itemsShow">
         <label>{{ item.name }}</label>
         <template v-if="item.tag === 'select'">
             <select v-model="selectedItem[item.key]">
@@ -27,23 +27,19 @@
         </template>
         <template v-if="item.tag === 'ImgFile'">
             <div class="color-w200">
-              <label class="hoverLable" for="FileInput" style="width:100%;position: relative;">
-                <img v-if="picSrc" style="height:100%;width:100%" :src="baseUrl + picSrc" alt="">
-                <!-- <img v-else style="height:100%;width:100%" :src="baseUrl + picSrc" alt=""> -->
-                <div  v-else style="text-align: center">
-                  <i class="icon-n-nodata" style="font-size: 108px;"></i>
-                  <p>抱歉，没有图片可供展示...</p>
-                </div>
-                <div class="hoverShow">
-                  <p>修改图片</p>
-                </div>
-              </label>
               <input type="file"
-                    id="FileInput"
-                    style="display:none"
-                    accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
-                    @change='changeImg' />
+                accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                @change='changeImg' />
             </div>
+        </template>
+        <template v-if="item.tag === 'videoFile'">
+          <div class="color-w200">
+            <input type="file"
+              name="myfiles"
+              id="myfiles"
+              accept="video/mp4"
+              @change="uploadVideo">
+          </div>
         </template>
         <template v-if="item.tag === 'GradientColor'">
             <div class="color-w200" style="margin-top: 8px;">
@@ -169,6 +165,43 @@ export default {
   methods: {
     setFontFamily: function (val) {
       this.selectedItem.fontFamily = val
+    },
+    uploadVideo (e) {
+      // field, that
+      if (e.value === '') {
+        return
+      }
+      if (e.target.files[0].size > 100 * 1024 * 1024) {
+        e.target.value = ''
+        if (gbs.inDev) {
+          Notification({
+            message: '上传的视频不能大于100MB',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
+        } else {
+          tooltip('', '上传的视频不能大于100MB', 'info')
+        }
+        return
+      }
+      var file = e.target.files[0]
+      // 视频截图
+      /**
+      var windowURL = window.URL || window.webkitURL
+      var videoURL = windowURL.createObjectURL(file)
+      this.selectedItem.videoSrc = videoURL
+      */
+      var formdata = new FormData()
+      formdata.append('uploaded_file', file)
+      var _this = this
+      this.$parent.uploadFile('video', formdata, function (data) {
+        if (_this.selectedItem.chartType === 'video' || _this.selectedItem.chartType === 'BulletFrame') {
+          _this.selectedItem.videoSrc = gbs.host + data.obj
+          _this.tempVideoUrl = _this.selectedItem.videoSrc
+          _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
+        }
+      })
+      e.target.value = ''
     },
     changeImg: function (e) {
       if (e.value === '') {
@@ -335,11 +368,6 @@ export default {
 }
 </script>
 <style>
-.bigBox{
-  width: 100%;
-  height: 200px;
-  overflow: auto;
-}
 .hoverShow{
   font-size: 20px;
 }

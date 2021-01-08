@@ -1674,6 +1674,8 @@
                   <div class="form-group cols2">
                     <label>图例字体大小</label>
                     <select v-model="selectedItem.ctLegendSize">
+                      <option value="8">8</option>
+                      <option value="10">10</option>
                       <option value="14">14</option>
                       <option value="16">16</option>
                       <option value="20">20</option>
@@ -1683,10 +1685,12 @@
                     </select>
                   </div>
                   <div class="form-group cols2">
-                    <label>图例位置</label>
-                    <select>
+                    <label>图例高度</label>
+                    <input type="number"
+                           v-model="selectedItem.legendY">
+                    <!-- <select>
                       <option>底部居中</option>
-                    </select>
+                    </select> -->
                   </div>
                   <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
                     <div class="form-group cols2">
@@ -1777,6 +1781,18 @@
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
+                  <label>数据点类型</label>
+                  <select v-model="selectedItem.symbolType">
+                    <option value="emptyCircle">空心圆点</option>
+                    <option value="circle">圆点</option>
+                    <option value="triangle">三角</option>
+                    <option value="pin">气泡</option>
+                    <option value="none">不显示</option>
+                    <option value="pic">自定义图片</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line' && selectedItem.symbolType === 'pic'">
                     <label>数据点图片</label>
                     <input type="file"
                            accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
@@ -1786,6 +1802,11 @@
                      v-if="selectedItem.chartType=='ve-line'">
                     <label>数据点大小</label>
                     <select v-model="selectedItem.symbolSize">
+                      <option value="4">4</option>
+                      <option value="6">6</option>
+                      <option value="8">8</option>
+                      <option value="10">10</option>
+                      <option value="12">12</option>
                       <option value="14">14</option>
                       <option value="16">16</option>
                       <option value="20">20</option>
@@ -1953,7 +1974,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','NEWtextArea'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
@@ -1974,7 +1995,7 @@
                             :value="item.id">{{item.name}}</option>
                   </select>
               </div>
-              <div v-show="['image', 'ppt'].includes(selectedItem.chartType)">
+              <div v-show="['image', 'ppt','BulletFrame'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
@@ -1991,7 +2012,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2244,7 +2265,7 @@
                 <button @click="videoChange"
                         style="margin-top: 30px">更新视图</button>
               </div>
-              <template v-if="selectedItem.chartType == 'ppt'">
+              <template v-if="selectedItem.chartType == 'ppt' || selectedItem.chartType == 'BulletFrame'">
                 <draggable class="img_src_list" v-model="selectedItem.srcList" handle=".handle">
                   <div v-for="(item, index) in selectedItem.srcList" :key="index">
                     <span class="src_item handle" @click="activeSrcList(index)">{{item.name}}</span>

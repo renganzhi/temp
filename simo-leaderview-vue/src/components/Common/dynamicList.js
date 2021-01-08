@@ -13,6 +13,7 @@ export default [
   'Sunrise',
   'Scatter',
   'KLine',
+  'BulletFrame',
   'TreeMap',
   'NEWtextArea',
   'TDHistogram',

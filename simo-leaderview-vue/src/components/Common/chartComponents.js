@@ -25,6 +25,7 @@ import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
 import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
 import Scatter from '@/components/EditComp/Scatter' // 散点图
 import KLine from '@/components/EditComp/KLine' // 散点图
+import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
 import TreeMap from '@/components/EditComp/TreeMap' // 散点图
 import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
@@ -60,6 +61,7 @@ export default {
   Sunrise,
   Scatter,
   KLine,
+  BulletFrame,
   TreeMap,
   NEWtextArea,
   TDHistogram,

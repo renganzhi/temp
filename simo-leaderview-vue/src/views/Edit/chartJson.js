@@ -9,6 +9,7 @@ import Sunrise from '@/components/EditComp/Sunrise/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
+import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
 import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
 import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
@@ -338,6 +339,7 @@ var compsArr = [{
   chartType: 've-pie',
   ifGradual: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   chartData: morenData.pie
 },
 {
@@ -346,6 +348,7 @@ var compsArr = [{
   chartType: 've-pie',
   ifGradual: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   chartData: morenData.pie,
   roseType: 'area' // 与饼图的区别
 },
@@ -355,6 +358,7 @@ var compsArr = [{
   chartType: 've-ring',
   ifGradual: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   chartData: morenData.pie
 },
 {
@@ -369,6 +373,7 @@ var compsArr = [{
   fontSize: 24,
   ctLegendShow: 'true',
   ctLegendSize: '16',
+  legendY: 10,
   chartData: morenData.single
 },
 {
@@ -379,6 +384,7 @@ var compsArr = [{
   ifGradual: 'false',
   splitShow: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -406,6 +412,7 @@ var compsArr = [{
   ifGradual: 'false',
   splitShow: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -453,6 +460,7 @@ var compsArr = [{
   colorful: false,
   splitShow: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   splitColor: '#333849',
   splitSize: 1,
   rotate: 0,
@@ -465,14 +473,16 @@ var compsArr = [{
   ifGradual: 'false',
   splitShow: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   splitColor: '#333849',
   splitSize: 1,
   chartData: morenData.time,
   lineArea: false, // 是否为区域图
   smooth: 'true',
   LineType: 'solid',
+  symbolType: 'circle',
   symbolSrc: '',
-  symbolSize: 20,
+  symbolSize: 6,
   showPoint: 'true', // 是否标点
   PointSize: '14',
   rotate: 0
@@ -485,14 +495,16 @@ var compsArr = [{
   subType: 'doubleAxis',
   splitShow: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   splitColor: '#333849',
   splitSize: 1,
   chartData: morenData.times,
   lineArea: false, // 是否为区域图
   smooth: 'true',
   LineType: 'solid',
+  symbolType: 'circle',
   symbolSrc: '',
-  symbolSize: 20,
+  symbolSize: 6,
   showPoint: 'true', // 是否标点
   PointSize: '14',
   rotate: 0
@@ -516,6 +528,7 @@ polarBar.item,
   chartType: 've-gauge',
   ifGradual: 'false',
   ctLegendSize: '16',
+  legendY: 10,
   ctLegendShow: false,
   bgClr: '#657992',
   chartData: morenData.single
@@ -863,6 +876,7 @@ GradientPie.item,
 Sunrise.item,
 Scatter.item,
 KLine.item,
+BulletFrame.item,
 TreeMap.item,
 TDHistogram.item,
 // {
