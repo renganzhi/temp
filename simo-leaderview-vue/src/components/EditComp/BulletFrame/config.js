@@ -1,0 +1,170 @@
+export default {
+  'item': {
+    'text': '弹框',
+    'width': 100,
+    'height': 100,
+    'imgClass': 'icon-n-waveball',
+    'chartType': 'BulletFrame',
+    'showType': '1',
+    'stationPlace': '1',
+    'bgClr': '#0088cc',
+    'imgSrc': '',
+    'videoSrc': '',
+    'openBoxheight': 560,
+    'openBoxwidth': 560,
+    'openBoxRight': 0,
+    'openBoxBtn': 0,
+    'closeBoxheight': 60,
+    'closeBoxwidth': 60,
+    'closeBoxRight': 0,
+    'closeBoxBtn': 0,
+    'videoheight': 200,
+    'videowidth': 400,
+    'videoBoxRight': 0,
+    'videoBoxBtn': 0,
+    'autoplay': true,
+    'loop': true,
+    'srcList': [],
+    'isPlay': false,
+    'PlayByClick': true,
+    'PlayTime': 2,
+    'Playheight': 400,
+    'PlayBoxwidth': 400,
+    'PlayBoxRight': 40,
+    'PlayBoxBtn': 40,
+    'chartData': {}
+  },
+  'styles': {
+    'base': [{
+      'name': '按钮颜色',
+      'key': 'bgClr',
+      'tag': 'Color'
+    }, {
+      'name': '背景图片',
+      'key': 'imgSrc',
+      'tag': 'ImgFile'
+    }, {
+      'name': '缩放方式',
+      'key': 'showType',
+      'tag': 'select',
+      'options': [
+        {
+          'name': '按比例缩放',
+          'value': '1'
+        },
+        {
+          'name': '自由缩放',
+          'value': '2'
+        }
+      ]
+    }, {
+      'name': '背景图片高度',
+      'key': 'openBoxheight',
+      'tag': 'input'
+    }, {
+      'name': '背景图片宽度',
+      'key': 'openBoxwidth',
+      'tag': 'input'
+    }, {
+      'name': '背景图片距离左距离',
+      'key': 'openBoxRight',
+      'tag': 'input'
+    }, {
+      'name': '背景图片距离上距离',
+      'key': 'openBoxBtn',
+      'tag': 'input'
+    }, {
+      'name': '关闭按钮高度',
+      'key': 'closeBoxheight',
+      'tag': 'input'
+    }, {
+      'name': '关闭按钮宽度',
+      'key': 'closeBoxwidth',
+      'tag': 'input'
+    }, {
+      'name': '关闭按钮距离右距离',
+      'key': 'closeBoxRight',
+      'tag': 'input'
+    }, {
+      'name': '关闭按钮距离上距离',
+      'key': 'closeBoxBtn',
+      'tag': 'input'
+    }, {
+      'name': '选择视频',
+      'key': 'videoSrc',
+      'tag': 'videoFile'
+    }, {
+      'name': '视频高度',
+      'key': 'videoheight',
+      'tag': 'input'
+    }, {
+      'name': '视频宽度',
+      'key': 'videowidth',
+      'tag': 'input'
+    }, {
+      'name': '视频距离左距离',
+      'key': 'videoBoxRight',
+      'tag': 'input'
+    }, {
+      'name': '视频距离上距离',
+      'key': 'videoBoxBtn',
+      'tag': 'input'
+    }, {
+      'name': '轮播图片',
+      'key': 'isPlay',
+      'tag': 'select',
+      'options': [
+        {
+          'name': '隐藏',
+          'value': false
+        },
+        {
+          'name': '显示',
+          'value': true
+        }
+      ]
+    }, {
+      'name': '图片轮播方式',
+      'key': 'PlayByClick',
+      'parentKey': {
+        'isPlay': true
+      },
+      'tag': 'select',
+      'options': [
+        {
+          'name': '点击轮播',
+          'value': false
+        },
+        {
+          'name': '自动轮播',
+          'value': true
+        }
+      ]
+    }, {
+      'name': '轮播时间(s)',
+      'key': 'PlayTime',
+      'parentKey': {
+        'isPlay': true,
+        'PlayByClick': true
+      },
+      'tag': 'input'
+    }, {
+      'name': '轮播图片高度',
+      'key': 'Playheight',
+      'tag': 'input'
+    }, {
+      'name': '轮播图片宽度',
+      'key': 'PlayBoxwidth',
+      'tag': 'input'
+    }, {
+      'name': '轮播图片距离右距离',
+      'key': 'PlayBoxRight',
+      'tag': 'input'
+    }, {
+      'name': '轮播图片距离下距离',
+      'key': 'PlayBoxBtn',
+      'tag': 'input'
+    }
+    ]
+  }
+}

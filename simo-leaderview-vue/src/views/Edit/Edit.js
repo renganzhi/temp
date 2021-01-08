@@ -29,6 +29,7 @@ let config = {
   // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.js'),
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),
+  BulletFrame: require('@/components/EditComp/BulletFrame/config.js'),
   Scatter: require('@/components/EditComp/Scatter/config.js'),
   KLine: require('@/components/EditComp/KLine/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
@@ -3520,7 +3521,7 @@ export default {
           _this.selectedItem.symbolImg = curSrc
         } if (_this.selectedItem.chartType === 've-line') {
           _this.selectedItem.symbolSrc = curSrc
-        } else if (chartType === 'ppt') {
+        } else if (chartType === 'ppt' || chartType === 'BulletFrame') {
           // 列表顶部添加
           _this.selectedItem.srcList.unshift({
             name,

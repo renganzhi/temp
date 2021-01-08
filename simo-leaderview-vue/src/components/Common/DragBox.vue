@@ -66,6 +66,8 @@
           :item="item"></Scatter>
     <KLine v-else-if="item.chartType=='KLine'"
           :item="item"></KLine>
+    <BulletFrame v-else-if="item.chartType=='BulletFrame'"
+          :item="item"></BulletFrame>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
           :item="item"></TreeMap>
     <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"

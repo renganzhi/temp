@@ -84,7 +84,7 @@ export default {
           legend: {
             // orient : 'vertical', //横向、纵向
             x: 'center',
-            y: 'bottom',
+            y: this.item.legendY,
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
               fontSize: this.item.fontSize,
@@ -234,6 +234,9 @@ export default {
         this.extend.legend.show = newV === 'true'
       }
     },
+    'item.legendY': function (newV) {
+      this.extend.legend.y = newV
+    },
     'item.ctLegendSize': function (newV) {
       if (this.item.chartType === 've-gauge') {
         this.settings.seriesMap.p.title.textStyle.fontSize = newV
@@ -253,6 +256,9 @@ export default {
         baseUrl = gbs.host
       }
       this.extend.series.symbol = `image://${baseUrl}${newV}`
+    },
+    'item.symbolType': function (newV) {
+      this.extend.series.symbol = newV
     },
     'item.symbolSize': function (newV) {
       this.extend.series.symbolSize = newV
@@ -790,7 +796,7 @@ export default {
               type: 'line',
               smooth: _this.item.smooth ? _this.item.smooth === 'true' : true, // 折线/曲线
               showAllSymbol: false,
-              symbol: _this.item.symbolSrc ? `image://${baseUrl}${_this.item.symbolSrc}` : 'circle',
+              symbol: _this.item.symbolType !== 'pic' ? _this.item.symbolType : _this.item.symbolSrc ? `image://${baseUrl}${_this.item.symbolSrc}` : 'circle',
               symbolSize: _this.item.symbolSize,
               itemStyle: {
                 normal: {

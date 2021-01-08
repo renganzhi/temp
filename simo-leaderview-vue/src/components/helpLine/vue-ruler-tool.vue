@@ -440,6 +440,7 @@ export default {
     height: 5px;
     cursor: n-resize; /*url(./image/cur_move_h.cur), move*/
     display: flex;
+    left: -10px;
     justify-content: center;
     align-items: center;
     .line{
@@ -451,7 +452,7 @@ export default {
 
   &-ref-line-v {
     width: 5px;
-    _height: 9999px;
+    top: -10px;
     cursor: w-resize; /*url(./image/cur_move_v.cur), move*/
     display: flex;
     justify-content: center;
@@ -466,6 +467,7 @@ export default {
   &-ref-dot-h {
     width: 100%;
     height: 3px;
+    left: -10px;
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFf39/////F3PnHQAAAAJ0Uk5T/wDltzBKAAAAEElEQVR42mJgYGRgZAQIMAAADQAExkizYQAAAABJRU5ErkJggg==)
       repeat-x left 1px; /*./image/line_dot.png*/
     cursor: n-resize; /*url(./image/cur_move_h.cur), move*/
@@ -475,6 +477,7 @@ export default {
   &-ref-dot-v {
     width: 3px;
     height: 100%;
+    top: -10px;
     _height: 9999px;
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFf39/////F3PnHQAAAAJ0Uk5T/wDltzBKAAAAEElEQVR42mJgYGRgZAQIMAAADQAExkizYQAAAABJRU5ErkJggg==)
       repeat-y 1px top; /*./image/line_dot.png*/
