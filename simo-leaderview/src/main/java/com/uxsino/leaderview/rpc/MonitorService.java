@@ -2,6 +2,7 @@ package com.uxsino.leaderview.rpc;
 
 import com.alibaba.fastjson.JSON;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
@@ -47,5 +48,28 @@ public interface MonitorService {
 
     @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/networkLink/findPage", consumes = "application/json")
     JsonModel findPage(@RequestParam("pageModel") String pageModel, @RequestBody NetworkLinkModel networkLinkModel);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/networkEntity/vmStatics", consumes = "application/json")
+    JsonModel vmStatics(@RequestParam("domain") Long domain);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/neStatistics", consumes = "application/json")
+    JsonModel neStatistics(@RequestParam("domainId") Long domainId, @RequestParam("baseNeClass") BaseNeClass baseNeClass);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/networkEntity/countVr", consumes = "application/json")
+    JsonModel countVr(@RequestParam("domainId") Long domainId);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/neStatusStatistics", consumes = "application/json")
+    JsonModel neStatusStatistics(@RequestParam("domainId") List<Long> domainId, @RequestParam("baseNeClass") BaseNeClass baseNeClass);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/findByIdsAndBaseNe", consumes = "application/json")
+    JsonModel findByIdsAndBaseNe(@RequestParam("domainId") List<Long> domainId,
+                                 @RequestParam("itObjectIds") String itObjectIds,
+                                 @RequestParam("baseNeClass") BaseNeClass baseNeClass);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/neHealth/getNeHealth", consumes = "application/json")
+    JsonModel getNeHealth(@RequestParam("neId") String neId);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/indicator/getStrategy", consumes = "application/json")
+    JsonModel getStrategy(@RequestParam("neId") String neId, @RequestParam("indicatorNames") String indicatorNames);
 
 }

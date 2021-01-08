@@ -21,7 +21,7 @@ import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
-import com.uxsino.utils.ZipUtils;
+import com.uxsino.leaderview.utils.ZipUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -916,7 +916,7 @@ public class HomePageController {
 
 	@ApiOperation("模板导出成zip包")
 	@GetMapping("/exportTemplate")
-	public void exportTemplate(@RequestParam("ids") String ids, HttpServletResponse response){
+	public void exportTemplate(@RequestParam("ids") String ids, HttpServletRequest request, HttpServletResponse response){
 //		try {
 		List<HomePage> pages = Lists.newArrayList();
 		for (String str: ids.split(",")) {
@@ -930,7 +930,7 @@ public class HomePageController {
 		logger.info("导出开始");
 		String path = impExpService.makeTemplate(pages);
 		logger.info("缓存目标地址： "  + path);
-		impExpService.download(path, response);
+		impExpService.download(path, request, response);
 //		}catch (Exception e){
 //			e.printStackTrace();
 //		}

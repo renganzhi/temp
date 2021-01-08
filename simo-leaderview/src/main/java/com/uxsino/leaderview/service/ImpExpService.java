@@ -7,9 +7,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.entity.*;
-import com.uxsino.utils.ZipUtils;
+import com.uxsino.leaderview.utils.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
@@ -239,7 +239,10 @@ public class ImpExpService {
         Set<Long> processedId = Sets.newHashSet();
         while (m.find()){
             Matcher numMatcher = numPattern.matcher(m.group());
-            Long id = Long.valueOf(numMatcher.replaceAll("").trim());
+            String trim = numMatcher.replaceAll("").trim();
+            log.info(trim);
+            if (Strings.isBlank(trim)) continue;
+            Long id = Long.valueOf(trim);
             if (processedId.contains(id)){
                 continue;
             }
@@ -502,7 +505,7 @@ public class ImpExpService {
         }
     }
 
-    public void download(String path, HttpServletResponse response) {
+    public void download(String path, HttpServletRequest request, HttpServletResponse response) {
         try {
             // path
             File file = new File(path);
@@ -521,10 +524,10 @@ public class ImpExpService {
             // 设置response的Header
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
             response.addHeader("Content-Length", "" + file.length());
-//            response.setHeader("Content-Type", "multipart/form-data");
+            response.setHeader("Content-Type", "multipart/form-data");
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/octet-stream");
-//            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+            response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
             toClient.write(buffer);
             toClient.flush();
             toClient.close();
