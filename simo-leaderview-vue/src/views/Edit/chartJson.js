@@ -1,5 +1,4 @@
-import config from './config.json'
-// 改造过渡
+import player from '@/components/EditComp/player/config.js'
 import ppt from '@/components/EditComp/ppt/config.js'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import polarBar from '@/components/EditComp/polarBar/config.js'
@@ -15,7 +14,7 @@ import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
 
-var morenData = {
+export var morenData = {
   pie: {
     columns: ['告警级别', '数量'],
     rows: [{
@@ -866,7 +865,7 @@ TDHistogram.item,
 //   width: 300,
 //   height: 300
 // },
-config.video.item
+player.item
 // {
 //   text: '视频流',
 //   imgClass: 'icon-n-video',

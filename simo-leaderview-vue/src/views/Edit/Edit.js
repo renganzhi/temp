@@ -17,15 +17,18 @@ import { mapActions, mapGetters } from 'vuex'
 import { checkLogin, newAjax } from '@/config/thirdLoginMix'
 import qs from 'qs'
 import _ from 'lodash'
-import oldConfig from './config.json'
+// import oldConfig from './config.json'
+import player from '@/components/EditComp/player/config.js'
 
 import ChildTag from '@/components/ChildTag/styleTag'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
+import Archive from '@/components/archive'
 
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
-  ...oldConfig,
+  // ...oldConfig,
+  video: player,
   // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.js'),
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),
@@ -38,7 +41,7 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag },
+  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
