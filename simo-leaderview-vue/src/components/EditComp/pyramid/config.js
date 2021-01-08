@@ -13,7 +13,7 @@ const rows = Mock.mock({
 export default {
   item: {
     text: '金字塔',
-    imgClass: 'el-icon-help',
+    imgClass: 'icon-pyramid',
     chartType: 'pyramid',
     colorful: false,
     ifGradual: 'false',

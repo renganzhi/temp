@@ -1,7 +1,7 @@
 export default {
   'item': {
-    'text': 'PPT',
-    'imgClass': 'el-icon-picture',
+    'text': '轮播图片',
+    'imgClass': 'icon-sliderimg',
     'chartType': 'ppt',
     'width': 300,
     'height': 300,

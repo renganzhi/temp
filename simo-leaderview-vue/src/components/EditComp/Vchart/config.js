@@ -28,7 +28,7 @@ export const axis = [
 
 export default {
     item: {
-        text: "极坐标柱状图",
+        text: "demo",
         imgClass: "el-icon-s-grid",
         chartType: "polarBar",
         colorful: false,

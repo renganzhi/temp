@@ -1,7 +1,7 @@
 export default {
     item: {
         text: "极坐标柱状图",
-        imgClass: "el-icon-s-grid",
+        imgClass: "icon-ploarbar",
         chartType: "polarBar",
         colorful: false,
         ifGradual: "false",
