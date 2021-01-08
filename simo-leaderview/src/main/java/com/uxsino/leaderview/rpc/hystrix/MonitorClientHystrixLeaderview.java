@@ -2,6 +2,7 @@ package com.uxsino.leaderview.rpc.hystrix;
 
 import com.alibaba.fastjson.JSON;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
@@ -58,6 +59,41 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel findPage(String pageModel, NetworkLinkModel networkLinkModel) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel vmStatics(Long domain) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel neStatistics(Long domainId, BaseNeClass baseNeClass) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel countVr(Long domainId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findByIdsAndBaseNe(List<Long> domainId, String itObjectIds, BaseNeClass baseNeClass) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getNeHealth(String neId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getStrategy(String neId, String indicatorNames) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

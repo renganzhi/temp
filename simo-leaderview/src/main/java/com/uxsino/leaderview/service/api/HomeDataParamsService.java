@@ -1,6 +1,5 @@
 package com.uxsino.leaderview.service.api;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
@@ -21,6 +20,7 @@ import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.reactorq.model.FieldType;
 import com.uxsino.reactorq.model.INDICATOR_TYPE;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,6 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Component
 public class HomeDataParamsService {
@@ -198,14 +196,6 @@ public class HomeDataParamsService {
         return new JsonModel(true, list);
     }
 
-    /** Boolean类型参数存在性判断，默认为false */
-    public Boolean existJudgment(Boolean value){
-        return existJudgment(value, false);
-    }
-
-    public Boolean existJudgment(Boolean value ,Boolean defaultValue){
-        return ObjectUtils.isEmpty(value) ? defaultValue : value;
-    }
 
     /**
      * 设置资源查询类QO
@@ -970,30 +960,6 @@ public class HomeDataParamsService {
         return new JsonModel(true, "windows", result);
     }
 
-    /** 对JSONArray进行遍历，根据predicate过滤 */
-    private JSONArray filter(JSONArray array, Predicate<? super JSONObject> predicate){
-        List list = StreamSupport.stream(array.spliterator(),false).map(o -> (JSONObject) o).filter(predicate).collect(Collectors.toList());
-        return JSON.parseArray(JSON.toJSONString(list));
-    }
-
-    /** 对JSONArray进行遍历，执行操作action */
-    private void action(JSONArray array,Consumer<? super JSONObject> action){
-        StreamSupport.stream(array.spliterator(), false).map(o -> (JSONObject) o).forEach(action);
-    }
-
-    private <T> List<T> filterToList(List<T> list, Predicate<? super T> predicate){
-        return list.stream().filter(predicate).collect(Collectors.toList());
-    }
-
-    /** 根据指标名称以及资源获取对应部件列表 */
-
-    public JSONObject newResultObj(Object name, Object value){
-        JSONObject obj = new JSONObject();
-        obj.put("name", name);
-        obj.put("value", value);
-        return obj;
-    }
-
     @SuppressWarnings("unchecked")
     public JsonModel getNetworkSourceId(HttpSession session) throws Exception{
         List<Long> domainList = getDomainByUserSession(session);
@@ -1146,24 +1112,46 @@ public class HomeDataParamsService {
         }
     }
 
+    /** 对JSONArray进行遍历，根据predicate过滤 */
+    private JSONArray filter(JSONArray array, Predicate<? super JSONObject> predicate){
+        return MonitorUtils.filter(array, predicate);
+    }
+
+    /** 对JSONArray进行遍历，执行操作action */
+    private void action(JSONArray array,Consumer<? super JSONObject> action){
+        MonitorUtils.action(array, action);
+    }
+
+    private <T> List<T> filterToList(List<T> list, Predicate<? super T> predicate){
+        return MonitorUtils.filterToList(list, predicate);
+    }
+
+    /** 根据指标名称以及资源获取对应部件列表 */
+    public JSONObject newResultObj(Object name, Object value){
+        return MonitorUtils.newResultObj(name, value);
+    }
+
     /**
      *  判断某一指标是否应该存在部件
      */
     private boolean validHasFields(IndicatorTable ind) {
-        // 只要是NUMBER类型、PERCENT类型或者STRING类型的指标，都没有属性
-        return !"NUMBER".equals(ind.getIndicatorType()) && !"PERCENT".equals(ind.getIndicatorType())
-                && !"STRING".equals(ind.getIndicatorType());
+        return MonitorUtils.validHasFields(ind);
     }
 
     /**
      * 构造vCharts的空对象
      */
     private JSONObject empObj() {
-        JSONObject obj = new JSONObject();
-        JSONArray emp = new JSONArray();
-        obj.put("columns", emp);
-        obj.put("rows", emp);
-        return obj;
+        return MonitorUtils.empObj();
+    }
+
+    /** Boolean类型参数存在性判断，默认为false */
+    public Boolean existJudgment(Boolean value){
+        return MonitorUtils.existJudgment(value);
+    }
+
+    public Boolean existJudgment(Boolean value ,Boolean defaultValue){
+        return MonitorUtils.existJudgment(value, defaultValue);
     }
 
 }
