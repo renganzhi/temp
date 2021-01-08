@@ -13,7 +13,7 @@ const speedOptions = Array.from({ length: 20 }, (v, i) => ({
 export default {
     item: {
         text: '气泡图',
-        imgClass: 'icon-n-rect',
+        imgClass: 'icon-bubble',
         chartType: 'bubble',
         width: 660,
         height: 300,

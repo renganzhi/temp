@@ -1,6 +1,6 @@
 {
     "name": "simo-screen",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "主页大屏独立项目",
     "author": "zhaoyisu <zhaoys@uxsino.com>",
     "private": true,
@@ -20,7 +20,7 @@
         "echarts": "^4.9.0",
         "echarts-gl": "^1.1.1",
         "echarts-liquidfill": "^2.0.5",
-        "element-ui": "^2.11.1",
+        "element-ui": "^2.14.1",
         "lodash": "^4.17.15",
         "mockjs": "^1.1.0",
         "moment": "^2.24.0",

@@ -101,7 +101,7 @@ import Vnumber from '@/components/EditComp/Vnumber' // 指标展示
 import Vmap from '@/components/EditComp/Vmap' // 指标展示
 import Vscatter from '@/components/EditComp/Vscatter' // 散点图
 import Liquidfill from '@/components/EditComp/liquidfill' // 水波图
-import Player from '@/components/EditComp/Player' // 视频流
+import Player from '@/components/EditComp/player' // 视频流
 import moveTable from '@/components/EditComp/moveTable' // 轮播表格
 import TDEarthLine from '@/components/EditComp/TDEarthLine' // 轮播表格
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 轮播表格

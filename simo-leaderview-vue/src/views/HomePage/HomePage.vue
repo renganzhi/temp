@@ -77,7 +77,7 @@
                 data-toggle='tooltip'
                 title
                 data-original-title="编辑当前页"
-                v-show="!isFullScreen"><i class="el-icon-edit"></i></span>
+                v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
           <span @click="refresh"
                 class="ring-icon"
                 data-toggle='tooltip'

@@ -1,7 +1,7 @@
 export default {
   'item': {
-    'text': '饼图',
-    'imgClass': 'icon-n-video',
+    'text': '环形柱图',
+    'imgClass': 'icon-roundcap',
     'chartType': 'GradientPie',
     'width': 300,
     'height': 300,

@@ -1,7 +1,7 @@
 export default {
     item: {
         text: '装饰器',
-        imgClass: 'icon-n-rect',
+        imgClass: 'icon-decorate',
         chartType: 'decorator',
         imgSrc: '',
         radius: 0,
