@@ -22,6 +22,7 @@ Vue.use(ElementUI)
 Vue.directive('tooltip', VTooltip)
 Vue.config.productionTip = false
 Vue.config.performance = true
+Vue.prototype.$EventBus = new Vue()
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
