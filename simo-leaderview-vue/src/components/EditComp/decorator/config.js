@@ -3,7 +3,7 @@ export default {
         text: '装饰器',
         imgClass: 'icon-decorate',
         chartType: 'decorator',
-        imgSrc: '',
+        imgSrc: '/leaderview/decorator/decoratorBg21.gif',
         radius: 0,
         width: 300,
         height: 300,

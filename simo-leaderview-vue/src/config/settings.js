@@ -31,7 +31,7 @@ let titleCase = [
   }
 ];
 
-for (let i in new Array(8).fill(0)){
+for (let i = 0; i < 8; i++){
   // console.log('i: ', typeof i);
   const src = `/leaderview/border/titleBg${6+Number(i)}.svg`
   titleCase.push({
@@ -59,7 +59,7 @@ let cardCase = [
   }
 ];
 
-for (let i in new Array(11).fill(0)){
+for (let i = 0; i < 11; i++){
   // console.log('i: ', typeof i);
   const src = `/leaderview/border/cardBg${5+Number(i)}.svg`
   cardCase.push({
@@ -71,7 +71,7 @@ for (let i in new Array(11).fill(0)){
 // 装饰器
 let decoratorCase = [];
 
-for (let i in new Array(21).fill(0)){
+for (let i = 0; i < 21; i++){
   // console.log('i: ', typeof i);
   let curIndex = 1+Number(i);
   let type = 'svg';

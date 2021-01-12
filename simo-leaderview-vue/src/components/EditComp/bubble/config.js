@@ -25,7 +25,7 @@ export default {
       styles: {
         base: [
             {
-                "name": "图例可见性",
+                "name": "动画速度",
                 "key": "speed",
                 "tag": "select",
                 "options": speedOptions
