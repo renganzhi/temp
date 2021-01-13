@@ -14,15 +14,19 @@ export default {
     'splitLinecolor': 'white',
     'axisLinecolor': 'white',
     'axisLabelcolor': 'white',
+    'tooltipShow': true,
+    'tooltipBackColor': '#57625d',
+    'tooltipColor': '#fff',
+    'tooltipSize': 14,
     'axisLabelfontSize': 12,
     'XaxisLabelrotate': 0,
     'YaxisLabelrotate': 0,
     'ScatterColor': [
       '#37a2da',
+      '#ffdb5c',
       '#32c5e9',
       '#67e0e3',
-      '#9fe6b8',
-      '#ffdb5c'],
+      '#9fe6b8'],
     'DScatterColor': [
       ['#6fcaf7', '#0c79c5'],
       ['#8feee5', '#1bbcae'],
@@ -94,6 +98,10 @@ export default {
   'styles': {
     'base': [
       {
+        'name': '图例配置',
+        'tag': 'Hint'
+      },
+      {
         'name': '是否显示图例',
         'key': 'openlegend',
         'tag': 'select',
@@ -139,6 +147,53 @@ export default {
             'value': 'bottom'
           }
         ]
+      },
+      {
+        'name': 'tips配置',
+        'tag': 'Hint'
+      },
+      {
+        'name': '是否显示tips',
+        'key': 'tooltipShow',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '显示',
+            'value': true
+          },
+          {
+            'name': '隐藏',
+            'value': false
+          }
+        ]
+      },
+      {
+        'name': 'tips背景色',
+        'key': 'tooltipBackColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体色',
+        'key': 'tooltipColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体大小',
+        'key': 'tooltipSize',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'input'
+      },
+      {
+        'name': '背景线配置',
+        'tag': 'Hint'
       },
       {
         'name': '显示背景线',

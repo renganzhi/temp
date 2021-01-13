@@ -13,6 +13,10 @@ export default {
     'axisLabelcolor': 'white',
     'axisLabelfontSize': 12,
     'XaxisLabelrotate': 0,
+    'tooltipShow': true,
+    'tooltipBackColor': '#57625d',
+    'tooltipColor': '#fff',
+    'tooltipSize': 14,
     'YaxisLabelrotate': 0,
     'dataZoom': true,
     'dataZoomFontColor': 'white',
@@ -71,6 +75,10 @@ export default {
   'styles': {
     'base': [
       {
+        'name': '图例配置',
+        'tag': 'Hint'
+      },
+      {
         'name': '是否显示图例',
         'key': 'openlegend',
         'tag': 'select',
@@ -118,6 +126,53 @@ export default {
         ]
       },
       {
+        'name': 'tips配置',
+        'tag': 'Hint'
+      },
+      {
+        'name': '是否显示tips',
+        'key': 'tooltipShow',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '显示',
+            'value': true
+          },
+          {
+            'name': '隐藏',
+            'value': false
+          }
+        ]
+      },
+      {
+        'name': 'tips背景色',
+        'key': 'tooltipBackColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体色',
+        'key': 'tooltipColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体大小',
+        'key': 'tooltipSize',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'input'
+      },
+      {
+        'name': '时间轴配置',
+        'tag': 'Hint'
+      },
+      {
         'name': '显示时间轴',
         'key': 'dataZoom',
         'tag': 'select',
@@ -148,6 +203,10 @@ export default {
         'tag': 'Color'
       },
       {
+        'name': '刻度配置',
+        'tag': 'Hint'
+      },
+      {
         'name': '刻度字体颜色',
         'key': 'axisLabelcolor',
         'tag': 'Color'
@@ -166,6 +225,10 @@ export default {
         'name': 'Y轴刻度倾斜度',
         'key': 'YaxisLabelrotate',
         'tag': 'input'
+      },
+      {
+        'name': '颜色配置',
+        'tag': 'Hint'
       },
       {
         'name': 'K线图阳线颜色',

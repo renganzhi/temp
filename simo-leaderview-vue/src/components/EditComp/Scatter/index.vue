@@ -91,16 +91,22 @@ export default {
           left: 'center',
           top: this.item.legendStation
         },
-        // tooltip: {
-        //   trigger: 'item',
-        //   axisPointer: {
-        //     type: this.item.axisPointer, // 'none'  'cross'
-        //     crossStyle: {
-        //       type: this.item.axisPointerType,
-        //       color: this.item.axisPointerColor
-        //     }
-        //   }
-        // },
+        tooltip: {
+          trigger: 'item',
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipColor,
+            fontSize: this.item.tooltipSize
+          }
+          // axisPointer: {
+          //   type: this.item.axisPointer, // 'none'  'cross'
+          //   crossStyle: {
+          //     type: this.item.axisPointerType,
+          //     color: this.item.axisPointerColor
+          //   }
+          // }
+        },
         xAxis: {
           axisLine: {
             lineStyle: {

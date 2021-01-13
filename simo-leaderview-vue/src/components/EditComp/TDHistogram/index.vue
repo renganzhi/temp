@@ -76,6 +76,14 @@ export default {
         //         color:'black'
         //     }
         // },
+        tooltip: {
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipColor,
+            fontSize: this.item.tooltipSize
+          }
+        },
         visualMap: {
           show: false,
           min: valMin,

@@ -270,7 +270,7 @@ export default {
   cursor: pointer;
   background-position: right;
   background-repeat: no-repeat;
-  padding-right: 30px;
+  padding-right: 20px;
   vertical-align: top;
   overflow: hidden;
   text-overflow: ellipsis;
