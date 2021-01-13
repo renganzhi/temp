@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': 'K线图',
-    'imgClass': 'icon-n-video',
+    'imgClass': 'icon-candlestick',
     'chartType': 'KLine',
     'width': 300,
     'height': 300,

@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '散点图',
-    'imgClass': 'icon-n-video',
+    'imgClass': 'icon-scatter',
     'chartType': 'Scatter',
     'width': 300,
     'height': 300,

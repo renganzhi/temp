@@ -145,7 +145,7 @@
                @click="initChart(value)">
             {{value.text}}</div>
         </div>
-        
+
         <div class="m-main flex-1 auto" ref="editCanvas"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
@@ -594,6 +594,48 @@
               <!--表格\文本框配置-->
               <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
                 <div class="m-gap form-group">图表样式</div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table'">
+                  <label>添加内发光</label>
+                  <select v-model="selectedItem.Internal">
+                    <option value="false">隐藏</option>
+                    <option value="true">显示</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table'">
+                  <label>添加斑马纹</label>
+                  <select v-model="selectedItem.Zebra">
+                    <option value="true">显示</option>
+                    <option value="false">隐藏</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table' && selectedItem.Zebra=='true'">
+                  <label>斑马纹颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.ZebraColor"
+                            :key="1"
+                            type="ZebraColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table'">
+                  <label>对齐方式</label>
+                  <select v-model="selectedItem.Alignment">
+                    <option value="left">左对齐</option>
+                    <option value="center">居中对齐</option>
+                    <option value="right">右对齐</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table'">
+                  <label>表格背景图</label>
+                  <input type="file"
+                    accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                    @change='changeImg' />
+                </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
                   <label>表头背景色</label>
@@ -1693,6 +1735,39 @@
                       <option>底部居中</option>
                     </select> -->
                   </div>
+                  <div class="m-gap form-group">tips配置</div>
+                  <div class="form-group cols2">
+                    <label>tips可见性</label>
+                    <select v-model="selectedItem.tooltipShow">
+                      <option value="true">显示</option>
+                      <option value="false">隐藏</option>
+                    </select>
+                  </div>
+                  <div v-if="selectedItem.tooltipShow === 'true'">
+                    <div class="form-group cols2">
+                      <label>tips背景色</label>
+                      <div class="color-w200">
+                        <Vcolor :data="selectedItem.tooltipBackColor"
+                            :key="18"
+                            type="tooltipBackColor"
+                            @getdata="getColor"></Vcolor>
+                      </div>
+                    </div>
+                    <div class="form-group cols2">
+                      <label>tips字体色</label>
+                      <div class="color-w200">
+                        <Vcolor :data="selectedItem.tooltipTextColor"
+                              :key="18"
+                              type="tooltipTextColor"
+                              @getdata="getColor"></Vcolor>
+                      </div>
+                    </div>
+                    <div class="form-group cols2">
+                      <label>tips字体大小</label>
+                      <input  type="number"
+                          v-model="selectedItem.tooltipfontSize">
+                    </div>
+                  </div>
                   <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
                     <div class="form-group cols2">
                       <label>坐标线可见性</label>
@@ -2087,6 +2162,53 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
+                <div class="form-group cols2" style="text-align: center;">
+                    <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
+                </div>
+                <div v-if="advanced &&selectedItem.chartType==='table'">
+                  <div class="form-group cols2">
+                    <label>告警字段</label>
+                    <select v-model="selectedItem.AlarmField">
+                      <option v-for="i in selectedItem.chartData.columns"
+                              :key="i"
+                              :value="i">{{i}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>告警条件</label>
+                    <select v-model="selectedItem.AlarmType">
+                      <option value="num">数字</option>
+                      <option value="chart">字符</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'chart'">
+                    <label>告警字符</label>
+                    <input type="chart"
+                           v-model="selectedItem.AlarmChart">
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'">
+                    <label>条件</label>
+                    <select v-model="selectedItem.AlarmNumType">
+                      <option value="greater">大于</option>
+                      <option value="equal">等于</option>
+                      <option value="less">小于</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'">
+                    <label>阈值</label>
+                    <input type="num"
+                           v-model="selectedItem.AlarmNum">
+                  </div>
+                  <div class="form-group cols2">
+                    <label>告警颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.AlarmColor"
+                              :key="1"
+                              type="AlarmColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                </div>
                 <div class="form-group cols2"
                      v-show="selectedItem.thirdType==='moveTable'">
                   <label>每页展示条数</label>
@@ -2385,6 +2507,24 @@ export default EditJs
 }
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
+}
+.m-tabMain .desc{
+  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC3SURBVChTtY49DoJAEIXfILKN8Sc2UFpY21B5HuMZ4ATScyQbC6i9AaWJoQA2Zsf9g3AA/YrNzHtvXwa/pai2fgKZR9yqZiAkVplhzIAI533Y3i+ndWDEa7M5aIPNPKIzNrhSEiZoNBsuy+MQMT3NPKG/ClLoEXnBn+FgCou6/8C5C93KzFBZOmVss4OYQA+/QOlgvMTbr5ZZsyMq6pcE73R9K7PU3joya3bknYhDkMy7JPbS3wG+t2IugdRfUNsAAAAASUVORK5CYII=') !important
+}
+.m-tabMain .asc{
+  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACaSURBVChTY6AfqK9/ysXcceZXff0VNqgQHDBBaTho43zx8i8DA2s7589XUCE4QFHM1nHm1G+G/zwg9i+G//xsneeOgCWgAEnxf8Y/DAxGUA4Y/P3/zwwkDuUiFLN3nLv1j4GBGcoFA5BzgOLXoVyI4rKyG7w/Gf6rgEXQAFBcPTf3NjuIDVbcJ/D5PojGBWZIfXwIZdIEMDAAAIACLdN1yz7JAAAAAElFTkSuQmCC') !important
+}
+.m-tabMain .advancedset{
+  color: #0088cc;
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 10px;
+  cursor: pointer;
+  vertical-align: top;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 .edit-body .btm-tools{
   margin-bottom: -3px;

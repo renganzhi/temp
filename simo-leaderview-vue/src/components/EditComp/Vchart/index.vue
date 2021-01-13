@@ -102,6 +102,14 @@ export default {
           yAxis: $.extend({}, setings.axis, {
             position: 'left'
           }),
+          tooltip: {
+            show: this.item.tooltipShow === 'true',
+            backgroundColor: this.item.tooltipBackColor,
+            textStyle: {
+              color: this.item.tooltipTextColor,
+              fontSize: this.item.tooltipfontSize
+            }
+          },
           animation: true,
           animationDuration: 500
         }
@@ -265,6 +273,18 @@ export default {
     },
     'item.LineType': function (newV) {
       this.extend.series.itemStyle.normal.lineStyle.type = newV
+    },
+    'item.tooltipShow': function (newV) {
+      this.extend.tooltip.show = newV === 'true'
+    },
+    'item.tooltipBackColor': function (newV) {
+      this.extend.tooltip.backgroundColor = newV
+    },
+    'item.tooltipTextColor': function (newV) {
+      this.extend.tooltip.textStyle.color = newV
+    },
+    'item.tooltipfontSize': function (newV) {
+      this.extend.tooltip.textStyle.fontSize = newV
     },
     'item.lineArea': function (newV, oldValue) {
       this.settings.area = newV === 'true'
@@ -888,6 +908,12 @@ export default {
             },
             tooltip: {
               trigger: 'axis',
+              show: _this.item.tooltipShow === 'true',
+              backgroundColor: _this.item.tooltipBackColor,
+              textStyle: {
+                color: _this.item.tooltipTextColor,
+                fontSize: _this.item.tooltipfontSize
+              },
               formatter: function (params, ticket, callback) {
                 let nameArr = []
                 let time = params[0].data[0]

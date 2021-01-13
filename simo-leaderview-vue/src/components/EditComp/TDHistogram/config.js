@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '3D 柱状图',
-    'imgClass': 'icon-n-video',
+    'imgClass': 'icon-3dhistogram',
     'chartType': 'TDHistogram',
     'width': 600,
     'height': 400,

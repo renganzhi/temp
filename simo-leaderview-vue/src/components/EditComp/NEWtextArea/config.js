@@ -125,11 +125,11 @@ export default{
           'value': 'left'
         },
         {
-          'name': '居中',
+          'name': '居中对齐',
           'value': 'center'
         },
         {
-          'name': '右对其',
+          'name': '右对齐',
           'value': 'right'
         }
         ]
