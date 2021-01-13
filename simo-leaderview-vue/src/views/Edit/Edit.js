@@ -47,6 +47,7 @@ export default {
   props: [],
   data: function () {
     return {
+      advanced: false,
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
       config,
@@ -2882,7 +2883,8 @@ export default {
       $('#mainEdit-edit .main_topo').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/leaderview/border/tpstander.png')
+          // .attr('src', gbs.host + '/leaderview/border/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/topoBg.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3520,6 +3522,8 @@ export default {
         _this.saveHistory()
         if (_this.selectedItem.chartType === 'image') {
           _this.selectedItem.imgSrc = curSrc
+        } if (_this.selectedItem.chartType === 'table') {
+          _this.selectedItem.tableBack = curSrc
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg = curSrc
         } if (_this.selectedItem.chartType === 've-line') {

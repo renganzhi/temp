@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '矩形树图',
-    'imgClass': 'icon-n-video',
+    'imgClass': 'icon-treemap',
     'chartType': 'TreeMap',
     'width': 600,
     'height': 400,

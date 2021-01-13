@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '旭日图',
-    'imgClass': 'icon-n-video',
+    'imgClass': 'icon-sunburst',
     'chartType': 'Sunrise',
     'width': 300,
     'height': 300,

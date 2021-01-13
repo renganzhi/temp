@@ -124,9 +124,7 @@ export default {
         })
       } else {
         this.pageList = JSON.parse(this.pageData) || []
-        console.log(this.pageList)
         this.combinList = JSON.parse(this.composeData) || []
-        console.log(this.combinList)
         // this.$nextTick(() => {
         //   this.setScale()
         // })

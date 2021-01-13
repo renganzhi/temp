@@ -10,6 +10,7 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
+                :style="thStyle"
                 v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
               >{{title}}</th>
           </tr>
@@ -44,11 +45,12 @@
                v-if="tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
-            <tr :style="[trStyle,tbodyTrStyle]"
-                v-for="(tr, id) in page1Data"
+            <tr v-for="(tr, id) in page1Data"
+                :style="[trStyle,tbodyTrStyle(id),warnStyle(id)]"
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
+                  :style="thStyle"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -59,11 +61,12 @@
                v-if="!tableMove"
                style="table-layout: fixed; position: absolute; top:0px; left: 0;">
           <tbody>
-            <tr :style="[trStyle,tbodyTrStyle]"
-                v-for="(tr, id) in page2Data"
+            <tr v-for="(tr, id) in page2Data"
+                :style="[trStyle,tbodyTrStyle(id),warnStyle(id)]"
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
+                  :style="thStyle"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -82,6 +85,7 @@
 <script>
 // import { titleShowFn } from '#/js/public'
 import { mapGetters } from 'vuex'
+import { gbs } from '@/config/settings'
 export default {
   name: 'moveTable',
   props: ['item', 'moving'],
@@ -106,6 +110,10 @@ export default {
         width: this.item.width + 'px !important',
         height: this.item.height + 'px !important',
         tableLayout: 'fixed',
+        backgroundImage: this.item.tableBack
+          ? 'url(' + gbs.host + this.item.tableBack + ')'
+          : '',
+        backgroundSize: '100% 100%',
         overflow: 'hidden',
         border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
       }
@@ -116,19 +124,41 @@ export default {
         fontSize: this.item.fontSize + 'px !important'
       }
     },
+    // theadTrStyle: function () {
+    //   return {
+    //     backgroundColor: this.item.hdBgClr + ' !important', // 表头背景色
+    //     color: this.item.hdClr + ' !important',
+    //     fontSize: this.item.hdfontSize + 'px !important'
+    //   }
+    // },
+    thStyle: function () {
+      return {
+        textAlign: this.item.Alignment + '!important',
+        padding: '8px'
+      }
+    },
     theadTrStyle: function () {
-      return {
-        backgroundColor: this.item.hdBgClr + ' !important', // 表头背景色
-        color: this.item.hdClr + ' !important',
-        fontSize: this.item.hdfontSize + 'px !important'
+      if (this.item.Internal === 'true') {
+        return {
+          backgroundColor: 'transparent !important',
+          boxShadow: '0 0 15px ' + this.item.hdBgClr + ' inset',
+          color: this.item.hdClr + ' !important',
+          fontSize: this.item.hdfontSize + 'px !important'
+        }
+      } else {
+        return {
+          backgroundColor: this.item.hdBgClr + ' !important', // 表头背景色
+          color: this.item.hdClr + ' !important',
+          fontSize: this.item.hdfontSize + 'px !important'
+        }
       }
     },
-    tbodyTrStyle: function () {
-      return {
-        backgroundColor: this.item.bgClr + ' !important', // 表体背景色
-        borderTop: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
-      }
-    },
+    // tbodyTrStyle: function () {
+    //   return {
+    //     backgroundColor: this.item.bgClr + ' !important', // 表体背景色
+    //     borderTop: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
+    //   }
+    // },
     scrollStyle: function () {
       return {
         // marginTop: -36 * this.pageNum * this.nowPage + 'px' // 回流
@@ -204,6 +234,60 @@ export default {
     //     }, this.intervalTime)
     //   }
     // },
+    warnStyle (index) {
+      if (this.item.AlarmField) {
+        if (this.item.AlarmType === 'chart') {
+          if (this.item.AlarmChart !== '' && JSON.stringify(this.item.chartData.rows[index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
+            console.log(11)
+            return {
+              'color': this.item.AlarmColor + ' !important'
+            }
+          }
+        } else {
+          if (this.item.AlarmNum !== '') {
+            let error = false
+            if (this.item.AlarmNumType === 'greater') {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 > this.item.AlarmNum * 1) {
+                error = true
+              }
+            } else if (this.item.AlarmNumType === 'equal') {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 === this.item.AlarmNum * 1) {
+                error = true
+              }
+            } else {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 < this.item.AlarmNum * 1) {
+                error = true
+              }
+            }
+            if (error) {
+              return {
+                'color': this.item.AlarmColor + ' !important'
+              }
+            }
+          }
+        }
+      }
+      return {}
+    },
+    tbodyTrStyle: function (index) {
+      let Color = ''
+      if (this.item.Zebra === 'true' && index % 2 === 1) {
+        Color = this.item.ZebraColor
+      } else {
+        Color = this.item.bgClr
+      }
+      if (this.item.Internal === 'true') {
+        return {
+          backgroundColor: 'transparent !important',
+          boxShadow: '0 0 15px ' + Color + ' inset'
+        }
+      } else {
+        return {
+          backgroundColor: Color + ' !important', // 表体背景色
+          borderTop: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
+        }
+      }
+    },
     initLeftMove () {
       // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
       if (this.intervalId) {
