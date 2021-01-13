@@ -9,6 +9,10 @@ export default {
     'barSize': 10,
     'grid3DLineColor': 'white',
     'grid3DHLolor': 'black',
+    'tooltipShow': true,
+    'tooltipBackColor': '#57625d',
+    'tooltipColor': '#fff',
+    'tooltipSize': 14,
     'grid3DFontSize': 16,
     'ifGradual': 'false',
     'grid3DlineSize': 16,
@@ -53,6 +57,49 @@ export default {
       {
         'name': '柱体大小',
         'key': 'barSize',
+        'tag': 'input'
+      },
+      {
+        'name': 'tips配置',
+        'tag': 'Hint'
+      },
+      {
+        'name': '是否显示tips',
+        'key': 'tooltipShow',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '显示',
+            'value': true
+          },
+          {
+            'name': '隐藏',
+            'value': false
+          }
+        ]
+      },
+      {
+        'name': 'tips背景色',
+        'key': 'tooltipBackColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体色',
+        'key': 'tooltipColor',
+        'parentKey': {
+          'tooltipShow': true
+        },
+        'tag': 'Color'
+      },
+      {
+        'name': 'tips字体大小',
+        'key': 'tooltipSize',
+        'parentKey': {
+          'tooltipShow': true
+        },
         'tag': 'input'
       },
       {

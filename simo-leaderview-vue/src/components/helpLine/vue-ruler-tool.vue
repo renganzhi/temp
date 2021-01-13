@@ -445,7 +445,7 @@ export default {
     align-items: center;
     .line{
       width: 100%;
-      height: 1px;
+      height: 2px;
       background-color: #348cea;
     }
   }
@@ -459,7 +459,7 @@ export default {
     align-items: center;
     .line{
       height: 100%;
-      width: 1px;
+      width: 2px;
       background-color: #348cea;
     }
   }

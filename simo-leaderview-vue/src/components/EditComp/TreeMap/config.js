@@ -86,11 +86,11 @@ export default {
   'styles': {
     'base': [
       {
-        'name': '图例配置',
+        'name': 'tips配置',
         'tag': 'Hint'
       },
       {
-        'name': '显示图例',
+        'name': '显示tips',
         'key': 'showTooltip',
         'tag': 'select',
         'options': [
@@ -105,7 +105,7 @@ export default {
         ]
       },
       {
-        'name': '图例背景色',
+        'name': 'tips背景色',
         'key': 'TooltipBackColor',
         'parentKey': {
           'showTooltip': true
@@ -113,7 +113,7 @@ export default {
         'tag': 'Color'
       },
       {
-        'name': '图例字体色',
+        'name': 'tips字体色',
         'key': 'TooltipColor',
         'parentKey': {
           'showTooltip': true
@@ -121,7 +121,7 @@ export default {
         'tag': 'Color'
       },
       {
-        'name': '图例字大小',
+        'name': 'tips字大小',
         'key': 'TooltipSize',
         'parentKey': {
           'showTooltip': true

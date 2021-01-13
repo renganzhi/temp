@@ -3,7 +3,7 @@ export default {
     'text': '弹框',
     'width': 100,
     'height': 100,
-    'imgClass': 'icon-n-waveball',
+    'imgClass': 'icon-sliderdialog',
     'chartType': 'BulletFrame',
     'showType': '1',
     'stationPlace': '1',

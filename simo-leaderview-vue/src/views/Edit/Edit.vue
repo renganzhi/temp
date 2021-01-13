@@ -2162,10 +2162,10 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
-                <div class="form-group cols2" style="text-align: center;">
+                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='table'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
                 </div>
-                <div v-if="advanced &&selectedItem.chartType==='table'">
+                <div v-if="advanced && selectedItem.chartType==='table'">
                   <div class="form-group cols2">
                     <label>告警字段</label>
                     <select v-model="selectedItem.AlarmField">

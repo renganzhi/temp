@@ -112,7 +112,14 @@ export default {
           top: this.item.legendStation
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          // trigger: 'item',
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipColor,
+            fontSize: this.item.tooltipSize
+          }
           // axisPointer: {
           // animation: false,
           // type: 'cross',
