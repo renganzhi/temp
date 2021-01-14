@@ -6,10 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
-import com.uxsino.leaderview.model.monitor.IndicatorTable;
-import com.uxsino.leaderview.model.monitor.IndicatorVal;
-import com.uxsino.leaderview.model.monitor.NeHealth;
-import com.uxsino.leaderview.model.monitor.NetworkEntity;
+import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.DatacenterService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -154,7 +152,7 @@ public class IndicatorService {
                 }
             }
         } else {
-            log.info("跨组件请求数据中心接口报错：参数：{}, 返回：{}", param, result);
+            log.error("跨组件请求数据中心接口报错：参数：{}, 返回：{}", param, result);
         }
         return criteria;
     }
@@ -180,6 +178,43 @@ public class IndicatorService {
             log.info("跨组件请求数据中心接口报错：参数：{}, 返回：{}", param, result);
         }
         return criteria;
+    }
+
+    public IndicatorValueCriteria searchHistoryRecords(IndicatorValueCriteria criteria) {
+        // 健康度历史值获取
+        if ("healthy".equals(criteria.getIndicatorId())) {
+            List<NeHealthHistory> healthList = Lists.newArrayList();
+            try {
+                 healthList = rpcProcessService.findHealthByNeIdIn(Lists.newArrayList(criteria.getNeId()));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            List<IndicatorVal> object = Lists.newArrayList();
+            healthList.forEach(ne -> {
+                JSONObject obj = new JSONObject();
+                obj.put("result", ne.getHealth());
+                IndicatorVal value = new IndicatorVal();
+                value.setId(ne.getId());
+                value.setInd("healthy");
+                value.setNeId(ne.getNeId());
+                value.setTm(ne.getUpdateDate());
+                value.setIndicatorValue(obj);
+                object.add(value);
+            });
+            criteria.setObject(object);
+            return criteria;
+        }
+        JSONObject must = criteria.getMust();
+        if (StringUtils.isNotBlank(criteria.getIdentifier())) {
+            must.put(getSearchFieldKey("identifier"), criteria.getIdentifier());
+            criteria.setSourceType("include");
+            criteria.setSourceField(Arrays.asList("tm,v".split(",")));
+        }
+        return searchHistoryIndicatorValue(criteria);
+    }
+
+    public String getSearchFieldKey(String field) {
+        return StringUtils.isNotBlank(field) ? "v." + field : "v";
     }
 
 }
