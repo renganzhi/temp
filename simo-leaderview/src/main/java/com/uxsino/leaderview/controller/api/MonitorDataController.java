@@ -13,6 +13,7 @@ import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.commons.utils.TimeUtils;
+import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.service.api.MonitorDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,6 +27,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -126,5 +128,109 @@ public class MonitorDataController {
         }
 
     }
+
+    @ApiOperation("获取指标字符串属性的单值")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "componentName", paramType = "query", dataType = "String", value = "部件名称"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true) })
+    @RequestMapping(value = "/indicator/valueStr", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getIndicatorValueStr(@RequestParam String neIds, @RequestParam String indicators,
+                                          @RequestParam(required = false) String componentName, @RequestParam String field) {
+        try {
+            return monitorDataService.getIndicatorValueStr(neIds, indicators, componentName, field);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
+    @ApiOperation("获取指标字符串属性的列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "componentName", paramType = "query", dataType = "String", value = "部件名称"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true) })
+    @RequestMapping(value = "/indicator/valueStrTable", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getIndicatorValueStrTable(@RequestParam String neIds, @RequestParam String indicators,
+                                               @RequestParam(required = false) String[] componentName, @RequestParam String[] field) {
+        try {
+            return monitorDataService.getIndicatorValueStrTable(neIds, indicators, componentName, field);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
+    /**
+     * 指标历史统计-资源 (可以选择多个资源)(指标唯一)
+     * @param neIds
+     * @param indicators
+     * @param windows
+     * @param field
+     * @param period
+     * @param interval
+     * @return
+     */
+    @ApiOperation("指标历史统计-资源 (可以选择多个资源)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
+            @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
+            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true) })
+    @RequestMapping(value = "/indicator/history/record", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getIndHistoryValue(@RequestParam String[] neIds, String indicators,
+                                        @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
+                                        @RequestParam IndPeriod period, @RequestParam Integer interval) {
+        try {
+            if (Objects.equals("healthy", indicators)) {
+                if (IndPeriod._1day == period) {
+                    interval = 5;
+                }
+                return monitorDataService.getHistoryHealth(neIds, period, interval);
+            } else {
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, period, interval);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    /**
+     * 指标历史统计-指标 (可以选择多个指标)(资源唯一)
+     * 未处理完全 2020-07-22
+     * @param neIds
+     * @param indicators
+     * @param windows
+     * @param period
+     * @return
+     */
+    @ApiOperation("指标历史统计-指标 (可以选择多个指标)(资源唯一)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
+            @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true) })
+    @RequestMapping(value = "/multiple_indicator/record", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getMultipleIndHistoryValue(@RequestParam String[] neIds, String[] indicators,
+                                                @RequestParam(required = false) String windows, @RequestParam IndPeriod period) {
+        try {
+            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, period);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false , e.getMessage());
+        }
+    }
+
 
 }

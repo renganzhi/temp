@@ -40,6 +40,10 @@ public class RpcProcessService {
         return this.toJavaBeanList(neJsonModel, NetworkEntity.class);
     }
 
+    public NetworkEntity findNetworkEntityById(String ids) throws Exception{
+        return findNetworkEntityByIdIn(ids);
+    }
+
     public NetworkEntity findNetworkEntityByIdIn(String ids) throws Exception{
         List<NetworkEntity> list = findNetworkEntityByIdIn(Lists.newArrayList(ids));
         if (list.isEmpty()){
@@ -174,7 +178,15 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return (JSONObject) jsonModel.getObj();
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
+        JsonModel jsonModel = monitorService.findHealthByNeIdIn(neIdIn);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, NeHealthHistory.class);
     }
 
 

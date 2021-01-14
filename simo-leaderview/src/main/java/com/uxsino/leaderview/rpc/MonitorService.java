@@ -66,10 +66,12 @@ public interface MonitorService {
                                  @RequestParam("itObjectIds") String itObjectIds,
                                  @RequestParam("baseNeClass") BaseNeClass baseNeClass);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/neHealth/getNeHealth", consumes = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/homeData/neHealth/getNeHealth", consumes = "application/json")
     JsonModel getNeHealth(@RequestParam("neId") String neId);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/indicator/getStrategy", consumes = "application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/getStrategy", consumes = "application/json")
     JsonModel getStrategy(@RequestParam("neId") String neId, @RequestParam("indicatorNames") String indicatorNames);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/homeData/health/findHealthByNeIdIn", consumes = "application/json")
+    JsonModel findHealthByNeIdIn(@RequestParam("neIdIn") List<String> neIdIn);
 }
