@@ -125,8 +125,13 @@ export default {
             }
           },
           viewControl: {
-            projection: 'orthographic',
-            autoRotate: false
+            projection: 'perspective',
+            autoRotate: this.item.autoRotate, // 自动旋转
+            autoRotateDirection: this.item.autoRotateDirection, // 旋转方向 cw 或者 ccw
+            autoRotateSpeed: this.item.autoRotateSpeed, // 旋转速度  单位 角度/秒
+            autoRotateAfterStill: this.item.autoRotateAfterStill, // 鼠标操作后静止多久后开始旋转
+            distance: this.item.distance, // 视角的高度
+            alpha: this.item.alpha // 俯仰角
           }
         },
         series: [{

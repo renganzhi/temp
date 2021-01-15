@@ -164,7 +164,7 @@ export default {
       var myoption = {
         backgroundColor: '', // 背景颜色  不填为透明
         globe: {
-          environment: require('../../../../static/img/earthPic/Mapcolor.jpg'),
+          baseTexture: require('../../../../static/img/earthPic/Mapcolor.jpg'),
 
           heightTexture: require('../../../../static/img/earthPic/Mapcolor.jpg'),
           displacementScale: _this.item.displacementScale, // 凹凸度

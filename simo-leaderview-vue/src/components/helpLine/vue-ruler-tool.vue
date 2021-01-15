@@ -14,8 +14,8 @@
         :key="item.id"
         :class="`vue-ruler-ref-line-${item.type}`"
         @mousedown.stop="handleDragLine(item)">
-        <div v-if="item.type==='h'" class="line" :style="{width:Hstyle}"></div>
-        <div v-else class="line" :style="{height:Vstyle}"></div>
+        <div v-if="item.type==='h'" class="line" :style="{'width':Hstyle,'background-color':helpLineColor}"></div>
+        <div v-else class="line" :style="{height:Vstyle,'background-color':helpLineColor}"></div>
       </div>
     </section>
     <!-- <div ref="content" class="vue-ruler-content" :style="contentStyle">
@@ -68,6 +68,10 @@ export default {
     parentH: {
       type: Number,
       default: 1080
+    },
+    helpLineColor: {
+      type: String,
+      default: '#348cea'
     },
     stepLength: {
       type: Number,
@@ -446,7 +450,6 @@ export default {
     .line{
       width: 100%;
       height: 2px;
-      background-color: #348cea;
     }
   }
 
@@ -460,7 +463,6 @@ export default {
     .line{
       height: 100%;
       width: 2px;
-      background-color: #348cea;
     }
   }
 

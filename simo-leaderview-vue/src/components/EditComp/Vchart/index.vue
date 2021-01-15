@@ -38,10 +38,10 @@ export default {
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
       let setings = {
         grid: {
-          left: '10%',
+          left: 10,
           right: 10,
-          top: 10,
-          bottom: 10
+          top: this.item.gridTop,
+          bottom: this.item.gridTop
         },
         axis: {
           splitLine: {
@@ -67,7 +67,7 @@ export default {
           yAxisType: [0]
         },
         extend: {
-          // grid:setings.grid,
+          grid: setings.grid,
           title: {
             show: false,
             // text:this.item.ctName,
@@ -177,6 +177,10 @@ export default {
         this.settings.seriesMap.pro.detail.fontSize = newV
       }
     },
+    'item.gridTop': function (newV) {
+      this.extend.grid.top = newV
+      this.extend.grid.bottom = newV
+    },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
         let barW = Math.floor((newV - 60) * 0.7 / this.dealChartData.rows.length)
@@ -250,9 +254,11 @@ export default {
         this.settings.seriesMap.p.title.textStyle.fontSize = newV
       } else {
         this.extend.legend.textStyle.fontSize = newV
-        this.extend.xAxis.axisLabel.textStyle.fontSize = newV
-        this.extend.yAxis.axisLabel.textStyle.fontSize = newV
       }
+    },
+    'item.axisLabelSize': function (newV) {
+      this.extend.xAxis.axisLabel.textStyle.fontSize = newV
+      this.extend.yAxis.axisLabel.textStyle.fontSize = newV
     },
     'item.smooth': function (newV) {
       this.extend.series.smooth = newV === 'true'
@@ -628,7 +634,7 @@ export default {
                 rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -646,7 +652,7 @@ export default {
                 showMaxLabel: true,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
                   return params.length > 5 ? params.substr(0, 5) + '...' : params
@@ -701,7 +707,7 @@ export default {
                 rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -720,7 +726,7 @@ export default {
                 interval: 'auto', // 采用不重叠的方式展示
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -865,7 +871,7 @@ export default {
                 interval: 'auto', // 采用不重叠的方式展示
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (value) {
                   if (value >= 1000) {
@@ -901,7 +907,7 @@ export default {
                 rotate: _this.item.rotate || 0,
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
-                  fontSize: _this.item.ctLegendSize || '14'
+                  fontSize: _this.item.axisLabelSize || '14'
                 },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
               }
@@ -937,6 +943,7 @@ export default {
               }
             }
           })
+          console.log(obj)
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
