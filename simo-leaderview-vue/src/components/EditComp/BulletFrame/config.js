@@ -7,7 +7,6 @@ export default {
     'chartType': 'BulletFrame',
     'showType': '1',
     'stationPlace': '1',
-    'bgClr': '#0088cc',
     'imgSrc': '',
     'videoSrc': '',
     'openBoxheight': 560,
@@ -36,10 +35,6 @@ export default {
   },
   'styles': {
     'base': [{
-      'name': '按钮颜色',
-      'key': 'bgClr',
-      'tag': 'Color'
-    }, {
       'name': '背景图片',
       'key': 'imgSrc',
       'tag': 'ImgFile'

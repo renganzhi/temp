@@ -163,6 +163,7 @@
                 :is-scale-revise="true"
                 :visible.sync="paintObj.showGrid"
                 :scale="paintObj.scale"
+                :helpLineColor='helpLineColor'
                 style="height:100%;width100%"
               >
               </vue-ruler-tool>
@@ -1731,9 +1732,11 @@
                     <label>图例高度</label>
                     <input type="number"
                            v-model="selectedItem.legendY">
-                    <!-- <select>
-                      <option>底部居中</option>
-                    </select> -->
+                  </div>
+                  <div class="form-group cols2">
+                    <label>图元间隙</label>
+                    <input type="number"
+                           v-model="selectedItem.gridTop">
                   </div>
                   <div class="m-gap form-group">tips配置</div>
                   <div class="form-group cols2">
@@ -1831,11 +1834,33 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
+                     v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
+                  <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字大小</label>
+                    <select v-model="selectedItem.axisLabelSize">
+                      <option value="8">8</option>
+                      <option value="10">10</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="20">20</option>
+                      <option value="24">24</option>
+                      <option value="28">28</option>
+                      <option value="30">30</option>
+                    </select>
+                </div>
+                <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
                   <label>折线图类型</label>
                   <select v-model="selectedItem.lineArea">
                     <option value="false">折线图</option>
                     <option value="true">区域图</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line' && selectedItem.lineArea === 'true'">
+                  <label>线条颜色</label>
+                  <select v-model="selectedItem.lineColorType">
+                    <option value="false">渐变</option>
+                    <option value="true">单色</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
@@ -1852,7 +1877,7 @@
                   <select v-model="selectedItem.LineType">
                     <option value="solid">实线</option>
                     <option value="dashed">虚线</option>
-                    <option value="dotted">数据点</option>
+                    <option value="dotted">点状线</option>
                   </select>
                 </div>
                 <div class="form-group cols2"

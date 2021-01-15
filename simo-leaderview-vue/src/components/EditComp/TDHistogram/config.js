@@ -16,6 +16,12 @@ export default {
     'grid3DFontSize': 16,
     'ifGradual': 'false',
     'grid3DlineSize': 16,
+    'autoRotate': false,
+    'autoRotateDirection': 'cw',
+    'autoRotateSpeed': 20,
+    'autoRotateAfterStill': 5,
+    'distance': 250,
+    'alpha': 20,
     'grid3DColorArray': [
       '#37a2da',
       '#32c5e9',
@@ -99,6 +105,75 @@ export default {
         'key': 'tooltipSize',
         'parentKey': {
           'tooltipShow': true
+        },
+        'tag': 'input'
+      },
+      {
+        'name': '旋转配置',
+        'tag': 'Hint'
+      },
+      {
+        'name': '是否旋转',
+        'key': 'autoRotate',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '旋转',
+            'value': true
+          },
+          {
+            'name': '不旋转',
+            'value': false
+          }
+        ]
+      },
+      {
+        'name': '旋转方向',
+        'key': 'autoRotateDirection',
+        'tag': 'select',
+        'parentKey': {
+          'autoRotate': true
+        },
+        'options': [
+          {
+            'name': '顺时针',
+            'value': 'cw'
+          },
+          {
+            'name': '逆时针',
+            'value': 'ccw'
+          }
+        ]
+      },
+      {
+        'name': '旋转速度',
+        'key': 'autoRotateSpeed',
+        'parentKey': {
+          'autoRotate': true
+        },
+        'tag': 'input'
+      },
+      {
+        'name': '操作静置时间',
+        'key': 'autoRotateAfterStill',
+        'parentKey': {
+          'autoRotate': true
+        },
+        'tag': 'input'
+      },
+      // {
+      //   'name': '视角高度',
+      //   'key': 'distance',
+      //   // 'parentKey': {
+      //   //   'autoRotate': true
+      //   // },
+      //   'tag': 'input'
+      // },
+      {
+        'name': '俯仰角',
+        'key': 'alpha',
+        'parentKey': {
+          'autoRotate': true
         },
         'tag': 'input'
       },

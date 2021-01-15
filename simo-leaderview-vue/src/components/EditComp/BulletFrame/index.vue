@@ -129,9 +129,12 @@ export default {
         top: this.item.openBoxBtn + 'px'
       }
     },
+    isEidt: function () {
+      return this.$route.name === 'edit' && this.$parent.$parent._name !== '<PreView>'
+    },
     closeBoxStyle: function () {
       return {
-        backgroundColor: this.item.bgClr + '',
+        backgroundColor: this.isEidt ? 'rgba(255, 0, 0, 0.3)' : '',
         width: this.item.closeBoxwidth + 'px',
         height: this.item.closeBoxheight + 'px',
         right: this.item.closeBoxRight + 'px',
@@ -181,7 +184,7 @@ export default {
             let leftsize = lefthchajusize * option - lefthchajusize + document.querySelector('.moveBoximg').style.left.split('px')[0] * 1 / option
             let topsize = tophchajusize * option - tophchajusize + document.querySelector('.moveBoximg').style.top.split('px')[0] * 1 / option
             this.openBoxStyle = {
-              backgroundColor: this.item.bgClr + '',
+              backgroundColor: this.isEidt ? 'rgba(255, 0, 0, 0.3)' : '',
               width: (this.item.width * option).toFixed(2) + 'px',
               height: (this.item.height * option).toFixed(2) + 'px',
               top: topsize.toFixed(2) + 'px',
@@ -189,7 +192,7 @@ export default {
             }
           } else {
             this.openBoxStyle = {
-              backgroundColor: this.item.bgClr + '',
+              backgroundColor: this.isEidt ? 'rgba(255, 0, 0, 0.3)' : '',
               width: this.item.width + 'px',
               height: this.item.height + 'px'
             }
@@ -199,7 +202,7 @@ export default {
         this.stopcomputed()
         this.Interval = setInterval((val) => {
           this.openBoxStyle = {
-            backgroundColor: this.item.bgClr + '',
+            backgroundColor: this.isEidt ? 'rgba(255, 0, 0, 0.3)' : '',
             width: this.item.width + 'px',
             height: this.item.height + 'px'
           }

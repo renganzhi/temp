@@ -48,6 +48,7 @@ export default {
   data: function () {
     return {
       advanced: false,
+      helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
       config,
@@ -2877,6 +2878,7 @@ export default {
       canvas2.width = this.paintObj.width * (this.paintObj.scale / 100)
       canvas2.height = this.paintObj.height * (this.paintObj.scale / 100)
       canvas2.getContext('2d')
+      this.paintObj.showGrid = false
       $('#mainEdit-edit .main_topo')
         .find('svg')
         .css('opacity', 0)
@@ -3585,10 +3587,7 @@ export default {
       this.paintObj.bgColor = data.color
     },
     getLineCl (data) {
-      let lineArry = document.querySelectorAll('.line')
-      lineArry.forEach(element => {
-        element.style.background = data.color
-      })
+      this.helpLineColor = data.color
     },
     changeStation () {
       document.querySelector('.vue-ruler-wrapper').style.position = this.guideStation

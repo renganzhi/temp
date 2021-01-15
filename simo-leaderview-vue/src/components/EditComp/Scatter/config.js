@@ -227,7 +227,7 @@ export default {
             'value': 'dashed'
           },
           {
-            'name': '圆点',
+            'name': '点状线',
             'value': 'dotted'
           }
         ]
