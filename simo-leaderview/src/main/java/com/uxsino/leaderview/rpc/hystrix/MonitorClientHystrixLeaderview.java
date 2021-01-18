@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
@@ -99,6 +100,16 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel findHealthByNeIdIn(List<String> neIdIn) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getTopNByItObjects(String indicator, String itObjectIds, String topStr, String field, String windowsStr, String order) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeHealthOrderByHealthy(String regexpSplitToTable, String order) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

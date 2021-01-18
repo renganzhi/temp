@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.uxsino.leaderview.model.monitor.IndicatorTable;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -74,7 +76,12 @@ public class MonitorUtils {
         return ObjectUtils.isEmpty(value) ? defaultValue : value;
     }
 
-    public static JSONObject HistoryUnitTransfer(JSONArray array, String unit) {
+    public static JSONObject HistoryUnitTransfer(JSONArray array, String unit){
+        return unitTransfer(array, unit, "value");
+    }
+
+
+    public static JSONObject unitTransfer(JSONArray array, String unit, String valueKey) {
         JSONObject re = newResultObj("result", array, "unit", unit);
         if (ObjectUtils.isEmpty(array) || Strings.isNullOrEmpty(unit)) {
             return re;
@@ -86,7 +93,7 @@ public class MonitorUtils {
 //            if (!unit.equals(obj.getString("unit"))) {
 //                continue;
 //            }
-            String valueStr = obj.getString("value");
+            String valueStr = obj.getString(valueKey);
             if (Strings.isNullOrEmpty(valueStr)) {
                 continue;
             }
@@ -114,16 +121,17 @@ public class MonitorUtils {
                 // TODO 暂时只有厘秒和秒做转换
                 for (int i = 0; i < array.size(); i++) {
                     JSONObject obj = array.getJSONObject(i);
-                    String valueStr = obj.getString("value");
+                    String valueStr = obj.getString(valueKey);
                     if (ObjectUtils.isEmpty(valueStr)) {
                         result.add(obj);
                     } else {
                         Double objValue = getValueDob(valueStr);
                         if ("秒".equals(unit)) {
-                            obj.put("value", objValue / 100D);
+                            objValue = objValue / 100D;
                         } else {
-                            obj.put("value", objValue);
+
                         }
+                        obj.put(valueKey, getValueStr(objValue));
                     }
                 }
                 break;
@@ -143,24 +151,22 @@ public class MonitorUtils {
                 re.put("unit",unit);
                 for (int i = 0; i < array.size(); i++) {
                     JSONObject obj = array.getJSONObject(i);
-                    String valueStr = obj.getString("value");
+                    String valueStr = obj.getString(valueKey);
                     if (ObjectUtils.isEmpty(valueStr)) {
                         result.add(obj);
                     } else {
                         Double objValue = getValueDob(valueStr);
                         if ("TB".equals(unit)) {
-                            obj.put("value", objValue / (1024 * 1024 * 1024 * 1024D));
-                            result.add(obj);
+                            objValue = objValue / (1024 * 1024 * 1024 * 1024D);
                         } else if ("GB".equals(unit)) {
-                            obj.put("value", objValue / (1024 * 1024 * 1024D));
-                            result.add(obj);
+                            objValue = objValue / (1024 * 1024 * 1024D);
                         } else if ("MB".equals(unit)) {
-                            obj.put("value", objValue / (1024 * 1024D));
-                            result.add(obj);
+                            objValue = objValue / (1024 * 1024D);
                         } else {
-                            obj.put("value", objValue / (1024D));
-                            result.add(obj);
+                            objValue = objValue / (1024D);
                         }
+                        obj.put(valueKey, getValueStr(objValue));
+                        result.add(obj);
                     }
                 }
                 break;
@@ -170,6 +176,7 @@ public class MonitorUtils {
             }
         }
         re.put("result", ObjectUtils.isEmpty(result) ? array : result);
+        re.put("unit", unit);
         return re;
     }
 
@@ -178,8 +185,14 @@ public class MonitorUtils {
             return valueStr;
         }else if (valueStr.contains(".") && !valueStr.contains("E")) {
             valueStr = valueStr.substring(0, valueStr.indexOf(".") + 2);
+        }else if (valueStr.contains("E")){
+            valueStr = new DecimalFormat("0.0").format(Double.parseDouble(valueStr));
         }
         return valueStr;
+    }
+
+    public static String getValueStr(Double value){
+        return new DecimalFormat("0.0").format(value);
     }
 
     public static Double getValueDob(String valueStr){
@@ -189,5 +202,52 @@ public class MonitorUtils {
             objValue = Double.parseDouble(valueStr);
         }
         return objValue;
+    }
+
+
+    public static JSONObject splitUnitValue(String valueStr){
+        return splitUnitValue(valueStr, "");
+    }
+
+    public static JSONObject splitUnitValue(String valueStr, String nullValue){
+        String[] str = valueStr.split(" ");
+        String value = null;
+        String unit = "";
+        if (str.length == 2){
+            value = Strings.isNullOrEmpty(str[0]) ? nullValue : str[0];
+            unit = str[1];
+        }else if (str.length == 1){
+            value = Strings.isNullOrEmpty(str[0]) ? nullValue : str[0];
+        }
+        JSONObject result = new JSONObject();
+        result.put("value", value);
+        result.put("unit", unit);
+        return result;
+    }
+
+    public static JSONObject getValueJSON(JSON indicatorValues){
+        return getValueJSON(indicatorValues, null);
+    }
+
+    public static JSONObject getValueJSON(JSON indicatorValues, String componentName) {
+        JSONObject valueJSON = new JSONObject();
+        // indicatorValues的类型可能是JSONArray,也可能是JSONObject
+        if (indicatorValues instanceof JSONArray) {
+            if (!StringUtils.isEmpty(componentName)) {
+                JSONArray indicatorValuesArray = (JSONArray) indicatorValues;
+                for (int k = 0; k < indicatorValuesArray.size(); k++) {
+                    if (indicatorValuesArray.getJSONObject(k).get("identifier").equals(componentName)) {
+                        valueJSON = indicatorValuesArray.getJSONObject(k);
+                        break;
+                    }
+                }
+                valueJSON = ObjectUtils.isEmpty(valueJSON) ? indicatorValuesArray.getJSONObject(0) : valueJSON;
+            }else {
+                valueJSON = ((JSONArray) indicatorValues).getJSONObject(0);
+            }
+        } else if (indicatorValues instanceof JSONObject) {
+            valueJSON = (JSONObject) indicatorValues;
+        }
+        return valueJSON;
     }
 }

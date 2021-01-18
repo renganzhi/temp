@@ -15,4 +15,9 @@ public class MCClientHystrixLeaderview implements MCService {
     public JsonModel findAllUserByRoleId(String cookie, Long[] roleIds) {
         return new JsonModel(false, "MC服务调用失败");
     }
+
+    @Override
+    public JsonModel getDomainList(String cookie) {
+        return new JsonModel(false, "MC服务调用失败");
+    }
 }

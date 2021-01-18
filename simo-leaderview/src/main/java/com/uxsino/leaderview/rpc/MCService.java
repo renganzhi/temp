@@ -21,4 +21,7 @@ public interface MCService {
 
     @RequestMapping(method = RequestMethod.GET, value = "mc/role/findAllUserByRoleId", consumes = "application/json")
     JsonModel findAllUserByRoleId(@RequestHeader("Cookie") String cookie, @RequestParam("roleIds") Long[] roleIds);
+
+    @RequestMapping(method = RequestMethod.GET, value = "department/list", consumes = "application/json")
+    JsonModel getDomainList(@RequestHeader("Cookie") String cookie);
 }

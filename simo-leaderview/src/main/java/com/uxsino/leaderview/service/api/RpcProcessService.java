@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.service.api;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -187,6 +189,28 @@ public class RpcProcessService {
             throw new Exception(jsonModel.getMsg());
         }
         return toJavaBeanList(jsonModel, NeHealthHistory.class);
+    }
+
+    public List<NeHealth> findNeHealthOrderByHealthy(String neIds, String order) throws Exception{
+        JsonModel indJsonModel = monitorService.findNeHealthOrderByHealthy(neIds, order);
+        if (!indJsonModel.isSuccess()){
+            throw new Exception(indJsonModel.getMsg());
+        }
+        return this.toJavaBeanList(indJsonModel, NeHealth.class);
+    }
+
+
+    public JSONObject getTopNByItObjects(String indicator, String itObjectIds, String topStr, String field,
+                                         JSONArray window, String order) throws Exception{
+        String windowStr = null;
+        if (!ObjectUtils.isEmpty(window)){
+            windowStr = window.toJSONString();
+        }
+        JsonModel jsonModel = monitorService.getTopNByItObjects(indicator, itObjectIds, topStr, field, windowStr, order);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
     }
 
 
