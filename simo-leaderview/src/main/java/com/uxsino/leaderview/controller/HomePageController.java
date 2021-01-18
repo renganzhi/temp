@@ -954,6 +954,8 @@ public class HomePageController {
 		File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
 		fileDir.mkdirs();
 		File saveFile = new File(fileDir, fileName);//将压缩包解析到指定位置
+		//导入的文件名统一添加后缀“_导入”
+		name = Strings.isNullOrEmpty(name)? "导入" : name;
 		try {
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;

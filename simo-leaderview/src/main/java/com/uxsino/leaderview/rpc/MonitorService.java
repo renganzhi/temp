@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.rpc;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
@@ -74,4 +75,15 @@ public interface MonitorService {
 
     @RequestMapping(method = RequestMethod.POST, value = "/homeData/health/findHealthByNeIdIn", consumes = "application/json")
     JsonModel findHealthByNeIdIn(@RequestParam("neIdIn") List<String> neIdIn);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/topn/getTopNByItObjects", consumes = "application/json")
+    JsonModel getTopNByItObjects(@RequestParam("indicator") String indicator, @RequestParam("itObjectIds") String itObjectIds,
+                                 @RequestParam("topStr") String topStr, @RequestParam("field") String field,
+                                 @RequestParam("windowsStr") String windowsStr, @RequestParam("order") String order);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/neHealth/findNeHealthOrderByHealthy", consumes = "application/json")
+    JsonModel findNeHealthOrderByHealthy(@RequestParam("regexpSplitToTable") String regexpSplitToTable,
+                                         @RequestParam("order") String order);
+
+
 }

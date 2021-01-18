@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
@@ -207,7 +209,6 @@ public class MonitorDataController {
 
     /**
      * 指标历史统计-指标 (可以选择多个指标)(资源唯一)
-     * 未处理完全 2020-07-22
      * @param neIds
      * @param indicators
      * @param windows
@@ -232,5 +233,143 @@ public class MonitorDataController {
         }
     }
 
+
+    @ApiOperation("获取topN的展示数据(定位到资源)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "topN展示的指标类型", required = true),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源IDs"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性"),
+            @ApiImplicitParam(name = "number", paramType = "query", dataType = "String", value = "topN展示的记录条数"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值"),
+            @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式") })
+    @RequestMapping(value = "/indicator/topN", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getTopNByItObjects(@RequestParam String indicators, @RequestParam(required = false) Long domainId,
+                                        @RequestParam(required = false) String neIds, @RequestParam(required = false) String baseNeClass,
+                                        @RequestParam(required = false) String neClass, @RequestParam(required = false) String field,
+                                        @RequestParam String number, @RequestParam String windows, @RequestParam String order, HttpSession session,
+                                        Boolean bar) {
+        try {
+            return monitorDataService.getTopNByItObjects(indicators, domainId, neIds, baseNeClass, neClass, field, number, windows, order, session, bar);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("获取多资源多指标统计的展示数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs"),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "展示的指标类型"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值") })
+    @RequestMapping(value = "/indicator/multipleIndicator", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getMultipleIndicatorObject(@RequestParam String[] neIds, @RequestParam String[] indicators,
+                                                @RequestParam String windows, HttpSession session) {
+        try {
+            return monitorDataService.getMultipleIndicatorObject(neIds, indicators, windows, session);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @ApiOperation("根据所选域、拓扑图id统计链路数量")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "abnormal", paramType = "query", dataType = "Boolean", value = "统计异常数据") })
+    @RequestMapping(value = "/countNeLink", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel countNeLink(@RequestParam(required = false) Boolean abnormal, HttpSession session) {
+        try {
+            return monitorDataService.countNeLink(abnormal, session);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
+
+    @ApiOperation("根据所选域、父类型、子类型和状态进行统计资源数量")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "status", paramType = "query", dataType = "String", value = "状态") })
+    @RequestMapping(value = "/countNe", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel countNe(@RequestParam(required = false) String domainId,
+                             @RequestParam(required = false) String[] baseNeClass, @RequestParam(required = false) String[] neClass,
+                             @RequestParam(required = false) String status, HttpSession session) {
+        try {
+            return monitorDataService.countNe(domainId, baseNeClass, neClass, status, session);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    @ApiOperation("指标统计-链路")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "sourceId", paramType = "query", dataType = "String", value = "源id"),
+            @ApiImplicitParam(name = "sourceIfName", paramType = "query", dataType = "String", value = "源接口"),
+            @ApiImplicitParam(name = "targetId", paramType = "query", dataType = "String", value = "目的id"),
+            @ApiImplicitParam(name = "targetIfName", paramType = "query", dataType = "String", value = "目的接口"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "指标") })
+    @RequestMapping(value = "/indicator/valueNetwork", method = RequestMethod.GET)
+    public JsonModel valueNetwork(HttpSession session, @RequestParam String sourceId, @RequestParam String sourceIfName,
+                                  @RequestParam String targetId, @RequestParam String targetIfName, @RequestParam String field) {
+        try {
+            return monitorDataService.valueNetwork(session, sourceId, sourceIfName, targetId, targetIfName, field);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @ApiOperation("链路展示")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "network", paramType = "query", dataType = "String", value = "链路"),
+            @ApiImplicitParam(name = "number", paramType = "query", dataType = "Long", value = "展示条数"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性") })
+    @RequestMapping(value = "/networkTable", method = RequestMethod.GET)
+    public JsonModel networkTable(HttpSession session, @RequestParam String network, @RequestParam Long number,
+                                  @RequestParam String[] field) {
+        try {
+            return monitorDataService.networkTable(session, network, number, field);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @ApiOperation("获取资源分布数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "status", paramType = "query", dataType = "String", value = "资源状态", required = false),
+            @ApiImplicitParam(name = "range", paramType = "query", dataType = "String", value = "展示范围", required = false),
+            @ApiImplicitParam(name = "areaName", paramType = "query", dataType = "String", value = "已选地区", required = false),
+            @ApiImplicitParam(name = "names", paramType = "query", dataType = "String", value = "展示范围下的地区名集合", required = false),
+            @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "颗粒度", required = false) })
+    @RequestMapping(value = "/v_map/neDivision", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel neDivision(HttpSession session, @RequestParam(required = false) String[] status,
+                                @RequestParam(required = false) String range, @RequestParam(required = false) String[] names,
+                                @RequestParam(required = false) String areaName, @RequestParam(required = false) String period) {
+        try {
+            return monitorDataService.neDivision(session, status, range, names, areaName, period);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
 
 }
