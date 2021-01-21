@@ -1,8 +1,5 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
@@ -10,7 +7,6 @@ import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +106,26 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel findNeHealthOrderByHealthy(String regexpSplitToTable, String order) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getFieldLables(String indicatorID) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findLastObject(String neId, String indicatorName, String params, String fetchDate) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeIdByParams(Boolean sourceManage, String objectIds, String ip, String name, String type, String objType, Long[] domainIds, Long groupId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeListByParams(Boolean sourceManage, String objectIds, String ip, String name, String type, String objType, Long[] domainIds, Long groupId) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

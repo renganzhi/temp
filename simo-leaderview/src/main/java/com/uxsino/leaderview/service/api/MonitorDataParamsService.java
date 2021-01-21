@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Component
-public class HomeDataParamsService {
+public class MonitorDataParamsService {
 
     @Autowired
     private DomainUtils domainUtils;

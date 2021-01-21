@@ -1,20 +1,7 @@
-package com.uxsino.leaderview.controller.api;
+package com.uxsino.leaderview.controller.monitor;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.commons.model.NeClass;
-import com.uxsino.commons.model.RunStatus;
-import com.uxsino.commons.utils.DateUtils;
-import com.uxsino.commons.utils.SessionUtils;
-import com.uxsino.commons.utils.TimeUtils;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.service.api.MonitorDataService;
 import io.swagger.annotations.Api;
@@ -22,24 +9,16 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 
 @Api(tags = { "资源-大屏展示数据接口" })
 @RestController
-@RequestMapping("/homeData")
+@RequestMapping("/monitor")
 @Slf4j
 public class MonitorDataController {
 
@@ -123,7 +102,7 @@ public class MonitorDataController {
     public JsonModel getIndicatorValue(@RequestParam String neIds, @RequestParam String indicators,
                                        @RequestParam(required = false) String componentName, @RequestParam String field) {
         try {
-            return monitorDataService.getIndicatorValue(neIds,indicators,componentName,field);
+            return monitorDataService.getIndicatorValueData(neIds,indicators,componentName,field);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -278,7 +257,7 @@ public class MonitorDataController {
 
     }
 
-    @SuppressWarnings("unchecked")
+
     @ApiOperation("根据所选域、拓扑图id统计链路数量")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "abnormal", paramType = "query", dataType = "Boolean", value = "统计异常数据") })
@@ -366,6 +345,50 @@ public class MonitorDataController {
                                 @RequestParam(required = false) String areaName, @RequestParam(required = false) String period) {
         try {
             return monitorDataService.neDivision(session, status, range, names, areaName, period);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation("双轴-历史值统计图")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
+            @ApiImplicitParam(name = "indicatorsLeft", paramType = "query", dataType = "String", value = "左侧指标分类", required = true),
+            @ApiImplicitParam(name = "componentNameLeft", paramType = "query", dataType = "String", value = "左侧部件", required = false),
+            @ApiImplicitParam(name = "fieldLeft", paramType = "query", dataType = "String", value = "左侧指标", required = true),
+            @ApiImplicitParam(name = "indicatorsRight", paramType = "query", dataType = "String", value = "右侧指标分类", required = true),
+            @ApiImplicitParam(name = "componentNameRight", paramType = "query", dataType = "String", value = "右侧部件", required = false),
+            @ApiImplicitParam(name = "fieldRight", paramType = "query", dataType = "String", value = "右侧指标", required = true),
+            @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true) })
+    @RequestMapping(value = "/multiple_indicator/recordDoubleAxis", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel recordDoubleAxis(@RequestParam String[] neIds, @RequestParam String indicatorsLeft,
+                                      @RequestParam String componentNameLeft, @RequestParam String fieldLeft, @RequestParam String indicatorsRight,
+                                      @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period) {
+        try {
+            return monitorDataService.multipleIndicatorHistory(neIds[0], indicatorsLeft, componentNameLeft, fieldLeft, indicatorsRight,
+                    componentNameRight, fieldRight, period);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation("同资源多部件统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "componentName", paramType = "query", dataType = "String", value = "部件名称"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true) })
+    @RequestMapping(value = "/indicator/multipleComponent", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel multipleComponent(@RequestParam String neIds, @RequestParam String indicators,
+                                       @RequestParam(required = false) String[] componentName, @RequestParam String field) {
+        try {
+            return monitorDataService.multipleComponent(neIds, indicators, componentName, field);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
