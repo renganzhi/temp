@@ -1,8 +1,5 @@
 package com.uxsino.leaderview.rpc;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
@@ -11,7 +8,6 @@ import com.uxsino.leaderview.rpc.hystrix.MonitorClientHystrixLeaderview;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -85,5 +81,27 @@ public interface MonitorService {
     JsonModel findNeHealthOrderByHealthy(@RequestParam("regexpSplitToTable") String regexpSplitToTable,
                                          @RequestParam("order") String order);
 
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/getFieldLables", consumes = "application/json")
+    JsonModel getFieldLables(@RequestParam("indicatorID") String indicatorID);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/findLastObject", consumes = "application/json")
+    JsonModel findLastObject(@RequestParam("neId") String neId, @RequestParam("indicatorName") String indicatorName,
+                             @RequestParam("params") String params, @RequestParam("fetchDate") String fetchDate);
+
+    // 根据参数模糊查询，获取资源ID
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorAlert/findNeIdByParams", consumes = "application/json")
+    JsonModel findNeIdByParams(@RequestParam(value = "sourceManage") Boolean sourceManage,
+                               @RequestParam(value = "objectIds") String objectIds, @RequestParam(value = "ip") String ip,
+                               @RequestParam(value = "name") String name, @RequestParam(value = "type") String type,
+                               @RequestParam(value = "objType") String objType, @RequestParam(value = "domainIds") Long[] domainIds,
+                               @RequestParam(value = "groupId") Long groupId);
+
+    // 根据资源的各项参数查询资源列表
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorAlert/findNeListByParams", consumes = "application/json")
+    JsonModel findNeListByParams(@RequestParam(value = "sourceManage") Boolean sourceManage,
+                                 @RequestParam(value = "objectIds") String objectIds, @RequestParam(value = "ip") String ip,
+                                 @RequestParam(value = "name") String name, @RequestParam(value = "type") String type,
+                                 @RequestParam(value = "objType") String objType, @RequestParam(value = "domainIds") Long[] domainIds,
+                                 @RequestParam(value = "groupId") Long groupId);
 
 }

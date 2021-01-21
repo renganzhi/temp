@@ -1,4 +1,4 @@
-package com.uxsino.leaderview.model;
+package com.uxsino.leaderview.model.monitor;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

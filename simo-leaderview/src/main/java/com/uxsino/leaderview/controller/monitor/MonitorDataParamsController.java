@@ -1,74 +1,60 @@
-package com.uxsino.leaderview.controller.api;
+package com.uxsino.leaderview.controller.monitor;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
-import com.uxsino.commons.model.RunStatus;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
-import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
-import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
-import com.uxsino.leaderview.service.api.HomeDataParamsService;
-import com.uxsino.reactorq.model.FieldType;
-import com.uxsino.reactorq.model.INDICATOR_TYPE;
+import com.uxsino.leaderview.service.api.MonitorDataParamsService;
 import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
 
 @Api(tags = { "大屏数据项接口" })
 @RestController
-@RequestMapping("/homeData/params")
-public class HomeDataParamsController {
+@RequestMapping("/monitor/params")
+public class MonitorDataParamsController {
     @Autowired
-    HomeDataParamsService homeDataParamsService;
+    MonitorDataParamsService monitorDataParamsService;
 
     @GetMapping("/getDomainByUser")
     @ApiOperation("根据当前用户获取所拥有权限的下拉框")
     public JsonModel getDomainByUser(HttpSession session) {
-        return homeDataParamsService.getDomainByUser(session);
+        return monitorDataParamsService.getDomainByUser(session);
     }
 
     @ApiOperation("获取所有BaseNeClass-用于下拉列表")
     @GetMapping("/baseNeClass")
     @ResponseBody
     public JsonModel getManageObjectEnum() {
-        return homeDataParamsService.getManageObjectEnum();
+        return monitorDataParamsService.getManageObjectEnum();
     }
 
     @ApiOperation("获取除了未知类型的其他BaseNeClass-用于下拉列表")
     @GetMapping("/baseNotKnown")
     @ResponseBody
     public JsonModel baseNotKnown() {
-        return homeDataParamsService.getManageObjectEnum(BaseNeClass.unknow);
+        return monitorDataParamsService.getManageObjectEnum(BaseNeClass.unknow);
     }
 
     @ApiOperation("根据BaseNeClass获取所有子类型-用于下拉列表")
     @GetMapping("/neClass")
     @ResponseBody
     public JsonModel getNeClassByBase(@ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass) {
-        return homeDataParamsService.getNeClassByBase(baseNeClass);
+        return monitorDataParamsService.getNeClassByBase(baseNeClass);
     }
 
     @ApiOperation("根据BaseNeClass获取所有子类型-用于下拉列表")
     @GetMapping("/neClass-multi")
     @ResponseBody
     public JsonModel getMultiNeClassByBase(@ApiParam("资源父类型") @RequestParam(required = false) String[] baseNeClass) {
-        return homeDataParamsService.getMultiNeClassByBase(baseNeClass);
+        return monitorDataParamsService.getMultiNeClassByBase(baseNeClass);
     }
 
     @ApiOperation("获取所有资源状态-用于下拉框")
@@ -76,7 +62,7 @@ public class HomeDataParamsController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "abnormal", paramType = "query", dataType = "Boolean", value = "是否统计异常") })
     public JsonModel getNeStatus(@RequestParam(required = false) Boolean abnormal) {
-        return homeDataParamsService.getNeStatus(abnormal);
+        return monitorDataParamsService.getNeStatus(abnormal);
     }
 
     @ApiOperation("获取指标类型的资源")
@@ -86,8 +72,8 @@ public class HomeDataParamsController {
                              @ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
                              @ApiParam("资源子类型") @RequestParam(required = false) NeClass neClass,
                              @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown) {
-        NetworkEntityQO neQO = homeDataParamsService.setNeQO(session, domainId, baseNeClass, neClass);
-        return homeDataParamsService.findNes(neQO,notUnknown);
+        NetworkEntityQO neQO = monitorDataParamsService.setNeQO(session, domainId, baseNeClass, neClass);
+        return monitorDataParamsService.findNes(neQO,notUnknown);
     }
 
     @ApiOperation("查询资源可选的指标单位类型，用于下拉框")
@@ -95,7 +81,7 @@ public class HomeDataParamsController {
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"), })
     @RequestMapping(value = "/getUnit", method = RequestMethod.GET)
     public JsonModel getUnit(@RequestParam(required = false) String[] neIds) {
-        return homeDataParamsService.getUnit(neIds);
+        return monitorDataParamsService.getUnit(neIds);
     }
 
 
@@ -110,7 +96,7 @@ public class HomeDataParamsController {
     public JsonModel getIndicator(@RequestParam(required = false) String[] neIds,
                                   @RequestParam(required = false) String type, @RequestParam(required = false) String unit,
                                   @RequestParam(required = false) NeClass neClass, @RequestParam(required = false) Boolean healthy) {
-        return homeDataParamsService.getIndicator(neIds, type, unit, neClass, healthy);
+        return monitorDataParamsService.getIndicator(neIds, type, unit, neClass, healthy);
 
     }
 
@@ -124,7 +110,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getIndicatorTopN", method = RequestMethod.GET)
     public JsonModel getIndicatorTopN(@RequestParam(required = false) String[] neIds,
                                   @RequestParam(required = false) NeClass neClass) {
-        return homeDataParamsService.getIndicatorTopn(neIds, neClass);
+        return monitorDataParamsService.getIndicatorTopn(neIds, neClass);
 
     }
 
@@ -138,7 +124,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getIndicatorStr", method = RequestMethod.GET)
     public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
                                      @RequestParam(required = false) NeClass neClass) {
-        return homeDataParamsService.getIndicatorStr(neIds,neClass);
+        return monitorDataParamsService.getIndicatorStr(neIds,neClass);
     }
 
 
@@ -149,7 +135,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getComponentName", method = RequestMethod.GET)
     public JsonModel getComponentName(@RequestParam String[] neIds, @RequestParam String indicators) {
         try {
-            return homeDataParamsService.getComponentName(neIds, indicators);
+            return monitorDataParamsService.getComponentName(neIds, indicators);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
@@ -163,7 +149,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getIndField", method = RequestMethod.GET)
     public JsonModel getIndField(@RequestParam String indicators) {
         try {
-            return homeDataParamsService.getIndField(indicators);
+            return monitorDataParamsService.getIndField(indicators);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
@@ -177,7 +163,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getIndFieldByType/{type}", method = RequestMethod.GET)
     public JsonModel getIndFieldByType(@RequestParam String indicators, @PathVariable String type) {
         try {
-            return homeDataParamsService.getIndField(indicators, type);
+            return monitorDataParamsService.getIndField(indicators, type);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -195,7 +181,7 @@ public class HomeDataParamsController {
     public JsonModel getComponentNameAndIndFieldByType(@RequestParam String[] indicators, @RequestParam String[] neIds,
                                                        @RequestParam(required = false) String type, @RequestParam(required = false) String unit) {
         try {
-            return homeDataParamsService.getComponentNameAndIndFieldByType(indicators, neIds, type, unit);
+            return monitorDataParamsService.getComponentNameAndIndFieldByType(indicators, neIds, type, unit);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -211,10 +197,10 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getComponentNameAndIndField", method = RequestMethod.GET)
     public JsonModel getComponentNameAndIndField(@RequestParam String[] indicators, @RequestParam String[] neIds,
                                                  @RequestParam(required = false) Boolean multipleComp, @RequestParam(required = false) Boolean multipleField) {
-        multipleComp = homeDataParamsService.existJudgment(multipleComp);
-        multipleField = homeDataParamsService.existJudgment(multipleField, true);
+        multipleComp = monitorDataParamsService.existJudgment(multipleComp);
+        multipleField = monitorDataParamsService.existJudgment(multipleField, true);
         try {
-            return homeDataParamsService.getWindows(indicators, neIds, multipleComp, multipleField);
+            return monitorDataParamsService.getWindows(indicators, neIds, multipleComp, multipleField);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -228,7 +214,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getComponentNameForWindows", method = RequestMethod.GET)
     public JsonModel getComponentNameForWindows(@RequestParam String[] indicators, @RequestParam String[] neIds) {
         try {
-            JsonModel jsonModel = homeDataParamsService.getWindows(indicators, neIds, false, true);
+            JsonModel jsonModel = monitorDataParamsService.getWindows(indicators, neIds, false, true);
             // TODO 这里的核心利用率部件选择有误
             // 如果参数有误，直接返回false
             if (!jsonModel.isSuccess()) {
@@ -256,7 +242,7 @@ public class HomeDataParamsController {
         String[] nameArray = { "5分钟", "10分钟", "20分钟", "30分钟", "60分钟" };
         Integer[] valueArray = { 5, 10, 20, 30, 60 };
         for (int i = 0; i < nameArray.length; i++) {
-            result.add(homeDataParamsService.newResultObj( nameArray[i], valueArray[i]));
+            result.add(monitorDataParamsService.newResultObj( nameArray[i], valueArray[i]));
         }
         if ("_1month".equals(period.name())) {
             // 如果选择的是展示一个月，则展示时间点数为每30分钟展示一个数据
@@ -269,7 +255,7 @@ public class HomeDataParamsController {
         } else {
             // 如果选择的是展示一天，则根据存在数据进行展示
             result.clear();
-            result.add(homeDataParamsService.newResultObj("无间隔",null));
+            result.add(monitorDataParamsService.newResultObj("无间隔",null));
         }
         return new JsonModel(true, result);
     }
@@ -281,7 +267,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getNetworkSourceId", method = RequestMethod.GET)
     public JsonModel getNetworkSourceId(HttpSession session) {
         try {
-            return homeDataParamsService.getNetworkSourceId(session);
+            return monitorDataParamsService.getNetworkSourceId(session);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -295,7 +281,7 @@ public class HomeDataParamsController {
     @RequestMapping(value = "/getNetworkSourceIfName", method = RequestMethod.GET)
     public JsonModel getNetworkSourceIfName(HttpSession session, @RequestParam String sourceId) {
         try {
-            return homeDataParamsService.getNetworkSourceIfName(session, sourceId);
+            return monitorDataParamsService.getNetworkSourceIfName(session, sourceId);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -310,7 +296,7 @@ public class HomeDataParamsController {
     public JsonModel getNetworkTargetId(HttpSession session, @RequestParam String sourceId,
                                         @RequestParam String sourceIfName) {
         try {
-            return homeDataParamsService.getNetworkTargetId(session, sourceId, sourceIfName);
+            return monitorDataParamsService.getNetworkTargetId(session, sourceId, sourceIfName);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -326,7 +312,7 @@ public class HomeDataParamsController {
     public JsonModel getNetworkTargetIfName(HttpSession session, @RequestParam String sourceId,
                                             @RequestParam String sourceIfName, @RequestParam String targetId) {
         try {
-            return homeDataParamsService.getNetworkTargetIfName(session, sourceId, sourceIfName, targetId);
+            return monitorDataParamsService.getNetworkTargetIfName(session, sourceId, sourceIfName, targetId);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

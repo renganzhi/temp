@@ -17,8 +17,7 @@ import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.JSONUtils;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.commons.utils.TimeUtils;
-import com.uxsino.leaderview.model.FieldModel;
-import com.uxsino.leaderview.model.WindowsArray;
+import com.uxsino.leaderview.model.monitor.FieldModel;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MCService;
@@ -296,7 +295,7 @@ public class MonitorDataService {
      * @param field 属性
      * @return
      */
-    public JsonModel getIndicatorValue(String neIds, String indicators, String componentName, String field) throws Exception {
+    public JsonModel getIndicatorValueData(String neIds, String indicators, String componentName, String field) throws Exception {
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         // 单值元件中，错误数据也需要展示正确图例
         JSONObject empObj = newResultObj("name", Objects.isNull(ind) ? "" : ind.getLabel(), "unit","");
@@ -2161,6 +2160,7 @@ public class MonitorDataService {
         return new JsonModel(true, result);
     }
 
+    @SuppressWarnings("unchecked")
     public JsonModel countNeLink(Boolean abnormal, HttpSession session) throws Exception{
         Long[] domains;
         if (ObjectUtils.isEmpty(abnormal)) {
@@ -2437,6 +2437,474 @@ public class MonitorDataService {
         result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : "资源个数");
         result.put("value", neList.size());
         result.put("unit", "");
+        return new JsonModel(true, result);
+    }
+
+
+    /**
+     * 双轴-历史值统计图
+     * @param neIds
+     * @param period
+     * @return
+     */
+    public JsonModel multipleIndicatorHistory(String neId, String indicatorsLeft, String componentNameLeft,
+                                              String fieldLeft, String indicatorsRight, String componentNameRight,
+                                              String fieldRight, IndPeriod period) throws Exception{
+        // 封装指标list（需使用有序list）
+        List<JSONObject> indicatorList = new ArrayList<>();
+        if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
+                (indicatorsRight + componentNameRight + fieldRight))) {
+            JSONObject leftObj = new JSONObject();
+            leftObj.put("neId", neId);
+            leftObj.put("indicator", indicatorsLeft);
+            leftObj.put("component", componentNameLeft);
+            leftObj.put("field", fieldLeft);
+            indicatorList.add(leftObj);
+        }
+        JSONObject rightObj = new JSONObject();
+        rightObj.put("neId", neId);
+        rightObj.put("indicator", indicatorsRight);
+        rightObj.put("component", componentNameRight);
+        rightObj.put("field", fieldRight);
+        indicatorList.add(rightObj);
+        // 由于双轴曲线没有可选的时间间隔,故统计时段为天、周、月时的时间间隔分别为5分钟、20分钟、60分钟
+        Integer interval = 5;
+        if (Objects.equals("_1week", period.name())) {
+            interval = 20;
+        } else if (Objects.equals("_1month", period.name())) {
+            interval = 60;
+        }
+        JSONObject result = indicatorHistoryHandleByInterval(indicatorList, period, interval, true);
+        JSONArray unit = result.getJSONArray("unit");
+        // unit.size() == 1说明左右两侧指标、部件、属性相同，需向column和unit重复添加一条冗余数据
+        if (unit.size() == 1) {
+            JSONArray columns = result.getJSONArray("columns");
+            unit.add(unit.get(0));
+            columns.add(columns.get(1));
+        }
+        return new JsonModel().success(result);
+    }
+
+    /**
+     * 通过给定时间间隔处理指标历史数据
+     * @param indicatorList 指标集合对象（neId、indicator、component、field）
+     * @param period 统计时段
+     * @param interval 时间间隔（单位为分钟）
+     * @param isUnitTransfer 是否转换单位
+     * @return
+     */
+    public JSONObject indicatorHistoryHandleByInterval(List<JSONObject> indicatorList, IndPeriod period,
+                                                       Integer interval, Boolean isUnitTransfer) throws Exception {
+        Date now = new Date();
+        JSONArray columns = new JSONArray();
+        JSONArray units = new JSONArray();
+        JSONArray rows = new JSONArray();
+        columns.add("采集时间");
+
+        // 固定时间间隔
+        Date startDate = IndPeriod.getStartDate(period, now);
+        startDate.setTime(startDate.getTime() - startDate.getTime() % 60000L);
+        Date startTag = new Date(startDate.getTime());
+        List<Date> dateList = Lists.newArrayList();
+        while (startDate.before(now)) {
+            Date itm = new Date(startDate.getTime());
+            dateList.add(itm);
+            startDate.setTime(startDate.getTime() + 1000 * 60 * interval);
+        }
+
+        // 该map用于缓存指标历史数据，避免过多的查询
+        Map<String, List<IndicatorVal>> indicatorValueCache = new HashMap<>(indicatorList.size());
+        // 该map用于缓存column和unit，避免过多的查询（需使用有序map）
+        Map<String, JSONObject> columnUnitCache = new LinkedHashMap<>(indicatorList.size());
+        dateList.forEach(intervalDate -> {
+            JSONObject row = new JSONObject();
+            indicatorList.forEach(indicatorObj -> {
+                String neId = indicatorObj.getString("neId");
+                String indicator = indicatorObj.getString("indicator");
+                String component = indicatorObj.getString("component");
+                String field = indicatorObj.getString("field");
+                String cacheKey = neId + indicator + component + field;
+                // 获取指标历史数据
+                List<IndicatorVal> indicatorValueList = null;
+                if (indicatorValueCache.containsKey(cacheKey)) {
+                    indicatorValueList = indicatorValueCache.get(cacheKey);
+                } else {
+                    IndicatorValueCriteria criteria = new IndicatorValueCriteria();
+                    JSONObject sort = new JSONObject();
+                    JSONObject must = new JSONObject();
+                    JSONObject scope = new JSONObject();
+                    criteria.setPagination(false);
+                    sort.put("tm", "asc");
+                    criteria.setSort(sort);
+                    scope.put("gte", startTag);
+                    scope.put("lte", now);
+                    must.put("tm", scope);
+                    must.put("ne", neId);
+                    List<String> indNameArr = Lists.newArrayList(Strings.nullToEmpty(indicator).split(","));
+                    criteria.setIndicatorName(indNameArr);
+                    criteria.setMust(must);
+                    indicatorService.searchHistoryRecords(criteria);
+                    Object IndValueObj = criteria.getObject();
+                    JSONArray valueArray = IndValueObj == null ? new JSONArray()
+                            : JSON.parseArray(JSON.toJSONString(IndValueObj));
+                    indicatorValueList = valueArray == null ? null
+                            : JSONObject.parseArray(valueArray.toString(), IndicatorVal.class);
+                    indicatorValueCache.put(cacheKey, indicatorValueList);
+                }
+                // 获取column和unit
+                String column = null;
+                String unit = null;
+                String transferUnit = null;
+                if (columnUnitCache.containsKey(cacheKey)) {
+                    column = columnUnitCache.get(cacheKey).getString("column");
+                    unit = columnUnitCache.get(cacheKey).getString("unit");
+                    transferUnit = columnUnitCache.get(cacheKey).getString("transferUnit");
+                } else {
+                    IndicatorTable indicatorTable = new IndicatorTable();
+                    JSONArray fieldLabel = new JSONArray();
+                    try {
+                        indicatorTable = rpcProcessService.getIndicatorInfoByName(indicator);
+                        fieldLabel = rpcProcessService.getFieldLables(indicator);
+                    }catch (Exception e){
+
+                    }
+                    if (ObjectUtils.isEmpty(fieldLabel)) {
+                        column = indicatorTable.getLabel();
+                        if (Objects.equals("PERCENT", indicatorTable.getIndicatorType())) {
+                            unit = "%";
+                            transferUnit = unit;
+                        }
+                    } else {
+                        for (Object obj : fieldLabel) {
+                            JSONObject itm = (JSONObject) obj;
+                            if (Objects.equals(field, itm.getString("name"))) {
+                                column = indicatorTable.getLabel() + ":" + itm.getString("label");
+                                unit = itm.getString("unit");
+                                // 取该指标所有被统计的数据，进行最大值筛选，按照最大值的最合适的单位对所有数据进行该单位的处理
+                                Optional<Double> optional = indicatorValueList.stream().map(map -> {
+                                    Object valueObj = map.getIndicatorValue();
+                                    // valueObj = viewService.changeToJson(valueObj, indicator);
+                                    JSON indicatorValue = (JSON) valueObj;
+                                    return getIndicatorValue(indicatorValue, component, field);
+                                }).filter(condition -> !ObjectUtils.isEmpty(condition)).reduce(Double::max);
+                                if (optional.isPresent() && isUnitTransfer) {
+                                    transferUnit = indicatorUnitTransfer(optional.get(), unit, null)
+                                            .getString("transferUnit");
+                                } else {
+                                    transferUnit = unit;
+                                }
+                            }
+                        }
+                    }
+                    JSONObject obj = new JSONObject();
+                    obj.put("column", column);
+                    obj.put("unit", unit);
+                    obj.put("transferUnit", transferUnit);
+                    columnUnitCache.put(cacheKey, obj);
+                }
+
+                /* 健康度指标特殊处理：如果时间间隔内没有健康度（没有发生告警），使用上一次的健康度填充。
+                   非健康度指标处理：如果时间间隔内没有数据（采集器服务停止），不使用健康度指标的方式填充（使用上一次数据填充），用null填充。
+                   所有指标公共处理：如果时间间隔内有多个数据（主要针对统计时段比较大的情况），使用间隔区间内的平均值（保留两位小数）。 */
+                if (Objects.equals("healthy", indicator) && intervalDate.compareTo(startTag) == 0) {
+                    // 统计时段起始时间的健康度特殊处理，取统计时段起始时间之前的的所有健康度中距离起始时间最近的健康度
+                    Optional<IndicatorVal> firstOptional = indicatorValueList.stream()
+                            .filter(itm -> itm.getTm().getTime() <= startTag.getTime())
+                            .max(Comparator.comparing(IndicatorVal::getTm));
+                    if (firstOptional.isPresent()) {
+                        Object valueObj = firstOptional.get().getIndicatorValue();
+                        // valueObj = viewService.changeToJson(valueObj, indicator);
+                        JSON indicatorValue = (JSON) valueObj;
+                        row.put(column, getIndicatorValue(indicatorValue, component, field));
+                    } else {
+                        row.put(column, null);
+                    }
+                    return;
+                }
+                OptionalDouble averageOptional = indicatorValueList.stream()
+                        // 指标采集时间与间隔区间判断条件为左开右闭，不可使用after、before
+                        .filter(itm -> itm.getTm().getTime() <= intervalDate.getTime() && itm.getTm()
+                                .getTime() > (new Date(intervalDate.getTime() - 1000 * 60 * interval)).getTime())
+                        // 该filter的情况较少，且条件中存在遍历，故没有放置在上个filter，减少无用的迭代，加快查询速度
+                        .filter(itm -> {
+                            Object valueObj = itm.getIndicatorValue();
+                            // valueObj = viewService.changeToJson(valueObj, indicator);
+                            JSON indicatorValue = (JSON) valueObj;
+                            return !ObjectUtils.isEmpty(getIndicatorValue(indicatorValue, component, field));
+                        }).mapToDouble(itm -> {
+                            Object valueObj = itm.getIndicatorValue();
+                            // valueObj = viewService.changeToJson(valueObj, indicator);
+                            JSON indicatorValue = (JSON) valueObj;
+                            return getIndicatorValue(indicatorValue, component, field);
+                        }).average();
+                if (averageOptional.isPresent()) {
+                    Double value = averageOptional.getAsDouble();
+                    value = isUnitTransfer ? indicatorUnitTransfer(value, unit, transferUnit).getDouble("value")
+                            : value;
+                    value = new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    row.put(column, value);
+                } else if (Objects.equals("healthy", indicator)) {
+                    Object lastHealth = rows.getJSONObject(rows.size() - 1).get(column);
+                    row.put(column, lastHealth);
+                } else {
+                    row.put(column, null);
+                }
+            });
+            row.put("采集时间", DateUtils.formatCommonDate(intervalDate));
+            rows.add(row);
+        });
+
+        columnUnitCache.forEach((key, value) -> {
+            columns.add(value.getString("column"));
+            units.add(value.getString("transferUnit"));
+        });
+        JSONObject result = new JSONObject();
+        result.put("columns", columns);
+        result.put("rows", rows);
+        result.put("unit", units);
+        return result;
+    }
+
+    /**
+     * 获取指标中给定部件和属性的值
+     * @param indicatorValue 指标中的所有值
+     * @param component 部件
+     * @param field 属性
+     * @return
+     */
+    public Double getIndicatorValue(JSON indicatorValue, String component, String field) {
+        Double result = null;
+        if (indicatorValue instanceof JSONArray) {
+            JSONArray indicatorValues = (JSONArray) indicatorValue;
+            for (Object obj : indicatorValues) {
+                JSONObject itm = (JSONObject) obj;
+                if (Objects.equals(component, itm.getString("identifier"))) {
+                    result = itm.getDouble(field);
+                }
+            }
+        }
+        if (indicatorValue instanceof JSONObject) {
+            JSONObject indicatorValues = (JSONObject) indicatorValue;
+            if (StringUtils.isBlank(field)) {
+                result = indicatorValues.getDouble("result");
+            } else {
+                result = indicatorValues.getDouble(field);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 大屏曲线图单位转换
+     * @param value 值
+     * @param unit 原单位
+     * @param transferUnit 需要转换的单位
+     * @return
+     */
+    public JSONObject indicatorUnitTransfer(Double value, String unit, String transferUnit) {
+        JSONObject result = new JSONObject();
+        result.put("unit", unit);
+        if (ObjectUtils.isEmpty(unit) || ObjectUtils.isEmpty(value)) {
+            result.put("value", value);
+            result.put("transferUnit", transferUnit);
+            return result;
+        }
+        if ("byte".equals(unit) || "B".equals(unit) || "KB".equals(unit) || "MB".equals(unit) || "GB".equals(unit)
+                || "8KB".equals(unit) || "16MB".equals(unit) || "2KB".equals(unit) || "TB".equals(unit)) {
+            if ("8KB".equals(unit)) {
+                value *= 8;
+                unit = "KB";
+            }
+            if ("16MB".equals(unit)) {
+                value *= 16;
+                unit = "MB";
+            }
+            if ("2KB".equals(unit)) {
+                value *= 2;
+                unit = "KB";
+            }
+            List<String> units = Arrays.asList("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+            if ("byte".equals(unit)) {
+                units.set(0, "byte");
+            }
+            int index = units.indexOf(unit);
+            if (StringUtils.isBlank(transferUnit)) {
+                double transferIndex = value == 0 ? 0 : Math.floor(Math.log(value) / Math.log(1024));
+                transferUnit = units.get(index + (int) transferIndex);
+            } else {
+                int transferIndex = units.indexOf(transferUnit);
+                value = value / Math.pow(1024, transferIndex - index);
+            }
+        } else if ("second".equals(unit) || "ms".equals(unit) || "microsecond".equals(unit) || "ns".equals(unit)
+                || "sec".equals(unit) || "day".equals(unit) || "cs".equals(unit)) {
+            if ("day".equals(unit)) {
+                unit = "天";
+            }
+            if ("second".equals(unit) || "sec".equals(unit)) {
+                unit = "秒";
+            }
+            if ("cs".equals(unit)) {
+                unit = "厘秒";
+            }
+            if ("ms".equals(unit)) {
+                unit = "毫秒";
+            }
+            if ("microsecond".equals(unit)) {
+                unit = "微秒";
+            }
+            if ("ns".equals(unit)) {
+                unit = "纳秒";
+            }
+            List<String> units = Arrays.asList("天", "时", "分", "秒", "厘秒", "毫秒", "微秒", "纳秒");
+            int[] gap = { 24, 60, 60, 100, 10, 1000, 1000 };
+            int index = units.indexOf(unit);
+            if (StringUtils.isBlank(transferUnit)) {
+                transferUnit = units.get(index);
+                value = value / gap[index - 1];
+                while (Math.floor(value) >= 1 && index > 0) {
+                    value = value / gap[index - 1];
+                    index--;
+                    transferUnit = units.get(index);
+                }
+            } else {
+                int transferIndex = units.indexOf(transferUnit);
+                while (transferIndex < index) {
+                    value = value / gap[index - 1];
+                    index--;
+                }
+            }
+        } else {
+            transferUnit = unit;
+        }
+        result.put("value", value);
+        result.put("transferUnit", transferUnit);
+        return result;
+    }
+
+    /**
+     * 同资源多部件统计
+     * @param neIds 资源ID
+     * @param indicators 指标名称
+     * @param componentName 部件名称
+     * @param field 属性
+     * @return
+     */
+    public JsonModel multipleComponent(String neIds, String indicators, String[] componentName, String field) throws Exception{
+
+        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        // 资源ID和指标名为必选项
+        if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
+            return new JsonModel(true, empObj());
+        }
+        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
+        // 判断资源是否存在或者是否已被销毁或者未监控
+        if (ObjectUtils.isEmpty(ne) || ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
+            return new JsonModel(true, empObj());
+        }
+        // IPMI数据进行指标单位特殊处理
+        List<String> ipmiIndicator = Lists.newArrayList("ipmi_temp", "ipmi_current", "ipmi_fan", "ipmi_voltage");
+        // 返回的结果
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        // 属性字段的JSON
+        JSONObject fieldLabel = null;
+        // 属性值的JSON
+        // JSONObject valueJSON = new JSONObject();
+        if (validHasFields(ind)) {
+            JSONArray fields = ind.getFields();
+            if (CollectionUtils.isEmpty(fields)) {
+                return new JsonModel(true, empObj());
+            }
+            // 查找属性的label
+            for (int i = 0; i < fields.size(); i++) {
+                JSONObject fieldJson = fields.getJSONObject(i);
+                if (field.equalsIgnoreCase(fieldJson.getString("name"))) {
+                    fieldLabel = fieldJson;
+                    break;
+                }
+            }
+            if (Objects.isNull(fieldLabel)) {
+                return new JsonModel(true, empObj());
+            }
+        }
+        // 获取指标的值
+        IndicatorVal indValue = rpcProcessService.findLastObject(neIds, indicators, null, null);
+        Boolean strategyField = getStrategy(neIds, indicators, field);
+        // 若指标未监控，取消其数值展示
+        if (!strategyField) {
+            indValue = new IndicatorVal();
+        }
+        if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
+            return new JsonModel(true, empObj());
+        }
+        // indicatorValues的类型可能是JSONArray,也可能是JSONObject
+        JSON indicatorValues = (JSON) indValue.getIndicatorValue();
+        // 根据指标ID取对应参数
+        JSONArray fieldArray = JSON.parseArray(indicatorValues.toJSONString());
+        Map<String, String> componentNameMap = Maps.newHashMap();
+        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds), indicators,
+                null, null, null);
+        for (Map<String, Object> map : idAndComponent) {
+            if (map.get("identifier") == null || map.get("componentName") == null) {
+                continue;
+            }
+            componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
+        }
+        String unit = fieldLabel.getString("unit");
+        JSONObject row = new JSONObject();
+        columns.add("资源名");
+        row.put("资源名",
+                ne.getName() + " : " + fieldLabel.getString("label") + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
+        for (String component : componentName) {
+            for (int i = 0; i < fieldArray.size(); i++) {
+                JSONObject fieldObj = fieldArray.getJSONObject(i);
+                if (fieldObj.get("identifier").toString().equals(component)) {
+                    String value = fieldObj.getString(field);
+                    String name = new String();
+                    Object value1 = new Object();
+                    if (Strings.isNullOrEmpty(value)) {
+                        name = componentNameMap.get(component);
+                        value1 = "";
+                    } else {
+                        Matcher m = CHINESE_PATTERN.matcher(value);
+                        while (m.find()) {
+                            value = m.group(1);
+                            break;
+                        }
+                        if (Strings.isNullOrEmpty(unit)) {
+                            name = componentNameMap.get(component);
+                            value1 = String.format("%.2f", Double.parseDouble(value));
+                        } else {
+                            int index = value.lastIndexOf(" ");
+                            name = componentNameMap.get(component);
+                            value1 = index > 0 ? String.format("%.2f", Double.parseDouble(value.substring(0, index)))
+                                    : String.format("%.2f", Double.parseDouble(value));
+                            unit = index > 0 ? value.substring(index + 1) : unit;
+                            if (ipmiIndicator.contains(indicators)) {
+                                unit = fieldObj.getString("unit");
+                            }
+                        }
+                    }
+                    if (Strings.isNullOrEmpty(unit)) {
+                        row.put(name, value1);
+                        columns.add(name);
+                    } else {
+                        row.put(name + "(" + unit + ")", value1);
+                        columns.add(name + "(" + unit + ")");
+                    }
+                    break;
+                }
+            }
+        }
+        rows.add(row);
+        if (row.size() == 1) {
+            rows = new JSONArray();
+            columns = new JSONArray();
+        }
+        result.put("rows", rows);
+        result.put("columns", columns);
+        result.put("unit", unit);
         return new JsonModel(true, result);
     }
 }

@@ -6,23 +6,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
-import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
+import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.*;
-import com.uxsino.leaderview.rpc.DatacenterService;
+import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+/**
+ * @description 对服务间调用的返回数据进行成功判断以及处理
+ * @date 2021-01-19
+ */
 @Component
 @Slf4j
 public class RpcProcessService {
@@ -31,7 +35,7 @@ public class RpcProcessService {
     private MonitorService monitorService;
 
     @Autowired
-    private IndicatorService indicatorService;
+    private AlertService alertService;
 
     @SuppressWarnings("unchecked")
     public List<NetworkEntity> findAllNetworkEntity(NetworkEntityQO entityQO) throws Exception{
@@ -145,7 +149,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return Long.valueOf(jsonModel.getObj().toString());
+        return getLongValue(jsonModel);
     }
 
     @SuppressWarnings("unchecked")
@@ -202,10 +206,7 @@ public class RpcProcessService {
 
     public JSONObject getTopNByItObjects(String indicator, String itObjectIds, String topStr, String field,
                                          JSONArray window, String order) throws Exception{
-        String windowStr = null;
-        if (!ObjectUtils.isEmpty(window)){
-            windowStr = window.toJSONString();
-        }
+        String windowStr = ObjectUtils.isEmpty(window)? null : window.toJSONString();
         JsonModel jsonModel = monitorService.getTopNByItObjects(indicator, itObjectIds, topStr, field, windowStr, order);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -213,9 +214,120 @@ public class RpcProcessService {
         return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
     }
 
+    public JSONArray getFieldLables(String indicatorID) throws Exception{
+        JsonModel jsonModel = monitorService.getFieldLables(indicatorID);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseArray(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    public IndicatorVal findLastObject(String neId, String indicatorName, JSONObject params, String fetchDate) throws Exception{
+        String paramStr = ObjectUtils.isEmpty(params)? null : params.toJSONString();
+        JsonModel jsonModel = monitorService.findLastObject(neId, indicatorName, paramStr, fetchDate);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return this.toJavaBean(jsonModel, IndicatorVal1.class);
+    }
+
+    public JsonModel countAlert(HttpSession session, String alertType, String alertLevel) throws Exception{
+        JsonModel jsonModel = alertService.countAlert("SESSION=" + session.getId(), alertType, alertLevel);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
+    public JsonModel getOtherAlertInfo(HttpSession session, String type) throws Exception{
+        JsonModel jsonModel = alertService.getOtherAlertInfo("SESSION=" + session.getId(), type);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
+    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number) throws Exception{
+        JsonModel jsonModel = alertService.getOtherAlertTable("SESSION=" + session.getId(), type, number);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
+    public long getAlertCount(AlertQuery query, AlertType alert) throws Exception{
+        JsonModel jsonModel = alertService.getAlertCount(query, alert);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return getLongValue(jsonModel);
+    }
+
+    public List<AlertLevel> findAlertList(AlertLevelQuery alertLevelQuery) throws Exception{
+        JsonModel jsonModel = alertService.findAlertList(alertLevelQuery);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, AlertLevel.class);
+    }
+
+    public List<AlertRecord> findAlert(AlertQuery query, Map<String, String> orderBy) throws Exception{
+        JsonModel jsonModel = alertService.findAlert(query, JSON.toJSONString(orderBy));
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, AlertRecord.class);
+    }
+
+    public List<Alert> findByChooseForLeaderview(String[] neIds, Long number) throws Exception{
+        JsonModel jsonModel = alertService.findByChooseForLeaderview(neIds, number);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, Alert.class);
+    }
+
+    public String getLevel(Integer level) throws Exception{
+        JsonModel jsonModel = alertService.getLevel(level);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel.getMsg();
+    }
+
+    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alert) throws Exception{
+        JsonModel jsonModel = alertService.getStatByLevel(arr, alertLevel, alert);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    public JSONObject getStatByClass(JSONArray neArray, String baseClass, String levels, AlertType alertType,
+                                     String neClassStr, boolean statisticsByNe) throws Exception{
+        JsonModel jsonModel = alertService.getStatByClass(neArray, baseClass, levels, alertType, neClassStr, statisticsByNe);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    public JSONObject getStatByNe(JSONArray neArray, String alertLevel, AlertType alert) throws Exception{
+        JsonModel jsonModel = alertService.getStatByNe(neArray, alertLevel, alert);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    @Data
+    private static class IndicatorVal1 extends IndicatorVal{
+        //IndicatorVal中的indicatorValue是Object类型，通过转换时，会获取不到值，这里使用
+        private JSON indicatorValue;
+    }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
+    private <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
         List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
         List<T> ts = Lists.newArrayList();
         for (LinkedHashMap map: list) {
@@ -225,11 +337,18 @@ public class RpcProcessService {
         return ts;
     }
 
-    public <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
+    private <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
         LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
     }
 
-
+    private Long getLongValue(JsonModel jsonModel) throws Exception{
+        Object obj = jsonModel.getObj();
+        if (obj instanceof Integer || obj instanceof Long){
+            return Long.valueOf(obj.toString());
+        }else {
+            throw new Exception("数据转换出错");
+        }
+    }
 
 }
