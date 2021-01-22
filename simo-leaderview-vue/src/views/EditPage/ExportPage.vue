@@ -176,6 +176,14 @@ export default {
       // 校验名称
       this.changeName()
       if (this.showErr) return
+      if (this.temId.length === 0) {
+        Notification({
+          message: '未选择导出页面！',
+          position: 'bottom-right',
+          customClass: 'toast toast-error'
+        })
+        return
+      }
       this.getAdminUsers().then(() => {
         var data = {
           name: this.name,
