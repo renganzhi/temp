@@ -138,8 +138,8 @@
               class="context-menu-item context-menu-visible"
               @click="toBottom"><span>置于底层</span></li>
         </ul>
-        <!-- <Archive @click="initChart"></Archive> -->
-        <div class="m-left content-side flex"
+        <Archive @click="initChart"></Archive>
+        <!-- <div class="m-left content-side flex"
              @click.self="clickPaint($event)">
           <div class="cs-item"
                :key="key"
@@ -147,7 +147,7 @@
                :class="value.imgClass"
                @click="initChart(value)">
             {{value.text}}</div>
-        </div>
+        </div> -->
 
         <div class="m-main flex-1 auto" ref="editCanvas"
              @click.self="clickPaint($event)">
