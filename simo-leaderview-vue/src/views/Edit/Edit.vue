@@ -670,6 +670,13 @@
                   </select>
                 </div>
                 <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='table'">
+                  <label>行高</label>
+                    <input type="number"
+                            min="36"
+                           v-model="selectedItem.heightLinght">
+                </div>
+                <div class="form-group cols2"
                      v-if="selectedItem.chartType=='border'">
                   <label>边框类型</label>
                   <select v-model="selectedItem.borderType"
@@ -1752,6 +1759,8 @@
                   <div class="form-group cols2">
                     <label>图例高度</label>
                     <input type="number"
+                           max="100"
+                           min="0"
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2">
@@ -2096,7 +2105,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >

@@ -2,14 +2,14 @@
   <div class="bootstrap-table home-table"
        :style="boxStyle">
     <div class="fixed-table-header"
-         style="height: 36px;">
+        :style="heightLinght">
       <table class="table"
              style="table-layout: fixed;"
              :style="theadTrStyle">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
-                :style="thStyle"
+                :style="[thStyle,heightLinght]"
                 :key="index"><span data-toggle='tooltip'
                     title
                     :data-original-title="title"><div :class="noworder[title] ? noworder[title]==='up'?'sortable desc':'sortable asc' :'sortable' " v-if="tableData[0] && !isNaN(tableData[0][title]*1)" @click="sortArry(title)">{{title}}</div> <div v-else>{{title}}</div></span></th>
@@ -34,7 +34,7 @@
               v-for="(tr, id) in tableData"
               :key="id" :style="[trStyle,tbodyTrStyle(id), warnStyle(id)]">
             <td v-for="(tdText, ind, i) in tr"
-                :style="thStyle"
+                :style="[thStyle,heightLinght]"
                 :key="ind">
                 <!-- template: '<div class=\'tooltip\' role=\'tooltip\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>'  -->
               <span v-if="i === 0"
@@ -101,6 +101,11 @@ export default {
       return {
         textAlign: this.item.Alignment + '!important',
         padding: '8px'
+      }
+    },
+    heightLinght: function () {
+      return {
+        height: this.item.heightLinght + 'px'
       }
     },
     theadTrStyle: function () {

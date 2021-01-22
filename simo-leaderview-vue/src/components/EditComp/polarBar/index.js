@@ -1,149 +1,169 @@
-import Vue from "vue";
-import echarts from "echarts"
+import Vue from 'vue'
+import echarts from 'echarts'
 
-var data = [
-    [5000, 10000, 6785.71],
-    [4000, 10000, 6825],
-    [3000, 6500, 4463.33],
-    [2500, 5600, 3793.83],
-    [2000, 4000, 3060],
-    [2000, 4000, 3222.33],
-    [2500, 4000, 3133.33],
-    [1800, 4000, 3100],
-    [2000, 3500, 2750],
-    [2000, 3000, 2500],
-    [1800, 3000, 2433.33],
-    [2000, 2700, 2375],
-    [1500, 2800, 2150],
-    [1500, 2300, 2100],
-    [1600, 3500, 2057.14],
-    [1500, 2600, 2037.5],
-    [1500, 2417.54, 1905.85],
-    [1500, 2000, 1775],
-    [1500, 1800, 1650]
-];
-var cities = ['北京', '上海', '深圳', '广州', '苏州', '杭州', '南京', '福州', '青岛', '济南', '长春', '大连', '温州', '郑州', '武汉', '成都', '东莞', '沈阳', '烟台'];
-var barHeight = 50;
-
-export default Vue.component("polarBar", {
-    template: `<div :style="style">热力图</div>`,
-    // render (createElement) {
-    //     return createElement('div', {
-    //        class: [],
-    //        style: {} 
-    //     }, this.$slots.default)
-    // },
-    props: ['item'],
-    data() {
-        return {
-            type: 'heatmap',
-            count: 0
-        };
-    },
-    computed: {
-        style () {
-            return {
-                width: `${this.item.width}px`,
-                height: `${this.item.height}px`
-            }
-        }
-    },
-    mounted () {
-        this.option = {
-            title: {
-                text: '在中国租个房子有多贵？',
-                subtext: '市中心一室月租费（数据来源：https://www.numbeo.com）'
-            },
-            legend: {
-                show: true,
-                data: ['价格范围', '均值']
-            },
-            grid: {
-                top: 100
-            },
-            angleAxis: {
-                type: 'category',
-                data: cities
-            },
-            tooltip: {
-                show: true,
-                formatter: function (params) {
-                    var id = params.dataIndex;
-                    return cities[id] + '<br>最低：' + data[id][0] + '<br>最高：' + data[id][1] + '<br>平均：' + data[id][2];
-                }
-            },
-            radiusAxis: {
-            },
-            polar: {
-            },
-            series: [{
-                type: 'bar',
-                itemStyle: {
-                    color: 'transparent'
-                },
-                data: data.map(function (d) {
-                    return d[0];
-                }),
-                coordinateSystem: 'polar',
-                stack: '最大最小值',
-                silent: true
-            }, {
-                type: 'bar',
-                data: data.map(function (d) {
-                    return d[1] - d[0];
-                }),
-                coordinateSystem: 'polar',
-                name: '价格范围',
-                stack: '最大最小值'
-            }, {
-                type: 'bar',
-                itemStyle: {
-                    color: 'transparent'
-                },
-                data: data.map(function (d) {
-                    return d[2] - barHeight;
-                }),
-                coordinateSystem: 'polar',
-                stack: '均值',
-                silent: true,
-                z: 10
-            }, {
-                type: 'bar',
-                data: data.map(function (d) {
-                    return barHeight * 2;
-                }),
-                coordinateSystem: 'polar',
-                name: '均值',
-                stack: '均值',
-                barGap: '-100%',
-                z: 10
-            }]
-        };
-        this.chart = echarts.init(this.$el);
-        this.chart.setOption(this.option)
-
-        console.log(this.chart)
-        // this.chart.setOptions(option)
-    },
-    watch: {
-        'item.width' (newVal, oldVal) {
-            // console.log('chang width');
-            this.resize()
-        },
-        'item.height' (newVal, oldVal) {
-            // console.log('chang height');
-            this.resize()
-        },
-       'item.chartData' (newVal, oldVal) {
-           console.log('change data');
-       }
-    },
-    methods: {
-        resize () {
-            this.chart.resize();
-        },
-        rerender () {
-
-        }
+export default Vue.component('polarBar', {
+  template: `<div :style="style">热力图</div>`,
+  // render (createElement) {
+  //     return createElement('div', {
+  //        class: [],
+  //        style: {}
+  //     }, this.$slots.default)
+  // },
+  props: ['item'],
+  data () {
+    return {
+      type: 'heatmap',
+      count: 0,
+      oldOption: ''
     }
-});
+  },
+  computed: {
+    style () {
+      return {
+        width: `${this.item.width}px`,
+        height: `${this.item.height}px`
+      }
+    }
+  },
+  mounted () {
+    this.rerender()
+  },
+  watch: {
+    'item.width' (newVal, oldVal) {
+      // console.log('chang width');
+      this.resize()
+    },
+    'item.height' (newVal, oldVal) {
+      // console.log('chang height');
+      this.resize()
+    },
+    'item': {
+      handler (newVal, oldVal) {
+        this.rerender()
+      },
+      deep: true
+    }
+  },
+  methods: {
+    resize () {
+      this.chart.resize()
+    },
+    rerender () {
+      let chartData = this.item.chartData
+      var newbarHeight = 50
+      let dataArry = []
+      chartData.columns.forEach(name => {
+        let Onedata = {
+          name: name,
+          value: []
+        }
+        chartData.rows.forEach(d => {
+          Onedata.value.push(d[name])
+        })
+        dataArry.push(Onedata)
+      })
+      var myseries = []
+      dataArry.forEach((element, index) => {
+        if (index > 0) {
+          myseries.push({
+            type: 'bar',
+            itemStyle: {
+              color: 'transparent'
+            },
+            data: element.value.map(function (d) {
+              if (d[1]) {
+                return d[0]
+              } else {
+                return d[0] - newbarHeight
+              }
+            }),
+            coordinateSystem: 'polar',
+            stack: element.name,
+            silent: true,
+            z: index
+          })
+          myseries.push({
+            type: 'bar',
+            data: element.value.map(function (d) {
+              if (d[1]) {
+                return d[1] - d[0]
+              } else {
+                return 2 * newbarHeight
+              }
+            }),
+            coordinateSystem: 'polar',
+            name: element.name,
+            barGap: '-100%',
+            stack: element.name,
+            z: index
+          })
+        }
+      })
+      this.option = {
+        legend: {
+          show: this.item.openlegend,
+          textStyle: {
+            color: this.item.legendColor,
+            fontSize: this.item.legendSize
+          },
+          left: 'center',
+          top: this.item.legendStation
+        },
+        grid: {
+          top: 100
+        },
+        angleAxis: {
+          type: 'category',
+          data: dataArry[0].value,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.item.angleAxisColor
+            }
+          },
+          axisLabel: {
+            fontSize: this.item.axisLabelSize
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipColor,
+            fontSize: this.item.tooltipSize
+          },
+          formatter: function (params) {
+            var id = params.dataIndex
+            let stringData = ''
+            dataArry.forEach(data => {
+              let mydata = data.value[id]
+              let value = typeof (mydata) === 'string' ? mydata : data.value[id].join('-')
+              stringData = stringData + data.name + ':' + value + '<br>'
+            })
+            return stringData
+          }
+        },
+        radiusAxis: {
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.item.angleAxisColor
+            }
+          },
+          axisLabel: {
+            fontSize: this.item.axisLabelSize
+          }
+        },
+        polar: {
+        },
+        series: myseries
+      }
+      this.chart = echarts.init(this.$el)
+      if (this.oldOption !== JSON.stringify(this.option)) {
+        this.oldOption = JSON.stringify(this.option)
+        this.chart.setOption(this.option)
+      }
+    }
+  }
+})
