@@ -7,10 +7,10 @@
         @click="toLinkPage">
       <template v-if="!item.autoplay">
         <div class="left_btn" @click="change(-1)">
-          <i class="el-icon-back" ></i>
+          <i class="el-icon-back" v-show="loop || activeIndex != 0"></i>
         </div>
         <div class="right_btn" @click="change(1)">
-          <i class="el-icon-right"></i>
+          <i class="el-icon-right" v-show="loop || activeIndex != this.item.srcList.length - 1"></i>
         </div>
       </template>
       <!-- <image class="image_box" :src="imgSrc" /> -->
@@ -154,12 +154,14 @@ export default {
   // width: 50%;
   // height: 100%;
   padding: 16px;
-  cursor: pointer;
   color: rgba(256, 256, 256, 0.1);
   font-size: 60px;
   &:hover {
     font-size: 600%;
     color: rgba(256, 256, 256, 0.6);
+  }
+  i {
+    cursor: pointer;
   }
 }
 

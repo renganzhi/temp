@@ -2552,7 +2552,10 @@ export default EditJs
   }
   .delete_text {
     cursor: pointer;
-    color: #0088cc;
+    // color: #0088cc;
+    &:hover{
+      color: red;
+    }
   }
 }
 .src_item {
