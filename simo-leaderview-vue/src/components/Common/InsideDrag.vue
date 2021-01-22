@@ -67,6 +67,10 @@
           :item="item"></Scatter>
     <KLine v-else-if="item.chartType=='KLine'"
           :item="item"></KLine>
+    <ELine v-else-if="item.chartType=='ELine'"
+          :item="item"></ELine>
+    <Dashboard v-else-if="item.chartType=='Dashboard'"
+          :item="item"></Dashboard>
     <BulletFrame v-else-if="item.chartType=='BulletFrame'"
           :item="item"></BulletFrame>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
@@ -110,6 +114,8 @@ import GradientPie from '@/components/EditComp/GradientPie' // 轮播表格
 import Sunrise from '@/components/EditComp/Sunrise' // 轮播表格
 import Scatter from '@/components/EditComp/Scatter' // 轮播表格
 import KLine from '@/components/EditComp/KLine' // 轮播表格
+import Dashboard from '@/components/EditComp/Dashboard' // 轮播表格
+import ELine from '@/components/EditComp/ELine' // 轮播表格
 import BulletFrame from '@/components/EditComp/BulletFrame' // 轮播表格
 import TreeMap from '@/components/EditComp/TreeMap' // 轮播表格
 import TDHistogram from '@/components/EditComp/TDHistogram' // 轮播表格
@@ -118,7 +124,7 @@ import NEWtextArea from '@/components/EditComp/NEWtextArea' // 轮播表格
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, KLine, BulletFrame, TreeMap, NEWtextArea, TDHistogram, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, ELine, KLine, Dashboard, BulletFrame, TreeMap, NEWtextArea, TDHistogram, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
   data () {
     return {
 

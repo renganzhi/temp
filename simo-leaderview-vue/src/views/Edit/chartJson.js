@@ -6,6 +6,8 @@ import pyramid from '@/components/EditComp/pyramid/config.js'
 import GradientPie from '@/components/EditComp/GradientPie/config.js'
 import Sunrise from '@/components/EditComp/Sunrise/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
+import ELine from '@/components/EditComp/ELine/config.js'
+import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
@@ -514,34 +516,35 @@ var compsArr = [{
   rotate: 0,
   chartData: morenData.pie
 },
-{
-  text: '曲线图',
-  imgClass: 'icon-n-line',
-  chartType: 've-line',
-  ifGradual: 'false',
-  splitShow: 'false',
-  ctLegendSize: '16',
-  axisLabelSize: '16',
-  legendY: 300,
-  gridTop: 50,
-  tooltipShow: 'true',
-  tooltipBackColor: '#57625d',
-  tooltipTextColor: '#fff',
-  tooltipfontSize: 14,
-  splitColor: '#333849',
-  splitSize: 1,
-  chartData: morenData.time,
-  lineArea: false, // 是否为区域图
-  lineColorType: false, // 是否为区域图
-  smooth: 'true',
-  LineType: 'solid',
-  symbolType: 'circle',
-  symbolSrc: '',
-  symbolSize: 6,
-  showPoint: 'true', // 是否标点
-  PointSize: '14',
-  rotate: 0
-},
+ELine.item,
+// {
+//   text: '曲线图',
+//   imgClass: 'icon-n-line',
+//   chartType: 've-line',
+//   ifGradual: 'false',
+//   splitShow: 'false',
+//   ctLegendSize: '16',
+//   axisLabelSize: '16',
+//   legendY: 300,
+//   gridTop: 50,
+//   tooltipShow: 'true',
+//   tooltipBackColor: '#57625d',
+//   tooltipTextColor: '#fff',
+//   tooltipfontSize: 14,
+//   splitColor: '#333849',
+//   splitSize: 1,
+//   chartData: morenData.time,
+//   lineArea: false, // 是否为区域图
+//   lineColorType: false, // 是否为区域图
+//   smooth: 'true',
+//   LineType: 'solid',
+//   symbolType: 'circle',
+//   symbolSrc: '',
+//   symbolSize: 6,
+//   showPoint: 'true', // 是否标点
+//   PointSize: '14',
+//   rotate: 0
+// },
 {
   text: '双轴曲线图',
   imgClass: 'icon-n-line',
@@ -592,18 +595,19 @@ polarBar.item,
   height: 380,
   chartData: morenData.line
 },
-{
-  text: '仪表盘',
-  imgClass: 'icon-n-gauge',
-  chartType: 've-gauge',
-  ifGradual: 'false',
-  ctLegendSize: '16',
-  legendY: 300,
-  gridTop: 50,
-  ctLegendShow: false,
-  bgClr: '#657992',
-  chartData: morenData.single
-},
+Dashboard.item,
+// {
+//   text: '仪表盘',
+//   imgClass: 'icon-n-gauge',
+//   chartType: 've-gauge',
+//   ifGradual: 'false',
+//   ctLegendSize: '16',
+//   legendY: 300,
+//   gridTop: 50,
+//   ctLegendShow: false,
+//   bgClr: '#657992',
+//   chartData: morenData.single
+// },
 {
   text: '表格',
   imgClass: 'icon-n-table',
@@ -870,6 +874,8 @@ bubble.item,
   symbolcolor: 'rgb(50, 250, 150)',
   symbolopacity: 0.5,
   displacementScale: 0.03,
+  roughness: 0,
+  metalness: 0,
   shadingtype: 'realistic',
   ambientcolor: '#ffffff',
   ambientintensity: 0.5,
@@ -903,6 +909,8 @@ bubble.item,
   symbolcolor: 'rgb(50, 250, 150)',
   symbolopacity: 0.5,
   displacementScale: 0.03,
+  roughness: 0,
+  metalness: 0,
   shadingtype: 'realistic',
   ambientcolor: '#ffffff',
   ambientintensity: 0.5,

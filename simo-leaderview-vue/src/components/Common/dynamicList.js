@@ -13,6 +13,8 @@ export default [
   'Sunrise',
   'Scatter',
   'KLine',
+  'ELine',
+  'Dashboard',
   'BulletFrame',
   'TreeMap',
   'NEWtextArea',

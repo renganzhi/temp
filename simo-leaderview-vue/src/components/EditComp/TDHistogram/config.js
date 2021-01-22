@@ -118,11 +118,11 @@ export default {
         'tag': 'select',
         'options': [
           {
-            'name': '旋转',
+            'name': '是',
             'value': true
           },
           {
-            'name': '不旋转',
+            'name': '否',
             'value': false
           }
         ]

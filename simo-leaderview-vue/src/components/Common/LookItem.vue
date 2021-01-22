@@ -34,6 +34,10 @@
               :item="item"></Vscatter>
     <KLine v-else-if="item.chartType=='KLine'"
               :item="item"></KLine>
+    <ELine v-else-if="item.chartType=='ELine'"
+              :item="item"></ELine>
+    <Dashboard v-else-if="item.chartType=='Dashboard'"
+              :item="item"></Dashboard>
     <BulletFrame v-else-if="item.chartType=='BulletFrame'"
               :item="item"></BulletFrame>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
