@@ -67,7 +67,6 @@ export default {
   props: ['item'],
   data () {
     return {
-      tableData: this.item.chartData.rows,
       tableEmpty: false,
       noworder: {}
     }
@@ -88,6 +87,9 @@ export default {
         backgroundSize: '100% 100%',
         border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
       }
+    },
+    tableData: function () {
+      return this.item.chartData.rows
     },
     trStyle: function () {
       return {
@@ -164,13 +166,11 @@ export default {
         })
         this.noworder[key] = 'down'
       }
-      console.log(this.noworder)
     },
     warnStyle (index) {
       if (this.item.AlarmField) {
         if (this.item.AlarmType === 'chart') {
           if (this.item.AlarmChart !== '' && JSON.stringify(this.item.chartData.rows[index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
-            console.log(11)
             return {
               'color': this.item.AlarmColor + ' !important'
             }
