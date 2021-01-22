@@ -106,6 +106,12 @@ export default {
     'item.displacementScale': function () {
       this.drawLine()
     },
+    'item.metalness': function () {
+      this.drawLine()
+    },
+    'item.roughness': function () {
+      this.drawLine()
+    },
     'item.shadingtype': function () {
       this.drawLine()
     },
@@ -180,8 +186,8 @@ export default {
           baseColor: '#fff',
           displacementQuality: 'high',
           realisticMaterial: {
-            roughness: 0.2,
-            metalness: 0
+            roughness: _this.item.roughness,
+            metalness: _this.item.metalness
           },
 
           postEffect: {

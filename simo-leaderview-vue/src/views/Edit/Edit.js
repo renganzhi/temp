@@ -35,6 +35,8 @@ let config = {
   BulletFrame: require('@/components/EditComp/BulletFrame/config.js'),
   Scatter: require('@/components/EditComp/Scatter/config.js'),
   KLine: require('@/components/EditComp/KLine/config.js'),
+  Dashboard: require('@/components/EditComp/Dashboard/config.js'),
+  ELine: require('@/components/EditComp/ELine/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js')
@@ -1250,6 +1252,20 @@ export default {
       this.changeLimitItem(this.aroundItem)
       this.childResize = false // 暂且保留
       // this.onCtrl = false
+    },
+    mycontextmenu: function (ev) {
+      if (ev.srcElement.className === 'vue-ruler-wrapper' || ev.srcElement.id === 'chooseWrap') {
+        $(this.$refs.contextMenu).toggle(false)
+        this.clickPaint() // 取消所有的选中
+        if (this.tempItemArry.length > 0) {
+          $(this.$refs.copyMenu)
+            .css({
+              left: ev.pageX,
+              top: ev.pageY
+            })
+            .toggle(true)
+        }
+      }
     },
     selected: function (item, ev, type, i) {
       $('.select2-container--open').remove()
@@ -3071,6 +3087,7 @@ export default {
       if (_top > document.body.clientHeight - 188) {
         _top = document.body.clientHeight - 188
       }
+      $(this.$refs.copyMenu).toggle(false)
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
@@ -3082,6 +3099,7 @@ export default {
     // 组合右键 未使用该方法
     composeMenu: function (index, ev) {
       // console.log(ev);
+      $(this.$refs.copyMenu).toggle(false)
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
@@ -3190,6 +3208,7 @@ export default {
         div.addEventListener('contextmenu', function (ee) {
           // _this.getChooseItems(parseInt(div.style.left), parseInt(div.style.top), parseInt(div.style.width), parseInt(div.style.height))
           if (_this.chooseCompIndexs.length + _this.chooseIndexs.length > 0) {
+            $(_this.$refs.copyMenu).toggle(false)
             $(_this.$refs.contextMenu)
               .css({
                 left: ee.pageX,
@@ -3471,6 +3490,7 @@ export default {
     },
     hideContext: function () {
       $(this.$refs.contextMenu).toggle(false)
+      $(this.$refs.copyMenu).toggle(false)
     },
     gridChg: function (data) {
       this.saveHistory('paint')

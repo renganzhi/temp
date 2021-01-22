@@ -101,13 +101,16 @@
         </div>
         <ul class="menu-list"
             style="width: 156px;"
+            ref="copyMenu">
+          <li class="context-menu-item context-menu-visible"
+              @click="paste"><span>粘贴</span></li>
+        </ul>
+        <ul class="menu-list"
+            style="width: 156px;"
             ref="contextMenu">
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
-          <li class="context-menu-item context-menu-visible"
-              v-show="tempItemArry.length>0"
-              @click="paste"><span>粘贴</span></li>
           <!-- <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="paste"><span>粘贴</span></li> -->
@@ -149,6 +152,7 @@
         <div class="m-main flex-1 auto" ref="editCanvas"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
+              @contextmenu.prevent="mycontextmenu($event)"
                :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor, 'z-index':500}">
             <div class="paint"
                  :style="paintStyle"></div>
@@ -961,6 +965,23 @@
                   <label>地球凹凸感</label>
                   <input  type="number"
                           v-model="selectedItem.displacementScale">
+                </div>
+                <div class="form-group cols2">
+                  <label>地球粗糙度</label>
+                  <select v-model="selectedItem.roughness">
+                    <option value="0">完全光滑</option>
+                    <option value="0.2">光滑</option>
+                    <option value="0.5">中等</option>
+                    <option value="0.8">粗糙</option>
+                    <option value="1">完全粗糙</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>地球材质</label>
+                  <select v-model="selectedItem.metalness">
+                    <option value="0">非金属</option>
+                    <option value="1">金属</option>
+                  </select>
                 </div>
                 <div v-if="selectedItem.chartType=='TDEarthLine'">
                   <div class="m-gap form-group" >线条配置</div>
@@ -1836,7 +1857,7 @@
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字大小</label>
-                    <select v-model="selectedItem.axisLabelSize">
+                    <select v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'" v-model="selectedItem.axisLabelSize">
                       <option value="8">8</option>
                       <option value="10">10</option>
                       <option value="14">14</option>
@@ -2075,7 +2096,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','KLine','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
