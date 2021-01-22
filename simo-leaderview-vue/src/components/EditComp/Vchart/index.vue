@@ -84,7 +84,7 @@ export default {
           legend: {
             // orient : 'vertical', //横向、纵向
             x: 'center',
-            y: this.item.legendY,
+            y: this.item.legendY + '%',
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
               fontSize: this.item.fontSize,
@@ -247,7 +247,7 @@ export default {
       }
     },
     'item.legendY': function (newV) {
-      this.extend.legend.y = newV
+      this.extend.legend.y = newV + '%'
     },
     'item.ctLegendSize': function (newV) {
       if (this.item.chartType === 've-gauge') {

@@ -1759,6 +1759,8 @@
                   <div class="form-group cols2">
                     <label>图例高度</label>
                     <input type="number"
+                           max="100"
+                           min="0"
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2">
