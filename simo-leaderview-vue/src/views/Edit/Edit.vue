@@ -482,11 +482,11 @@
                   </div>
                 </div> -->
                 <div class="form-group">
-                  <label :class="lineBgColor" style="width:60px">辅助线颜色</label>
+                  <label style="width:60px">辅助线颜色</label>
                   <div class="color-w70">
-                    <Vcolor :data="lineBgColor"
+                    <Vcolor :data="helpLineColor"
                             :key="11"
-                            type="lineBgColor"
+                            type="helpLineColor"
                             @getdata="getLineCl"></Vcolor>
                   </div>
                 </div>
