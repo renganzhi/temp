@@ -7,10 +7,10 @@
         @click="toLinkPage">
       <template v-if="!item.autoplay">
         <div class="left_btn" @click="change(-1)">
-          <i class="el-icon-back" v-show="loop || activeIndex != 0"></i>
+          <i class="el-icon-back" v-show="item.loop || activeIndex != 0"></i>
         </div>
         <div class="right_btn" @click="change(1)">
-          <i class="el-icon-right" v-show="loop || activeIndex != this.item.srcList.length - 1"></i>
+          <i class="el-icon-right" v-show="item.loop || activeIndex != this.item.srcList.length - 1"></i>
         </div>
       </template>
       <!-- <image class="image_box" :src="imgSrc" /> -->
