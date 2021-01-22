@@ -34,6 +34,7 @@ let config = {
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),
   BulletFrame: require('@/components/EditComp/BulletFrame/config.js'),
   Scatter: require('@/components/EditComp/Scatter/config.js'),
+  polarBar: require('@/components/EditComp/polarBar/config.js'),
   KLine: require('@/components/EditComp/KLine/config.js'),
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),
   ELine: require('@/components/EditComp/ELine/config.js'),

@@ -2,7 +2,7 @@
   <div class="bootstrap-table home-table"
        :style="boxStyle">
     <div class="fixed-table-header"
-         style="height: 36px;">
+        :style="heightLinght">
       <table class="table"
              :style="theadTrStyle"
              style="table-layout: fixed;">
@@ -10,7 +10,7 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
-                :style="thStyle"
+                :style="[thStyle,heightLinght]"
                 v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
               >{{title}}</th>
           </tr>
@@ -38,7 +38,7 @@
       </transition>
     </div> -->
     <div class="fixed-table-body"
-         :style="{'max-height': pageNum * 36 + 'px'}"
+         :style="{'max-height': pageNum * this.item.heightLinght + 'px'}"
          style="padding-bottom: 26px; overflow: hidden; position: relative;">
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
         <table class="table"
@@ -50,7 +50,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  :style="thStyle"
+                  :style="[thStyle,heightLinght]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -66,7 +66,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  :style="thStyle"
+                  :style="[thStyle,heightLinght]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -137,6 +137,11 @@ export default {
         padding: '8px'
       }
     },
+    heightLinght: function () {
+      return {
+        height: this.item.heightLinght + 'px'
+      }
+    },
     theadTrStyle: function () {
       if (this.item.Internal === 'true') {
         return {
@@ -200,6 +205,10 @@ export default {
       // } else {
       //   this.initTopMove()
       // }
+      this.initLeftMove()
+    },
+    'item.pageNum': function (val) {
+      this.pageNum = Number(val)
       this.initLeftMove()
     },
     'item.speed': function (newV) {
