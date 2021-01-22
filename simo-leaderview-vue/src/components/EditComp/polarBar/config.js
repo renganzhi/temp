@@ -13,8 +13,25 @@ export default {
     'tooltipBackColor': '#57625d',
     'tooltipColor': '#fff',
     'tooltipSize': 14,
+    'newbarHeight': 50,
     'legendStation': 'top',
     'ifGradual': 'false',
+    'ScatterColor': [
+      '#37a2da',
+      '#ffdb5c',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8'],
+    'DScatterColor': [
+      ['#6fcaf7', '#0c79c5'],
+      ['#8feee5', '#1bbcae'],
+      ['#fa8d76', '#db4222'],
+      ['#af8af3', '#874edc'],
+      ['#f5739c', '#f31d53'],
+      ['#ffdf91', '#eeb01b'],
+      ['#5c84e7', '#144fe5'],
+      ['#85f8c0', '#62dc26']
+    ],
     'chartData': {
       'columns': [
         '城市',
@@ -149,6 +166,10 @@ export default {
           'tooltipShow': true
         },
         'tag': 'input'
+      }, {
+        'name': '最小柱体高度',
+        'key': 'newbarHeight',
+        'tag': 'input'
       },
       {
         'name': '刻度颜色',
@@ -159,6 +180,34 @@ export default {
         'name': '刻度字大小',
         'key': 'axisLabelSize',
         'tag': 'input'
+      }, {
+        'name': '颜色类型',
+        'key': 'ifGradual',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '渐变',
+            'value': 'true'
+          },
+          {
+            'name': '单色',
+            'value': 'false'
+          }
+        ]
+      }, {
+        'name': '饼图颜色',
+        'key': 'ScatterColor',
+        'parentKey': {
+          'ifGradual': 'false'
+        },
+        'tag': 'ColorArray'
+      }, {
+        'name': '饼图颜色',
+        'key': 'DScatterColor',
+        'parentKey': {
+          'ifGradual': 'true'
+        },
+        'tag': 'ColorArray'
       }
     ]
   }

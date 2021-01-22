@@ -139,11 +139,11 @@ export default {
         },
         'options': [
           {
-            'name': '上方居中',
+            'name': '顶部居中',
             'value': 'top'
           },
           {
-            'name': '下放居中',
+            'name': '底部居中',
             'value': 'bottom'
           }
         ]
