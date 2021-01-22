@@ -95,7 +95,6 @@ export default {
       pageName: '', // 页面名称
       showDataConf: false, // 展示系统数据配置
       selectedItem: {},
-      lineBgColor: '#37a2da',
       selectedIndex: null,
       chartNum: [],
       oldChartNum: '', // chartNum更改之前的历史
@@ -2139,6 +2138,8 @@ export default {
       this.paintObj.opacity = 100
       this.paintObj.showGrid = true
       this.paintObj.scale = 100
+      this.paintObj.showGrid = false
+      this.helpLineColor = '#348cea'
     },
     addColor (index) {
       // 添加颜色
