@@ -77,6 +77,9 @@ export default {
     }
   },
   computed: {
+    linkId () {
+      return this.item.linkId === '' ? -1 : this.item.linkId
+    },
     boxStyle () {
       let style = {
         width: Number(this.item.width) + 'px',
@@ -85,7 +88,7 @@ export default {
         top: Number(this.item.y) + 'px',
         zIndex: this.item.zIndex || 500
       }
-      style.cursor = this.item.linkId > -1 ? 'pointer' : 'default'
+      style.cursor = this.linkId > -1 ? 'pointer' : 'default'
       return style
     }
   },
@@ -95,8 +98,8 @@ export default {
     ]),
     capitalize,
     handleClick () {
-      if (this.item.linkId > -1) {
-        this.changeNowPage(this.item.linkId)
+      if (this.linkId > -1) {
+        this.changeNowPage(this.linkId)
       }
     }
   }
