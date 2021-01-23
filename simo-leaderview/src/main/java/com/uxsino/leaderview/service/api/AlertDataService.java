@@ -17,6 +17,7 @@ import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class AlertDataService {
@@ -50,8 +52,33 @@ public class AlertDataService {
         return rpcProcessService.getOtherAlertInfo(session, type);
     }
 
-    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number) throws Exception {
-        return rpcProcessService.getOtherAlertTable(session, type, number);
+    @SuppressWarnings("unchecked")
+    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column) throws Exception {
+        JsonModel rpcData = rpcProcessService.getOtherAlertTable(session, type, number);
+        List<String > diffColumns;
+        if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type) && !"ThirdPartyAlert".equals(type)
+                && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
+            if ("NELinkAlert".equals(type)) {
+                diffColumns = Lists.newArrayList("状态","告警来源","告警内容","告警时间");
+            } else {
+                diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
+            }
+        }else {
+            diffColumns = Lists.newArrayList("状态","告警内容","告警时间");
+        }
+        column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
+        JSONArray columns = newColumns(column);
+        diffColumns.removeAll(getAllColumns(columns));
+        Map<String , List> obj = (Map<String, List>) rpcData.getObj();
+        List<Map<String, String>> rows = obj.get("rows");
+        if (ObjectUtils.isEmpty(rows)){
+            return rpcData;
+        }
+        for (Map<String, String> row: rows) {
+            diffColumns.forEach(diff -> row.remove(diff));
+        }
+        JSONObject result = MonitorUtils.newResultObj("columns", columns, "rows", rows);
+        return new JsonModel(true, result);
     }
 
     /**
@@ -325,14 +352,13 @@ public class AlertDataService {
      * @param session
      * @return
      */
-    public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds, Long number, HttpSession session) throws Exception{
+    public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
+                                  Long number, HttpSession session, String[] column) throws Exception{
         JSONObject result = new JSONObject();
-        JSONArray columns = new JSONArray();
-        columns.add("状态");
-        columns.add("告警来源");
-        columns.add("IP地址");
-        columns.add("告警内容");
-        columns.add("告警时间");
+        List<String > diffColumns = Lists.newArrayList("状态","告警来源","IP地址","告警内容","告警时间");
+        column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
+        JSONArray columns = newColumns(column);
+        diffColumns.removeAll(columns);
         JsonModel neList = new JsonModel();
         if (ObjectUtils.isEmpty(neIds)){
             if (domainId == null){
@@ -372,6 +398,7 @@ public class AlertDataService {
                 row.put("IP地址", ne.getIp());
                 row.put("告警内容", alert.getRecentAlertBrief());
                 row.put("告警时间", alert.getRecentAlertDateStr());
+                diffColumns.forEach(diff -> row.remove(diff));
                 rows.add(row);
             }catch (Exception e){
                 e.printStackTrace();
@@ -441,6 +468,32 @@ public class AlertDataService {
 
     protected List<Long> userDomainIds(HttpSession session) {
         return domainUtils.getUserDomainIds(session);
+    }
+
+    private JSONArray newColumns(List<String> columnsList){
+        String[] columns = columnsList.toArray(new String[columnsList.size()]);
+        return newColumns(columns);
+    }
+
+    private JSONArray newColumns(String... columns){
+        JSONArray jsonArray = new JSONArray();
+        for (String column : columns) {
+            jsonArray.add(column);
+        }
+        return jsonArray;
+    }
+
+    private JSONArray addColumns(JSONArray jsonArray, String... columns){
+        for (String column : columns) {
+            jsonArray.add(column);
+        }
+        return jsonArray;
+    }
+
+    private List<String> getAllColumns(JSONArray columns) {
+        List<String > list = Lists.newArrayList();
+        StreamSupport.stream(columns.spliterator(), false).map(s -> (String) s).forEach(s -> list.add(s));
+        return list;
     }
 
 }
