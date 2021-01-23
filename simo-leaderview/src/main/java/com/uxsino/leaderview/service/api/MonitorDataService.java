@@ -41,6 +41,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 @Slf4j
@@ -219,8 +220,12 @@ public class MonitorDataService {
      * @param session
      * @return
      */
-    public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session) throws Exception{
-        JSONArray columns = newColumns("资源名称","IP地址","资源类型","运行状态","更新时间");
+    public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session, String[] column) throws Exception{
+        List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
+        column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
+        JSONArray columns = newColumns("资源名称");
+        columns = addColumns(columns, column);
+        diffColumns.removeAll(getAllColumns(columns));
         // 检查指定的资源是否是符合用户权限的资源
         if (StringUtils.isNoneBlank(neIds) && !SessionUtils.isSuperAdmin(session)) {
             List<String> targetNeIds = Arrays.asList(neIds.split(","));
@@ -248,6 +253,7 @@ public class MonitorDataService {
             row.put("资源类型", NeClass.valueOf(ne.get("neClass").toString()).getText());
             row.put("运行状态", RunStatus.valueOf(ne.get("runStatus").toString()).getName());
             row.put("更新时间", DateUtils.formatCommonDate(new Date((Long) ne.get("patrolTime"))));
+            diffColumns.forEach(diff -> row.remove(diff));
             rows.add(row);
         }
         json.put("rows", rows);
@@ -833,12 +839,25 @@ public class MonitorDataService {
         return MonitorUtils.newResultObj(nameStr, name, valueStr, value);
     }
 
-    public JSONArray newColumns(String... columns){
+    private JSONArray newColumns(String... columns){
         JSONArray jsonArray = new JSONArray();
         for (String column : columns) {
             jsonArray.add(column);
         }
         return jsonArray;
+    }
+
+    private JSONArray addColumns(JSONArray jsonArray, String... columns){
+        for (String column : columns) {
+            jsonArray.add(column);
+        }
+        return jsonArray;
+    }
+
+    private List<String> getAllColumns(JSONArray columns) {
+        List<String > list = Lists.newArrayList();
+        StreamSupport.stream(columns.spliterator(), false).map(s -> (String) s).forEach(s -> list.add(s));
+        return list;
     }
 
     /**
@@ -2443,7 +2462,6 @@ public class MonitorDataService {
 
     /**
      * 双轴-历史值统计图
-     * @param neIds
      * @param period
      * @return
      */
