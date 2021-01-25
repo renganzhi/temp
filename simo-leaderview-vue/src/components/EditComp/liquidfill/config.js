@@ -9,6 +9,7 @@ export default {
     chartType: 'liquidfill',
     bdpx: 4,
     isLinear: false,
+    directionLinear: '0,0,0,1',
     bgClr: '#156acf',
     bgClrRange: ['rgba(21,106,207, 1)', 'rgba(255, 255, 255, 0)'],
     clr: 'rgba(221, 221, 221, 0.9)',
@@ -68,6 +69,25 @@ export default {
         dep: {
           targetKey: 'isLinear',
           targetVal: false
+        }
+      },
+      {
+        'name': '渐变方向',
+        'key': 'directionLinear',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '上下',
+            'value': [0, 0, 0, 1]
+          },
+          {
+            'name': '左右',
+            'value': [0, 0, 1, 0]
+          }
+        ],
+        dep: {
+          targetKey: 'isLinear',
+          targetVal: true
         }
       },
       {
