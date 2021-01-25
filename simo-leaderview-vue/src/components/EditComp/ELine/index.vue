@@ -166,8 +166,8 @@ export default {
         },
         color: optioncolor,
         grid: {
-          left: this.item.gridTop,
-          right: this.item.gridTop,
+          // left: this.item.gridTop,
+          // right: this.item.gridTop,
           top: this.item.gridTop,
           bottom: this.item.gridTop
         },
@@ -178,7 +178,7 @@ export default {
         },
         legend: {
           x: 'center',
-          y: this.item.legendY,
+          y: this.item.legendY + '%',
           show: this.item.ctLegendShow,
           textStyle: {
             fontSize: this.item.fontSize,

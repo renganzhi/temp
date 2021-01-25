@@ -111,9 +111,9 @@
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
-          <!-- <li class="context-menu-item context-menu-visible"
+          <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
-              @click="paste"><span>粘贴</span></li> -->
+              @click="paste"><span>粘贴</span></li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="del"><span>删除</span></li>
@@ -603,8 +603,8 @@
                      v-if="selectedItem.chartType=='table'">
                   <label>添加内发光</label>
                   <select v-model="selectedItem.Internal">
-                    <option value="false">隐藏</option>
                     <option value="true">显示</option>
+                    <option value="false">隐藏</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
