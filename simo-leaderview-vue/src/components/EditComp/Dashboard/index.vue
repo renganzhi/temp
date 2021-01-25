@@ -609,7 +609,7 @@ export default {
     doing () {
       if (this.item.DashboardType === 4) {
         let option = echarts.init(this.$refs.myDashboard).getOption()
-        option.series[1].startAngle = option.series[1].startAngle - 4
+        option.series[1].startAngle = option.series[1].startAngle - 2
         echarts.init(this.$refs.myDashboard).setOption(option)
       } else {
         clearInterval(this.timer)

@@ -43,7 +43,7 @@ const map = {
     },
     {
       text: '3d地图-飞线图',
-      imgClass: 'icon-n-video',
+      imgClass: 'icon-3dlines',
       chartType: 'TDEarthLine',
       width: 300,
       height: 300,
@@ -79,7 +79,7 @@ const map = {
     },
     {
       text: '3d地图-柱状图',
-      imgClass: 'icon-n-video',
+      imgClass: 'icon-3dhistogrammap',
       chartType: 'TDEarthBar',
       width: 600,
       height: 600,
@@ -125,7 +125,7 @@ const map = {
     },
     {
       text: '地图-迁徙图',
-      imgClass: 'icon-n-video',
+      imgClass: 'icon-migratemap',
       chartType: 'DataFlow',
       width: 600,
       height: 600,
