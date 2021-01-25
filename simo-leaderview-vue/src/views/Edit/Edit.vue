@@ -225,7 +225,7 @@
 
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
-          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{selectedItem.ctName || ''}}</div>
+          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{['text', 'NEWtextArea'].includes(selectedItem.chartType) ? '文本框' : (selectedItem.ctName || '')}}</div>
           <div class="handle_label" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前元件: 组合</div>
           <div class="base-item"
                v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
