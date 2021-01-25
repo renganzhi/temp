@@ -15,7 +15,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      mychart: null
+      mychart: null,
+      oldOption: ''
     }
   },
   computed: {
@@ -53,6 +54,9 @@ export default {
       this.drawLine()
     },
     'item.alpha': function () {
+      this.drawLine()
+    },
+    'item.beta': function () {
       this.drawLine()
     },
     'item.chartData': function () {
@@ -206,7 +210,8 @@ export default {
             autoRotateSpeed: _this.item.rotatespeed, // 旋转速度  单位 角度/秒
             autoRotateAfterStill: _this.item.norotatetime, // 鼠标操作后静止多久后开始旋转
             distance: 200, // 视角距离地图的高度
-            alpha: _this.item.alpha // 俯仰角
+            alpha: _this.item.alpha, // 俯仰角
+            beta: _this.item.beta // 俯仰角
           }
         },
         series: series
@@ -274,7 +279,12 @@ export default {
       }
       // this.mychart.dispose()
       // this.mychart.setOption(myoption2)
-      this.mychart.setOption(myoption)
+
+      if (this.oldOption !== JSON.stringify(myoption)) {
+        console.log(99999999)
+        this.mychart.clear()
+        this.mychart.setOption(myoption)
+      }
     }
   },
   mounted () {
