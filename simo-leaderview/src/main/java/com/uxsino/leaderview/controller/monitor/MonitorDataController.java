@@ -58,13 +58,16 @@ public class MonitorDataController {
 
     @ApiOperation("资源状态列表")
     @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
-            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源IDs")/*,*/
-            /*@ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") */ })
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源IDs"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "column", paramType = "query", dataType = "String", value = "筛选列"),
+    })
     @RequestMapping(value = "/neList", method = RequestMethod.POST)
     public JsonModel neList(@RequestParam(required = false) Long domainId, @RequestParam(required = false) String neIds,
-                            @RequestParam(required = false) BaseNeClass baseNeClass, HttpSession session) {
+                            @RequestParam(required = false) BaseNeClass baseNeClass, HttpSession session,
+                            @RequestParam(required = false) String[] column) {
         try {
-            return monitorDataService.neList(domainId, neIds, baseNeClass, session);
+            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
