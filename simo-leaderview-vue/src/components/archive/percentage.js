@@ -1,5 +1,6 @@
 import {morenData} from '@/views/Edit/chartJson'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
+import Dashboard from '@/components/EditComp/Dashboard/config.js'
 
 const percentage = {
   name: '百分比图',
@@ -10,6 +11,14 @@ const percentage = {
       chartType: 've-pie',
       ifGradual: 'false',
       ctLegendSize: '16',
+      ctLegendColor: '#666f8b',
+      axisLabelSize: '16',
+      legendY: 85,
+      gridTop: 50,
+      tooltipShow: 'true',
+      tooltipBackColor: '#57625d',
+      tooltipTextColor: '#fff',
+      tooltipfontSize: 14,
       chartData: morenData.pie
     },
     {
@@ -18,6 +27,14 @@ const percentage = {
       chartType: 've-pie',
       ifGradual: 'false',
       ctLegendSize: '16',
+      ctLegendColor: '#666f8b',
+      axisLabelSize: '16',
+      legendY: 85,
+      gridTop: 50,
+      tooltipShow: 'true',
+      tooltipBackColor: '#57625d',
+      tooltipTextColor: '#fff',
+      tooltipfontSize: 14,
       chartData: morenData.pie,
       roseType: 'area' // 与饼图的区别
     },
@@ -27,6 +44,14 @@ const percentage = {
       chartType: 've-ring',
       ifGradual: 'false',
       ctLegendSize: '16',
+      ctLegendColor: '#666f8b',
+      axisLabelSize: '16',
+      legendY: 85,
+      gridTop: 50,
+      tooltipShow: 'true',
+      tooltipBackColor: '#57625d',
+      tooltipTextColor: '#fff',
+      tooltipfontSize: 14,
       chartData: morenData.pie
     },
     {
@@ -41,6 +66,14 @@ const percentage = {
       fontSize: 24,
       ctLegendShow: 'true',
       ctLegendSize: '16',
+      ctLegendColor: '#666f8b',
+      axisLabelSize: '16',
+      legendY: 85,
+      gridTop: 50,
+      tooltipShow: 'true',
+      tooltipBackColor: '#57625d',
+      tooltipTextColor: '#fff',
+      tooltipfontSize: 14,
       chartData: morenData.single
     },
     {
@@ -49,22 +82,32 @@ const percentage = {
       chartType: 've-radar',
       ifGradual: 'false',
       splitShow: 'true',
+      ctLegendSize: '16',
+      ctLegendColor: '#666f8b',
+      axisLabelSize: '16',
+      legendY: 85,
+      gridTop: 50,
+      tooltipShow: 'true',
+      tooltipBackColor: '#57625d',
+      tooltipTextColor: '#fff',
+      tooltipfontSize: 14,
       splitColor: 'rgba(117, 124, 137, 0.2)',
       splitSize: 1,
       width: 500,
       height: 380,
       chartData: morenData.line
     },
-    {
-      text: '仪表盘',
-      imgClass: 'icon-n-gauge',
-      chartType: 've-gauge',
-      ifGradual: 'false',
-      ctLegendSize: '16',
-      ctLegendShow: false,
-      bgClr: '#657992',
-      chartData: morenData.single
-    },
+    Dashboard.item,
+    // {
+    //   text: '仪表盘',
+    //   imgClass: 'icon-n-gauge',
+    //   chartType: 've-gauge',
+    //   ifGradual: 'false',
+    //   ctLegendSize: '16',
+    //   ctLegendShow: false,
+    //   bgClr: '#657992',
+    //   chartData: morenData.single
+    // },
     {
       text: '进度条',
       imgClass: 'icon-n-progress',
