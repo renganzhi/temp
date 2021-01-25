@@ -225,6 +225,7 @@ export default {
 
 <style lang="scss">
 .archive {
+  background: #1b2031;
   .el-menu-vertical-demo {
     background: transparent;
     border: none;
@@ -264,12 +265,18 @@ export default {
 .el-menu--vertical  {
   .el-menu {
     border: none;
-    background: #24374b;
+    background: #1b2031;
+    color: rgb(202, 214, 221);
   }
 
   .archive_sub {
-    .cs-item-container .el-submenu__title:hover {
-     background: red !important;
+    .cs-item-container .el-submenu__title {
+       background: #141a2d;
+      &:hover {
+        background: #2e3444;
+        color: #ffffff;
+      }
+    
     }
   }
   .cs-item-container ul{
@@ -294,9 +301,6 @@ export default {
       background: none !important;
        border: 1px solid #0088cc !important;
     }
-    &:last-child {
-      margin-right: 90px;
-    }
     &:before {
       font-size: 30px;
       margin-left: -12px;
@@ -320,6 +324,11 @@ export default {
 
       }
     }
+    }
+    .cs-item:nth-child(2n+1) {
+      &:last-child {
+        margin-right: 90px;
+      }
     }
     .is-active {
       background: none !important;
