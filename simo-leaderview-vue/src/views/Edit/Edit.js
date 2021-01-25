@@ -3568,6 +3568,8 @@ export default {
       console.log('this.selectedItem: ', this.selectedItem);
       if (chartType === 'image') {
         this.selectedItem.imgSrc = ''
+      } else if (chartType === 'video') {
+        this.selectedItem.videoSrc = ''
       }
     },
     // 视频

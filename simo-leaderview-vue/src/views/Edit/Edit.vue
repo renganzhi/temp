@@ -2447,11 +2447,12 @@
                   <div class="form-group cols2"
                        v-show="selectedItem.videoType === 'local'">
                     <label>选择文件</label>
-                    <input type="file"
+                    <input type="file" style="width: 147px!important;margin-right: 8px;"
                            name="myfiles"
                            id="myfiles"
                            accept="video/mp4"
                            @change="uploadVideo">
+                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>
                 <button @click="videoChange"
