@@ -2131,7 +2131,16 @@
                             :value="item.id">{{item.name}}</option>
                   </select>
               </div>
-              <div v-show="['image', 'ppt','BulletFrame'].includes(selectedItem.chartType)">
+              <div v-show="['image', 'BulletFrame'].includes(selectedItem.chartType)">
+                <div class="form-group cols2">
+                  <label>选择文件</label>
+                  <input type="file" style="width: 147px!important;margin-right: 8px;"
+                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         @change='changeImg' />
+                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
+                </div>
+              </div>
+              <div v-show="['ppt'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
@@ -2556,6 +2565,9 @@ export default EditJs
     cursor:move;
         display: inline-block;
     width: calc(100% - 37px);
+  }
+  .upload {
+        width: 145px !important;
   }
   .delete_text {
     cursor: pointer;

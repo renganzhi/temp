@@ -3563,6 +3563,13 @@ export default {
       })
       e.target.value = ''
     },
+    removeImg (e) {
+      let {chartType} = this.selectedItem
+      console.log('this.selectedItem: ', this.selectedItem);
+      if (chartType === 'image') {
+        this.selectedItem.imgSrc = ''
+      }
+    },
     // 视频
     uploadVideo (e) {
       // field, that
