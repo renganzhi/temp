@@ -131,7 +131,8 @@ export default {
             autoRotateSpeed: this.item.autoRotateSpeed, // 旋转速度  单位 角度/秒
             autoRotateAfterStill: this.item.autoRotateAfterStill, // 鼠标操作后静止多久后开始旋转
             distance: this.item.distance, // 视角的高度
-            alpha: this.item.alpha // 俯仰角
+            alpha: this.item.alpha, // 俯仰角
+            beta: this.item.beta // 俯仰角
           }
         },
         series: [{

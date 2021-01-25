@@ -5,23 +5,23 @@ import player from '@/components/EditComp/player/config.js'
 // 改造过渡
 
 const media = {
-    name: '百分比图',
-    child: [
-        {
-            text: '图片',
-            imgClass: 'icon-n-exportPicture',
-            chartType: 'image',
-            width: 300,
-            height: 300,
-            imgSrc: '',
-            showType: '1',
-            linkId: '',
-            chartData: {}
-          },
-          ppt.item,
-          player.item,
-        //   config.video.item
-    ]
+  name: '百分比图',
+  child: [
+    {
+      text: '图片',
+      imgClass: 'icon-n-exportPicture',
+      chartType: 'image',
+      width: 300,
+      height: 300,
+      imgSrc: '',
+      showType: '1',
+      linkId: '',
+      chartData: {}
+    },
+    ppt.item,
+    player.item
+    //   config.video.item
+  ]
 }
 
 export default media

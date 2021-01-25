@@ -96,7 +96,7 @@ export default {
   .vue-rulerh {
     height: 12px;
     position: fixed;
-    left: 206px;
+    left: 65px;
     top: 50px;
     overflow: hidden;
     z-index: 999;
@@ -107,7 +107,7 @@ export default {
   .vue-rulerv {
     width: 12px;
     position: fixed;
-    left: 206px;
+    left: 65px;
     top: 50px;
     overflow: hidden;
     z-index: 999;

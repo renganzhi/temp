@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       mychart: null,
-      oldItem: ''
+      oldOption: ''
     }
   },
   computed: {
@@ -39,13 +39,7 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        if (this.oldItem === JSON.stringify(newVal)) {
-
-        } else {
-          this.oldItem = JSON.stringify(newVal)
-          this.drawFlow()
-        }
-        // this.drawFlow()
+        this.drawFlow()
       },
       deep: true
     }
@@ -147,7 +141,10 @@ export default {
         },
         series: myseries
       }
-      this.mychart.setOption(myoption)
+      if (this.oldOption !== JSON.stringify(myoption)) {
+        this.mychart.clear()
+        this.mychart.setOption(myoption)
+      }
     }
   },
   mounted () {
