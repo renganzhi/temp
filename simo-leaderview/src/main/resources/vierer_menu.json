@@ -5,7 +5,7 @@
 			"modelName": "viewer",
 			"orderNumber": 10,
 			"appId": "SIMO",
-			"name": "大屏展示",
+			"name": "大数据可视化",
 			"range": [
 				"Super_Admin"
 			],
