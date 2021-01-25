@@ -11,8 +11,8 @@ export default {
     'ctLegendShow': true,
     'ctLegendSize': '16',
     'axisLabelSize': '16',
-    'legendY': 370,
-    'gridTop': 60,
+    'legendY': 93,
+    'gridTop': 70,
     'tooltipShow': true,
     'areaLineType': true,
     'tooltipBackColor': '#57625d',
@@ -50,32 +50,32 @@ export default {
       'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
       'unit': '%',
       'rows': [{
-        '日期': '2018-01-01',
+        '日期': '2020-01-01',
         'CPU核心利用率': 15,
         'CPU平均利用率': 15
       },
       {
-        '日期': '2018-01-02',
+        '日期': '2020-01-02',
         'CPU核心利用率': 80,
         'CPU平均利用率': 50
       },
       {
-        '日期': '2018-01-03',
+        '日期': '2020-01-03',
         'CPU核心利用率': 40,
         'CPU平均利用率': 6
       },
       {
-        '日期': '2018-01-05',
+        '日期': '2020-01-05',
         'CPU核心利用率': 45,
         'CPU平均利用率': 70
       },
       {
-        '日期': '2018-01-06',
+        '日期': '2020-01-06',
         'CPU核心利用率': 10,
         'CPU平均利用率': 40
       },
       {
-        '日期': '2018-01-07',
+        '日期': '2020-01-07',
         'CPU核心利用率': 95,
         'CPU平均利用率': 50
       }
@@ -344,11 +344,11 @@ export default {
         'tag': 'select',
         'options': [
           {
-            'name': '空心圆点',
+            'name': '空白圆点',
             'value': 'emptyCircle'
           },
           {
-            'name': '圆点',
+            'name': '实心圆点',
             'value': 'circle'
           },
           {
