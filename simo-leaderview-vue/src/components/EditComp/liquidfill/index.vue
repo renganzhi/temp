@@ -35,33 +35,6 @@ export default {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
       }
-    },
-    curColor () {
-      if (!this.item.isLinear) {
-        return this.item.bgClr
-      } else {
-        let colorSet = [
-            {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  //填充区渐变色
-                  offset: 0,
-                  color: this.item.bgClrRange[0]
-                },
-                {
-                  offset: 1,
-                  color: this.item.bgClrRange[1]
-                }
-              ]
-            }
-          ]
-        return colorSet
-      }
     }
   },
   watch: {
@@ -77,18 +50,23 @@ export default {
     },
     'item.bgClr': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear);
+      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear, this.item.directionLinear);
       this.chart.setOption(this.option)
     },
     'item.isLinear': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV);
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV, this.item.directionLinear);
+      this.chart.setOption(this.option)
+    },
+    'item.directionLinear': function (newV) {
+      this.chart.clear()
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear, newV);
       this.chart.setOption(this.option)
     },
     'item.bgClrRange': function (newV) {
       // 改变渐变
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear);
+      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear, this.item.directionLinear);
       this.chart.setOption(this.option)
     },
     'item.clr': function (newV) {
@@ -136,7 +114,7 @@ export default {
             animationDuration: 0,
             animationDurationUpdate: 0, // 更改数值时候的动画时长
             data: [0.8, 0.75],
-            color: this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear),
+            color: this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear, this.item.directionLinear),
             outline: {
               // show: false
               borderDistance: 5,
@@ -176,28 +154,30 @@ export default {
         this.chart.setOption(this.option)
       }
     },
-    getColor (color, colorRange, isLinear) {
+    getColor (color, colorRange, isLinear, directionLinear) {
       if (isLinear) {
+        // let [x, y, x2, y2] = [0, 1, 0, 0]
+        let [x, y, x2, y2] = directionLinear.split(',')
         return [
-            {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  //填充区渐变色
-                  offset: 0,
-                  color: colorRange[0]
-                },
-                {
-                  offset: 1,
-                  color: colorRange[1]
-                }
-              ]
-            }
-          ]
+          {
+            type: 'linear',
+            x,
+            y,
+            x2,
+            y2,
+            colorStops: [
+              {
+                // 填充区渐变色
+                offset: 0,
+                color: colorRange[0]
+              },
+              {
+                offset: 1,
+                color: colorRange[1]
+              }
+            ]
+          }
+        ]
       } else {
         return [color]
       }
