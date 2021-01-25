@@ -91,6 +91,12 @@ export default {
           left: 'center',
           top: this.item.legendStation
         },
+        grid: {
+          // left: this.item.gridTop,
+          // right: this.item.gridTop,
+          top: this.item.legendY,
+          bottom: this.item.legendY
+        },
         tooltip: {
           trigger: 'item',
           show: this.item.tooltipShow,
@@ -99,13 +105,6 @@ export default {
             color: this.item.tooltipColor,
             fontSize: this.item.tooltipSize
           }
-          // axisPointer: {
-          //   type: this.item.axisPointer, // 'none'  'cross'
-          //   crossStyle: {
-          //     type: this.item.axisPointerType,
-          //     color: this.item.axisPointerColor
-          //   }
-          // }
         },
         xAxis: {
           axisLine: {

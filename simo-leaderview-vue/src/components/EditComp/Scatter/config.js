@@ -10,6 +10,7 @@ export default {
     'legendSize': 12,
     'legendStation': 'top',
     'splitLine': true,
+    'legendY': 40,
     'splitLinetype': 'dashed',
     'splitLinecolor': 'white',
     'axisLinecolor': 'white',
@@ -147,6 +148,11 @@ export default {
             'value': 'bottom'
           }
         ]
+      },
+      {
+        'name': '图元间隙',
+        'key': 'legendY',
+        'tag': 'input'
       },
       {
         'name': 'tips配置',
