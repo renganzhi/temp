@@ -89,31 +89,17 @@ export default{
         ]
       },
       {
-        'name': '显示滚动条',
+        'name': '滚动条',
         'key': 'overflow',
         'tag': 'select',
-        'options': [{
-          'name': '隐藏',
-          'value': false
-        },
-        {
-          'name': '显示',
-          'value': true
-        }
-        ]
-      },
-      {
-        'name': '颜色类型',
-        'key': 'ColorType',
-        'tag': 'select',
-        'options': [{
-          'name': '单色',
-          'value': true
-        },
-        {
-          'name': '渐变',
-          'value': false
-        }
+        'options': [
+          {
+            'name': '显示',
+            'value': true
+          }, {
+            'name': '隐藏',
+            'value': false
+          }
         ]
       },
       {
@@ -131,6 +117,20 @@ export default{
         {
           'name': '右对齐',
           'value': 'right'
+        }
+        ]
+      },
+      {
+        'name': '颜色类型',
+        'key': 'ColorType',
+        'tag': 'select',
+        'options': [{
+          'name': '单色',
+          'value': true
+        },
+        {
+          'name': '渐变',
+          'value': false
         }
         ]
       },
@@ -166,7 +166,7 @@ export default{
         'tag': 'select',
         'options': [
           {
-            'name': 'lighter',
+            'name': 'light',
             'value': 'lighter'
           },
           {
