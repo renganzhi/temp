@@ -1165,19 +1165,19 @@
                     <option value="false">不旋转</option>
                   </select>
                 </div>
-                <div class="form-group cols2">
+                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
                   <label>旋转方向</label>
                   <select v-model="selectedItem.rotatedirection">
                     <option value="ccw">由左往右</option>
                     <option value="cw">由右往左</option>
                   </select>
                 </div>
-                <div class="form-group cols2">
+                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
                   <label>旋转速度</label>
                   <input  type="number"
                           v-model="selectedItem.rotatespeed" placeholder="单位（度/秒）">
                 </div>
-                <div class="form-group cols2">
+                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
                   <label>操作后静止时长</label>
                   <input  type="number"
                           v-model="selectedItem.norotatetime" placeholder="鼠标操作后静置多久继续旋转，单位（秒）">
@@ -1186,6 +1186,11 @@
                   <label>地图俯仰角</label>
                   <input  type="number"
                           v-model="selectedItem.alpha" placeholder="俯仰角（单位：度）">
+                </div>
+                <div class="form-group cols2">
+                  <label>地图旋转角</label>
+                  <input  type="number"
+                          v-model="selectedItem.beta" placeholder="俯仰角（单位：度）">
                 </div>
                 <div class="m-gap form-group">光照配置</div>
                 <div class="form-group cols2">

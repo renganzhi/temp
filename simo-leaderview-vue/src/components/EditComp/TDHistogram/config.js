@@ -22,6 +22,7 @@ export default {
     'autoRotateAfterStill': 5,
     'distance': 250,
     'alpha': 20,
+    'beta': 30,
     'grid3DColorArray': [
       '#37a2da',
       '#32c5e9',
@@ -172,9 +173,11 @@ export default {
       {
         'name': '俯仰角',
         'key': 'alpha',
-        'parentKey': {
-          'autoRotate': true
-        },
+        'tag': 'input'
+      },
+      {
+        'name': '旋转角',
+        'key': 'beta',
         'tag': 'input'
       },
       {
