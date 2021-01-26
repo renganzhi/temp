@@ -141,6 +141,7 @@ export default {
         series: myseries
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
+        this.oldOption = JSON.stringify(myoption)
         this.mychart.clear()
         this.mychart.setOption(myoption)
       }

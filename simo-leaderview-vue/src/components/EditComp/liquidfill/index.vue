@@ -41,25 +41,25 @@ export default {
         return this.item.bgClr
       } else {
         let colorSet = [
-            {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  //填充区渐变色
-                  offset: 0,
-                  color: this.item.bgClrRange[0]
-                },
-                {
-                  offset: 1,
-                  color: this.item.bgClrRange[1]
-                }
-              ]
-            }
-          ]
+          {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                // 填充区渐变色
+                offset: 0,
+                color: this.item.bgClrRange[0]
+              },
+              {
+                offset: 1,
+                color: this.item.bgClrRange[1]
+              }
+            ]
+          }
+        ]
         return colorSet
       }
     }
@@ -77,18 +77,18 @@ export default {
     },
     'item.bgClr': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear);
+      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear)
       this.chart.setOption(this.option)
     },
     'item.isLinear': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV);
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV)
       this.chart.setOption(this.option)
     },
     'item.bgClrRange': function (newV) {
       // 改变渐变
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear);
+      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear)
       this.chart.setOption(this.option)
     },
     'item.clr': function (newV) {
@@ -179,25 +179,25 @@ export default {
     getColor (color, colorRange, isLinear) {
       if (isLinear) {
         return [
-            {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  //填充区渐变色
-                  offset: 0,
-                  color: colorRange[0]
-                },
-                {
-                  offset: 1,
-                  color: colorRange[1]
-                }
-              ]
-            }
-          ]
+          {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                // 填充区渐变色
+                offset: 0,
+                color: colorRange[0]
+              },
+              {
+                offset: 1,
+                color: colorRange[1]
+              }
+            ]
+          }
+        ]
       } else {
         return [color]
       }
