@@ -93,7 +93,7 @@
           >
           <el-submenu index="2-1" class="cs-item-container">
               <template slot="title">
-                <span>地图</span>
+                <span>多媒体</span>
               </template>
               <el-menu-item :index="`2-1-${index}`" :key="key"
                       v-for="(value,key) in compsArr.media.child"

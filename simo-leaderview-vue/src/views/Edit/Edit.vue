@@ -227,7 +227,7 @@
 
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
-          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{selectedItem.ctName || ''}}</div>
+          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{['text', 'NEWtextArea'].includes(selectedItem.chartType) ? '文本框' : (selectedItem.ctName || '')}}</div>
           <div class="handle_label" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前元件: 组合</div>
           <div class="base-item"
                v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
@@ -2142,7 +2142,16 @@
                             :value="item.id">{{item.name}}</option>
                   </select>
               </div>
-              <div v-show="['image', 'ppt','BulletFrame'].includes(selectedItem.chartType)">
+              <div v-show="['image', 'BulletFrame'].includes(selectedItem.chartType)">
+                <div class="form-group cols2">
+                  <label>选择文件</label>
+                  <input type="file" style="width: 147px!important;margin-right: 8px;"
+                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         @change='changeImg' />
+                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
+                </div>
+              </div>
+              <div v-show="['ppt'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
@@ -2449,11 +2458,12 @@
                   <div class="form-group cols2"
                        v-show="selectedItem.videoType === 'local'">
                     <label>选择文件</label>
-                    <input type="file"
+                    <input type="file" style="width: 147px!important;margin-right: 8px;"
                            name="myfiles"
                            id="myfiles"
                            accept="video/mp4"
                            @change="uploadVideo">
+                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>
                 <button @click="videoChange"
@@ -2567,6 +2577,9 @@ export default EditJs
     cursor:move;
         display: inline-block;
     width: calc(100% - 37px);
+  }
+  .upload {
+        width: 145px !important;
   }
   .delete_text {
     cursor: pointer;
