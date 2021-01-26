@@ -263,6 +263,12 @@ export default {
 }
 
 .el-menu--vertical  {
+  .el-submenu .el-menu-item {
+    height: auto;
+    line-height: 50px;
+    padding: 0;
+    min-width: auto;
+}
   .el-menu {
     border: none;
     background: #1b2031;
