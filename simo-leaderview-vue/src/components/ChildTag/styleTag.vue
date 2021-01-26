@@ -37,7 +37,7 @@
             <input type="file"
               name="myfiles"
               id="myfiles"
-              accept="video/mp4"
+              accept="video/*"
               @change="uploadVideo">
           </div>
         </template>
