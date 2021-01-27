@@ -127,6 +127,9 @@ export default {
     },
     'item.symbolopacity': function () {
       this.drawLine()
+    },
+    'item.backPicName': function () {
+      this.drawLine()
     }
   },
   methods: {
@@ -182,9 +185,9 @@ export default {
       var myoption = {
         backgroundColor: '', // 背景颜色  不填为透明
         globe: {
-          baseTexture: require('../../../../static/img/earthPic/Mapcolor.jpg'),
+          baseTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
 
-          heightTexture: require('../../../../static/img/earthPic/Mapcolor.jpg'),
+          heightTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
           displacementScale: _this.item.displacementScale, // 凹凸度
           shading: _this.item.shadingtype, // color   realistic
           baseColor: '#fff',

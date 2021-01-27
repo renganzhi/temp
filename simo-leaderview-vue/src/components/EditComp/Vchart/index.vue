@@ -177,6 +177,10 @@ export default {
         this.settings.seriesMap.pro.detail.fontSize = newV
       }
     },
+    'item.detailColor': function (newV) {
+      console.log(999)
+      this.settings.seriesMap.pro.detail.color = newV
+    },
     'item.gridTop': function (newV) {
       this.extend.grid.top = newV
       this.extend.grid.bottom = newV
@@ -998,11 +1002,9 @@ export default {
         },
         've-gauge': function () {
           if (Array.isArray(_this.item.ctColors[0])) {
-            var fontColor = _this.item.ctColors[0][0]
             var color = new echarts.graphic.LinearGradient(1, 0, 0, 0, [{ offset: 0, color: _this.item.ctColors[0][0] }, { offset: 1, color: _this.item.ctColors[0][1] }])
           } else {
             color = _this.item.ctColors[0]
-            fontColor = _this.item.ctColors[0]
           }
           let data = _this.item.chartData
           if (data.rows) {
@@ -1084,7 +1086,7 @@ export default {
                   detail: {
                     offsetCenter: [0, 8],
                     fontSize: _this.item.fontSize,
-                    color: fontColor,
+                    color: _this.item.detailColor,
                     formatter: '{value}' + data.unit
                   }
                 }
@@ -1160,7 +1162,7 @@ export default {
                   },
                   detail: {
                     offsetCenter: [0, '0%'],
-                    color: fontColor,
+                    color: _this.item.detailColor,
                     formatter: '{value}' + data.unit
                   }
                 },

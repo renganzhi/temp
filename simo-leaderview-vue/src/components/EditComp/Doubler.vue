@@ -15,7 +15,7 @@
     </div>
     <div v-show="showTitle"
          class="doublerName"
-         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{ comUnit}}</div>
+         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{comUnit}}</div>
   </div>
 </template>
 <script>

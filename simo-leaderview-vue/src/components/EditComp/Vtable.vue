@@ -9,7 +9,7 @@
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
-                :style="[thStyle,heightLinght]"
+                :style="[thStyle,heightLinght,widthLinght(index)]"
                 :key="index"><span data-toggle='tooltip'
                     title
                     :data-original-title="title"><div :class="noworder[title] ? noworder[title]==='up'?'sortable desc':'sortable asc' :'sortable' " v-if="tableData[0] && !isNaN(tableData[0][title]*1)" @click="sortArry(title)">{{title}}</div> <div v-else>{{title}}</div></span></th>
@@ -34,7 +34,7 @@
               v-for="(tr, id) in tableData"
               :key="id" :style="[trStyle,tbodyTrStyle(id), warnStyle(id)]">
             <td v-for="(tdText, ind, i) in tr"
-                :style="[thStyle,heightLinght]"
+                :style="[thStyle,heightLinght,widthLinght(i)]"
                 :key="ind">
                 <!-- template: '<div class=\'tooltip\' role=\'tooltip\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>'  -->
               <span v-if="i === 0"
@@ -108,6 +108,18 @@ export default {
         height: this.item.heightLinght + 'px'
       }
     },
+    widthArry: function () {
+      console.log(this.item.LineSizeArry)
+      let arr = this.item.LineSizeArry || []
+      this.item.chartData.columns.forEach((element, i) => {
+        if (arr[i]) {
+
+        } else {
+          arr.push(86)
+        }
+      })
+      return arr
+    },
     theadTrStyle: function () {
       if (this.item.Internal === 'true') {
         return {
@@ -148,6 +160,13 @@ export default {
       //   titleShowFn('bottom', $(this.$el), this.$el)
       // }
       // 这里不用注释
+    },
+    'item.OneLineSize': function (newV, oldV) {
+      this.item.LineSizeArry[this.item.chartData.columns.indexOf(this.item.AlarmField)] = newV
+      document.querySelector('.DataChangeBtn').click()
+    },
+    'item.AlarmField': function (newV, oldV) {
+      this.item.OneLineSize = this.item.LineSizeArry[this.item.chartData.columns.indexOf(newV)]
     }
   },
   methods: {
@@ -206,6 +225,17 @@ export default {
       }
       return {}
     },
+    widthLinght (index) {
+      // let arr = JSON.parse(this.widthArry)
+      if (this.item.OneLineType === 'default') {
+        return ''
+      } else {
+        return {
+          display: 'inline-block',
+          width: this.item.LineSizeArry[index] + 'px'
+        }
+      }
+    },
     tbodyTrStyle: function (index) {
       let Color = ''
       if (this.item.Zebra === 'true' && index % 2 === 1) {
@@ -241,6 +271,14 @@ export default {
     }
   },
   mounted: function () {
+    this.item.chartData.columns.forEach((element, i) => {
+      if (this.widthArry[i]) {
+
+      } else {
+        this.widthArry.push(86)
+      }
+    })
+    this.item.LineSizeArry = this.widthArry
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }

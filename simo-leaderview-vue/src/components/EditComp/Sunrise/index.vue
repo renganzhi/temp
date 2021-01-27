@@ -13,7 +13,7 @@ export default {
   data () {
     return {
       mychart1: null,
-      oldItem: ''
+      oldOption: ''
     }
   },
   computed: {
@@ -37,13 +37,7 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        if (this.oldItem === JSON.stringify(newVal)) {
-
-        } else {
-          this.oldItem = JSON.stringify(newVal)
-          this.drawFlow()
-        }
-        // this.drawPre()
+        this.drawFlow()
       },
       deep: true
     }
@@ -113,8 +107,11 @@ export default {
           // }]
         }
       }
-      this.mychart1.clear()
-      this.mychart1.setOption(myoption1)
+      if (this.oldOption !== JSON.stringify(myoption1)) {
+        this.oldOption = JSON.stringify(myoption1)
+        this.mychart1.clear()
+        this.mychart1.setOption(myoption1)
+      }
     }
   }
 }

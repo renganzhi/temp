@@ -50,23 +50,23 @@ export default {
     },
     'item.bgClr': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear, this.item.directionLinear);
+      this.option.series[0].color = this.getColor(newV, this.item.bgClrRange, this.item.isLinear, this.item.directionLinear)
       this.chart.setOption(this.option)
     },
     'item.isLinear': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV, this.item.directionLinear);
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, newV, this.item.directionLinear)
       this.chart.setOption(this.option)
     },
     'item.directionLinear': function (newV) {
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear, newV);
+      this.option.series[0].color = this.getColor(this.item.bgClr, this.item.bgClrRange, this.item.isLinear, newV)
       this.chart.setOption(this.option)
     },
     'item.bgClrRange': function (newV) {
       // 改变渐变
       this.chart.clear()
-      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear, this.item.directionLinear);
+      this.option.series[0].color = this.getColor(this.item.bgClr, newV, this.item.isLinear, this.item.directionLinear)
       this.chart.setOption(this.option)
     },
     'item.clr': function (newV) {

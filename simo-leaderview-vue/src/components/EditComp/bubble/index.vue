@@ -17,7 +17,7 @@ import createBubble from './createBubble'
 export default {
   name: 'BubbleChart',
   props: ['item'],
-  data() {
+  data () {
     return {
       top: 0,
       targetHeight: 300,
@@ -25,7 +25,7 @@ export default {
     }
   },
   computed: {
-    chartData() {
+    chartData () {
       let originData = this.item.chartData.rows
       const minCount = Math.floor(
         (this.item.width * this.item.height) / 200 ** 2
@@ -44,25 +44,25 @@ export default {
         return d
       })
     },
-    len() {
+    len () {
       return this.chartData.length
     },
-    speed() {
+    speed () {
       return 40 / this.item.speed
     }
     // targetHeight () { return 300 }
   },
   watch: {
-    item() {
+    item () {
       cancelAnimationFrame(this.animate)
       this.initCanvas()
     }
   },
-  mounted() {
+  mounted () {
     this.initCanvas()
   },
   methods: {
-    initCanvas() {
+    initCanvas () {
       createBubble(this.item.width, this.item.height, this.chartData).then(
         canvas => {
           console.log(canvas)
@@ -80,11 +80,11 @@ export default {
         }
       )
     },
-    animate() {
+    animate () {
       requestAnimationFrame(this.animate)
       TWEEN.update()
     },
-    scroll() {
+    scroll () {
       let initPos = { top: 0 }
       const targetTop = this.targetHeight
       this.tween = new TWEEN.Tween(initPos)

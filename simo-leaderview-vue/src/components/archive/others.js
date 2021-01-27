@@ -1,5 +1,6 @@
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
+import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
 
 const others = {
   name: '其他',
@@ -21,8 +22,8 @@ const others = {
       bdClr: '#175278'
     },
     hotspot.item,
-    decorator.item
-
+    decorator.item,
+    BulletFrame.item
   ]
 }
 

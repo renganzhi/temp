@@ -3565,7 +3565,7 @@ export default {
     },
     removeImg (e) {
       let {chartType} = this.selectedItem
-      console.log('this.selectedItem: ', this.selectedItem);
+      console.log('this.selectedItem: ', this.selectedItem)
       if (chartType === 'image') {
         this.selectedItem.imgSrc = ''
       } else if (chartType === 'video') {

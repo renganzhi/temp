@@ -6,7 +6,7 @@ export default {
     'width': 700,
     'chartType': 'ELine',
     'ifEidetColor': false,
-    'ifGradual': 'false',
+    'ifGradual': 'true',
     'splitShow': false,
     'ctLegendShow': true,
     'ctLegendColor': '#fff',
@@ -21,6 +21,8 @@ export default {
     'tooltipfontSize': 14,
     'splitColor': '#333849',
     'splitSize': 1,
+    'legendColor': '#828bac',
+    'DanweiColor': '#828bac',
     'lineArea': false, // 是否为区域图
     'lineColorType': false, // 是否为区域图
     'smooth': false,
@@ -38,8 +40,8 @@ export default {
       '#9fe6b8',
       '#ffdb5c'],
     'DLineColorArray': [
-      ['#6fcaf7', '#0c79c5'],
-      ['#8feee5', '#1bbcae'],
+      ['rgba(69, 194, 255, 0.47)', '#009bff'],
+      ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
       ['#fa8d76', '#db4222'],
       ['#af8af3', '#874edc'],
       ['#f5739c', '#f31d53'],
@@ -254,6 +256,11 @@ export default {
       {
         'name': '坐标文字颜色',
         'key': 'legendColor',
+        'tag': 'Color'
+      },
+      {
+        'name': '坐标单位颜色',
+        'key': 'DanweiColor',
         'tag': 'Color'
       },
       {
@@ -530,7 +537,7 @@ export default {
           }
         ]
       }, {
-        'name': '饼图颜色',
+        'name': '折线颜色',
         'key': 'LineColorArray',
         'parentKey': {
           'ifGradual': 'false',
@@ -538,7 +545,7 @@ export default {
         },
         'tag': 'ColorArray'
       }, {
-        'name': '饼图颜色',
+        'name': '折线颜色',
         'key': 'DLineColorArray',
         'parentKey': {
           'ifGradual': 'true',
