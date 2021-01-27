@@ -208,7 +208,7 @@ export default {
         'tag': 'Color'
       },
       {
-        'name': '坐标轴字体',
+        'name': '坐标文字大小',
         'key': 'grid3DFontSize',
         'parentKey': {
           'showgrid3D': true

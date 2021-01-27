@@ -50,7 +50,7 @@ export default Vue.component('polarBar', {
     },
     rerender () {
       let chartData = this.item.chartData
-      var newbarHeight = 50
+      var newbarHeight = this.item.newbarHeight
       let dataArry = []
       chartData.columns.forEach(name => {
         let Onedata = {
@@ -84,6 +84,15 @@ export default Vue.component('polarBar', {
           })
           myseries.push({
             type: 'bar',
+            itemStyle: {
+              color: this.item.ifGradual === 'false' ? this.item.ScatterColor[index - 1] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: this.item.DScatterColor[index - 1][0]
+              }, {
+                offset: 1,
+                color: this.item.DScatterColor[index - 1][1]
+              }])
+            },
             data: element.value.map(function (d) {
               if (d[1]) {
                 return d[1] - d[0]

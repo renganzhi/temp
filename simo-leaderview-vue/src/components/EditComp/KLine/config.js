@@ -10,6 +10,7 @@ export default {
     'legendSize': 12,
     'legendStation': 'top',
     'axisLinecolor': 'white',
+    'legendY': 80,
     'axisLabelcolor': 'white',
     'axisLabelfontSize': 12,
     'XaxisLabelrotate': 0,
@@ -124,6 +125,10 @@ export default {
             'value': 'bottom'
           }
         ]
+      }, {
+        'name': '图元间隙',
+        'key': 'legendY',
+        'tag': 'input'
       },
       {
         'name': 'tips配置',
