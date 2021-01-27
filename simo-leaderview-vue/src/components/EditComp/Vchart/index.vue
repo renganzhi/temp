@@ -40,8 +40,8 @@ export default {
         grid: {
           left: 10,
           right: 10,
-          top: this.item.gridTop,
-          bottom: this.item.gridTop
+          top: this.item.gridTop + '%',
+          bottom: this.item.gridTop + '%'
         },
         axis: {
           splitLine: {
@@ -178,12 +178,11 @@ export default {
       }
     },
     'item.detailColor': function (newV) {
-      console.log(999)
       this.settings.seriesMap.pro.detail.color = newV
     },
     'item.gridTop': function (newV) {
-      this.extend.grid.top = newV
-      this.extend.grid.bottom = newV
+      this.extend.grid.top = newV + '%'
+      this.extend.grid.bottom = newV + '%'
     },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {

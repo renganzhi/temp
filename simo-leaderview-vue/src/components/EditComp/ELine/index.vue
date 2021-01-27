@@ -168,8 +168,8 @@ export default {
         grid: {
           // left: this.item.gridTop,
           // right: this.item.gridTop,
-          top: this.item.gridTop,
-          bottom: this.item.gridTop
+          top: this.item.gridTop + '%',
+          bottom: this.item.gridTop + '%'
         },
         label: {
           show: this.item.showPoint,
