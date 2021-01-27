@@ -2499,7 +2499,7 @@
                     <input type="file" style="width: 147px!important;margin-right: 8px;"
                            name="myfiles"
                            id="myfiles"
-                           accept="video/mp4"
+                           accept="video/*"
                            @change="uploadVideo">
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
