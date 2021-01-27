@@ -112,7 +112,7 @@ export default {
                     }],
                     global: false // 缺省为 false
                   } : '' : this.item.DLineColorArray[index - 1] ? this.item.DLineColorArray[index - 1][1] : '' || '' : this.item.LineColorArray[index - 1] || '',
-                  width: 1, // 设置线条粗细
+                  width: this.item.lineWidth, // 设置线条粗细
                   type: this.item.LineType || 'solid'
                 }
               }

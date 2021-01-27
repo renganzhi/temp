@@ -30,6 +30,7 @@ export default {
     'symbolType': 'circle',
     'symbolSrc': '',
     'symbolSize': 6,
+    'lineWidth': 1,
     'showPoint': true, // 是否标点
     'PointSize': '14',
     'rotate': 0,
@@ -348,6 +349,29 @@ export default {
           {
             'name': '点状线',
             'value': 'dotted'
+          }
+        ]
+      },
+      {
+        'name': '线条宽度',
+        'key': 'lineWidth',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '1',
+            'value': 1
+          },
+          {
+            'name': '2',
+            'value': 2
+          },
+          {
+            'name': '3',
+            'value': 3
+          },
+          {
+            'name': '4',
+            'value': 4
           }
         ]
       },
