@@ -38,7 +38,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import 'main.scss';
+
 html,
 body {
   width: 100%;
@@ -69,6 +71,7 @@ body {
 #app {
   width: 100%;
   height: 100%;
+ /* 指标显示器字体，时间器字体 */
 }
 /* 框选区域样式 */
 #bottom {

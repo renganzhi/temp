@@ -1,0 +1,58 @@
+$fontpath: "../static/font";
+
+@font-face {
+    font-family: 'timeFont';
+    src: url('#{$fontpath}/timeFont/timeFont.ttf');
+}
+
+@font-face {
+    font-family: 'number1';
+    src: url('#{$fontpath}/numberFont/Poppins-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'number2';
+    src: url('#{$fontpath}/numberFont/FuturaStd-Heavy.otf');
+}
+
+@font-face {
+    font-family: 'number3';
+    src: url('#{$fontpath}/numberFont/NexaBold.otf');
+}
+
+@font-face {
+    font-family: 'number4';
+    src: url('#{$fontpath}/numberFont/RobotoSlab-Regular.ttf');
+}
+@font-face {
+    font-family: 'baidu';
+    src: url('#{$fontpath}/百度综艺简体.ttf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Bold';
+    src: url('#{$fontpath}/SourceHanSansCN-Bold.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-ExtraLight';
+    src: url('#{$fontpath}/SourceHanSansCN-ExtraLight.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Heavy';
+    src: url('#{$fontpath}/SourceHanSansCN-Heavy.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Light';
+    src: url('#{$fontpath}/SourceHanSansCN-Light.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Medium';
+    src: url('#{$fontpath}/SourceHanSansCN-Medium.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Normal';
+    src: url('#{$fontpath}/SourceHanSansCN-Normal.otf');
+}
+@font-face {
+    font-family: 'SourceHanSansCN-Regular';
+    src: url('#{$fontpath}/SourceHanSansCN-Regular.otf');
+}
