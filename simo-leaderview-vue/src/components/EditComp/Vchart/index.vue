@@ -88,7 +88,7 @@ export default {
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
               fontSize: this.item.fontSize,
-              color: '#666f8b'
+              color: this.item.ctLegendColor
             }
           },
           // color:this.item.ctColors,
@@ -254,6 +254,13 @@ export default {
         this.settings.seriesMap.p.title.textStyle.fontSize = newV
       } else {
         this.extend.legend.textStyle.fontSize = newV
+      }
+    },
+    'item.ctLegendColor': function (newV) {
+      if (this.item.chartType === 've-gauge') {
+
+      } else {
+        this.extend.legend.textStyle.color = newV
       }
     },
     'item.axisLabelSize': function (newV) {

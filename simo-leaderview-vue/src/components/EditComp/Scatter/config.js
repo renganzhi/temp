@@ -10,6 +10,7 @@ export default {
     'legendSize': 12,
     'legendStation': 'top',
     'splitLine': true,
+    'legendY': 40,
     'splitLinetype': 'dashed',
     'splitLinecolor': 'white',
     'axisLinecolor': 'white',
@@ -139,14 +140,19 @@ export default {
         },
         'options': [
           {
-            'name': '上方居中',
+            'name': '顶部居中',
             'value': 'top'
           },
           {
-            'name': '下放居中',
+            'name': '底部居中',
             'value': 'bottom'
           }
         ]
+      },
+      {
+        'name': '图元间隙',
+        'key': 'legendY',
+        'tag': 'input'
       },
       {
         'name': 'tips配置',

@@ -129,6 +129,9 @@ export default {
       {
         'name': '字体高度',
         'key': 'textHeight',
+        'parentKey': {
+          'DashboardType': 2
+        },
         'tag': 'select',
         'options': [
           {

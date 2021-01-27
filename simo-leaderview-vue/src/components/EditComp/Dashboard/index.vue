@@ -429,7 +429,7 @@ export default {
       } else if (this.item.DashboardType === 4) {
         myoption = {
           title: {
-            text: '{a|' + dataArr.toFixed(2).split('.')[0] + '}{b|.' + dataArr.toFixed(2).split('.')[1] + '}{b|' + this.item.chartData.unit + '}\n{c|' + this.item.chartData.name + '}',
+            text: '{a|' + dataArr.toFixed(2).split('.')[0] + '}{a|' + this.item.chartData.unit + '}\n{c|' + this.item.chartData.name + '}',
             x: 'center',
             y: 'center',
             textStyle: {
@@ -438,11 +438,6 @@ export default {
                   fontSize: this.item.textSize,
                   color: this.item.textColor,
                   fontWeight: '600'
-                },
-                b: {
-                  fontSize: this.item.textSize / 2 + 1,
-                  color: this.item.textColor,
-                  padding: [0, 0, 14, 0]
                 },
                 c: {
                   fontSize: this.item.ctLegendSize,

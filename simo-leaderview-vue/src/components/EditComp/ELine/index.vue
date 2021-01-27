@@ -182,7 +182,7 @@ export default {
           show: this.item.ctLegendShow,
           textStyle: {
             fontSize: this.item.fontSize,
-            color: '#666f8b'
+            color: this.item.ctLegendColor
           }
         },
         tooltip: {

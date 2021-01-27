@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       mychart: null,
-      oldItem: ''
+      oldOption: ''
     }
   },
   computed: {
@@ -39,12 +39,7 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        if (this.oldItem === JSON.stringify(newVal)) {
-
-        } else {
-          this.oldItem = JSON.stringify(newVal)
-          this.drawFlow()
-        }
+        this.drawFlow()
       },
       deep: true
     }
@@ -174,7 +169,10 @@ export default {
           }
         },
         grid: {
-          bottom: this.item.dataZoom ? 140 : 80
+          left: '15%',
+          right: '10%',
+          top: '15%',
+          bottom: this.item.legendY
         },
         series: myseries,
         dataZoom: [{
@@ -192,14 +190,17 @@ export default {
               color: '#8392A5'
             }
           },
-          bottom: 60,
+          bottom: 20,
           brushSelect: true
         }, {
           type: 'inside'
         }]
       }
-      this.mychart.clear()
-      this.mychart.setOption(myoption)
+      if (this.oldOption !== myoption) {
+        this.oldOption = JSON.stringify(myoption)
+        this.mychart.clear()
+        this.mychart.setOption(myoption)
+      }
     }
   },
   mounted () {

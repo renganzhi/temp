@@ -9,6 +9,7 @@ export default {
     'ifGradual': 'false',
     'splitShow': false,
     'ctLegendShow': true,
+    'ctLegendColor': '#fff',
     'ctLegendSize': '16',
     'axisLabelSize': '16',
     'legendY': 93,
@@ -136,6 +137,11 @@ export default {
             'value': 30
           }
         ]
+      },
+      {
+        'name': '图例字颜色',
+        'key': 'ctLegendColor',
+        'tag': 'Color'
       },
       {
         'name': '图例高度',
@@ -539,6 +545,10 @@ export default {
           'ifEidetColor': true
         },
         'tag': 'ColorArray'
+      },
+      {
+        'name': '坐标轴样式',
+        'tag': 'Hint'
       },
       {
         'name': 'x轴标注倾斜',

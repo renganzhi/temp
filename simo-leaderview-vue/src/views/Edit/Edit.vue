@@ -89,12 +89,14 @@
           <div class="btn-box">
             <span @click="preOther(0)"
                   class="ring-icon"
+                  style="line-height: 34px;margin: 0 8px;"
                   data-toggle='tooltip'
                   title
                   data-original-title="上一页"><i class="icon-n-prev"></i></span>
             <span @click="preOther(1)"
                   class="ring-icon"
                   data-toggle='tooltip'
+                  style="line-height: 34px;margin: 0 8px;"
                   title
                   data-original-title="下一页"><i class="icon-n-next"></i></span>
           </div>
@@ -1567,7 +1569,7 @@
                     <option value="false">隐藏</option>
                   </select>
                 </div>
-                <div class="form-group cols2">
+                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">
                   <label>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
@@ -1748,7 +1750,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例字体大小</label>
                     <select v-model="selectedItem.ctLegendSize">
                       <option value="8">8</option>
@@ -1761,14 +1763,23 @@
                       <option value="30">30</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                    <label>图例字颜色</label>
+                      <div class="color-w200">
+                        <Vcolor :data="selectedItem.ctLegendColor"
+                            :key="18"
+                            type="ctLegendColor"
+                            @getdata="getColor"></Vcolor>
+                      </div>
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例高度</label>
                     <input type="number"
                            max="100"
                            min="0"
                            v-model="selectedItem.legendY">
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if=" ['v-line', 've-histogram', 've-bar'].includes(selectedItem.chartType) ">
                     <label>图元间隙</label>
                     <input type="number"
                            v-model="selectedItem.gridTop">
@@ -2609,7 +2620,7 @@ export default EditJs
   width: 100%;
   padding-right: 320px;
   padding-left: 15px;
-  z-index: 999;
+  z-index: 99;
   text-align: right;
   .ring-icon{
     display: inline-block;
