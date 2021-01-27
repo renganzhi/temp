@@ -270,6 +270,14 @@ export default {
       'editId'
     ]),
     curChartType () { return this.selectedItem.chartType },
+    curChartName () {
+      if (['text', 'NEWtextArea'].includes(this.curChartType)) {
+        return '文本框'
+      } else if (this.curChartType === 'marquee') {
+        return '跑马灯'
+      }
+      return this.selectedItem.ctName || ''
+    },
     alertLevels: function () {
       if (this.alertInfo && this.alertInfo.length > 0) {
         return _.forEach(this.alertInfo, function (item) {
