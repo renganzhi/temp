@@ -28,17 +28,21 @@
         <template v-if="item.tag === 'ImgFile'">
             <div class="color-w200">
               <input type="file"
+                style="width: 147px!important;margin-right: 8px;"
                 accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
                 @change='changeImg' />
+              <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
             </div>
         </template>
         <template v-if="item.tag === 'videoFile'">
           <div class="color-w200">
             <input type="file"
+              style="width: 147px!important;margin-right: 8px;"
               name="myfiles"
               id="myfiles"
               accept="video/mp4"
               @change="uploadVideo">
+          <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
           </div>
         </template>
         <template v-if="item.tag === 'GradientColor'">
@@ -232,6 +236,9 @@ export default {
         _this.selectedItem[_this.item.key] = curSrc
       })
       e.target.value = ''
+    },
+    removeFile () {
+      this.selectedItem[this.item.key] = ''
     },
     ChildGetColor (data) {
       this.$parent.getColor(data)

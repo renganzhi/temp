@@ -971,6 +971,23 @@
               <div v-if="selectedItem.chartType=='TDEarthLine' || selectedItem.chartType=='TDEarthBar'">
                 <div class="m-gap form-group">地球配置</div>
                 <div class="form-group cols2">
+                  <label>地球类型</label>
+                  <select v-model="selectedItem.backPicName">
+                    <!-- <option value="Mapcolor">类型一</option> -->
+                    <option value="Mapcolor1-2">类型1</option>
+                    <option value="Mapcolor1-1">类型2</option>
+                    <option value="Mapcolor2-1">类型3</option>
+                    <option value="Mapcolor2-2">类型4</option>
+                    <option value="Mapcolor3-1">类型5</option>
+                    <option value="Mapcolor3-2">类型6</option>
+                    <option value="Mapcolor4">类型7</option>
+                    <option value="Mapcolor5-1">类型8</option>
+                    <option value="Mapcolor5-2">类型9</option>
+                    <option value="Mapcolor6-1">类型10</option>
+                    <option value="Mapcolor6-2">类型11</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
                   <label>地球凹凸感</label>
                   <input  type="number"
                           v-model="selectedItem.displacementScale">
@@ -1780,7 +1797,7 @@
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2" v-if=" ['v-line', 've-histogram', 've-bar'].includes(selectedItem.chartType) ">
-                    <label>图元间隙</label>
+                    <label>图元高度</label>
                     <input type="number"
                            v-model="selectedItem.gridTop">
                   </div>
@@ -1876,6 +1893,15 @@
                     <Vcolor :data="selectedItem.legendColor"
                             :key="24"
                             type="legendColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2" v-if="selectedItem.chartType === 've-gauge'">
+                  <label >文字颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.detailColor"
+                            :key="24"
+                            type="detailColor"
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
@@ -2142,7 +2168,7 @@
                             :value="item.id">{{item.name}}</option>
                   </select>
               </div>
-              <div v-show="['image', 'BulletFrame'].includes(selectedItem.chartType)">
+              <div v-show="['image'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
@@ -2151,7 +2177,7 @@
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
               </div>
-              <div v-show="['ppt'].includes(selectedItem.chartType)">
+              <div v-show="['ppt', 'BulletFrame'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
@@ -2247,26 +2273,38 @@
                 </div>
                 <div v-if="advanced && selectedItem.chartType==='table'">
                   <div class="form-group cols2">
-                    <label>告警字段</label>
+                    <label>列宽类型</label>
+                    <select v-model="selectedItem.OneLineType">
+                      <option value="default">默认列宽</option>
+                      <option value="custom">自定义列宽</option>
+                    </select>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
                       <option v-for="i in selectedItem.chartData.columns"
                               :key="i"
                               :value="i">{{i}}</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.OneLineType === 'custom' && selectedItem.AlarmField">
+                    <label>字段列宽</label>
+                    <input type="number"
+                           v-model="selectedItem.OneLineSize">
+                  </div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
                     <label>告警条件</label>
                     <select v-model="selectedItem.AlarmType">
                       <option value="num">数字</option>
                       <option value="chart">字符</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'chart'">
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'chart'&&selectedItem.AlarmField">
                     <label>告警字符</label>
                     <input type="chart"
                            v-model="selectedItem.AlarmChart">
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'">
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
                     <label>条件</label>
                     <select v-model="selectedItem.AlarmNumType">
                       <option value="greater">大于</option>
@@ -2274,12 +2312,12 @@
                       <option value="less">小于</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'">
+                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
                     <label>阈值</label>
-                    <input type="num"
+                    <input type="number"
                            v-model="selectedItem.AlarmNum">
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
                     <label>告警颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.AlarmColor"
@@ -2432,7 +2470,7 @@
                        @click="delAlertLevel(index)"></i>
                   </div>
                 </div>
-                <button @click="dataChange">更新视图</button>
+                <button class="DataChangeBtn" @click="dataChange">更新视图</button>
 
               </div>
               <div style="height: 100%;"

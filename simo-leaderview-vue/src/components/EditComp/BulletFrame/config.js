@@ -7,7 +7,7 @@ export default {
     'chartType': 'BulletFrame',
     'showType': '2',
     'stationPlace': '1',
-    'imgSrc': 'leaderview/border/back.jpg',
+    'imgSrc': '/leaderview/border/back.jpg',
     'videoSrc': '',
     'openBoxheight': 320,
     'openBoxwidth': 560,
@@ -145,18 +145,30 @@ export default {
       'tag': 'input'
     }, {
       'name': '轮播图片高度',
+      'parentKey': {
+        'isPlay': true
+      },
       'key': 'Playheight',
       'tag': 'input'
     }, {
       'name': '轮播图片宽度',
+      'parentKey': {
+        'isPlay': true
+      },
       'key': 'PlayBoxwidth',
       'tag': 'input'
     }, {
       'name': '轮播图片距离右距离',
+      'parentKey': {
+        'isPlay': true
+      },
       'key': 'PlayBoxRight',
       'tag': 'input'
     }, {
       'name': '轮播图片距离下距离',
+      'parentKey': {
+        'isPlay': true
+      },
       'key': 'PlayBoxBtn',
       'tag': 'input'
     }

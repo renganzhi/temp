@@ -65,15 +65,10 @@ const percentage = {
       bgClr: '#657992',
       fontSize: 24,
       ctLegendShow: 'true',
+      detailColor: '#ffff00',
       ctLegendSize: '16',
       ctLegendColor: '#666f8b',
       axisLabelSize: '16',
-      legendY: 85,
-      gridTop: 50,
-      tooltipShow: 'true',
-      tooltipBackColor: '#57625d',
-      tooltipTextColor: '#fff',
-      tooltipfontSize: 14,
       chartData: morenData.single
     },
     {

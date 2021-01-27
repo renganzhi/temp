@@ -181,7 +181,7 @@ export default {
           y: this.item.legendY + '%',
           show: this.item.ctLegendShow,
           textStyle: {
-            fontSize: this.item.fontSize,
+            fontSize: this.item.ctLegendSize,
             color: this.item.ctLegendColor
           }
         },

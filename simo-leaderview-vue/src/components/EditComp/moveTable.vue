@@ -10,7 +10,7 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
-                :style="[thStyle,heightLinght]"
+                :style="[thStyle,heightLinght,widthLinght(index)]"
                 v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
               >{{title}}</th>
           </tr>
@@ -48,9 +48,9 @@
             <tr v-for="(tr, id) in page1Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle(id)]"
                 :key="id">
-              <td v-for="(tdText, ind) in tr"
+              <td v-for="(tdText, ind,i) in tr"
                   :key="ind"
-                  :style="[thStyle,heightLinght]"
+                  :style="[thStyle,heightLinght,widthLinght(i)]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -64,9 +64,9 @@
             <tr v-for="(tr, id) in page2Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle(id)]"
                 :key="id">
-              <td v-for="(tdText, ind) in tr"
+              <td v-for="(tdText, ind,i) in tr"
                   :key="ind"
-                  :style="[thStyle,heightLinght]"
+                  :style="[thStyle,heightLinght,widthLinght(i)]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
             </tr>
           </tbody>
@@ -141,6 +141,17 @@ export default {
       return {
         height: this.item.heightLinght + 'px'
       }
+    },
+    widthArry: function () {
+      let arr = this.item.LineSizeArry || []
+      this.item.chartData.columns.forEach((element, i) => {
+        if (arr[i]) {
+
+        } else {
+          arr.push(86)
+        }
+      })
+      return arr
     },
     theadTrStyle: function () {
       if (this.item.Internal === 'true') {
@@ -220,6 +231,13 @@ export default {
         this.intervalTime = 6000
       }
       this.initLeftMove()
+    },
+    'item.OneLineSize': function (newV, oldV) {
+      this.item.LineSizeArry[this.item.chartData.columns.indexOf(this.item.AlarmField)] = newV
+      document.querySelector('.DataChangeBtn').click()
+    },
+    'item.AlarmField': function (newV, oldV) {
+      this.item.OneLineSize = this.item.LineSizeArry[this.item.chartData.columns.indexOf(newV)]
     }
   },
   methods: {
@@ -277,6 +295,17 @@ export default {
         }
       }
       return {}
+    },
+    widthLinght (index) {
+      // let arr = JSON.parse(this.widthArry)
+      if (this.item.OneLineType === 'default') {
+        return ''
+      } else {
+        return {
+          display: 'inline-block',
+          width: this.item.LineSizeArry[index] + 'px'
+        }
+      }
     },
     tbodyTrStyle: function (index) {
       let Color = ''
@@ -387,6 +416,13 @@ export default {
     // }
   },
   mounted: function () {
+    this.item.chartData.columns.forEach((element, i) => {
+      if (this.widthArry[i]) {
+
+      } else {
+        this.widthArry.push(86)
+      }
+    })
     this.pageNum = Number(this.item.pageNum)
     if (this.item.speed === '3') {
       this.intervalTime = 6000
