@@ -6,7 +6,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.uxsino.commons.db.JsonObjectUserType;
 import com.uxsino.commons.utils.StringUtils;
-import com.uxsino.reactorq.model.INDICATOR_TYPE;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

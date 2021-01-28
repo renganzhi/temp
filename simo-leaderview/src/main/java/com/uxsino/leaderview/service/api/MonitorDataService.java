@@ -2441,7 +2441,7 @@ public class MonitorDataService {
             neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
             neQo.setRunStatus(RunStatus.Unconnection);
             neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
-            neQo.setRunStatus(RunStatus.Unknown);
+            neQo.setRunStatus(RunStatus.Unknow);
             neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
         } else {
             neQo.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
