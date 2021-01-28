@@ -5,7 +5,7 @@
          ref="liquidfill"
          :style="boxStyle"></div>
     <div class="name"
-         v-show="item.ctLegendShow != 'false'"
+         v-show="item.ctLegendShow"
          :style="{'color': item.legendColor}">{{item.chartData.name}}</div>
   </div>
   <div class="v-charts-data-empty"
