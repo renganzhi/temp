@@ -2599,6 +2599,12 @@ export default EditJs
   input[type="file"] {
     color: transparent !important;
   }
+  .delete_text {
+    &:hover {
+      cursor: pointer;
+      color: red;
+    }
+  }
 }
 .handle_label {
   width: 100%;
