@@ -722,14 +722,11 @@
                     <label>填充色</label>
                     <select v-model="selectedItem.colorful"
                             style="width: 68px !important; margin-left: 3px;">
-                      <option value="false">单色</option>
-                      <option value="true">渐变</option>
+                      <option :value="false">单色</option>
+                      <option :value="true">渐变</option>
                     </select>
-                    <!-- <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
-                                        <Vcolor :data="selectedItem.barClr" :key="22" type="barClr" @getdata="getColor"></Vcolor>
-                                    </div> -->
                     <div class="barGradient"
-                         v-if="selectedItem.colorful === 'true'"
+                         v-if="selectedItem.colorful"
                          @click="reverseClr"
                          :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                       <div class="color-w15">
@@ -765,6 +762,13 @@
                               @getdata="getColor"></Vcolor>
                     </div>
                   </div>
+                </div>
+                <div div class="form-group cols2" v-show="selectedItem.chartType==='border' && selectedItem.colorful">
+                  <label>渐变方向</label>
+                    <select v-model="selectedItem.directionLinear">
+                      <option :value="180">上下</option>
+                      <option :value="90">左右</option>
+                    </select>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
