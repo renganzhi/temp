@@ -11,7 +11,7 @@ axios.interceptors.request.use(
   config => {
     // 这里配置全局loading
     if (!(/\.json/.test(config.url))) {
-      // $('#screen').show()
+      // $('#lead-screen').show()
     }
 
     return config
@@ -25,11 +25,11 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   res => {
     // loading结束
-    $('#screen').hide()
+    $('#lead-screen').hide()
     return Promise.resolve(res.data)
   },
   error => {
-    $('#screen').hide()
+    $('#lead-screen').hide()
     if (error.response && error.response.config.url.includes('findAlertLevelList')) {
       return Promise.reject(error)
     }

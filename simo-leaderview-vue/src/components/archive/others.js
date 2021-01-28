@@ -17,6 +17,7 @@ const others = {
       bdpx: 1,
       showType: '1',
       colorful: false,
+      directionLinear: 180,
       bgClr: 'rgba(255, 255, 255, 0.02)',
       barClrs: ['rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.02)'],
       bdClr: '#175278'

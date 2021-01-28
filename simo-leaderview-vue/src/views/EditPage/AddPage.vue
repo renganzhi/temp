@@ -237,14 +237,12 @@ export default {
 }
 
 #addHomePage-modal .flex-item {
-  width: 31%;
-  height: 152px;
+  // width: 31%;
+  // height: 152px;
+  width: 310px;
+  height: 165px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
-}
-
-#addHomePage-modal .flex-item:nth-child(3n + 0) {
-  margin-right: 0px !important;
 }
 
 #addHomePage-modal .first-item {

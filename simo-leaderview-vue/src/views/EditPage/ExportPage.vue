@@ -263,10 +263,6 @@ export default {
   margin: 10px;
 }
 
-#exportPage-modal .flex-item:nth-child(3n + 0) {
-  margin-right: 0px !important;
-}
-
 #exportPage-modal .first-item {
   text-align: center;
   line-height: 152px;
