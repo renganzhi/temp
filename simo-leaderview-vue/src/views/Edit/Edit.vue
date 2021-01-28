@@ -2595,6 +2595,11 @@ import './Edit.scss'
 export default EditJs
 </script>
 <style lang="scss" scoped>
+#mainEdit-edit {
+  input[type="file"] {
+    color: transparent !important;
+  }
+}
 .handle_label {
   width: 100%;
   height: 38px;
