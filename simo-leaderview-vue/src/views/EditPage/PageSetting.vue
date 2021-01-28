@@ -237,18 +237,18 @@ export default {
       })
     },
     changeVisiable (index, val) {
-      if (!this.tableData[index].visible && this.getVisiableNum() >= 20) {
-        if (gbs.inDev) {
-          Notification({
-            message: '可见页面不可超过20个！',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '可见页面不可超过20个！', 'info')
-        }
-        return
-      }
+      // if (!this.tableData[index].visible && this.getVisiableNum() >= 20) {
+      //   if (gbs.inDev) {
+      //     Notification({
+      //       message: '可见页面不可超过20个！',
+      //       position: 'bottom-right',
+      //       customClass: 'toast toast-info'
+      //     })
+      //   } else {
+      //     tooltip('', '可见页面不可超过20个！', 'info')
+      //   }
+      //   return
+      // }
       this.tableData[index].visible = !val
       var temp = this.tableData.splice(index, 1)[0]
       if (val) {
@@ -333,12 +333,15 @@ export default {
           }
           $('#homeSetting-modal').modal('hide')
         } else {
-          tooltip('', res.msg, 'error')
-          // Notification({
-          //   message: res.msg,
-          //   position: 'bottom-right',
-          //   customClass: 'toast toast-error'
-          // })
+          if (gbs.inDev) {
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+          } else {
+            tooltip('', res.msg, 'error')
+          }
         }
       })
     }
