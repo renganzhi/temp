@@ -1075,10 +1075,10 @@ export default {
     this.pageVisibInit()
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
-    $('#screen').addClass('disShow')
+    $('#lead-screen').addClass('disShow')
   },
   beforeDestroy: function () {
-    $('#screen').removeClass('disShow')
+    $('#lead-screen').removeClass('disShow')
     this.stopRefreshTimer()
     this.xhrArr.forEach((xhr) => {
       if (xhr.status !== 200) {

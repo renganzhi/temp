@@ -3024,7 +3024,7 @@ export default {
             // var _url = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
             typeof cb === 'function' && cb(data)
           } else {
-            // $("#screen").hide()
+            // $("#lead-screen").hide()
             if (gbs.inDev) {
               Notification({
                 message: data.msg,
@@ -4343,7 +4343,7 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
-    $('#screen').addClass('disShow')
+    $('#lead-screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {
     //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)
@@ -4362,7 +4362,7 @@ export default {
     // stateBar.removeEventListener('mousedown ', this.userChoose)
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
-    $('#screen').removeClass('disShow')
+    $('#lead-screen').removeClass('disShow')
   },
   destroyed: function () {
     // $.comps.editHome = null;
