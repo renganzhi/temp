@@ -82,7 +82,7 @@ export default {
           },
           series: [{
             type: 'gauge',
-            radius: '65%',
+            radius: (70 - this.item.lineGaugeWidth) + '%', // '65%',
             startAngle: 200,
             endAngle: -20,
             center: ['50%', '50%'],
@@ -103,11 +103,11 @@ export default {
             },
             axisTick: {
               show: true,
-              length: 3,
+              length: (this.item.lineFontSize / 5).toFixed(0),
               splitNumber: 3,
               lineStyle: {
                 color: 'auto',
-                width: 3
+                width: (this.item.lineFontSize / 5).toFixed(0)
               }
             },
             axisLabel: {
@@ -128,7 +128,7 @@ export default {
             center: ['50%', '50%'],
             axisLine: {
               lineStyle: { // 属性lineStyle控制线条样式
-                width: 4,
+                width: this.item.lineWidth,
                 color: [
                   [dataArr / 100, colorSet.color],
                   [1, this.item.bgClr]
@@ -164,7 +164,7 @@ export default {
         myoption = {
           series: [{
             type: 'gauge',
-            radius: '60%',
+            radius: (64 - this.item.lineGaugeWidth) + '%', // '60%',
             splitNumber: 10,
             axisLine: {
               lineStyle: {
@@ -172,7 +172,7 @@ export default {
                   [dataArr / 100, colorSet.color],
                   [1, this.item.bgClr]
                 ],
-                width: 8
+                width: this.item.lineWidth
               }
             },
             axisLabel: {
@@ -351,10 +351,10 @@ export default {
             radius: '90%' // 图形大小
           }],
           series: [{
-            name: '小环',
+            name: '刻度',
             type: 'gauge',
             splitNumber: 10,
-            radius: '75%',
+            radius: (70 + this.item.lineGaugeWidth * 1) + '%', // '75%',
             center: ['50%', '50%'],
             startAngle: 0,
             endAngle: 359.9999,
@@ -394,7 +394,7 @@ export default {
             },
             coordinateSystem: 'polar',
             roundCap: true,
-            barWidth: '10%',
+            barWidth: this.item.lineWidth + '%', // 10%',
             itemStyle: {
               normal: {
                 opacity: 1,
@@ -407,7 +407,7 @@ export default {
           {
             type: 'pie',
             name: '内层细圆环',
-            radius: ['46%', '43%'],
+            radius: [(46 + this.item.lineWidth / 6) + '%', (45 - this.item.lineWidth / 6) + '%'],
             center: ['50%', '50%'],
             hoverAnimation: false,
             clockWise: true,
@@ -469,7 +469,7 @@ export default {
                   [(100 - dataArr) / 100, colorSet.color],
                   [1, this.item.bgClr]
                 ],
-                width: 20
+                width: this.item.lineWidth // 20
               }
             },
             axisTick: {
@@ -492,7 +492,7 @@ export default {
           },
           {
             type: 'pie',
-            radius: ['44%', '45%'],
+            radius: [(48 - this.item.lineGaugeWidth) + '%', (49 - this.item.lineGaugeWidth) + '%'],
             hoverAnimation: false,
             clockWise: false,
             itemStyle: {
