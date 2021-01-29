@@ -1002,7 +1002,6 @@ export default {
               }
             }
           })
-          console.log(obj)
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
