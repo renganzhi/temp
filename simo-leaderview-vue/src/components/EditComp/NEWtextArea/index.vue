@@ -110,6 +110,7 @@ export default {
           margin: '10px !important',
           padding: '0px !important',
           letterSpacing: this.item.fontSpaceing + 'px !important',
+          resize: 'none',
           fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
         }
       } else {

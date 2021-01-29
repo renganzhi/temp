@@ -2726,7 +2726,7 @@ export default EditJs
   width: 100%;
   padding-right: 320px;
   padding-left: 15px;
-  z-index: 99;
+  z-index: 999;
   text-align: right;
   .ring-icon{
     display: inline-block;
