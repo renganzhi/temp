@@ -21,8 +21,10 @@ export default {
     'tooltipfontSize': 14,
     'splitColor': '#333849',
     'splitSize': 1,
+    'minInterval': '',
     'legendColor': '#828bac',
     'DanweiColor': '#828bac',
+    'DanweiSize': 16,
     'lineArea': false, // 是否为区域图
     'lineColorType': false, // 是否为区域图
     'smooth': false,
@@ -53,6 +55,7 @@ export default {
     'chartData': {
       'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
       'unit': '%',
+      'unitX': '时间',
       'rows': [{
         '日期': '2020-01-01',
         'CPU核心利用率': 15,
@@ -155,7 +158,7 @@ export default {
         'tag': 'input'
       },
       {
-        'name': '图元间隙',
+        'name': '图元高度',
         'key': 'gridTop',
         'parentKey': {
           'ctLegendShow': true
@@ -225,19 +228,28 @@ export default {
         ]
       },
       {
+        'name': '坐标刻度类型',
+        'key': 'minInterval',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '整数',
+            'value': 1
+          },
+          {
+            'name': '自适应',
+            'value': ''
+          }
+        ]
+      },
+      {
         'name': '坐标线颜色',
-        'parentKey': {
-          'splitShow': true
-        },
         'key': 'splitColor',
         'tag': 'Color'
       },
       {
         'name': '线条粗细',
         'key': 'splitSize',
-        'parentKey': {
-          'splitShow': true
-        },
         'tag': 'select',
         'options': [
           {
@@ -260,13 +272,52 @@ export default {
         'tag': 'Color'
       },
       {
+        'name': '坐标文字大小',
+        'key': 'axisLabelSize',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '8',
+            'value': 8
+          },
+          {
+            'name': '10',
+            'value': 10
+          },
+          {
+            'name': '14',
+            'value': 14
+          },
+          {
+            'name': '16',
+            'value': 16
+          },
+          {
+            'name': '20',
+            'value': 20
+          },
+          {
+            'name': '24',
+            'value': 24
+          },
+          {
+            'name': '28',
+            'value': 28
+          },
+          {
+            'name': '30',
+            'value': 30
+          }
+        ]
+      },
+      {
         'name': '坐标单位颜色',
         'key': 'DanweiColor',
         'tag': 'Color'
       },
       {
-        'name': '坐标文字大小',
-        'key': 'axisLabelSize',
+        'name': '坐标单位大小',
+        'key': 'DanweiSize',
         'tag': 'select',
         'options': [
           {

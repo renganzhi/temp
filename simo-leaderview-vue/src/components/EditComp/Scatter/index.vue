@@ -95,12 +95,21 @@ export default {
           trigger: 'item',
           show: this.item.tooltipShow,
           backgroundColor: this.item.tooltipBackColor,
+          // formatter: function (obj) {
+          //   console.log()
+          //   return obj.seriesName + '  ' +
+          // },
           textStyle: {
             color: this.item.tooltipColor,
             fontSize: this.item.tooltipSize
           }
         },
         xAxis: {
+          name: this.item.chartData.unitX,
+          nameTextStyle: {
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
+          },
           axisLine: {
             lineStyle: {
               color: this.item.axisLinecolor
@@ -120,6 +129,11 @@ export default {
           }
         },
         yAxis: {
+          name: this.item.chartData.unit,
+          nameTextStyle: {
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
+          },
           axisLine: {
             lineStyle: {
               color: this.item.axisLinecolor

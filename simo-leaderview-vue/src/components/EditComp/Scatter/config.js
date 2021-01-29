@@ -3,21 +3,23 @@ export default {
     'text': '散点图',
     'imgClass': 'icon-scatter',
     'chartType': 'Scatter',
-    'width': 300,
-    'height': 300,
+    'height': 400,
+    'width': 700,
     'openlegend': true,
-    'legendColor': '#FFF',
+    'legendColor': '#828bac',
+    'DanweiColor': '#828bac',
+    'DanweiSize': 16,
     'legendSize': 12,
     'legendStation': 'top',
     'splitLine': true,
     'legendY': 40,
     'splitLinetype': 'dashed',
-    'splitLinecolor': 'white',
-    'axisLinecolor': 'white',
-    'axisLabelcolor': 'white',
+    'splitLinecolor': '#828bac',
+    'axisLinecolor': '#828bac',
+    'axisLabelcolor': '#828bac',
     'tooltipShow': true,
     'tooltipBackColor': '#57625d',
-    'tooltipColor': '#fff',
+    'tooltipColor': '#ebedf6',
     'tooltipSize': 14,
     'axisLabelfontSize': 12,
     'XaxisLabelrotate': 0,
@@ -40,57 +42,44 @@ export default {
     ],
     'ifGradual': 'false',
     'chartData': {
+      'unit': '次',
+      'unitX': '日期',
       'dataArry': [{
-        'name': '测试数据1',
+        'name': '资源1',
         'points': [
-          [10.0, 8.04, 5],
-          [8.07, 6.95, 5],
-          [13.0, 7.58, 12],
-          [9.05, 8.81, 1],
-          [11.0, 8.33, 5],
-          [14.0, 7.66, 2],
-          [13.4, 6.81, 5],
-          [10.0, 6.33, 5],
-          [14.0, 8.96, 5],
-          [12.5, 6.82, 6],
-          [9.15, 7.20, 5],
-          [11.5, 7.20, 11],
-          [3.03, 4.23, 5],
-          [12.2, 7.83, 5],
-          [2.02, 4.47, 10],
-          [1.05, 3.33, 5],
-          [4.05, 4.96, 15],
-          [6.03, 7.24, 9],
-          [12.0, 6.26, 5],
-          [12.0, 8.84, 16],
-          [7.08, 5.82, 5],
-          [5.02, 5.68, 16]
+          [1, 3, 5],
+          [2, 4, 10],
+          [3, 4, 5],
+          [4, 4, 15],
+          [5, 5, 16],
+          [6, 7, 9],
+          [7, 5, 5],
+          [8, 9, 5],
+          [9, 7, 5],
+          [10, 8, 5],
+          [11, 7, 5],
+          [12, 10, 16],
+          [13, 7, 12],
+          [14, 7, 2]
         ]
       }, {
-        'name': '测试数据2',
+        'name': '资源2',
         'points': [
-          [11.0, 8.04, 5],
-          [9.07, 6.95, 5],
-          [15.0, 7.58, 12],
-          [13.05, 8.81, 1],
-          [16.0, 8.33, 5],
-          [14.0, 7.66, 2],
-          [15.4, 6.81, 5],
-          [17.0, 6.33, 5],
-          [16.0, 8.96, 5],
-          [16.5, 6.82, 6],
-          [4.15, 7.20, 5],
-          [15.5, 7.20, 11],
-          [9.03, 4.23, 5],
-          [15.2, 7.83, 5],
-          [9.02, 4.47, 10],
-          [6.05, 3.33, 5],
-          [2.05, 4.96, 15],
-          [9.03, 7.24, 9],
-          [16.0, 6.26, 5],
-          [16.0, 8.84, 16],
-          [8.08, 5.82, 5],
-          [6.02, 5.68, 16]
+          [1, 8, 5],
+          [2, 6, 5],
+          [3, 7, 12],
+          [4, 9, 1],
+          [5, 8, 5],
+          [6, 9, 2],
+          [7, 9, 8],
+          [8, 6, 5],
+          [9, 10, 5],
+          [10, 6, 6],
+          [11, 7, 5],
+          [12, 7, 11],
+          [13, 4, 5],
+          [14, 7, 5],
+          [15, 4, 10]
         ]
       }
       ]
@@ -260,6 +249,50 @@ export default {
         'name': '刻度字体大小',
         'key': 'axisLabelfontSize',
         'tag': 'input'
+      },
+      {
+        'name': '坐标单位颜色',
+        'key': 'DanweiColor',
+        'tag': 'Color'
+      },
+      {
+        'name': '坐标单位大小',
+        'key': 'DanweiSize',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '8',
+            'value': 8
+          },
+          {
+            'name': '10',
+            'value': 10
+          },
+          {
+            'name': '14',
+            'value': 14
+          },
+          {
+            'name': '16',
+            'value': 16
+          },
+          {
+            'name': '20',
+            'value': 20
+          },
+          {
+            'name': '24',
+            'value': 24
+          },
+          {
+            'name': '28',
+            'value': 28
+          },
+          {
+            'name': '30',
+            'value': 30
+          }
+        ]
       },
       {
         'name': 'X轴刻度倾斜度',

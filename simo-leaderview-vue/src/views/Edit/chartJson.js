@@ -20,6 +20,7 @@ import decorator from '@/components/EditComp/decorator/config.js'
 export var morenData = {
   pie: {
     columns: ['告警级别', '数量'],
+    unit: '次',
     rows: [{
       告警级别: '致命',
       数量: 233
@@ -48,6 +49,7 @@ export var morenData = {
   },
   line: {
     columns: ['资源', 'CPU利用率', '内存利用率', '健康度'],
+    unit: '%',
     rows: [{
       资源: '192.168.2.32',
       CPU利用率: 80,
