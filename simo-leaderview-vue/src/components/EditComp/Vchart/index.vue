@@ -87,7 +87,7 @@ export default {
             y: this.item.legendY + '%',
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
-              fontSize: this.item.fontSize,
+              fontSize: this.item.ctLegendSize,
               color: this.item.ctLegendColor
             }
           },
