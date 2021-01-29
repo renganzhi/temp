@@ -140,6 +140,8 @@ export default {
             color: this.item.DanweiColor || '#828bac',
             fontSize: this.item.DanweiSize || 16
           },
+          animation: true,
+          animationDuration: 500,
           data: myXAxisData,
           position: 'bottom',
           axisTick: {

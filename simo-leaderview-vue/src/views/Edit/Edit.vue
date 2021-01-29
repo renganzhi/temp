@@ -1922,6 +1922,7 @@
                   <label >环宽</label>
                   <div class="color-w200">
                     <input type="number"
+                           max="50"
                            v-model="selectedItem.detailwidth">
                   </div>
                 </div>
