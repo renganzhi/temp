@@ -2927,7 +2927,8 @@ export default {
       $('#mainEdit-edit .main_video').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
