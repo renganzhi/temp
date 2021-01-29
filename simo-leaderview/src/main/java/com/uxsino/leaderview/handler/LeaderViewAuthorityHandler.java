@@ -54,12 +54,12 @@ public class LeaderViewAuthorityHandler {
             if (homePages == null || homePages.isEmpty()) {
                 return;
             }
-            JSONArray hp = new JSONArray();
             //获取用户所拥有的资源
             JsonModel nes = monitorService.findAllByDomainIdIn(domainIds);
             List<String> neIdsInDomains = (List<String>) nes.getObj();
             if (homePages != null && !homePages.isEmpty()) {
                 for (HomePage homePage : homePages) {
+                    JSONArray hp = new JSONArray();
                     String viewConf = homePage.getViewConf();
                     JSONArray vcArr = viewConf != null ? JSONArray.parseArray(viewConf) : null;
                     if (vcArr != null) {
@@ -97,8 +97,8 @@ public class LeaderViewAuthorityHandler {
             return;
         }
         List<HomePage> homePages = homePageService.findAll();
-        JSONArray hp = new JSONArray();
         homePages.forEach(h->{
+            JSONArray hp = new JSONArray();
             Long userId = h.getUserId();
             List<Long> userDomainIds = domainUtils.getUserDomainIds(userId);
             //如果当前用户没有更变的域权限，需要对该用户的大屏资源更新
