@@ -176,7 +176,8 @@ export default {
           // left: this.item.gridTop,
           // right: this.item.gridTop,
           top: this.item.gridTop + '%',
-          bottom: this.item.gridTop + '%'
+          bottom: this.item.gridTop + '%',
+          containLabel: true
         },
         label: {
           show: this.item.showPoint,
