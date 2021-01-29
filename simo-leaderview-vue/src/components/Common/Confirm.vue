@@ -1,37 +1,27 @@
 <template>
-  <div class="modal"
+  <div class="modal container-fluid"
        id="alert-modal"
        tabindex="-1"
        role="dialog"
        aria-hidden="true"
        style="z-index: 200100;">
-    <div class="modal-dialog">
-      <div class="row">
-        <div class="col-lg-offset-3 col-md-offset-3 col-md-7 col-lg-7">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title font-white-lemon">请选择</h4>
-            </div>
-            <div class="modal-body">
-              <h5 style="text-align: center; line-height: 24px; word-wrap: break-word;">{{message}}
-              </h5>
-            </div>
-            <div class="modal-footer"
-                 style="border: 0; padding-top: 0; text-align: center; margin-left: 0px;">
-              <button type="button"
-                      @click="sure2">{{sureText}}</button>
-              <span style="width: 20px; display: inline-block;"></span>
-              <button type="button"
-                      data-dismiss="modal">{{cancelText}}</button>
-              <!-- <button type="button"
-                        data-dismiss="modal"
-                        @click="sure2"
-                        action="1">{{sureText}}</button>
-                <span style="width: 20px; display: inline-block;"></span>
-                <button type="button"
-                        data-dismiss="modal"
-                        action="-1">{{cancelText}}</button> -->
-            </div>
+    <div class="modal-dialog modal-dialog-centered row justify-content-center">
+      <div class="col-4">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title font-white-lemon">请选择</h4>
+          </div>
+          <div class="modal-body">
+            <h5 style="text-align: center; line-height: 24px; word-wrap: break-word;">{{message}}
+            </h5>
+          </div>
+          <div class="modal-footer"
+                style="border: 0; padding-top: 0; text-align: center; margin-left: 0px;">
+            <button type="button"
+                    @click="sure2">{{sureText}}</button>
+            <span style="width: 20px; display: inline-block;"></span>
+            <button type="button"
+                    data-dismiss="modal">{{cancelText}}</button>
           </div>
         </div>
       </div>
