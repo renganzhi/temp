@@ -1845,6 +1845,13 @@
                       </select>
                     </div>
                     <div class="form-group cols2">
+                      <label>坐标刻度类型</label>
+                      <select v-model="selectedItem.minInterval">
+                        <option value="">自适应</option>
+                        <option value="1">整数</option>
+                      </select>
+                    </div>
+                    <div class="form-group cols2">
                       <label>坐标线颜色</label>
                       <div class="color-w200">
                         <Vcolor :data="selectedItem.splitColor"
@@ -1907,10 +1914,39 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
+                <div class="form-group cols2" v-if="selectedItem.chartType === 've-gauge'||selectedItem.chartType === 've-ring'">
+                  <label >环宽</label>
+                  <div class="color-w200">
+                    <input type="number"
+                           v-model="selectedItem.detailwidth">
+                  </div>
+                </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字大小</label>
                     <select v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'" v-model="selectedItem.axisLabelSize">
+                      <option value="8">8</option>
+                      <option value="10">10</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="20">20</option>
+                      <option value="24">24</option>
+                      <option value="28">28</option>
+                      <option value="30">30</option>
+                    </select>
+                </div>
+                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                  <label>坐标单位颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.DanweiColor"
+                            :key="24"
+                            type="DanweiColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                  <label>坐标单位颜色</label>
+                  <select v-model="selectedItem.DanweiSize">
                       <option value="8">8</option>
                       <option value="10">10</option>
                       <option value="14">14</option>
@@ -1943,6 +1979,16 @@
                   <select v-model="selectedItem.smooth">
                     <option value="true">曲线</option>
                     <option value="false">折线</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                  <label>线条宽度</label>
+                  <select v-model="selectedItem.lineWidth">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
@@ -2275,13 +2321,6 @@
                 </div>
                 <div v-if="advanced && selectedItem.chartType==='table'">
                   <div class="form-group cols2">
-                    <label>列宽类型</label>
-                    <select v-model="selectedItem.OneLineType">
-                      <option value="default">默认列宽</option>
-                      <option value="custom">自定义列宽</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2">
                     <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
                       <option v-for="i in selectedItem.chartData.columns"
@@ -2289,11 +2328,22 @@
                               :value="i">{{i}}</option>
                     </select>
                   </div>
+                <div class="m-gap form-group"
+                     >列宽配置</div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
+                    <label>列宽类型</label>
+                    <select v-model="selectedItem.OneLineType">
+                      <option value="default">默认列宽</option>
+                      <option value="custom">自定义列宽</option>
+                    </select>
+                  </div>
                   <div class="form-group cols2" v-if="selectedItem.OneLineType === 'custom' && selectedItem.AlarmField">
                     <label>字段列宽</label>
                     <input type="number"
                            v-model="selectedItem.OneLineSize">
                   </div>
+                <div class="m-gap form-group"
+                     >告警配置</div>
                   <div class="form-group cols2" v-if="selectedItem.AlarmField">
                     <label>告警条件</label>
                     <select v-model="selectedItem.AlarmType">
