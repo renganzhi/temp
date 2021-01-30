@@ -2,7 +2,7 @@
   <div id="homeSetting-modal"
        style="z-index: 20100"
        class="modal">
-    <div class="modal-dialog modal-lg"
+    <div class="modal-dialog modal-dialog-centered modal-lg"
          role="document">
       <div class="modal-content">
         <div class="modal-header">
