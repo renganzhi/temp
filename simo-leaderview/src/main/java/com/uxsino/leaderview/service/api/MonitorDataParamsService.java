@@ -9,14 +9,12 @@ import com.google.common.collect.Sets;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
-import com.uxsino.leaderview.model.monitor.IndicatorTable;
-import com.uxsino.leaderview.model.monitor.NetworkEntity;
-import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
-import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
+import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import com.uxsino.simo.indicator.FieldType;
@@ -171,11 +169,11 @@ public class MonitorDataParamsService {
      * 获取指标类型的资源
      */
     @SuppressWarnings("unchecked")
-    public JsonModel findNes(NetworkEntityQO entityQO,Boolean notUnknown){
+    public JsonModel findNes(NetworkEntityCriteria criteria,Boolean notUnknown){
         List<Map<String, String>> list = new ArrayList<>();
         List<NetworkEntity> nes;
         try {
-            nes = rpcProcessService.findAllNetworkEntity(entityQO);
+            nes = rpcProcessService.getNeList(criteria);
         }catch (Exception e){
             return new JsonModel(false, e.getMessage());
         }
@@ -197,13 +195,13 @@ public class MonitorDataParamsService {
     }
 
 
-    /**
-     * 设置资源查询类QO
-     */
-    public NetworkEntityQO setNeQO(HttpSession session,Long domainId ,BaseNeClass baseNeClass,NeClass neClass){
-        NetworkEntityQOModel entityQO = new NetworkEntityQOModel();
-        return entityQO.setNeQO(session, domainId).setNeQO(baseNeClass, neClass);
-    }
+//    /**
+//     * 设置资源查询类QO
+//     */
+//    public NetworkEntityQO setNeQO(HttpSession session,Long domainId ,BaseNeClass baseNeClass,NeClass neClass){
+//        NetworkEntityQOModel entityQO = new NetworkEntityQOModel();
+//        return entityQO.setNeQO(session, domainId).setNeQO(baseNeClass, neClass);
+//    }
 
     public JsonModel getUnit(String[] neIds) {
         List<String> unitList = Lists.newArrayList();
@@ -225,7 +223,10 @@ public class MonitorDataParamsService {
         // 资源所有可配置的指标
         List<IndicatorTable> indicatorTables = Lists.newArrayList();
         try {
-            indicatorTables = rpcProcessService.findUsableIndForNe(neList, neClasses);
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            criteria.setIds(Lists.newArrayList(neIds));
+            criteria.setNeClasses(neClasses);
+            indicatorTables = rpcProcessService.getUsableInd(null, criteria);
         }catch (Exception e){
             return new JsonModel(false, e.getMessage());
         }
@@ -354,7 +355,10 @@ public class MonitorDataParamsService {
                 }
                 List<IndicatorTable> indicatorTables = Lists.newArrayList();
                 try {
-                    indicatorTables = rpcProcessService.findUsableIndForNe(Lists.newArrayList(ne), Lists.newArrayList(ne.getNeClass()));
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    criteria.setId(ne.getId());
+                    criteria.setNeClass(ne.getNeClass());
+                    indicatorTables = rpcProcessService.getUsableInd(null, criteria);
                 } catch (Exception e) {
                     return new JsonModel(false, e.getMessage());
                 }
@@ -420,8 +424,12 @@ public class MonitorDataParamsService {
         if ((neIds == null || neIds.length == 0) && !ObjectUtils.isEmpty(neClass)) {
             List<IndicatorTable> indicatorTables = Lists.newArrayList();
             try {
-                indicatorTables.addAll(rpcProcessService.findIndByNeClass(Lists.newArrayList(neClass.getBaseNeClass().toString())));
-                indicatorTables.addAll(rpcProcessService.findIndByNeClass(Lists.newArrayList(neClass.toString())));
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                List<NeClass> neClasses = Lists.newArrayList();
+                neClasses.addAll(neClass.getBaseNeClass().getNeClass());
+                neClasses.add(neClass);
+                criteria.setNeClasses(neClasses);
+                indicatorTables.addAll(rpcProcessService.getUsableInd(null,criteria));
             }catch (Exception e){
                 return new JsonModel(false, e.getMessage());
             }
@@ -477,7 +485,10 @@ public class MonitorDataParamsService {
                 }
                 List<IndicatorTable> indicatorTables = Lists.newArrayList();
                 try {
-                    indicatorTables = rpcProcessService.findUsableIndForNe(Lists.newArrayList(ne), Lists.newArrayList(ne.getNeClass()));
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    criteria.setId(ne.getId());
+                    criteria.setNeClass(ne.getNeClass());
+                    indicatorTables = rpcProcessService.getUsableInd(null, criteria);
                 } catch (Exception e) {
                     return new JsonModel(false, e.getMessage());
                 }
@@ -574,7 +585,10 @@ public class MonitorDataParamsService {
                         return new JsonModel(false, "资源不存在");
                     }
                     // 资源所有可配置的指标
-                    List<IndicatorTable> indicatorTables = rpcProcessService.findUsableIndForNe(Lists.newArrayList(ne), Lists.newArrayList(ne.getNeClass()));
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    criteria.setId(ne.getId());
+                    criteria.setNeClass(ne.getNeClass());
+                    List<IndicatorTable> indicatorTables = rpcProcessService.getUsableInd(null, criteria);
                     JSONArray arr = new JSONArray();
                     if (CollectionUtils.isNotEmpty(indicatorTables)) {
                         // 查看资源已经配置的指标
@@ -645,8 +659,10 @@ public class MonitorDataParamsService {
             return new JsonModel(true, new JSONArray());
         }
         JSONArray result = new JSONArray();
-        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
-                indicators, null, null, null);
+        NeComponentQuery compQuery = new NeComponentQuery();
+        compQuery.setNeIds(Lists.newArrayList(neIds));
+        compQuery.setIndicatorName(indicators);
+        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
         // 如果有部件，应该对资源进行遍历查询部件
         if (ObjectUtils.isEmpty(idAndComponent)) {
             result.add(newResultObj("值", null));
@@ -818,8 +834,10 @@ public class MonitorDataParamsService {
             JSONArray neParentResult = new JSONArray();
 
             List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
-            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
-                    indicatorName, null, null, null);
+            NeComponentQuery compQuery = new NeComponentQuery();
+            compQuery.setNeIds(Lists.newArrayList(neIds));
+            compQuery.setIndicatorName(indicatorName);
+            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
             // 对每个资源进行遍历
             for (NetworkEntity ne : nes) {
                 JSONObject neResult = new JSONObject();
@@ -917,8 +935,10 @@ public class MonitorDataParamsService {
             JSONArray neParentResult = new JSONArray();
 
             List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
-            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
-                    indicatorName, null, null, null);
+            NeComponentQuery compQuery = new NeComponentQuery();
+            compQuery.setNeIds(Lists.newArrayList(neIds));
+            compQuery.setIndicatorName(indicatorName);
+            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
             // 对每个资源进行遍历
             for (NetworkEntity ne : nes) {
                 JSONObject neResult = new JSONObject();
@@ -969,7 +989,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
@@ -995,7 +1015,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
@@ -1024,7 +1044,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
@@ -1054,7 +1074,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
@@ -1073,44 +1093,47 @@ public class MonitorDataParamsService {
     }
 
 
-    public class NetworkEntityQOModel extends NetworkEntityQO{
-        NetworkEntityQOModel setNeQO(HttpSession session, Long domainId){
-            if (domainId != null) {
-                this.setDomainIds(new Long[] { domainId });
-            } else {
-                List<Long> domainIds = domainUtils.getUserDomainIds(session);
-                if (domainIds.isEmpty()) {
-                    //TODO 该用户权限下无资源
-                    return null;
-                }
-                Long[] ids = new Long[domainIds.size()];
-                for (int i = 0; i < domainIds.size(); i++) {
-                    ids[i] = domainIds.get(i);
-                }
-                this.setDomainIds(ids);
-            }
-            return this;
-        }
 
-        NetworkEntityQOModel setNeQO(BaseNeClass baseNeClass,NeClass neClass){
-            // 过滤掉不被监控的资源
-            this.setMonitoring(true);
-            if (!ObjectUtils.isEmpty(neClass)) {
-                this.setNeClasses(neClass.toString());
-                // 虚拟化资源的sourceManage为false
-                if (neClass.getBaseNeClass().equals(BaseNeClass.virtualization)) {
-                    this.setSourceManage(false);
-                }
-            } else {
-                this.setBaseNeClass(baseNeClass);
-                // 虚拟化资源的sourceManage为false
-                if (!ObjectUtils.isEmpty(baseNeClass) && baseNeClass.equals(BaseNeClass.virtualization)) {
-                    this.setSourceManage(false);
-                }
-            }
-            return this;
-        }
-    }
+//    public class NetworkEntityQOModel extends NetworkEntityQO{
+//        NetworkEntityQOModel setNeQO(HttpSession session, Long domainId){
+//            if (domainId != null) {
+//                this.setDomainIds(new Long[] { domainId });
+//            } else {
+//                List<Long> domainIds = domainUtils.getUserDomainIds(session);
+//                if (domainIds.isEmpty()) {
+//                    //TODO 该用户权限下无资源
+//                    return null;
+//                }
+//                Long[] ids = new Long[domainIds.size()];
+//                for (int i = 0; i < domainIds.size(); i++) {
+//                    ids[i] = domainIds.get(i);
+//                }
+//                this.setDomainIds(ids);
+//            }
+//            return this;
+//        }
+//
+//        NetworkEntityQOModel setNeQO(BaseNeClass baseNeClass,NeClass neClass){
+//            // 过滤掉不被监控的资源
+//            this.setMonitoring(true);
+//            if (!ObjectUtils.isEmpty(neClass)) {
+//                this.setNeClasses(neClass.toString());
+//                // 虚拟化资源的sourceManage为false
+//                if (neClass.getBaseNeClass().equals(BaseNeClass.virtualization)) {
+//                    this.setSourceManage(false);
+//                }
+//            } else {
+//                this.setBaseNeClass(baseNeClass);
+//                // 虚拟化资源的sourceManage为false
+//                if (!ObjectUtils.isEmpty(baseNeClass) && baseNeClass.equals(BaseNeClass.virtualization)) {
+//                    this.setSourceManage(false);
+//                }
+//            }
+//            return this;
+//        }
+//    }
+
+
 
     /** 对JSONArray进行遍历，根据predicate过滤 */
     private JSONArray filter(JSONArray array, Predicate<? super JSONObject> predicate){

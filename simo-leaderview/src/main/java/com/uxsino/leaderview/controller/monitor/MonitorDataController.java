@@ -3,7 +3,9 @@ package com.uxsino.leaderview.controller.monitor;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.service.api.MonitorDataService;
+import com.uxsino.leaderview.service.api.RpcProcessService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -396,6 +398,15 @@ public class MonitorDataController {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
         }
+    }
+
+    @Autowired
+    RpcProcessService rpcProcessService;
+
+    @GetMapping("/test")
+    public JsonModel test(){
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        return new JsonModel(true);
     }
 
 }

@@ -1,7 +1,11 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
+import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
@@ -126,6 +130,31 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel findNeListByParams(Boolean sourceManage, String objectIds, String ip, String name, String type, String objType, Long[] domainIds, Long groupId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getNeList(NetworkEntityCriteria criteria) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getUsableInd(String indicatorName, NetworkEntityCriteria criteria) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getIndValues(IndicatorValueQO indicatorValueQO) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeComps(NeComponentQuery neComponentQuery) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel findNeLinks(boolean pagination, PageModel pageModel, NetworkLinkModel networkLinkModel) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

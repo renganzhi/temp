@@ -1,7 +1,11 @@
 package com.uxsino.leaderview.rpc;
 
+import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.hystrix.MonitorClientHystrixLeaderview;
@@ -104,4 +108,24 @@ public interface MonitorService {
                                  @RequestParam(value = "objType") String objType, @RequestParam(value = "domainIds") Long[] domainIds,
                                  @RequestParam(value = "groupId") Long groupId);
 
+    /**
+     * 以上所有非monitor提供的公用数据获取接口 均应删除 功能调整通过公用接口获取
+     */
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getNeList", consumes = "application/json")
+    JsonModel getNeList(@RequestParam("criteria") NetworkEntityCriteria criteria);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
+    JsonModel getUsableInd(@RequestParam("indicatorName")String indicatorName, @RequestParam("criteria") NetworkEntityCriteria criteria);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getIndValues", consumes = "application/json")
+    JsonModel getIndValues(@RequestParam("indicatorValueQO")IndicatorValueQO indicatorValueQO);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeComps", consumes = "application/json")
+    JsonModel findNeComps(@RequestParam("neComponentQuery")NeComponentQuery neComponentQuery);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeLinks", consumes = "application/json")
+    JsonModel findNeLinks(@RequestParam("pagination")boolean pagination,
+                          @RequestParam("pageModel")PageModel pageModel,
+                          @RequestParam("networkLinkModel")NetworkLinkModel networkLinkModel);
 }

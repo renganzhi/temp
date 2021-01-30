@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +35,10 @@ public class IndicatorService {
 
     public List<JSONObject> findIndicatorStatus(String neId) throws Exception{
         List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(Lists.newArrayList(neId));
-        List<IndicatorTable> indicatorTable = rpcProcessService.findUsableIndForNe(nes, Lists.newArrayList(nes.get(0).getNeClass()));
+        NetworkEntityCriteria networkEntityCriteria = new NetworkEntityCriteria();
+        networkEntityCriteria.setId(neId);
+        networkEntityCriteria.setNeClass(nes.get(0).getNeClass());
+        List<IndicatorTable> indicatorTable = rpcProcessService.getUsableInd(null, networkEntityCriteria);
         List<String> indNames = indicatorTable.stream().map(ind -> ind.getName()).collect(Collectors.toList());
         IndicatorValueCriteria criteria = new IndicatorValueCriteria();
         JSONObject must = new JSONObject();
@@ -71,17 +75,17 @@ public class IndicatorService {
 
     }
 
-    public IndicatorVal findValueByNeIdAndIndicator1(String neId, String indicatorName, String fetchDate) throws Exception{
-        // 健康度指标特殊处理
-        if ("healthy".equals(indicatorName)) {
-            return getHealthIndicator(neId);
-        }
-        if (StringUtils.isEmpty(neId) || StringUtils.isEmpty(indicatorName)) {
-            return null;
-        }
-        IndicatorVal indicatorValue = getIndicatorValue(neId, indicatorName, fetchDate);
-        return indicatorValue;
-    }
+//    public IndicatorVal findValueByNeIdAndIndicator1(String neId, String indicatorName, String fetchDate) throws Exception{
+//        // 健康度指标特殊处理
+//        if ("healthy".equals(indicatorName)) {
+//            return getHealthIndicator(neId);
+//        }
+//        if (StringUtils.isEmpty(neId) || StringUtils.isEmpty(indicatorName)) {
+//            return null;
+//        }
+//        IndicatorVal indicatorValue = getIndicatorValue(neId, indicatorName, fetchDate);
+//        return indicatorValue;
+//    }
 
     private IndicatorVal getHealthIndicator(String neId) throws Exception{
         IndicatorVal indValue = new IndicatorVal();
@@ -132,6 +136,34 @@ public class IndicatorService {
         } else {
             return null;
         }
+    }
+
+    public IndValue findIndValue(String neId, String indicatorName, String fetchDate) throws Exception{
+        // 健康度指标特殊处理
+        if ("healthy".equals(indicatorName)) {
+            //TODO 健康度处理待增添
+            return null;
+        }
+        if (StringUtils.isEmpty(neId) || StringUtils.isEmpty(indicatorName)) {
+            return null;
+        }
+        return getIndValueByIdInd(neId, indicatorName);
+    }
+
+    public IndValue getIndValueByIdInd(String neId, String indicatorName) throws Exception{
+        IndicatorValueQO qo = new IndicatorValueQO();
+        qo.setCurrent(true);
+        qo.setNeIds(Lists.newArrayList(neId));
+        qo.setIndicatorNames(Lists.newArrayList(indicatorName));
+        List<IndValue> indValues = rpcProcessService.getIndValues(qo);
+        if (ObjectUtils.isEmpty(indValues)){
+            return null;
+        }
+        JSON indicatorValue = indValues.get(0).getIndicatorValue();
+        if (ObjectUtils.isEmpty(indicatorValue)){
+            return null;
+        }
+        return indValues.get(0);
     }
 
     /**

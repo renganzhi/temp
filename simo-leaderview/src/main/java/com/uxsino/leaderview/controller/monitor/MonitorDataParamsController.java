@@ -6,8 +6,10 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
+import com.uxsino.leaderview.service.api.RpcProcessService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -22,6 +24,9 @@ import javax.servlet.http.HttpSession;
 public class MonitorDataParamsController {
     @Autowired
     MonitorDataParamsService monitorDataParamsService;
+
+    @Autowired
+    RpcProcessService rpcProcessService;
 
     @GetMapping("/getDomainByUser")
     @ApiOperation("根据当前用户获取所拥有权限的下拉框")
@@ -72,8 +77,10 @@ public class MonitorDataParamsController {
                              @ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
                              @ApiParam("资源子类型") @RequestParam(required = false) NeClass neClass,
                              @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown) {
-        NetworkEntityQO neQO = monitorDataParamsService.setNeQO(session, domainId, baseNeClass, neClass);
-        return monitorDataParamsService.findNes(neQO,notUnknown);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        criteria = rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        return monitorDataParamsService.findNes(criteria,notUnknown);
     }
 
     @ApiOperation("查询资源可选的指标单位类型，用于下拉框")

@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
@@ -42,6 +43,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.uxsino.leaderview.utils.MonitorUtils.getValueJSON;
+
 
 @Component
 @Slf4j
@@ -237,22 +241,26 @@ public class MonitorDataService {
         }
         JSONObject json = new JSONObject(true);
         List<Long> domainList = getDomainList(domainId, session);
-        List<Map<String, Object>> list = rpcProcessService.findByIdsAndBaseNe(domainList, neIds, baseNeClass);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria.setDomainIds(domainList);
+        criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        criteria.setNeClasses(baseNeClass.getNeClass());
+        List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
         if (CollectionUtils.isEmpty(list)) {
             return new JsonModel(true, newResultObj("columns",columns,"rows",new JSONArray()));
         }
         json.put("columns", columns);
         JSONArray rows = new JSONArray();
-        for (Map<String, Object> ne : list) {
-            if (!(Boolean) (ne.get("monitoring"))) {
+        for (NetworkEntity ne : list) {
+            if (!ne.isMonitoring()) {
                 continue;
             }
             JSONObject row = new JSONObject(true);
-            row.put("资源名称", ne.get("name"));
-            row.put("IP地址", ne.get("ip"));
-            row.put("资源类型", NeClass.valueOf(ne.get("neClass").toString()).getText());
-            row.put("运行状态", RunStatus.valueOf(ne.get("runStatus").toString()).getName());
-            row.put("更新时间", DateUtils.formatCommonDate(new Date((Long) ne.get("patrolTime"))));
+            row.put("资源名称", ne.getName());
+            row.put("IP地址", ne.getIp());
+            row.put("资源类型", ne.getNeClass());
+            row.put("运行状态", ne.getRunStatus());
+            row.put("更新时间",ne.getPatrolTime());
             diffColumns.forEach(diff -> row.remove(diff));
             rows.add(row);
         }
@@ -309,7 +317,7 @@ public class MonitorDataService {
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj);
         }
-        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
         // 判断资源是否存在或者是否已被销毁或者未监控
         if (ObjectUtils.isEmpty(ne) || ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
             return new JsonModel(true, empObj);
@@ -338,11 +346,11 @@ public class MonitorDataService {
 
         // 获取指标监控策略
         Boolean strategyField = getStrategy(neIds, indicators, field);
-        IndicatorVal indValue = null;
+        IndValue indValue = null;
         // 若指标被监控
         if (strategyField) {
             // 获取指标的值
-            indValue = indicatorService.findValueByNeIdAndIndicator1(neIds, indicators, null);
+            indValue = indicatorService.findIndValue(neIds, indicators, null);
         }
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             return new JsonModel(true, empObj);
@@ -394,8 +402,10 @@ public class MonitorDataService {
             JSONArray fieldArray = JSON.parseArray(indicatorValues.toJSONString());
 
             Map<String, String> componentNameMap = Maps.newHashMap();
-            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
-                    indicators, null, null, null);
+            NeComponentQuery compQuery = new NeComponentQuery();
+            compQuery.setNeIds(Lists.newArrayList(neIds));
+            compQuery.setIndicatorName(indicators);
+            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
             for (Map<String, Object> map : idAndComponent) {
                 if (map.get("identifier") == null || map.get("componentName") == null) {
                     continue;
@@ -492,11 +502,11 @@ public class MonitorDataService {
         // 获取指标监控策略列表
         Boolean strategyField = getStrategy(neIds, indicators, field);
 
-        IndicatorVal indValue = null;
+        IndValue indValue = null;
         // 若指标被监控
         if (strategyField) {
             // 获取指标的值
-            indValue = indicatorService.findValueByNeIdAndIndicator1(neIds, indicators, null);
+            indValue = indicatorService.findIndValue(neIds, indicators, null);
         }
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             result.put("info", "该资源策略已被关闭或者指标未被监控");
@@ -587,11 +597,11 @@ public class MonitorDataService {
 
         // 获取指标监控策略
         Boolean strategyField = getStrategy(neIds, indicators, field);
-        IndicatorVal indValue = null;
+        IndValue indValue = null;
         // 若指标被监控
         if (strategyField) {
             // 获取指标的值
-            indValue = indicatorService.findValueByNeIdAndIndicator1(neIds, indicators, null);
+            indValue = indicatorService.findIndValue(neIds, indicators, null);
         }
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             return new JsonModel(true, empObj);
@@ -646,8 +656,10 @@ public class MonitorDataService {
             }
         } else {
             Map<String, String> componentNameMap = Maps.newHashMap();
-            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds),
-                    indicators, null, null, null);
+            NeComponentQuery compQuery = new NeComponentQuery();
+            compQuery.setNeIds(Lists.newArrayList(neIds));
+            compQuery.setIndicatorName(indicators);
+            List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
             for (Map<String, Object> map : idAndComponent) {
                 if (map.get("identifier") == null || map.get("componentName") == null) {
                     continue;
@@ -723,11 +735,11 @@ public class MonitorDataService {
 
         // 获取指标监控策略
         Boolean strategyField = getStrategy(neIds, ind.getName(), field);
-        IndicatorVal indValue = null;
+        IndValue indValue = null;
         // 若指标被监控
         if (strategyField) {
             // 获取指标的值
-            indValue = indicatorService.findValueByNeIdAndIndicator1(neIds, ind.getName(), null);
+            indValue = indicatorService.findIndValue(neIds, ind.getName(), null);
         }
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             return new JsonModel(true, new JSONObject());
@@ -754,13 +766,13 @@ public class MonitorDataService {
         return new JsonModel(true, result);
     }
 
-    private JSONObject getValueJSON(JSON indicatorValues) {
-        return MonitorUtils.getValueJSON(indicatorValues);
-    }
+//    private JSONObject getValueJSON(JSON indicatorValues) {
+//        return MonitorUtils.getValueJSON(indicatorValues);
+//    }
 
-    private JSONObject getValueJSON(JSON indicatorValues, String componentName) {
-        return MonitorUtils.getValueJSON(indicatorValues, componentName);
-    }
+//    private JSONObject getValueJSON(JSON indicatorValues, String componentName) {
+//        return MonitorUtils.getValueJSON(indicatorValues, componentName);
+//    }
 
     private IndicatorVal validStrategy(IndicatorVal indValue, Boolean strategyField){
         // 若指标未监控，取消其数值展示
@@ -1673,21 +1685,20 @@ public class MonitorDataService {
             return new JsonModel(true, "未选择指标！", empObj());
         }
         List<NetworkEntity> nes = Lists.newArrayList();
-        NetworkEntityQO neQo = new NetworkEntityQO();
-        neQo.setMonitoring(true);
-        neQo.setDomainIds(getDomainIds(domainId, session));
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         if (Strings.isNullOrEmpty(neIds)) {
             // 如果子类型为空，查询父类型，如果父类型也为空，则直接判断资源
             if (!Strings.isNullOrEmpty(neClass)) {
-                neQo.setNeClasses(neClass);
+                criteria.setNeClass(NeClass.valueOf(neClass));
             } else {
                 return new JsonModel(true, "子类型与资源均未选择！", empObj());
             }
-            nes = rpcProcessService.findAllNetworkEntity(neQo);
+            nes = rpcProcessService.getNeList(criteria);
             neIds = nes.stream().map(NetworkEntity::getId).collect(Collectors.joining(","));
         }else {
-            neQo.setNeIds(neIds);
-            nes = rpcProcessService.findAllNetworkEntity(neQo);
+            criteria.setIds(Lists.newArrayList(neIds.split(",")));
+            nes = rpcProcessService.getNeList(criteria);
         }
         if (CollectionUtils.isEmpty(nes)) {
             return new JsonModel(true, empObj());
@@ -1833,8 +1844,10 @@ public class MonitorDataService {
             }
             for (int i = 0; i < arr.size(); i++) {
                 for (IndicatorVal indicatorCurrentValue : values) {
-                    List<Map<String, Object>> idAndComponent = rpcProcessService.
-                            findNeComps(Lists.newArrayList(indicatorCurrentValue.getNeId()), ind.getName(), null, null, null);
+                    NeComponentQuery compQuery = new NeComponentQuery();
+                    compQuery.setNeIds(Lists.newArrayList(indicatorCurrentValue.getNeId()));
+                    compQuery.setIndicatorName(ind.getName());
+                    List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
                     if (indicatorCurrentValue.getNeId().equals(arr.getJSONObject(i).getString("id"))) {
                         JSONObject obj = new JSONObject();
                         JSON valueJson = (JSON) indicatorCurrentValue.getIndicatorValue();
@@ -2072,11 +2085,11 @@ public class MonitorDataService {
                 }
                 // 获取指标监控策略
                 Boolean strategyField = getStrategy(neId, indicatorName, fieldsName);
-                IndicatorVal indValue = null;
+                IndValue indValue = null;
                 // 若指标被监控
                 if (strategyField) {
                     // 获取指标的值
-                    indValue = indicatorService.findValueByNeIdAndIndicator1(neId, indicatorName, null);
+                    indValue = indicatorService.findIndValue(neId, indicatorName, null);
                 }
                 // 如果该资源的该指标无值，将其赋空值，继续统计
                 if (Objects.isNull(indValue) || ObjectUtils.isEmpty(indValue.getIndicatorValue())) {
@@ -2194,7 +2207,7 @@ public class MonitorDataService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
         JSONObject result = new JSONObject();
         if (abnormal) {
@@ -2232,7 +2245,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
             Map<String, String> nameMap = Maps.newHashMap();
             nameMap.put("speed", "链路带宽");
@@ -2316,7 +2329,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findPage(temPage, networkLinkModel);
+            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
             Map<String, String> nameMap = Maps.newLinkedHashMap();
             nameMap.put("speed", "链路带宽");
@@ -2408,11 +2421,11 @@ public class MonitorDataService {
             for (String name : names) {
                 if (region.contains(name)) {
                     List<NetworkEntity> neList = Lists.newArrayList();
-                    NetworkEntityQO neQo = new NetworkEntityQO();
-                    neQo.setDomainIds(new Long[] { Long.parseLong(map.get("id").toString()) });
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    criteria.setDomainId(Long.parseLong(map.get("id").toString()));
                     for (RunStatus runStatus : statusList) {
-                        neQo.setRunStatus(runStatus);
-                        neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
+                        criteria.setRunStatus(runStatus);
+                        neList.addAll(rpcProcessService.getNeList(criteria));
                     }
                     result.put(name, result.get(name) + neList.size());
                 }
@@ -2422,31 +2435,31 @@ public class MonitorDataService {
     }
 
     public JsonModel countNe(String domainId, String[] baseNeClass, String[] neClass, String status, HttpSession session) throws Exception {
-        NetworkEntityQO neQo = new NetworkEntityQO();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if (Strings.isNullOrEmpty(domainId)) {
             List<Long> domainList = getDomainList(null, session);
-            neQo.setDomainIds(domainList.toArray(new Long[domainList.size()]));
+            criteria.setDomainIds(domainList);
         } else {
-            neQo.setDomainIds(new Long[] { Long.parseLong(domainId) });
+            criteria.setDomainId(Long.parseLong(domainId));
         }
         if (ObjectUtils.isEmpty(neClass)) {
-            neQo.setBaseNeclasses(
-                    ObjectUtils.isEmpty(baseNeClass) ? null : "'" + StringUtils.join(baseNeClass, "','") + "'");
+            List<NeClass> neClasses = Lists.newArrayList();
+            Arrays.stream(baseNeClass).forEach(base -> {
+                neClasses.addAll(BaseNeClass.getNeClass(true));
+            });
+            criteria.setNeClasses(ObjectUtils.isEmpty(baseNeClass) ? null : neClasses);
         } else {
-            neQo.setNeClasses(StringUtils.join(neClass, ","));
+            List<NeClass> neClasses = Lists.newArrayList();
+            Arrays.stream(neClass).forEach(ne -> neClasses.add(NeClass.valueOf(ne)));
+            criteria.setNeClasses(neClasses);
         }
         List<NetworkEntity> neList = Lists.newArrayList();
         if ("abnormal".equals(status)) {
-            neQo.setRunStatus(RunStatus.Warning);
-            neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
-            neQo.setRunStatus(RunStatus.Unconnection);
-            neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
-            neQo.setRunStatus(RunStatus.Unknow);
-            neList.addAll(rpcProcessService.findAllNetworkEntity(neQo));
+            criteria.setRunStatusIn(Lists.newArrayList(RunStatus.Warning, RunStatus.Unconnection, RunStatus.Unknow));
         } else {
-            neQo.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
-            neList = rpcProcessService.findAllNetworkEntity(neQo);
+            criteria.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
         }
+        neList = rpcProcessService.getNeList(criteria);
         JSONObject result = new JSONObject();
         if (ObjectUtils.isEmpty(neList)) {
             result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : "资源个数");
@@ -2847,11 +2860,14 @@ public class MonitorDataService {
             }
         }
         // 获取指标的值
-        IndicatorVal indValue = rpcProcessService.findLastObject(neIds, indicators, null, null);
+        IndicatorValueQO indValueQo = new IndicatorValueQO();
+        indValueQo.setNeIds(Lists.newArrayList(neIds));
+        indValueQo.setIndicatorNames(Lists.newArrayList(indicators));
+        IndValue indValue = rpcProcessService.getIndValue(indValueQo);
         Boolean strategyField = getStrategy(neIds, indicators, field);
         // 若指标未监控，取消其数值展示
         if (!strategyField) {
-            indValue = new IndicatorVal();
+            indValue = new IndValue();
         }
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             return new JsonModel(true, empObj());
@@ -2861,8 +2877,10 @@ public class MonitorDataService {
         // 根据指标ID取对应参数
         JSONArray fieldArray = JSON.parseArray(indicatorValues.toJSONString());
         Map<String, String> componentNameMap = Maps.newHashMap();
-        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(Lists.newArrayList(neIds), indicators,
-                null, null, null);
+        NeComponentQuery compQuery = new NeComponentQuery();
+        compQuery.setNeIds(Lists.newArrayList(neIds));
+        compQuery.setIndicatorName(indicators);
+        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
         for (Map<String, Object> map : idAndComponent) {
             if (map.get("identifier") == null || map.get("componentName") == null) {
                 continue;
