@@ -1,5 +1,6 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
+import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
@@ -134,27 +135,38 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel getNeList(NetworkEntityCriteria criteria) {
+    public JsonModel getNeList(Map<String, Object> map) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+
+    @Override
+    public JsonModel getUsableInd(Map<String, Object> map) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
     @Override
-    public JsonModel getUsableInd(String indicatorName, NetworkEntityCriteria criteria) {
+    public JsonModel getIndValues(Map<String, Object> map) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
     @Override
-    public JsonModel getIndValues(IndicatorValueQO indicatorValueQO) {
+    public JsonModel findNeComps(Map<String, Object> map) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
     @Override
-    public JsonModel findNeComps(NeComponentQuery neComponentQuery) {
+    public JsonModel findNeLinks(Map<String, Object> map) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
     @Override
-    public JsonModel findNeLinks(boolean pagination, PageModel pageModel, NetworkLinkModel networkLinkModel) {
+    public JsonModel findNeHealth(List<String> neIds, boolean isHistory, String order) {
+        return null;
+    }
+
+    @Override
+    public JsonModel findNeHealth(Map<String, Object> map) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

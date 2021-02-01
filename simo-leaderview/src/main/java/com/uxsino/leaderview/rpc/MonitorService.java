@@ -1,5 +1,6 @@
 package com.uxsino.leaderview.rpc;
 
+import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
@@ -20,6 +21,7 @@ import java.util.Map;
  * @date 2020年09月29日
  */
 @FeignClient(value = "${service-monitoring}", fallback = MonitorClientHystrixLeaderview.class)
+//@FeignClient(value = "${service-monitoring}")
 public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/networkEntity/findAllByDomainIdIn", consumes = "application/json")
     JsonModel findAllByDomainIdIn(@RequestParam(value = "domainIds") List<Long> domainIds);
@@ -113,19 +115,25 @@ public interface MonitorService {
      */
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getNeList", consumes = "application/json")
-    JsonModel getNeList(@RequestParam("criteria") NetworkEntityCriteria criteria);
+    JsonModel getNeList(@RequestParam Map<String , Object> map);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
-    JsonModel getUsableInd(@RequestParam("indicatorName")String indicatorName, @RequestParam("criteria") NetworkEntityCriteria criteria);
+    JsonModel getUsableInd(@RequestParam Map<String,Object> map);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getIndValues", consumes = "application/json")
-    JsonModel getIndValues(@RequestParam("indicatorValueQO")IndicatorValueQO indicatorValueQO);
+    JsonModel getIndValues(@RequestParam Map<String,Object> map);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeComps", consumes = "application/json")
-    JsonModel findNeComps(@RequestParam("neComponentQuery")NeComponentQuery neComponentQuery);
+    JsonModel findNeComps(@RequestParam Map<String, Object> map);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeLinks", consumes = "application/json")
-    JsonModel findNeLinks(@RequestParam("pagination")boolean pagination,
-                          @RequestParam("pageModel")PageModel pageModel,
-                          @RequestParam("networkLinkModel")NetworkLinkModel networkLinkModel);
+    JsonModel findNeLinks(@RequestParam Map<String, Object> map);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
+    JsonModel findNeHealth(@RequestParam("neIds")List<String> neIds,
+                           @RequestParam("isHistory") boolean isHistory,
+                           @RequestParam("order") String order);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
+    JsonModel findNeHealth(@RequestParam Map<String, Object> map);
 }

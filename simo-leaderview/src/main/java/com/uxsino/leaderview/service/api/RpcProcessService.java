@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
@@ -17,6 +18,7 @@ import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -107,13 +109,13 @@ public class RpcProcessService {
         return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
     }
 
-    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
-        JsonModel jsonModel = monitorService.findHealthByNeIdIn(neIdIn);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return toJavaBeanList(jsonModel, NeHealthHistory.class);
-    }
+//    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
+//        JsonModel jsonModel = monitorService.findHealthByNeIdIn(neIdIn);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return toJavaBeanList(jsonModel, NeHealthHistory.class);
+//    }
 
     public List<NeHealth> findNeHealthOrderByHealthy(String neIds, String order) throws Exception{
         JsonModel indJsonModel = monitorService.findNeHealthOrderByHealthy(neIds, order);
@@ -230,6 +232,22 @@ public class RpcProcessService {
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
     }
 
+    private <T> Map<String, Object> getBeanMap(T t){
+        return getBeanMap(t, Maps.newHashMap());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Map<String, Object> getBeanMap(T t, Map<String, String> params){
+        Map<String, Object> map = BeanMap.create(t);
+        for (Map.Entry<String,String> entry: params.entrySet()) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        Map<String, Object> result = Maps.newHashMap();
+        result.putAll(map);
+        result.putAll(params);
+        return result;
+    }
+
     private Long getLongValue(JsonModel jsonModel) throws Exception{
         Object obj = jsonModel.getObj();
         if (obj instanceof Integer || obj instanceof Long){
@@ -266,6 +284,59 @@ public class RpcProcessService {
 //        return list.get(0);
 //    }
 
+    public NeHealth findNeHealth(String neId) throws Exception{
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("neIds", Lists.newArrayList(neId));
+        map.put("isHistory", false);
+        map.put("order", "desc");
+//        JsonModel jsonModel = monitorService.findNeHealth(map);
+        JsonModel jsonModel = monitorService.findNeHealth(Lists.newArrayList(neId), false, "desc");
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        List<NeHealth> neHealths = (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+        if (ObjectUtils.isEmpty(neHealths)){
+            return null;
+        }
+        return neHealths.get(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NeHealth> findNeHealthOrderByHealthy(List<String> neIds, String order) throws Exception{
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("neIds", neIds);
+        map.put("isHistory", false);
+        map.put("order", order);
+        JsonModel jsonModel = monitorService.findNeHealth(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("neIds", neIdIn);
+        map.put("isHistory", true);
+        map.put("order", "");
+        JsonModel jsonModel = monitorService.findNeHealth(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return (List<NeHealthHistory>)((JSONObject) jsonModel.getObj()).get("historyNeHealth");
+    }
+
+    public NetworkEntity findNetworkEntityByIdIn(String id) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria.setId(id);
+        List<NetworkEntity> neList = getNeList(criteria);
+        if (ObjectUtils.isEmpty(neList)){
+            return null;
+        }
+        return neList.get(0);
+    }
+
     public List<NetworkEntity> findNetworkEntityByIdIn(List<String > ids) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setIds(ids);
@@ -278,8 +349,11 @@ public class RpcProcessService {
         return getNeList(criteria);
     }
 
+    @SuppressWarnings("unchecked")
     public List<NetworkEntity> getNeList(NetworkEntityCriteria criteria) throws Exception{
-        JsonModel jsonModel = monitorService.getNeList(criteria);
+        Map<String , Object> map = BeanMap.create(criteria);
+        map.put("cls", null);
+        JsonModel jsonModel = monitorService.getNeList(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -309,10 +383,10 @@ public class RpcProcessService {
             if (neClass.getBaseNeClass().equals(BaseNeClass.virtualization)) {
                 criteria.setSourceManage(false);
             }
-        } else {
-            criteria.setNeClasses(BaseNeClass.getNeClass(false));
+        } else if (!ObjectUtils.isEmpty(baseNeClass)){
+            criteria.setNeClasses(baseNeClass.getNeClass());
             // 虚拟化资源的sourceManage为false
-            if (!ObjectUtils.isEmpty(baseNeClass) && baseNeClass.equals(BaseNeClass.virtualization)) {
+            if (baseNeClass.equals(BaseNeClass.virtualization)) {
                 criteria.setSourceManage(false);
             }
         }
@@ -320,7 +394,18 @@ public class RpcProcessService {
     }
 
     public List<IndicatorTable> getUsableInd(String indicatorName, NetworkEntityCriteria criteria) throws Exception{
-        JsonModel jsonModel = monitorService.getUsableInd(indicatorName, criteria);
+        if (ObjectUtils.isEmpty(criteria.getIds())){
+            criteria.setIds(Lists.newArrayList(criteria.getId()));
+        }
+        if (ObjectUtils.isEmpty(criteria.getNeClasses())){
+            criteria.setNeClasses(Lists.newArrayList(criteria.getNeClass()));
+        }
+        Map<String, String> map = Maps.newHashMap();
+        map.put("indicatorName", indicatorName);
+        Map<String, Object> beanMap = getBeanMap(criteria, map);
+        beanMap.put("cls", null);
+        JsonModel jsonModel = monitorService.getUsableInd(beanMap);
+        criteria.setIds(Lists.newArrayList(criteria.getId()));
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -345,7 +430,8 @@ public class RpcProcessService {
     }
 
     public List<IndValue> getIndValues(IndicatorValueQO indicatorValueQO) throws Exception{
-        JsonModel jsonModel = monitorService.getIndValues(indicatorValueQO);
+        Map<String, Object> beanMap = getBeanMap(indicatorValueQO);
+        JsonModel jsonModel = monitorService.getIndValues(beanMap);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -354,7 +440,8 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<Map<String,Object>> findNeComps(NeComponentQuery neComponentQuery) throws Exception{
-        JsonModel jsonModel = monitorService.findNeComps(neComponentQuery);
+        Map<String, Object> beanMap = getBeanMap(neComponentQuery);
+        JsonModel jsonModel = monitorService.findNeComps(beanMap);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -379,7 +466,9 @@ public class RpcProcessService {
         }
         criteria.setPagination(false);
         criteria.setSourceManage(null);
-        JsonModel jsonModel = monitorService.getNeList(criteria);
+        Map<String, Object> beanMap = getBeanMap(criteria);
+        beanMap.put("cls", null);
+        JsonModel jsonModel = monitorService.getNeList(beanMap);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -389,7 +478,13 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public PageModel findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
-        JsonModel jsonModel = monitorService.findNeLinks(false, temPage, networkLinkModel);
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("pagination", false);
+        Map<String, Object> pageMap = getBeanMap(temPage);
+        Map<String, Object> linkModelMap = getBeanMap(networkLinkModel);
+        map.putAll(pageMap);
+        map.putAll(linkModelMap);
+        JsonModel jsonModel = monitorService.findNeLinks(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }

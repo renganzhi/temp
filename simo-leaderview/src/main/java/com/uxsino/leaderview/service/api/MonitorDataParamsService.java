@@ -175,6 +175,7 @@ public class MonitorDataParamsService {
         try {
             nes = rpcProcessService.getNeList(criteria);
         }catch (Exception e){
+            e.printStackTrace();
             return new JsonModel(false, e.getMessage());
         }
         if (!CollectionUtils.isEmpty(nes)) {

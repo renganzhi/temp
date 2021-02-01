@@ -345,10 +345,11 @@ public class MonitorDataService {
         }
 
         // 获取指标监控策略
-        Boolean strategyField = getStrategy(neIds, indicators, field);
+        //Boolean strategyField = getStrategy(neIds, indicators, field);
         IndValue indValue = null;
         // 若指标被监控
-        if (strategyField) {
+        //TODO 监控策略 strategyField
+        if (true) {
             // 获取指标的值
             indValue = indicatorService.findIndValue(neIds, indicators, null);
         }
@@ -1706,7 +1707,7 @@ public class MonitorDataService {
         JSONObject json = new JSONObject();
         // 健康度特殊化处理
         if ("healthy".equals(indicators)) {
-            List<NeHealth> healthList = rpcProcessService.findNeHealthOrderByHealthy(neIds, order);
+            List<NeHealth> healthList = rpcProcessService.findNeHealthOrderByHealthy(Lists.newArrayList(neIds.split(",")), order);
             JSONArray columns = new JSONArray();
             columns.add("资源名称");
             columns.add("健康度");
@@ -2445,7 +2446,7 @@ public class MonitorDataService {
         if (ObjectUtils.isEmpty(neClass)) {
             List<NeClass> neClasses = Lists.newArrayList();
             Arrays.stream(baseNeClass).forEach(base -> {
-                neClasses.addAll(BaseNeClass.getNeClass(true));
+                neClasses.addAll(BaseNeClass.valueOf(base).getNeClass());
             });
             criteria.setNeClasses(ObjectUtils.isEmpty(baseNeClass) ? null : neClasses);
         } else {

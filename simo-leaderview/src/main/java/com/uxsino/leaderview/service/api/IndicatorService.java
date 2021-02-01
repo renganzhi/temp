@@ -87,10 +87,10 @@ public class IndicatorService {
 //        return indicatorValue;
 //    }
 
-    private IndicatorVal getHealthIndicator(String neId) throws Exception{
-        IndicatorVal indValue = new IndicatorVal();
-        NeHealth neHealth = rpcProcessService.getNeHealth(neId);
-        if (org.springframework.util.ObjectUtils.isEmpty(neHealth)) {
+    private IndValue getHealthIndicator(String neId) throws Exception{
+        IndValue indValue = new IndValue();
+        NeHealth neHealth = rpcProcessService.findNeHealth(neId);
+        if (ObjectUtils.isEmpty(neHealth)) {
             return null;
         }
         JSONObject obj = new JSONObject();
@@ -141,8 +141,7 @@ public class IndicatorService {
     public IndValue findIndValue(String neId, String indicatorName, String fetchDate) throws Exception{
         // 健康度指标特殊处理
         if ("healthy".equals(indicatorName)) {
-            //TODO 健康度处理待增添
-            return null;
+            return getHealthIndicator(neId);
         }
         if (StringUtils.isEmpty(neId) || StringUtils.isEmpty(indicatorName)) {
             return null;
