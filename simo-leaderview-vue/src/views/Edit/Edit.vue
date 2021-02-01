@@ -978,17 +978,17 @@
                   <label>地球类型</label>
                   <select v-model="selectedItem.backPicName">
                     <!-- <option value="Mapcolor">类型一</option> -->
-                    <option value="Mapcolor1-2">类型1</option>
-                    <option value="Mapcolor1-1">类型2</option>
-                    <option value="Mapcolor2-1">类型3</option>
-                    <option value="Mapcolor2-2">类型4</option>
-                    <option value="Mapcolor3-1">类型5</option>
-                    <option value="Mapcolor3-2">类型6</option>
-                    <option value="Mapcolor4">类型7</option>
-                    <option value="Mapcolor5-1">类型8</option>
-                    <option value="Mapcolor5-2">类型9</option>
-                    <option value="Mapcolor6-1">类型10</option>
-                    <option value="Mapcolor6-2">类型11</option>
+                    <option value="Mapcolor1-2">地球影像</option>
+                    <option value="Mapcolor1-1">地球影像(网格)</option>
+                    <option value="Mapcolor2-2"> 地球剪影-浅蓝蓝色</option>
+                    <option value="Mapcolor2-1">地球剪影-浅蓝蓝色(网格)</option>
+                    <option value="Mapcolor3-2">地球-深绿</option>
+                    <option value="Mapcolor3-1">地球-浅绿深绿(网格)</option>
+                    <option value="Mapcolor4">地球影像-黄绿色(纬度环)</option>
+                    <option value="Mapcolor5-2">地球剪影-浅粉绿</option>
+                    <option value="Mapcolor5-1">地球剪影-浅粉绿(网格)</option>
+                    <option value="Mapcolor6-2">地球剪影-深绿青色</option>
+                    <option value="Mapcolor6-1">地球剪影-深绿青色(网格)</option>
                   </select>
                 </div>
                 <div class="form-group cols2">
@@ -1662,13 +1662,40 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                    <label>图例字颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.ctLegendColor"
+                              :key="10"
+                              type="ctLegendColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
                   <div class="m-gap form-group">图表样式</div>
-                  <div class="form-group cols2">
+                  <!-- <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
                       <option value="1">深色</option>
                       <option value="2">浅色</option>
                     </select>
+                  </div> -->
+                  <div class="form-group cols2">
+                    <label>地图颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.areaColor"
+                              :key="10"
+                              type="areaColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>分界线颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.borderColor"
+                              :key="10"
+                              type="borderColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1683,7 +1710,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例位置</label>
                     <select v-model="selectedItem.visualPosition">
                       <option value="left">底部靠左</option>
@@ -1698,7 +1725,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
                     <label>地名颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.cityColor"
@@ -1707,7 +1734,7 @@
                               @getdata="getColor"></Vcolor>
                     </div>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
                     <label>字号</label>
                     <select v-model="selectedItem.fontSize">
                       <option value="8">8</option>
@@ -1717,12 +1744,30 @@
                       <option value="13">13</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <!-- <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
                       <option value="1">深色</option>
                       <option value="2">浅色</option>
                     </select>
+                  </div> -->
+                  <div class="form-group cols2">
+                    <label>地图颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.areaColor"
+                              :key="10"
+                              type="areaColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>分界线颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.borderColor"
+                              :key="10"
+                              type="borderColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
                   </div>
                   <div class="form-group cols2">
                     <label>配色</label>
@@ -1950,7 +1995,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
-                  <label>坐标单位颜色</label>
+                  <label>坐标单位大小</label>
                   <select v-model="selectedItem.DanweiSize">
                       <option value="8">8</option>
                       <option value="10">10</option>

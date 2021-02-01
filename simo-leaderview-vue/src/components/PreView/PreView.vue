@@ -163,7 +163,7 @@ export default {
 #mainPreview .itemWrapBox {
   padding-top: 1px !important;
 }
-.modal-dialog.modal-lg {
+/* .modal-dialog.modal-lg {
     width: 1500px;
-}
+} */
 </style>

@@ -413,6 +413,11 @@ export default {
         }
         this.empty = true
       }
+      if (this.item.chartType === 've-histogram' || this.item.chartType === 've-line') {
+        this.extend.yAxis.name = newV.unit
+      } else if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.name = newV.unit
+      }
       if (this.item.chartType === 've-histogram') {
         let rows
         if (newV.rows) {
