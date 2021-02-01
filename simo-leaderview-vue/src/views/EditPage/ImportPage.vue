@@ -2,41 +2,59 @@
   <div>
     <div id="importPage-modal"
          style="z-index: 20100"
-         class="modal in container-fluid"
+         class="modal in"
          role="dialog"
          aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered row justify-content-center">
-        <div class="col-4">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-hidden="true">&times;</button>
-              <h4 class="modal-title">导入</h4>
-            </div>
-            <div class="modal-body">
-              <form autocomplete="off">
-                <div class="form-group">
-                  <label class="page-lable required-label">待上传文件</label>
-                  <div class="page-lable-content">
-                    <input type="file"
-                          accept=".zip"
-                          ref="file"
-                          @change='changeFile' />
-                    <label class="error"
-                          v-show="showErr"
-                          style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true">&times;</button>
+            <h4 class="modal-title">导入</h4>
+          </div>
+          <div class="modal-body">
+            <form autocomplete="off">
+              <div class="form-group">
+                <label class="page-lable required-label">待上传文件</label>
+                <div class="page-lable-content">
+                  <input type="file"
+                         accept=".zip"
+                         ref="file"
+                         @change='changeFile' />
+                  <label class="error"
+                         v-show="showErr"
+                         style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
+                </div>
+              </div>
+              <!-- <div class="form-group"
+                   style="margin-bottom: 0">
+                <label class="page-lable">选择大屏</label>
+                <div class="page-lable-content">
+                  <div class="defPages flex">
+                    <div class="flex-item first-item"
+                         :class="{ active: temId.includes(item.id) }"
+                         v-for="(item,index) in tems"
+                         :key=index
+                         @click="choosePage(item.id)">
+                      <img :src="baseUrl + item.viewImage"
+                      v-if="item.viewImage"
+                           alt=""
+                           style="width:100%;height:100%;" />
+              <img class="page-img"
+                   v-else />
+                    </div>
                   </div>
                 </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button"
-                      @click="save">导入</button>
-              <button type="button"
-                      data-dismiss="modal">取消</button>
-            </div>
+              </div> -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    @click="save">导入</button>
+            <button type="button"
+                    data-dismiss="modal">取消</button>
           </div>
         </div>
       </div>
@@ -53,7 +71,7 @@ export default {
   components: { Notification },
   data () {
     return {
-      file: null,
+        file: null,
       name: '',
       visible: true,
       baseUrl: gbs.host,

@@ -135,6 +135,13 @@ export default {
       let myoption = {
         xAxis: {
           type: 'category',
+          name: this.item.chartData.unitX,
+          nameTextStyle: {
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
+          },
+          animation: true,
+          animationDuration: 500,
           data: myXAxisData,
           position: 'bottom',
           axisTick: {
@@ -169,7 +176,8 @@ export default {
           // left: this.item.gridTop,
           // right: this.item.gridTop,
           top: this.item.gridTop + '%',
-          bottom: this.item.gridTop + '%'
+          bottom: this.item.gridTop + '%',
+          containLabel: true
         },
         label: {
           show: this.item.showPoint,
@@ -215,8 +223,10 @@ export default {
           type: 'value',
           name: this.item.chartData.unit,
           nameTextStyle: {
-            color: this.item.legendColor || '#828bac'
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
           },
+          minInterval: this.item.minInterval,
           axisTick: {
             show: false,
             lineStyle: {
@@ -256,7 +266,6 @@ export default {
         series: newseries
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
-        console.log(11)
         this.oldOption = JSON.stringify(myoption)
         this.mychart.setOption(myoption)
       } else {

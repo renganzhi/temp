@@ -12,6 +12,8 @@ export default {
     'ctLegendColor': '#46e2fd',
     'lineColor': ['rgba(0,44,254,1)', '#56f2f5'],
     'lineFontColor': '#468EFD',
+    'lineWidth': 4,
+    'lineGaugeWidth': 4,
     'lineFontSize': 14,
     'bgClr': 'rgba(107, 121, 139, 0.29)',
     'chartData': {
@@ -157,6 +159,17 @@ export default {
         'name': '刻度颜色',
         'key': 'lineFontColor',
         'tag': 'Color'
+      },
+      {
+        'name': '环宽',
+        'key': 'lineWidth',
+        'min': 1,
+        'tag': 'input'
+      },
+      {
+        'name': '环与刻度距离',
+        'key': 'lineGaugeWidth',
+        'tag': 'input'
       },
       {
         'name': '刻度大小',

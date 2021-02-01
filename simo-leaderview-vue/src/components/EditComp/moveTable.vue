@@ -39,7 +39,7 @@
     </div> -->
     <div class="fixed-table-body"
          :style="{'max-height': pageNum * this.item.heightLinght + 'px'}"
-         style="padding-bottom: 26px; overflow: hidden; position: relative;">
+         style="padding-bottom: 26px; overflow: hidden; position: relative;height: 95%;">
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
         <table class="table"
                v-if="tableMove"

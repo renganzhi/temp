@@ -1,7 +1,7 @@
 <template>
     <div>
         <section v-for="(section, sectionIndex) in ['lengend', 'base', 'axis']" :key="`section${sectionIndex}`">
-              <div  v-if="section === 'axis' ? ['v-line', 've-histogram', 've-bar'].includes(curType) : true">
+              <div  v-if="section === 'axis' ? ['v-line','ve-line', 've-histogram', 've-bar'].includes(curType) : true">
                 <div class="m-gap form-group" v-show="configOptions[section] && configOptions[section].length > 0">{{sectionMap[section]}}</div>
                 <div
                     class="form-group cols2"

@@ -38,8 +38,8 @@ export default {
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
       let setings = {
         grid: {
-          left: 10,
-          right: 10,
+          left: 20,
+          right: 20,
           top: this.item.gridTop + '%',
           bottom: this.item.gridTop + '%'
         },
@@ -87,7 +87,7 @@ export default {
             y: this.item.legendY + '%',
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
-              fontSize: this.item.fontSize,
+              fontSize: this.item.ctLegendSize,
               color: this.item.ctLegendColor
             }
           },
@@ -202,6 +202,27 @@ export default {
         this.extend.radar.splitLine.show = newV === 'true'
       }
     },
+    'item.DanweiColor': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.nameTextStyle.color = newV
+      } else {
+        this.extend.yAxis.nameTextStyle.color = newV
+      }
+    },
+    'item.minInterval': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.minInterval = newV
+      } else {
+        this.extend.yAxis.minInterval = newV
+      }
+    },
+    'item.DanweiSize': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.nameTextStyle.fontSize = newV
+      } else {
+        this.extend.yAxis.nameTextStyle.fontSize = newV
+      }
+    },
     'item.splitColor': function (newV) {
       if (this.item.chartType === 've-bar') {
         this.extend.xAxis.splitLine.lineStyle.color = newV
@@ -290,6 +311,9 @@ export default {
     'item.LineType': function (newV) {
       this.extend.series.itemStyle.normal.lineStyle.type = newV
     },
+    'item.lineWidth': function (newV) {
+      this.extend.series.itemStyle.normal.lineStyle.width = newV
+    },
     'item.tooltipShow': function (newV) {
       this.extend.tooltip.show = newV === 'true'
     },
@@ -328,6 +352,17 @@ export default {
         }
       },
       deep: true
+    },
+    'item.detailwidth': {
+      handler: function (newV) {
+        if (this.item.chartType === 've-gauge') {
+          this.settings.seriesMap.p.axisLine.lineStyle.width = newV
+          this.settings.seriesMap.pro.axisLine.lineStyle.width = newV
+        } else if (this.item.chartType === 've-ring') {
+          let index = 50 - newV + '%'
+          this.settings.radius = [index, '50%']
+        }
+      }
     },
     'item.ctColors': function (newV) {
       if (this.item.chartType === 've-gauge') {
@@ -615,7 +650,7 @@ export default {
           obj.settings.xAxisType = [0]
           obj.extend = $.extend(obj.extend, {
             grid: {
-              right: 15
+              right: 65
             },
             series: {
               type: 'bar',
@@ -632,6 +667,13 @@ export default {
               }
             },
             xAxis: {
+              minInterval: _this.item.minInterval,
+              name: _this.item.chartData.unit,
+              position: 'bottom',
+              nameTextStyle: {
+                color: _this.item.DanweiColor || '#828bac',
+                fontSize: _this.item.DanweiSize || 16
+              },
               splitLine: {
                 show: _this.item.splitShow === 'true',
                 lineStyle: {
@@ -725,6 +767,13 @@ export default {
               }
             },
             yAxis: {
+              minInterval: _this.item.minInterval,
+              name: _this.item.chartData.unit,
+              position: 'left',
+              nameTextStyle: {
+                color: _this.item.DanweiColor || '#828bac',
+                fontSize: _this.item.DanweiSize || 16
+              },
               splitLine: {
                 show: _this.item.splitShow === 'true',
                 lineStyle: {
@@ -837,7 +886,7 @@ export default {
               itemStyle: {
                 normal: {
                   lineStyle: {
-                    width: 1, // 设置线条粗细
+                    width: _this.item.lineWidth, // 设置线条粗细
                     type: _this.item.LineType || 'solid'
                   }
                 }
@@ -953,7 +1002,6 @@ export default {
               }
             }
           })
-          console.log(obj)
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
@@ -976,8 +1024,9 @@ export default {
           }
         },
         've-ring': function () {
+          let index = 50 - _this.item.detailwidth + '%'
           obj.settings = $.extend(obj.settings, {
-            radius: ['40%', '50%']
+            radius: [index, '50%']
           })
           obj.extend = $.extend(obj.extend, {
             series: {
@@ -1025,7 +1074,7 @@ export default {
                   // radius: '50%',
                   axisLine: {
                     lineStyle: { //  属性lineStyle控制线条样式
-                      width: 12,
+                      width: _this.item.detailwidth, // 12,
                       color: [
                         [1, _this.item.bgClr || '#657992']
                       ]
@@ -1061,7 +1110,7 @@ export default {
                   // radius: '50%',
                   axisLine: {
                     lineStyle: {
-                      width: 12,
+                      width: _this.item.detailwidth, // 12,
                       color: [
                         [data.value / 100, color]
                       ]
