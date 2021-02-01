@@ -42,8 +42,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     // var arguments = process.argv.splice(2)
     var replaceText = '/leaderview-static/' // 目标目录
 
-    var ignoreJs = ['jquery-3.5.1', 'jquery-ui', 'bootstrap', 'popper', 'topo', 'echarts']
-    var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'baseLayout', 'spectrum', 'flexStyle', 'echarts']
+    var ignoreJs = ['jquery', 'jquery-ui', 'bootstrap', 'topo', 'echarts']
+    var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'spectrum', 'flexStyle', 'echarts']
 
     var readStream = fs.createReadStream(sourceFile)
     var writeStream = fs.createWriteStream(destPath)
