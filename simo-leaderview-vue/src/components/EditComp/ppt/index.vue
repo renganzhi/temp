@@ -70,7 +70,7 @@ export default {
   mounted () {
     // console.log(this.item.srcList.length)
     // console.log('editing', this.editing)
-    if (this.item.autoplay && !this.editing) {
+    if ((this.item.autoplay && !this.editing) || this.$parent.$parent._name === '<PreView>') {
       this.setTimer()
     }
     this.$EventBus.$on('activeSrcList', (data) => {
@@ -107,7 +107,7 @@ export default {
           return
         }
         let activeIndex = this.activeIndex + 1
-        if (activeIndex == this.item.srcList.length - 1) {
+        if (activeIndex === this.item.srcList.length) {
           !this.item.loop && this.clearTimer()
           activeIndex = 0
         }
