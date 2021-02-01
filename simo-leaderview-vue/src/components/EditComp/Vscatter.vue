@@ -87,7 +87,7 @@ export default {
           hoverLink: true,
           showLabel: true,
           textStyle: {
-            color: this.item.themeType === '1' ? '#fff' : '#50607c'
+            color: this.item.ctLegendColor
           }
         },
         tooltip: {
@@ -111,8 +111,8 @@ export default {
           roam: false,
           itemStyle: {
             normal: {
-              areaColor: this.item.themeType === '1' ? '#333e61' : '#cfd9e3',
-              borderColor: this.item.themeType === '1' ? '#141929' : '#a2b1c0',
+              areaColor: this.item.areaColor,
+              borderColor: this.item.borderColor,
               borderWidth: 0.5,
               shadowColor: 'rgba(0, 0, 0, 0.5)'
               // shadowBlur: 1
@@ -146,7 +146,7 @@ export default {
             normal: {
               formatter: '{b}',
               position: 'right',
-              color: this.item.themeType === '1' ? '#cad6dd' : '#50607c',
+              color: this.item.ctLegendColor,
               show: this.item.ctLegendShow === 'true' // false
             },
             emphasis: {
@@ -231,10 +231,20 @@ export default {
     }
   },
   watch: {
-    'item.themeType': function (newV) {
-      this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
-      this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
-      this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
+    // 'item.themeType': function (newV) {
+    //   this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#333e61' : '#cfd9e3'
+    //   this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#141929' : '#a2b1c0'
+    //   this.extend.series.label.normal.color = newV === '1' ? '#cad6dd' : '#50607c'
+    // },
+    'item.ctLegendColor': function (newV) {
+      this.extend.series.label.normal.color = newV
+      this.extend.visualMap.textStyle.color = newV
+    },
+    'item.areaColor': function (newV) {
+      this.extend.geo.itemStyle.normal.areaColor = newV
+    },
+    'item.borderColor': function (newV) {
+      this.extend.geo.itemStyle.normal.borderColor = newV
     },
     'item.ctLegendShow': function (newV) {
       this.extend.series.label.normal.show = newV === 'true'
@@ -308,7 +318,7 @@ export default {
         this.item.scatterPoint = this.extend.series.data
       }
     },
-    alertInfo: function(){
+    alertInfo: function () {
       this.handlePieces()
     }
   },
@@ -345,7 +355,7 @@ export default {
     // }, 5000)
   },
   methods: {
-    handlePieces(){
+    handlePieces () {
       var piecesArr = []
       if (this.alertInfo && this.alertInfo.length > 0) {
         _.forEach(this.alertInfo, function (item) {

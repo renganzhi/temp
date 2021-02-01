@@ -114,7 +114,7 @@ export default {
         scale: 100,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
-        showGrid: true // 显示网格
+        showGrid: false // 默认不显示网格
       },
       // 箭头的展示与隐藏
       arrowObj: {
@@ -2145,7 +2145,7 @@ export default {
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
-      this.paintObj.showGrid = true
+      // this.paintObj.showGrid = true
       this.paintObj.scale = 100
       this.paintObj.showGrid = false
       this.helpLineColor = '#348cea'
@@ -2928,7 +2928,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
           .css({
             width: '100%',
             height: '100%',
@@ -2958,6 +2958,7 @@ export default {
         // $('#mainEdit-edit .monitp').remove()
         document.body.appendChild(canvas)
         var dataUrl = canvas.toDataURL('image/png')
+        console.log($(canvas))
         var arr = dataUrl.split(',')
         var mime = arr[0].match(/:(.*?);/)[1]
         var suffix = mime.split('/')[1]
