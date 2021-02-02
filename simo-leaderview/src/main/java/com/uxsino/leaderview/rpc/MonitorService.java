@@ -134,6 +134,6 @@ public interface MonitorService {
                            @RequestParam("isHistory") boolean isHistory,
                            @RequestParam("order") String order);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
-    JsonModel findNeHealth(@RequestParam Map<String, Object> map);
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/FindFieldIsMonitoringInStrategy", consumes = "application/json")
+    JsonModel FindFieldIsMonitoringInStrategy(@RequestParam("neId") String neId,@RequestParam("indicatorNames") String indicatorNames);
 }

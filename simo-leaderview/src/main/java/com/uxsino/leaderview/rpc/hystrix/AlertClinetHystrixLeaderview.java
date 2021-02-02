@@ -67,4 +67,34 @@ public class AlertClinetHystrixLeaderview implements AlertService {
     public JsonModel getStatByNe(JSONArray neArray, String levels, AlertType alertType) {
         return new JsonModel(false, "Alert服务调用失败");
     }
+
+    @Override
+    public JsonModel getAlertLevels(Map<String, Object> map) {
+        return new JsonModel(false, "Alert服务调用失败");
+    }
+
+    @Override
+    public JsonModel getAlertRecord(AlertQuery alertQuery, Map<String, String> orderBy) {
+        return new JsonModel(false, "Alert服务调用失败");
+    }
+
+    @Override
+    public JsonModel getAlertCount(Map<String, Object> map) {
+        return new JsonModel(false, "Alert服务调用失败");
+    }
+
+    @Override
+    public JsonModel getObjectIdsByAlertType(String cookie, AlertQuery query) {
+        return new JsonModel(false, "Alert服务调用失败");
+    }
+
+//    @Override
+//    public JsonModel getObjectIdsByAlertType(String cookie, Map<String, Object> map) {
+//        return new JsonModel(false, "Alert服务调用失败");
+//    }
+
+    @Override
+    public JsonModel getLevelStatisticsResult(Map<String, Object> map) {
+        return new JsonModel(false, "Alert服务调用失败");
+    }
 }

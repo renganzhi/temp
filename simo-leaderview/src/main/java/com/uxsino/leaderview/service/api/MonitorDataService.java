@@ -227,7 +227,7 @@ public class MonitorDataService {
     public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session, String[] column) throws Exception{
         List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
-        JSONArray columns = newColumns("资源名称");
+        JSONArray columns = new JSONArray();
         columns = addColumns(columns, column);
         diffColumns.removeAll(getAllColumns(columns));
         // 检查指定的资源是否是符合用户权限的资源
@@ -345,11 +345,11 @@ public class MonitorDataService {
         }
 
         // 获取指标监控策略
-        //Boolean strategyField = getStrategy(neIds, indicators, field);
+        Boolean strategyField = getStrategy(neIds, indicators, field);
         IndValue indValue = null;
         // 若指标被监控
         //TODO 监控策略 strategyField
-        if (true) {
+        if (strategyField) {
             // 获取指标的值
             indValue = indicatorService.findIndValue(neIds, indicators, null);
         }

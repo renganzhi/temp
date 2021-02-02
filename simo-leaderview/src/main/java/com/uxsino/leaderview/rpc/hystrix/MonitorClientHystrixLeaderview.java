@@ -166,7 +166,8 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel findNeHealth(Map<String, Object> map) {
+    public JsonModel FindFieldIsMonitoringInStrategy(String neId, String indicatorNames) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
+
 }

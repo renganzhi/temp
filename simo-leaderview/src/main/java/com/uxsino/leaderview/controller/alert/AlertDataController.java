@@ -194,9 +194,9 @@ public class AlertDataController {
     })
     @RequestMapping(value = "/getStatByNe", method = RequestMethod.POST)
     @ResponseBody
-    public JsonModel getStatByNe(String alertLevel, Long domainId, String baseNeClass, String neClass, String neIds) {
+    public JsonModel getStatByNe(String alertLevel, Long domainId, String baseNeClass, String neClass, String neIds, HttpSession session) {
         try {
-            return alertDataService.getStatByNe(alertLevel, domainId, baseNeClass, neClass, neIds);
+            return alertDataService.getStatByNe(alertLevel, domainId, baseNeClass, neClass, neIds, session);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -245,5 +245,19 @@ public class AlertDataController {
             return new JsonModel(false, e.getMessage());
         }
     }
+
+//    @ApiOperation("按告警级别统计资源的未处理告警条数")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "alertType", paramType = "query", dataType = "String", value = "告警类型"),
+//            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔")
+//    })
+//    @RequestMapping(value = "/countAlert", method = RequestMethod.GET)
+//    @ResponseBody
+//    public JsonModel countAlert(HttpSession session,
+//                                @RequestParam(required = false) String alertType,
+//                                @RequestParam(required = false) String alertLevel) {
+//        return alertDataService.countAlert1(session, alertType, alertLevel);
+//
+//    }
 
 }
