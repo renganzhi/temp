@@ -41,7 +41,8 @@ let config = {
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
-  liquidfill: require('@/components/EditComp/liquidfill/config.js')
+  liquidfill: require('@/components/EditComp/liquidfill/config.js'),
+  ppt: require('@/components/EditComp/ppt/config.js')
 }
 
 export default {

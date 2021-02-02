@@ -2179,7 +2179,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['bubble', 'ppt'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['bubble'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
@@ -2200,7 +2200,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
