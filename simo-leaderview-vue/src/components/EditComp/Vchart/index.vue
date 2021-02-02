@@ -206,7 +206,6 @@ export default {
         var rows = this.item.chartData.rows
         let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
         let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
-        console.log(strLen)
         this.extend.xAxis.axisLabel.formatter = (params, index) => {
           if (this.item.formatterType === '0') {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -284,7 +283,6 @@ export default {
     'item.ctLegendShow': function (newV) {
       if (this.item.subType === 'progress') {
         if (newV === 'true') {
-          console.log(this.settings)
           this.settings.dataName.p = this.item.chartData.name
         } else {
           this.settings.dataName.p = ''
@@ -443,7 +441,6 @@ export default {
         var rows = this.item.chartData.rows
         let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
         let strLen = Math.ceil(barW / this.item.ctLegendSize)
-        console.log(strLen)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           if (newV === '0') {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
