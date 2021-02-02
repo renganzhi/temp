@@ -42,7 +42,8 @@ let config = {
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
-  ppt: require('@/components/EditComp/ppt/config.js')
+  ppt: require('@/components/EditComp/ppt/config.js'),
+  bubble: require('@/components/EditComp/bubble/config.js')
 }
 
 export default {
