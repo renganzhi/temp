@@ -159,7 +159,7 @@ export default {
         'tag': 'input'
       },
       {
-        'name': '图元高度',
+        'name': '图元边距',
         'key': 'gridTop',
         'parentKey': {
           'ctLegendShow': true
