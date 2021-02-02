@@ -212,7 +212,8 @@ export default {
       'changePageVisiable'
     ]),
     ...mapMutations([
-      'changeEditId'
+      'changeEditId',
+      'changeNowPage'
     ]),
     toEditPage () {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
@@ -399,6 +400,7 @@ export default {
       this.nowPage = JSON.parse(nowPageObj.viewConf)
       nowPageObj = null
       this.isFullScreen && this.interTimer()
+      this.changeNowPage(-1)
     },
     setPaint: function () {
       if (this.paintConf) {
@@ -467,6 +469,7 @@ export default {
     next: function () { // 下一页
       this.timeFn()
       this.isFullScreen && this.interTimer()
+      this.changeNowPage(-1)
     },
     // 加载第一页大屏
     loadFirstPage: function () {

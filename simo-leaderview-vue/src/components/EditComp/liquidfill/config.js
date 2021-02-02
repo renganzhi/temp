@@ -17,6 +17,7 @@ export default {
     fontSize: 28,
     ctLegendShow: true,
     legendColor: 'rgba(255, 255, 255, 1)',
+    legendFontSize: 14,
     chartData: {
       name: '繁忙度',
       unit: '%',
@@ -24,7 +25,11 @@ export default {
     }
   },
   styles: {
-    lengend: [
+    base: [
+      {
+        'name': '图例配置',
+        'tag': 'Hint'
+      },
       {
         'name': '图例可见性',
         'key': 'ctLegendShow',
@@ -43,10 +48,21 @@ export default {
       {
         'name': '图例文字颜色',
         'key': 'legendColor',
-        'tag': 'singleColor'
-      }
-    ],
-    base: [
+        'tag': 'Color'
+      },
+      {
+        'name': '字号',
+        'key': 'legendFontSize',
+        'tag': 'select',
+        'options': [12, 13, 14, 16, 18, 20, 24, 26, 28, 30, 36, 40, 48, 54, 60, 72, 84, 88].map(d => ({
+          'name': d,
+          'value': d
+        }))
+      },
+      {
+        'name': '图标样式',
+        'tag': 'Hint'
+      },
       {
         'name': '填充色方式',
         'key': 'isLinear',
@@ -65,10 +81,9 @@ export default {
       {
         'name': '填充色',
         'key': 'bgClr',
-        'tag': 'singleColor',
-        dep: {
-          targetKey: 'isLinear',
-          targetVal: false
+        'tag': 'Color',
+        'parentKey': {
+          'isLinear': false
         }
       },
       {
@@ -78,31 +93,29 @@ export default {
         'options': [
           {
             'name': '上下',
-            'value': [0, 0, 0, 1]
+            'value': '0,0,0,1'
           },
           {
             'name': '左右',
-            'value': [0, 0, 1, 0]
+            'value': '0,0,1,0'
           }
         ],
-        dep: {
-          targetKey: 'isLinear',
-          targetVal: true
+        'parentKey': {
+          'isLinear': true
         }
       },
       {
         'name': '渐变色',
         'key': 'bgClrRange',
-        'tag': 'rangeColor',
-        dep: {
-          targetKey: 'isLinear',
-          targetVal: true
+        'tag': 'GradientColor',
+        'parentKey': {
+          'isLinear': true
         }
       },
       {
         'name': '边框色',
         'key': 'bdClr',
-        'tag': 'singleColor'
+        'tag': 'Color'
       },
       {
         'name': '线宽',
@@ -116,7 +129,7 @@ export default {
       {
         'name': '字体颜色',
         'key': 'clr',
-        'tag': 'singleColor'
+        'tag': 'Color'
       },
       {
         'name': '字号',

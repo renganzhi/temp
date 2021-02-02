@@ -40,7 +40,8 @@ let config = {
   ELine: require('@/components/EditComp/ELine/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
-  NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js')
+  NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
+  liquidfill: require('@/components/EditComp/liquidfill/config.js')
 }
 
 export default {
