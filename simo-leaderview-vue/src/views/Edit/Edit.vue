@@ -2179,7 +2179,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || [].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && selectedItem.chartType.indexOf('ve-') > -1" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
