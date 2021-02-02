@@ -24,6 +24,7 @@ const coordinate = {
       minInterval: '',
       legendY: 90,
       gridTop: 10,
+      formatterType: '0',
       tooltipShow: 'true',
       tooltipBackColor: '#57625d',
       tooltipTextColor: '#fff',
@@ -55,6 +56,7 @@ const coordinate = {
       tooltipfontSize: 14,
       subType: 'groupHistogram',
       rotate: 0,
+      formatterType: '0',
       chartData: morenData.line
     },
     {
@@ -80,6 +82,7 @@ const coordinate = {
       splitColor: '#333849',
       splitSize: 1,
       rotate: 0,
+      formatterType: '0',
       chartData: morenData.line
     },
     {
@@ -104,6 +107,7 @@ const coordinate = {
       splitColor: '#333849',
       splitSize: 1,
       rotate: 0,
+      formatterType: '0',
       chartData: morenData.pie
     },
     ELine.item,
@@ -150,6 +154,7 @@ const coordinate = {
       smooth: 'true',
       LineType: 'solid',
       symbolType: 'circle',
+      formatterType: '0',
       symbolSrc: '',
       symbolSize: 6,
       showPoint: 'true', // 是否标点

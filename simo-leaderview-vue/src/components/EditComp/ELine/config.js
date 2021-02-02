@@ -29,6 +29,7 @@ export default {
     'lineColorType': false, // 是否为区域图
     'smooth': false,
     'LineType': 'solid',
+    'formatterType': '0',
     'symbolType': 'circle',
     'symbolSrc': '',
     'symbolSize': 6,
@@ -672,6 +673,21 @@ export default {
           {
             'name': '-40',
             'value': -40
+          }
+        ]
+      },
+      {
+        'name': 'x轴标注剪裁',
+        'key': 'formatterType',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '自适应',
+            'value': '0'
+          },
+          {
+            'name': '不裁剪',
+            'value': '1'
           }
         ]
       }

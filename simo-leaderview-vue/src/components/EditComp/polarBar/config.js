@@ -120,7 +120,7 @@ export default {
             'value': 'top'
           },
           {
-            'name': '下放居中',
+            'name': '下方居中',
             'value': 'bottom'
           }
         ]
