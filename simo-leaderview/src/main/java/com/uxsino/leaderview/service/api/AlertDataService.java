@@ -6,15 +6,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Longs;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.Dates;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.NetworkEntity;
-import com.uxsino.leaderview.rpc.AlertService;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -28,6 +30,8 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.uxsino.leaderview.utils.MonitorUtils.empObj;
 
 @Component
 public class AlertDataService {
@@ -45,16 +49,161 @@ public class AlertDataService {
     MonitorService monitorService;
 
     public JsonModel countAlert(HttpSession session, String alertType, String alertLevel) throws Exception{
-        return rpcProcessService.countAlert(session, alertType, alertLevel);
+        JSONObject result = new JSONObject();
+        Boolean special = "virtualization".equals(alertType) || "cloud".equals(alertType) || "video".equals(alertType);
+        AlertType alertType1 = special ? AlertType.Alert : AlertType.valueOf(alertType);
+        String name;
+        if (Objects.equals("virtualization", alertType)) {
+            name = "虚拟化告警";
+        } else if (Objects.equals("cloud", alertType)) {
+            name = "云监控告警";
+        } else if (Objects.equals("video", alertType)) {
+            name = "视频监控告警";
+        } else {
+            name = alertType1.getText();
+        }
+        result.put("name", name + "数");
+        result.put("unit", "");
+        result.put("value", 0);
+        AlertQuery queryObject = new AlertQuery();
+        queryObject.setAlertType(alertType1);
+        if (special) queryObject.setObjectType(alertType);
+        setUserDomainIds(queryObject, session);
+//        queryObject.setNotifyUserIds(alertInit.getFilterList().contains(alertType1.toString())
+//                ? SessionUtils.getCurrentUserIdBySession(session) : null);
+        queryObject.setNotifyUserIds(SessionUtils.getCurrentUserIdBySession(session));
+        if (Objects.equals("video", alertType)) {
+            queryObject.setSourceManage(false);
+        } else {
+            queryObject.setSourceManage(true);
+        }
+        if (AlertType.NELinkAlert.equals(alertType1)) {
+            queryObject.setSourceManage(null);
+        }
+        String ids = rpcProcessService.getObjectIds(session, queryObject);
+        if (StringUtils.isEmpty(ids) && !AlertType.TerminalAlert.equals(alertType1)
+                && !AlertType.ThirdPartyAlert.equals(alertType1)) {
+            return new JsonModel(true, result);
+        }
+        // 第三方告警中资源Id可能没有
+        if (!AlertType.ThirdPartyAlert.equals(alertType1)) {
+            queryObject.setObjectIds(ids);
+        }
+        if (AlertType.Alert.equals(alertType1) && queryObject.getIsAvailability() != null) {
+            if (queryObject.getIsAvailability()) {
+//                Set<String> neIds = loadRootTreeHandler.getNeIds();
+//                if (!neIds.isEmpty()) {
+//                    neIds.retainAll(Arrays.asList(ids.split(",")));
+//                    queryObject.setObjectIds(org.apache.commons.lang3.StringUtils.join(neIds, ","));
+//                } else {
+//                    return new JsonModel(true, result);
+//                }
+                queryObject.setIndicatorIds("useable_state");
+            } else {
+                queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
+            }
+        }
+        List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
+        List<AlertHandleStatus> statuses =
+                Lists.newArrayList(AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
+        if (!alertLevel.isEmpty()) {
+            List<AlertRecord> levelList = Lists.newArrayList();
+            String[] split = StringUtils.split(alertLevel, ",");
+            List<String> level = Lists.newArrayList();
+            if (ObjectUtils.isEmpty(split)) {
+                level.add(alertLevel);
+            } else {
+                level = Arrays.asList(split);
+            }
+            for (AlertRecord alertRecord : list) {
+                if (!statuses.contains(alertRecord.getHandleStatus())
+                        && level.contains(alertRecord.getLevel().toString())){
+                    levelList.add(alertRecord);
+                }
+            }
+            list = levelList;
+        }else {
+            List<AlertRecord> temList = Lists.newArrayList();
+            list.forEach(alertRecord -> {
+                if (!statuses.contains(alertRecord.getHandleStatus())){
+                    temList.add(alertRecord);
+                }
+            });
+            list = temList;
+        }
+        result.put("value", list.size());
+        return new JsonModel(true, result);
     }
 
     public JsonModel getOtherAlertInfo(HttpSession session, String type) throws Exception {
-        return rpcProcessService.getOtherAlertInfo(session, type);
+        JSONObject result = new JSONObject();
+        try {
+            AlertQuery queryObject = new AlertQuery();
+            queryObject.setAlertType(AlertType.valueOf(type));
+            queryObject.setSourceManage(true);
+            setUserDomainIds(queryObject, session);
+            AlertType alertType = queryObject.getAlertType();
+            queryObject.setNotifyUserIds(SessionUtils.getCurrentUserIdBySession(session));
+            if (AlertType.NELinkAlert.equals(alertType)) {
+                queryObject.setSourceManage(null);
+            }
+            String ids = rpcProcessService.getObjectIds(session, queryObject);
+            if (StringUtils.isEmpty(ids) && !AlertType.TerminalAlert.equals(alertType)
+                    && !AlertType.ThirdPartyAlert.equals(alertType)) {
+                result.put("info", "抱歉，没有数据可供展示...");
+                return new JsonModel(true, result);
+            }
+            // 第三方告警中资源Id可能没有
+            if (!AlertType.ThirdPartyAlert.equals(alertType)) {
+                queryObject.setObjectIds(ids);
+            }
+            if (AlertType.Alert.equals(alertType) && queryObject.getIsAvailability() != null) {
+                if (queryObject.getIsAvailability()) {
+//                    Set<String> neIds = loadRootTreeHandler.getNeIds();
+//                    if (!neIds.isEmpty()) {
+//                        neIds.retainAll(Arrays.asList(ids.split(",")));
+//                        queryObject.setObjectIds(org.apache.commons.lang3.StringUtils.join(neIds, ","));
+//                    } else {
+//                        result.put("info", "抱歉，没有数据可供展示...");
+//                        return new JsonModel(true, result);
+//                    }
+                    queryObject.setIndicatorIds("useable_state");
+                } else {
+                    queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
+                }
+            }
+            // 查全部，过滤关键字后再排序、分页
+            List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
+            if (ObjectUtils.isEmpty(list)) {
+                result.put("info", "抱歉，没有数据可供展示...");
+                return new JsonModel(true, result);
+            }
+            AlertRecord alert = list.get(0);
+            if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type)
+                    && !"ThirdPartyAlert".equals(type) && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
+                if ("NELinkAlert".equals(type)) {
+                    result.put("title", alert.getObjectName());
+                    result.put("ip", alert.getObjectName());
+                } else {
+                    NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
+                    result.put("title", ne.getIp());
+                    result.put("ip", ne.getIp());
+                }
+            }
+            result.put("state", rpcProcessService.getLevel(alert.getLevel()));
+            result.put("time", alert.getRecentAlertDateStr());
+            result.put("info", alert.getRecentAlertBrief());
+            return new JsonModel(true, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(true, e.getMessage(), result);
+        }
     }
 
     @SuppressWarnings("unchecked")
     public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column) throws Exception {
-        JsonModel rpcData = rpcProcessService.getOtherAlertTable(session, type, number);
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
         List<String > diffColumns;
         if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type) && !"ThirdPartyAlert".equals(type)
                 && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
@@ -69,15 +218,74 @@ public class AlertDataService {
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
         diffColumns.removeAll(getAllColumns(columns));
-        Map<String , List> obj = (Map<String, List>) rpcData.getObj();
-        List<Map<String, String>> rows = obj.get("rows");
-        if (ObjectUtils.isEmpty(rows)){
-            return rpcData;
+
+        AlertQuery queryObject = new AlertQuery();
+        queryObject.setAlertType(AlertType.valueOf(type));
+        queryObject.setSourceManage(true);
+        setUserDomainIds(queryObject, session);
+        AlertType alertType = queryObject.getAlertType();
+        queryObject.setNotifyUserIds(SessionUtils.getCurrentUserIdBySession(session));
+        if (AlertType.NELinkAlert.equals(alertType)) {
+            queryObject.setSourceManage(null);
         }
-        for (Map<String, String> row: rows) {
+        String ids = rpcProcessService.getObjectIds(session, queryObject);
+        if (StringUtils.isEmpty(ids) && !AlertType.TerminalAlert.equals(alertType)
+                && !AlertType.ThirdPartyAlert.equals(alertType)) {
+            return new JsonModel(true, result);
+        }
+        // 第三方告警中资源Id可能没有
+        if (!AlertType.ThirdPartyAlert.equals(alertType)) {
+            queryObject.setObjectIds(ids);
+        }
+        if (AlertType.Alert.equals(alertType) && queryObject.getIsAvailability() != null) {
+            if (queryObject.getIsAvailability()) {
+//                Set<String> neIds = loadRootTreeHandler.getNeIds();
+//                if (!neIds.isEmpty()) {
+//                    neIds.retainAll(Arrays.asList(ids.split(",")));
+//                    queryObject.setObjectIds(org.apache.commons.lang3.StringUtils.join(neIds, ","));
+//                } else {
+//                    return new JsonModel(true, result);
+//                }
+                queryObject.setIndicatorIds("useable_state");
+            } else {
+                queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
+            }
+        }
+        // 查全部，过滤关键字后再排序、分页
+        List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
+        if (ObjectUtils.isEmpty(list)) {
+            result.put("info", "抱歉，没有数据可供展示...");
+            return new JsonModel(true, result);
+        }
+        int num = 0;
+        for (AlertRecord alert : list) {
+            JSONObject row = new JSONObject(true);
+            row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
+            if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type)
+                    && !"ThirdPartyAlert".equals(type) && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
+                if ("NELinkAlert".equals(type)) {
+                    row.put("告警来源", alert.getObjectName());
+                } else {
+                    NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
+                    row.put("IP地址", ne.getIp());
+                }
+            }
+            row.put("告警内容", alert.getRecentAlertBrief());
+            row.put("告警时间", alert.getRecentAlertDateStr());
+            if (++num > number) break;
+            rows.add(row);
+        }
+        result.put("rows", rows);
+
+        if (ObjectUtils.isEmpty(rows)){
+            return new JsonModel(true, result);
+        }
+        for (int i = 0; i < rows.size(); i++) {
+            JSONObject row = rows.getJSONObject(i);
             diffColumns.forEach(diff -> row.remove(diff));
         }
-        JSONObject result = MonitorUtils.newResultObj("columns", columns, "rows", rows);
+
+        result = MonitorUtils.newResultObj("columns", columns, "rows", rows);
         return new JsonModel(true, result);
     }
 
@@ -126,22 +334,15 @@ public class AlertDataService {
             for (String name : names) {
                 if (region.contains(name)) {
                     //这个域下的所有资源id
-                    JsonModel datas = new JsonModel();
                     Long domainId= Long.parseLong(map.get("id").toString());
-                    if (domainId == null){
-                        List<Long> domainList = domainUtils.getUserDomainIds(session);
-                        datas = monitorService.findNeIdByParams(null,null,null,null,null,null,
-                                domainList.toArray(new Long[domainList.size()]), null);
-                    }else {
-                        datas =  monitorService.findNeIdByParams(null,null,null,null,null,
-                                null,new Long[] { domainId }, null);
-                    }
-                    ArrayList arr = (ArrayList) datas.getObj();
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+                    List<String> neIds = rpcProcessService.getNeIds(criteria);
                     List<String> objectIds = Lists.newArrayList();
-                    for (int i = 0; i < arr.size(); i++) {
-                        objectIds.add(arr.get(i).toString());
-                        System.out.println("alert获取资源ID"+arr.get(i).toString());
-                    }
+                    neIds.forEach(neId ->{
+                        objectIds.add(neId);
+                        System.out.println("alert获取资源ID" + neId);
+                    });
                     if (ObjectUtils.isEmpty(objectIds)) continue;
                     query.setObjectIds(org.apache.commons.lang3.StringUtils.join(objectIds, ","));
                     Long num = 0L;
@@ -190,23 +391,15 @@ public class AlertDataService {
             for (String name : names) {
                 if (region.contains(name)) {
                     //这个域下的所有资源id
-                    // List<Object> datas=null;
-                    JsonModel datas = new JsonModel();
                     Long domainId= Long.parseLong(map.get("id").toString());
-                    if (domainId == null){
-                        List<Long> domainList = domainUtils.getUserDomainIds(session);
-                        datas = monitorService.findNeIdByParams(null,null,null,null,null,null,
-                                domainList.toArray(new Long[domainList.size()]), null);
-                    }else {
-                        datas =  monitorService.findNeIdByParams(null,null,null,null,null,
-                                null,new Long[] { domainId }, null);
-                    }
-                    ArrayList arr = (ArrayList) datas.getObj();
+                    NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                    rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+                    List<String> neIds = rpcProcessService.getNeIds(criteria);
                     List<String> objectIds = Lists.newArrayList();
-                    for (int i = 0; i < arr.size(); i++) {
-                        objectIds.add(arr.get(i).toString());
-                        System.out.println("alert获取资源ID"+arr.get(i).toString());
-                    }
+                    neIds.forEach(neId ->{
+                        objectIds.add(neId);
+                        System.out.println("alert获取资源ID" + neId);
+                    });
                     if (ObjectUtils.isEmpty(objectIds)) continue;
                     query.setObjectIds(org.apache.commons.lang3.StringUtils.join(objectIds, ","));
                     query.setAlertType(AlertType.Alert);
@@ -240,27 +433,11 @@ public class AlertDataService {
     public JsonModel getAlertInfoForText(Long domainId, String baseNeClass, String[] neIds, HttpSession session) throws Exception{
         JSONObject result = new JSONObject();
         if (ObjectUtils.isEmpty(neIds)){
-            JsonModel datas = new JsonModel();
-            if (domainId == null){
-                List<Long> domainList = domainUtils.getUserDomainIds(session);
-                datas = monitorService.findNeIdByParams(null,null,null,null,null,
-                        baseNeClass,domainList.toArray(new Long[domainList.size()]), null);
-            }else {
-                datas =  monitorService.findNeIdByParams(null,null,null,null,null,
-                        baseNeClass, new Long[] { domainId }, null);
-
-            }
-            // 无数据时返回空值
-            if (ObjectUtils.isEmpty(datas)){
-                result.put("info", "抱歉，没有数据可供展示...");
-                return new JsonModel(true, "无资源数据", result);
-            }
-            ArrayList arr = (ArrayList) datas.getObj();
-            List<String> ne = Lists.newArrayList();
-            for (int i = 0; i < arr.size(); i++) {
-                ne.add(arr.get(i).toString());
-            }
-            neIds = ne.toArray(new String[ne.size()]);
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+            rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
+            List<String > neIdList = rpcProcessService.getNeIds(criteria);
+            neIds = neIdList.toArray(new String[neIdList.size()]);
         }
         List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1L);
         if (ObjectUtils.isEmpty(list)){
@@ -291,17 +468,18 @@ public class AlertDataService {
      */
     public JsonModel getStatByLevel(HttpSession session, String alertLevel, Long domainId,
                                     String baseNeClass, String neClass, String neIds) throws Exception{
-        JsonModel jm = new JsonModel();
-        if (domainId == null){
-            List<Long> domainList = domainUtils.getUserDomainIds(session);
-            jm= monitorService.findNeIdByParams(null, neIds, null, null, neClass, baseNeClass,
-                    domainList.toArray(new Long[domainList.size()]) , null);
-        }else {
-            jm = monitorService.findNeIdByParams(null, neIds, null, null, neClass, baseNeClass,
-                    new Long[] { domainId }, null);
-        }
-        ArrayList arr = (ArrayList) jm.getObj();
-        return new JsonModel(true, rpcProcessService.getStatByLevel(arr, alertLevel, AlertType.Alert));
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
+        //TODO 这个getStatByLevel需要在大屏这边重写，逻辑需要进行修改，可以参考ALert中CurrencyAlertService中的同名方法
+        return new JsonModel(true, getStatByLevel(arr, alertLevel, AlertType.Alert));
+    }
+
+    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alertType){
+        //TODO 这个getStatByLevel需要在大屏这边重写，逻辑需要进行修改，可以参考ALert中CurrencyAlertService中的同名方法
+        return null;
     }
 
     /**
@@ -312,17 +490,12 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getStatByClass(HttpSession session, String alertLevel, Long domainId, String baseNeClass) throws Exception{
-        JsonModel jm = new JsonModel();
-        if (domainId == null){
-            List<Long> domainList = domainUtils.getUserDomainIds(session);
-            jm = monitorService.findNeListByParams(null, null, null, null, null, baseNeClass,
-                    domainList.toArray(new Long[domainList.size()]) , null);
-        }else {
-            jm = monitorService.findNeListByParams(null, null, null, null, null, baseNeClass,
-                    new Long[] { domainId }, null);
-        }
-        JSONArray neArray = JSON.parseArray(JSON.toJSONString(jm.getObj()));
-        return new JsonModel(true, rpcProcessService.getStatByClass(neArray, baseNeClass, alertLevel,
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
+        List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
+        JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
+        return new JsonModel(true, getStatByClass(neArray, baseNeClass, alertLevel,
                 AlertType.Alert, null, false));
     }
 
@@ -335,11 +508,14 @@ public class AlertDataService {
      * @param neIds 多个资源ID用,分隔
      * @return
      */
-    public JsonModel getStatByNe(String alertLevel, Long domainId, String baseNeClass, String neClass, String neIds) throws Exception{
-        JsonModel jm = monitorService.findNeListByParams(null, neIds, null, null, neClass, baseNeClass,
-                null == domainId ? null : new Long[] { domainId }, null);
-        JSONArray neArray = JSON.parseArray(JSON.toJSONString(jm.getObj()));
-        return new JsonModel(true, rpcProcessService.getStatByNe(neArray, alertLevel, AlertType.Alert));
+    public JsonModel getStatByNe(String alertLevel, Long domainId, String baseNeClass, String neClass, String neIds, HttpSession session) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
+        JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
+        return new JsonModel(true, getStatByNe(neArray, alertLevel, AlertType.Alert));
     }
 
 
@@ -359,23 +535,12 @@ public class AlertDataService {
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
         diffColumns.removeAll(columns);
-        JsonModel neList = new JsonModel();
         if (ObjectUtils.isEmpty(neIds)){
-            if (domainId == null){
-                List<Long> domainList = domainUtils.getUserDomainIds(session);
-                neList = monitorService.findNeIdByParams(null,null,null,null,null,
-                        baseNeClass,domainList.toArray(new Long[domainList.size()]), null);
-            }else {
-                neList =  monitorService.findNeIdByParams(null,null,null,null,null,
-                        baseNeClass, new Long[] { domainId }, null);
-
-            }
-            ArrayList arr = (ArrayList) neList.getObj();
-            List<String> ne = Lists.newArrayList();
-            for (int i = 0; i < arr.size(); i++) {
-                ne.add(arr.get(i).toString());
-            }
-            neIds = ne.toArray(new String[ne.size()]);
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+            rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
+            List<String > neIdList = rpcProcessService.getNeIds(criteria);
+            neIds = neIdList.toArray(new String[neIdList.size()]);
         }
         List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,number);
         if (CollectionUtils.isEmpty(list)){
@@ -429,19 +594,191 @@ public class AlertDataService {
      */
     public JsonModel getStatByClassForRadar(HttpSession session, String alertLevel,
                                             Long domainId, String baseNeClass, String neClass, String neIds) throws Exception{
-        JsonModel jm = new JsonModel();
-        if (domainId == null){
-            List<Long> domainList = domainUtils.getUserDomainIds(session);
-            jm = monitorService.findNeListByParams(null, neIds, null, null, neClass, baseNeClass,
-                    domainList.toArray(new Long[domainList.size()]) , null);
-        }else {
-            jm = monitorService.findNeListByParams(null, neIds, null, null, neClass, baseNeClass,
-                    new Long[] { domainId }, null);
-        }
-        JSONArray neArray = JSON.parseArray(JSON.toJSONString(jm.getObj()));
-        return new JsonModel(true, rpcProcessService.getStatByClass(neArray, baseNeClass, alertLevel,
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
+        JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
+        return new JsonModel(true, getStatByClass(neArray, baseNeClass, alertLevel,
                 AlertType.Alert, neClass, !Strings.isNullOrEmpty(neIds)));
     }
+
+    /**
+     * 按资源类型统计资源的未处理告警条数
+     */
+    public JSONObject getStatByClass(JSONArray neArray, String baseClass, String levels, AlertType alertType,
+                                     String neClassStr, boolean statisticsByNe) throws Exception{
+        if (ObjectUtils.isEmpty(neArray)) {
+            return empObj();
+        }
+        // 如果资源父类型为空，则按照BaseNeClass.values进行分类，如果不为空，则按照neClass分类
+        boolean isBaseClass = Strings.isNullOrEmpty(baseClass);
+        // 如果资源子类型不为空，或者已选具体资源，则按照资源进行分类
+        boolean isByNe = !Strings.isNullOrEmpty(neClassStr) || statisticsByNe;
+        // 如果选择了子类型，但是未选具体资源，则不予展示。
+        if (!Strings.isNullOrEmpty(neClassStr) && !statisticsByNe) {
+            return empObj();
+        }
+        // 基本资源类型对应的资源ID（多个资源ID用,分隔）
+        Map<String, StringBuilder> typeIdMap = Maps.newHashMap();
+        if (!isByNe) {
+            for (int i = 0; i < neArray.size(); i++) {
+                JSONObject ne = neArray.getJSONObject(i);
+                NeClass neClass = NeClass.valueOf(ne.getString("neClass"));
+                String type = isBaseClass ? neClass.getBaseNeClass().getText() : neClass.getText();
+                StringBuilder ids = typeIdMap.get(type);
+                ids = null != ids ? ids : new StringBuilder();
+                typeIdMap.put(type, ids.append(ne.getString("id")).append(","));
+            }
+        } else {
+            for (int i = 0; i < neArray.size(); i++) {
+                JSONObject ne = neArray.getJSONObject(i);
+                String type = ne.getString("name") + ne.getString("ip");
+                StringBuilder ids = typeIdMap.get(type);
+                ids = null != ids ? ids : new StringBuilder();
+                typeIdMap.put(type, ids.append(ne.getString("id")).append(","));
+            }
+        }
+
+        List<AlertLevel> allLevel = rpcProcessService.findAlertList(new AlertLevelQuery());
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
+            return empObj();
+        }
+        // 用户选定的告警等级列表
+        List<Integer> chosenLevels = new ArrayList<>();
+        if (Strings.isNullOrEmpty(levels)) {
+            AlertLevelQuery query = new AlertLevelQuery();
+            query.setStatus(AlertLevelStatus.ACTIVATED);
+            List<AlertLevel> activeLevel = rpcProcessService.findAlertList(query);
+            for (AlertLevel level : activeLevel) {
+                chosenLevels.add(level.getLevel());
+            }
+        } else {
+            chosenLevels = Arrays.stream(levels.split(",")).map(e -> {
+                Long level = Longs.tryParse(e);
+                return level != null ? level.intValue() : null;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+        // 告警等级和告警名称的映射集合
+        Map<Integer, String> levelNameMap = new LinkedHashMap<>();
+        Map<Integer, String> colorMap = new LinkedHashMap<>();
+        allLevel.forEach(e -> {
+            levelNameMap.put(e.getLevel(), e.getName());
+            colorMap.put(e.getLevel(), e.getColor());
+        });
+        JSONObject result = new JSONObject();
+        JSONArray columns = new JSONArray();
+        if (isByNe) {
+            columns.add("资源名");
+        } else {
+            columns.add("资源类型");
+        }
+        // 告警颜色数组，顺序和columns一致
+        JSONArray colors = new JSONArray();
+        chosenLevels.forEach(e -> {
+            columns.add(levelNameMap.get(e));
+            colors.add(colorMap.get(e));
+        });
+        result.put("colors", colors);
+        result.put("columns", columns);
+        JSONArray rows = new JSONArray();
+        for (Map.Entry<String, StringBuilder> entry : typeIdMap.entrySet()) {
+            JSONObject row = new JSONObject();
+            if (isByNe) {
+                row.put("资源名", entry.getKey());
+            } else {
+                row.put("资源类型", entry.getKey());
+            }
+            StringBuilder ids = entry.getValue();
+            // 去掉最后一个逗号
+            ids.setLength(ids.length() - 1);
+            StatisticsQuery query = new StatisticsQuery(ids.toString(), chosenLevels, alertType, AlertHandleStatus.UNTREATED);
+            List<StatisticsResult> levelResult = rpcProcessService.getLevelStatisticsResult(query);
+            List<Integer> existLevel = new ArrayList<>(chosenLevels);
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(levelResult)) {
+                chosenLevels.forEach(e -> row.put(levelNameMap.get(e), 0));
+                existLevel.removeAll(chosenLevels);
+            } else {
+                levelResult.forEach(e -> {
+                    row.put(levelNameMap.get(Integer.valueOf(e.getScopeValue())), e.getAlertCount());
+                    existLevel.remove(Integer.valueOf(e.getScopeValue()));
+                });
+            }
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(existLevel)) {
+                existLevel.forEach(e -> row.put(levelNameMap.get(e), 0));
+            }
+            rows.add(row);
+        }
+        result.put("rows", rows);
+        return result;
+    }
+
+    /**
+     * 【主页3.0】按资源统计告警个数
+     */
+    @SuppressWarnings({ "unchecked" })
+    public JSONObject getStatByNe(JSONArray neArray, String levels, AlertType alertType) throws Exception{
+        if (ObjectUtils.isEmpty(neArray) || Strings.isNullOrEmpty(levels)) {
+            return empObj();
+        }
+        // 资源ID和name的映射表
+        Map<String, String> idNameMap = new HashMap<>(neArray.size());
+        for (int i = 0; i < neArray.size(); i++) {
+            JSONObject ne = neArray.getJSONObject(i);
+            idNameMap.put(ne.getString("id"), ne.getString("name"));
+        }
+        // 用户选定的告警等级列表
+        List<Integer> chosenLevels = Arrays.stream(levels.split(",")).map(Integer::valueOf)
+                .collect(Collectors.toList());
+        // 统计各个资源的告警情况
+        StatisticsQuery query = new StatisticsQuery(String.join(",", idNameMap.keySet()), chosenLevels, alertType,
+                AlertHandleStatus.UNTREATED);
+        // data可能为空
+        List<StatisticsResult> data = rpcProcessService.getLevelStatisticsResult(query);
+        List<AlertLevel> allLevel = rpcProcessService.findAlertList(new AlertLevelQuery());
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
+            return empObj();
+        }
+        // 告警等级和告警名称的映射集合
+        Map<Integer, String> levelNameMap = new LinkedHashMap<>();
+        allLevel.forEach(e -> levelNameMap.put(e.getLevel(), e.getName()));
+
+        JSONObject result = new JSONObject();
+        JSONArray columns = new JSONArray();
+
+        columns.add("资源名称");
+        chosenLevels.forEach(e -> columns.add(levelNameMap.get(e)));
+        result.put("columns", columns);
+
+        JSONArray rows = new JSONArray();
+        for (String objId : idNameMap.keySet()) {
+            JSONObject row = new JSONObject();
+            // 被选中的levelIds
+            List<Integer> chosenIds = new ArrayList<>(chosenLevels);
+            row.put("资源名称", idNameMap.get(objId));
+            // 如果data为null，代表根据条件未能查询到这些资源的告警信息
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(data)) {
+                chosenIds.forEach(e -> row.put(levelNameMap.get(e), 0));
+            } else {
+                // 在data中已经查询出来的level集合，用于后续判断哪些为空
+                Set<Integer> existLevels = new HashSet<>();
+                data.stream().filter(e -> ObjectUtils.nullSafeEquals(e.getScopeValue(), objId)).forEach(e -> {
+                    existLevels.add(e.getAlertLevel());
+                    row.put(levelNameMap.get(e.getAlertLevel()), e.getAlertCount());
+                });
+                // 移除掉已经添加的等级，只剩下应该为0的告警个数
+                chosenIds.removeAll(existLevels);
+                if (org.apache.commons.collections.CollectionUtils.isNotEmpty(chosenIds)) {
+                    chosenIds.forEach(e -> row.put(levelNameMap.get(e), 0));
+                }
+            }
+            rows.add(row);
+        }
+        result.put("rows", rows);
+        return result;
+    }
+
 
     /**
      * 设置用户的域参数

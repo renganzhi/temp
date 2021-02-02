@@ -93,21 +93,13 @@ public class RpcProcessService {
         return (List<ArrayList> ) jsonModel.getObj();
     }
 
-    public NeHealth getNeHealth(String neId) throws Exception{
-        JsonModel jsonModel = monitorService.getNeHealth(neId);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return this.toJavaBean(jsonModel, NeHealth.class);
-    }
-
-    public JSONObject getStrategy(String neId, String indicatorNames) throws Exception{
-        JsonModel jsonModel = monitorService.getStrategy(neId, indicatorNames);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-    }
+//    public NeHealth getNeHealth(String neId) throws Exception{
+//        JsonModel jsonModel = monitorService.getNeHealth(neId);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return this.toJavaBean(jsonModel, NeHealth.class);
+//    }
 
 //    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
 //        JsonModel jsonModel = monitorService.findHealthByNeIdIn(neIdIn);
@@ -117,62 +109,38 @@ public class RpcProcessService {
 //        return toJavaBeanList(jsonModel, NeHealthHistory.class);
 //    }
 
-    public List<NeHealth> findNeHealthOrderByHealthy(String neIds, String order) throws Exception{
-        JsonModel indJsonModel = monitorService.findNeHealthOrderByHealthy(neIds, order);
-        if (!indJsonModel.isSuccess()){
-            throw new Exception(indJsonModel.getMsg());
-        }
-        return this.toJavaBeanList(indJsonModel, NeHealth.class);
-    }
+//    public List<NeHealth> findNeHealthOrderByHealthy(String neIds, String order) throws Exception{
+//        JsonModel indJsonModel = monitorService.findNeHealthOrderByHealthy(neIds, order);
+//        if (!indJsonModel.isSuccess()){
+//            throw new Exception(indJsonModel.getMsg());
+//        }
+//        return this.toJavaBeanList(indJsonModel, NeHealth.class);
+//    }
 
 
-    public JsonModel countAlert(HttpSession session, String alertType, String alertLevel) throws Exception{
-        JsonModel jsonModel = alertService.countAlert("SESSION=" + session.getId(), alertType, alertLevel);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return jsonModel;
-    }
+//    public JsonModel countAlert(HttpSession session, String alertType, String alertLevel) throws Exception{
+//        JsonModel jsonModel = alertService.countAlert("SESSION=" + session.getId(), alertType, alertLevel);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return jsonModel;
+//    }
 
-    public JsonModel getOtherAlertInfo(HttpSession session, String type) throws Exception{
-        JsonModel jsonModel = alertService.getOtherAlertInfo("SESSION=" + session.getId(), type);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return jsonModel;
-    }
+//    public JsonModel getOtherAlertInfo(HttpSession session, String type) throws Exception{
+//        JsonModel jsonModel = alertService.getOtherAlertInfo("SESSION=" + session.getId(), type);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return jsonModel;
+//    }
 
-    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number) throws Exception{
-        JsonModel jsonModel = alertService.getOtherAlertTable("SESSION=" + session.getId(), type, number);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return jsonModel;
-    }
-
-    public long getAlertCount(AlertQuery query, AlertType alert) throws Exception{
-        JsonModel jsonModel = alertService.getAlertCount(query, alert);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return getLongValue(jsonModel);
-    }
-
-    public List<AlertLevel> findAlertList(AlertLevelQuery alertLevelQuery) throws Exception{
-        JsonModel jsonModel = alertService.findAlertList(alertLevelQuery);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return toJavaBeanList(jsonModel, AlertLevel.class);
-    }
-
-    public List<AlertRecord> findAlert(AlertQuery query, Map<String, String> orderBy) throws Exception{
-        JsonModel jsonModel = alertService.findAlert(query, JSON.toJSONString(orderBy));
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return toJavaBeanList(jsonModel, AlertRecord.class);
-    }
+//    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number) throws Exception{
+//        JsonModel jsonModel = alertService.getOtherAlertTable("SESSION=" + session.getId(), type, number);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return jsonModel;
+//    }
 
     public List<Alert> findByChooseForLeaderview(String[] neIds, Long number) throws Exception{
         JsonModel jsonModel = alertService.findByChooseForLeaderview(neIds, number);
@@ -182,38 +150,92 @@ public class RpcProcessService {
         return toJavaBeanList(jsonModel, Alert.class);
     }
 
+    @SuppressWarnings("unchecked")
+    public long getAlertCount(AlertQuery query, AlertType alert) throws Exception{
+        query.setAlertType(alert);
+        Map<String, Object> map = getBeanMap(query);
+        JsonModel jsonModel = alertService.getAlertCount(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return getLongValue(jsonModel);
+    }
+
+    public List<AlertRecord> findAlert(AlertQuery query, Map<String, String> orderBy) throws Exception{
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("orderBy", orderBy);
+        Map<String, Object> map = getBeanMap(query, params);
+        map.put("objectInfo", null);
+        map.put("params", null);
+        JsonModel jsonModel = alertService.getAlertRecord(query, Maps.newHashMap());
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, AlertRecord.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<AlertLevel> findAlertList(AlertLevelQuery alertLevelQuery) throws Exception{
+        Map<String, Object> map = getBeanMap(alertLevelQuery);
+        JsonModel jsonModel = alertService.getAlertLevels(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, AlertLevel.class);
+    }
+
+    @SuppressWarnings("unchecked")
     public String getLevel(Integer level) throws Exception{
-        JsonModel jsonModel = alertService.getLevel(level);
+        Map<String,Object> map = getBeanMap(new AlertLevelQuery());
+        JsonModel jsonModel = alertService.getAlertLevels(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        List<AlertLevel> list = toJavaBeanList(jsonModel, AlertLevel.class);
+        for (AlertLevel alertLevel: list) {
+            if (alertLevel.getLevel().equals(level)){
+                return alertLevel.getName();
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public String getObjectIds(HttpSession session, AlertQuery query) throws Exception{
+        String cookie = "SESSION=" + session.getId();
+        Map<String,Object> map = getBeanMap(query);
+        map.put("objectInfo", null);
+        JsonModel jsonModel = alertService.getObjectIdsByAlertType(cookie, query);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
         return jsonModel.getMsg();
     }
 
-    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alert) throws Exception{
-        JsonModel jsonModel = alertService.getStatByLevel(arr, alertLevel, alert);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-    }
+//    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alert) throws Exception{
+//        JsonModel jsonModel = alertService.getStatByLevel(arr, alertLevel, alert);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+//    }
 
-    public JSONObject getStatByClass(JSONArray neArray, String baseClass, String levels, AlertType alertType,
-                                     String neClassStr, boolean statisticsByNe) throws Exception{
-        JsonModel jsonModel = alertService.getStatByClass(neArray, baseClass, levels, alertType, neClassStr, statisticsByNe);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-    }
-
-    public JSONObject getStatByNe(JSONArray neArray, String alertLevel, AlertType alert) throws Exception{
-        JsonModel jsonModel = alertService.getStatByNe(neArray, alertLevel, alert);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-    }
+//    public JSONObject getStatByClass(JSONArray neArray, String baseClass, String levels, AlertType alertType,
+//                                     String neClassStr, boolean statisticsByNe) throws Exception{
+//        JsonModel jsonModel = alertService.getStatByClass(neArray, baseClass, levels, alertType, neClassStr, statisticsByNe);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+//    }
+//
+//    public JSONObject getStatByNe(JSONArray neArray, String alertLevel, AlertType alert) throws Exception{
+//        JsonModel jsonModel = alertService.getStatByNe(neArray, alertLevel, alert);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+//    }
 
 
     @SuppressWarnings("unchecked")
@@ -237,9 +259,9 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Map<String, Object> getBeanMap(T t, Map<String, String> params){
+    private <T> Map<String, Object> getBeanMap(T t, Map<String, Object> params){
         Map<String, Object> map = BeanMap.create(t);
-        for (Map.Entry<String,String> entry: params.entrySet()) {
+        for (Map.Entry<String,Object> entry: params.entrySet()) {
             map.put(entry.getKey(), entry.getValue());
         }
         Map<String, Object> result = Maps.newHashMap();
@@ -266,6 +288,25 @@ public class RpcProcessService {
 //        return this.toJavaBeanList(neJsonModel, NetworkEntity.class);
 //    }
 
+
+//    public NetworkEntity findNetworkEntityByIdIn(String ids) throws Exception{
+//        List<NetworkEntity> list = findNetworkEntityByIdIn(Lists.newArrayList(ids));
+//        if (list.isEmpty()){
+//            return null;
+//        }
+//        return list.get(0);
+//    }
+
+    public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
+        Map<String, Object> map = getBeanMap(query);
+        JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, StatisticsResult.class);
+    }
+
+
     public NetworkEntity findNetworkEntityById(String ids) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setId(ids);
@@ -275,14 +316,6 @@ public class RpcProcessService {
         }
         return list.get(0);
     }
-
-//    public NetworkEntity findNetworkEntityByIdIn(String ids) throws Exception{
-//        List<NetworkEntity> list = findNetworkEntityByIdIn(Lists.newArrayList(ids));
-//        if (list.isEmpty()){
-//            return null;
-//        }
-//        return list.get(0);
-//    }
 
     public NeHealth findNeHealth(String neId) throws Exception{
         Map<String, Object> map = Maps.newHashMap();
@@ -303,11 +336,7 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<NeHealth> findNeHealthOrderByHealthy(List<String> neIds, String order) throws Exception{
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("neIds", neIds);
-        map.put("isHistory", false);
-        map.put("order", order);
-        JsonModel jsonModel = monitorService.findNeHealth(map);
+        JsonModel jsonModel = monitorService.findNeHealth(neIds, false, order);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -316,11 +345,7 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("neIds", neIdIn);
-        map.put("isHistory", true);
-        map.put("order", "");
-        JsonModel jsonModel = monitorService.findNeHealth(map);
+        JsonModel jsonModel = monitorService.findNeHealth(neIdIn, true, "");
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -360,6 +385,15 @@ public class RpcProcessService {
         return this.toJavaBeanList(jsonModel, NetworkEntity.class);
     }
 
+    public List<String> getNeIds(NetworkEntityCriteria criteria) throws Exception{
+        List<NetworkEntity> neList = getNeList(criteria);
+        List<String> result = Lists.newArrayList();
+        for (NetworkEntity ne:neList) {
+            result.add(ne.getId());
+        }
+        return result;
+    }
+
     public NetworkEntityCriteria setCriteriaDomainIds(NetworkEntityCriteria criteria, HttpSession session, Long domainId){
         if (domainId != null) {
             criteria.setDomainIds(Lists.newArrayList(domainId));
@@ -393,6 +427,41 @@ public class RpcProcessService {
         return criteria;
     }
 
+    public NetworkEntityCriteria setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass, String neClass){
+        // 过滤掉不被监控的资源
+        criteria.setMonitoring(true);
+        if (!ObjectUtils.isEmpty(neClass)) {
+            NeClass neClass1 = NeClass.valueOf(neClass);
+            criteria.setNeClasses(Lists.newArrayList(neClass1));
+            // 虚拟化资源的sourceManage为false
+            if (neClass1.getBaseNeClass().equals(BaseNeClass.virtualization)) {
+                criteria.setSourceManage(false);
+            }
+        } else if (!ObjectUtils.isEmpty(baseNeClass)){
+            BaseNeClass baseNeClass1 = BaseNeClass.valueOf(baseNeClass);
+            criteria.setNeClasses(baseNeClass1.getNeClass());
+            // 虚拟化资源的sourceManage为false
+            if (baseNeClass1.equals(BaseNeClass.virtualization)) {
+                criteria.setSourceManage(false);
+            }
+        }
+        return criteria;
+    }
+
+    public NetworkEntityCriteria setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass){
+        // 过滤掉不被监控的资源
+        criteria.setMonitoring(true);
+        if (!ObjectUtils.isEmpty(baseNeClass)){
+            BaseNeClass baseNeClass1 = BaseNeClass.valueOf(baseNeClass);
+            criteria.setNeClasses(baseNeClass1.getNeClass());
+            // 虚拟化资源的sourceManage为false
+            if (baseNeClass1.equals(BaseNeClass.virtualization)) {
+                criteria.setSourceManage(false);
+            }
+        }
+        return criteria;
+    }
+
     public List<IndicatorTable> getUsableInd(String indicatorName, NetworkEntityCriteria criteria) throws Exception{
         if (ObjectUtils.isEmpty(criteria.getIds())){
             criteria.setIds(Lists.newArrayList(criteria.getId()));
@@ -400,7 +469,7 @@ public class RpcProcessService {
         if (ObjectUtils.isEmpty(criteria.getNeClasses())){
             criteria.setNeClasses(Lists.newArrayList(criteria.getNeClass()));
         }
-        Map<String, String> map = Maps.newHashMap();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("indicatorName", indicatorName);
         Map<String, Object> beanMap = getBeanMap(criteria, map);
         beanMap.put("cls", null);
@@ -521,4 +590,14 @@ public class RpcProcessService {
         }
         return fieldLabel;
     }
+
+    public JSONObject getStrategy(String neId, String indicatorNames) throws Exception{
+        JsonModel jsonModel = monitorService.FindFieldIsMonitoringInStrategy(neId, indicatorNames);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+
 }

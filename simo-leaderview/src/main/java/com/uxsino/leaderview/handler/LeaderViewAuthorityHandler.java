@@ -3,11 +3,14 @@ package com.uxsino.leaderview.handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.entity.HomePage;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.service.HomePageService;
+import com.uxsino.leaderview.service.api.RpcProcessService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,9 @@ public class LeaderViewAuthorityHandler {
     @Autowired
     private DomainUtils domainUtils;
 
+    @Autowired
+    private RpcProcessService rpcProcessService;
+
 
     // 域信息变更广播
     public void handle(JSONArray array) {
@@ -55,34 +61,39 @@ public class LeaderViewAuthorityHandler {
                 return;
             }
             JSONArray hp = new JSONArray();
-            //获取用户所拥有的资源
-            JsonModel nes = monitorService.findAllByDomainIdIn(domainIds);
-            List<String> neIdsInDomains = (List<String>) nes.getObj();
-            if (homePages != null && !homePages.isEmpty()) {
-                for (HomePage homePage : homePages) {
-                    String viewConf = homePage.getViewConf();
-                    JSONArray vcArr = viewConf != null ? JSONArray.parseArray(viewConf) : null;
-                    if (vcArr != null) {
-                        vcArr.forEach(vc -> {
-                            JSONObject vcObj = JSONObject.parseObject(JSON.toJSONString(vc));
-                            if (vcObj.containsKey("params") && vcObj.get("params") != null && vcObj
-                                    .getJSONObject("params").containsKey("neIds") && StringUtils
-                                    .isNotBlank(vcObj.getJSONObject("params").getString("neIds"))) {
-                                String neIds = vcObj.getJSONObject("params").getString("neIds");
-                                List<String> neIdList = Arrays.asList(neIds.split(","));
-                                //过滤掉不属于用户的资源
-                                neIdList = neIdList.stream()
-                                        .filter(neId -> StringUtils.isNotBlank(neId) && (neIdsInDomains != null
-                                                && neIdsInDomains.contains(neId))).collect(Collectors.toList());
-                                vcObj.getJSONObject("params").put("neIds", StringUtils.join(neIdList, ","));
-                            }
-                            hp.add(vcObj);
-                        });
-                        homePage.setViewConf(hp.toJSONString());
+            try {
+                //获取用户所拥有的资源
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                criteria.setDomainIds(domainIds);
+                List<String> neIdsInDomains = rpcProcessService.getNeIds(criteria);
+                if (homePages != null && !homePages.isEmpty()) {
+                    for (HomePage homePage : homePages) {
+                        String viewConf = homePage.getViewConf();
+                        JSONArray vcArr = viewConf != null ? JSONArray.parseArray(viewConf) : null;
+                        if (vcArr != null) {
+                            vcArr.forEach(vc -> {
+                                JSONObject vcObj = JSONObject.parseObject(JSON.toJSONString(vc));
+                                if (vcObj.containsKey("params") && vcObj.get("params") != null && vcObj
+                                        .getJSONObject("params").containsKey("neIds") && StringUtils
+                                        .isNotBlank(vcObj.getJSONObject("params").getString("neIds"))) {
+                                    String neIds = vcObj.getJSONObject("params").getString("neIds");
+                                    List<String> neIdList = Arrays.asList(neIds.split(","));
+                                    //过滤掉不属于用户的资源
+                                    neIdList = neIdList.stream()
+                                            .filter(neId -> StringUtils.isNotBlank(neId) && (neIdsInDomains != null
+                                                    && neIdsInDomains.contains(neId))).collect(Collectors.toList());
+                                    vcObj.getJSONObject("params").put("neIds", StringUtils.join(neIdList, ","));
+                                }
+                                hp.add(vcObj);
+                            });
+                            homePage.setViewConf(hp.toJSONString());
+                        }
                     }
+                    //批量更新大屏
+                    homePageService.saveAll(homePages);
                 }
-                //批量更新大屏
-                homePageService.saveAll(homePages);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         });
     }
