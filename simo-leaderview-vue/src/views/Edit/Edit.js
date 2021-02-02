@@ -2703,9 +2703,9 @@ export default {
             _this.selectedItem.url = curConf.url
             _this.selectedItem.method = curConf.method
             _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
               _this.selectedItem.ctName = data.obj.info
-              if (_this.selectedItem.chartType === 'text') {
+              if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
                 _this.selectedItem.chartData = data.obj
               }
             }
@@ -2835,7 +2835,7 @@ export default {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NEWtextArea') {
         this.selectedItem.ctName = this.$refs.textarea.innerText
-        this.$refs.textarea.innerText = this.selectedItem.ctName
+        // this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {
         var textData = this.$refs.textareaData.innerText
         var reg = /^\{[\s\S]*\}$/

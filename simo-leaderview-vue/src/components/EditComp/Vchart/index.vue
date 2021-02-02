@@ -38,8 +38,8 @@ export default {
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
       let setings = {
         grid: {
-          left: 20,
-          right: 20,
+          left: this.item.gridTop + '%',
+          right: this.item.gridTop + '%',
           top: this.item.gridTop + '%',
           bottom: this.item.gridTop + '%'
         },
@@ -183,6 +183,8 @@ export default {
     'item.gridTop': function (newV) {
       this.extend.grid.top = newV + '%'
       this.extend.grid.bottom = newV + '%'
+      this.extend.grid.left = newV + '%'
+      this.extend.grid.right = newV + '%'
     },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {

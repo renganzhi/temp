@@ -140,12 +140,6 @@ export default {
         this.updateColor()
       }
     },
-    'item.ctName': function (val) {
-      // if (this.item.ctDataSource !== 'static') {
-      //   this.updateColor()
-      // }
-      this.item.chartData = val
-    },
     'item.fontSize': function () {
       this.updateHeight()
     },

@@ -1846,7 +1846,7 @@
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
-                    <label>图元高度</label>
+                    <label>图元边距</label>
                     <input type="number"
                            max="50"
                            min="0"
