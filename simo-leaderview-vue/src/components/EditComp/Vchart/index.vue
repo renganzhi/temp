@@ -387,6 +387,28 @@ export default {
         this.extend.series.itemStyle.normal.color = null
       }
     },
+    'item.formatterType' (newV, oldV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+        let strLen = Math.round(barW / 10)
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
+        }
+      }
+    },
     'item.rotate' (newV, oldV) {
       this.extend.xAxis.axisLabel.rotate = newV
     },
@@ -712,7 +734,11 @@ export default {
                   fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
-                  return params.length > 5 ? params.substr(0, 5) + '...' : params
+                  if (_this.item.formatterType === '0') {
+                    return params.length > 5 ? params.substr(0, 5) + '...' : params
+                  } else {
+                    return params
+                  }
                 }
               }
             }
@@ -767,7 +793,11 @@ export default {
                   fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
-                  return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                  if (_this.item.formatterType === '0') {
+                    return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                  } else {
+                    return params
+                  }
                 }
               }
             },
@@ -972,6 +1002,18 @@ export default {
                 textStyle: {
                   color: _this.item.legendColor || '#828bac',
                   fontSize: _this.item.axisLabelSize || '14'
+                },
+                formatter: function (params, index) {
+                  var rows = _this.item.chartData.rows
+                  let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
+                  let strLen = Math.round(barW / 10)
+                  _this.extend.xAxis.axisLabel.formatter = function (params, index) {
+                    if (_this.item.formatterType === '0') {
+                      return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                    } else {
+                      return params
+                    }
+                  }
                 },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
               }

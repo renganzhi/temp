@@ -168,6 +168,16 @@ export default {
               color: this.item.legendColor || '#828bac',
               fontSize: this.item.axisLabelSize || '14'
             },
+            formatter: (params, index) => {
+              var rows = this.item.chartData.rows
+              let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+              let strLen = Math.round(barW / 10)
+              if (this.item.formatterType === '0') {
+                return params.length > strLen ? params.substr(0, strLen) + '...' : params
+              } else {
+                return params
+              }
+            },
             interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
           }
         },
@@ -264,6 +274,20 @@ export default {
           }
         },
         series: newseries
+      }
+      var rows = this.item.chartData.rows
+      let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+      let strLen = Math.round(barW / 10)
+      if (this.item.formatterType === '0') {
+        myoption.xAxis.axisLabel.formatter = function (params, index) {
+          return params.length > strLen ? params.substr(0, strLen) + '...' : params
+        }
+        this.mychart.setOption(myoption)
+      } else {
+        myoption.xAxis.axisLabel.formatter = function (params, index) {
+          return params
+        }
+        this.mychart.setOption(myoption)
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
