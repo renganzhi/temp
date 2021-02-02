@@ -189,9 +189,30 @@ export default {
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
         let barW = Math.floor((newV - 60) * 0.7 / this.dealChartData.rows.length)
-        let strLen = Math.round(barW / 10)
+        let strLen = Math.ceil(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
+        }
+      }
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        console.log(strLen)
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
         }
       }
     },
@@ -292,6 +313,26 @@ export default {
     'item.axisLabelSize': function (newV) {
       this.extend.xAxis.axisLabel.textStyle.fontSize = newV
       this.extend.yAxis.axisLabel.textStyle.fontSize = newV
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
+        }
+      }
     },
     'item.smooth': function (newV) {
       this.extend.series.smooth = newV === 'true'
@@ -400,8 +441,9 @@ export default {
         }
       } else {
         var rows = this.item.chartData.rows
-        let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-        let strLen = Math.round(barW / 10)
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / this.item.ctLegendSize)
+        console.log(strLen)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           if (newV === '0') {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -451,7 +493,7 @@ export default {
           rows = newV.allData[this.activeTab].rows
         }
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-        let strLen = Math.round(barW / 10)
+        let strLen = Math.ceil(barW / this.item.ctLegendSize)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
@@ -781,8 +823,8 @@ export default {
             }
             rows = _this.item.chartData.allData[_this.activeTab].rows
           }
-          let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
-          let strLen = Math.round(barW / 10)
+          let barW = Math.floor((_this.item.width - _this.item.width * _this.item.gridTop / 50) * 0.7 / rows.length)
+          let strLen = Math.ceil(barW / (_this.item.axisLabelSize * 2))
           obj.extend = $.extend(obj.extend, {
             xAxis: {
               axisLabel: {
@@ -1008,7 +1050,7 @@ export default {
                 formatter: function (params, index) {
                   var rows = _this.item.chartData.rows
                   let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
-                  let strLen = Math.round(barW / 10)
+                  let strLen = Math.ceil(barW / (_this.item.axisLabelSize * 2))
                   _this.extend.xAxis.axisLabel.formatter = function (params, index) {
                     if (_this.item.formatterType === '0') {
                       return params.length > strLen ? params.substr(0, strLen) + '...' : params
