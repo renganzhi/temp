@@ -668,10 +668,10 @@ export default {
     right: 0px;
     width: 30px;
     height: 30px;
-    background: url("../../assets/canSee.png");
+    background: url("../../assets/image/canSee.png");
   }
   .notSee {
-    background: url("../../assets/noSee.png");
+    background: url("../../assets/image/noSee.png");
   }
 }
 

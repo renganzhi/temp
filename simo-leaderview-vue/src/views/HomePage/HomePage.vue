@@ -5,9 +5,9 @@
          v-if="loadAll && pageList.length < 1">
       <div class="homeEmpty">
         <img v-if="defTheme"
-             src="../../assets/homeEmpty1.png" />
+             src="../../assets/image/homeEmpty1.png" />
         <img v-else
-             src="../../assets/homeEmpty.png" />
+             src="../../assets/image/homeEmpty.png" />
         <div>
           <p v-show="isNewUser"
              style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
