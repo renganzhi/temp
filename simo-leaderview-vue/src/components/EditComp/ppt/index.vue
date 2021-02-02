@@ -70,7 +70,7 @@ export default {
   mounted () {
     // console.log(this.item.srcList.length)
     // console.log('editing', this.editing)
-    if ((this.item.autoplay && !this.editing) || this.$parent.$parent._name === '<PreView>') {
+    if ((this.item.autoplay && !this.editing) || this.$parent.$parent.previewStatus) {
       this.setTimer()
     }
     this.$EventBus.$on('activeSrcList', (data) => {
