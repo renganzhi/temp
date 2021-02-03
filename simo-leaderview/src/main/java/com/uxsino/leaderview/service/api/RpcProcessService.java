@@ -227,7 +227,7 @@ public class RpcProcessService {
                 Iterator<NetworkEntity> iterator = networkEntityList.iterator();
                 while(iterator.hasNext()){
                     NetworkEntity networkEntity = iterator.next();
-                    if(networkEntity.getRunStatus().equals(runStatus)){
+                    if(networkEntity.getRunStatus().toString().equals(runStatus)){
                         count++;
                         networkEntityList.remove(networkEntity);
                     }
