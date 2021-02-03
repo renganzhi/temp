@@ -36,6 +36,7 @@ export default {
   components: { LookItem, Notification, LookCompose },
   data () {
     return {
+      previewStatus: true, // 标记预览状态
       editable: false,
       pageList: [],
       combinList: [],
