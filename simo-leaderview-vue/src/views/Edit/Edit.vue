@@ -234,7 +234,7 @@
             <div class="m-tab"
                  :class="{active:showStyleTab}"
                  @click="showStyleTab=true">样式</div>
-            <div class="m-tab"
+            <div class="m-tab" v-show="!['decorator'].includes(curChartType)"
                  :class="{active:!showStyleTab}"
                  @click="showStyleTab=false">数据</div>
           </div>
