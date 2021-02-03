@@ -76,24 +76,25 @@ public class MonitorDataController {
         }
     }
 
-    /**
-     * 资源指标状态列表
-     * @param neId 资源ID
-     * @return
-     */
-    @ApiOperation("资源指标状态列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID", required = true) })
-    @RequestMapping(value = "/indicatorStatus", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonModel findIndicatorsStatus(@RequestParam String neId) {
-        try {
-            return monitorDataService.findIndicatorsStatus(neId);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new JsonModel(false, e.getMessage());
-        }
-    }
+    //已被废除的大屏接口 不需要进行维护了
+//    /**
+//     * 资源指标状态列表
+//     * @param neId 资源ID
+//     * @return
+//     */
+//    @ApiOperation("资源指标状态列表")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID", required = true) })
+//    @RequestMapping(value = "/indicatorStatus", method = RequestMethod.GET)
+//    @ResponseBody
+//    public JsonModel findIndicatorsStatus(@RequestParam String neId) {
+//        try {
+//            return monitorDataService.findIndicatorsStatus(neId);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return new JsonModel(false, e.getMessage());
+//        }
+//    }
 
 
     @ApiOperation("获取指标属性的单值")

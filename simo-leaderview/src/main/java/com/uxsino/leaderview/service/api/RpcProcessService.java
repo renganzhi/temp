@@ -18,6 +18,7 @@ import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,7 @@ public class RpcProcessService {
 //    }
     //上述方法因为要使用核心接口而变更为下面的实现
 
+    @SuppressWarnings("unchecked")
     public List<Map<String,Object>> vmStatics(Long domain) throws Exception {
         Map<String, Object> condition = new HashMap<>();
         if(domain != null){
@@ -290,7 +292,10 @@ public class RpcProcessService {
 //    }
 
     public List<Alert> findByChooseForLeaderview(String[] neIds, Long number) throws Exception{
-        JsonModel jsonModel = alertService.findByChooseForLeaderview(neIds, number);
+        AlertQuery query = new AlertQuery();
+        query.setAlertType(AlertType.Alert);
+        query.setObjectIds(StringUtils.join(neIds,","));
+        JsonModel jsonModel = alertService.getAlertRecord(query, Maps.newHashMap());
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -309,12 +314,13 @@ public class RpcProcessService {
     }
 
     public List<AlertRecord> findAlert(AlertQuery query, Map<String, String> orderBy) throws Exception{
-        Map<String, Object> params = Maps.newHashMap();
-        params.put("orderBy", orderBy);
-        Map<String, Object> map = getBeanMap(query, params);
-        map.put("objectInfo", null);
-        map.put("params", null);
-        JsonModel jsonModel = alertService.getAlertRecord(query, Maps.newHashMap());
+//        Map<String, Object> params = Maps.newHashMap();
+//        params.put("orderBy", orderBy);
+//        Map<String, Object> map = getBeanMap(query, params);
+//        map.put("objectInfo", null);
+//        map.put("params", null);
+        orderBy = ObjectUtils.isEmpty(orderBy)? Maps.newHashMap() : orderBy;
+        JsonModel jsonModel = alertService.getAlertRecord(query, orderBy);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -464,6 +470,7 @@ public class RpcProcessService {
         return list.get(0);
     }
 
+    @SuppressWarnings("unchecked")
     public NeHealth findNeHealth(String neId) throws Exception{
         Map<String, Object> map = Maps.newHashMap();
         map.put("neIds", Lists.newArrayList(neId));
@@ -487,7 +494,13 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+        ArrayList<LinkedHashMap> neHealths = (ArrayList)((LinkedHashMap) jsonModel.getObj()).get("neHealths");
+        List<NeHealth> ts = Lists.newArrayList();
+        for (LinkedHashMap map: neHealths) {
+            NeHealth t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)), NeHealth.class);
+            ts.add(t);
+        }
+        return ts;
     }
 
     @SuppressWarnings("unchecked")
@@ -496,7 +509,13 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return (List<NeHealthHistory>)((JSONObject) jsonModel.getObj()).get("historyNeHealth");
+        ArrayList<LinkedHashMap> neHealths = (ArrayList)((LinkedHashMap) jsonModel.getObj()).get("historyNeHealth");
+        List<NeHealthHistory> ts = Lists.newArrayList();
+        for (LinkedHashMap map: neHealths) {
+            NeHealthHistory t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)), NeHealthHistory.class);
+            ts.add(t);
+        }
+        return ts;
     }
 
     public NetworkEntity findNetworkEntityByIdIn(String id) throws Exception{
@@ -574,7 +593,7 @@ public class RpcProcessService {
         return criteria;
     }
 
-    public NetworkEntityCriteria setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass, String neClass){
+    public void setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass, String neClass){
         // 过滤掉不被监控的资源
         criteria.setMonitoring(true);
         if (!ObjectUtils.isEmpty(neClass)) {
@@ -592,10 +611,9 @@ public class RpcProcessService {
                 criteria.setSourceManage(false);
             }
         }
-        return criteria;
     }
 
-    public NetworkEntityCriteria setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass){
+    public void setCriteriaNeClass(NetworkEntityCriteria criteria, String baseNeClass){
         // 过滤掉不被监控的资源
         criteria.setMonitoring(true);
         if (!ObjectUtils.isEmpty(baseNeClass)){
@@ -606,7 +624,6 @@ public class RpcProcessService {
                 criteria.setSourceManage(false);
             }
         }
-        return criteria;
     }
 
     public List<IndicatorTable> getUsableInd(String indicatorName, NetworkEntityCriteria criteria) throws Exception{
@@ -689,7 +706,7 @@ public class RpcProcessService {
             throw new Exception(jsonModel.getMsg());
         }
         List<NetworkEntity> nes = toJavaBeanList(jsonModel, NetworkEntity.class);
-        return nes.stream().map(itm -> itm.getId()).collect(Collectors.toList());
+        return nes.stream().map(NetworkEntity::getId).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

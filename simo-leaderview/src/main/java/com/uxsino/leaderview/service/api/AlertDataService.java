@@ -477,7 +477,7 @@ public class AlertDataService {
         return new JsonModel(true, getStatByLevel(arr, alertLevel, AlertType.Alert));
     }
 
-    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alertType){
+    private JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alertType){
         //TODO 这个getStatByLevel需要在大屏这边重写，逻辑需要进行修改，可以参考ALert中CurrencyAlertService中的同名方法
         return null;
     }

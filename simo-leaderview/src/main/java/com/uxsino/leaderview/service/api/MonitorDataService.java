@@ -240,11 +240,12 @@ public class MonitorDataService {
             }
         }
         JSONObject json = new JSONObject(true);
-        List<Long> domainList = getDomainList(domainId, session);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-        criteria.setDomainIds(domainList);
-        criteria.setIds(Lists.newArrayList(neIds.split(",")));
-        criteria.setNeClasses(baseNeClass.getNeClass());
+        rpcProcessService.setCriteriaDomainIds(criteria ,session ,domainId);
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
+        if (!ObjectUtils.isEmpty(neIds)){
+            criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        }
         List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
         if (CollectionUtils.isEmpty(list)) {
             return new JsonModel(true, newResultObj("columns",columns,"rows",new JSONArray()));
@@ -268,38 +269,38 @@ public class MonitorDataService {
         return new JsonModel(true, json);
     }
 
-    public JsonModel findIndicatorsStatus(String neId) throws Exception {
-        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(new String[]{neId});
-        NetworkEntity ne = new NetworkEntity();
-        if (!nes.isEmpty()){
-            ne = nes.get(0);
-        }
-        List<String> indicators = null;
-        if (ne.getIndicators() != null) {
-            indicators = JSON.parseArray(ne.getIndicators().toString()).toJavaList(String.class);
-        }
-        List<JSONObject> list = indicatorService.findIndicatorStatus(neId);
-        JSONObject json = new JSONObject();
-        json.put("columns", newColumns("指标名称","运行状态","更新时间"));
-        JSONArray rows = new JSONArray();
-        for (JSONObject indicator : list) {
-            if (indicator.getString("neids") != null && !Arrays.asList(indicator.getString("neids").split(",")).contains(neId)) {
-                continue;
-            }
-            if (indicators == null || indicators.contains(indicator.getString("name"))) {
-                JSONObject row = newResultObj("指标名称", indicator.getString("label"),
-                        "运行状态", indicator.getString("run_status"));
-                try {
-                    row.put("fetch_date", TimeUtils.formatTime(sdf.parse(indicator.getString("fetch_date"))));
-                } catch (ParseException e) {
-                    row.put("fetch_date", indicator.getString("fetch_date"));
-                }
-                rows.add(row);
-            }
-        }
-        json.put("rows", rows);
-        return new JsonModel(true, json);
-    }
+//    public JsonModel findIndicatorsStatus(String neId) throws Exception {
+//        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(new String[]{neId});
+//        NetworkEntity ne = new NetworkEntity();
+//        if (!nes.isEmpty()){
+//            ne = nes.get(0);
+//        }
+//        List<String> indicators = null;
+//        if (ne.getIndicators() != null) {
+//            indicators = JSON.parseArray(ne.getIndicators().toString()).toJavaList(String.class);
+//        }
+//        List<JSONObject> list = indicatorService.findIndicatorStatus(neId);
+//        JSONObject json = new JSONObject();
+//        json.put("columns", newColumns("指标名称","运行状态","更新时间"));
+//        JSONArray rows = new JSONArray();
+//        for (JSONObject indicator : list) {
+//            if (indicator.getString("neids") != null && !Arrays.asList(indicator.getString("neids").split(",")).contains(neId)) {
+//                continue;
+//            }
+//            if (indicators == null || indicators.contains(indicator.getString("name"))) {
+//                JSONObject row = newResultObj("指标名称", indicator.getString("label"),
+//                        "运行状态", indicator.getString("run_status"));
+//                try {
+//                    row.put("fetch_date", TimeUtils.formatTime(sdf.parse(indicator.getString("fetch_date"))));
+//                } catch (ParseException e) {
+//                    row.put("fetch_date", indicator.getString("fetch_date"));
+//                }
+//                rows.add(row);
+//            }
+//        }
+//        json.put("rows", rows);
+//        return new JsonModel(true, json);
+//    }
 
     /**
      * 获取指标属性的单值
@@ -1747,8 +1748,7 @@ public class MonitorDataService {
             if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
                 return new JsonModel(true, empObj());
             }
-            json =
-            getTopNByItObjects(ind, nes, number, field, window, order);
+            json = getTopNByItObjects(ind, nes, number, field, window, order);
         }
         if (Objects.isNull(json)) {
             return new JsonModel(true, empObj());
@@ -1803,21 +1803,20 @@ public class MonitorDataService {
             }
         }
         List<String> indicators = Lists.newArrayList(ind.getName());
-        IndicatorValueCriteria InvCriteria = new IndicatorValueCriteria();
-        JSONObject should = new JSONObject();
-        should.put("ne", new ArrayList<>(availableIds));
-        InvCriteria.setShould(should);
-        InvCriteria.setIndicatorName(indicators);
-        InvCriteria.setPagination(false);
-        InvCriteria = indicatorService.searchIndicatorValue(InvCriteria);
-        if (InvCriteria == null || InvCriteria.getObject() == null) {
-            return null;
-        }
-        JSONArray valueArray = InvCriteria.getObject() == null ? new JSONArray()
-                : JSON.parseArray(JSON.toJSONString(InvCriteria.getObject()));
-        List<IndicatorVal> values = valueArray == null ? null
-                : JSONObject.parseArray(valueArray.toJSONString(), IndicatorVal.class);
-        if (values == null || values.size() == 0) {
+//        IndicatorValueCriteria InvCriteria = new IndicatorValueCriteria();
+//        JSONObject should = new JSONObject();
+//        should.put("ne", new ArrayList<>(availableIds));
+//        InvCriteria.setShould(should);
+//        InvCriteria.setIndicatorName(indicators);
+//        InvCriteria.setPagination(false);
+//        InvCriteria = indicatorService.searchIndicatorValue(InvCriteria);
+        IndicatorValueQO qo = new IndicatorValueQO();
+        qo.setIndicatorNames(Lists.newArrayList(indicators));
+        List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
+        qo.setNeIds(neIds);
+        qo.setCurrent(true);
+        List<IndValue> indValues = rpcProcessService.getIndValues(qo);
+        if (ObjectUtils.isEmpty(indValues)) {
             return null;
         }
         // 如果是部件，则需要取属性值
@@ -1844,61 +1843,43 @@ public class MonitorDataService {
                 arr.add(obj);
             }
             for (int i = 0; i < arr.size(); i++) {
-                for (IndicatorVal indicatorCurrentValue : values) {
-                    NeComponentQuery compQuery = new NeComponentQuery();
-                    compQuery.setNeIds(Lists.newArrayList(indicatorCurrentValue.getNeId()));
-                    compQuery.setIndicatorName(ind.getName());
-                    List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
-                    if (indicatorCurrentValue.getNeId().equals(arr.getJSONObject(i).getString("id"))) {
+                JSONObject object = arr.getJSONObject(i);
+                String neId = object.getString("id");
+                String component = object.getString("component");
+                for (IndValue indValue: indValues) {
+                    if (indValue.getNeId().equals(neId)){
                         JSONObject obj = new JSONObject();
-                        JSON valueJson = (JSON) indicatorCurrentValue.getIndicatorValue();
-                        JSONObject value = new JSONObject();
-                        String comp = null;
-                        if (valueJson instanceof JSONObject) {
-                            value = (JSONObject) valueJson;
-                        } else if (valueJson instanceof JSONArray) {
-                            for (int j = 0; j < ((JSONArray) valueJson).size(); j++) {
-                                value = ((JSONArray) valueJson).getJSONObject(j);
-                                comp = arr.getJSONObject(i).getString("component");
-                                if (Strings.isNullOrEmpty(value.getString(field))) {
-                                    continue;
-                                }
-                                if (!Strings.isNullOrEmpty(value.getString(field)) && Strings.isNullOrEmpty(comp)) {
-                                    break;
-                                }
-                                if (comp.equals(value.getString("identifier"))) {
-                                    break;
-                                }
-                            }
-                        }
+                        JSONObject value = getValueJSON(indValue.getIndicatorValue(), component);
                         obj.put("num", value.getString(field));
                         valueUtils.transferItem(fieldLabel, value);
-                        obj.put("id", indicatorCurrentValue.getNeId());
+                        obj.put("id", neId);
                         obj.put("value", value.getString(field));
                         obj.put("unit", unit);
-                        if (org.apache.commons.lang3.ObjectUtils.allNotNull(idAndComponent)) {
-                            multipleComp = true;
-                            for (Map map : idAndComponent) {
-                                if (map.get("identifier").equals(comp)) {
-                                    obj.put("componentName", map.get("componentName"));
-                                }
-                            }
-                        }
+
+                        NeComponentQuery compQuery = new NeComponentQuery();
+                        compQuery.setNeIds(Lists.newArrayList(neId));
+                        compQuery.setIndicatorName(ind.getName());
+                        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
+                        Map<String, Object> compMap =
+                                idAndComponent.stream().filter(map -> map.get("identifier").equals(component))
+                                        .findFirst().orElse(Maps.newHashMap());
+                        obj.put("componentName", compMap.get("componentName").toString());
                         allValue.add(obj);
                     }
                 }
+
             }
         } else if ("COMPOUND".equals(ind.getIndicatorType())) {
             if (StringUtils.isEmpty(field)) {
                 return null;
             }
             IndicatorValueUtils valueUtils = new IndicatorValueUtils();
-            for (IndicatorVal indicatorCurrentValue : values) {
+            for (IndValue value : indValues) {
                 JSONObject obj = new JSONObject();
-                JSONObject valueJson = getValueJSON((JSON) indicatorCurrentValue.getIndicatorValue());
+                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
                 obj.put("num", valueJson.getString(field));
                 valueUtils.transferItem(fieldLabel, valueJson);
-                obj.put("id", indicatorCurrentValue.getNeId());
+                obj.put("id", value.getNeId());
                 obj.put("value", valueJson.getString(field));
                 obj.put("unit", unit);
                 allValue.add(obj);
@@ -1908,11 +1889,11 @@ public class MonitorDataService {
             if ("PERCENT".equals(ind.getIndicatorType())) {
                 unit = "%";
             }
-            for (IndicatorVal indicatorCurrentValue : values) {
+            for (IndValue value : indValues) {
                 JSONObject obj = new JSONObject();
-                JSONObject valueJson = getValueJSON((JSON) indicatorCurrentValue.getIndicatorValue());
+                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
                 obj.put("num", valueJson.getString("result"));
-                obj.put("id", indicatorCurrentValue.getNeId());
+                obj.put("id", value.getNeId());
                 obj.put("value", valueJson.getString("result") + unit);
                 obj.put("unit", unit);
                 allValue.add(obj);

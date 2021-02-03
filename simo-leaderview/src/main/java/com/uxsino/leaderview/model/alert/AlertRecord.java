@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.model.alert;
 
 import com.alibaba.fastjson.JSONObject;
+import com.uxsino.commons.enums.AlertOrigin;
 import com.uxsino.commons.enums.ThirdParties;
 import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.IpAlertRuleType;
@@ -294,6 +295,11 @@ public class AlertRecord {
      */
     private Long fieldConfId;
 
+    /**
+     * 告警来源
+     */
+    private AlertOrigin alertOrigin;
+
     public AlertRecord() {
 
     }
@@ -304,7 +310,7 @@ public class AlertRecord {
     public AlertRecord(Long alertId, String alertCode, String objectId, Integer level, String recentAlertBrief,
                        AlertHandleStatus handleStatus, Integer number, Integer times, Date firstAlertDate, Date recentAlertDate,
                        String processInstanceId, Date handleDate, Boolean isDeleted, Long ruleId, String indicatorId,
-                       String componentId, String fieldId, Long fieldConfId) {
+                       String componentId, String fieldId, Long fieldConfId, AlertOrigin alertOrigin) {
         this.alertId = alertId;
         this.alertCode = alertCode;
         this.objectId = objectId;
@@ -323,6 +329,7 @@ public class AlertRecord {
         this.componentId = componentId;
         this.fieldId = fieldId;
         this.fieldConfId = fieldConfId;
+        this.alertOrigin = alertOrigin;
     }
 
     /**
