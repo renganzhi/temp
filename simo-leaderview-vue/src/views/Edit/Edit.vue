@@ -2247,7 +2247,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
