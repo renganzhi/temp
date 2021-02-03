@@ -142,6 +142,9 @@ export default {
   align-items: center;
   font-size: 14px;
 }
+.main_topo svg:first-of-type{
+  z-index: 10;
+}
 .v-charts-data-empty i,
 .v-charts-data-empty p {
   color: #666f8b;

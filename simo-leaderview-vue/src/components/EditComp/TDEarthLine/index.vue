@@ -9,6 +9,7 @@
 </template>
 <script>
 import echarts from 'echarts'
+import { gbs } from '@/config/settings'
 import 'echarts-gl'
 export default {
   name: 'TDEarth',
@@ -134,6 +135,11 @@ export default {
   },
   methods: {
     drawLine () {
+      var reg = /^\/api/
+      var baseUrl = ''
+      if (!reg.test(this.item.symbolSrc)) {
+        baseUrl = gbs.host
+      }
       let _this = this
       var pointsData = []
       _this.item.chartData.lineArry.forEach(function (airline) {
@@ -183,11 +189,11 @@ export default {
       })
       this.mychart = echarts.init(this.$refs.TDEarth)
       var myoption = {
-        backgroundColor: '', // 背景颜色  不填为透明
+        backgroundColor: 'transparent', // 背景颜色  不填为透明
         globe: {
-          baseTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
-
-          heightTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          baseTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`, // 'http://localhost:8080/api/leaderview/map/Mapcolor.jpg', // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          // environment: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`,
+          heightTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`, // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
           displacementScale: _this.item.displacementScale, // 凹凸度
           shading: _this.item.shadingtype, // color   realistic
           baseColor: '#fff',
@@ -214,6 +220,12 @@ export default {
               beta: _this.item.mainbeta,
               alpha: _this.item.mainalpha
             }
+            // ambientCubemap: {
+            //   texture: `${baseUrl}/leaderview/hdr/lake.hdr`, // 'lake.hdr', // 请求不是路径
+            //   exposure: 1,
+            //   diffuseIntensity: 0.5,
+            //   specularIntensity: 2
+            // }
           },
           viewControl: {
             autoRotate: _this.item.needrotate === 'true', // 自动旋转
@@ -227,10 +239,7 @@ export default {
         },
         series: series
       }
-      // this.mychart.dispose()
-      // this.mychart.setOption(myoption2)
       if (this.oldOption !== JSON.stringify(myoption)) {
-        console.log(999999)
         this.mychart.clear()
         this.mychart.setOption(myoption)
       }

@@ -9,6 +9,7 @@
 </template>
 <script>
 import echarts from 'echarts'
+import { gbs } from '@/config/settings'
 import 'echarts-gl'
 export default {
   name: 'TDEarthBar',
@@ -131,6 +132,11 @@ export default {
   },
   methods: {
     drawLine () {
+      var reg = /^\/api/
+      var baseUrl = ''
+      if (!reg.test(this.item.symbolSrc)) {
+        baseUrl = gbs.host
+      }
       let _this = this
       let barArry = JSON.parse(JSON.stringify(_this.item.chartData.barArry))
       barArry.push({
@@ -177,9 +183,9 @@ export default {
       var myoption = {
         backgroundColor: '', // 背景颜色  不填为透明
         globe: {
-          baseTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          baseTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`, // 'http://localhost:8080/api/leaderview/map/Mapcolor.jpg', // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
 
-          heightTexture: require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          heightTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`,
           displacementScale: _this.item.displacementScale, // 凹凸度
           shading: _this.item.shadingtype, // color   realistic
           baseColor: '#fff',
@@ -206,6 +212,12 @@ export default {
               beta: _this.item.mainbeta,
               alpha: _this.item.mainalpha
             }
+            // ambientCubemap: {
+            //   texture: 'lake.hdr', // 请求不是路径
+            //   exposure: 1,
+            //   diffuseIntensity: 0.5,
+            //   specularIntensity: 2
+            // }
           },
           viewControl: {
             autoRotate: _this.item.needrotate === 'true', // 自动旋转
@@ -219,72 +231,7 @@ export default {
         },
         series: series
       }
-      let myoption2 = {
-        visualMap: {
-          show: false,
-          min: 0,
-          max: 60,
-          inRange: {
-            symbolSize: [1.0, 10.0]
-          }
-        },
-        backgroundColor: '', // 背景颜色  不填为透明
-        globe: {
-
-          environment: require('../../../../static/img/earthPic/Mapcolor.jpg'),
-
-          heightTexture: require('../../../../static/img/earthPic/Mapcolor.jpg'),
-
-          displacementScale: 0.05,
-          displacementQuality: 'high',
-
-          globeOuterRadius: 100,
-
-          baseColor: '#000',
-
-          shading: 'realistic',
-          realisticMaterial: {
-            roughness: 0.2,
-            metalness: 0
-          },
-
-          postEffect: {
-            enable: true,
-            depthOfField: {
-              focalRange: 15
-            }
-          },
-          temporalSuperSampling: {
-            enable: true
-          },
-          light: {
-            ambient: {
-              intensity: 0
-            },
-            main: {
-              intensity: 0.1,
-              shadow: false
-            },
-            ambientCubemap: {
-              texture: 'lake.hdr', // 请求不是路径
-              exposure: 1,
-              diffuseIntensity: 0.5,
-              specularIntensity: 2
-            }
-          },
-          viewControl: {
-            autoRotate: false,
-            beta: 180,
-            alpha: 20,
-            distance: 100
-          }
-        }
-      }
-      // this.mychart.dispose()
-      // this.mychart.setOption(myoption2)
-
       if (this.oldOption !== JSON.stringify(myoption)) {
-        console.log(99999999)
         this.mychart.clear()
         this.mychart.setOption(myoption)
       }

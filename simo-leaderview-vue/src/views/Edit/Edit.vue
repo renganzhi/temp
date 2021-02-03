@@ -234,7 +234,7 @@
             <div class="m-tab"
                  :class="{active:showStyleTab}"
                  @click="showStyleTab=true">样式</div>
-            <div class="m-tab"
+            <div class="m-tab" v-show="!['decorator'].includes(curChartType)"
                  :class="{active:!showStyleTab}"
                  @click="showStyleTab=false">数据</div>
           </div>
@@ -722,14 +722,11 @@
                     <label>填充色</label>
                     <select v-model="selectedItem.colorful"
                             style="width: 68px !important; margin-left: 3px;">
-                      <option value="false">单色</option>
-                      <option value="true">渐变</option>
+                      <option :value="false">单色</option>
+                      <option :value="true">渐变</option>
                     </select>
-                    <!-- <div v-show="selectedItem.colorful !== 'true'" class="color-w200" style="width: 100px;">
-                                        <Vcolor :data="selectedItem.barClr" :key="22" type="barClr" @getdata="getColor"></Vcolor>
-                                    </div> -->
                     <div class="barGradient"
-                         v-if="selectedItem.colorful === 'true'"
+                         v-if="selectedItem.colorful"
                          @click="reverseClr"
                          :style="{'background': 'linear-gradient(45deg, ' + selectedItem.barClrs[0]  +',' + selectedItem.barClrs[1] + ')'}">
                       <div class="color-w15">
@@ -765,6 +762,13 @@
                               @getdata="getColor"></Vcolor>
                     </div>
                   </div>
+                </div>
+                <div div class="form-group cols2" v-show="selectedItem.chartType==='border' && selectedItem.colorful">
+                  <label>渐变方向</label>
+                    <select v-model="selectedItem.directionLinear">
+                      <option :value="180">上下</option>
+                      <option :value="90">左右</option>
+                    </select>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
@@ -974,17 +978,17 @@
                   <label>地球类型</label>
                   <select v-model="selectedItem.backPicName">
                     <!-- <option value="Mapcolor">类型一</option> -->
-                    <option value="Mapcolor1-2">类型1</option>
-                    <option value="Mapcolor1-1">类型2</option>
-                    <option value="Mapcolor2-1">类型3</option>
-                    <option value="Mapcolor2-2">类型4</option>
-                    <option value="Mapcolor3-1">类型5</option>
-                    <option value="Mapcolor3-2">类型6</option>
-                    <option value="Mapcolor4">类型7</option>
-                    <option value="Mapcolor5-1">类型8</option>
-                    <option value="Mapcolor5-2">类型9</option>
-                    <option value="Mapcolor6-1">类型10</option>
-                    <option value="Mapcolor6-2">类型11</option>
+                    <option value="Mapcolor1-2">地球影像</option>
+                    <option value="Mapcolor1-1">地球影像(网格)</option>
+                    <option value="Mapcolor2-2"> 地球剪影-浅蓝蓝色</option>
+                    <option value="Mapcolor2-1">地球剪影-浅蓝蓝色(网格)</option>
+                    <option value="Mapcolor3-2">地球-深绿</option>
+                    <option value="Mapcolor3-1">地球-浅绿深绿(网格)</option>
+                    <option value="Mapcolor4">地球影像-黄绿色(纬度环)</option>
+                    <option value="Mapcolor5-2">地球剪影-浅粉绿</option>
+                    <option value="Mapcolor5-1">地球剪影-浅粉绿(网格)</option>
+                    <option value="Mapcolor6-2">地球剪影-深绿青色</option>
+                    <option value="Mapcolor6-1">地球剪影-深绿青色(网格)</option>
                   </select>
                 </div>
                 <div class="form-group cols2">
@@ -1354,7 +1358,7 @@
                 </div>
                 <div v-if="selectedItem.effectshow === 'true'">
                 <!-- <div class="form-group cols2">
-                  <label>图标</label>
+                  <label>图标图片</label>
                   <input type="file"
                          accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
@@ -1658,13 +1662,40 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                    <label>图例字颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.ctLegendColor"
+                              :key="10"
+                              type="ctLegendColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
                   <div class="m-gap form-group">图表样式</div>
-                  <div class="form-group cols2">
+                  <!-- <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
                       <option value="1">深色</option>
                       <option value="2">浅色</option>
                     </select>
+                  </div> -->
+                  <div class="form-group cols2">
+                    <label>地图颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.areaColor"
+                              :key="10"
+                              type="areaColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>分界线颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.borderColor"
+                              :key="10"
+                              type="borderColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1679,7 +1710,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例位置</label>
                     <select v-model="selectedItem.visualPosition">
                       <option value="left">底部靠左</option>
@@ -1694,7 +1725,7 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
                     <label>地名颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.cityColor"
@@ -1703,7 +1734,7 @@
                               @getdata="getColor"></Vcolor>
                     </div>
                   </div>
-                  <div class="form-group cols2">
+                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
                     <label>字号</label>
                     <select v-model="selectedItem.fontSize">
                       <option value="8">8</option>
@@ -1713,12 +1744,30 @@
                       <option value="13">13</option>
                     </select>
                   </div>
-                  <div class="form-group cols2">
+                  <!-- <div class="form-group cols2">
                     <label>主题</label>
                     <select v-model="selectedItem.themeType">
                       <option value="1">深色</option>
                       <option value="2">浅色</option>
                     </select>
+                  </div> -->
+                  <div class="form-group cols2">
+                    <label>地图颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.areaColor"
+                              :key="10"
+                              type="areaColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
+                  </div>
+                  <div class="form-group cols2">
+                    <label>分界线颜色</label>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.borderColor"
+                              :key="10"
+                              type="borderColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
                   </div>
                   <div class="form-group cols2">
                     <label>配色</label>
@@ -1797,7 +1846,7 @@
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
-                    <label>图元高度</label>
+                    <label>图元边距</label>
                     <input type="number"
                            max="50"
                            min="0"
@@ -1842,6 +1891,13 @@
                       <select v-model="selectedItem.splitShow">
                         <option value="true">显示</option>
                         <option value="false">隐藏</option>
+                      </select>
+                    </div>
+                    <div class="form-group cols2">
+                      <label>坐标刻度类型</label>
+                      <select v-model="selectedItem.minInterval">
+                        <option value="">自适应</option>
+                        <option value="1">整数</option>
                       </select>
                     </div>
                     <div class="form-group cols2">
@@ -1907,10 +1963,40 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
+                <div class="form-group cols2" v-if="selectedItem.chartType === 've-gauge'||selectedItem.chartType === 've-ring'">
+                  <label >环宽</label>
+                  <div class="color-w200">
+                    <input type="number"
+                           max="50"
+                           v-model="selectedItem.detailwidth">
+                  </div>
+                </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字大小</label>
                     <select v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'" v-model="selectedItem.axisLabelSize">
+                      <option value="8">8</option>
+                      <option value="10">10</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="20">20</option>
+                      <option value="24">24</option>
+                      <option value="28">28</option>
+                      <option value="30">30</option>
+                    </select>
+                </div>
+                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                  <label>坐标单位颜色</label>
+                  <div class="color-w200">
+                    <Vcolor :data="selectedItem.DanweiColor"
+                            :key="24"
+                            type="DanweiColor"
+                            @getdata="getColor"></Vcolor>
+                  </div>
+                </div>
+                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                  <label>坐标单位大小</label>
+                  <select v-model="selectedItem.DanweiSize">
                       <option value="8">8</option>
                       <option value="10">10</option>
                       <option value="14">14</option>
@@ -1943,6 +2029,16 @@
                   <select v-model="selectedItem.smooth">
                     <option value="true">曲线</option>
                     <option value="false">折线</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                  <label>线条宽度</label>
+                  <select v-model="selectedItem.lineWidth">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                   </select>
                 </div>
                 <div class="form-group cols2"
@@ -2128,7 +2224,7 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && (selectedItem.chartType.indexOf('ve-') > -1 || ['liquidfill', 'bubble', 'ppt'].includes(selectedItem.chartType))" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && selectedItem.chartType.indexOf('ve-') > -1" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
               <template v-if="['video'].includes(selectedItem.chartType)">
                 <!-- <div class="m-gap form-group">基础样式</div> -->
@@ -2149,7 +2245,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
@@ -2196,7 +2292,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2275,13 +2371,6 @@
                 </div>
                 <div v-if="advanced && selectedItem.chartType==='table'">
                   <div class="form-group cols2">
-                    <label>列宽类型</label>
-                    <select v-model="selectedItem.OneLineType">
-                      <option value="default">默认列宽</option>
-                      <option value="custom">自定义列宽</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2">
                     <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
                       <option v-for="i in selectedItem.chartData.columns"
@@ -2289,11 +2378,22 @@
                               :value="i">{{i}}</option>
                     </select>
                   </div>
+                <div class="m-gap form-group"
+                     >列宽配置</div>
+                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
+                    <label>列宽类型</label>
+                    <select v-model="selectedItem.OneLineType">
+                      <option value="default">默认列宽</option>
+                      <option value="custom">自定义列宽</option>
+                    </select>
+                  </div>
                   <div class="form-group cols2" v-if="selectedItem.OneLineType === 'custom' && selectedItem.AlarmField">
                     <label>字段列宽</label>
                     <input type="number"
                            v-model="selectedItem.OneLineSize">
                   </div>
+                <div class="m-gap form-group"
+                     >告警配置</div>
                   <div class="form-group cols2" v-if="selectedItem.AlarmField">
                     <label>告警条件</label>
                     <select v-model="selectedItem.AlarmType">
@@ -2595,6 +2695,17 @@ import './Edit.scss'
 export default EditJs
 </script>
 <style lang="scss" scoped>
+#mainEdit-edit {
+  input[type="file"] {
+    color: transparent !important;
+  }
+  .delete_text {
+    &:hover {
+      cursor: pointer;
+      color: red;
+    }
+  }
+}
 .handle_label {
   width: 100%;
   height: 38px;
@@ -2660,7 +2771,7 @@ export default EditJs
   width: 100%;
   padding-right: 320px;
   padding-left: 15px;
-  z-index: 99;
+  z-index: 999;
   text-align: right;
   .ring-icon{
     display: inline-block;

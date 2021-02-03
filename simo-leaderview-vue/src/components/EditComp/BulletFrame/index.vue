@@ -130,7 +130,7 @@ export default {
       }
     },
     isEidt: function () {
-      return this.$route.name === 'edit' && this.$parent.$parent._name !== '<PreView>'
+      return this.$route.name === 'edit' && !this.$parent.$parent.previewStatus
     },
     closeBoxStyle: function () {
       return {

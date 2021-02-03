@@ -16,6 +16,9 @@ const map = {
       visualPosition: 'left',
       fontSize: 10,
       cityShow: false,
+      ctLegendColor: '#fff',
+      areaColor: '#121a33',
+      borderColor: '#38597b',
       cityColor: '#828bac',
       themeType: '1', // 1深色 2浅色
       piecesData: [
@@ -37,6 +40,9 @@ const map = {
       provinceCode: '',
       cityCode: '',
       themeType: '1',
+      ctLegendColor: '#ffffff',
+      areaColor: '#121a33',
+      borderColor: '#38597b',
       visualPosition: 'left',
       scatterPoint: [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
       chartData: morenData.mapData

@@ -13,6 +13,8 @@
         </template>
         <template v-if="item.tag === 'input'">
             <input  :type="item.type || 'number'"
+                    :max="item.max*1 || 100000"
+                    :min="item.min===0 ? item.min : item.min || -100000"
                     v-model="selectedItem[item.key]">
         </template>
         <template v-if="item.tag === 'Hint'">

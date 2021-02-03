@@ -5,9 +5,9 @@
          v-if="loadAll && pageList.length < 1">
       <div class="homeEmpty">
         <img v-if="defTheme"
-             src="../../assets/homeEmpty1.png" />
+             src="../../assets/image/homeEmpty1.png" />
         <img v-else
-             src="../../assets/homeEmpty.png" />
+             src="../../assets/image/homeEmpty.png" />
         <div>
           <p v-show="isNewUser"
              style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
@@ -212,7 +212,8 @@ export default {
       'changePageVisiable'
     ]),
     ...mapMutations([
-      'changeEditId'
+      'changeEditId',
+      'changeNowPage'
     ]),
     toEditPage () {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
@@ -399,6 +400,7 @@ export default {
       this.nowPage = JSON.parse(nowPageObj.viewConf)
       nowPageObj = null
       this.isFullScreen && this.interTimer()
+      this.changeNowPage(-1)
     },
     setPaint: function () {
       if (this.paintConf) {
@@ -467,6 +469,7 @@ export default {
     next: function () { // 下一页
       this.timeFn()
       this.isFullScreen && this.interTimer()
+      this.changeNowPage(-1)
     },
     // 加载第一页大屏
     loadFirstPage: function () {
@@ -1075,10 +1078,10 @@ export default {
     this.pageVisibInit()
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
-    $('#screen').addClass('disShow')
+    $('#lead-screen').addClass('disShow')
   },
   beforeDestroy: function () {
-    $('#screen').removeClass('disShow')
+    $('#lead-screen').removeClass('disShow')
     this.stopRefreshTimer()
     this.xhrArr.forEach((xhr) => {
       if (xhr.status !== 200) {

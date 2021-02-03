@@ -29,20 +29,6 @@
                          style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
                 </div>
               </div>
-              <!-- <div class="form-group"
-                   style="line-height: 28px;">
-                <label class="page-lable"
-                       style="margin-right: 15px;">是否可见</label>
-                <input type="radio"
-                       name="visible"
-                       v-model="visible"
-                       value="true" /> 是
-                <input type="radio"
-                       name="visible"
-                       v-model="visible"
-                       style="margin-left: 15px;"
-                       value="false" /> 否
-              </div> -->
               <div class="form-group"
                    style="margin-bottom: 0">
                 <label class="page-lable">选择大屏</label>
@@ -78,13 +64,10 @@
 </template>
 <script>
 import { gbs } from '@/config/settings'
-import { Notification } from 'element-ui'
-import qs from 'qs'
 import { download } from '@/utils'
 export default {
   name: 'exportPage',
   props: ['showModal', 'tems'],
-  components: { Notification },
   data () {
     return {
       name: '',
@@ -177,7 +160,7 @@ export default {
       this.changeName()
       if (this.showErr) return
       if (this.temId.length === 0) {
-        Notification({
+        this.$notify({
           message: '未选择导出页面！',
           position: 'bottom-right',
           customClass: 'toast toast-error'
@@ -261,10 +244,6 @@ export default {
   height: 165px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
-}
-
-#exportPage-modal .flex-item:nth-child(3n + 0) {
-  margin-right: 0px !important;
 }
 
 #exportPage-modal .first-item {

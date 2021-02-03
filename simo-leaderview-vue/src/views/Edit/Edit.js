@@ -40,7 +40,10 @@ let config = {
   ELine: require('@/components/EditComp/ELine/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
-  NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js')
+  NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
+  liquidfill: require('@/components/EditComp/liquidfill/config.js'),
+  ppt: require('@/components/EditComp/ppt/config.js'),
+  bubble: require('@/components/EditComp/bubble/config.js')
 }
 
 export default {
@@ -114,7 +117,7 @@ export default {
         scale: 100,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
-        showGrid: true // 显示网格
+        showGrid: false // 默认不显示网格
       },
       // 箭头的展示与隐藏
       arrowObj: {
@@ -2145,7 +2148,7 @@ export default {
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
-      this.paintObj.showGrid = true
+      // this.paintObj.showGrid = true
       this.paintObj.scale = 100
       this.paintObj.showGrid = false
       this.helpLineColor = '#348cea'
@@ -2700,9 +2703,9 @@ export default {
             _this.selectedItem.url = curConf.url
             _this.selectedItem.method = curConf.method
             _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee') {
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
               _this.selectedItem.ctName = data.obj.info
-              if (_this.selectedItem.chartType === 'text') {
+              if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
                 _this.selectedItem.chartData = data.obj
               }
             }
@@ -2832,7 +2835,7 @@ export default {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NEWtextArea') {
         this.selectedItem.ctName = this.$refs.textarea.innerText
-        this.$refs.textarea.innerText = this.selectedItem.ctName
+        // this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {
         var textData = this.$refs.textareaData.innerText
         var reg = /^\{[\s\S]*\}$/
@@ -2927,7 +2930,8 @@ export default {
       $('#mainEdit-edit .main_video').append(
         $('<img>')
           .addClass('monitp')
-          .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
@@ -2957,6 +2961,7 @@ export default {
         // $('#mainEdit-edit .monitp').remove()
         document.body.appendChild(canvas)
         var dataUrl = canvas.toDataURL('image/png')
+        console.log($(canvas))
         var arr = dataUrl.split(',')
         var mime = arr[0].match(/:(.*?);/)[1]
         var suffix = mime.split('/')[1]
@@ -3024,7 +3029,7 @@ export default {
             // var _url = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
             typeof cb === 'function' && cb(data)
           } else {
-            // $("#screen").hide()
+            // $("#lead-screen").hide()
             if (gbs.inDev) {
               Notification({
                 message: data.msg,
@@ -3552,7 +3557,7 @@ export default {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
-        if (_this.selectedItem.chartType === 'image') {
+        if (_this.selectedItem.chartType === 'image' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
         } if (_this.selectedItem.chartType === 'table') {
           _this.selectedItem.tableBack = curSrc
@@ -4343,7 +4348,7 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
-    $('#screen').addClass('disShow')
+    $('#lead-screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {
     //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)
@@ -4362,7 +4367,7 @@ export default {
     // stateBar.removeEventListener('mousedown ', this.userChoose)
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
-    $('#screen').removeClass('disShow')
+    $('#lead-screen').removeClass('disShow')
   },
   destroyed: function () {
     // $.comps.editHome = null;

@@ -24,6 +24,10 @@ export default {
   styles: {
     base: [
       {
+        'name': '图表样式',
+        'tag': 'Hint'
+      },
+      {
         'name': '动画速度',
         'key': 'speed',
         'tag': 'select',

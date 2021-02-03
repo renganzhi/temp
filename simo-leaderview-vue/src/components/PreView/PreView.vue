@@ -36,6 +36,7 @@ export default {
   components: { LookItem, Notification, LookCompose },
   data () {
     return {
+      previewStatus: true, // 标记预览状态
       editable: false,
       pageList: [],
       combinList: [],
@@ -74,28 +75,26 @@ export default {
     ])
   },
   methods: {
-    // setScale () {
-    //   var box = $('#mainPreview').find('.box')
-    //   var w = box.width()
-    //   var h = box.height()
+    setScale () {
+      var box = $('#mainPreview').find('.box')
+      var w = box.width()
+      var h = box.height()
 
-    //   if (this.paintObj) {
-    //     console.log(1111)
-    //     var scaleX = w / this.paintObj.width
-    //     var scaleY = h / this.paintObj.height
-    //   } else if (this.paintConf) {
-    //     console.log(22222)
-    //     scaleX = w / this.paintConf.width
-    //     scaleY = h / this.paintConf.height
-    //   } else {
-    //     console.log(w, h)
-    //     scaleX = w / 1920
-    //     scaleY = h / 1080
-    //   }
-    //   box.css({
-    //     transform: 'scale(' + scaleX + ',' + scaleY + ')'
-    //   })
-    // },
+      if (this.paintObj) {
+        var scaleX = w / this.paintObj.width
+        var scaleY = h / this.paintObj.height
+      } else if (this.paintConf) {
+        scaleX = w / this.paintConf.width
+        scaleY = h / this.paintConf.height
+      } else {
+        scaleX = w / 1920
+        scaleY = h / 1080
+      }
+      let scale = Math.min(scaleX, scaleY)
+      box.css({
+        transform: 'scale(' + scale + ',' + scale + ')'
+      })
+    },
     reNewOne () {
       Public.bigScreenfullScreen($('.wrap').get(0))
       this.getConf()
@@ -107,9 +106,9 @@ export default {
             this.pageList = res.obj.viewConf ? JSON.parse(res.obj.viewConf) : []
             this.combinList = res.obj.composeObj ? JSON.parse(res.obj.composeObj) : []
             this.paintConf = res.obj.paintObj ? JSON.parse(res.obj.paintObj) : ''
-            // this.$nextTick(() => {
-            //   this.setScale()
-            // })
+            this.$nextTick(() => {
+              this.setScale()
+            })
           } else {
             if (gbs.inDev) {
               Notification({
@@ -125,9 +124,9 @@ export default {
       } else {
         this.pageList = JSON.parse(this.pageData) || []
         this.combinList = JSON.parse(this.composeData) || []
-        // this.$nextTick(() => {
-        //   this.setScale()
-        // })
+        this.$nextTick(() => {
+          this.setScale()
+        })
       }
     }
   },
@@ -163,7 +162,7 @@ export default {
 #mainPreview .itemWrapBox {
   padding-top: 1px !important;
 }
-.modal-dialog.modal-lg {
+/* .modal-dialog.modal-lg {
     width: 1500px;
-}
+} */
 </style>

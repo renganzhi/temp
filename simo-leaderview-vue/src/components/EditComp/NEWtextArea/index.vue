@@ -101,15 +101,16 @@ export default {
         return {
           width: this.item.width - 20 + 'px !important',
           height: this.textHeight - 20 + 'px !important',
-          backgroundImage: !this.item.ColorType ? '-webkit-linear-gradient(bottom,' + this.item.Gradientclr[0] + ',' + this.item.Gradientclr[1] + ')' : '-webkit-linear-gradient(bottom,' + this.item.clr + ',' + this.item.clr + ')',
+          backgroundImage: !this.item.ColorType ? '-webkit-linear-gradient(bottom,' + this.item.Gradientclr[0] + ',' + this.item.Gradientclr[1] + ')!important' : '-webkit-linear-gradient(bottom,' + this.item.clr + ',' + this.item.clr + ')!important',
           fontSize: this.item.fontSize + 'px !important',
           textAlign: this.item.textAlign,
           lineHeight: this.item.fontLineHeight + 'px',
           fontWeight: this.item.fontWeight + ' !important',
-          backgroundSize: '100% ' + (this.item.fontSize * 1 + 8) + 'px',
+          backgroundSize: '100% ' + (this.item.fontSize * 1 + 8) + 'px!important',
           margin: '10px !important',
           padding: '0px !important',
           letterSpacing: this.item.fontSpaceing + 'px !important',
+          resize: 'none',
           fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
         }
       } else {
@@ -138,12 +139,6 @@ export default {
       if (this.item.ctDataSource !== 'static') {
         this.updateColor()
       }
-    },
-    'item.ctName': function (val) {
-      // if (this.item.ctDataSource !== 'static') {
-      //   this.updateColor()
-      // }
-      this.item.chartData = val
     },
     'item.fontSize': function () {
       this.updateHeight()

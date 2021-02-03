@@ -38,8 +38,8 @@ export default {
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
       let setings = {
         grid: {
-          left: 10,
-          right: 10,
+          left: this.item.gridTop + '%',
+          right: this.item.gridTop + '%',
           top: this.item.gridTop + '%',
           bottom: this.item.gridTop + '%'
         },
@@ -87,7 +87,7 @@ export default {
             y: this.item.legendY + '%',
             show: this.item.chartType === 've-gauge' ? false : this.item.ctLegendShow === 'true',
             textStyle: {
-              fontSize: this.item.fontSize,
+              fontSize: this.item.ctLegendSize,
               color: this.item.ctLegendColor
             }
           },
@@ -183,13 +183,35 @@ export default {
     'item.gridTop': function (newV) {
       this.extend.grid.top = newV + '%'
       this.extend.grid.bottom = newV + '%'
+      this.extend.grid.left = newV + '%'
+      this.extend.grid.right = newV + '%'
     },
     'item.width': function (newV, oldValue) {
       if (this.item.chartType === 've-histogram') {
         let barW = Math.floor((newV - 60) * 0.7 / this.dealChartData.rows.length)
-        let strLen = Math.round(barW / 10)
+        let strLen = Math.ceil(barW / 10)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
+        }
+      }
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
         }
       }
     },
@@ -200,6 +222,27 @@ export default {
         this.extend.yAxis.splitLine.show = newV === 'true'
       } else if (this.item.chartType === 've-radar') {
         this.extend.radar.splitLine.show = newV === 'true'
+      }
+    },
+    'item.DanweiColor': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.nameTextStyle.color = newV
+      } else {
+        this.extend.yAxis.nameTextStyle.color = newV
+      }
+    },
+    'item.minInterval': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.minInterval = newV
+      } else {
+        this.extend.yAxis.minInterval = newV
+      }
+    },
+    'item.DanweiSize': function (newV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.nameTextStyle.fontSize = newV
+      } else {
+        this.extend.yAxis.nameTextStyle.fontSize = newV
       }
     },
     'item.splitColor': function (newV) {
@@ -240,7 +283,6 @@ export default {
     'item.ctLegendShow': function (newV) {
       if (this.item.subType === 'progress') {
         if (newV === 'true') {
-          console.log(this.settings)
           this.settings.dataName.p = this.item.chartData.name
         } else {
           this.settings.dataName.p = ''
@@ -269,6 +311,26 @@ export default {
     'item.axisLabelSize': function (newV) {
       this.extend.xAxis.axisLabel.textStyle.fontSize = newV
       this.extend.yAxis.axisLabel.textStyle.fontSize = newV
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
+        }
+      }
     },
     'item.smooth': function (newV) {
       this.extend.series.smooth = newV === 'true'
@@ -289,6 +351,9 @@ export default {
     },
     'item.LineType': function (newV) {
       this.extend.series.itemStyle.normal.lineStyle.type = newV
+    },
+    'item.lineWidth': function (newV) {
+      this.extend.series.itemStyle.normal.lineStyle.width = newV
     },
     'item.tooltipShow': function (newV) {
       this.extend.tooltip.show = newV === 'true'
@@ -329,6 +394,17 @@ export default {
       },
       deep: true
     },
+    'item.detailwidth': {
+      handler: function (newV) {
+        if (this.item.chartType === 've-gauge') {
+          this.settings.seriesMap.p.axisLine.lineStyle.width = newV
+          this.settings.seriesMap.pro.axisLine.lineStyle.width = newV
+        } else if (this.item.chartType === 've-ring') {
+          let index = 50 - newV + '%'
+          this.settings.radius = [index, '50%']
+        }
+      }
+    },
     'item.ctColors': function (newV) {
       if (this.item.chartType === 've-gauge') {
         this.setGaugeColor('pro', newV)
@@ -350,6 +426,28 @@ export default {
         }
       } else {
         this.extend.series.itemStyle.normal.color = null
+      }
+    },
+    'item.formatterType' (newV, oldV) {
+      if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.axisLabel.formatter = function (params, index) {
+          if (newV === '0') {
+            return params.length > 5 ? params.substr(0, 5) + '...' : params
+          } else {
+            return params
+          }
+        }
+      } else {
+        var rows = this.item.chartData.rows
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
+        }
       }
     },
     'item.rotate' (newV, oldV) {
@@ -378,6 +476,13 @@ export default {
         }
         this.empty = true
       }
+      if (this.item.chartType === 've-histogram' || this.item.chartType === 've-line') {
+        if (this.item.subType !== 'doubleAxis') {
+          this.extend.yAxis.name = newV.unit
+        }
+      } else if (this.item.chartType === 've-bar') {
+        this.extend.xAxis.name = newV.unit
+      }
       if (this.item.chartType === 've-histogram') {
         let rows
         if (newV.rows) {
@@ -387,7 +492,7 @@ export default {
           rows = newV.allData[this.activeTab].rows
         }
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-        let strLen = Math.round(barW / 10)
+        let strLen = Math.ceil(barW / this.item.ctLegendSize)
         this.extend.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
@@ -615,7 +720,7 @@ export default {
           obj.settings.xAxisType = [0]
           obj.extend = $.extend(obj.extend, {
             grid: {
-              right: 15
+              right: 65
             },
             series: {
               type: 'bar',
@@ -632,6 +737,13 @@ export default {
               }
             },
             xAxis: {
+              minInterval: _this.item.minInterval,
+              name: _this.item.chartData.unit,
+              position: 'bottom',
+              nameTextStyle: {
+                color: _this.item.DanweiColor || '#828bac',
+                fontSize: _this.item.DanweiSize || 16
+              },
               splitLine: {
                 show: _this.item.splitShow === 'true',
                 lineStyle: {
@@ -665,7 +777,11 @@ export default {
                   fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
-                  return params.length > 5 ? params.substr(0, 5) + '...' : params
+                  if (_this.item.formatterType === '0') {
+                    return params.length > 5 ? params.substr(0, 5) + '...' : params
+                  } else {
+                    return params
+                  }
                 }
               }
             }
@@ -706,8 +822,8 @@ export default {
             }
             rows = _this.item.chartData.allData[_this.activeTab].rows
           }
-          let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
-          let strLen = Math.round(barW / 10)
+          let barW = Math.floor((_this.item.width - _this.item.width * _this.item.gridTop / 50) * 0.7 / rows.length)
+          let strLen = Math.ceil(barW / (_this.item.axisLabelSize * 2))
           obj.extend = $.extend(obj.extend, {
             xAxis: {
               axisLabel: {
@@ -720,11 +836,22 @@ export default {
                   fontSize: _this.item.axisLabelSize || '14'
                 },
                 formatter: function (params, index) {
-                  return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                  if (_this.item.formatterType === '0') {
+                    return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                  } else {
+                    return params
+                  }
                 }
               }
             },
             yAxis: {
+              minInterval: _this.item.minInterval,
+              name: _this.item.chartData.unit,
+              position: 'left',
+              nameTextStyle: {
+                color: _this.item.DanweiColor || '#828bac',
+                fontSize: _this.item.DanweiSize || 16
+              },
               splitLine: {
                 show: _this.item.splitShow === 'true',
                 lineStyle: {
@@ -837,7 +964,7 @@ export default {
               itemStyle: {
                 normal: {
                   lineStyle: {
-                    width: 1, // 设置线条粗细
+                    width: _this.item.lineWidth, // 设置线条粗细
                     type: _this.item.LineType || 'solid'
                   }
                 }
@@ -919,6 +1046,18 @@ export default {
                   color: _this.item.legendColor || '#828bac',
                   fontSize: _this.item.axisLabelSize || '14'
                 },
+                formatter: function (params, index) {
+                  var rows = _this.item.chartData.rows
+                  let barW = Math.floor((_this.item.width - 60) * 0.7 / rows.length)
+                  let strLen = Math.ceil(barW / (_this.item.axisLabelSize * 2))
+                  _this.extend.xAxis.axisLabel.formatter = function (params, index) {
+                    if (_this.item.formatterType === '0') {
+                      return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                    } else {
+                      return params
+                    }
+                  }
+                },
                 interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
               }
             },
@@ -953,7 +1092,6 @@ export default {
               }
             }
           })
-          console.log(obj)
           if (_this.item.subType === 'doubleAxis') {
             // CPU平均利用率
             obj.settings = $.extend(obj.settings, {
@@ -976,8 +1114,9 @@ export default {
           }
         },
         've-ring': function () {
+          let index = 50 - _this.item.detailwidth + '%'
           obj.settings = $.extend(obj.settings, {
-            radius: ['40%', '50%']
+            radius: [index, '50%']
           })
           obj.extend = $.extend(obj.extend, {
             series: {
@@ -1025,7 +1164,7 @@ export default {
                   // radius: '50%',
                   axisLine: {
                     lineStyle: { //  属性lineStyle控制线条样式
-                      width: 12,
+                      width: _this.item.detailwidth, // 12,
                       color: [
                         [1, _this.item.bgClr || '#657992']
                       ]
@@ -1061,7 +1200,7 @@ export default {
                   // radius: '50%',
                   axisLine: {
                     lineStyle: {
-                      width: 12,
+                      width: _this.item.detailwidth, // 12,
                       color: [
                         [data.value / 100, color]
                       ]

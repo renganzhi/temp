@@ -7,6 +7,18 @@ export const axis = [
       name: d,
       value: d
     }))
+  },
+  {
+    name: 'x轴标注剪裁',
+    key: 'formatterType',
+    tag: 'select',
+    options: [{
+      name: '自适应',
+      value: '0'
+    }, {
+      name: '不剪裁',
+      value: '1'
+    }]
   }
   // {
   //     name: "文字剪裁",

@@ -16,6 +16,10 @@ export default {
   'styles': {
     'base': [
       {
+        'name': '图表样式',
+        'tag': 'Hint'
+      },
+      {
         'name': '是否自动播放',
         'key': 'autoplay',
         'tag': 'select',
@@ -45,7 +49,10 @@ export default {
             'name': '禁止自动播放',
             'value': false
           }
-        ]
+        ],
+        'parentKey': {
+          'autoplay': true
+        }
       },
       {
         'name': '是否循环',
@@ -62,8 +69,6 @@ export default {
           }
         ]
       }
-    ],
-    'lengend': [],
-    'axis': []
+    ]
   }
 }

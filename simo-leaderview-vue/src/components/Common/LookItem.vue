@@ -105,7 +105,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .itemWrapBox {
   position: absolute;
   box-sizing: border-box;
