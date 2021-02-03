@@ -17,6 +17,7 @@ import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
@@ -57,40 +58,186 @@ public class RpcProcessService {
 
 
 
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> vmStatics(Long domain) throws Exception{
-        JsonModel jsonModel = monitorService.vmStatics(domain);
-        if (!jsonModel.isSuccess()){
+//    @SuppressWarnings("unchecked")
+//    public List<Map<String, Object>> vmStatics(Long domain) throws Exception{
+//        JsonModel jsonModel = monitorService.vmStatics(domain);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return (List<Map<String, Object>>) jsonModel.getObj();
+//    }
+    //上述方法因为要使用核心接口而变更为下面的实现
+
+    public List<Map<String,Object>> vmStatics(Long domain) throws Exception {
+        Map<String, Object> condition = new HashMap<>();
+        if(domain != null){
+            condition.put("domainId", domain);
+        }
+        List<NeClass> neClasses = BaseNeClass.virtualization.getNeClass();
+        condition.put("neClasses", neClasses);
+        condition.put("pagination", false);
+        condition.put("sourceManage", false);
+        condition.put("manageStatusNotIn", "Delected");
+        JsonModel jsonModel = monitorService.getNeList(condition);
+        if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return (List<Map<String, Object>>) jsonModel.getObj();
+        List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
+        List<Map<String, Object>> realResult = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(rawResult)) {
+            for (NeClass neClass : neClasses) {
+                HashMap<String, Object> temp = Maps.newHashMap();
+                long neCount;
+                // 对esxi主机计数特殊处理
+                if (NeClass.esxi.equals(neClass)) {
+                    // 统计不是vCenter下属的esxi主机数量，即NetworkEntity中parentId == id
+                    neCount = rawResult.stream().filter(e -> neClass.equals(e.getNeClass())
+                            && e.getId().equals(e.getParentId())).count();
+                } else {
+                    neCount = rawResult.stream().filter(e -> neClass.equals(e.getNeClass())).count();
+                }
+                temp.put("name", neClass);
+                temp.put("value", neCount);
+                realResult.add(temp);
+            }
+        }
+        return realResult;
     }
 
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
+//    public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
+//        JsonModel jsonModel = monitorService.neStatistics(domain, baseClass);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return (List<Map<String, Object>>) jsonModel.getObj();
+//    }
+
+    //上述方法因为要使用核心接口而变更为下面的实现
+
     public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
-        JsonModel jsonModel = monitorService.neStatistics(domain, baseClass);
-        if (!jsonModel.isSuccess()){
+        Map<String, Object> condition = new HashMap<>();
+        if(domain != null){
+            condition.put("domainId", domain);
+        }
+        condition.put("pagination", false);
+        condition.put("sourceManage", false);
+        condition.put("manageStatusNotIn", "Delected");
+        JsonModel jsonModel = monitorService.getNeList(condition);
+        if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return (List<Map<String, Object>>) jsonModel.getObj();
-    }
-
-    @SuppressWarnings("unchecked")
-    public Long countVr(Long domainId) throws Exception{
-        JsonModel jsonModel = monitorService.countVr(domainId);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
+        List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
+        List<Map<String, Object>> realResult = new ArrayList<>();
+        if(baseClass == null){
+            List<BaseNeClass> baseNeClassList = Arrays.asList(BaseNeClass.values());
+            Map<String, Object> temp = null;
+            for(BaseNeClass baseNeClass: baseNeClassList){
+                long count = 0;
+                Iterator<NetworkEntity> iterator = rawResult.iterator();
+                while(iterator.hasNext()){
+                    NetworkEntity networkEntity = iterator.next();
+                    if(networkEntity.getBaseNeClass().toString().equals(baseNeClass.toString())){
+                        count++;
+                        rawResult.remove(networkEntity);    //如果已经统计过，则去掉，减少后面循环的次数
+                    }
+                }
+                temp = new HashMap<>();
+                temp.put("name", baseNeClass);
+                temp.put("value", count);
+                realResult.add(temp);
+            }
+        }else{
+            List<NeClass> neClassList = Arrays.asList(NeClass.values());
+            Map<String, Object> temp = null;
+            for(NeClass neClass: neClassList){
+                int count = 0;
+                if(!neClass.getBaseNeClass().toString().equals(baseClass.toString())){
+                    continue;
+                }
+                Iterator<NetworkEntity> iterator = rawResult.iterator();
+                while(iterator.hasNext()){
+                    NetworkEntity networkEntity = iterator.next();
+                    if(networkEntity.getNeClass().toString().equals(neClass.toString())){
+                        count++;
+                        rawResult.remove(networkEntity);    //如果已经统计过，则去掉，减少后面循环的次数
+                    }
+                }
+                temp = new HashMap<>();
+                temp.put("name", neClass);
+                temp.put("value", count);
+                realResult.add(temp);
+            }
         }
-        return getLongValue(jsonModel);
+        return realResult;
     }
 
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
+//    public Long countVr(Long domainId) throws Exception{
+//        JsonModel jsonModel = monitorService.countVr(domainId);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return getLongValue(jsonModel);
+//    }
+    //上述方法因为要使用核心接口而变更为下面的实现
+
+    public Long countVr(Long domainId) throws Exception {
+        List<Map<String, Object>> statics = vmStatics(domainId);
+        long value = 0L;
+        if (CollectionUtils.isNotEmpty(statics)) {
+            for (Map<String, Object> map : statics) {
+                value = value + Long.parseLong(map.get("value").toString());
+            }
+        }
+        return value;
+    }
+
+//    @SuppressWarnings("unchecked")
+//    public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
+//        JsonModel jsonModel = monitorService.neStatusStatistics(domainId, baseNeClass);
+//        if (!jsonModel.isSuccess()){
+//            throw new Exception(jsonModel.getMsg());
+//        }
+//        return (List<ArrayList> ) jsonModel.getObj();
+//    }
+    //上述方法因为要使用核心接口而变更为下面的实现
+
     public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
-        JsonModel jsonModel = monitorService.neStatusStatistics(domainId, baseNeClass);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
+        Map<String, Object> condition = new HashMap<>();
+        if(domainId != null){
+            condition.put("domainId", domainId);
         }
-        return (List<ArrayList> ) jsonModel.getObj();
+        if(baseNeClass != null){
+            condition.put("baseNeClass", baseNeClass);
+        }
+        condition.put("manageStatusNotIn", "Delected");
+        List<NetworkEntity> networkEntityList =(List<NetworkEntity>) monitorService.getNeList(condition);
+        // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
+        List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
+            networkEntity.getParentId() == null
+            || networkEntity.getParentId().equals(networkEntity.getId())
+        ).collect(Collectors.toList());
+        List<ArrayList> realResult = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(rawResult)){
+            String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
+            ArrayList<Object> temp = new ArrayList<>();
+            for(String runStatus : runStatuses){
+                long count = 0;
+                Iterator<NetworkEntity> iterator = networkEntityList.iterator();
+                while(iterator.hasNext()){
+                    NetworkEntity networkEntity = iterator.next();
+                    if(networkEntity.getRunStatus().equals(runStatus)){
+                        count++;
+                        networkEntityList.remove(networkEntity);
+                    }
+                }
+                temp.add(runStatus);
+                temp.add(count);
+                realResult.add(temp);
+            }
+        }
+        return realResult;
     }
 
     public NeHealth getNeHealth(String neId) throws Exception{
