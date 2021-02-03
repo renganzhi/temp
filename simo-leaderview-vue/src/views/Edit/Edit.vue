@@ -1358,7 +1358,7 @@
                 </div>
                 <div v-if="selectedItem.effectshow === 'true'">
                 <!-- <div class="form-group cols2">
-                  <label>图标</label>
+                  <label>图标图片</label>
                   <input type="file"
                          accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
