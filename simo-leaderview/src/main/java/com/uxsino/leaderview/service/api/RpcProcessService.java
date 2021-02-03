@@ -78,12 +78,13 @@ public class RpcProcessService {
         List<NeClass> neClasses = BaseNeClass.virtualization.getNeClass();
         condition.put("neClasses", neClasses);
         condition.put("pagination", false);
-        condition.put("sourceManage", false);
+//        condition.put("sourceManage", false);
         condition.put("manageStatusNotIn", "Delected");
         JsonModel jsonModel = monitorService.getNeList(condition);
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
+        List<NeHealthHistory> list = new ArrayList<>();
         List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
         List<Map<String, Object>> realResult = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(rawResult)) {
@@ -123,13 +124,13 @@ public class RpcProcessService {
             condition.put("domainId", domain);
         }
         condition.put("pagination", false);
-        condition.put("sourceManage", false);
+//        condition.put("sourceManage", false);
         condition.put("manageStatusNotIn", "Delected");
         JsonModel jsonModel = monitorService.getNeList(condition);
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
+        List<NetworkEntity> rawResult = toJavaBeanList(jsonModel, NetworkEntity.class);
         List<Map<String, Object>> realResult = new ArrayList<>();
         if(baseClass == null){
             List<BaseNeClass> baseNeClassList = Arrays.asList(BaseNeClass.values());
@@ -141,7 +142,7 @@ public class RpcProcessService {
                     NetworkEntity networkEntity = iterator.next();
                     if(networkEntity.getBaseNeClass().toString().equals(baseNeClass.toString())){
                         count++;
-                        rawResult.remove(networkEntity);    //如果已经统计过，则去掉，减少后面循环的次数
+                        iterator.remove();    //如果已经统计过，则去掉，减少后面循环的次数
                     }
                 }
                 temp = new HashMap<>();
@@ -162,7 +163,7 @@ public class RpcProcessService {
                     NetworkEntity networkEntity = iterator.next();
                     if(networkEntity.getNeClass().toString().equals(neClass.toString())){
                         count++;
-                        rawResult.remove(networkEntity);    //如果已经统计过，则去掉，减少后面循环的次数
+                        iterator.remove();    //如果已经统计过，则去掉，减少后面循环的次数
                     }
                 }
                 temp = new HashMap<>();
@@ -231,7 +232,7 @@ public class RpcProcessService {
                     NetworkEntity networkEntity = iterator.next();
                     if(networkEntity.getRunStatus().toString().equals(runStatus)){
                         count++;
-                        networkEntityList.remove(networkEntity);
+                        iterator.remove();
                     }
                 }
                 temp.add(runStatus);
