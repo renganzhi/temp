@@ -232,7 +232,6 @@ export default {
         series: series
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
-        console.log(99999999)
         this.mychart.clear()
         this.mychart.setOption(myoption)
       }

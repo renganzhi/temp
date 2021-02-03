@@ -3557,7 +3557,7 @@ export default {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
-        if (_this.selectedItem.chartType === 'image') {
+        if (_this.selectedItem.chartType === 'image' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
         } if (_this.selectedItem.chartType === 'table') {
           _this.selectedItem.tableBack = curSrc
