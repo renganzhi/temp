@@ -227,7 +227,9 @@ export default {
     'item.DanweiColor': function (newV) {
       if (this.item.chartType === 've-bar') {
         this.extend.xAxis.nameTextStyle.color = newV
-      } else {
+      } else if (this.item.chartType === 've-histogram') {
+        this.extend.yAxis.nameTextStyle.color = newV
+      } else if (this.item.chartType === 've-line') {
         this.extend.yAxis.nameTextStyle.color = newV
       }
     },
@@ -241,8 +243,16 @@ export default {
     'item.DanweiSize': function (newV) {
       if (this.item.chartType === 've-bar') {
         this.extend.xAxis.nameTextStyle.fontSize = newV
-      } else {
+      } else if (this.item.chartType === 've-histogram') {
         this.extend.yAxis.nameTextStyle.fontSize = newV
+      } else if (this.item.chartType === 've-line') {
+        console.log(11111)
+        this.extend.yAxis.nameTextStyle.fontSize = newV
+      }
+    },
+    'item.boundaryGap': function (newV) {
+      if (this.item.chartType === 've-line') {
+        this.extend.xAxis.boundaryGap = newV === 'true'
       }
     },
     'item.splitColor': function (newV) {
@@ -277,7 +287,7 @@ export default {
       } else {
         this.extend.xAxis.axisLabel.textStyle.color = newV
         this.extend.yAxis.axisLabel.textStyle.color = newV
-        this.extend.yAxis.nameTextStyle.color = newV
+        // this.extend.yAxis.nameTextStyle.color = newV
       }
     },
     'item.ctLegendShow': function (newV) {
@@ -978,7 +988,8 @@ export default {
             yAxis: {
               type: 'value',
               nameTextStyle: {
-                color: _this.item.legendColor || '#828bac'
+                color: _this.item.DanweiColor || '#828bac',
+                fontSize: _this.item.DanweiSize || 16
               },
               // position: 'left',
               // name: _this.item.chartData.unit, // 单位
@@ -1022,6 +1033,7 @@ export default {
             xAxis: {
               type: 'category',
               position: 'bottom',
+              boundaryGap: _this.item.boundaryGap === 'true',
               axisTick: {
                 show: true,
                 alignWithLabel: true, // 刻度线与标签对齐
