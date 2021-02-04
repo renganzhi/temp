@@ -31,7 +31,7 @@
             <div class="color-w200">
               <input type="file"
                 style="width: 147px!important;margin-right: 8px;"
-                accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                 @change='changeImg' />
               <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
             </div>

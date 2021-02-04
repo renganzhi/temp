@@ -426,7 +426,7 @@
                       <input type="file"
                              class="uploadBg"
                              style="height: 120px !important;"
-                             accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                             accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                              @change='changeImg' />
                     </div>
                     <input type="radio"
@@ -640,7 +640,7 @@
                      v-if="selectedItem.chartType=='table'">
                   <label>表格背景图</label>
                   <input type="file"
-                    accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                    accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
                 </div>
                 <div class="form-group cols2"
@@ -1360,7 +1360,7 @@
                 <!-- <div class="form-group cols2">
                   <label>图标图片</label>
                   <input type="file"
-                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
                 </div> -->
                 <div class="form-group cols2">
@@ -2074,7 +2074,7 @@
                      v-if="selectedItem.chartType=='ve-line' && selectedItem.symbolType === 'pic'">
                     <label>数据点图片</label>
                     <input type="file"
-                           accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                           accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                            @change='changeImg' />
                 </div>
                 <div class="form-group cols2"
@@ -2226,7 +2226,7 @@
                   <div class="form-group cols2">
                     <label>图形形状</label>
                     <input type="file"
-                           accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                           accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                            @change='changeImg' />
                   </div>
                 </div>
@@ -2278,7 +2278,7 @@
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
-                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
@@ -2287,7 +2287,7 @@
                 <div class="form-group cols2">
                   <label>选择文件</label>
                   <input type="file"
-                         accept="image/png, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
                 </div>
               </div>
