@@ -23,6 +23,7 @@ export default {
     'splitSize': 1,
     'minInterval': '',
     'Linesubsection': false,
+    'boundaryGap': true,
     'legendColor': '#828bac',
     'DanweiColor': '#828bac',
     'DanweiSize': 16,
@@ -370,6 +371,21 @@ export default {
           {
             'name': '区域图',
             'value': true
+          }
+        ]
+      },
+      {
+        'name': '线条距Y距离',
+        'key': 'boundaryGap',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '开启',
+            'value': true
+          },
+          {
+            'name': '关闭',
+            'value': false
           }
         ]
       },

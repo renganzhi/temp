@@ -1985,7 +1985,7 @@
                       <option value="30">30</option>
                     </select>
                 </div>
-                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                <div class="form-group cols2" v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
                   <label>坐标单位颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.DanweiColor"
@@ -1994,7 +1994,7 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
-                <div class="form-group cols2" v-if=" ['v-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                <div class="form-group cols2" v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
                   <label>坐标单位大小</label>
                   <select v-model="selectedItem.DanweiSize">
                       <option value="8">8</option>
@@ -2021,6 +2021,14 @@
                   <select v-model="selectedItem.lineColorType">
                     <option value="false">渐变</option>
                     <option value="true">单色</option>
+                  </select>
+                </div>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType=='ve-line'">
+                  <label>线条距Y距离</label>
+                  <select v-model="selectedItem.boundaryGap">
+                    <option value="true">开启</option>
+                    <option value="false">关闭</option>
                   </select>
                 </div>
                 <div class="form-group cols2"

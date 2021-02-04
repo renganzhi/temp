@@ -152,6 +152,7 @@ export default {
       let myoption = {
         xAxis: {
           type: 'category',
+          boundaryGap: this.item.boundaryGap || true,
           name: this.item.chartData.unitX,
           nameTextStyle: {
             color: this.item.DanweiColor || '#828bac',
