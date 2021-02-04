@@ -22,6 +22,7 @@ export default {
     'splitColor': '#333849',
     'splitSize': 1,
     'minInterval': '',
+    'Linesubsection': false,
     'legendColor': '#828bac',
     'DanweiColor': '#828bac',
     'DanweiSize': 16,
@@ -38,13 +39,13 @@ export default {
     'PointSize': '14',
     'rotate': 0,
     'LineColorArray': [
-      '#37a2da',
+      '#be4d24',
       '#32c5e9',
       '#67e0e3',
       '#9fe6b8',
       '#ffdb5c'],
     'DLineColorArray': [
-      ['rgba(69, 194, 255, 0.47)', '#009bff'],
+      ['rgba(213, 153, 17, 0.52)', '#be4d24'],
       ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
       ['#fa8d76', '#db4222'],
       ['#af8af3', '#874edc'],
@@ -56,6 +57,8 @@ export default {
     'chartData': {
       'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
       'unit': '%',
+      'min': 60,
+      'max': 80,
       'unitX': '时间',
       'rows': [{
         '日期': '2020-01-01',
@@ -401,6 +404,21 @@ export default {
           {
             'name': '点状线',
             'value': 'dotted'
+          }
+        ]
+      },
+      {
+        'name': '数据线分段显示',
+        'key': 'Linesubsection',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '分段',
+            'value': true
+          },
+          {
+            'name': '不分段',
+            'value': false
           }
         ]
       },

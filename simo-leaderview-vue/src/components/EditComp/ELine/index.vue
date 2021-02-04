@@ -16,7 +16,8 @@ export default {
   data () {
     return {
       mychart: null,
-      oldOption: ''
+      oldOption: '',
+      oldformatterType: ''
     }
   },
   computed: {
@@ -25,6 +26,12 @@ export default {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
       }
+    },
+    maxData: function () {
+      return this.item.chartData.max || 10000
+    },
+    minData: function () {
+      return this.item.chartData.min || 0
     }
   },
   watch: {
@@ -69,6 +76,16 @@ export default {
             }
           }
         })
+      })
+      let errorArry = []
+      mySeriesData.forEach(data => {
+        let oneArry = []
+        data.forEach((d, index) => {
+          if (d >= this.minData && d <= this.maxData) {
+            oneArry.push(index)
+          }
+        })
+        errorArry.push(oneArry)
       })
       mySeriesData.forEach((data, index) => {
         if (data) {
@@ -275,22 +292,72 @@ export default {
         },
         series: newseries
       }
+      let myvisualMap = []
+      errorArry.forEach((d, index) => {
+        let pices = []
+        d.forEach(element => {
+          pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DLineColorArray[0][0] || 'red' : this.item.LineColorArray[0] || 'red'})
+        })
+        myvisualMap.push({
+          show: false,
+          dimension: 0,
+          seriesIndex: index,
+          pieces: pices,
+          outOfRange: {
+            color: this.item.ifGradual === 'true' ? this.item.DLineColorArray[1][0] || '#009bff' : this.item.LineColorArray[1] || '#009bff'
+          }
+        })
+      })
+      if (this.item.Linesubsection) {
+        myoption.visualMap = myvisualMap
+        myoption.series.forEach((element, index) => {
+          element.itemStyle.normal.lineStyle = {
+            width: this.item.lineWidth, // 设置线条粗细
+            type: this.item.LineType || 'solid'
+          }
+          if (this.item.ifGradual === 'true' && this.item.lineArea) {
+            element.itemStyle.normal.lineStyle.color = this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DLineColorArray[index] ? {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: this.item.DLineColorArray[index][1] || '' // 0% 处的颜色
+              }, {
+                offset: 1, color: this.item.DLineColorArray[index][0] || '' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            } : '' : this.item.DLineColorArray[index] ? this.item.DLineColorArray[index][1] : '' || '' : this.item.LineColorArray[index] || ''
+          }
+          element.itemStyle.normal.areaStyle = {
+            opacity: this.item.lineArea ? 1 : 0
+          }
+        })
+      } else {
+        delete myoption.visualMap
+      }
       var rows = this.item.chartData.rows
       let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
       let strLen = Math.round(barW / 10)
-      if (this.item.formatterType === '0') {
+      if (this.item.formatterType === '0' && this.oldformatterType !== this.item.formatterType) {
         myoption.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
+        this.oldformatterType = this.item.formatterType
+        this.mychart.clear()
         this.mychart.setOption(myoption)
-      } else {
+      } else if (this.oldformatterType !== this.item.formatterType) {
         myoption.xAxis.axisLabel.formatter = function (params, index) {
           return params
         }
+        this.oldformatterType = this.item.formatterType
+        this.mychart.clear()
         this.mychart.setOption(myoption)
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
+        this.mychart.clear()
         this.mychart.setOption(myoption)
       } else {
 
