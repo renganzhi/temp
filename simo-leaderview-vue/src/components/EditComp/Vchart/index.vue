@@ -26,11 +26,13 @@
   </div>
 </template>
 <script>
+import {VeLine, VeBar, VeHistogram, VePie, VeRing, VeGauge, VeRadar} from 'v-charts'
 import echarts from 'echarts'
 import { gbs } from '@/config/settings'
 import _ from 'lodash'
 export default {
   name: 'vchart',
+  components: {VeLine, VeBar, VeHistogram, VePie, VeRing, VeGauge, VeRadar},
   props: ['item'],
   data: function () {
     // 这里没有直接定义，所以component里调用了data属性的都会先报错，但不会影响页面渲染，后续需要改进

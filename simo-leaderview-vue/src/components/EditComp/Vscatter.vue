@@ -20,12 +20,14 @@
   </component>
 </template>
 <script>
+import { VeMap } from 'v-charts'
 import echarts from 'echarts'
 import { gbs } from '@/config/settings'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
   name: 'vscatter',
+  components: {VeMap},
   props: ['item'],
   data () {
     var code = 100000 // 中国
