@@ -10,12 +10,12 @@ export default {
     'textColor': '#46e2fd',
     'textHeight': '80%',
     'ctLegendColor': '#46e2fd',
-    'lineColor': ['rgba(0,44,254,1)', '#56f2f5'],
+    'lineColor': ['#88cff3', '#0c49ed'],
     'lineFontColor': '#468EFD',
     'lineWidth': 4,
     'lineGaugeWidth': 4,
     'lineFontSize': 14,
-    'bgClr': 'rgba(107, 121, 139, 0.29)',
+    'bgClr': '#2c5589',
     'chartData': {
       'name': '繁忙度',
       'unit': '%',
@@ -151,7 +151,7 @@ export default {
         ]
       },
       {
-        'name': '刻度轴颜色',
+        'name': '进度颜色',
         'key': 'lineColor',
         'tag': 'GradientColor'
       },
