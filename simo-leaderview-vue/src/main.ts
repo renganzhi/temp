@@ -1,10 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-<<<<<<< HEAD:simo-leaderview-vue/src/main.js
-import ElementUI, {Notification} from 'element-ui'
-=======
 import ElementUI, { Notification } from 'element-ui'
->>>>>>> UXDV-2.0-leaderview_3.0.4.3_98855:simo-leaderview-vue/src/main.ts
 import 'element-ui/lib/theme-chalk/index.css'
 
 import Vue from 'vue'
@@ -33,7 +29,6 @@ if (gbs.inDev) {
   Vue.prototype.$notify = Notification
 } else {
   Vue.prototype.$notify = function (obj) {
-
     // @ts-ignore
     tooltip(' ', obj.message, (/error/g).test(obj.customClass) ? 'error' : 'success')
   }
