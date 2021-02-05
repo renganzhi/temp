@@ -3583,6 +3583,8 @@ export default {
         this.selectedItem.imgSrc = ''
       } else if (chartType === 'video') {
         this.selectedItem.videoSrc = ''
+      } else if (chartType === 'table') {
+        this.selectedItem.tableBack = ''
       }
     },
     // 视频
