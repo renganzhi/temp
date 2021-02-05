@@ -86,10 +86,10 @@ export default {
           top: this.item.legendStation
         },
         grid: {
-          // left: this.item.gridTop,
-          // right: this.item.gridTop,
-          top: this.item.legendY,
-          bottom: this.item.legendY
+          left: this.item.legendY + '%',
+          right: this.item.legendY + '%',
+          top: this.item.legendY + '%',
+          bottom: this.item.legendY + '%'
         },
         tooltip: {
           trigger: 'item',

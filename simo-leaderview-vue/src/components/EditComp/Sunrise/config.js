@@ -7,9 +7,9 @@ export default {
     'height': 300,
     'ifGradual': 'false',
     'FontColor': 'white',
-    'LineColor': 'black',
+    'LineColor': '#11ecec',
     'FontSize': 12,
-    'LineWidth': 3,
+    'LineWidth': 2,
     'isHollow': 0,
     'PieColorArray': [
       '#37a2da',

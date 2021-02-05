@@ -1638,7 +1638,7 @@
                 </div>
               </div>
               <div v-if="selectedItem.chartType=='number' || selectedItem.chartType=='text'">
-                <div class="m-gap form-group">字体样式</div>
+                <div class="m-gap form-group">{{selectedItem.chartType=='number' ?'数字':'字体'}}样式</div>
                 <div class="form-group"
                      style="height: 30px;">
                   <div v-for="(item, index) in fontFaces"
