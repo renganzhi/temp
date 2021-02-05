@@ -4,7 +4,7 @@
         text-color="rgb(202, 214, 221)"
         active-text-color="#00a0e9"
       >
-        <el-submenu index="1"   :popper-append-to-body="true">
+        <el-submenu index="1" :popper-append-to-body="true">
           <template slot="title">
             <i class="nav_icon icon-archive1"></i>
             <span slot="title">分类一</span>
@@ -12,7 +12,7 @@
           <el-menu class="archive_sub"
           :default-openeds="['1-1']"
           :unique-opened="true"
-           width="180"
+          width="180"
           text-color="rgb(202, 214, 221)"
           active-text-color="#00a0e9"
           >
@@ -211,6 +211,7 @@ export default {
 .archive {
   box-sizing: border-box;
   border: solid 3px transparent;
+  width: 45px;
 }
 .nav_icon {
   font-size: 30px;
@@ -226,6 +227,7 @@ export default {
 <style lang="scss">
 .archive {
   background: #1b2031;
+  width: 45px;
   .el-menu-vertical-demo {
     background: transparent;
     border: none;
@@ -246,23 +248,45 @@ export default {
   //     fill: #00a0e9;
   //   }
   // }
-  .el-submenu__title {
-    border: solid 3px transparent;
+  .el-submenu {
+    width: 45px;
   }
-.el-submenu__title:focus, .el-submenu__title:hover{  
+  .el-submenu__title {
+    border: solid 2.5px transparent;
+    padding: 0 8px !important;
+    width: 44px;
+    margin-left: 3px;
+    height: 35px;
+    line-height: 28px;
+    .nav_icon {
+      font-size: 18px;
+    }
+  }
+  .el-submenu__title:focus, .el-submenu__title:hover {  
     outline: 0 !important;  
     // color: #409EFF !important;  
     background: none !important;
     background-image: linear-gradient(to right, #12174e, #0f3858) !important;
     box-sizing: border-box !important;
-    border-right: solid 3px #00a0e9;
+    border-left: solid 2.5px #00a0e9;
     .nav_icon {
       color: #00a0e9;
     }
-    }  
+  }
+}
+
+.is-opened {
+  .el-submenu__title {
+    background: #2e3444 !important;
+  }
 }
 
 .el-menu--vertical  {
+
+  .el-submenu__title {
+    height: 36px !important;
+    line-height: 36px !important;
+  }
   .el-submenu .el-menu-item {
     height: auto;
     line-height: 50px;
@@ -340,6 +364,9 @@ export default {
       background: none !important;
       color: rgb(202, 214, 221) !important;
     }
-  
+  .el-menu--popup {
+    margin: 0;
+    padding: 0;
+  }
 }
 </style>
