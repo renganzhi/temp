@@ -19,10 +19,12 @@
   </ve-map>
 </template>
 <script>
+import { VeMap } from 'v-charts'
 import { gbs } from '@/config/settings'
 import echarts from 'echarts'
 export default {
   name: 'vmap',
+  components: { VeMap },
   props: ['item'],
   data () {
     var code = 100000 // 中国

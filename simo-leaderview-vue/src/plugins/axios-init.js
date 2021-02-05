@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from 'axios'
 import { Notification } from 'element-ui'
 import { gbs } from '@/config/settings'
@@ -52,4 +53,26 @@ axios.interceptors.response.use(
   }
 )
 
-export default axios
+// export default axios
+
+// eslint-disable-next-line
+Plugin.install = function (Vue) {
+  Vue.axios = axios;
+  window.axios = axios;
+  Object.defineProperties(Vue.prototype, {
+    axios: {
+      get() {
+        return axios;
+      },
+    },
+    $axios: {
+      get() {
+        return axios;
+      },
+    },
+  });
+};
+
+Vue.use(Plugin);
+
+export default Plugin;
