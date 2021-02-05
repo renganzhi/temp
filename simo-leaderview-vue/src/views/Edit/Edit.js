@@ -38,6 +38,7 @@ let config = {
   KLine: require('@/components/EditComp/KLine/config.js'),
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),
   ELine: require('@/components/EditComp/ELine/config.js'),
+  DataFlow: require('@/components/EditComp/DataFlow/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
