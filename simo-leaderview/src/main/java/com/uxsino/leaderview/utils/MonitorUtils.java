@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.uxsino.leaderview.model.monitor.IndicatorTable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
@@ -82,6 +83,10 @@ public class MonitorUtils {
 
 
     public static JSONObject unitTransfer(JSONArray array, String unit, String valueKey) {
+        return unitTransfer(array, unit, Lists.newArrayList(valueKey));
+    }
+
+    public static JSONObject unitTransfer(JSONArray array, String unit, List<String> valueKey) {
         JSONObject re = newResultObj("result", array, "unit", unit);
         if (ObjectUtils.isEmpty(array) || Strings.isNullOrEmpty(unit)) {
             return re;
@@ -93,7 +98,7 @@ public class MonitorUtils {
 //            if (!unit.equals(obj.getString("unit"))) {
 //                continue;
 //            }
-            String valueStr = obj.getString(valueKey);
+            String valueStr = obj.getString(getValueKey(obj, valueKey));
             if (Strings.isNullOrEmpty(valueStr)) {
                 continue;
             }
@@ -121,7 +126,7 @@ public class MonitorUtils {
                 // TODO 暂时只有厘秒和秒做转换
                 for (int i = 0; i < array.size(); i++) {
                     JSONObject obj = array.getJSONObject(i);
-                    String valueStr = obj.getString(valueKey);
+                    String valueStr = obj.getString(getValueKey(obj, valueKey));
                     if (ObjectUtils.isEmpty(valueStr)) {
                         result.add(obj);
                     } else {
@@ -131,7 +136,7 @@ public class MonitorUtils {
                         } else {
 
                         }
-                        obj.put(valueKey, getValueStr(objValue));
+                        obj.put(getValueKey(obj, valueKey), getValueStr(objValue));
                     }
                 }
                 break;
@@ -151,7 +156,7 @@ public class MonitorUtils {
                 re.put("unit",unit);
                 for (int i = 0; i < array.size(); i++) {
                     JSONObject obj = array.getJSONObject(i);
-                    String valueStr = obj.getString(valueKey);
+                    String valueStr = obj.getString(getValueKey(obj, valueKey));
                     if (ObjectUtils.isEmpty(valueStr)) {
                         result.add(obj);
                     } else {
@@ -165,7 +170,7 @@ public class MonitorUtils {
                         } else {
                             objValue = objValue / (1024D);
                         }
-                        obj.put(valueKey, getValueStr(objValue));
+                        obj.put(getValueKey(obj, valueKey), getValueStr(objValue));
                         result.add(obj);
                     }
                 }
@@ -178,6 +183,16 @@ public class MonitorUtils {
         re.put("result", ObjectUtils.isEmpty(result) ? array : result);
         re.put("unit", unit);
         return re;
+    }
+
+    public static String getValueKey(JSONObject obj, List<String> fields){
+        String result = null;
+        for (String field: fields) {
+            if (!ObjectUtils.isEmpty(obj.getString(field))){
+                result =  field;
+            }
+        }
+        return result;
     }
 
     public static String getValueStr(String valueStr){

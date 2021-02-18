@@ -1,5 +1,6 @@
 package com.uxsino.leaderview.controller.monitor;
 
+import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
@@ -184,7 +185,19 @@ public class MonitorDataController {
                 }
                 return monitorDataService.getHistoryHealth(neIds, period, interval);
             } else {
-                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, period, interval);
+                IntervalType intervalType = IntervalType.minute;
+                interval = 5;
+                if (IndPeriod._1day == period){
+                    intervalType = IntervalType.minute;
+                    interval = 5;
+                }else if (IndPeriod._1week == period){
+                    intervalType = IntervalType.hour;
+                    interval = 8;
+                }else if (IndPeriod._1month == period){
+                    intervalType = IntervalType.hour;
+                    interval = 24;
+                }
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -211,7 +224,20 @@ public class MonitorDataController {
     public JsonModel getMultipleIndHistoryValue(@RequestParam String[] neIds, String[] indicators,
                                                 @RequestParam(required = false) String windows, @RequestParam IndPeriod period) {
         try {
-            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, period);
+            IntervalType intervalType = IntervalType.minute;
+            Integer interval = 5;
+            if (IndPeriod._1day == period){
+                intervalType = IntervalType.minute;
+                interval = 5;
+            }else if (IndPeriod._1week == period){
+                intervalType = IntervalType.hour;
+                interval = 8;
+            }else if (IndPeriod._1month == period){
+                intervalType = IntervalType.hour;
+                interval = 24;
+            }
+
+            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false , e.getMessage());

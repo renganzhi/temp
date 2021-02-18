@@ -473,13 +473,67 @@ public class AlertDataService {
         criteria.setIds(Lists.newArrayList(neIds.split(",")));
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
         ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
-        //TODO 这个getStatByLevel需要在大屏这边重写，逻辑需要进行修改，可以参考ALert中CurrencyAlertService中的同名方法
         return new JsonModel(true, getStatByLevel(arr, alertLevel, AlertType.Alert));
     }
 
-    private JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alertType){
-        //TODO 这个getStatByLevel需要在大屏这边重写，逻辑需要进行修改，可以参考ALert中CurrencyAlertService中的同名方法
-        return null;
+    private JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alertType) throws Exception{
+        if (ObjectUtils.isEmpty(arr)) {
+            return empObj();
+        }
+        Set<String> neIds = new LinkedHashSet<>();
+        for (int i = 0; i < arr.size(); i++) {
+            neIds.add(arr.get(i).toString());
+        }
+
+        List<Integer> levelList = new ArrayList<>();
+        AlertLevelQuery query = new AlertLevelQuery();
+        query.setStatus(AlertLevelStatus.ACTIVATED);
+        List<AlertLevel> activeLevel = rpcProcessService.findAlertList(query);
+        if (Strings.isNullOrEmpty(alertLevel)) {
+            for (AlertLevel level : activeLevel) {
+                levelList.add(level.getLevel());
+            }
+        } else {
+            levelList = Arrays.stream(alertLevel.split(",")).map(e -> {
+                Long level = Longs.tryParse(e);
+                return level != null ? level.intValue() : null;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+        AlertQuery alertQuery = new AlertQuery();
+        alertQuery.setAlertType(alertType);
+        alertQuery.setHandleStatus(AlertHandleStatus.UNTREATED);
+        if (!ObjectUtils.isEmpty(neIds)) {
+            alertQuery.setObjectIds(org.apache.commons.lang3.StringUtils.join(arr,","));
+        }
+
+        List<AlertRecord> alertList = rpcProcessService.findAlert(alertQuery, null);
+        if (ObjectUtils.isEmpty(activeLevel)) {
+            return empObj();
+        }
+        Map<Object, String> levelMap = new LinkedHashMap<>();
+        Map<Object, String> colorMap = new LinkedHashMap<>();
+        activeLevel.forEach(e -> {
+            levelMap.put(e.getLevel(), e.getName());
+            colorMap.put(e.getLevel(), e.getColor());
+        });
+        JSONObject result = new JSONObject();
+        JSONArray columns = new JSONArray();
+        columns.add("告警类型");
+        columns.add("数量");
+        result.put("columns", columns);
+        JSONArray rows = new JSONArray();
+        // 告警颜色数组，顺序跟rows一致
+        JSONArray colors = new JSONArray();
+        for (Integer level: levelList) {
+            JSONObject row = new JSONObject();
+            row.put("告警类型", levelMap.get(level));
+            row.put("数量", alertList.stream().filter(alert -> alert.getLevel().equals(level)).count());
+            rows.add(row);
+            colors.add(colorMap.get(level));
+        }
+        result.put("rows", rows);
+        result.put("colors", colors);
+        return result;
     }
 
     /**
