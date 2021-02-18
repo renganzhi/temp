@@ -1,4 +1,5 @@
 import {morenData} from '@/views/Edit/chartJson'
+import DataFlow from '@/components/EditComp/DataFlow/config.js'
 
 const map = {
   name: '地图',
@@ -48,7 +49,7 @@ const map = {
       chartData: morenData.mapData
     },
     {
-      text: '3d地图-飞线图',
+      text: '3D路径图',
       imgClass: 'icon-3dlines',
       chartType: 'TDEarthLine',
       width: 300,
@@ -85,7 +86,7 @@ const map = {
       chartData: morenData.TDEarthLineData
     },
     {
-      text: '3d地图-柱状图',
+      text: '3D地球柱状图',
       imgClass: 'icon-3dhistogrammap',
       chartType: 'TDEarthBar',
       width: 600,
@@ -131,49 +132,50 @@ const map = {
       mainalpha: 10,
       chartData: morenData.TDEarthbarData
     },
-    {
-      text: '地图-迁徙图',
-      imgClass: 'icon-migratemap',
-      chartType: 'DataFlow',
-      width: 600,
-      height: 600,
-      labelemphasis: 'true',
-      textStyleColor: '#fff',
-      labelfontSize: 20,
-      roam: 'true',
-      normalcolor: 'rgba(51, 69, 89, .5)',
-      normalborderColor: '#516a89',
-      normalborderWidth: 1,
-      emphasis: 'rgba(37, 43, 61, .5)',
-      effectshow: 'true',
-      imgSrc: '',
-      effectperiod: 3,
-      effecttrailLength: 0.6,
-      effectsymbolSize: 15,
-      normalwidth: 1,
-      normalopacity: '1.0',
-      normalcurveness: -0.3,
-      showEffectOn: 'render',
-      rippleEffectbrushType: 'stroke',
-      rippleEffectperiod: 4,
-      rippleEffectscale: 4,
-      normalposition: 'right',
-      normalfontSize: 20,
-      symbolSize: 6,
-      EffectbrushType: 'stroke',
-      Effectscale: 1.6,
-      labelposition: 'right',
-      labelcolor: '#fff',
-      labeltextSize: 20,
-      geosymbolSize: 40,
-      tooltipBackColor: 'rgba(166, 200, 76, 0.82)',
-      tooltipTextColor: '#fff',
-      tooltipTextfontSize: 12,
-      visualMapShow: 'true',
-      calculable: 'true',
-      visualMapTextcolor: '#fff',
-      chartData: morenData.DataFlowData
-    }
+    DataFlow.item
+    // {
+    //   text: '地图-迁徙图',
+    //   imgClass: 'icon-migratemap',
+    //   chartType: 'DataFlow',
+    //   width: 600,
+    //   height: 600,
+    //   labelemphasis: 'true',
+    //   textStyleColor: '#fff',
+    //   labelfontSize: 14,
+    //   roam: 'true',
+    //   normalcolor: 'rgba(51, 69, 89, .5)',
+    //   normalborderColor: '#516a89',
+    //   normalborderWidth: 1,
+    //   emphasis: 'rgba(37, 43, 61, .5)',
+    //   effectshow: 'true',
+    //   imgSrc: '',
+    //   effectperiod: 3,
+    //   effecttrailLength: 0.6,
+    //   effectsymbolSize: 15,
+    //   normalwidth: 1,
+    //   normalopacity: '1.0',
+    //   normalcurveness: -0.3,
+    //   showEffectOn: 'render',
+    //   rippleEffectbrushType: 'stroke',
+    //   rippleEffectperiod: 4,
+    //   rippleEffectscale: 4,
+    //   normalposition: 'right',
+    //   normalfontSize: 16,
+    //   symbolSize: 6,
+    //   EffectbrushType: 'stroke',
+    //   Effectscale: 1.6,
+    //   labelposition: 'right',
+    //   labelcolor: '#fff',
+    //   labeltextSize: 16,
+    //   geosymbolSize: 25,
+    //   tooltipBackColor: 'rgba(166, 200, 76, 0.82)',
+    //   tooltipTextColor: '#fff',
+    //   tooltipTextfontSize: 12,
+    //   visualMapShow: 'true',
+    //   calculable: 'true',
+    //   visualMapTextcolor: '#fff',
+    //   chartData: morenData.DataFlowData
+    // }
   ]
 }
 

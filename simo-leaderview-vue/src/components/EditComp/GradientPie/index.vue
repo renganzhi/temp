@@ -16,7 +16,9 @@ export default {
   data () {
     return {
       mychart1: null,
-      mychart2: null
+      mychart2: null,
+      oldOption1: '',
+      oldOption2: ''
     }
   },
   computed: {
@@ -143,8 +145,11 @@ export default {
         },
         series: myseries
       }
-      this.mychart1.clear()
-      this.mychart1.setOption(myoption1)
+      if (this.oldOption1 !== JSON.stringify(myoption1)) {
+        this.oldOption1 = JSON.stringify(myoption1)
+        this.mychart1.clear()
+        this.mychart1.setOption(myoption1)
+      }
       this.mychart2 = echarts.init(this.$refs.Gradient2)
       let myseries2 = []
       array.forEach((d, index) => {
@@ -201,8 +206,11 @@ export default {
         },
         series: myseries2
       }
-      this.mychart2.clear()
-      this.mychart2.setOption(myoption2)
+      if (this.oldOption2 !== JSON.stringify(myoption2)) {
+        this.oldOption2 = JSON.stringify(myoption2)
+        this.mychart2.clear()
+        this.mychart2.setOption(myoption2)
+      }
     }
   },
   mounted () {

@@ -1,6 +1,6 @@
 export default {
   'item': {
-    'text': '弹框',
+    'text': '弹框轮播',
     'width': 100,
     'height': 100,
     'imgClass': 'icon-sliderdialog',

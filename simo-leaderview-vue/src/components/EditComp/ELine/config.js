@@ -375,7 +375,7 @@ export default {
         ]
       },
       {
-        'name': '线条距Y距离',
+        'name': '线条距Y轴距离',
         'key': 'boundaryGap',
         'tag': 'select',
         'options': [

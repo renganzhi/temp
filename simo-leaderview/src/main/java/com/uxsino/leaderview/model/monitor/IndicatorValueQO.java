@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.model.monitor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.db.model.PageModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotBlank;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
 @ApiModel(description = "指标数据查询参数类")
 @EqualsAndHashCode(callSuper = false)
 public class IndicatorValueQO extends PageModel {
-    private static final Logger LOG = LoggerFactory.getLogger(IndicatorValueQO.class);
+    private static final Logger logger = LoggerFactory.getLogger(IndicatorValueQO.class);
 
     @ApiModelProperty(value = "历史数据默认时间间隔秒数")
     private static final Long DEFAULT_INTERVAL = 24 * 60 * 60L;// 历史数据默认时间间隔秒数
@@ -38,8 +38,11 @@ public class IndicatorValueQO extends PageModel {
     @NotBlank(message = "指标名不能为空")
     private List<String> indicatorNames;// 指标名称，如：["cpu_usage_avg","network_cpu"]
 
-    @ApiModelProperty(value = "是否进行单位转换，默认要单位转换")
-    private boolean convertUnit = true;
+    @ApiModelProperty(value = "指标类型")
+    private Map<String, String> indicatorTypes;//key为指标名，value为指标类型。查询聚合值时不能为空
+
+    @ApiModelProperty(value = "是否进行单位转换，默认不要单位转换")
+    private boolean convertUnit;
 
     @ApiModelProperty(value = "自定义数据查询时间长度（秒）")
     private Long cusInterval;// 自定义数据查询时间长度（秒）
@@ -50,24 +53,29 @@ public class IndicatorValueQO extends PageModel {
     @ApiModelProperty(value = "结束时间")
     private Date dateTo;
 
+    @ApiModelProperty(value = "统计时间间隔")
+    private Long interval;
+
+    @ApiModelProperty(value = "统计时间间隔类型，包括周，天，小时，分钟")
+    private IntervalType intervalType;
+
     private List<String> identifiers;//部件ids，支持多个
 
-    private List<String> fields;//单值属性，需要传result
+    private Map<String, List<String>> fields;//key为指标名，value为属性。单值属性，需要传result
 
     private JSONObject sort; // 排序，如： {"v.cpuUsage":"asc","tm": "desc"}
 
     private boolean current = false;//是否查询实时指标表，默认为false，查询历史指标
 
     public void setSearchTime() {
-        Long interval = cusInterval == null ? DEFAULT_INTERVAL : cusInterval;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long intervalTmp = cusInterval == null ? DEFAULT_INTERVAL : cusInterval;
         if (dateFrom == null && dateTo == null) {
             dateTo = new Date();
-            dateFrom = new Date(System.currentTimeMillis() - interval * 1000);
+            dateFrom = new Date(System.currentTimeMillis() - intervalTmp * 1000);
         } else if (dateFrom != null && dateTo == null) {
-            dateTo = new Date(dateFrom.getTime() + interval * 1000);
+            dateTo = new Date(dateFrom.getTime() + intervalTmp * 1000);
         } else if (dateFrom == null && dateTo != null) {
-            dateFrom = new Date(dateTo.getTime() - interval * 1000);
+            dateFrom = new Date(dateTo.getTime() - intervalTmp * 1000);
         }
     }
 

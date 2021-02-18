@@ -26,94 +26,6 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/networkEntity/findAllByDomainIdIn", consumes = "application/json")
     JsonModel findAllByDomainIdIn(@RequestParam(value = "domainIds") List<Long> domainIds);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/networkEntity/findAllNetworkEntity", consumes = "application/json")
-    JsonModel findAllNetworkEntity(@RequestBody NetworkEntityQO entityQO);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/networkEntity/findNetworkEntityByIdIn", consumes = "application/json")
-    JsonModel findNetworkEntityByIdIn(@RequestParam(value = "ids") String[] ids);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/indicatorTable/findUsableIndForNe", consumes = "application/json")
-    JsonModel findUsableIndForNe(@RequestBody Map<String,List> map);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/indicatorTable/findIndByNeClass", consumes = "application/json")
-    JsonModel findIndByNeClass(@RequestParam("neClasses") List<String> neClasses);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/indicatorTable/getIndicatorInfoByName", consumes = "application/json")
-    JsonModel getIndicatorInfoByName(@RequestParam("indicatorName") String indicatorName);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/component/findNeComps", consumes = "application/json")
-    JsonModel findNeComps(@RequestParam("neIds") List<String> neIds, @RequestParam("indicatorName") String indicatorName,
-                          @RequestParam("componentName") String componentName, @RequestParam("neName") String neName,
-                          @RequestParam("neCompIdNotIn") List<String> neCompIdNotIn, @RequestParam("keyword") String... keyword);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/networkLink/getNeIdsByDomainIds", consumes = "application/json")
-    JsonModel getNeIdsByDomainIds(@RequestParam("domainIds") Long[] domainIds, @RequestHeader("Cookie") String cookie);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/params/networkLink/findPage", consumes = "application/json")
-    JsonModel findPage(@RequestParam("pageModel") String pageModel, @RequestBody NetworkLinkModel networkLinkModel);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/networkEntity/vmStatics", consumes = "application/json")
-    JsonModel vmStatics(@RequestParam("domain") Long domain);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/neStatistics", consumes = "application/json")
-    JsonModel neStatistics(@RequestParam("domainId") Long domainId, @RequestParam("baseNeClass") BaseNeClass baseNeClass);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/networkEntity/countVr", consumes = "application/json")
-    JsonModel countVr(@RequestParam("domainId") Long domainId);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/neStatusStatistics", consumes = "application/json")
-    JsonModel neStatusStatistics(@RequestParam("domainId") List<Long> domainId, @RequestParam("baseNeClass") BaseNeClass baseNeClass);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/networkEntity/findByIdsAndBaseNe", consumes = "application/json")
-    JsonModel findByIdsAndBaseNe(@RequestParam("domainId") List<Long> domainId,
-                                 @RequestParam("itObjectIds") String itObjectIds,
-                                 @RequestParam("baseNeClass") BaseNeClass baseNeClass);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/neHealth/getNeHealth", consumes = "application/json")
-    JsonModel getNeHealth(@RequestParam("neId") String neId);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/getStrategy", consumes = "application/json")
-    JsonModel getStrategy(@RequestParam("neId") String neId, @RequestParam("indicatorNames") String indicatorNames);
-
-    @RequestMapping(method = RequestMethod.POST, value = "/homeData/health/findHealthByNeIdIn", consumes = "application/json")
-    JsonModel findHealthByNeIdIn(@RequestParam("neIdIn") List<String> neIdIn);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/topn/getTopNByItObjects", consumes = "application/json")
-    JsonModel getTopNByItObjects(@RequestParam("indicator") String indicator, @RequestParam("itObjectIds") String itObjectIds,
-                                 @RequestParam("topStr") String topStr, @RequestParam("field") String field,
-                                 @RequestParam("windowsStr") String windowsStr, @RequestParam("order") String order);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/neHealth/findNeHealthOrderByHealthy", consumes = "application/json")
-    JsonModel findNeHealthOrderByHealthy(@RequestParam("regexpSplitToTable") String regexpSplitToTable,
-                                         @RequestParam("order") String order);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/getFieldLables", consumes = "application/json")
-    JsonModel getFieldLables(@RequestParam("indicatorID") String indicatorID);
-
-    @RequestMapping(method = RequestMethod.GET, value = "/homeData/indicator/findLastObject", consumes = "application/json")
-    JsonModel findLastObject(@RequestParam("neId") String neId, @RequestParam("indicatorName") String indicatorName,
-                             @RequestParam("params") String params, @RequestParam("fetchDate") String fetchDate);
-
-    // 根据参数模糊查询，获取资源ID
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorAlert/findNeIdByParams", consumes = "application/json")
-    JsonModel findNeIdByParams(@RequestParam(value = "sourceManage") Boolean sourceManage,
-                               @RequestParam(value = "objectIds") String objectIds, @RequestParam(value = "ip") String ip,
-                               @RequestParam(value = "name") String name, @RequestParam(value = "type") String type,
-                               @RequestParam(value = "objType") String objType, @RequestParam(value = "domainIds") Long[] domainIds,
-                               @RequestParam(value = "groupId") Long groupId);
-
-    // 根据资源的各项参数查询资源列表
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorAlert/findNeListByParams", consumes = "application/json")
-    JsonModel findNeListByParams(@RequestParam(value = "sourceManage") Boolean sourceManage,
-                                 @RequestParam(value = "objectIds") String objectIds, @RequestParam(value = "ip") String ip,
-                                 @RequestParam(value = "name") String name, @RequestParam(value = "type") String type,
-                                 @RequestParam(value = "objType") String objType, @RequestParam(value = "domainIds") Long[] domainIds,
-                                 @RequestParam(value = "groupId") Long groupId);
-
-    /**
-     * 以上所有非monitor提供的公用数据获取接口 均应删除 功能调整通过公用接口获取
-     */
-
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getNeList", consumes = "application/json")
     JsonModel getNeList(@RequestParam Map<String , Object> map);
 
@@ -136,4 +48,12 @@ public interface MonitorService {
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/FindFieldIsMonitoringInStrategy", consumes = "application/json")
     JsonModel FindFieldIsMonitoringInStrategy(@RequestParam("neId") String neId,@RequestParam("indicatorNames") String indicatorNames);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getIndAggValues", consumes = "application/json")
+    JsonModel getIndAggValues(@RequestBody IndicatorValueQO indicatorValueQO);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getTopoData/{topoId}", consumes = "application/json")
+    JsonModel getTopoData(@PathVariable("topoId") String topoId, @RequestParam("mapLocationId") String mapLocationId,@RequestParam("userId") Long userId);
+
+
 }

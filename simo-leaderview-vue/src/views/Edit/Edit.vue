@@ -640,8 +640,10 @@
                      v-if="selectedItem.chartType=='table'">
                   <label>表格背景图</label>
                   <input type="file"
+                    style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
+                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
@@ -985,8 +987,8 @@
                     <option value="Mapcolor3-2">地球-深绿</option>
                     <option value="Mapcolor3-1">地球-浅绿深绿(网格)</option>
                     <option value="Mapcolor4">地球影像-黄绿色(纬度环)</option>
-                    <option value="Mapcolor5-2">地球剪影-浅粉绿</option>
-                    <option value="Mapcolor5-1">地球剪影-浅粉绿(网格)</option>
+                    <option value="Mapcolor5-2">地球剪影-浅灰</option>
+                    <option value="Mapcolor5-1">地球剪影-浅灰(网格)</option>
                     <option value="Mapcolor6-2">地球剪影-深绿青色</option>
                     <option value="Mapcolor6-1">地球剪影-深绿青色(网格)</option>
                   </select>
@@ -1261,314 +1263,6 @@
                 </div>
               </div>
               <!-- 迁徙图 -->
-              <div v-if="selectedItem.chartType=='DataFlow'">
-                <div class="m-gap form-group">地图配置</div>
-                <div class="form-group cols2">
-                  <label>移入显示地名</label>
-                  <select v-model="selectedItem.labelemphasis">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                  </select>
-                </div>
-                <div class="form-group cols2"  v-if="selectedItem.labelemphasis==='true'">
-                  <label>地名字体颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.textStyleColor"
-                            :key="10"
-                            type="textStyleColor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2"  v-if="selectedItem.labelemphasis==='true'">
-                  <label>地名字体大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.labelfontSize">
-                </div>
-                <div class="form-group cols2">
-                  <label>允许缩放拖拽</label>
-                  <select v-model="selectedItem.roam">
-                    <option value="true">允许</option>
-                    <option value="false">不允许</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>地图颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.normalcolor"
-                            :key="10"
-                            type="normalcolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>边界线颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.normalborderColor"
-                            :key="10"
-                            type="normalborderColor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>边界线大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.normalborderWidth">
-                </div>
-                <div class="form-group cols2">
-                  <label>悬浮背景颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.emphasis"
-                            :key="10"
-                            type="emphasis"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="m-gap form-group">迁徙线配置</div>
-                <div class="form-group cols2">
-                  <label>线条宽度</label>
-                  <select v-model="selectedItem.normalwidth">
-                    <option v-for="item in 5"
-                        :key="item" :value="item">{{item}}</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>线条透明度</label>
-                  <select v-model="selectedItem.normalopacity">
-                    <option value="0.001">0.001</option>
-                    <option value="0.01">0.01</option>
-                    <option v-for="item in 5"
-                            :key="(item*0.2).toFixed(1)">{{(item*0.2).toFixed(1)}}</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>线条弯曲度</label>
-                  <select v-model="selectedItem.normalcurveness">
-                    <option v-for="item in 16"
-                            :key="((item-8)*0.1).toFixed(1)">{{((item-8)*0.1).toFixed(1)}}</option>
-                  </select>
-                </div>
-
-                <div class="m-gap form-group">迁徙图标配置</div>
-                <div class="form-group cols2">
-                  <label>是否显示图标</label>
-                  <select v-model="selectedItem.effectshow">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                  </select>
-                </div>
-                <div v-if="selectedItem.effectshow === 'true'">
-                <!-- <div class="form-group cols2">
-                  <label>图标图片</label>
-                  <input type="file"
-                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
-                         @change='changeImg' />
-                </div> -->
-                <div class="form-group cols2">
-                  <label>图标运动速度</label>
-                  <select v-model="selectedItem.effectperiod">
-                    <option value="1">特快</option>
-                    <option value="3">快</option>
-                    <option value="6">中</option>
-                    <option value="9">慢</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>图标大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.effectsymbolSize">
-                </div>
-                <div class="form-group cols2">
-                  <label>尾迹长度</label>
-                  <select v-model="selectedItem.effecttrailLength">
-                    <option value="0">无</option>
-                    <option value="0.3">短</option>
-                    <option value="0.6">长</option>
-                    <option value="0.9">特长</option>
-                  </select>
-                </div>
-
-                </div>
-
-                <div class="m-gap form-group">涟漪点配置</div>
-                <div class="form-group cols2">
-                  <label>涟漪点显示时机</label>
-                  <select v-model="selectedItem.showEffectOn">
-                    <option value="emphasis">移入显示</option>
-                    <option value="render">一直显示</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>涟漪类型</label>
-                  <select v-model="selectedItem.rippleEffectbrushType">
-                    <option value="stroke">类型一</option>
-                    <option value="fill">类型二</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>涟漪速度</label>
-                  <select v-model="selectedItem.rippleEffectperiod">
-                    <option :value="2">快</option>
-                    <option :value="4">中</option>
-                    <option :value="6">慢</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>涟漪环数</label>
-                  <select v-model="selectedItem.rippleEffectscale">
-                    <option :value="2">2</option>
-                    <option :value="4">4</option>
-                    <option :value="6">6</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>涟漪大小</label>
-                  <select v-model="selectedItem.symbolSize">
-                    <option :value="3">小</option>
-                    <option :value="6">中</option>
-                    <option :value="9">大</option>
-                    <option :value="20">特大</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>文字位置</label>
-                  <select v-model="selectedItem.normalposition">
-                    <option value="top">上方</option>
-                    <option value="bottom">下方</option>
-                    <option value="left">左方</option>
-                    <option value="right">右方</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>文字大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.normalfontSize">
-                </div>
-                <div class="m-gap form-group">气泡配置</div>
-                <div class="form-group cols2">
-                  <label>气泡类型</label>
-                  <select v-model="selectedItem.EffectbrushType">
-                    <option value="stroke">类型一</option>
-                    <option value="fill">类型二</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>气泡缩放比例</label>
-                  <select v-model="selectedItem.Effectscale">
-                    <option value="1">无</option>
-                    <option value="1.4">小</option>
-                    <option value="1.6">中</option>
-                    <option value="1.8">大</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>气泡大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.geosymbolSize">
-                </div>
-                <div class="form-group cols2">
-                  <label>文字位置</label>
-                  <select v-model="selectedItem.labelposition">
-                    <option value="top">上方</option>
-                    <option value="bottom">下方</option>
-                    <option value="left">左方</option>
-                    <option value="right">右方</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>字体颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.labelcolor"
-                            :key="10"
-                            type="labelcolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>文字大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.labeltextSize">
-                </div>
-                <div class="m-gap form-group">tips配置</div>
-                <div class="form-group cols2">
-                  <label>tips背景颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.tooltipBackColor"
-                            :key="10"
-                            type="tooltipBackColor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>tips字体颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.tooltipTextColor"
-                            :key="10"
-                            type="tooltipTextColor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>tips字体大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.tooltipTextfontSize">
-                </div>
-
-                <div class="m-gap form-group">图例配置</div>
-                <div class="form-group cols2">
-                  <label>显示图例</label>
-                  <select v-model="selectedItem.visualMapShow">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                  </select>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.visualMapShow==='true'">
-                  <label>显示图例文字</label>
-                  <select v-model="selectedItem.calculable">
-                    <option value="true">显示</option>
-                    <option value="false">隐藏</option>
-                  </select>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.visualMapShow==='true'">
-                  <label>图例字体颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.visualMapTextcolor"
-                            :key="10"
-                            type="visualMapTextcolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2">
-                  <label>颜色配置</label>
-                  <div class="form-group colorsConf">
-                    <span>序号</span>
-                    <!-- <span class="color-w70 text">系列</span> -->
-                    <span class="color-w70 text">颜色</span>
-                    <!-- <i class="icon-n-add" @click="addColor"></i> -->
-                  </div>
-                  <div class="form-group colorsConf"
-                       v-for="(v,index) in selectedItem.ctColors"
-                       :key="index">
-                    <span class="colorOrder">{{index+1}}</span>
-                    <div>
-                      <div class="color-w200"
-                           style="float: left; width: 140px;">
-                        <Vcolor :data="selectedItem.ctColors[index]"
-                                type="ctColors"
-                                :index="index"
-                                @getdata="getSingleColor"></Vcolor>
-                      </div>
-                    </div>
-                    <i class="icon-n-add"
-                       @click="addColor(index + 1)"></i>
-                    <i class="icon-n-toUp"
-                       @click="moveUp(index)"></i>
-                    <i class="icon-n-putin"
-                       @click="moveDown(index)"></i>
-                    <i class="icon-n-deleteNew"
-                       @click="delColor(index)"></i>
-                  </div>
-                </div>
-              </div>
               <!-- 3/4饼图 -->
               <!-- <div v-if="selectedItem.chartType=='GradientPie'">
                   <div class="form-group cols2">
@@ -1638,7 +1332,7 @@
                 </div>
               </div>
               <div v-if="selectedItem.chartType=='number' || selectedItem.chartType=='text'">
-                <div class="m-gap form-group">字体样式</div>
+                <div class="m-gap form-group">{{selectedItem.chartType=='number' ?'数字':'字体'}}样式</div>
                 <div class="form-group"
                      style="height: 30px;">
                   <div v-for="(item, index) in fontFaces"
@@ -2025,7 +1719,7 @@
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
-                  <label>线条距Y距离</label>
+                  <label>线条距Y轴距离</label>
                   <select v-model="selectedItem.boundaryGap">
                     <option value="true">开启</option>
                     <option value="false">关闭</option>
@@ -2253,7 +1947,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
