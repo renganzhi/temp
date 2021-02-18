@@ -673,6 +673,15 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
+    public JSONArray getIndAggValues(IndicatorValueQO qo) throws Exception{
+        JsonModel jsonModel = monitorService.getIndAggValues(qo);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseArray(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Map<String,Object>> findNeComps(NeComponentQuery neComponentQuery) throws Exception{
         Map<String, Object> beanMap = getBeanMap(neComponentQuery);
         JsonModel jsonModel = monitorService.findNeComps(beanMap);
