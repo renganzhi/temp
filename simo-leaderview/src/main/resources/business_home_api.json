@@ -1,0 +1,403 @@
+[
+    {
+        "key": "business_indicator_statistics",
+        "name": "指标统计-按业务",
+        "component": "business",
+        "type": "doubler,number",
+        "url": "/business/homeData/indicatorValue",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getIndicator"
+            }
+        ]
+    },
+    {
+        "key": "business_indicator_statistics",
+        "name": "指标统计-按业务",
+        "component": "business",
+        "type": "progress",
+        "url": "/business/homeData/indicatorValue",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getIndicatorPercent"
+            }
+        ]
+    },
+    {
+        "key": "business_indicator_statistics",
+        "name": "多业务多指标统计",
+        "component": "business",
+        "type": "groupHistogram,ve-radar",
+        "url": "/business/homeData/multipleBusinessIndicator",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过5个",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择指标不超过5个",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getIndicator"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_status_statistics",
+        "name": "业务统计-按状态",
+        "component": "business",
+        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "url": "/business/homeData/businessStatisticsByStatus",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_statistics",
+        "name": "告警统计-按业务",
+        "component": "business",
+        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "url": "/business/homeData/getStatByBusiness",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过20个",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_indicator_topn",
+        "name": "指标TOPN-按业务",
+        "component": "business",
+        "type": "ve-histogram",
+        "url": "/business/homeData/getIndicatorTOPN",
+        "method" : "post",
+        "params" : [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getIndicator"
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "3",
+                        "value": 3
+                    },
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    }
+                ]
+            },
+            {
+                "key": "order",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": "asc"
+                    },
+                    {
+                        "name": "降序",
+                        "value": "desc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_business_indicator_topn",
+        "name": "指标TOPN-按业务",
+        "component": "business",
+        "type": "ve-bar",
+        "url": "/business/homeData/getIndicatorTOPN?bar=true",
+        "method" : "post",
+        "params" : [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getIndicator"
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "3",
+                        "value": 3
+                    },
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    }
+                ]
+            },
+            {
+                "key": "order",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": "asc"
+                    },
+                    {
+                        "name": "降序",
+                        "value": "desc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_info_table",
+        "name": "业务告警信息",
+        "component": "business",
+        "type": "table",
+        "url": "/alert/currencyAlertmanager/getBusinessAlertInfoForTable",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    },
+                    {
+                        "name": "15",
+                        "value": 15
+                    },
+                    {
+                        "name": "20",
+                        "value": 20
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_info_text",
+        "name": "业务告警信息",
+        "component": "business",
+        "type": "text,marquee",
+        "url": "/alert/currencyAlertmanager/getBusinessAlertInfoForText",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "maxLength": 5,
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_history_indicator_statistics",
+        "name": "指标历史统计-业务",
+        "component": "business",
+        "type": "ELine",
+        "url": "/business/homeData/history/record",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "业务可多选，展示效果为多条曲线，建议选择业务不超过5个",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            },
+            {
+                "key": "indicator",
+                "name": "指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getHistoryIndicator",
+                "params": ["business"]
+            },
+            {
+                "key": "period",
+                "name": "统计时段",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "最近1天",
+                        "value": "_1day"
+                    },
+                    {
+                        "name": "最近1周",
+                        "value": "_1week"
+                    },
+                    {
+                        "name": "最近1月",
+                        "value": "_1month"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "business_count",
+        "name": "全局统计-业务",
+        "component": "business",
+        "type": "doubler,number",
+        "url": "/business/homeData/countBusiness",
+        "method" : "get",
+        "params": [
+            {
+                "key": "status",
+                "name": "状态",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "可用",
+                        "value": "true"
+                    },
+                    {
+                        "name": "不可用",
+                        "value": "false"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_business_topo",
+        "name": "业务拓扑",
+        "component": "business",
+        "type": "topo",
+        "url": "/business/homeData/getTopo",
+        "method" : "get",
+        "params": [
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/business/homeData/params/getBusiness"
+            }
+        ]
+    }
+]

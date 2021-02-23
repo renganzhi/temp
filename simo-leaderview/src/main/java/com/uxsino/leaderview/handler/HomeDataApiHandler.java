@@ -15,10 +15,12 @@ import com.uxsino.leaderview.cache.DataViewCache;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 @Component
 public class HomeDataApiHandler {
     private static Logger logger = LoggerFactory.getLogger(HomeDataApiHandler.class);
+    private String currentFileName = null;
     private final String MONITOR_FILE_NAME = "monitor_home_api.json";
     private final String BUSINESS_FILE_NAME = "business_home_api.json";
 //    public void register(String str) {
@@ -35,12 +37,13 @@ public class HomeDataApiHandler {
      *                至于那边返回的字符串是什么，这我们并不关心，直接忽略掉即可。
      */
     public void register(String message){
-        String apiString = readFile();
+        String apiString = readFile(message);
         JSONArray api = JSON.parseArray(apiString);
         DataViewCache.cacheApi(api);
     }
 
-    private String readFile(){
+    private String readFile(String message){
+        /*
         try{
             InputStream monitorInputStream = this.getClass().getClassLoader().getResourceAsStream(MONITOR_FILE_NAME);
             InputStream businessInputStream = this.getClass().getClassLoader().getResourceAsStream(BUSINESS_FILE_NAME);
@@ -72,36 +75,37 @@ public class HomeDataApiHandler {
             logger.error("LEADERVIEW -> 文件【{}】和【{}】读取失败！", MONITOR_FILE_NAME, BUSINESS_FILE_NAME);
             return null;
         }
-    }
-
-    private String jsonArrayMerge(JSONArray array1, JSONArray array2){
-        StringBuffer buffer = new StringBuffer();
+        */
+        //上述方法因为耦合较高改为下面代码，通过判断收到的消息是哪个服务，一个一个地添加接口
         try {
-            buffer = addJsonObject(array1, buffer);
-            if(array2.size() > 0){
-                buffer.append(",");
-                buffer = addJsonObject(array2, buffer);
+            JSONArray jsonArray = JSON.parseArray(message);
+            JSONObject jsonObject =(JSONObject) jsonArray.get(0);
+            String key =(String) jsonObject.get("key");
+            InputStream inputStream = null;
+            //读到的第一个json的key属性值为enable_ne_num_statistics，则该数据从monitor发送
+            if(key.equals("enable_ne_num_statistics")){
+                inputStream = this.getClass().getClassLoader().getResourceAsStream(MONITOR_FILE_NAME);
+                currentFileName = MONITOR_FILE_NAME;
+            }else if(key.equals("business_indicator_statistics")){  //若为business_indicator_statistics，则为business
+                inputStream = this.getClass().getClassLoader().getResourceAsStream(BUSINESS_FILE_NAME);
+                currentFileName = BUSINESS_FILE_NAME;
+            }   //若其他还有别的业务，还可以继续扩展
+            if(inputStream == null){
+                logger.error("LEADERVIEW -> 文件【{}】未找到！", currentFileName);
+                return null;
             }
-            buffer.insert(0, "[");
-            buffer.append("]");
-            return buffer.toString();
-        }catch (Exception e){
-            logger.error("LEADERVIEW -> 文件【{}】和【{}】数组合并异常，请重新检查两个文件！", MONITOR_FILE_NAME, BUSINESS_FILE_NAME);
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+            JsonParser jsonParser = new JsonParser();
+            JsonElement jsonElement = jsonParser.parse(jsonReader);
+            if(jsonElement.isJsonArray()){
+                return Jsons.of(jsonElement).toJson();
+            }else{
+                logger.error("LEADERVIEW -> 文件【{}】格式错误！必须是一个数组。", currentFileName);
+                return null;
+            }
+        } catch (UnsupportedEncodingException e) {
+            logger.error("LEADERVIEW -> 文件【{}】读取出错！", currentFileName);
             return null;
         }
-    }
-
-    private StringBuffer addJsonObject(JSONArray jsonArray, StringBuffer buffer){
-        int size = jsonArray.size();
-        for(int i=0; i<size; i++){
-            JSONObject object =(JSONObject)jsonArray.get(i);
-            if(i == size-1){
-                buffer.append(object.toString());
-            }else{
-                buffer.append(object.toString()).append(",");
-            }
-        }
-
-        return buffer;
     }
 }
