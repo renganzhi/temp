@@ -83,7 +83,7 @@ public class RpcProcessService {
             throw new Exception(jsonModel.getMsg());
         }
         List<NeHealthHistory> list = new ArrayList<>();
-        List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
+        List<NetworkEntity> rawResult = toJavaBeanList(jsonModel, NetworkEntity.class);
         List<Map<String, Object>> realResult = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(rawResult)) {
             for (NeClass neClass : neClasses) {
@@ -213,7 +213,8 @@ public class RpcProcessService {
             condition.put("baseNeClass", baseNeClass);
         }
         condition.put("manageStatusNotIn", "Delected");
-        List<NetworkEntity> networkEntityList =(List<NetworkEntity>) monitorService.getNeList(condition);
+        JsonModel jsonModel = monitorService.getNeList(condition);
+        List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
         List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
             networkEntity.getParentId() == null
@@ -224,6 +225,7 @@ public class RpcProcessService {
             String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
             ArrayList<Object> temp = new ArrayList<>();
             for(String runStatus : runStatuses){
+                temp = new ArrayList<>();
                 long count = 0;
                 Iterator<NetworkEntity> iterator = networkEntityList.iterator();
                 while(iterator.hasNext()){
