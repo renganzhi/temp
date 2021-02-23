@@ -2,6 +2,7 @@ package com.uxsino.leaderview.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -18,7 +19,8 @@ import java.io.InputStreamReader;
 @Component
 public class HomeDataApiHandler {
     private static Logger logger = LoggerFactory.getLogger(HomeDataApiHandler.class);
-    private final String FILE_NAME = "monitor_home_api.json";
+    private final String MONITOR_FILE_NAME = "monitor_home_api.json";
+    private final String BUSINESS_FILE_NAME = "business_home_api.json";
 //    public void register(String str) {
 //        JSONArray apis = JSON.parseArray(str);
 //        DataViewCache.cacheApi(apis);
@@ -40,23 +42,66 @@ public class HomeDataApiHandler {
 
     private String readFile(){
         try{
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(FILE_NAME);
-            if(inputStream == null){
-                logger.error("LEADERVIEW -> 文件【{}】未找到！", FILE_NAME);
+            InputStream monitorInputStream = this.getClass().getClassLoader().getResourceAsStream(MONITOR_FILE_NAME);
+            InputStream businessInputStream = this.getClass().getClassLoader().getResourceAsStream(BUSINESS_FILE_NAME);
+            if(monitorInputStream == null){
+                logger.error("LEADERVIEW -> 文件【{}】未找到！", MONITOR_FILE_NAME);
                 return null;
             }
-            JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+            JSONArray monitorJsonArray;
+            JSONArray businessJsonArray;
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(monitorInputStream, "UTF-8"));
             JsonParser jsonParser = new JsonParser();
             JsonElement jsonElement = jsonParser.parse(jsonReader);
             if(jsonElement.isJsonArray()){
-                return Jsons.of(jsonElement).toJson();
+                monitorJsonArray = JSON.parseArray(Jsons.of(jsonElement).toJson());
             }else{
-                logger.error("LEADERVIEW -> 文件【{}】格式错误！必须是一个数组。", FILE_NAME);
+                logger.error("LEADERVIEW -> 文件【{}】格式错误！必须是一个数组。", MONITOR_FILE_NAME);
                 return null;
             }
+            jsonReader = new JsonReader(new InputStreamReader(businessInputStream, "UTF-8"));
+            jsonElement = jsonParser.parse(jsonReader);
+            if(jsonElement.isJsonArray()){
+                businessJsonArray = JSON.parseArray(Jsons.of(jsonElement).toJson());
+            }else{
+                logger.error("LEADERVIEW -> 文件【{}】格式错误！必须是一个数组。", BUSINESS_FILE_NAME);
+                return null;
+            }
+            return jsonArrayMerge(monitorJsonArray, businessJsonArray);
         }catch (Exception e){
-            logger.error("LEADERVIEW -> 文件【{}】读取失败！", FILE_NAME);
+            logger.error("LEADERVIEW -> 文件【{}】和【{}】读取失败！", MONITOR_FILE_NAME, BUSINESS_FILE_NAME);
             return null;
         }
+    }
+
+    private String jsonArrayMerge(JSONArray array1, JSONArray array2){
+        StringBuffer buffer = new StringBuffer();
+        try {
+            buffer = addJsonObject(array1, buffer);
+            if(array2.size() > 0){
+                buffer.append(",");
+                buffer = addJsonObject(array2, buffer);
+            }
+            buffer.insert(0, "[");
+            buffer.append("]");
+            return buffer.toString();
+        }catch (Exception e){
+            logger.error("LEADERVIEW -> 文件【{}】和【{}】数组合并异常，请重新检查两个文件！", MONITOR_FILE_NAME, BUSINESS_FILE_NAME);
+            return null;
+        }
+    }
+
+    private StringBuffer addJsonObject(JSONArray jsonArray, StringBuffer buffer){
+        int size = jsonArray.size();
+        for(int i=0; i<size; i++){
+            JSONObject object =(JSONObject)jsonArray.get(i);
+            if(i == size-1){
+                buffer.append(object.toString());
+            }else{
+                buffer.append(object.toString()).append(",");
+            }
+        }
+
+        return buffer;
     }
 }
