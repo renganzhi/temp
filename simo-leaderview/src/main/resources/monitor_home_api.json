@@ -799,7 +799,7 @@
         "key": "enable_monitor_indicator_percent_statistics",
         "name": "指标统计-按资源",
         "component": "monitor",
-        "type": "Dashboard,liquidfill",
+        "type": "Dashboard,liquidfill,progress",
         "url": "/leaderview/monitor/indicator/value",
         "method" : "get",
         "params": [
@@ -1526,7 +1526,7 @@
         "key": "enable_monitor_network_statistics",
         "name": "指标统计-链路",
         "component": "monitor",
-        "type": "Dashboard,liquidfill",
+        "type": "Dashboard,liquidfill,progress",
         "url": "/leaderview/monitor/indicator/valueNetwork",
         "method" : "get",
         "params": [
