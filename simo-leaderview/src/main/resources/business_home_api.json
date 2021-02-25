@@ -29,7 +29,7 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "progress",
+        "type": "Dashboard,liquidfill,progress",
         "url": "/business/homeData/indicatorValue",
         "method" : "get",
         "params": [
@@ -291,7 +291,7 @@
         "key": "enable_alert_business_info_text",
         "name": "业务告警信息",
         "component": "business",
-        "type": "text,marquee",
+        "type": "NEWtextArea,marquee",
         "url": "/alert/currencyAlertmanager/getBusinessAlertInfoForText",
         "method" : "get",
         "params": [
