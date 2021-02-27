@@ -319,7 +319,8 @@ public class HomePageController {
 		result.put("pages", homePageService.findVisible(userId));
 		// 判断是不是一个页面都没有的全新用户
 		Boolean isNewUser = false;
-		for (int i = 1 ; i <= homePageUserConfService.getMaxPageByUserId(userId); i++) {
+		Integer pageCount = homePageUserConfService.getMaxPageByUserId(userId);
+		for (int i = 1 ; i <= pageCount; i++) {
 			try {
 				homePageUserConfService.findOneByIndexAndUserId(i,userId);
 			}catch (Exception e){
@@ -327,7 +328,7 @@ public class HomePageController {
 			}
 		}
 		try {
-			isNewUser = ObjectUtils.isEmpty(homePageUserConfService.findOneByIndexAndUserId(1, userId));
+			isNewUser = pageCount==0;
 		}catch (Exception e){
 			// 如果出现同一位置有两个值的问题，说明排序出了问题，调用排序修复方案
 			homePageUserConfService.RescueConfSort(userId);

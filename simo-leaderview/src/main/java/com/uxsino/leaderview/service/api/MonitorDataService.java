@@ -243,7 +243,8 @@ public class MonitorDataService {
         JSONObject json = new JSONObject(true);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         rpcProcessService.setCriteriaDomainIds(criteria ,session ,domainId);
-        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
+        if(baseNeClass!=null)
+            rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
         if (!ObjectUtils.isEmpty(neIds)){
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         }
