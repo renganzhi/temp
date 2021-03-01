@@ -2296,6 +2296,12 @@ public class MonitorDataService {
                 }
             }
         }
+        // 对0值做处理，将0值修改为null值，以便前端进行背景颜色展示
+        for (Map.Entry<String,Integer> entry: result.entrySet()) {
+            if (entry.getValue().equals(0)){
+                entry.setValue(null);
+            }
+        }
         return new JsonModel(true, result);
     }
 
