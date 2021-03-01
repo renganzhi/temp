@@ -20,7 +20,7 @@ import java.util.Map;
  * @description 调用SIMO-Monitoring的服务类
  * @date 2020年09月29日
  */
-@FeignClient(value = "${service-monitoring}", fallback = MonitorClientHystrixLeaderview.class)
+@FeignClient(value = "${service-monitoring}", fallback = MonitorClientHystrixLeaderview.class , decode404 = true)
 //@FeignClient(value = "${service-monitoring}")
 public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/networkEntity/findAllByDomainIdIn", consumes = "application/json")
