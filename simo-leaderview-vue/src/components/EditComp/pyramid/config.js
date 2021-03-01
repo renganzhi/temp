@@ -16,6 +16,8 @@ export default {
     imgClass: 'icon-pyramid',
     chartType: 'pyramid',
     colorful: false,
+    width: 350,
+    height: 250,
     ifGradual: 'false',
     chartData: {
       rows
