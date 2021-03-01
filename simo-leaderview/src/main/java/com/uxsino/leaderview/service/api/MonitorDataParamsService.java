@@ -990,8 +990,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1016,8 +1015,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1045,8 +1043,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1075,8 +1072,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();

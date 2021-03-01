@@ -723,7 +723,7 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
-    public PageModel findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
+    public List<NetworkLinkModel> findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
         Map<String, Object> map = Maps.newHashMap();
         map.put("pagination", false);
         Map<String, Object> pageMap = getBeanMap(temPage);
@@ -734,7 +734,14 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return this.toJavaBean(jsonModel, PageModel.class);
+        PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
+        JSONArray array = (JSONArray) pageModel.getObject();
+        List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
+        for (int i = 0; i < array.size(); i++) {
+            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
+            nesLinkList.add(model);
+        }
+        return nesLinkList;
     }
 
     public JSONArray getFieldLables(String indicatorID) throws Exception{

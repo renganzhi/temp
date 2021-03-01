@@ -2072,8 +2072,7 @@ public class MonitorDataService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         JSONObject result = new JSONObject();
         if (abnormal) {
             int count = 0;
@@ -2089,7 +2088,7 @@ public class MonitorDataService {
             result.put("value", count);
         } else {
             result.put("name", "链路条数");
-            result.put("value", pageModel.getCount());
+            result.put("value", list.size());
         }
         result.put("unit", "");
         return new JsonModel(true, result);
@@ -2110,8 +2109,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-            List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             Map<String, String> nameMap = Maps.newHashMap();
             nameMap.put("speed", "链路带宽");
             nameMap.put("speedUsage", "带宽利用率");
@@ -2194,8 +2192,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-            List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             Map<String, String> nameMap = Maps.newLinkedHashMap();
             nameMap.put("speed", "链路带宽");
             nameMap.put("speedUsage", "带宽利用率");
