@@ -455,6 +455,7 @@ public class RpcProcessService {
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
+        map.put("params", null);
         JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
