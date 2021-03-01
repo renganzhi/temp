@@ -16,6 +16,7 @@ import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -677,6 +678,9 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public JSONArray getIndAggValues(IndicatorValueQO qo) throws Exception{
+        if (!ObjectUtils.isEmpty(qo.getIdentifiers()) && qo.getIdentifiers().get(0) == null){
+            qo.setIdentifiers(null);
+        }
         JsonModel jsonModel = monitorService.getIndAggValues(qo);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());

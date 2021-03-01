@@ -26,6 +26,7 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
 
 import com.uxsino.leaderview.utils.MonitorUtils;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -994,6 +995,8 @@ public class MonitorDataService {
         List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
         nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected) && ne.isMonitoring()).collect(Collectors.toList());
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        field = !MonitorUtils.validHasFields(ind)? "result" : field ;
+        String finalField = field;
         if (Objects.isNull(ind)) {
             return new JsonModel(true, empObj());
         }
@@ -1010,7 +1013,7 @@ public class MonitorDataService {
         nes = nes.stream().filter(ne -> {
             columns.add(ne.getIp() + ne.getName());
             neIpMap.put(ne.getId(), ne.getIp() + ne.getName());
-            Boolean strategyField = getStrategy(ne.getId(), indicators, field);
+            Boolean strategyField = getStrategy(ne.getId(), indicators, finalField);
             if (strategyField) {
                 neMap.put(ne.getId(), ne);
             }
@@ -1025,6 +1028,9 @@ public class MonitorDataService {
         qo.setNeIds(Lists.newArrayList(neIds));
         qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
+        if (!MonitorUtils.validHasFields(ind)){
+            field = "result";
+        }
         Map<String,List<String>> fieldMap = Maps.newHashMap();
         fieldMap.put(ind.getName(), Lists.newArrayList(field));
         qo.setFields(fieldMap);
@@ -1056,7 +1062,7 @@ public class MonitorDataService {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
                 row.put("采集时间", fetchDate);
-                MonitorUtils.action(filter, o -> row.put( neIpMap.get(o.getString("neId")), o.getString(field)));
+                MonitorUtils.action(filter, o -> row.put( neIpMap.get(o.getString("neId")), o.getString(finalField)));
                 cacheTime.add(fetchDate);
                 rows.add(row);
             }
