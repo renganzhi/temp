@@ -16,6 +16,7 @@ import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -405,6 +406,20 @@ public class RpcProcessService {
         return ts;
     }
 
+    @SuppressWarnings("unchecked")
+    private  List<IndValue> toJavaBeanListIndValue(JsonModel jsonModel){
+        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
+        List<IndValue> ts = Lists.newArrayList();
+        for (LinkedHashMap map: list) {
+            IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
+            if (ObjectUtils.isEmpty(t.getIndicatorValue())){
+                t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
+            }
+            ts.add(t);
+        }
+        return ts;
+    }
+
     private <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
         LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
@@ -480,16 +495,15 @@ public class RpcProcessService {
         map.put("neIds", Lists.newArrayList(neId));
         map.put("isHistory", false);
         map.put("order", "desc");
-//        JsonModel jsonModel = monitorService.findNeHealth(map);
         JsonModel jsonModel = monitorService.findNeHealth(Lists.newArrayList(neId), false, "desc");
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        List<NeHealth> neHealths = (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+        ArrayList<LinkedHashMap> neHealths = ((LinkedHashMap<String, ArrayList>) jsonModel.getObj()).get("neHealths");
         if (ObjectUtils.isEmpty(neHealths)){
             return null;
         }
-        return neHealths.get(0);
+        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(neHealths.get(0))), NeHealth.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -672,11 +686,14 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return toJavaBeanList(jsonModel, IndValue.class);
+        return toJavaBeanListIndValue(jsonModel);
     }
 
     @SuppressWarnings("unchecked")
     public JSONArray getIndAggValues(IndicatorValueQO qo) throws Exception{
+        if (!ObjectUtils.isEmpty(qo.getIdentifiers()) && qo.getIdentifiers().get(0) == null){
+            qo.setIdentifiers(null);
+        }
         JsonModel jsonModel = monitorService.getIndAggValues(qo);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
