@@ -54,6 +54,10 @@ export default {
   'styles': {
     'base': [
       {
+        'name': '基础属性',
+        'tag': 'Hint'
+      },
+      {
         'name': '开始方向',
         'key': 'direction',
         'tag': 'select',
@@ -108,6 +112,9 @@ export default {
           }
         ]
       }, {
+        'name': 'tips配置',
+        'tag': 'Hint'
+      }, {
         'name': '是否显示tips',
         'key': 'tipsShow',
         'tag': 'select',
@@ -135,6 +142,9 @@ export default {
           'tipsShow': true
         },
         'tag': 'input'
+      }, {
+        'name': '注释配置',
+        'tag': 'Hint'
       }, {
         'name': '是否显示注释',
         'key': 'tipsNotes',
@@ -185,14 +195,14 @@ export default {
         },
         'tag': 'input'
       }, {
-        'name': '注释字体距上距离',
+        'name': '注释距上距离',
         'key': 'NotesToTop',
         'parentKey': {
           'tipsNotes': true
         },
         'tag': 'input'
       }, {
-        'name': '注释字体距左距离',
+        'name': '注释距左距离',
         'key': 'NotesToLeft',
         'parentKey': {
           'tipsNotes': true

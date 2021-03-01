@@ -34,144 +34,157 @@ export default {
     'chartData': {}
   },
   'styles': {
-    'base': [{
-      'name': '背景图片',
-      'key': 'imgSrc',
-      'tag': 'ImgFile'
-    }, {
-      'name': '缩放方式',
-      'key': 'showType',
-      'tag': 'select',
-      'options': [
-        {
-          'name': '按比例缩放',
-          'value': '1'
+    'base': [
+      {
+        'name': '背景配置',
+        'tag': 'Hint'
+      }, {
+        'name': '背景图片',
+        'key': 'imgSrc',
+        'tag': 'ImgFile'
+      }, {
+        'name': '缩放方式',
+        'key': 'showType',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '按比例缩放',
+            'value': '1'
+          },
+          {
+            'name': '自由缩放',
+            'value': '2'
+          }
+        ]
+      }, {
+        'name': '背景图片高度',
+        'key': 'openBoxheight',
+        'tag': 'input'
+      }, {
+        'name': '背景图片宽度',
+        'key': 'openBoxwidth',
+        'tag': 'input'
+      }, {
+        'name': '图片距左距离',
+        'key': 'openBoxRight',
+        'tag': 'input'
+      }, {
+        'name': '图片距上距离',
+        'key': 'openBoxBtn',
+        'tag': 'input'
+      }, {
+        'name': '按钮配置',
+        'tag': 'Hint'
+      }, {
+        'name': '关闭按钮高度',
+        'key': 'closeBoxheight',
+        'tag': 'input'
+      }, {
+        'name': '关闭按钮宽度',
+        'key': 'closeBoxwidth',
+        'tag': 'input'
+      }, {
+        'name': '按钮距右距离',
+        'key': 'closeBoxRight',
+        'tag': 'input'
+      }, {
+        'name': '按钮距上距离',
+        'key': 'closeBoxBtn',
+        'tag': 'input'
+      }, {
+        'name': '视频配置',
+        'tag': 'Hint'
+      }, {
+        'name': '选择视频',
+        'key': 'videoSrc',
+        'tag': 'videoFile'
+      }, {
+        'name': '视频高度',
+        'key': 'videoheight',
+        'tag': 'input'
+      }, {
+        'name': '视频宽度',
+        'key': 'videowidth',
+        'tag': 'input'
+      }, {
+        'name': '视频距左距离',
+        'key': 'videoBoxRight',
+        'tag': 'input'
+      }, {
+        'name': '视频距上距离',
+        'key': 'videoBoxBtn',
+        'tag': 'input'
+      }, {
+        'name': '轮播图片配置',
+        'tag': 'Hint'
+      }, {
+        'name': '轮播图片',
+        'key': 'isPlay',
+        'tag': 'select',
+        'options': [
+          {
+            'name': '隐藏',
+            'value': false
+          },
+          {
+            'name': '显示',
+            'value': true
+          }
+        ]
+      }, {
+        'name': '图片轮播方式',
+        'key': 'PlayByClick',
+        'parentKey': {
+          'isPlay': true
         },
-        {
-          'name': '自由缩放',
-          'value': '2'
-        }
-      ]
-    }, {
-      'name': '背景图片高度',
-      'key': 'openBoxheight',
-      'tag': 'input'
-    }, {
-      'name': '背景图片宽度',
-      'key': 'openBoxwidth',
-      'tag': 'input'
-    }, {
-      'name': '背景图片距离左距离',
-      'key': 'openBoxRight',
-      'tag': 'input'
-    }, {
-      'name': '背景图片距离上距离',
-      'key': 'openBoxBtn',
-      'tag': 'input'
-    }, {
-      'name': '关闭按钮高度',
-      'key': 'closeBoxheight',
-      'tag': 'input'
-    }, {
-      'name': '关闭按钮宽度',
-      'key': 'closeBoxwidth',
-      'tag': 'input'
-    }, {
-      'name': '关闭按钮距离右距离',
-      'key': 'closeBoxRight',
-      'tag': 'input'
-    }, {
-      'name': '关闭按钮距离上距离',
-      'key': 'closeBoxBtn',
-      'tag': 'input'
-    }, {
-      'name': '选择视频',
-      'key': 'videoSrc',
-      'tag': 'videoFile'
-    }, {
-      'name': '视频高度',
-      'key': 'videoheight',
-      'tag': 'input'
-    }, {
-      'name': '视频宽度',
-      'key': 'videowidth',
-      'tag': 'input'
-    }, {
-      'name': '视频距离左距离',
-      'key': 'videoBoxRight',
-      'tag': 'input'
-    }, {
-      'name': '视频距离上距离',
-      'key': 'videoBoxBtn',
-      'tag': 'input'
-    }, {
-      'name': '轮播图片',
-      'key': 'isPlay',
-      'tag': 'select',
-      'options': [
-        {
-          'name': '隐藏',
-          'value': false
+        'tag': 'select',
+        'options': [
+          {
+            'name': '点击轮播',
+            'value': false
+          },
+          {
+            'name': '自动轮播',
+            'value': true
+          }
+        ]
+      }, {
+        'name': '轮播时间(s)',
+        'key': 'PlayTime',
+        'parentKey': {
+          'isPlay': true,
+          'PlayByClick': true
         },
-        {
-          'name': '显示',
-          'value': true
-        }
-      ]
-    }, {
-      'name': '图片轮播方式',
-      'key': 'PlayByClick',
-      'parentKey': {
-        'isPlay': true
-      },
-      'tag': 'select',
-      'options': [
-        {
-          'name': '点击轮播',
-          'value': false
+        'tag': 'input'
+      }, {
+        'name': '轮播图片高度',
+        'parentKey': {
+          'isPlay': true
         },
-        {
-          'name': '自动轮播',
-          'value': true
-        }
-      ]
-    }, {
-      'name': '轮播时间(s)',
-      'key': 'PlayTime',
-      'parentKey': {
-        'isPlay': true,
-        'PlayByClick': true
-      },
-      'tag': 'input'
-    }, {
-      'name': '轮播图片高度',
-      'parentKey': {
-        'isPlay': true
-      },
-      'key': 'Playheight',
-      'tag': 'input'
-    }, {
-      'name': '轮播图片宽度',
-      'parentKey': {
-        'isPlay': true
-      },
-      'key': 'PlayBoxwidth',
-      'tag': 'input'
-    }, {
-      'name': '轮播图片距离右距离',
-      'parentKey': {
-        'isPlay': true
-      },
-      'key': 'PlayBoxRight',
-      'tag': 'input'
-    }, {
-      'name': '轮播图片距离下距离',
-      'parentKey': {
-        'isPlay': true
-      },
-      'key': 'PlayBoxBtn',
-      'tag': 'input'
-    }
+        'key': 'Playheight',
+        'tag': 'input'
+      }, {
+        'name': '轮播图片宽度',
+        'parentKey': {
+          'isPlay': true
+        },
+        'key': 'PlayBoxwidth',
+        'tag': 'input'
+      }, {
+        'name': '图片距右距离',
+        'parentKey': {
+          'isPlay': true
+        },
+        'key': 'PlayBoxRight',
+        'tag': 'input'
+      }, {
+        'name': '图片距下距离',
+        'parentKey': {
+          'isPlay': true
+        },
+        'key': 'PlayBoxBtn',
+        'tag': 'input'
+      }
     ]
   }
 }

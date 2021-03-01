@@ -78,6 +78,9 @@ export default {
   'styles': {
     'base': [
       {
+        'name': '基础配置',
+        'tag': 'Hint'
+      }, {
         'name': '是否空心',
         'key': 'isHollow',
         'tag': 'select',
@@ -99,6 +102,9 @@ export default {
         'name': '字体大小',
         'key': 'FontSize',
         'tag': 'input'
+      }, {
+        'name': '分界线配置',
+        'tag': 'Hint'
       }, {
         'name': '分界线颜色',
         'key': 'LineColor',
