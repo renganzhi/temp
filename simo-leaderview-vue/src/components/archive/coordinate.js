@@ -14,7 +14,7 @@ const coordinate = {
       colorful: false,
       imgClass: 'icon-n-histogram',
       chartType: 've-histogram',
-      ifGradual: 'false',
+      ifGradual: 'true',
       splitShow: 'false',
       ctLegendSize: '16',
       ctLegendColor: '#666f8b',
@@ -152,7 +152,7 @@ const coordinate = {
       splitColor: '#333849',
       splitSize: 1,
       chartData: morenData.times,
-      lineArea: false, // 是否为区域图
+      lineArea: 'true', // 是否为区域图
       lineColorType: false, // 是否为区域图
       smooth: 'true',
       LineType: 'solid',
