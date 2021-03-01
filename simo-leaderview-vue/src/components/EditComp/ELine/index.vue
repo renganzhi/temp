@@ -17,6 +17,7 @@ export default {
     return {
       mychart: null,
       oldOption: '',
+      Linesubsection: '',
       oldformatterType: ''
     }
   },
@@ -358,7 +359,12 @@ export default {
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
-        this.mychart.clear()
+        if (this.Linesubsection === this.item.Linesubsection) {
+
+        } else {
+          this.Linesubsection = this.item.Linesubsection
+          this.mychart.clear()
+        }
         this.mychart.setOption(myoption)
       } else {
 

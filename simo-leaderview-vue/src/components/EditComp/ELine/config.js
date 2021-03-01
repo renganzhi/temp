@@ -424,7 +424,7 @@ export default {
         ]
       },
       {
-        'name': '数据线分段显示',
+        'name': '数据线分段',
         'key': 'Linesubsection',
         'tag': 'select',
         'options': [
