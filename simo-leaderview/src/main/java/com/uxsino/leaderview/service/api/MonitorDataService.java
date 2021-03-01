@@ -1928,12 +1928,6 @@ public class MonitorDataService {
                 if (Objects.isNull(fieldLabel)) {
                     return new JsonModel(true, empObj());
                 }
-            } else {
-                if ("PERCENT".equals(ind.getIndicatorType())) {
-                    columns.add(ind.getLabel() + "(%)");
-                } else {
-                    columns.add(ind.getLabel());
-                }
             }
             JSONArray neArray = (JSONArray) params.get("ne");
             List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);

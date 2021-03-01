@@ -481,16 +481,15 @@ public class RpcProcessService {
         map.put("neIds", Lists.newArrayList(neId));
         map.put("isHistory", false);
         map.put("order", "desc");
-//        JsonModel jsonModel = monitorService.findNeHealth(map);
         JsonModel jsonModel = monitorService.findNeHealth(Lists.newArrayList(neId), false, "desc");
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        List<NeHealth> neHealths = (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+        ArrayList<LinkedHashMap> neHealths = ((LinkedHashMap<String, ArrayList>) jsonModel.getObj()).get("neHealths");
         if (ObjectUtils.isEmpty(neHealths)){
             return null;
         }
-        return neHealths.get(0);
+        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(neHealths.get(0))), NeHealth.class);
     }
 
     @SuppressWarnings("unchecked")
