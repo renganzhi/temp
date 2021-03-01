@@ -444,6 +444,11 @@ public class AlertDataService {
             rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
             List<String > neIdList = rpcProcessService.getNeIds(criteria);
             neIds = neIdList.toArray(new String[neIdList.size()]);
+            //如果父类型已经被指定但是依然没有符合条件的设备id，证明该账号下没有该类型的设备，直接返回无数据
+            if(baseNeClass!=null && neIds.length==0){
+                result.put("info", "抱歉，没有数据可供展示...");
+                return new JsonModel(true, "无资源数据", result);
+            }
         }
         List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1L);
         if (ObjectUtils.isEmpty(list)){
