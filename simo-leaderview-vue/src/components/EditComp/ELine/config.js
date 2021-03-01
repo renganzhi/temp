@@ -6,7 +6,7 @@ export default {
     'width': 700,
     'chartType': 'ELine',
     'ifEidetColor': false,
-    'ifGradual': 'true',
+    'ifGradual': 'false',
     'splitShow': false,
     'ctLegendShow': true,
     'ctLegendColor': '#828bac',
@@ -27,7 +27,7 @@ export default {
     'legendColor': '#828bac',
     'DanweiColor': '#828bac',
     'DanweiSize': 16,
-    'lineArea': false, // 是否为区域图
+    'lineArea': true, // 是否为区域图
     'lineColorType': false, // 是否为区域图
     'smooth': false,
     'LineType': 'solid',
@@ -40,7 +40,7 @@ export default {
     'PointSize': '14',
     'rotate': 0,
     'LineColorArray': [
-      '#be4d24',
+      '#2d98f1',
       '#32c5e9',
       '#67e0e3',
       '#9fe6b8',
