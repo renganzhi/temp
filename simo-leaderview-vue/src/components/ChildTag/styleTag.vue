@@ -1,6 +1,6 @@
 <template>
     <div v-if="itemsShow">
-        <label :style=" item.tag === 'Hint'? 'font-weight: bold;':''">{{ item.name }}</label>
+        <label :style=" item.tag === 'Hint'? 'font-weight: bold; color: #fff;':''">{{ item.name }}</label>
         <template v-if="item.tag === 'select'">
             <select v-model="selectedItem[item.key]">
                 <option
