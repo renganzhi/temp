@@ -522,7 +522,7 @@
                        style="position: relative;">
                     <label>宽</label>
                     <input class="w-90"
-                           type="number"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
                            v-model="testObj.width">
                     <span>px</span>
                     <span @click="testObj.width++"
@@ -537,7 +537,7 @@
                        style="position: relative;">
                     <label>高</label>
                     <input class="w-90"
-                           type="number"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
                            v-model="testObj.height">
                     <span>px</span>
                     <span @click="testObj.height++"
@@ -555,7 +555,7 @@
                        style="position: relative;">
                     <label>X</label>
                     <input class="w-90"
-                           type="number"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
                            v-model="testObj.x">
                     <span>px</span>
                     <span @click="testObj.x++"
@@ -570,7 +570,7 @@
                        style="position: relative;">
                     <label>Y</label>
                     <input class="w-90"
-                           type="number"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
                            v-model="testObj.y">
                     <span>px</span>
                     <span @click="testObj.y++"

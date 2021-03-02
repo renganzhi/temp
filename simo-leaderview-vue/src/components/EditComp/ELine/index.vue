@@ -18,7 +18,8 @@ export default {
       mychart: null,
       oldOption: '',
       Linesubsection: '',
-      oldformatterType: ''
+      oldformatterType: '',
+      oldchartData: ''
     }
   },
   computed: {
@@ -363,6 +364,12 @@ export default {
 
         } else {
           this.Linesubsection = this.item.Linesubsection
+          this.mychart.clear()
+        }
+        if (this.oldchartData === JSON.stringify(this.item.chartData)) {
+
+        } else {
+          this.oldchartData = JSON.stringify(this.item.chartData)
           this.mychart.clear()
         }
         this.mychart.setOption(myoption)
