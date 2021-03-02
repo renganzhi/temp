@@ -3314,50 +3314,6 @@ export default {
         $('.tempDiv').remove()
       }
     },
-    changetestW: function (d) {
-      let value = this.testObj.width + ''
-      var valeArry = value.split('')
-      let nowDate = 0
-      valeArry.forEach(element => {
-        if (element * 1 >= 0 && element * 1 <= 9) {
-          nowDate = nowDate * 10 + element * 1
-        }
-      })
-      this.testObj.width = Number(nowDate) + (d === 0 ? 1 : -1)
-    },
-    changetestH: function (d) {
-      let value = this.testObj.height + ''
-      var valeArry = value.split('')
-      let nowDate = 0
-      valeArry.forEach(element => {
-        if (element * 1 >= 0 && element * 1 <= 9) {
-          nowDate = nowDate * 10 + element * 1
-        }
-      })
-      this.testObj.height = Number(nowDate) + (d === 0 ? 1 : -1)
-    },
-    changetestX: function (d) {
-      let value = this.testObj.x + ''
-      var valeArry = value.split('')
-      let nowDate = 0
-      valeArry.forEach(element => {
-        if (element * 1 >= 0 && element * 1 <= 9) {
-          nowDate = nowDate * 10 + element * 1
-        }
-      })
-      this.testObj.x = Number(nowDate) + (d === 0 ? 1 : -1)
-    },
-    changetestY: function (d) {
-      let value = this.testObj.y + ''
-      var valeArry = value.split('')
-      let nowDate = 0
-      valeArry.forEach(element => {
-        if (element * 1 >= 0 && element * 1 <= 9) {
-          nowDate = nowDate * 10 + element * 1
-        }
-      })
-      this.testObj.y = Number(nowDate) + (d === 0 ? 1 : -1)
-    },
     deleteOne: function (type, tempArr) {
       var i = 0
       var indexArr = []
