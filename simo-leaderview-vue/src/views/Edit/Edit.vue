@@ -522,12 +522,12 @@
                        style="position: relative;">
                     <label>宽</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
                            v-model="testObj.width">
                     <span>px</span>
-                    <span @click="testObj.width++"
+                    <span @click="changetestW(0)"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="testObj.width--"
+                    <span @click="changetestW(1)"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="widthVali.isShowError"
@@ -537,12 +537,12 @@
                        style="position: relative;">
                     <label>高</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
                            v-model="testObj.height">
                     <span>px</span>
-                    <span @click="testObj.height++"
+                    <span @click="changetestH(0)"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="testObj.height--"
+                    <span @click="changetestH(1)"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="heightVali.isShowError"
@@ -555,12 +555,12 @@
                        style="position: relative;">
                     <label>X</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
                            v-model="testObj.x">
                     <span>px</span>
-                    <span @click="testObj.x++"
+                    <span @click="changetestX(0)"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="testObj.x--"
+                    <span @click="changetestX(1)"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="xVali.isShowError"
@@ -570,12 +570,12 @@
                        style="position: relative;">
                     <label>Y</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')"
+                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
                            v-model="testObj.y">
                     <span>px</span>
-                    <span @click="testObj.y++"
+                    <span @click="changetestY(0)"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="testObj.y--"
+                    <span @click="changetestY(1)"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="yVali.isShowError"
@@ -1332,7 +1332,7 @@
                 </div>
               </div>
               <div v-if="selectedItem.chartType=='number' || selectedItem.chartType=='text'">
-                <div class="m-gap form-group">{{selectedItem.chartType=='number' ?'数字':'字体'}}样式</div>
+                <div class="form-group">{{selectedItem.chartType=='number' ?'数字':'字体'}}样式</div>
                 <div class="form-group"
                      style="height: 30px;">
                   <div v-for="(item, index) in fontFaces"
@@ -1933,7 +1933,7 @@
                 <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >
-                    <label>{{item.name}}</label>
+                    <label :style="item.tag === 'Hint'? 'font-weight: bold; color: #fff;':''">{{item.name}}</label>
                     <template v-if="item.tag == 'select'">
                       <select v-model="selectedItem[item.key]">
                         <option v-for="(option, optIndex) in item.options" :key="`${option.name}_${optIndex}`"
