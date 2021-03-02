@@ -17,6 +17,17 @@ const coordinate = {
       ifGradual: 'true',
       splitShow: 'false',
       ctLegendSize: '16',
+      colorType: 'custom',
+      ctColors: [
+        ['#6fcaf7', '#0c79c5'],
+        ['#8feee5', '#1bbcae'],
+        ['#fa8d76', '#db4222'],
+        ['#af8af3', '#874edc'],
+        ['#f5739c', '#f31d53'],
+        ['#ffdf91', '#eeb01b'],
+        ['#5c84e7', '#144fe5'],
+        ['#85f8c0', '#62dc26']
+      ],
       ctLegendColor: '#666f8b',
       axisLabelSize: '16',
       DanweiColor: '#828bac',
