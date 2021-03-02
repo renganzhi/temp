@@ -1,6 +1,6 @@
 export default {
   item: {
-    text: '装饰器',
+    text: '装饰',
     imgClass: 'icon-decorate',
     chartType: 'decorator',
     imgSrc: '/leaderview/decorator/decoratorBg21.gif',

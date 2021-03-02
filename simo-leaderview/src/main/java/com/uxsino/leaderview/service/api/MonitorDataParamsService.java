@@ -738,7 +738,7 @@ public class MonitorDataParamsService {
             if ("ALL".equals(type)) {
                 // 只展示数值类和需要展示的指标
                 fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
-                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
+//                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 fields = filter(fields, o -> Objects.equals("performance", o.getString("tag")));
             } else {
                 switch (type){
@@ -751,7 +751,7 @@ public class MonitorDataParamsService {
                         fields = filter(fields, o -> !Objects.equals(o.getString("unit"), "%"));
                         break;
                     case "STRING":
-                        fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType"))
+                        fields = filter(fields, o -> FieldType.PERCENT.toString().equals(o.getString("fieldType"))
                                 || FieldType.NUMBER.toString().equals(o.getString("fieldType")));
                         break;
                 }
@@ -990,8 +990,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1016,8 +1015,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1045,8 +1043,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();
@@ -1075,8 +1072,7 @@ public class MonitorDataParamsService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         List<Map<String, String>> result = Lists.newArrayList();
         for (NetworkLinkModel ne : list) {
             Map<String, String> map = Maps.newHashMap();

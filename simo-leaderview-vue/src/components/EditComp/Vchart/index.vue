@@ -717,12 +717,11 @@ export default {
       }
     },
     setGaugeColor: function (type, newV) {
-      if (Array.isArray(newV[0])) {
-        this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = new echarts.graphic.LinearGradient(1, 0, 0, 0, [{ offset: 0, color: newV[0][0] }, { offset: 1, color: newV[0][1] }])
-        this.settings.seriesMap[type].detail.color = newV[0][0]
-      } else {
-        this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = newV[0]
-        this.settings.seriesMap[type].detail.color = newV[0]
+      let lineStyleColor = Array.isArray(newV[0]) ? new echarts.graphic.LinearGradient(1, 0, 0, 0, [{ offset: 0, color: newV[0][0] }, { offset: 1, color: newV[0][1] }])
+        : newV[0]
+      this.settings.seriesMap[type].axisLine.lineStyle.color[0][1] = lineStyleColor
+      if (type !== 'pro') {
+        this.settings.seriesMap[type].detail.color = Array.isArray(newV[0]) ? newV[0][0] : newV[0]
       }
     },
     dealCompsData: function (obj) {

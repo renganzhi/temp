@@ -16,6 +16,7 @@ import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -85,7 +86,7 @@ public class RpcProcessService {
             throw new Exception(jsonModel.getMsg());
         }
         List<NeHealthHistory> list = new ArrayList<>();
-        List<NetworkEntity> rawResult =(List<NetworkEntity>) jsonModel.getObj();
+        List<NetworkEntity> rawResult = toJavaBeanList(jsonModel, NetworkEntity.class);
         List<Map<String, Object>> realResult = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(rawResult)) {
             for (NeClass neClass : neClasses) {
@@ -215,7 +216,8 @@ public class RpcProcessService {
             condition.put("baseNeClass", baseNeClass);
         }
         condition.put("manageStatusNotIn", "Delected");
-        List<NetworkEntity> networkEntityList =(List<NetworkEntity>) monitorService.getNeList(condition);
+        JsonModel jsonModel = monitorService.getNeList(condition);
+        List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
         List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
             networkEntity.getParentId() == null
@@ -226,6 +228,7 @@ public class RpcProcessService {
             String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
             ArrayList<Object> temp = new ArrayList<>();
             for(String runStatus : runStatuses){
+                temp = new ArrayList<>();
                 long count = 0;
                 Iterator<NetworkEntity> iterator = networkEntityList.iterator();
                 while(iterator.hasNext()){
@@ -403,6 +406,20 @@ public class RpcProcessService {
         return ts;
     }
 
+    @SuppressWarnings("unchecked")
+    private  List<IndValue> toJavaBeanListIndValue(JsonModel jsonModel){
+        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
+        List<IndValue> ts = Lists.newArrayList();
+        for (LinkedHashMap map: list) {
+            IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
+            if (ObjectUtils.isEmpty(t.getIndicatorValue())){
+                t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
+            }
+            ts.add(t);
+        }
+        return ts;
+    }
+
     private <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
         LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
@@ -453,6 +470,7 @@ public class RpcProcessService {
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
+        map.put("params", null);
         JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -477,16 +495,15 @@ public class RpcProcessService {
         map.put("neIds", Lists.newArrayList(neId));
         map.put("isHistory", false);
         map.put("order", "desc");
-//        JsonModel jsonModel = monitorService.findNeHealth(map);
         JsonModel jsonModel = monitorService.findNeHealth(Lists.newArrayList(neId), false, "desc");
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        List<NeHealth> neHealths = (List<NeHealth>)((JSONObject) jsonModel.getObj()).get("neHealths");
+        ArrayList<LinkedHashMap> neHealths = ((LinkedHashMap<String, ArrayList>) jsonModel.getObj()).get("neHealths");
         if (ObjectUtils.isEmpty(neHealths)){
             return null;
         }
-        return neHealths.get(0);
+        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(neHealths.get(0))), NeHealth.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -669,7 +686,19 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return toJavaBeanList(jsonModel, IndValue.class);
+        return toJavaBeanListIndValue(jsonModel);
+    }
+
+    @SuppressWarnings("unchecked")
+    public JSONArray getIndAggValues(IndicatorValueQO qo) throws Exception{
+        if (!ObjectUtils.isEmpty(qo.getIdentifiers()) && qo.getIdentifiers().get(0) == null){
+            qo.setIdentifiers(null);
+        }
+        JsonModel jsonModel = monitorService.getIndAggValues(qo);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseArray(JSON.toJSONString(jsonModel.getObj()));
     }
 
     @SuppressWarnings("unchecked")
@@ -711,7 +740,7 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
-    public PageModel findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
+    public List<NetworkLinkModel> findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
         Map<String, Object> map = Maps.newHashMap();
         map.put("pagination", false);
         Map<String, Object> pageMap = getBeanMap(temPage);
@@ -722,7 +751,14 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return this.toJavaBean(jsonModel, PageModel.class);
+        PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
+        JSONArray array = (JSONArray) pageModel.getObject();
+        List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
+        for (int i = 0; i < array.size(); i++) {
+            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
+            nesLinkList.add(model);
+        }
+        return nesLinkList;
     }
 
     public JSONArray getFieldLables(String indicatorID) throws Exception{

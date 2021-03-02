@@ -268,7 +268,6 @@ public class MonitorDataParamsController {
     }
 
 
-    //TODO 暂时没有链路数据 无法自测
     @ApiOperation("获取链路的源ip下拉框")
     @ApiImplicitParams({})
     @RequestMapping(value = "/getNetworkSourceId", method = RequestMethod.GET)
@@ -281,7 +280,6 @@ public class MonitorDataParamsController {
         }
     }
 
-    //TODO 暂时没有链路数据 无法自测
     @ApiOperation("获取链路的源接口下拉框")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sourceId", paramType = "query", dataType = "String", value = "源id") })
@@ -295,7 +293,6 @@ public class MonitorDataParamsController {
         }
     }
 
-    //TODO 暂时没有链路数据 无法自测
     @ApiOperation("获取链路的目标ip下拉框")
     @ApiImplicitParams({ @ApiImplicitParam(name = "sourceId", paramType = "query", dataType = "String", value = "源id"),
             @ApiImplicitParam(name = "sourceIfName", paramType = "query", dataType = "String", value = "源接口") })
@@ -310,7 +307,6 @@ public class MonitorDataParamsController {
         }
     }
 
-    //TODO 暂时没有链路数据 无法自测
     @ApiOperation("获取链路的目的接口下拉框")
     @ApiImplicitParams({ @ApiImplicitParam(name = "sourceId", paramType = "query", dataType = "String", value = "源id"),
             @ApiImplicitParam(name = "sourceIfName", paramType = "query", dataType = "String", value = "源接口"),

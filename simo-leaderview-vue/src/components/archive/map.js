@@ -86,7 +86,7 @@ const map = {
       chartData: morenData.TDEarthLineData
     },
     {
-      text: '3D地球柱状图',
+      text: '3D地球柱图',
       imgClass: 'icon-3dhistogrammap',
       chartType: 'TDEarthBar',
       width: 600,

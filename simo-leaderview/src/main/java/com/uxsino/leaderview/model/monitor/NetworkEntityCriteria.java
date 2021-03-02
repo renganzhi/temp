@@ -115,6 +115,7 @@ public class NetworkEntityCriteria extends Criteria<NetworkEntity> {
     public NetworkEntityCriteria() {
         super(NetworkEntity.class);
         setNativeQuery(true);
+        setPageSize(9999);
     }
 
     private String sql() {

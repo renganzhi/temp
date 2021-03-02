@@ -1,6 +1,6 @@
 export default {
   'item': {
-    'text': '极坐标柱状图',
+    'text': '极坐标柱图',
     'imgClass': 'icon-ploarbar',
     'chartType': 'polarBar',
     'colorful': false,

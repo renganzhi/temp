@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.authority.lib.util.DomainUtils;
+import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
@@ -25,6 +26,7 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
 
 import com.uxsino.leaderview.utils.MonitorUtils;
+import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -242,7 +244,8 @@ public class MonitorDataService {
         JSONObject json = new JSONObject(true);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         rpcProcessService.setCriteriaDomainIds(criteria ,session ,domainId);
-        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
+        if(baseNeClass!=null)
+            rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
         if (!ObjectUtils.isEmpty(neIds)){
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         }
@@ -960,7 +963,7 @@ public class MonitorDataService {
         return new JsonModel().success(result);
     }
 
-    public JsonModel getHistoryValue(String[] neIds, String indicators, String windows, String field, IndPeriod period,
+    public JsonModel getHistoryValue(String[] neIds, String indicators, String windows, String field, IntervalType intervalType,
                                       Integer interval) throws Exception{
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
@@ -975,10 +978,12 @@ public class MonitorDataService {
         String[] componentNames = new String[componentArray.size()];
         // 封装资源id和部件标识
         HashMap<String, String> componentMap = new HashMap<>();
+        List<String> identifiers = Lists.newArrayList();
         for (int i = 0; i < componentArray.size(); i++) {
             componentNames[i] = componentArray.getJSONObject(i).getString("component");
             neIds[i] = componentArray.getJSONObject(i).getString("id");
             componentMap.put(neIds[i], componentNames[i]);
+            identifiers.add(componentNames[i]);
         }
 
 
@@ -990,6 +995,8 @@ public class MonitorDataService {
         List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
         nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected) && ne.isMonitoring()).collect(Collectors.toList());
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        field = !MonitorUtils.validHasFields(ind)? "result" : field ;
+        String finalField = field;
         if (Objects.isNull(ind)) {
             return new JsonModel(true, empObj());
         }
@@ -1002,9 +1009,11 @@ public class MonitorDataService {
         // 封装资源id和资源
         HashMap<String, NetworkEntity> neMap = new HashMap<>();
         // 开始对多资源遍历循环查询
+        Map<String, String> neIpMap = Maps.newHashMap();
         nes = nes.stream().filter(ne -> {
             columns.add(ne.getIp() + ne.getName());
-            Boolean strategyField = getStrategy(ne.getId(), indicators, field);
+            neIpMap.put(ne.getId(), ne.getIp() + ne.getName());
+            Boolean strategyField = getStrategy(ne.getId(), indicators, finalField);
             if (strategyField) {
                 neMap.put(ne.getId(), ne);
             }
@@ -1015,35 +1024,52 @@ public class MonitorDataService {
 
         FieldModel model = new FieldModel();
 
-        List<IndicatorVal> records = Lists.newArrayList();
-        for (NetworkEntity ne: nes) {
-            JSONObject neComponent = filter(componentArray, o -> o.getString("id").equals(ne.getId())).getJSONObject(0);
-            model.setNe(ne);
-            model.setIndicator(ind);
-            model.setField(field);
-            model.setComponent(neComponent.getString("component"));
+        IndicatorValueQO qo = new IndicatorValueQO();
+        qo.setNeIds(Lists.newArrayList(neIds));
+        qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
-            JSONArray neIndVal = getHistoryValByNe(model, period, "asc");
-            if (neIndVal != null){
-                records.addAll(JSONObject.parseArray(neIndVal.toJSONString(), IndicatorVal.class));
-            }
+        if (!MonitorUtils.validHasFields(ind)){
+            field = "result";
+        }
+        Map<String,List<String>> fieldMap = Maps.newHashMap();
+        fieldMap.put(ind.getName(), Lists.newArrayList(field));
+        qo.setFields(fieldMap);
+
+        Map<String,String> indicatorTypeMap = Maps.newHashMap();
+        indicatorTypeMap.put( ind.getName() ,ind.getIndicatorType());
+        qo.setIndicatorTypes(indicatorTypeMap);
+
+        if (!ObjectUtils.isEmpty(componentMap)){
+            qo.setIdentifiers(identifiers);
         }
 
-        model.setIndicator(ind);
-        model.setField(field);
-        if (ObjectUtils.isEmpty(records)) {
+        qo.setIntervalType(intervalType);
+        qo.setInterval(Long.valueOf(interval));
+        JSONArray values = rpcProcessService.getIndAggValues(qo);
+        if (ObjectUtils.isEmpty(values)){
             return new JsonModel(true, empObj());
         }
-
-        JSONArray resultArray = getHistoryArray(records, model, componentMap, neMap, period, interval);
-        JSONObject unitTransfer = MonitorUtils.HistoryUnitTransfer(resultArray, getUnit(model));
-        resultArray = unitTransfer.getJSONArray("result");
-        result.put("unit", unitTransfer.getString("unit"));
-
-        rows = unifyHistory(resultArray);
-
+        model.setIndicator(ind);
+        model.setField(field);
+        JSONObject unitTransfer = MonitorUtils.unitTransfer(values, getUnit(model), field);
+        values = unitTransfer.getJSONArray("result");
+        List<String> cacheTime = Lists.newArrayList();
+        for (int i = 0; i < values.size(); i++) {
+            JSONObject obj = values.getJSONObject(i);
+            JSONObject row = new JSONObject();
+            String fetchDate = obj.getString("fetchDate");
+            if (!cacheTime.contains(fetchDate)){
+                JSONArray arr = values;
+                JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
+                row.put("采集时间", fetchDate);
+                MonitorUtils.action(filter, o -> row.put( neIpMap.get(o.getString("neId")), o.getString(finalField)));
+                cacheTime.add(fetchDate);
+                rows.add(row);
+            }
+        }
         result.put("rows", rows);
         result.put("columns", columns);
+        result.put("unit", unitTransfer.getString("unit"));
         return new JsonModel(true, result);
     }
 
@@ -1423,7 +1449,7 @@ public class MonitorDataService {
         return result;
     }
 
-    public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows, IndPeriod period) throws Exception{
+    public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows, IntervalType intervalType, Integer interval) throws Exception{
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
@@ -1440,39 +1466,8 @@ public class MonitorDataService {
         for (int i = 0; i < componentArray.size(); i++) {
             componentNames[i] = componentArray.getJSONArray(i).getJSONObject(0).getString("component");
         }
-        // 根据统计时段的选择，将采集时间轴给固定好
-        if (ObjectUtils.isEmpty(period)) {
-            return new JsonModel(true, "未选择统计时段", empObj());
-        }
-        // 用一个JSONArray保存所有的展示时间
-        JSONArray dateArray = new JSONArray();
-        Date startDate = IndPeriod.getStartDate(period, new Date());
-        // 先将startDate取整
-        startDate.setTime(startDate.getTime() - startDate.getTime() % 60000L);
-        Integer interval;
-        if ("_1month".equals(period.name())) {
-            // 如果选择的是展示一个月，则展示时间点数为每30分钟展示一个数据
-            interval = 30;
-        } else if ("_1week".equals(period.name())) {
-            // 如果选择的是展示一周，则展示时间点数为每5分钟展示一个数据
-            interval = 5;
-        } else {
-            // 如果选择的是展示一天，则根据存在数据进行展示
-            interval = null;
-        }
-        if (!ObjectUtils.isEmpty(interval)) {
-            Long currTime = System.currentTimeMillis();
-            while (startDate.getTime() < currTime) {
-                JSONObject dateObj = new JSONObject();
-                dateObj.put("time", DateUtils.formatCommonDate(startDate));
-                dateObj.put("value", startDate.getTime());
-                dateArray.add(dateObj);
-                startDate.setTime(startDate.getTime() + 1000 * 60 * interval);
-            }
-        }
 
-
-        JSONArray resultArray = new JSONArray();
+        JSONArray values = new JSONArray();
         List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
         // 排除无效、被删除、未监控资源
         nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected) && ne.isMonitoring()).collect(Collectors.toList());
@@ -1487,11 +1482,16 @@ public class MonitorDataService {
         columns.add("采集时间");
         String unit = new String() ;
 
+        List<String> filedList = Lists.newArrayList();
+        Map<String, String> filedLabelMap = Maps.newHashMap();
+
         // 获取数据中心的指标数据
         for (int i = 0; i < indicatorArr.size(); i++) {
             String indicatorId = indicatorArr.getString(i);
+            String identifier = componentNames[i];
             IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicatorId);
             String field = windowsJsonArray.getJSONObject(i).getString("fields");
+            filedList.add(field);
             if (Objects.isNull(ind)) {
                 return new JsonModel(true, empObj());
             }
@@ -1500,164 +1500,53 @@ public class MonitorDataService {
             model.setIndicator(ind);
             model.setField(field);
             unit = getUnit(model);
-            // 属性字段的JSON
-            JSONObject fieldLabel = model.getFieldLabel();
             String label = getLabel(ind, field);
             columns.add(label);
-            // 属性值的JSON
-            JSONObject valueJSON = null;
+            filedLabelMap.put(indicatorId, label);
+            IndicatorValueQO qo = new IndicatorValueQO();
+            qo.setNeIds(Lists.newArrayList(ne.getId()));
+            qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
-            JSONArray neIndVal = getHistoryValByNe(model, period, "asc");
-            List<IndicatorVal> records = Lists.newArrayList();
-            if (neIndVal != null){
-                records = JSONObject.parseArray(neIndVal.toJSONString(), IndicatorVal.class);
+            Map<String,List<String>> fieldMap = Maps.newHashMap();
+            fieldMap.put(ind.getName(), Lists.newArrayList(field));
+            qo.setFields(fieldMap);
+
+            Map<String,String> indicatorTypeMap = Maps.newHashMap();
+            indicatorTypeMap.put( ind.getName() ,ind.getIndicatorType());
+            qo.setIndicatorTypes(indicatorTypeMap);
+
+            if (!ObjectUtils.isEmpty(identifier)){
+                qo.setIdentifiers(Lists.newArrayList(identifier));
             }
 
-            // 采集时间缓存判断：避免产生同一资源相同采集时间的数据
-            String cacheTime = new String();
-            // 创建一个采集时间判断数，用于判断采集时间与显示时间的关系
-            Integer timeValid = 0;
-            // 创建一个缓存数据保存值
-            Double cacheValue = null;
-            // 获取指标监控策略列表
-            Boolean strategyField = getStrategy(neIds[0], indicatorId, field);
-            // 若指标未监控，取消其数值展示
-            if (!strategyField) {
-                records = new ArrayList<IndicatorVal>();
-            }
-            for (IndicatorVal historyValue : records) {
-                String component = componentNames[i];
-                String name = label;
-                Object valueObj = historyValue.getIndicatorValue();
-                if (ObjectUtils.isEmpty(valueObj)) {
-                    continue;
-                }
-                JSON indicatorValues = (JSON) valueObj;
-                if (validHasFields(ind)) {
-                    unit = fieldLabel.getString("unit");
-                } else if ("PERCENT".equals(ind.getIndicatorType())) {
-                    unit = "%";
-                } else {
-                    unit = null;
-                }
-                result.put("unit", unit);
-                BigDecimal indValue;
-                // 判断该指标是否有部件,COMPOUND、NUMBER、PERCENT类型的指标无部件，并且LIST类型中也有部件为空的(CPU核心利用率)
-                if ((!"COMPOUND".equals(ind.getIndicatorType()) && validHasFields(ind))
-                        && !StringUtils.isEmpty(component)) {
-                    // 如果是部件，则indicatorValues肯定为JSONArray类型
-                    JSONArray fieldArray = JSON.parseArray(indicatorValues.toJSONString());
-                    for (int j = 0; j < fieldArray.size(); j++) {
-                        JSONObject obj = fieldArray.getJSONObject(j);
-                        // 跳过错误的采集数据
-                        if (Strings.isNullOrEmpty(obj.getString("identifier"))) {
-                            continue;
-                        }
-                        if (obj.getString("identifier").equals(component)) {
-                            valueJSON = obj;
-                            break;
-                        }
-                    }
-                    if (null == valueJSON) {
-                        continue;
-                    }
-                    String tmpStr = valueJSON.getString(field);
-                    if (!Strings.isNullOrEmpty(tmpStr) && NUMBER_PATTERN.matcher(tmpStr).matches()) {
-                        indValue = valueJSON.getBigDecimal(field);
-                    } else {
-                        continue;
-                    }
-                } else {
-                    // 非部件指标直接取值
-                    valueJSON = getValueJSON(indicatorValues);
-                    if (null == valueJSON) {
-                        return new JsonModel(true, empObj());
-                    }
-                    try {
-                        if (!validHasFields(ind)) {
-                            if (!ObjectUtils.isEmpty(valueJSON.getString("result"))) {
-                                String str = valueJSON.getString("result");
-                                Matcher m = NUMBER_PATTERN.matcher(str);
-                                while (m.find()) {
-                                    str = m.group();
-                                }
-                                indValue = new BigDecimal(str);
-                            } else {
-                                indValue = null;
-                            }
-                        } else {
-                            if (!ObjectUtils.isEmpty(valueJSON.getString(field))) {
-                                String str = valueJSON.getString(field);
-                                Matcher m = NUMBER_PATTERN.matcher(str);
-                                while (m.find()) {
-                                    str = m.group();
-                                }
-                                indValue = new BigDecimal(str);
-                            } else {
-                                indValue = null;
-                            }
-                        }
-                    } catch (Exception e) {
-                        indValue = null;
-                    }
-                }
-                if (indValue != null && Objects.equals(unit, "%")) {
-                    indValue = indValue.setScale(2, BigDecimal.ROUND_HALF_UP);
-                }
-                // 采集时间判断：判断是否与上一采集时间点相同
-                if (cacheTime.equals(DateUtils.formatCommonDate(historyValue.getTm()))) {
-                    // 如果相同则跳过该采集点
-                    continue;
-                }
-                // 缓存时间更新
-                cacheTime = DateUtils.formatCommonDate(historyValue.getTm());
-                /**
-                 * 采集时间存放
-                 */
-                JSONObject resultObj = new JSONObject();
-                // 如果采集间隔时间不存在，则展示所有存在的数据
-                if (ObjectUtils.isEmpty(interval)) {
-                    resultObj.put("采集时间", DateUtils.formatCommonDate(
-                            new Date(historyValue.getTm().getTime() - historyValue.getTm().getTime() % 60000L)));
-                    resultObj.put("name", name);
-                    resultObj.put("value", indValue);
-                    resultArray.add(resultObj);
-                } else {
-                    // 找到距离采集时间最近的展示时间
-                    for (int j = timeValid; j < dateArray.size(); j++) {
-                        Long showTime = dateArray.getJSONObject(j).getLong("value");
-                        Long findTime = historyValue.getTm().getTime();
-                        if (showTime > findTime && (showTime - 60 * 1000 * interval) < findTime) {
-                            timeValid = j;
-                            // 将数据先保存到缓存值中
-                            if (cacheValue == null) {
-                                cacheValue = indValue == null ? null : indValue.doubleValue();
-                            } else {
-                                cacheValue = indValue == null ? null : (cacheValue + indValue.doubleValue()) / 2;
-                            }
-                            break;
-                        } else {
-                            if (showTime - 60 * 1000 * interval > findTime) {
-                                continue;
-                            }
-                            resultObj = new JSONObject();
-                            resultObj.put("采集时间", dateArray.getJSONObject(j).get("time"));
-                            resultObj.put("name", name);
-                            resultObj.put("value", cacheValue);
-                            resultArray.add(resultObj);
-                            // 清除缓存
-                            cacheValue = null;
-                        }
-                    }
-                }
+            qo.setIntervalType(intervalType);
+            qo.setInterval(Long.valueOf(interval));
+            values.addAll(rpcProcessService.getIndAggValues(qo));
+        }
+        if (ObjectUtils.isEmpty(values)){
+            return new JsonModel(true, empObj());
+        }
+        JSONObject unitTransfer = MonitorUtils.unitTransfer(values, unit, filedList);
+        values = unitTransfer.getJSONArray("result");
+
+        // 遍历统计
+        List<String> cacheTime = Lists.newArrayList();
+        JSONArray rows = new JSONArray();
+        for (int i = 0; i < values.size(); i++) {
+            JSONObject obj = values.getJSONObject(i);
+            JSONObject row = new JSONObject();
+            String fetchDate = obj.getString("fetchDate");
+            if (!cacheTime.contains(fetchDate)){
+                JSONArray arr = values;
+                JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
+                row.put("采集时间", fetchDate);
+                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList))));
+                cacheTime.add(fetchDate);
+                rows.add(row);
             }
         }
 
-        JSONObject unitTransfer = MonitorUtils.HistoryUnitTransfer(resultArray, unit);
-        resultArray = unitTransfer.getJSONArray("result");
         result.put("unit", unitTransfer.getString("unit"));
-        // 统计已遍历的采集时间
-        JSONArray rows = unifyHistory(resultArray);
         result.put("rows", rows);
         result.put("columns", columns);
 
@@ -2039,12 +1928,6 @@ public class MonitorDataService {
                 if (Objects.isNull(fieldLabel)) {
                     return new JsonModel(true, empObj());
                 }
-            } else {
-                if ("PERCENT".equals(ind.getIndicatorType())) {
-                    columns.add(ind.getLabel() + "(%)");
-                } else {
-                    columns.add(ind.getLabel());
-                }
             }
             JSONArray neArray = (JSONArray) params.get("ne");
             List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
@@ -2189,8 +2072,7 @@ public class MonitorDataService {
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
-        PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-        List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+        List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
         JSONObject result = new JSONObject();
         if (abnormal) {
             int count = 0;
@@ -2206,7 +2088,7 @@ public class MonitorDataService {
             result.put("value", count);
         } else {
             result.put("name", "链路条数");
-            result.put("value", pageModel.getCount());
+            result.put("value", list.size());
         }
         result.put("unit", "");
         return new JsonModel(true, result);
@@ -2227,8 +2109,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-            List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             Map<String, String> nameMap = Maps.newHashMap();
             nameMap.put("speed", "链路带宽");
             nameMap.put("speedUsage", "带宽利用率");
@@ -2311,8 +2192,7 @@ public class MonitorDataService {
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
-            PageModel pageModel = rpcProcessService.findNeLinks(temPage, networkLinkModel);
-            List<NetworkLinkModel> list = (List<NetworkLinkModel>) pageModel.getObject();
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
             Map<String, String> nameMap = Maps.newLinkedHashMap();
             nameMap.put("speed", "链路带宽");
             nameMap.put("speedUsage", "带宽利用率");
@@ -2413,6 +2293,12 @@ public class MonitorDataService {
                 }
             }
         }
+        // 对0值做处理，将0值修改为null值，以便前端进行背景颜色展示
+        for (Map.Entry<String,Integer> entry: result.entrySet()) {
+            if (entry.getValue().equals(0)){
+                entry.setValue(null);
+            }
+        }
         return new JsonModel(true, result);
     }
 
@@ -2463,39 +2349,108 @@ public class MonitorDataService {
     public JsonModel multipleIndicatorHistory(String neId, String indicatorsLeft, String componentNameLeft,
                                               String fieldLeft, String indicatorsRight, String componentNameRight,
                                               String fieldRight, IndPeriod period) throws Exception{
-        // 封装指标list（需使用有序list）
-        List<JSONObject> indicatorList = new ArrayList<>();
-        if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
-                (indicatorsRight + componentNameRight + fieldRight))) {
-            JSONObject leftObj = new JSONObject();
-            leftObj.put("neId", neId);
-            leftObj.put("indicator", indicatorsLeft);
-            leftObj.put("component", componentNameLeft);
-            leftObj.put("field", fieldLeft);
-            indicatorList.add(leftObj);
-        }
-        JSONObject rightObj = new JSONObject();
-        rightObj.put("neId", neId);
-        rightObj.put("indicator", indicatorsRight);
-        rightObj.put("component", componentNameRight);
-        rightObj.put("field", fieldRight);
-        indicatorList.add(rightObj);
         // 由于双轴曲线没有可选的时间间隔,故统计时段为天、周、月时的时间间隔分别为5分钟、20分钟、60分钟
+        IntervalType intervalType = IntervalType.minute;
         Integer interval = 5;
         if (Objects.equals("_1week", period.name())) {
             interval = 20;
         } else if (Objects.equals("_1month", period.name())) {
             interval = 60;
         }
-        JSONObject result = indicatorHistoryHandleByInterval(indicatorList, period, interval, true);
-        JSONArray unit = result.getJSONArray("unit");
-        // unit.size() == 1说明左右两侧指标、部件、属性相同，需向column和unit重复添加一条冗余数据
-        if (unit.size() == 1) {
-            JSONArray columns = result.getJSONArray("columns");
-            unit.add(unit.get(0));
-            columns.add(columns.get(1));
+        JSONArray columns = new JSONArray();
+        columns.add("采集时间");
+        JSONArray rows = new JSONArray();
+        JSONObject leftValues = new JSONObject();
+        JSONObject rightValues = new JSONObject();
+        JSONArray unit = new JSONArray();
+
+        Map<String, String > filedLabelMap = Maps.newHashMap();
+        List<String> filedList = Lists.newArrayList();
+
+        // 封装指标list（需使用有序list）
+        List<JSONObject> indicatorList = new ArrayList<>();
+        if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
+                (indicatorsRight + componentNameRight + fieldRight))) {
+//            JSONObject leftObj = new JSONObject();
+//            leftObj.put("neId", neId);
+//            leftObj.put("indicator", indicatorsLeft);
+//            leftObj.put("component", componentNameLeft);
+//            leftObj.put("field", fieldLeft);
+//            indicatorList.add(leftObj);
+            IndicatorTable leftInd = rpcProcessService.getIndicatorInfoByName(indicatorsLeft);
+            String label = getLabel(leftInd, fieldLeft);
+            columns.add(label);
+            filedList.add(fieldLeft);
+            filedLabelMap.put(indicatorsLeft, label);
+            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval);
+            unit.add(leftValues.getString("unit"));
         }
+//        JSONObject rightObj = new JSONObject();
+//        rightObj.put("neId", neId);
+//        rightObj.put("indicator", indicatorsRight);
+//        rightObj.put("component", componentNameRight);
+//        rightObj.put("field", fieldRight);
+//        indicatorList.add(rightObj);
+        IndicatorTable rightInd = rpcProcessService.getIndicatorInfoByName(indicatorsRight);
+        String label = getLabel(rightInd, fieldRight);
+        columns.add(label);
+        filedList.add(fieldRight);
+        filedLabelMap.put(indicatorsRight, label);
+        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval);
+        unit.add(rightValues.getString("unit"));
+        JSONArray values = new JSONArray();
+        values.addAll(leftValues.getJSONArray("result"));
+        values.addAll(rightValues.getJSONArray("result"));
+        List<String> cacheTime = Lists.newArrayList();
+        for (int i = 0; i < values.size(); i++) {
+            JSONObject obj = values.getJSONObject(i);
+            JSONObject row = new JSONObject();
+            String fetchDate = obj.getString("fetchDate");
+            if (!cacheTime.contains(fetchDate)){
+                JSONArray arr = values;
+                JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
+                row.put("采集时间", fetchDate);
+                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList))));
+                cacheTime.add(fetchDate);
+                rows.add(row);
+            }
+        }
+        JSONObject result = new JSONObject();
+        result.put("unit", unit);
+        result.put("columns", columns);
+        result.put("rows", rows);
         return new JsonModel().success(result);
+    }
+
+    private JSONObject getHistoryValues(String neId, String indName, String component,
+                                       String field, IntervalType intervalType, Integer interval) throws Exception{
+        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neId);
+        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indName);
+        if (ObjectUtils.isEmpty(ne) || ObjectUtils.isEmpty(ind)){
+            return null;
+        }
+        IndicatorValueQO qo = new IndicatorValueQO();
+        qo.setNeIds(Lists.newArrayList(ne.getId()));
+        qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
+        Map<String,List<String>> fieldMap = Maps.newHashMap();
+        fieldMap.put(ind.getName(), Lists.newArrayList(field));
+        qo.setFields(fieldMap);
+        Map<String,String> indicatorTypeMap = Maps.newHashMap();
+        indicatorTypeMap.put( ind.getName() ,ind.getIndicatorType());
+        qo.setIndicatorTypes(indicatorTypeMap);
+        qo.setIntervalType(intervalType);
+        qo.setInterval(Long.valueOf(interval));
+        if (!ObjectUtils.isEmpty(component)){
+            qo.setIdentifiers(Lists.newArrayList(component));
+        }
+        JSONArray values = rpcProcessService.getIndAggValues(qo);
+        if (ObjectUtils.isEmpty(values)){
+            return null;
+        }
+        FieldModel model = new FieldModel();
+        model.setIndicator(ind);
+        model.setField(field);
+        return MonitorUtils.unitTransfer(values, getUnit(model), field);
     }
 
     /**
