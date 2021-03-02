@@ -10,6 +10,7 @@ import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -246,23 +247,26 @@ public class MonitorDataParamsController {
     @RequestMapping(value = "/getInterval", method = RequestMethod.GET)
     public JsonModel getInterval(@RequestParam IndPeriod period) {
         JSONArray result = new JSONArray();
-        String[] nameArray = { "5分钟", "10分钟", "20分钟", "30分钟", "60分钟" };
-        Integer[] valueArray = { 5, 10, 20, 30, 60 };
-        for (int i = 0; i < nameArray.length; i++) {
-            result.add(monitorDataParamsService.newResultObj( nameArray[i], valueArray[i]));
-        }
+        //TODO 这里的时间值在之后的版本中可调整至灵活输入的。
+//        String[] nameArray = { "5分钟", "10分钟", "20分钟", "30分钟", "60分钟" };
+//        Integer[] valueArray = { 5, 10, 20, 30, 60 };
+//        for (int i = 0; i < nameArray.length; i++) {
+//            result.add(MonitorUtils.newResultObj( nameArray[i], valueArray[i]));
+//        }
         if ("_1month".equals(period.name())) {
             // 如果选择的是展示一个月，则展示时间点数为每30分钟展示一个数据
-            result.remove(0);
-            result.remove(0);
+//            result.remove(0);
+//            result.remove(0);
+            result.add(MonitorUtils.newResultObj("24小时",8));
         } else if ("_1week".equals(period.name())) {
             // 如果选择的是展示一周，则展示时间点数为每5分钟展示一个数据
-            result.remove(3);
-            result.remove(3);
+//            result.remove(3);
+//            result.remove(3);
+            result.add(MonitorUtils.newResultObj("8小时",8));
         } else {
             // 如果选择的是展示一天，则根据存在数据进行展示
-            result.clear();
-            result.add(monitorDataParamsService.newResultObj("无间隔",null));
+//            result.clear();
+            result.add(MonitorUtils.newResultObj("5分钟",5));
         }
         return new JsonModel(true, result);
     }

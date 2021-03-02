@@ -114,7 +114,7 @@ public class MonitorDataParamsService {
         for (String str:baseNeClass) {
             set.add(BaseNeClass.valueOf(str));
         }
-        return new JsonModel(true, getMultiNeClassByBase(set));
+        return getMultiNeClassByBase(set);
     }
 
     private List<Map<String, String>> neClassByBase(BaseNeClass baseNeClass){

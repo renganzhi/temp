@@ -900,8 +900,21 @@ public class MonitorDataService {
         return MonitorUtils.existJudgment(value, defaultValue);
     }
 
-
     public JsonModel getHistoryHealth(String[] neIds, IndPeriod period, Integer interval) throws Exception{
+        JSONArray rows = getHistoryHealthValues(neIds, period, interval);
+        JSONArray columns = new JSONArray();
+        columns.add("采集时间");
+        List<NetworkEntity> neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        neList.forEach(itm -> columns.add(itm.getIp() + itm.getName()));
+
+        JSONObject result = new JSONObject();
+        result.put("columns", columns);
+        result.put("rows", rows);
+        result.put("unit", null);
+        return new JsonModel().success(result);
+    }
+
+    public JSONArray getHistoryHealthValues(String[] neIds, IndPeriod period, Integer interval) throws Exception{
         Date now = new Date();
         Date startDate = IndPeriod.getStartDate(period, now);
         startDate.setTime(startDate.getTime() - startDate.getTime() % 60000L);
@@ -952,17 +965,7 @@ public class MonitorDataService {
             row.put("采集时间", DateUtils.formatCommonDate(date));
             rows.add(row);
         }
-
-        JSONArray columns = new JSONArray();
-        columns.add("采集时间");
-        List<NetworkEntity> neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
-        neList.forEach(itm -> columns.add(itm.getIp() + itm.getName()));
-
-        JSONObject result = new JSONObject();
-        result.put("columns", columns);
-        result.put("rows", rows);
-        result.put("unit", null);
-        return new JsonModel().success(result);
+        return rows;
     }
 
     public JsonModel getHistoryValue(String[] neIds, String indicators, String windows, String field, IntervalType intervalType,
@@ -2373,37 +2376,31 @@ public class MonitorDataService {
         List<String> filedList = Lists.newArrayList();
 
         JSONArray values = new JSONArray();
-        // 封装指标list（需使用有序list）
-        List<JSONObject> indicatorList = new ArrayList<>();
         if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
                 (indicatorsRight + componentNameRight + fieldRight))) {
-//            JSONObject leftObj = new JSONObject();
-//            leftObj.put("neId", neId);
-//            leftObj.put("indicator", indicatorsLeft);
-//            leftObj.put("component", componentNameLeft);
-//            leftObj.put("field", fieldLeft);
-//            indicatorList.add(leftObj);
             IndicatorTable leftInd = rpcProcessService.getIndicatorInfoByName(indicatorsLeft);
             String label = getLabel(leftInd, fieldLeft);
             columns.add(label);
-            filedList.add(fieldLeft);
+            if ("healthy".equals(indicatorsLeft)){
+                filedList.add(indicatorsLeft);
+            }else {
+                filedList.add(fieldLeft);
+            }
             filedLabelMap.put(indicatorsLeft, label);
-            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval);
+            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period);
             unit.add(leftValues.getString("unit"));
             values.addAll(leftValues.getJSONArray("result"));
         }
-//        JSONObject rightObj = new JSONObject();
-//        rightObj.put("neId", neId);
-//        rightObj.put("indicator", indicatorsRight);
-//        rightObj.put("component", componentNameRight);
-//        rightObj.put("field", fieldRight);
-//        indicatorList.add(rightObj);
         IndicatorTable rightInd = rpcProcessService.getIndicatorInfoByName(indicatorsRight);
         String label = getLabel(rightInd, fieldRight);
         columns.add(label);
-        filedList.add(fieldRight);
+        if ("healthy".equals(indicatorsRight)){
+            filedList.add(indicatorsRight);
+        }else {
+            filedList.add(fieldRight);
+        }
         filedLabelMap.put(indicatorsRight, label);
-        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval);
+        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period);
         unit.add(rightValues.getString("unit"));
         values.addAll(rightValues.getJSONArray("result"));
         List<String> cacheTime = Lists.newArrayList();
@@ -2428,7 +2425,26 @@ public class MonitorDataService {
     }
 
     private JSONObject getHistoryValues(String neId, String indName, String component,
-                                       String field, IntervalType intervalType, Integer interval) throws Exception{
+                                       String field, IntervalType intervalType, Integer interval, IndPeriod period) throws Exception{
+        // 健康度历史值特殊处理
+        if ("healthy".equals(indName)){
+            String[] neIds = new String[]{neId};
+            NetworkEntity ne = rpcProcessService.findNetworkEntityById(neId);
+            if (ObjectUtils.isEmpty(ne)){
+                return new JSONObject();
+            }
+            JSONArray healthValues = getHistoryHealthValues(neIds, period, interval);
+            action(healthValues, o -> {
+                o.put("fetchDate", o.get("采集时间"));
+                o.put("indicator_name", "healthy");
+                o.put("healthy", o.get(ne.getIp() + ne.getName()));
+            });
+            JSONObject result = new JSONObject();
+            result.put("result", healthValues);
+            result.put("unit", "");
+            return result;
+        }
+
         NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neId);
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indName);
         if (ObjectUtils.isEmpty(ne) || ObjectUtils.isEmpty(ind)){
