@@ -3488,6 +3488,7 @@ export default {
       //   this.selectArea.choose = false
       //   $('.tempDiv').remove()
       // }
+      this.clickPaint()
       if (this.copyType === 'item') {
         var _type = 'chartNum'
         this.chooseIndexs = []
