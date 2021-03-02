@@ -913,40 +913,42 @@ public class MonitorDataService {
             startDate.setTime(startDate.getTime() + 1000 * 60 * interval);
         }
 
+        Map<String, List<NeHealthHistory>> healthMap = Maps.newConcurrentMap();
+        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        for (NetworkEntity ne: nes) {
+            List<NeHealthHistory> healthList = rpcProcessService.findHealthByNeIdIn(Lists.newArrayList(ne.getId()));
+            healthMap.put(ne.getId(), healthList);
+        }
+
+
         JSONArray rows = new JSONArray();
         for (Date date: allDate) {
             JSONObject row = new JSONObject();
-            List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
-            nes.forEach(ne -> {
-                try {
-                    List<NeHealthHistory> healthList = rpcProcessService.findHealthByNeIdIn(Lists.newArrayList(ne.getId()));
-                    // 判断起始时间之前有无数据
-                    if (date.compareTo(beginTag) == 0) {
-                        Optional<NeHealthHistory> firstHealth = healthList.stream()
-                                .filter(itm -> itm.getUpdateDate().before(date))
-                                .collect(Collectors.maxBy(Comparator.comparing(NeHealthHistory::getUpdateDate)));
-                        if (firstHealth.isPresent()) {
-                            row.put(ne.getIp() + ne.getName(), firstHealth.get().getHealth());
-                        } else {
-                            row.put(ne.getIp() + ne.getName(), null);
-                        }
-                        return;
-                    }
-                    Optional<NeHealthHistory> optional = healthList.stream()
-                            .filter(itm -> itm.getUpdateDate().before(date)
-                                    && itm.getUpdateDate().after(new Date(date.getTime() - 1000 * 60 * interval)))
+            for (NetworkEntity ne: nes) {
+                List<NeHealthHistory> healthList = healthMap.get(ne.getId());
+                // 判断起始时间之前有无数据
+                if (date.compareTo(beginTag) == 0) {
+                    Optional<NeHealthHistory> firstHealth = healthList.stream()
+                            .filter(itm -> itm.getUpdateDate().before(date))
                             .collect(Collectors.maxBy(Comparator.comparing(NeHealthHistory::getUpdateDate)));
-                    if (optional.isPresent()) {
-                        row.put(ne.getIp() + ne.getName(), optional.get().getHealth());
+                    if (firstHealth.isPresent()) {
+                        row.put(ne.getIp() + ne.getName(), firstHealth.get().getHealth());
                     } else {
-                        Object lastValue = rows.getJSONObject(rows.size() - 1).get(ne.getIp() + ne.getName());
-                        row.put(ne.getIp() + ne.getName(), lastValue);
+                        row.put(ne.getIp() + ne.getName(), null);
                     }
-                }catch (Exception e){
-                    return;
+                    continue;
                 }
-            });
-
+                Optional<NeHealthHistory> optional = healthList.stream()
+                        .filter(itm -> itm.getUpdateDate().before(date)
+                                && itm.getUpdateDate().after(new Date(date.getTime() - 1000 * 60 * interval)))
+                        .collect(Collectors.maxBy(Comparator.comparing(NeHealthHistory::getUpdateDate)));
+                if (optional.isPresent()) {
+                    row.put(ne.getIp() + ne.getName(), optional.get().getHealth());
+                } else {
+                    Object lastValue = rows.getJSONObject(rows.size() - 1).get(ne.getIp() + ne.getName());
+                    row.put(ne.getIp() + ne.getName(), lastValue);
+                }
+            }
             row.put("采集时间", DateUtils.formatCommonDate(date));
             rows.add(row);
         }
@@ -1502,7 +1504,7 @@ public class MonitorDataService {
             unit = getUnit(model);
             String label = getLabel(ind, field);
             columns.add(label);
-            filedLabelMap.put(indicatorId, label);
+            filedLabelMap.put(field, label);
             IndicatorValueQO qo = new IndicatorValueQO();
             qo.setNeIds(Lists.newArrayList(ne.getId()));
             qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
@@ -1521,7 +1523,10 @@ public class MonitorDataService {
 
             qo.setIntervalType(intervalType);
             qo.setInterval(Long.valueOf(interval));
-            values.addAll(rpcProcessService.getIndAggValues(qo));
+            JSONArray aggValues = rpcProcessService.getIndAggValues(qo);
+            // 该接口以指标为最小单位，保证同指标分类中可选多个指标进行数据展示
+            action(aggValues, o -> o.put("field", field));
+            values.addAll(aggValues);
         }
         if (ObjectUtils.isEmpty(values)){
             return new JsonModel(true, empObj());
@@ -1540,7 +1545,7 @@ public class MonitorDataService {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
                 row.put("采集时间", fetchDate);
-                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList))));
+                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("field")), o.getString(MonitorUtils.getValueKey(o, filedList))));
                 cacheTime.add(fetchDate);
                 rows.add(row);
             }
@@ -2367,6 +2372,7 @@ public class MonitorDataService {
         Map<String, String > filedLabelMap = Maps.newHashMap();
         List<String> filedList = Lists.newArrayList();
 
+        JSONArray values = new JSONArray();
         // 封装指标list（需使用有序list）
         List<JSONObject> indicatorList = new ArrayList<>();
         if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
@@ -2384,6 +2390,7 @@ public class MonitorDataService {
             filedLabelMap.put(indicatorsLeft, label);
             leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval);
             unit.add(leftValues.getString("unit"));
+            values.addAll(leftValues.getJSONArray("result"));
         }
 //        JSONObject rightObj = new JSONObject();
 //        rightObj.put("neId", neId);
@@ -2398,8 +2405,6 @@ public class MonitorDataService {
         filedLabelMap.put(indicatorsRight, label);
         rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval);
         unit.add(rightValues.getString("unit"));
-        JSONArray values = new JSONArray();
-        values.addAll(leftValues.getJSONArray("result"));
         values.addAll(rightValues.getJSONArray("result"));
         List<String> cacheTime = Lists.newArrayList();
         for (int i = 0; i < values.size(); i++) {

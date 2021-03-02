@@ -404,6 +404,10 @@ public class MonitorDataParamsService {
                     if (healthy) {
                         arr.add(newResultObj("健康度", "healthy"));
                     }
+                    // 暂时解决指标历史统计-指标右侧下拉框中 健康度选项出现在除数值之外所有分类中的缺陷
+                    if (healthy && typeExist && unitExist){
+                        if (unitString != null) arr.remove(newResultObj("健康度", "healthy"));
+                    }
                     arrs.add(arr);
                 }
             }
@@ -819,12 +823,15 @@ public class MonitorDataParamsService {
                 if ("PERCENT".equals(type)) {
                     fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 }
-                if ("NUMBER".equals(type) && !unitExist) {
-                    fields = filter(fields, o -> !Objects.equals(o.getString("unit"), "%"));
+                if ("NUMBER".equals(type)) {
+                    fields = filter(fields, o -> !o.containsKey("unit"));
                 }
-                if ("NUMBER".equals(type) && unitExist) {
-                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
-                }
+//                if ("NUMBER".equals(type) && !unitExist) {
+//                    fields = filter(fields, o -> !Objects.equals(o.getString("unit"), "%"));
+//                }
+//                if ("NUMBER".equals(type) && unitExist) {
+//                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
+//                }
                 action(fields, o -> fieldsResult.add(newResultObj(o.getString("label"), o.getString("name"))));
             }
             indicatorResult.put("fields", fieldsResult);

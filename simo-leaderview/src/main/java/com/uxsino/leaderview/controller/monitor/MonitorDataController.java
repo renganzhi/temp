@@ -7,12 +7,14 @@ import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.service.api.MonitorDataService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -400,6 +402,9 @@ public class MonitorDataController {
                                       @RequestParam String componentNameLeft, @RequestParam String fieldLeft, @RequestParam String indicatorsRight,
                                       @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period) {
         try {
+            if (ObjectUtils.isEmpty(neIds)){
+                return new JsonModel(true, MonitorUtils.empObj());
+            }
             return monitorDataService.multipleIndicatorHistory(neIds[0], indicatorsLeft, componentNameLeft, fieldLeft, indicatorsRight,
                     componentNameRight, fieldRight, period);
         }catch (Exception e){

@@ -616,6 +616,7 @@ public class AlertDataService {
             return new JsonModel(true, obj);
         }
         JSONArray rows = new JSONArray();
+        list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {
                 Map<String, String> row = new LinkedHashMap<>();
