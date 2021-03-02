@@ -7,6 +7,7 @@ export default {
     'height': 300,
     'videoType': 'local',
     'videoSrc': '',
+    'VideoName': '',
     'autoplay': true,
     'loop': true
   },

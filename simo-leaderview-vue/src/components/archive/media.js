@@ -15,6 +15,7 @@ const media = {
       width: 300,
       height: 300,
       imgSrc: '',
+      imgName: '',
       showType: '1',
       linkId: '',
       chartData: {}
