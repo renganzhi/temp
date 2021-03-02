@@ -3556,8 +3556,10 @@ export default {
         _this.saveHistory()
         if (_this.selectedItem.chartType === 'image' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
+          _this.selectedItem.imgName = e.target.files[0].name
         } if (_this.selectedItem.chartType === 'table') {
           _this.selectedItem.tableBack = curSrc
+          _this.selectedItem.tableBackName = e.target.files[0].name
         } else if (_this.selectedItem.subType === 'pictorialBar') {
           _this.selectedItem.symbolImg = curSrc
         } if (_this.selectedItem.chartType === 've-line') {
@@ -3578,10 +3580,13 @@ export default {
       console.log('this.selectedItem: ', this.selectedItem)
       if (chartType === 'image') {
         this.selectedItem.imgSrc = ''
+        this.selectedItem.imgName = ''
       } else if (chartType === 'video') {
         this.selectedItem.videoSrc = ''
+        this.selectedItem.VideoName = ''
       } else if (chartType === 'table') {
         this.selectedItem.tableBack = ''
+        this.selectedItem.tableBackName = ''
       }
     },
     // 视频
@@ -3616,6 +3621,8 @@ export default {
       this.uploadFile('video', formdata, function (data) {
         if (_this.selectedItem.chartType === 'video') {
           _this.selectedItem.videoSrc = gbs.host + data.obj
+          _this.selectedItem.VideoName = e.target.files[0].name
+          console.log(e.target.files[0].name)
           _this.tempVideoUrl = _this.selectedItem.videoSrc
           _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
         }

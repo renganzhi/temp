@@ -642,12 +642,14 @@
                   </select>
                 </div>
                 <div class="form-group cols2"
+                     style="position: relative;"
                      v-if="selectedItem.chartType=='table'">
                   <label>表格背景图</label>
                   <input type="file"
                     style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
+                  <label :title='selectedItem.tableBackName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
@@ -1954,6 +1956,7 @@
 
               <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
+                    style="position: relative"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
                   >
                   <ChildTag :item="item" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
@@ -1974,11 +1977,13 @@
                   </select>
               </div>
               <div v-show="['image'].includes(selectedItem.chartType)">
-                <div class="form-group cols2">
+                <div class="form-group cols2"
+                     style="position: relative;">
                   <label>选择文件</label>
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
                          accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
+                  <label :title='selectedItem.imgName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
               </div>
@@ -2303,6 +2308,7 @@
                 </div>
                 <div>
                   <div class="form-group cols2"
+                       style="position: relative;"
                        v-show="selectedItem.videoType === 'local'">
                     <label>选择文件</label>
                     <input type="file" style="width: 147px!important;margin-right: 8px;"
@@ -2310,6 +2316,7 @@
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
+                  <label :title='selectedItem.VideoName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>

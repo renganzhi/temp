@@ -34,6 +34,7 @@ export default {
     'formatterType': '0',
     'symbolType': 'circle',
     'symbolSrc': '',
+    'symbolName': '',
     'symbolSize': 6,
     'lineWidth': 1,
     'showPoint': true, // 是否标点
@@ -498,6 +499,7 @@ export default {
           'symbolType': 'pic'
         },
         'key': 'symbolSrc',
+        'keyName': 'symbolName',
         'tag': 'ImgFile'
       },
       {
