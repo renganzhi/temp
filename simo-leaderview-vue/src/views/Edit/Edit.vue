@@ -522,12 +522,14 @@
                        style="position: relative;">
                     <label>宽</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
+                           type="text"
+                           oninput="value=value.replace(/[^\d]/g,'')"
                            v-model="testObj.width">
                     <span>px</span>
-                    <span @click="changetestW(0)"
+                    <!-- <span @click="changetestW(0)" -->
+                    <span @click="testObj.width++"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="changetestW(1)"
+                    <span @click="testObj.width--"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="widthVali.isShowError"
@@ -537,12 +539,13 @@
                        style="position: relative;">
                     <label>高</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
+                           type="text"
+                           oninput="value=value.replace(/[^\d]/g,'')"
                            v-model="testObj.height">
                     <span>px</span>
-                    <span @click="changetestH(0)"
+                    <span @click="testObj.height++"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="changetestH(1)"
+                    <span @click="testObj.height--"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="heightVali.isShowError"
@@ -555,12 +558,13 @@
                        style="position: relative;">
                     <label>X</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
+                           type="text"
+                           oninput="value=value.replace(/[^\d-]/g,'')"
                            v-model="testObj.x">
                     <span>px</span>
-                    <span @click="changetestX(0)"
+                    <span @click="testObj.x++"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="changetestX(1)"
+                    <span @click="testObj.x--"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="xVali.isShowError"
@@ -570,12 +574,13 @@
                        style="position: relative;">
                     <label>Y</label>
                     <input class="w-90"
-                           onkeyup="this.value = this.value.replace(/[^0-9]/g,'')*1"
+                           type="text"
+                           oninput="value=value.replace(/[^\d-]/g,'')"
                            v-model="testObj.y">
                     <span>px</span>
-                    <span @click="changetestY(0)"
+                    <span @click="testObj.y++"
                           class="input-arrow"><i class="icon-n-arrowUp"></i></span>
-                    <span @click="changetestY(1)"
+                    <span @click="testObj.y--"
                           class="input-arrow"><i class="icon-n-arrowDown"></i></span>
                     <label class="error"
                            v-if="yVali.isShowError"
