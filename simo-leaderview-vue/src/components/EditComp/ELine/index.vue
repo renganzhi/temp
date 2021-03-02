@@ -240,7 +240,7 @@ export default {
               if (nameArr.indexOf(name) === -1) {
                 nameArr.push(name)
                 let value = element.value
-                if (typeof (value) !== 'number') {
+                if (typeof (value * 1) !== 'number') {
                   value = '--'
                 }
                 showHtm += name + '：' + value + (this.item.chartData.unit || '') + '<br>'
