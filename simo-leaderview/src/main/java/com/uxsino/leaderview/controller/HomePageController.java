@@ -56,7 +56,7 @@ public class HomePageController {
 
 	private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
 
-	private final int MAX_PAGE_INDEX = 40;
+	private final int MAX_PAGE_INDEX = 20;
 
 	private final int MIN_PAGE_INDEX = 1;
 
@@ -177,10 +177,17 @@ public class HomePageController {
 								 @ApiParam("模板ID") @RequestParam(required = false) Long templateId,
 								 @RequestParam(required = false) String[] adminId,
 								 @RequestParam boolean visible ) {
-		int maxIndex = homePageUserConfService.getMaxMinePage(SessionUtils.getCurrentUserIdFromSession(session),false);
+		long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
+	    int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId,false);
 		if (maxIndex >= MAX_PAGE_INDEX) {
 			return new JsonModel(false, "当前页面已达到最大数[20]");
 		}
+		List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
+		for(HomePage homePage : allHomePages){
+		    if(homePage.getName().equals(name)){
+		        return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+            }
+        }
 		if (index == null || index < MIN_PAGE_INDEX || index > maxIndex + 1) {
 			index = maxIndex + 1;
 		}
