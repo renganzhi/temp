@@ -32,7 +32,7 @@ let titleCase = [
 
 for (let i = 0; i < 8; i++) {
   // console.log('i: ', typeof i);
-  const src = `/leaderview/border/titleBg${6 + Number(i)}.svg`
+  const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
   titleCase.push({
     mini: src,
     imgSrc: src
@@ -68,7 +68,7 @@ let cardCase = [
 
 for (let i = 0; i < 11; i++) {
   // console.log('i: ', typeof i);
-  const src = `/leaderview/border/cardBg${5 + Number(i)}.svg`
+  const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
   cardCase.push({
     mini: src,
     imgSrc: src
@@ -90,7 +90,7 @@ let decoratorCase = []
 for (let i = 0; i < 21; i++) {
   // console.log('i: ', typeof i);
   let curIndex = 1 + Number(i)
-  let type = 'svg'
+  let type = 'png'
   if (curIndex == 13) {
     type = 'png'
   } else if (curIndex == 21) {
