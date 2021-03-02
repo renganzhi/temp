@@ -1502,7 +1502,7 @@ public class MonitorDataService {
             unit = getUnit(model);
             String label = getLabel(ind, field);
             columns.add(label);
-            filedLabelMap.put(indicatorId, label);
+            filedLabelMap.put(field, label);
             IndicatorValueQO qo = new IndicatorValueQO();
             qo.setNeIds(Lists.newArrayList(ne.getId()));
             qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
@@ -1521,7 +1521,10 @@ public class MonitorDataService {
 
             qo.setIntervalType(intervalType);
             qo.setInterval(Long.valueOf(interval));
-            values.addAll(rpcProcessService.getIndAggValues(qo));
+            JSONArray aggValues = rpcProcessService.getIndAggValues(qo);
+            // 该接口以指标为最小单位，保证同指标分类中可选多个指标进行数据展示
+            action(aggValues, o -> o.put("field", field));
+            values.addAll(aggValues);
         }
         if (ObjectUtils.isEmpty(values)){
             return new JsonModel(true, empObj());
@@ -1540,7 +1543,7 @@ public class MonitorDataService {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
                 row.put("采集时间", fetchDate);
-                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList))));
+                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("field")), o.getString(MonitorUtils.getValueKey(o, filedList))));
                 cacheTime.add(fetchDate);
                 rows.add(row);
             }
