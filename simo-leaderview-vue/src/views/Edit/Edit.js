@@ -153,12 +153,7 @@ export default {
         '#ffdb5c',
         '#ff9f7f',
         '#fb7293',
-        '#e062ae',
-        '#e690d1',
-        '#e7bcf3',
-        '#9d96f5',
-        '#8378ea',
-        '#96bfff'
+        '#e062ae'
       ],
       defGradColors: [
         ['#6fcaf7', '#0c79c5'],
