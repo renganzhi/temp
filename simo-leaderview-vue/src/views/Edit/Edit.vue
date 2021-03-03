@@ -649,7 +649,7 @@
                     style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
-                  <label :title='selectedItem.tableBackName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
+                  <label :title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
@@ -1983,7 +1983,7 @@
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
                          accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
-                  <label :title='selectedItem.imgName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
+                  <label :title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
               </div>
@@ -2316,7 +2316,7 @@
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
-                  <label :title='selectedItem.VideoName' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
+                  <label :title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>

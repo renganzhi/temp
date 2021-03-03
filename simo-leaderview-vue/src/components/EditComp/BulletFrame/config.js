@@ -8,7 +8,9 @@ export default {
     'showType': '2',
     'stationPlace': '1',
     'imgSrc': '/leaderview/border/back.jpg',
+    'imgName': '',
     'videoSrc': '',
+    'videoName': '',
     'openBoxheight': 320,
     'openBoxwidth': 560,
     'openBoxRight': 110,
@@ -41,6 +43,7 @@ export default {
       }, {
         'name': '背景图片',
         'key': 'imgSrc',
+        'keyName': 'imgName',
         'tag': 'ImgFile'
       }, {
         'name': '缩放方式',
@@ -97,6 +100,7 @@ export default {
       }, {
         'name': '选择视频',
         'key': 'videoSrc',
+        'keyName': 'videoName',
         'tag': 'videoFile'
       }, {
         'name': '视频高度',
