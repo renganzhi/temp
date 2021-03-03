@@ -46,6 +46,7 @@
               id="myfiles"
               accept="video/*"
               @change="uploadVideo">
+          <label :title='selectedItem[item.keyName]' style="position: absolute;float: left;left: 160px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
           <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
           </div>
         </template>
@@ -207,6 +208,8 @@ export default {
           _this.selectedItem.videoSrc = gbs.host + data.obj
           _this.tempVideoUrl = _this.selectedItem.videoSrc
           _this.selectedItem.linkSrc = data.obj // 保存一份纯接口的
+          console.log(e.target.files[0].name)
+          _this.selectedItem[_this.item.keyName] = e.target.files[0].name
         }
       })
       e.target.value = ''
