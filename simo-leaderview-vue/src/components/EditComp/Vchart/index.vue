@@ -1100,7 +1100,7 @@ export default {
                   if (nameArr.indexOf(name) === -1) {
                     nameArr.push(name)
                     let value = element.data[1]
-                    if (typeof (value) !== 'number' || value !== value) {
+                    if (typeof (value * 1) !== 'number' || value !== value) {
                       value = '--'
                     }
                     if (_this.item.subType === 'doubleAxis') {
