@@ -104,7 +104,7 @@ simo:
     broker: 
       url: failover:tcp://localhost:61616
   leaderview:
-    templateInit: false
+    templateInit: true
 
 heartbeat:
     send_interval: 20000
