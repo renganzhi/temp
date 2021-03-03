@@ -57,6 +57,7 @@ public class RpcProcessService {
         condition.put("pagination", false);
 //        condition.put("sourceManage", false);
         condition.put("manageStatusNotIn", "Delected");
+        condition.put("pageSize", 9999);
         JsonModel jsonModel = monitorService.getNeList(condition);
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -92,6 +93,7 @@ public class RpcProcessService {
         condition.put("pagination", false);
 //        condition.put("sourceManage", false);
         condition.put("manageStatusNotIn", "Delected");
+        condition.put("pageSize", 9999);
         JsonModel jsonModel = monitorService.getNeList(condition);
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -163,6 +165,7 @@ public class RpcProcessService {
             condition.put("baseNeClass", baseNeClass);
         }
         condition.put("manageStatusNotIn", "Delected");
+        condition.put("pageSize", 9999);
         JsonModel jsonModel = monitorService.getNeList(condition);
         List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
