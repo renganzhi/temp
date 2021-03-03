@@ -168,7 +168,6 @@
   </div>
 </template>
 
-
 <script>
 import coordinate from './coordinate'
 import percentage from './percentage'
@@ -180,29 +179,28 @@ import text from './text'
 import others from './others'
 
 export default {
-    name: 'archive',
-    data() {
-      return {
-        tabPosition: 'left',
-        compsArr: {
-          coordinate,
-          percentage,
-          relation,
-          table,
-          map,
-          media,
-          text,
-          others
-        }
-      };
-    },
-    methods: {
-      initChart (data) {
-        // console.log('type: ', data);
-        this.$emit('click', data);
-        
+  name: 'archive',
+  data () {
+    return {
+      tabPosition: 'left',
+      compsArr: {
+        coordinate,
+        percentage,
+        relation,
+        table,
+        map,
+        media,
+        text,
+        others
       }
     }
+  },
+  methods: {
+    initChart (data) {
+      // console.log('type: ', data);
+      this.$emit('click', data)
+    }
+  }
 }
 </script>
 
@@ -211,7 +209,7 @@ export default {
 .archive {
   box-sizing: border-box;
   border: solid 3px transparent;
-  width: 45px;
+  width: 60px;
 }
 .nav_icon {
   font-size: 30px;
@@ -227,7 +225,7 @@ export default {
 <style lang="scss">
 .archive {
   background: #1b2031;
-  width: 45px;
+  width: 60px;
   .el-menu-vertical-demo {
     background: transparent;
     border: none;
@@ -249,22 +247,29 @@ export default {
   //   }
   // }
   .el-submenu {
-    width: 45px;
+    width: 60px;
+    height: 35px;
+        margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .el-submenu__title {
     border: solid 2.5px transparent;
-    padding: 0 8px !important;
-    width: 44px;
+    width: 52px;
     margin-left: 3px;
     height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     line-height: 28px;
     .nav_icon {
-      font-size: 18px;
+      font-size: 26px;
     }
   }
-  .el-submenu__title:focus, .el-submenu__title:hover {  
-    outline: 0 !important;  
-    // color: #409EFF !important;  
+  .el-submenu__title:focus, .el-submenu__title:hover {
+    outline: 0 !important;
+    // color: #409EFF !important;
     background: none !important;
     background-image: linear-gradient(to right, #12174e, #0f3858) !important;
     box-sizing: border-box !important;
@@ -306,7 +311,7 @@ export default {
         background: #2e3444;
         color: #ffffff;
       }
-    
+
     }
   }
   .cs-item-container ul{
@@ -326,7 +331,7 @@ export default {
     border: solid 1px #3d445a !important;
     // margin: 0 0 -1px -1px;
     flex: 1;
-        
+
     &:hover {
       background: none !important;
        border: 1px solid #0088cc !important;

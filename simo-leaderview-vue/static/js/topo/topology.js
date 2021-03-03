@@ -5,7 +5,7 @@
  * }
  * */
 import { gbs } from '@/config/settings'
-import { newAjax,getTopoIcon } from '@/config/thirdLoginMix'
+import { newAjax, getTopoIcon } from '@/config/thirdLoginMix'
 // import levelMapName from './enum'
 function Topology (opt, topoId) {
   this.defaultConfig = {
@@ -177,7 +177,7 @@ Topology.prototype = {
   createMainSvg: function () {
     var _this = this
     this.inp = d3.select(this.ele).append('div').classed('rg-inp input-sm confData hide', true)
-      .attr({'contenteditable':'true','id':'textRg'})
+      .attr({'contenteditable': 'true', 'id': 'textRg'})
     // this.tip = d3.select(this.ele).append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
     if ($('#home-html').length > 0) {
       this.tip = d3.select('#home-html').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
@@ -185,11 +185,11 @@ Topology.prototype = {
       this.tip = d3.select('body').append('div').classed('tp-tip', true).classed('hide', true) // transform属性会影响fixed部件，大屏这里直接加在body标签上
     }
     getTopoIcon({
-      curThis:this,
-      url:gbs.host + '/monitor/topo/getIcon/' +(this.config.backgroundIconId || this.config.backgroundIconIdDefault) +'/Loading',
-      callback: function(curThis,src){
+      curThis: this,
+      url: gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Loading',
+      callback: function (curThis, src) {
         curThis.svgImage = d3.select(curThis.ele).append('img').attr({
-          'src':src,
+          'src': src,
           'width': '100%',
           'height': '100%',
           'class': 'backgroundImage'
@@ -206,7 +206,7 @@ Topology.prototype = {
       'height': '100%',
       'id': 'test',
       'pointer-events': 'all',
-      'text-rendering' : 'geometricPrecision'
+      'text-rendering': 'geometricPrecision'
       // 'preserveAspectRatio':'xMidYMid slice'
     }).style({
       'position': 'relative',
@@ -239,9 +239,9 @@ Topology.prototype = {
   setBackground: function (iconId) {
     this.config.backgroundIconId = iconId || this.config.backgroundIconId
     getTopoIcon({
-      curThis:this,
-      url:gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId) +'/Loading',
-      callback:function(curThis,src){
+      curThis: this,
+      url: gbs.host + '/monitor/topo/getIcon/' + (this.config.backgroundIconId) + '/Loading',
+      callback: function (curThis, src) {
         curThis.svgImage.attr('src', src)
       }
     })
@@ -284,7 +284,7 @@ Topology.prototype = {
         } else if (e.type == 'wheel' || typeof e.wheelDelta === 'number') { // 缩放计算,调整wh
           var xy = d3.mouse(this)
           var _viewBoxPoint = [_this.scaleCoor(viewBoxPoint[0], xy, dscale),
-          _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
+            _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
           var _x = _viewBoxPoint[0][0]
           var _y = _viewBoxPoint[0][1]
           var _width = _viewBoxPoint[1][0] - _viewBoxPoint[0][0]
@@ -333,12 +333,12 @@ Topology.prototype = {
       currHeight = Math.round(this.maxCanvasHeight)
     }
     this.canvasWidth = currWidth
-      this.canvasHeight = currHeight
-      var visBox = _this.vis.node().getBBox()
-      this.svgContainer.attr('viewBox', function () {
-        return _this.setViewBox((visBox.width - currWidth) / 2 + visBox.x,
-          (visBox.height - currHeight) / 2 + visBox.y, currWidth, currHeight)
-      })
+    this.canvasHeight = currHeight
+    var visBox = _this.vis.node().getBBox()
+    this.svgContainer.attr('viewBox', function () {
+      return _this.setViewBox((visBox.width - currWidth) / 2 + visBox.x,
+        (visBox.height - currHeight) / 2 + visBox.y, currWidth, currHeight)
+    })
   },
   addNode: function (node, x, y) { // 增加节点
     var index = this.findNodeIndex(node.id)
@@ -483,8 +483,8 @@ Topology.prototype = {
     }
     var o = this.changeLinkData(source, target, link)
     if (oldLink) {
-        o = $.extend(true, _.cloneDeep(oldLink), o)
-        _.remove(this.links, ['id', link.id])
+      o = $.extend(true, _.cloneDeep(oldLink), o)
+      _.remove(this.links, ['id', link.id])
     }
     return o
   },
@@ -828,66 +828,66 @@ Topology.prototype = {
         indicatorNames = ['network_cpu', 'network_memory']
       }
       newAjax({
-          url: gbs.host + '/monitor/ne/view/' + d.neId,
-          dataType: 'json',
-          data: {
-            indicatorNames: indicatorNames.length > 0
-              ? indicatorNames.join(',')
-              : ''
-          },
-          type: 'post',
-          async: false,
-          success: function (res) {
-            if (res.success == true) {
-              var data = res.obj
-              d.alertLevel = data.alertLevel || d.alertLevel
-              d.alertLevelText = data.alertLevelText || d.alertLevelText
-              if (data.indicators) {
-                $
-                  .each(
-                    data.indicators,
-                    function (idx, idc) {
-                      if (!idc.indicatorValue && !idc.value) {
-                        return
-                      }
-                      if (idc.indicatorName == 'physical_memory') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
+        url: gbs.host + '/monitor/ne/view/' + d.neId,
+        dataType: 'json',
+        data: {
+          indicatorNames: indicatorNames.length > 0
+            ? indicatorNames.join(',')
+            : ''
+        },
+        type: 'post',
+        async: false,
+        success: function (res) {
+          if (res.success == true) {
+            var data = res.obj
+            d.alertLevel = data.alertLevel || d.alertLevel
+            d.alertLevelText = data.alertLevelText || d.alertLevelText
+            if (data.indicators) {
+              $
+                .each(
+                  data.indicators,
+                  function (idx, idc) {
+                    if (!idc.indicatorValue && !idc.value) {
+                      return
+                    }
+                    if (idc.indicatorName == 'physical_memory') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
                             (d.memoryAvg = idc.indicatorValue[0].memory_usage)
-                        } else {
-                          d.memoryAvg = idc.indicatorValue.memory_usage
-                        }
-                      } else if (idc.indicatorName == 'cpu_usage_avg') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
+                      } else {
+                        d.memoryAvg = idc.indicatorValue.memory_usage
+                      }
+                    } else if (idc.indicatorName == 'cpu_usage_avg') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
                             (d.cpuAvg = idc.indicatorValue[0].result)
-                        } else {
-                          d.cpuAvg = idc.indicatorValue.result
-                        }
-                      } else if (idc.indicatorName == 'network_memory') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
-                            (d.memoryAvg = idc.indicatorValue[0].memory_usage)
-                        } else {
-                          d.memoryAvg = idc.indicatorValue.memory_usage
-                        }
-                      } else if (idc.indicatorName == 'network_cpu') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
-                            (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
-                        } else {
-                          d.cpuAvg = idc.indicatorValue.used_cpu_usage
-                        }
-                      } else if (idc.text == '内存配额使用率') {
-                        d.memoryAvg = idc.value
-                      } else if (idc.text == 'CPU配额使用率') {
-                        d.cpuAvg = idc.value
+                      } else {
+                        d.cpuAvg = idc.indicatorValue.result
                       }
-                    })
-              }
+                    } else if (idc.indicatorName == 'network_memory') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
+                            (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                      } else {
+                        d.memoryAvg = idc.indicatorValue.memory_usage
+                      }
+                    } else if (idc.indicatorName == 'network_cpu') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
+                            (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
+                      } else {
+                        d.cpuAvg = idc.indicatorValue.used_cpu_usage
+                      }
+                    } else if (idc.text == '内存配额使用率') {
+                      d.memoryAvg = idc.value
+                    } else if (idc.text == 'CPU配额使用率') {
+                      d.cpuAvg = idc.value
+                    }
+                  })
             }
           }
-        })
+        }
+      })
     } else if (d.nodeType == 'SubnetTopo' && d.runStatus == 'Warning') {
       $.ajax({
         url: '/monitor/topo/view/' + d.neId,
@@ -1425,9 +1425,9 @@ Topology.prototype = {
     var nodes = selection || this.vis.selectAll('.node')
     nodes.each(function (d) {
       getTopoIcon({
-        curThis:this,
-        url:_this.setNodeImg(d),
-        callback:function(curThis,src){
+        curThis: this,
+        url: _this.setNodeImg(d),
+        callback: function (curThis, src) {
           d3.select(curThis).select('.nodeImg').attr({
             'width': d.width,
             'height': d.height,
