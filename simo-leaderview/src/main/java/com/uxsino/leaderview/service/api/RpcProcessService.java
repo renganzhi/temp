@@ -46,30 +46,6 @@ public class RpcProcessService {
     @Autowired
     private DomainUtils domainUtils;
 
-
-//    @SuppressWarnings("unchecked")
-//    public List<Map<String,Object>> findNeComps(List<String> neIds, String indicatorName, String componentName,
-//                                                String neName, List<String> neCompIdNotIn, String... keyword) throws Exception{
-//        JsonModel jsonModel = monitorService.findNeComps(neIds, indicatorName, componentName, neName, neCompIdNotIn, keyword);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return (List<Map<String,Object>>) jsonModel.getObj();
-//    }
-
-
-
-
-//    @SuppressWarnings("unchecked")
-//    public List<Map<String, Object>> vmStatics(Long domain) throws Exception{
-//        JsonModel jsonModel = monitorService.vmStatics(domain);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return (List<Map<String, Object>>) jsonModel.getObj();
-//    }
-    //上述方法因为要使用核心接口而变更为下面的实现
-
     @SuppressWarnings("unchecked")
     public List<Map<String,Object>> vmStatics(Long domain) throws Exception {
         Map<String, Object> condition = new HashMap<>();
@@ -107,17 +83,6 @@ public class RpcProcessService {
         }
         return realResult;
     }
-
-//    @SuppressWarnings("unchecked")
-//    public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
-//        JsonModel jsonModel = monitorService.neStatistics(domain, baseClass);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return (List<Map<String, Object>>) jsonModel.getObj();
-//    }
-
-    //上述方法因为要使用核心接口而变更为下面的实现
 
     public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
         Map<String, Object> condition = new HashMap<>();
@@ -176,15 +141,6 @@ public class RpcProcessService {
         return realResult;
     }
 
-//    @SuppressWarnings("unchecked")
-//    public Long countVr(Long domainId) throws Exception{
-//        JsonModel jsonModel = monitorService.countVr(domainId);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return getLongValue(jsonModel);
-//    }
-    //上述方法因为要使用核心接口而变更为下面的实现
 
     public Long countVr(Long domainId) throws Exception {
         List<Map<String, Object>> statics = vmStatics(domainId);
@@ -197,15 +153,6 @@ public class RpcProcessService {
         return value;
     }
 
-//    @SuppressWarnings("unchecked")
-//    public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
-//        JsonModel jsonModel = monitorService.neStatusStatistics(domainId, baseNeClass);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return (List<ArrayList> ) jsonModel.getObj();
-//    }
-    //上述方法因为要使用核心接口而变更为下面的实现
 
     public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
         Map<String, Object> condition = new HashMap<>();
@@ -246,54 +193,6 @@ public class RpcProcessService {
         return realResult;
     }
 
-//    public NeHealth getNeHealth(String neId) throws Exception{
-//        JsonModel jsonModel = monitorService.getNeHealth(neId);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return this.toJavaBean(jsonModel, NeHealth.class);
-//    }
-
-//    public List<NeHealthHistory> findHealthByNeIdIn(List<String> neIdIn) throws Exception{
-//        JsonModel jsonModel = monitorService.findHealthByNeIdIn(neIdIn);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return toJavaBeanList(jsonModel, NeHealthHistory.class);
-//    }
-
-//    public List<NeHealth> findNeHealthOrderByHealthy(String neIds, String order) throws Exception{
-//        JsonModel indJsonModel = monitorService.findNeHealthOrderByHealthy(neIds, order);
-//        if (!indJsonModel.isSuccess()){
-//            throw new Exception(indJsonModel.getMsg());
-//        }
-//        return this.toJavaBeanList(indJsonModel, NeHealth.class);
-//    }
-
-
-//    public JsonModel countAlert(HttpSession session, String alertType, String alertLevel) throws Exception{
-//        JsonModel jsonModel = alertService.countAlert("SESSION=" + session.getId(), alertType, alertLevel);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return jsonModel;
-//    }
-
-//    public JsonModel getOtherAlertInfo(HttpSession session, String type) throws Exception{
-//        JsonModel jsonModel = alertService.getOtherAlertInfo("SESSION=" + session.getId(), type);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return jsonModel;
-//    }
-
-//    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number) throws Exception{
-//        JsonModel jsonModel = alertService.getOtherAlertTable("SESSION=" + session.getId(), type, number);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return jsonModel;
-//    }
 
     public List<Alert> findByChooseForLeaderview(String[] neIds, Long number) throws Exception{
         AlertQuery query = new AlertQuery();
@@ -369,78 +268,6 @@ public class RpcProcessService {
         return jsonModel.getMsg();
     }
 
-//    public JSONObject getStatByLevel(ArrayList arr, String alertLevel, AlertType alert) throws Exception{
-//        JsonModel jsonModel = alertService.getStatByLevel(arr, alertLevel, alert);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-//    }
-
-//    public JSONObject getStatByClass(JSONArray neArray, String baseClass, String levels, AlertType alertType,
-//                                     String neClassStr, boolean statisticsByNe) throws Exception{
-//        JsonModel jsonModel = alertService.getStatByClass(neArray, baseClass, levels, alertType, neClassStr, statisticsByNe);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-//    }
-//
-//    public JSONObject getStatByNe(JSONArray neArray, String alertLevel, AlertType alert) throws Exception{
-//        JsonModel jsonModel = alertService.getStatByNe(neArray, alertLevel, alert);
-//        if (!jsonModel.isSuccess()){
-//            throw new Exception(jsonModel.getMsg());
-//        }
-//        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
-//    }
-
-
-    @SuppressWarnings("unchecked")
-    private <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
-        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
-        List<T> ts = Lists.newArrayList();
-        for (LinkedHashMap map: list) {
-            T t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
-            ts.add(t);
-        }
-        return ts;
-    }
-
-    @SuppressWarnings("unchecked")
-    private  List<IndValue> toJavaBeanListIndValue(JsonModel jsonModel){
-        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
-        List<IndValue> ts = Lists.newArrayList();
-        for (LinkedHashMap map: list) {
-            IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
-            if (ObjectUtils.isEmpty(t.getIndicatorValue())){
-                t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
-            }
-            ts.add(t);
-        }
-        return ts;
-    }
-
-    private <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
-        LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
-        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
-    }
-
-    private <T> Map<String, Object> getBeanMap(T t){
-        return getBeanMap(t, Maps.newHashMap());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> Map<String, Object> getBeanMap(T t, Map<String, Object> params){
-        Map<String, Object> map = BeanMap.create(t);
-        for (Map.Entry<String,Object> entry: params.entrySet()) {
-            map.put(entry.getKey(), entry.getValue());
-        }
-        Map<String, Object> result = Maps.newHashMap();
-        result.putAll(map);
-        result.putAll(params);
-        return result;
-    }
-
     private Long getLongValue(JsonModel jsonModel) throws Exception{
         Object obj = jsonModel.getObj();
         if (obj instanceof Integer || obj instanceof Long){
@@ -449,24 +276,6 @@ public class RpcProcessService {
             throw new Exception("数据转换出错");
         }
     }
-
-//    @SuppressWarnings("unchecked")
-//    public List<NetworkEntity> findAllNetworkEntity(NetworkEntityQO entityQO) throws Exception{
-//        JsonModel neJsonModel = monitorService.findAllNetworkEntity(entityQO);
-//        if (!neJsonModel.isSuccess()){
-//            throw new Exception(neJsonModel.getMsg());
-//        }
-//        return this.toJavaBeanList(neJsonModel, NetworkEntity.class);
-//    }
-
-
-//    public NetworkEntity findNetworkEntityByIdIn(String ids) throws Exception{
-//        List<NetworkEntity> list = findNetworkEntityByIdIn(Lists.newArrayList(ids));
-//        if (list.isEmpty()){
-//            return null;
-//        }
-//        return list.get(0);
-//    }
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
@@ -800,5 +609,52 @@ public class RpcProcessService {
         return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
     }
 
+    private static <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
+        LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
+        return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
+        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
+        List<T> ts = Lists.newArrayList();
+        for (LinkedHashMap map: list) {
+            T t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
+            ts.add(t);
+        }
+        return ts;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<IndValue> toJavaBeanListIndValue(JsonModel jsonModel){
+        List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
+        List<IndValue> ts = Lists.newArrayList();
+        // 由于IndicatorValue的类型为JSON ，通过toJavaObject创建实例的过程中：
+        // 对JSONObject类型的IndicatorValue字段会造成数据丢失， 所以手动赋值
+        for (LinkedHashMap map: list) {
+            IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
+            if (ObjectUtils.isEmpty(t.getIndicatorValue())){
+                t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
+            }
+            ts.add(t);
+        }
+        return ts;
+    }
+
+    private static <T> Map<String, Object> getBeanMap(T t){
+        return getBeanMap(t, Maps.newHashMap());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Map<String, Object> getBeanMap(T t, Map<String, Object> params){
+        Map<String, Object> map = BeanMap.create(t);
+        for (Map.Entry<String,Object> entry: params.entrySet()) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        Map<String, Object> result = Maps.newHashMap();
+        result.putAll(map);
+        result.putAll(params);
+        return result;
+    }
 
 }

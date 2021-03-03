@@ -159,14 +159,6 @@ public class AlertDataService {
             }
             if (AlertType.Alert.equals(alertType) && queryObject.getIsAvailability() != null) {
                 if (queryObject.getIsAvailability()) {
-//                    Set<String> neIds = loadRootTreeHandler.getNeIds();
-//                    if (!neIds.isEmpty()) {
-//                        neIds.retainAll(Arrays.asList(ids.split(",")));
-//                        queryObject.setObjectIds(org.apache.commons.lang3.StringUtils.join(neIds, ","));
-//                    } else {
-//                        result.put("info", "抱歉，没有数据可供展示...");
-//                        return new JsonModel(true, result);
-//                    }
                     queryObject.setIndicatorIds("useable_state");
                 } else {
                     queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
@@ -174,6 +166,10 @@ public class AlertDataService {
             }
             // 查全部，过滤关键字后再排序、分页
             List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
+            List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
+                    AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
+            list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).collect(Collectors.toList());
             if (ObjectUtils.isEmpty(list)) {
                 result.put("info", "抱歉，没有数据可供展示...");
                 return new JsonModel(true, result);
@@ -253,6 +249,10 @@ public class AlertDataService {
         }
         // 查全部，过滤关键字后再排序、分页
         List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
+        List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
+                AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
+        list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
+        list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).collect(Collectors.toList());
         if (ObjectUtils.isEmpty(list)) {
             result.put("info", "抱歉，没有数据可供展示...");
             return new JsonModel(true, result);

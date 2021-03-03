@@ -125,26 +125,6 @@ public class AlertDataController {
         }
     }
 
-    @ApiOperation("大屏展示：根据选择的域、父类型、资源id和展示条数来查询最新的规定条数的告警，根据文本框元件需求返回值封装String")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
-            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
-            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
-    })
-    @RequestMapping(value = "/getAlertInfoForText", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonModel getAlertInfoForText(@RequestParam(required = false) Long domainId,
-                                         @RequestParam(required = false) String baseNeClass,
-                                         @RequestParam(required = false) String[] neIds,
-                                         HttpSession session){
-        try {
-            return alertDataService.getAlertInfoForText(domainId, baseNeClass, neIds, session);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new JsonModel(false, e.getMessage());
-        }
-    }
-
     @ApiOperation("按告警级别统计资源的未处理告警条数")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
@@ -220,6 +200,26 @@ public class AlertDataController {
                                   HttpSession session){
         try {
             return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("大屏展示：根据选择的域、父类型、资源id和展示条数来查询最新的规定条数的告警，根据文本框元件需求返回值封装String")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
+    })
+    @RequestMapping(value = "/getAlertInfoForText", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getAlertInfoForText(@RequestParam(required = false) Long domainId,
+                                         @RequestParam(required = false) String baseNeClass,
+                                         @RequestParam(required = false) String[] neIds,
+                                         HttpSession session){
+        try {
+            return alertDataService.getAlertInfoForText(domainId, baseNeClass, neIds, session);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
