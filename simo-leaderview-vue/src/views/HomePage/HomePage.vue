@@ -14,10 +14,10 @@
           <p v-show="!isNewUser"
              style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
-                  v-if="access==='w'"
+                  v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增</button>
           <button type="button"
-                  v-if="access==='w'"
+                  v-if="access==='w' && isNewUser"
                   @click="showImport = true">导入</button>
         </div>
       </div>
