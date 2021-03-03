@@ -427,6 +427,9 @@ export default {
       // this.extend.color = newV
       this.extend.color = this.getColors(newV)
     },
+    'item.showline': function (newV) {
+      this.extend.series.labelLine.normal.show = newV === 'true'
+    },
     'item.colorful': function (newV) {
       let _this = this
       // 页面中判断了只有条形图和柱状图才会触发改变
@@ -1139,7 +1142,12 @@ export default {
           })
           obj.extend = $.extend(obj.extend, {
             series: {
-              center: ['50%', '45%']
+              center: ['50%', '45%'],
+              labelLine: {
+                normal: {
+                  show: _this.item.showline
+                }
+              }
             }
           })
         },
@@ -1153,7 +1161,12 @@ export default {
             series: {
               type: 'pie',
               center: ['50%', '45%'],
-              radius: [0, '55%']
+              radius: [0, '55%'],
+              labelLine: {
+                normal: {
+                  show: _this.item.showline
+                }
+              }
             }
           })
         },

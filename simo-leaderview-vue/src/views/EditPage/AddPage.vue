@@ -239,8 +239,10 @@ export default {
 #addHomePage-modal .flex-item {
   // width: 31%;
   // height: 152px;
-  width: 310px;
-  height: 165px;
+  // width: 310px;
+  // height: 165px;
+  width: 255px;
+  height: 155px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
 }
