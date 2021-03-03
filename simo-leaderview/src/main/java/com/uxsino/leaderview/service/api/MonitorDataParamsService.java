@@ -823,15 +823,14 @@ public class MonitorDataParamsService {
                 if ("PERCENT".equals(type)) {
                     fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 }
-                if ("NUMBER".equals(type)) {
+                if ("NUMBER".equals(type) && unitExist) {
+                    String unitStr = unit;
+                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), unitStr));
+                }
+                if ("NUMBER".equals(type) && !unitExist) {
+                    // 数值类型的unit字段为空
                     fields = filter(fields, o -> !o.containsKey("unit"));
                 }
-//                if ("NUMBER".equals(type) && !unitExist) {
-//                    fields = filter(fields, o -> !Objects.equals(o.getString("unit"), "%"));
-//                }
-//                if ("NUMBER".equals(type) && unitExist) {
-//                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
-//                }
                 action(fields, o -> fieldsResult.add(newResultObj(o.getString("label"), o.getString("name"))));
             }
             indicatorResult.put("fields", fieldsResult);

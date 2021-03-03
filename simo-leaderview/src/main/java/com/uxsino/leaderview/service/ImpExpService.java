@@ -54,6 +54,9 @@ public class ImpExpService {
 
     private static Pattern imgPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)\"");
     private static Pattern img2Pattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
+
+    private static Pattern imgFalsePattern = Pattern.compile("/leaderview/home/getImg/false/(\\d*)\"");
+
     private static Pattern numPattern = Pattern.compile("[^0-9]");
     private static Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
     private static Pattern ipPattern = Pattern.compile("http://(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d*)/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
@@ -169,6 +172,26 @@ public class ImpExpService {
         if (Strings.isEmpty(str)){
             return result;
         }
+
+//        // 把模板中的图片也下载下来
+//        List<Long> tempImgIds = Lists.newArrayList();
+//        Matcher m3 = imgFalsePattern.matcher(str);
+//        List<String> imgFalseList = new ArrayList<>();
+//        while (m3.find()){
+//            if (imgFalseList.contains(m3.group())){
+//                continue;
+//            }
+//            imgFalseList.add(m3.group());
+//            Matcher m2 = numPattern.matcher(m3.group());
+//            tempImgIds.add(Long.valueOf(m2.replaceAll("").trim()));
+//        }
+//        for (Long id : tempImgIds) {
+//            HomeTemplateImg templateImg = homeTemplateImgService.getById(id);
+//            String imgPath = zipPath + "/templateZip" + zipNum + "/img/";
+//            saveToFile(imgPath + "temp" + templateImg.getName() , templateImg.getFileStream());
+//        }
+
+
         // 自定义图片id处理
         List<String> imgList = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
