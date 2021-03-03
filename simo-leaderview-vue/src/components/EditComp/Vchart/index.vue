@@ -503,10 +503,14 @@ export default {
           this.activeTab = newV.tabs[0]
           rows = newV.allData[this.activeTab].rows
         }
-        let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-        let strLen = Math.ceil(barW / this.item.ctLegendSize)
-        this.extend.xAxis.axisLabel.formatter = function (params, index) {
-          return params.length > strLen ? params.substr(0, strLen) + '...' : params
+        let barW = Math.floor((this.item.width - this.item.width * this.item.gridTop / 50) * 0.7 / rows.length)
+        let strLen = Math.ceil(barW / (this.item.axisLabelSize * 2))
+        this.extend.xAxis.axisLabel.formatter = (params, index) => {
+          if (this.item.formatterType === '0') {
+            return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          } else {
+            return params
+          }
         }
       }
       //  && _.isObject(newV) && !_.isArray(newV)
@@ -575,6 +579,8 @@ export default {
         this.extend.xAxis.axisLine.show = !this.empty
         this.extend.yAxis.axisLine.show = !this.empty
       }
+      this.item.width++
+      this.item.width--
     },
     'item.symbolImg': function (newV) {
       if (this.item.secondType === 'symbolBar') {
