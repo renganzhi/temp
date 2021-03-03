@@ -3813,6 +3813,9 @@ export default {
           if (newValue > limitValue) {
             this.testObj[position] = limitValue
           }
+          if (newValue < allowOverflow * -1) {
+            this.testObj[position] = allowOverflow * -1
+          }
         } else {
           this[valiType].isShowError = false
           this.selectedItem[position] = newValue

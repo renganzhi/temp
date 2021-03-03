@@ -107,7 +107,7 @@ export default {
   .vue-rulerv {
     width: 12px;
     position: fixed;
-    left: 65px;
+    left: 54px;
     top: 50px;
     overflow: hidden;
     z-index: 999;

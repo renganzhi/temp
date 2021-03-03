@@ -152,7 +152,7 @@ mapTopology.prototype = {
         d3.select(this).attr({
           x: p[0],
           y: p[1],
-          idName:d.id
+          idName: d.id
         })
       })
     // });
@@ -163,15 +163,15 @@ mapTopology.prototype = {
     })
     this.createLiquid()
     // _this = null
-    if(selectMapNum === '100000'){ //全国地图加九段线
-      d3.xml("/resources/img/topo/southchinasea.svg", function(error, xmlDocument) {
+    if (selectMapNum === '100000') { // 全国地图加九段线
+      d3.xml('/resources/img/topo/southchinasea.svg', function (error, xmlDocument) {
         var taiwan = _this.svgContainer.select('[idName="tai_wan"]')
-        _this.svgContainer.append('g').attr("transform","translate("+(Number(taiwan.attr('x'))+30)+","+(taiwan.attr('y'))+")scale(1)").attr('class','southsea').html(function (d) {
-            return xmlDocument.getElementsByTagName("g")[0].outerHTML;
+        _this.svgContainer.append('g').attr('transform', 'translate(' + (Number(taiwan.attr('x')) + 30) + ',' + (taiwan.attr('y')) + ')scale(1)').attr('class', 'southsea').html(function (d) {
+          return xmlDocument.getElementsByTagName('g')[0].outerHTML
         })
         _this = null
       })
-    }else{
+    } else {
       _this = null
     }
     return this
@@ -205,7 +205,7 @@ mapTopology.prototype = {
         getTopoIcon({
           curThis: _this,
           url: _this.setNodeImg(d),
-          callback: function(curThis,src){
+          callback: function (curThis, src) {
             d3.select(curThis).select('.nodeImg').attr({
               'width': d.width,
               'height': d.height,
@@ -445,65 +445,65 @@ mapTopology.prototype = {
         indicatorNames = ['network_cpu', 'network_memory']
       }
       newAjax({
-          url: gbs.host + '/monitor/ne/view/' + d.neId,
-          dataType: 'json',
-          data: {
-            indicatorNames: indicatorNames.length > 0
-              ? indicatorNames.join(',')
-              : ''
-          },
-          type: 'post',
-          async: false,
-          success: function (res) {
-            if (res.success == true) {
-              var data = res.obj
-              d.alertLevel = data.alertLevel || d.alertLevel
-              if (data.indicators) {
-                $
-                  .each(
-                    data.indicators,
-                    function (idx, idc) {
-                      if (!idc.indicatorValue && !idc.value) {
-                        return
-                      }
-                      if (idc.indicatorName == 'physical_memory') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
+        url: gbs.host + '/monitor/ne/view/' + d.neId,
+        dataType: 'json',
+        data: {
+          indicatorNames: indicatorNames.length > 0
+            ? indicatorNames.join(',')
+            : ''
+        },
+        type: 'post',
+        async: false,
+        success: function (res) {
+          if (res.success == true) {
+            var data = res.obj
+            d.alertLevel = data.alertLevel || d.alertLevel
+            if (data.indicators) {
+              $
+                .each(
+                  data.indicators,
+                  function (idx, idc) {
+                    if (!idc.indicatorValue && !idc.value) {
+                      return
+                    }
+                    if (idc.indicatorName == 'physical_memory') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
                                                         (d.memoryAvg = idc.indicatorValue[0].memory_usage)
-                        } else {
-                          d.memoryAvg = idc.indicatorValue.memory_usage
-                        }
-                      } else if (idc.indicatorName == 'cpu_usage_avg') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
+                      } else {
+                        d.memoryAvg = idc.indicatorValue.memory_usage
+                      }
+                    } else if (idc.indicatorName == 'cpu_usage_avg') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
                                                         (d.cpuAvg = idc.indicatorValue[0].result)
-                        } else {
-                          d.cpuAvg = idc.indicatorValue.result
-                        }
-                      } else if (idc.indicatorName == 'network_memory') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
-                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
-                        } else {
-                          d.memoryAvg = idc.indicatorValue.memory_usage
-                        }
-                      } else if (idc.indicatorName == 'network_cpu') {
-                        if (Array.isArray(idc.indicatorValue)) {
-                          idc.indicatorValue.length > 0 &&
-                                                        (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
-                        } else {
-                          d.cpuAvg = idc.indicatorValue.used_cpu_usage
-                        }
-                      } else if (idc.text == '内存配额使用率') {
-                        d.memoryAvg = idc.value
-                      } else if (idc.text == 'CPU配额使用率') {
-                        d.cpuAvg = idc.value
+                      } else {
+                        d.cpuAvg = idc.indicatorValue.result
                       }
-                    })
-              }
+                    } else if (idc.indicatorName == 'network_memory') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
+                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                      } else {
+                        d.memoryAvg = idc.indicatorValue.memory_usage
+                      }
+                    } else if (idc.indicatorName == 'network_cpu') {
+                      if (Array.isArray(idc.indicatorValue)) {
+                        idc.indicatorValue.length > 0 &&
+                                                        (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
+                      } else {
+                        d.cpuAvg = idc.indicatorValue.used_cpu_usage
+                      }
+                    } else if (idc.text == '内存配额使用率') {
+                      d.memoryAvg = idc.value
+                    } else if (idc.text == 'CPU配额使用率') {
+                      d.cpuAvg = idc.value
+                    }
+                  })
             }
           }
-        })
+        }
+      })
     } else if (d.nodeType == 'SubnetTopo' && d.runStatus == 'Warning') {
       newAjax({
         url: gbs.host + '/monitor/topo/view/' + d.neId,
