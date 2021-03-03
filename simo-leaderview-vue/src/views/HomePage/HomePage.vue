@@ -15,11 +15,18 @@
              style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
           <button type="button"
                   v-if="access==='w' && isNewUser"
-                  @click="addPage = true">新增页面</button>
+                  @click="addPage = true">新增</button>
+          <button type="button"
+                  v-if="access==='w' && isNewUser"
+                  @click="showImport = true">导入</button>
         </div>
       </div>
       <AddPage :showModal="addPage"
                @hideModal="hideModal"></AddPage>
+
+      <ImportPage :showModal="showImport"
+                  @hideModal="hideImportModal"
+                  :tems="pageList"></ImportPage>
     </div>
     <transition v-else :name="moveBox1">
       <div class="portlet light bordered flex-1"
@@ -131,6 +138,7 @@
 import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
+import ImportPage from './../EditPage/ImportPage'
 import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
@@ -138,12 +146,13 @@ import { mapActions, mapMutations, mapGetters } from 'vuex'
 import {checkLogin} from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
-  components: { Notification, LookItem, LookCompose, AddPage },
+  components: { Notification, LookItem, LookCompose, AddPage, ImportPage },
   // mixins:[thirdLoginMix],
   data () {
     return {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
+      showImport: false,
       moveFlag: true,
       defTheme: true, // 默认主题
       isFullScreen: false,
