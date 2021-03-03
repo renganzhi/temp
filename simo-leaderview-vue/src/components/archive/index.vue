@@ -257,7 +257,7 @@ export default {
   .el-submenu__title {
     border: solid 2.5px transparent;
     width: 54px;
-    margin-left: 3px;
+    // margin-left: 3px;
     height: 35px;
     display: flex;
     justify-content: center;
@@ -273,16 +273,29 @@ export default {
     background: none !important;
     background-image: linear-gradient(to right, #12174e, #0f3858) !important;
     box-sizing: border-box !important;
-    border-left: solid 2.5px #00a0e9;
+    border-left: solid 5px #00a0e9;
     .nav_icon {
       color: #00a0e9;
     }
   }
 }
-
+.el-menu--vertical{
+  height: 700px;
+  overflow: auto;
+}
 .is-opened {
   .el-submenu__title {
     background: #2e3444 !important;
+  }
+}
+.archive .is-opened {
+  .el-submenu__title {
+    background-image: linear-gradient(to right, #12174e, #0f3858) !important;
+    box-sizing: border-box !important;
+    border-left: solid 5px #00a0e9;
+    .nav_icon {
+      color: #00a0e9;
+    }
   }
 }
 

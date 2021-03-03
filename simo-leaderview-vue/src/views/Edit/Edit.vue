@@ -2467,9 +2467,6 @@ export default EditJs
 .src_item {
   z-index:100;
 }
-.select2-container.select2-container--default {
-  z-index: 10052;
-}
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
 }
