@@ -256,7 +256,7 @@ export default {
   }
   .el-submenu__title {
     border: solid 2.5px transparent;
-    width: 52px;
+    width: 54px;
     margin-left: 3px;
     height: 35px;
     display: flex;

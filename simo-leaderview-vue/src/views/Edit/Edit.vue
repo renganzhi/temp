@@ -1845,6 +1845,16 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
+                     v-if="selectedItem.chartType==='ve-pie' || selectedItem.chartType==='ve-ring'">
+                  <label>图表文字连线</label>
+                  <div class="color-w200">
+                    <select v-model="selectedItem.showline">
+                    <option value="false">隐藏</option>
+                    <option value="true">显示</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group cols2"
                      v-show="selectedItem.secondType !== 'liquidfill'">
                   <label>配色<i class="icon-n-tip"
                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"
