@@ -8,9 +8,10 @@
       <span>{{item.chartData.title}}</span>
       <span style="float: right; padding-right: 10px;">{{item.chartData.time}}</span>
     </div>
+    <span class="getPicSpan" :style="[spanStyle,{'display': 'none'}]">{{item.ctName}}</span>
     <textarea :style="textStyle"
               :id="!item.ColorType ? 'jianBian':''"
-              :class="item.overflow ? 'homeText':'homeText hiddeLeft'"
+              :class="item.overflow ? 'getTextArea homeText':'getTextArea homeText hiddeLeft'"
               v-model="item.ctName"
               ref="NEWtextArea"
               :disabled="dis"></textarea>
@@ -96,6 +97,21 @@ export default {
         fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
       }
     },
+    spanStyle: function () {
+      return {
+        width: this.item.width - 20 + 'px !important',
+        height: this.textHeight - 20 + 'px !important',
+        color: this.item.ColorType ? this.item.clr : this.item.Gradientclr[1] + ' !important',
+        fontSize: this.item.fontSize + 'px !important',
+        textAlign: this.item.textAlign,
+        lineHeight: this.item.fontLineHeight + 'px',
+        fontWeight: this.item.fontWeight + ' !important',
+        margin: '10px !important',
+        padding: '0px !important',
+        letterSpacing: this.item.fontSpaceing + 'px !important',
+        fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
+      }
+    },
     textStyle: function () {
       if (!this.item.ColorType) {
         return {
@@ -158,6 +174,10 @@ html[data-theme="blueWhite"] {
     background: transparent !important;
     background-color: transparent !important;
   }
+}
+.getPicSpan{
+  display: inline-block;
+  overflow: auto;
 }
 .homeText {
   border: none !important;

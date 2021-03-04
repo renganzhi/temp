@@ -343,6 +343,7 @@ export default {
     editing: true
   },
   created () {
+    $('.getPicSpan').hide()
     this.axios.get('/leaderview/home/getDatasource').then(res => {
       this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}
     })
@@ -2936,6 +2937,7 @@ export default {
             left: 0
           })
       )
+      $('.getPicSpan').show()
       html2canvas(_canvas, {
         width: this.paintObj.width * (cThis.paintObj.scale / 100),
         height: this.paintObj.height * (cThis.paintObj.scale / 100),
@@ -2951,6 +2953,7 @@ export default {
           $('#mainEdit-edit .main_video')
             .find('video')
             .css('opacity', 1)
+          $('.getPicSpan').hide()
           $('#mainEdit-edit .monitp').remove()
         }
       }).then(function (canvas) {
@@ -3761,6 +3764,9 @@ export default {
         if (newValue > limitValue) {
           this.testObj[direct] = limitValue
         }
+        // if (newValue < this.miniW) {
+        //   this.testObj[direct] = this.miniW
+        // }
       } else {
         if (oldV !== newValue) {
           this.saveOldData(this.selectedItem.id, direct, oldV)
