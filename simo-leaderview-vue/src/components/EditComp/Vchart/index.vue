@@ -1104,7 +1104,11 @@ export default {
                       value = '--'
                     }
                     if (_this.item.subType === 'doubleAxis') {
-                      showHtm += name + '：' + value + (_this.item.chartData.unit ? _this.item.chartData.unit[i] : '') + '<br>'
+                      if (value === null) {
+
+                      } else {
+                        showHtm += name + '：' + value + (_this.item.chartData.unit ? _this.item.chartData.unit[i] || '' : '') + '<br>'
+                      }
                     } else {
                       showHtm += name + '：' + value + (_this.item.chartData.unit || '') + '<br>'
                     }
