@@ -53,7 +53,7 @@ export default {
     // targetHeight () { return 300 }
   },
   watch: {
-    item () {
+    'item.chartData': function (newV, oldV) {
       cancelAnimationFrame(this.animate)
       this.initCanvas()
     }
