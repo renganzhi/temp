@@ -51,7 +51,7 @@ public class ImpExpService {
     private HomePageUserConfService homePageUserConfService;
 
     private static Set<String> videoSet = Sets.newHashSet();
-
+    private final int MAX_PAGE_INDEX = 20;
     private static Pattern imgPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)\"");
     private static Pattern img2Pattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
 
@@ -369,6 +369,7 @@ public class ImpExpService {
         ZipFile zf = null;
         InputStream in = null;
         JSONArray config = new JSONArray();
+        int j;  //表示zip中指向大屏的位置，方便在满20时立即返回，并告知用户导入了几个
         Map<Long ,Long > idMap = Maps.newHashMap();
         try {
             zf = new ZipFile(file);
@@ -403,8 +404,8 @@ public class ImpExpService {
                             homeTemplateImgService.save(img);
                         }catch (Exception e){
                             log.error("图片解析错误");
-                            new JsonModel(false,"图片解析错误");
                             e.printStackTrace();
+                            return new JsonModel(false,"图片解析错误");
                         }finally {
                             zfIn.close();
                         }
@@ -422,8 +423,8 @@ public class ImpExpService {
                             config = JSON.parseArray(sb.toString());
                         }catch (Exception e){
                             log.error("导出配置解析错误");
-                            new JsonModel(false,"导出配置解析错误");
                             e.printStackTrace();
+                            return new JsonModel(false,"导出配置解析错误");
                         }finally {
                             zfIn.close();
                         }
@@ -463,22 +464,23 @@ public class ImpExpService {
                             fileOut.close();
                         }catch (Exception e){
                             log.error("视频解析错误");
-                            new JsonModel(false,"视频解析错误");
                             e.printStackTrace();
+                            return new JsonModel(false,"视频解析错误");
                         }finally {
                             zfIn.close();
                         }
                     }else {
                         zfIn.close();
-                        new JsonModel(false,"文件内容有误，请检查导入文件是否为正确的模板zip");
+                        return new JsonModel(false,"文件内容有误，请检查导入文件是否为正确的模板zip");
                     }
 
                 }
             }
             zin.closeEntry();
+            int pageCount = homePageUserConfService.getMaxMinePage(1L, false);
             //跳转处理
-            for (int i = 0; i < config.size(); i++) {
-                JSONObject obj = config.getJSONObject(i);
+            for (j = 0; j<config.size() && pageCount<MAX_PAGE_INDEX; j++, pageCount++) {
+                JSONObject obj = config.getJSONObject(j);
                 HomePage page = new HomePage();
                 //TODO 从session中获取ID
                 page.setCreateUserId(1L);
@@ -506,17 +508,22 @@ public class ImpExpService {
             e.printStackTrace();
             return new JsonModel(false,"解析错误，请检查导入文件是否为正确的模板zip");
         }
-        return new JsonModel(true,"导入成功");
+        int remaining = config.size() - j;
+        if(remaining == 0)
+            return new JsonModel(true, "导入成功！");
+        else
+            return new JsonModel(false,"由于您只能创建最多20个大屏，当前成功导入" + j + "个，还剩" + remaining + "个");
     }
 
     private void linkImpProcess(Map<Long,Long> idMap, JSONArray config) {
-        for (int i = 0; i < config.size(); i++) {
+        //这里原来是config.size()，因为限制20个的缘故，idMap.size()<=config.size(),否则会引起空指针异常
+        for (int i = 0; i < idMap.size(); i++) {
             JSONObject obj = config.getJSONObject(i);
             HomePage page = homePageService.getById(idMap.get(obj.getLong("id")));
             JSONObject linkConfig = obj.getJSONObject("linkConfig");
             Integer num = 0;
             String viewConf = obj.getString("viewConf");
-            while (linkConfig.getLong("${" + num + "}") != null){
+            while (linkConfig!=null && linkConfig.getLong("${" + num + "}") != null){
                 String replace = "${" + num + "}";
                 Long originId = linkConfig.getLong(replace);
                 Long newId = idMap.get(originId);
