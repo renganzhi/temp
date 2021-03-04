@@ -213,6 +213,8 @@ public class RpcProcessService {
     public long getAlertCount(AlertQuery query, AlertType alert) throws Exception{
         query.setAlertType(alert);
         Map<String, Object> map = getBeanMap(query);
+        map.put("params", null);
+        map.put("objectInfo", null);
         JsonModel jsonModel = alertService.getAlertCount(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());

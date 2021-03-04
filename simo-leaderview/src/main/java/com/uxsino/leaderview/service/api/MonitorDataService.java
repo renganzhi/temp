@@ -1002,7 +1002,7 @@ public class MonitorDataService {
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         field = !MonitorUtils.validHasFields(ind)? "result" : field ;
         String finalField = field;
-        if (Objects.isNull(ind)) {
+        if (ObjectUtils.isEmpty(ind)) {
             return new JsonModel(true, empObj());
         }
         // 返回的结果
@@ -1746,7 +1746,13 @@ public class MonitorDataService {
                 for (IndValue indValue: indValues) {
                     if (indValue.getNeId().equals(neId)){
                         JSONObject obj = new JSONObject();
-                        JSONObject value = getValueJSON(indValue.getIndicatorValue(), component);
+                        JSONObject value = new JSONObject();
+                        // 对cup核心利用率指标做特殊化处理
+                        if ("cpu_usage_core".equals(ind.getName())){
+                            value = getValueJSON(indValue.getIndicatorValue());
+                        }else {
+                            value = getValueJSON(indValue.getIndicatorValue(), component);
+                        }
                         obj.put("num", value.getString(field));
                         valueUtils.transferItem(fieldLabel, value);
                         obj.put("id", neId);
@@ -1760,7 +1766,12 @@ public class MonitorDataService {
                         Map<String, Object> compMap =
                                 idAndComponent.stream().filter(map -> map.get("identifier").equals(component))
                                         .findFirst().orElse(Maps.newHashMap());
-                        obj.put("componentName", compMap.get("componentName").toString());
+                        // 对cup核心利用率指标做特殊化处理
+                        if ("cpu_usage_core".equals(ind.getName())){
+                            obj.put("componentName", "cpu");
+                        }else {
+                            obj.put("componentName", compMap.get("componentName").toString());
+                        }
                         allValue.add(obj);
                     }
                 }
