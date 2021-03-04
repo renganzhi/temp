@@ -891,9 +891,6 @@ tab切换页
     .select2-results__option--highlighted[aria-selected] {
     background-color: transparent;
 }
-.select2-container.select2-container--default {
-  z-index: 10052;
-}
 .select2-dropdown {
     z-index: 1051;
     border: 1px solid #3d445a;
