@@ -162,7 +162,8 @@ public class RpcProcessService {
             condition.put("domainId", domainId);
         }
         if(baseNeClass != null){
-            condition.put("baseNeClass", baseNeClass);
+            List<NeClass> neClassList = baseNeClass.getNeClass();
+            condition.put("neClasses", neClassList);
         }
         condition.put("manageStatusNotIn", "Delected");
         condition.put("pageSize", 9999);
