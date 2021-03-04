@@ -245,6 +245,8 @@ public class MonitorUtils {
     }
 
     public static JSONObject getValueJSON(JSON indicatorValues, String componentName) {
+        //TODO 这里可以根据indicatorValues中的值是否包含cpu_id字段来对cpu_usage_core指标进行特殊处理
+
         JSONObject valueJSON = new JSONObject();
         // indicatorValues的类型可能是JSONArray,也可能是JSONObject
         if (indicatorValues instanceof JSONArray) {

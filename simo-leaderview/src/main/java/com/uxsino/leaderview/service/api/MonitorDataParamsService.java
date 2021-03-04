@@ -21,11 +21,17 @@ import com.uxsino.simo.indicator.FieldType;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -946,6 +952,16 @@ public class MonitorDataParamsService {
             compQuery.setNeIds(Lists.newArrayList(neIds));
             compQuery.setIndicatorName(indicatorName);
             List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
+            // 对cup核心利用率指标做特殊化处理
+            if ("cpu_usage_core".equals(indicatorName)){
+                nes.forEach(ne -> {
+                    Map<String, Object> map = Maps.newLinkedHashMap();
+                    map.put("componentName", "avg_cpu");
+                    map.put("identifier", "1");
+                    map.put("neId", ne.getId());
+                    idAndComponent.add(map);
+                });
+            }
             // 对每个资源进行遍历
             for (NetworkEntity ne : nes) {
                 JSONObject neResult = new JSONObject();
