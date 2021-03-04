@@ -147,7 +147,10 @@ select {
     display: inline-block;
     vertical-align: middle;
 }
-
+.select2-dropdown {
+border: 1px solid #3d445a;
+background-color: #0a0e1a;
+color: #b2b2b2; }
 input:not([type='checkbox']):not([type='radio']):focus,
 textarea:focus,
 select:focus {
@@ -889,7 +892,7 @@ tab切换页
 
 .select2-container--default
     .select2-results__option--highlighted[aria-selected] {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 .select2-dropdown {
     z-index: 1051;

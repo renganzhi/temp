@@ -783,10 +783,10 @@ html[data-theme="blueWhite"] {
     .edit-opt {
       color: #50607c;
     }
-    textarea {
-      background: transparent !important;
-      background-color: transparent !important;
-    }
+    // textarea {
+    //   background: transparent !important;
+    //   background-color: transparent !important;
+    // }
     .color-w15 {
       background: #fff;
     }
@@ -796,6 +796,10 @@ html[data-theme="blueWhite"] {
   }
   #partsEdit-modal .page-lable i{
     color:#026bf4;
+  }
+  .select2-container--default{
+    background-color: #5897fb !important;
+    color: white !important;
   }
 }
 
@@ -816,6 +820,10 @@ html[data-theme="blackWhite"]{
   }
   .color-w15 {
     background: #fff;
+  }
+  .select2-container--default{
+    color: #b2b2b2 !important;
+    background: #0a0e1a !important;
   }
 }
 html[data-theme="blueWhite"] {
