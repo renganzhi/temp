@@ -229,6 +229,7 @@ export default {
   .el-menu-vertical-demo {
     background: transparent;
     border: none;
+    width: 100%;
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
@@ -247,7 +248,7 @@ export default {
   //   }
   // }
   .el-submenu {
-    width: 60px;
+    width: 100%;
     height: 35px;
         margin-top: 10px;
     display: flex;
@@ -273,7 +274,7 @@ export default {
     background: none !important;
     background-image: linear-gradient(to right, #12174e, #0f3858) !important;
     box-sizing: border-box !important;
-    border-left: solid 5px #00a0e9;
+    border-left: solid 3px #00a0e9;
     .nav_icon {
       color: #00a0e9;
     }
@@ -292,7 +293,7 @@ export default {
   .el-submenu__title {
     background-image: linear-gradient(to right, #12174e, #0f3858) !important;
     box-sizing: border-box !important;
-    border-left: solid 5px #00a0e9;
+    border-left: solid 3px #00a0e9;
     .nav_icon {
       color: #00a0e9;
     }
