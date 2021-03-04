@@ -57,6 +57,9 @@ body {
 .disShow {
   display: none !important;
 }
+.select2-container.select2-container--default {
+  z-index: 10100;
+}
 #lead-screen {
   width: 100%;
   height: 100%;
