@@ -17,7 +17,7 @@
                   v-if="access==='w' && isNewUser"
                   @click="addPage = true">新增</button>
           <button type="button"
-                  v-if="access==='w' && isNewUser"
+                  v-if="isSuperAdmin && isNewUser"
                   @click="showImport = true">导入</button>
         </div>
       </div>
@@ -153,6 +153,7 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showImport: false,
+      isSuperAdmin: false,
       moveFlag: true,
       defTheme: true, // 默认主题
       isFullScreen: false,
@@ -234,6 +235,10 @@ export default {
       if (data.ifAdd) {
         this.$router.push('/edit/' + data.addId)
       }
+    },
+    hideImportModal () {
+      this.showImport = false
+      this.getPageData()
     },
     getPageData: function () {
       // 获取大屏配置内容
@@ -934,6 +939,11 @@ export default {
     getAccess () {
       let permission = 'r'
       // 先获取simo存在本地的
+      this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
+        if (res.success) {
+          this.isSuperAdmin = res.obj.isSuperAdmin
+        }
+      })
       if (baseData && baseData.menuParam && baseData.menuParam.permission) {
         permission = baseData.menuParam.permission.toLowerCase().split(',')
         if (permission.indexOf('w') !== -1) {
