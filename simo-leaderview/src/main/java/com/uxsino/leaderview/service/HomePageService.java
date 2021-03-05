@@ -289,6 +289,10 @@ public class HomePageService {
         return homePageDao.getByUserIdAndPageIndex(employeeId, index);
     }
 
+    public List<HomePage> getByUserIdNoView(long userId){
+        return homePageDao.getByUserIdNoView(userId);
+    }
+
     /**
      * 查询指定角色的首页指定序号配置信息
      *

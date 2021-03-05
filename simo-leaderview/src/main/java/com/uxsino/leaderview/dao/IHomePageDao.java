@@ -17,6 +17,9 @@ public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
 
     HomePage getByUserIdAndPageIndex(long employeeId, int pageIndex);
 
+    @Query("select new com.uxsino.leaderview.entity.HomePage(id,userId,roleIds,pageIndex,name,visible,lastUpdateTime) from HomePage where userId = :userId")
+    List<HomePage> getByUserIdNoView(long userId);
+
     HomePage getByRoleIdsAndPageIndex(String roleIds, int pageIndex);
 
     @Query("from HomePage  h where h.visible = true  order by h.pageIndex")

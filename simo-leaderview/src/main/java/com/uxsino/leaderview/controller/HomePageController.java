@@ -354,6 +354,24 @@ public class HomePageController {
 		return new JsonModel(true, result);
 	}
 
+	@ApiOperation("获取当前用户可以导出的页面列表")
+	@Permission(value = {"VIEW01"}, text = "大屏展示", permission = {"R"})
+	@RequestMapping(value = "/homePage/export/list", method = RequestMethod.GET)
+	public JsonModel exportList(HttpSession session) {
+		boolean isSuperAdmin = SessionUtils.isSuperAdmin(session);
+		List<HomePage> result = Lists.newArrayList();
+		if (isSuperAdmin){
+			result = homePageService.getByAuthority(session);
+		}else {
+			Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+			if (ObjectUtils.isEmpty(userId)){
+				return new JsonModel(false, "获取用户信息失败", null);
+			}
+			result = homePageService.getByUserIdNoView(userId);
+		}
+		return new JsonModel(true, result);
+	}
+
 	@ApiOperation("根据序号查询大屏页面")
 	@RequestMapping(value = "/homePage/getByIndex/{pageIndex}", method = RequestMethod.GET)
 	public JsonModel homePage(HttpSession session, @ApiParam("待查询的页面序号") @PathVariable int pageIndex) {
@@ -951,7 +969,8 @@ public class HomePageController {
 	public JsonModel importTemplate(HttpServletRequest request,
 									MultipartFile file,
 									HttpServletResponse response,
-									@RequestParam(required = false) String name){
+									@RequestParam(required = false) String name,
+									HttpSession session){
 		JsonModel result = new JsonModel();
 		/*
 		 *创建临时文件夹
@@ -967,7 +986,7 @@ public class HomePageController {
 		try {
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;
-			result = impExpService.processZip(newFilePath, name);
+			result = impExpService.processZip(newFilePath, name, session);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JsonModel(false,"模板导入失败");
