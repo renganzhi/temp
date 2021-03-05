@@ -951,6 +951,7 @@ public class HomePageController {
 	public JsonModel importTemplate(HttpServletRequest request,
 									MultipartFile file,
 									HttpServletResponse response,
+									HttpSession session,
 									@RequestParam(required = false) String name){
 		JsonModel result = new JsonModel();
 		/*
@@ -967,7 +968,7 @@ public class HomePageController {
 		try {
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;
-			result = impExpService.processZip(newFilePath, name);
+			result = impExpService.processZip(newFilePath, name, session);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JsonModel(false,"模板导入失败");
