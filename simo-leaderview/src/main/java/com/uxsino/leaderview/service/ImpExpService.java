@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.entity.*;
 import com.uxsino.leaderview.utils.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.util.*;
@@ -365,7 +367,7 @@ public class ImpExpService {
 
     }
 
-    public JsonModel processZip(String file, String tempName){
+    public JsonModel processZip(String file, String tempName, HttpSession session){
         ZipFile zf = null;
         InputStream in = null;
         JSONArray config = new JSONArray();
@@ -477,30 +479,32 @@ public class ImpExpService {
                 }
             }
             zin.closeEntry();
-            int pageCount = homePageUserConfService.getMaxMinePage(1L, false);
+            long userId = SessionUtils.getCurrentUserIdFromSession(session);
+            int pageCount = homePageUserConfService.getMaxMinePage(userId, false);
             //跳转处理
             for (j = 0; j<config.size() && pageCount<MAX_PAGE_INDEX; j++, pageCount++) {
                 JSONObject obj = config.getJSONObject(j);
                 HomePage page = new HomePage();
                 //TODO 从session中获取ID
-                page.setCreateUserId(1L);
-                page.setHandoverId(1L);
-                page.setUserId(1L);
+                page.setCreateUserId(userId);
+                page.setHandoverId(userId);
+                page.setUserId(userId);
                 page.setLastUpdateTime(new Date());
                 page.setComposeObj(obj.getString("composeObj"));
                 page.setName(tempName == null ? obj.getString("name") : obj.getString("name") + "_" + tempName);
                 page.setViewConf(obj.getString("viewConf"));
                 page.setViewImage(obj.getString("viewImage"));
                 page.setPaintObj(obj.getString("paintObj"));
+                page.setPageIndex(pageCount);
 
                 Long pageId = homePageService.addAndGetId(page);
                 idMap.put(obj.getLong("id"), pageId);
                 HomePageUserConf homePageUserConf = new HomePageUserConf();
                 homePageUserConf.setPageId(pageId);
-                homePageUserConf.setUserId(1L);
+                homePageUserConf.setUserId(userId);
                 homePageUserConf.setVisible(true);
                 //TODO 从session中获取ID
-                homePageUserConfService.add(homePageUserConf, true, new String[]{"1"});
+                homePageUserConfService.add(homePageUserConf, true, new String[]{String.valueOf(userId)});
             }
             linkImpProcess(idMap, config);
         } catch (Exception e) {
