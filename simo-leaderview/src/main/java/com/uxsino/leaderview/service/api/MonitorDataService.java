@@ -314,7 +314,12 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel getIndicatorValueData(String neIds, String indicators, String componentName, String field) throws Exception {
-        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        IndicatorTable ind = null;
+        try {
+            ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        }catch (Exception e){
+            return new JsonModel(true,  e.getMessage(), newResultObj("name","","unit",""));
+        }
         // 单值元件中，错误数据也需要展示正确图例
         JSONObject empObj = newResultObj("name", Objects.isNull(ind) ? "" : ind.getLabel(), "unit","");
         // 资源ID和指标名为必选项
