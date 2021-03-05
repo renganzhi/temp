@@ -2395,7 +2395,7 @@ public class MonitorDataService {
 
         NetworkEntity ne = rpcProcessService.findNetworkEntityById(neId);
         if (ObjectUtils.isEmpty(ne)){
-            return new JsonModel(true, "资源已被取消监控", empObj() );ddd
+            return new JsonModel(true, "资源已被取消监控", empObj() );
         }
 
         JSONArray values = new JSONArray();
