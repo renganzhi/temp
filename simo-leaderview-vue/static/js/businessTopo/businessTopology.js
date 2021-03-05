@@ -106,7 +106,7 @@ businessTopology.prototype = {
       getTopoIcon({
         curThis: this,
         url: gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
-        callback: function(curThis,src){
+        callback: function (curThis, src) {
           curThis.svgImage = d3.select(curThis.ele).append('img').attr({
             // 'src': gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId || this.config.backgroundIconIdDefault) + '/Good',
             'src': src,
@@ -162,9 +162,9 @@ businessTopology.prototype = {
     var _this = this
     this.config.backgroundIconId = iconId || this.config.backgroundIconId
     getTopoIcon({
-      curThis:this,
+      curThis: this,
       url: gbs.host + '/business/topology/getIcon/' + (this.config.backgroundIconId) + '/Good',
-      callback: function(curThis,src){
+      callback: function (curThis, src) {
         curThis.svgImage.attr('src', src)
       }
     })
@@ -1130,12 +1130,12 @@ businessTopology.prototype = {
       getTopoIcon({
         curThis: this,
         url: _this.setNodeImg(d),
-        callback: function(curThis,src){
+        callback: function (curThis, src) {
           d3.select(curThis).select('.nodeImg').attr({
             'width': d.width,
             'height': d.height,
             'id': d.id,
-            'href':src
+            'href': src
           })
         }
       })
