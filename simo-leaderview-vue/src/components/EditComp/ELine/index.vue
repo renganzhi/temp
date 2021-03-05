@@ -2,7 +2,16 @@
   <div class="ELine">
     <div
       ref="ELine"
+      v-show="showLine"
       :style="boxStyle">
+    </div>
+    <div class="v-charts-data-empty"
+        v-show="!showLine"
+        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
     </div>
   </div>
 
@@ -16,6 +25,7 @@ export default {
   data () {
     return {
       mychart: null,
+      showLine: true,
       oldOption: '',
       Linesubsection: '',
       oldformatterType: '',
@@ -49,7 +59,12 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        this.drawFlow()
+        if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+          this.showLine = false
+        } else {
+          this.showLine = true
+          this.drawFlow()
+        }
       },
       deep: true
     }
@@ -379,7 +394,12 @@ export default {
     }
   },
   mounted () {
-    this.drawFlow()
+    if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+      this.showLine = false
+    } else {
+      this.showLine = true
+      this.drawFlow()
+    }
   },
   beforeDestroy () {
     this.mychart.dispose()
