@@ -67,7 +67,7 @@ import { gbs } from '@/config/settings'
 import { download } from '@/utils'
 export default {
   name: 'exportPage',
-  props: ['showModal', 'tems'],
+  props: ['showModal'],
   data () {
     return {
       name: '',
@@ -78,14 +78,14 @@ export default {
       errMsg: '必填项',
       showErr: false,
       userIds: [],
-      // tems: [],
+      tems: [],
       // temId: ''
       temId: []
     }
   },
   mounted: function () {
     var _this = this
-    // this.getTemps()
+    this.getTemps()
     if (this.showModal) {
       $('#exportPage-modal').modal('show')
     }
@@ -170,7 +170,7 @@ export default {
       this.getAdminUsers().then(() => {
         var data = {
           name: this.name,
-          ids: this.temId.join(','),
+          ids: this.temId.join(',')
           // visible: this.visible,
           // adminId: this.userIds.join(',')
         }
@@ -212,7 +212,7 @@ export default {
     },
     choosePage (id) {
       if (this.temId.includes(id)) {
-        // remove 
+        // remove
         const index = this.temId.indexOf(id)
         this.temId.splice(index, 1)
       } else {
@@ -240,8 +240,10 @@ export default {
 #exportPage-modal .flex-item {
   // width: 31%;
   // height: 152px;
-  width: 310px;
-  height: 165px;
+  // width: 310px;
+  // height: 165px;
+  width: 255px;
+  height: 155px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
 }
