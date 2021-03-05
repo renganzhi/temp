@@ -223,6 +223,39 @@ export default {
 </style>
 
 <style lang="scss">
+
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+    .el-menu--vertical .archive_sub .cs-item-container .el-submenu__title{
+      background-color: #fff;
+      color: #50607c !important;
+    }
+    .el-menu--vertical .archive_sub .cs-item-container .el-submenu__title:hover{
+      background: #f6f6f6!important;
+      color: #08c !important;
+    }
+    .el-menu--vertical .cs-item div{
+      color: #50607c !important
+    }
+    .is-opened .el-submenu__title{
+      background: #f6f6f6!important;
+      color: rgb(91,123,166)!important;
+    }
+    .archive {
+      background: #fff !important;
+    }
+    .el-menu--vertical .el-menu{
+      background: #fff !important;
+      color: #50607c !important;
+    }
+    .el-menu--vertical .cs-item{
+      border: 1px solid #c4c4c4 !important;
+    }
+    #mainEdit-edit .ring-icon{
+      background: #edf3fe !important;
+      color: #0089ff !important;
+    }
+}
 .archive {
   background: #1b2031;
   width: 60px;
@@ -248,7 +281,8 @@ export default {
   //   }
   // }
   .el-submenu {
-    width: 100%;
+    width: calc(100% - 3px);
+    margin-left: 3px;
     height: 35px;
         margin-top: 10px;
     display: flex;
@@ -342,7 +376,7 @@ export default {
     height: 88px;
     margin: 0;
     padding: 0;
-    border: solid 1px #3d445a !important;
+    border: solid 1px #3d445a;
     // margin: 0 0 -1px -1px;
     flex: 1;
 
