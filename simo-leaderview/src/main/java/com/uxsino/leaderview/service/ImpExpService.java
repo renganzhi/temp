@@ -368,6 +368,10 @@ public class ImpExpService {
     }
 
     public JsonModel processZip(String file, String tempName, HttpSession session){
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        if (ObjectUtils.isEmpty(userId)){
+            return new JsonModel(false, "用户信息获取失败");
+        }
         ZipFile zf = null;
         InputStream in = null;
         JSONArray config = new JSONArray();
@@ -460,8 +464,7 @@ public class ImpExpService {
                             if (!ObjectUtils.isEmpty(videoFileService.getByName(name.substring(name.indexOf("uploaded"))))){
                                 continue;
                             }
-                            //TODO 从session中获取ID
-                            video.setUserId(1L);
+                            video.setUserId(userId);
                             videoFileService.save(video);
                             fileOut.close();
                         }catch (Exception e){
@@ -479,13 +482,11 @@ public class ImpExpService {
                 }
             }
             zin.closeEntry();
-            long userId = SessionUtils.getCurrentUserIdFromSession(session);
             int pageCount = homePageUserConfService.getMaxMinePage(userId, false);
             //跳转处理
             for (j = 0; j<config.size() && pageCount<MAX_PAGE_INDEX; j++, pageCount++) {
                 JSONObject obj = config.getJSONObject(j);
                 HomePage page = new HomePage();
-                //TODO 从session中获取ID
                 page.setCreateUserId(userId);
                 page.setHandoverId(userId);
                 page.setUserId(userId);
@@ -503,8 +504,7 @@ public class ImpExpService {
                 homePageUserConf.setPageId(pageId);
                 homePageUserConf.setUserId(userId);
                 homePageUserConf.setVisible(true);
-                //TODO 从session中获取ID
-                homePageUserConfService.add(homePageUserConf, true, new String[]{String.valueOf(userId)});
+                homePageUserConfService.add(homePageUserConf, true, null);
             }
             linkImpProcess(idMap, config);
         } catch (Exception e) {
