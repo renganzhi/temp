@@ -512,7 +512,7 @@ public class ImpExpService {
         if(remaining == 0)
             return new JsonModel(true, "导入成功！");
         else
-            return new JsonModel(false,"由于您只能创建最多20个大屏，当前成功导入" + j + "个，还剩" + remaining + "个");
+            return new JsonModel(false,"由于您只能创建最多20个大屏，当前成功导入" + j + "个，还剩" + remaining + "个未导入");
     }
 
     private void linkImpProcess(Map<Long,Long> idMap, JSONArray config) {
