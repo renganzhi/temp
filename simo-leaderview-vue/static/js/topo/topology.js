@@ -1422,29 +1422,69 @@ Topology.prototype = {
   },
   updateNodeImg: function (selection) {
     var _this = this
+    var newthis = this
     var nodes = selection || this.vis.selectAll('.node')
+    var iconArr = []
+    var topoIcons = Topology.prototype.iconsCollections
     nodes.each(function (d) {
-      getTopoIcon({
-        curThis: this,
-        url: _this.setNodeImg(d),
-        callback: function (curThis, src) {
-          d3.select(curThis).select('.nodeImg').attr({
-            'width': d.width,
-            'height': d.height,
-            'id': d.id,
-            'href': src
-          })
-        }
+      var icon = d.iconId + '_' + (d.runStatus || 'Loading')
+      d3.select(this).select('.nodeImg').attr({
+        'width': d.width,
+        'height': d.height,
+        'id': d.id
       })
+      if (topoIcons) {
+        d.iconId && iconArr.indexOf(icon) == -1 && !topoIcons[icon] && iconArr.push(icon)
+      } else {
+        iconArr.push(icon)
+      }
     })
-    _this = nodes = null
+    // getTopoIcon()
+    // console.log(nodes)
+    // nodes.each(function (d) {
+    //   getTopoIcon({
+    //     curThis: this,
+    //     data: {key: d.iconId, value: (d.runStatus || 'Loading')},
+    //     url: _this.setNodeImg(d),
+    //     callback: function (curThis, src) {
+    //       d3.select(curThis).select('.nodeImg').attr({
+    //         'width': d.width,
+    //         'height': d.height,
+    //         'id': d.id,
+    //         'href': src
+    //       })
+    //     }
+    //   })
+    // })
+    if (iconArr.length) {
+      getTopoIcon({iconInfo: JSON.stringify(iconArr)}, function (res) {
+        var resObj = res.obj
+        Topology.prototype.iconsCollections = $.extend(resObj, Topology.prototype.iconsCollections)
+        console.log(newthis)
+        newthis.setNodeImg(nodes)
+      })
+    } else {
+      this.setNodeImg(nodes)
+    }
     return this
   },
-  setNodeImg: function (d) {
-    if (d.iconId) {
-      return gbs.host + '/monitor/topo/getIcon/' + d.iconId + '/' + (d.runStatus || 'Loading')
-    }
+  setNodeImg: function (nodes) {
+    var icons = Topology.prototype.iconsCollections
+    nodes.each(function (d) {
+      var icon = d.iconId + '_' + (d.runStatus || 'Loading')
+      if (d.iconId && icons[icon]) {
+        d3.select(this).select('.nodeImg').attr({
+          'href': 'data:image/png;base64,' + icons[icon]
+        })
+      }
+    })
   },
+
+  // setNodeImg: function (d) {
+  //   if (d.iconId) {
+  //     return gbs.host + '/monitor/topo/getIcon/' + d.iconId + '/' + (d.runStatus || 'Loading')
+  //   }
+  // },
   updateNodeText: function (selection) {
     var _this = this
     var texts = selection || this.vis.selectAll('.node .nodetext')

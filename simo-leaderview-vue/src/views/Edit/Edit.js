@@ -3421,7 +3421,12 @@ export default {
       // this.copyIndexs = this.chooseIndexs
       // this.copyCompIndexs = this.chooseCompIndexs
     },
-    paste: function () {
+    compare: function (property) {
+      return function (a, b) {
+        return JSON.parse(a).x - JSON.parse(b).x
+      }
+    },
+    paste: function (ev) {
       // console.log(1111111111)
       // this.saveHistory()
       // if (this.copyIndexs.length > 0) {
@@ -3442,6 +3447,7 @@ export default {
       //   this.selectArea.choose = false
       //   $('.tempDiv').remove()
       // }
+      var cThis = this
       this.clickPaint()
       if (this.copyType === 'item') {
         var _type = 'chartNum'
@@ -3450,8 +3456,17 @@ export default {
         _type = 'combinList'
         this.chooseCompIndexs = []
       }
-      this.tempItemArry.forEach(element => {
+      var chaHeight = 0
+      var chaWidth = 0
+      this.tempItemArry.sort(this.compare())
+      this.tempItemArry.forEach((element, index) => {
         let tempItem = JSON.parse(element)
+        if (index === 0) {
+          chaWidth = tempItem.x - Math.floor((ev.pageX - 80) / cThis.paintObj.scale * 100)
+          chaHeight = tempItem.y - Math.floor((ev.pageY - 70) / cThis.paintObj.scale * 100)
+        }
+        tempItem.x = tempItem.x - chaWidth
+        tempItem.y = tempItem.y - chaHeight
         tempItem.id = new Date().getTime() + parseInt(Math.random() * 10000)
         this[_type].push(tempItem)
         if (this.copyType === 'item') {
@@ -3580,7 +3595,6 @@ export default {
     },
     removeImg (e) {
       let {chartType} = this.selectedItem
-      console.log('this.selectedItem: ', this.selectedItem)
       if (chartType === 'image') {
         this.selectedItem.imgSrc = ''
         this.selectedItem.imgName = ''
