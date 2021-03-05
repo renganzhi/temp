@@ -115,7 +115,7 @@
               @click="copy"><span>复制</span></li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize && tempItemArry.length > 0"
-              @click="paste"><span>粘贴</span></li>
+              @click="paste($event)"><span>粘贴</span></li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="del"><span>删除</span></li>
