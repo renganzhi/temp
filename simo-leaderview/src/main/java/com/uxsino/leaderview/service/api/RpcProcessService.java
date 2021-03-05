@@ -377,6 +377,7 @@ public class RpcProcessService {
     public List<NetworkEntity> getNeList(NetworkEntityCriteria criteria) throws Exception{
         Map<String , Object> map = BeanMap.create(criteria);
         map.put("cls", null);
+        map.put("monitoring", true);
         JsonModel jsonModel = monitorService.getNeList(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());

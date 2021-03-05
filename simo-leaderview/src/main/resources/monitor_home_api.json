@@ -1602,8 +1602,8 @@
             {
                 "key": "network",
                 "name": "选择链路",
-                "notNull": true,
-                "type": "drop-down",
+                "notNull": false,
+                "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getNetworkSourceId"
             },

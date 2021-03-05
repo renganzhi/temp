@@ -2209,14 +2209,16 @@ public class MonitorDataService {
             }
             List<Long> domainList = getDomainList(null, session);
             Long[] domains = domainList.toArray(new Long[domainList.size()]);
-            Set<String> networkLinkIds = Sets.newHashSet();
             NetworkLinkModel networkLinkModel = new NetworkLinkModel();
-            networkLinkModel.setNetworkLinkIds(new ArrayList<>(networkLinkIds));
             networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domains, session));
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
             List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
+            if (!Strings.isNullOrEmpty(network)){
+                List<String> sourceIds = Lists.newArrayList(network.split(","));
+                list = list.stream().filter(net -> sourceIds.contains(net.getSourceId())).collect(Collectors.toList());
+            }
             Map<String, String> nameMap = Maps.newLinkedHashMap();
             nameMap.put("speed", "链路带宽");
             nameMap.put("speedUsage", "带宽利用率");
@@ -2390,6 +2392,11 @@ public class MonitorDataService {
 
         Map<String, String > filedLabelMap = Maps.newHashMap();
         List<String> filedList = Lists.newArrayList();
+
+        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neId);
+        if (ObjectUtils.isEmpty(ne)){
+            return new JsonModel(true, "资源已被取消监控", empObj() );ddd
+        }
 
         JSONArray values = new JSONArray();
         if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
