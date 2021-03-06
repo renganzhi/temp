@@ -483,7 +483,8 @@ public class RpcProcessService {
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         List<IndicatorTable> usableInd = getUsableInd(indicator, criteria);
         if (ObjectUtils.isEmpty(usableInd)){
-            throw new Exception("目标指标不存在");
+            log.error("目标指标不存在: " + indicator);
+            return null;
         }
         return usableInd.get(0);
     }

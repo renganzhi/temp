@@ -1051,6 +1051,10 @@ public class MonitorDataService {
 
         if (!ObjectUtils.isEmpty(componentMap)){
             qo.setIdentifiers(identifiers);
+            // 对CPU核心利用率指标进行特殊处理
+            if ("cpu_usage_core".equals(ind.getName())){
+                qo.setIdentifiers(null);
+            }
         }
 
         qo.setIntervalType(intervalType);
@@ -2802,8 +2806,12 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel multipleComponent(String neIds, String indicators, String[] componentName, String field) throws Exception{
-
-        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        IndicatorTable ind = null;
+        try {
+            ind = rpcProcessService.getIndicatorInfoByName(indicators);
+        }catch (Exception e){
+            return new JsonModel(true, e.getMessage(), empObj());
+        }
         // 资源ID和指标名为必选项
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj());
