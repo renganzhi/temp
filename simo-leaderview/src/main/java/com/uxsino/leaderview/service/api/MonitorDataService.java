@@ -1051,6 +1051,10 @@ public class MonitorDataService {
 
         if (!ObjectUtils.isEmpty(componentMap)){
             qo.setIdentifiers(identifiers);
+            // 对CPU核心利用率指标进行特殊处理
+            if ("cpu_usage_core".equals(ind.getName())){
+                qo.setIdentifiers(null);
+            }
         }
 
         qo.setIntervalType(intervalType);
