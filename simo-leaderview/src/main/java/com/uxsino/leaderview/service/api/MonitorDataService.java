@@ -1463,7 +1463,8 @@ public class MonitorDataService {
         return result;
     }
 
-    public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows, IntervalType intervalType, Integer interval) throws Exception{
+    public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows,
+                                                IntervalType intervalType, Integer interval, IndPeriod period) throws Exception{
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
@@ -1502,42 +1503,57 @@ public class MonitorDataService {
         // 获取数据中心的指标数据
         for (int i = 0; i < indicatorArr.size(); i++) {
             String indicatorId = indicatorArr.getString(i);
-            String identifier = componentNames[i];
-            IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicatorId);
-            String field = windowsJsonArray.getJSONObject(i).getString("fields");
-            filedList.add(field);
-            if (Objects.isNull(ind)) {
-                return new JsonModel(true, empObj());
+            JSONArray aggValues = new JSONArray();
+            if ("healthy".equals(indicatorId)){
+                // 对健康度指标特殊处理获取数据
+                aggValues = getHistoryHealthValues(neIds, period, interval);
+                filedLabelMap.put("healthy", "健康度");
+                filedList.add("healthy");
+                columns.add("健康度");
+                action(aggValues, o -> {
+                    o.put("field", "healthy");
+                    o.put("neId", ne.getId());
+                    o.put("fetchDate", o.get("采集时间"));
+                    o.put("healthy", o.get(ne.getIp() + ne.getName()));
+                });
+            }else {
+                String identifier = componentNames[i];
+                IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicatorId);
+                String field = windowsJsonArray.getJSONObject(i).getString("fields");
+                filedList.add(field);
+                if (Objects.isNull(ind)) {
+                    return new JsonModel(true, empObj());
+                }
+                FieldModel model = new FieldModel();
+                model.setNe(ne);
+                model.setIndicator(ind);
+                model.setField(field);
+                unit = getUnit(model);
+                String label = getLabel(ind, field);
+                columns.add(label);
+                filedLabelMap.put(field, label);
+                IndicatorValueQO qo = new IndicatorValueQO();
+                qo.setNeIds(Lists.newArrayList(ne.getId()));
+                qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
+
+                Map<String,List<String>> fieldMap = Maps.newHashMap();
+                fieldMap.put(ind.getName(), Lists.newArrayList(field));
+                qo.setFields(fieldMap);
+
+                Map<String,String> indicatorTypeMap = Maps.newHashMap();
+                indicatorTypeMap.put( ind.getName() ,ind.getIndicatorType());
+                qo.setIndicatorTypes(indicatorTypeMap);
+
+                if (!ObjectUtils.isEmpty(identifier)){
+                    qo.setIdentifiers(Lists.newArrayList(identifier));
+                }
+
+                qo.setIntervalType(intervalType);
+                qo.setInterval(Long.valueOf(interval));
+                aggValues = rpcProcessService.getIndAggValues(qo);
+                // 该接口以指标为最小单位，保证同指标分类中可选多个指标进行数据展示
+                action(aggValues, o -> o.put("field", field));
             }
-            FieldModel model = new FieldModel();
-            model.setNe(ne);
-            model.setIndicator(ind);
-            model.setField(field);
-            unit = getUnit(model);
-            String label = getLabel(ind, field);
-            columns.add(label);
-            filedLabelMap.put(field, label);
-            IndicatorValueQO qo = new IndicatorValueQO();
-            qo.setNeIds(Lists.newArrayList(ne.getId()));
-            qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
-
-            Map<String,List<String>> fieldMap = Maps.newHashMap();
-            fieldMap.put(ind.getName(), Lists.newArrayList(field));
-            qo.setFields(fieldMap);
-
-            Map<String,String> indicatorTypeMap = Maps.newHashMap();
-            indicatorTypeMap.put( ind.getName() ,ind.getIndicatorType());
-            qo.setIndicatorTypes(indicatorTypeMap);
-
-            if (!ObjectUtils.isEmpty(identifier)){
-                qo.setIdentifiers(Lists.newArrayList(identifier));
-            }
-
-            qo.setIntervalType(intervalType);
-            qo.setInterval(Long.valueOf(interval));
-            JSONArray aggValues = rpcProcessService.getIndAggValues(qo);
-            // 该接口以指标为最小单位，保证同指标分类中可选多个指标进行数据展示
-            action(aggValues, o -> o.put("field", field));
             values.addAll(aggValues);
         }
         if (ObjectUtils.isEmpty(values)){
