@@ -240,7 +240,7 @@ public class MonitorDataController {
                 interval = 24;
             }
 
-            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval);
+            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false , e.getMessage());
