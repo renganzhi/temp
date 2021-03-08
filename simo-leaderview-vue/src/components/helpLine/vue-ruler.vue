@@ -1,10 +1,18 @@
 <template>
-    <section class="vue-ruler">
-      <div ref="horizontalRuler" class="vue-rulerh" :style="{width:Hstyle}" @mousedown.stop="horizontalDragRuler">
-      </div>
-      <div ref="verticalRuler" class="vue-rulerv" :style="{height:Vstyle}" @mousedown.stop="verticalDragRuler">
-      </div>
-    </section>
+  <section class="vue-ruler">
+    <div
+      ref="horizontalRuler"
+      class="vue-rulerh"
+      :style="{ width: Hstyle }"
+      @mousedown.stop="horizontalDragRuler"
+    ></div>
+    <div
+      ref="verticalRuler"
+      class="vue-rulerv"
+      :style="{ height: Vstyle }"
+      @mousedown.stop="verticalDragRuler"
+    ></div>
+  </section>
 </template>
 
 <script>
@@ -68,11 +76,17 @@ export default {
     init () {
       var ele = document.querySelector('.m-main')
       if (ele) {
-        this.Hstyle = window.getComputedStyle(ele).width.split('px')[0] * 1 / 100 * 100 + 'px'
-        this.Vstyle = window.getComputedStyle(ele).height.split('px')[0] * 1 / 100 * 100 + 'px'
+        this.Hstyle =
+          ((window.getComputedStyle(ele).width.split('px')[0] * 1) / 100) *
+            100 +
+          'px'
+        this.Vstyle =
+          ((window.getComputedStyle(ele).height.split('px')[0] * 1) / 100) *
+            100 +
+          'px'
       } else {
-        this.Hstyle = this.parentW / 100 * 100 + 'px'
-        this.Vstyle = this.parentH / 100 * 100 + 'px'
+        this.Hstyle = (this.parentW / 100) * 100 + 'px'
+        this.Vstyle = (this.parentH / 100) * 100 + 'px'
       }
     },
     windowResize () {
@@ -88,30 +102,46 @@ export default {
 </script>
 
 <style lang="scss">
-.vue-ruler{
+.vue-ruler {
   position: absolute;
   z-index: 999;
 }
+.vue-rulerh {
+  height: 12px;
+  position: fixed;
+  left: 65px;
+  top: 50px;
+  overflow: hidden;
+  z-index: 999;
+  opacity: 1;
+}
+.vue-rulerv {
+  width: 12px;
+  position: fixed;
+  left: 54px;
+  top: 50px;
+  overflow: hidden;
+  z-index: 999;
+  opacity: 1;
+}
 
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
   .vue-rulerh {
-    height: 12px;
-    position: fixed;
-    left: 65px;
-    top: 50px;
-    overflow: hidden;
-    z-index: 999;
-    opacity: 1;
+    background: url(./image/ruler_h_w.png) repeat-x; /*./image/ruler_h.png*/
+  }
+
+  .vue-rulerv {
+    background: url(./image/ruler_v_w.png) repeat-y; /*./image/ruler_v.png*/
+  }
+}
+html[data-theme="default"] {
+  .vue-rulerh {
     background: url(./image/ruler_h.jpg) repeat-x; /*./image/ruler_h.png*/
   }
 
   .vue-rulerv {
-    width: 12px;
-    position: fixed;
-    left: 54px;
-    top: 50px;
-    overflow: hidden;
-    z-index: 999;
-    opacity: 1;
-    background:url(./image/ruler_v.jpg) repeat-y; /*./image/ruler_v.png*/
+    background: url(./image/ruler_v.jpg) repeat-y; /*./image/ruler_v.png*/
   }
+}
 </style>
