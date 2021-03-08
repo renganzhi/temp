@@ -256,6 +256,20 @@ html[data-theme="blueWhite"] {
       color: #0089ff !important;
     }
 }
+
+html[data-theme="default"] {
+ .archive .el-submenu__title:focus, .el-submenu__title:hover {
+    outline: 0 !important;
+    // color: #409EFF !important;
+    background: none !important;
+    background-image: linear-gradient(to right, #12174e, #0f3858) !important;
+    box-sizing: border-box !important;
+    border-left: solid 3px #00a0e9;
+    .nav_icon {
+      color: #00a0e9;
+    }
+  }
+}
 .archive {
   background: #1b2031;
   width: 60px;
@@ -300,17 +314,6 @@ html[data-theme="blueWhite"] {
     line-height: 28px;
     .nav_icon {
       font-size: 26px;
-    }
-  }
-  .el-submenu__title:focus, .el-submenu__title:hover {
-    outline: 0 !important;
-    // color: #409EFF !important;
-    background: none !important;
-    background-image: linear-gradient(to right, #12174e, #0f3858) !important;
-    box-sizing: border-box !important;
-    border-left: solid 3px #00a0e9;
-    .nav_icon {
-      color: #00a0e9;
     }
   }
 }

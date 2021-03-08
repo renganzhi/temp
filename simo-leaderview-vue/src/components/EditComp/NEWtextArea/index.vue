@@ -170,10 +170,9 @@ export default {
 <style scoped lang="scss">
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
-  // textarea {
-  //   background: transparent !important;
-  //   background-color: transparent !important;
-  // }
+  textarea {
+    background-color: transparent !important;
+  }
 }
 .getPicSpan{
   display: inline-block;
