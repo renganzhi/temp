@@ -36,7 +36,7 @@
                   <div class="defPages flex">
                     <div class="flex-item first-item"
                          :class="{ active: temId.includes(item.id) }"
-                         v-for="(item,index) in tems"
+                         v-for="(item,index) in mytems"
                          :key=index
                          @click="choosePage(item.id)">
                       <img :src="baseUrl + item.viewImage"
@@ -105,6 +105,17 @@ export default {
       }
     }
   },
+  computed: {
+    mytems: function () {
+      var arr = []
+      this.tems.forEach(d => {
+        if (d.belongCurrentUser === 'true') {
+          arr.push(d)
+        }
+      })
+      return arr
+    }
+  },
   methods: {
     getAdminUsers () {
       // 获取超级管理员角色下的所有用户
@@ -147,9 +158,10 @@ export default {
       this.showErr = false
     },
     getTemps () {
+      let mythis = this
       // this.tems.splice(0, this.tems.length)
-      this.axios.get('/leaderview/home/template/list').then((res) => {
-        this.tems = res.obj
+      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+        mythis.tems = res.obj
       })
       /*  this.$nextTick(function(){
         _this.$modal.find('.defPages').get(0).scrollTop = 0;
