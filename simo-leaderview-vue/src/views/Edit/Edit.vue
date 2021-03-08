@@ -2430,6 +2430,12 @@ export default EditJs
     }
   }
 }
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+    color: #444 !important;
+  }
+}
 .handle_label {
   width: 100%;
   height: 38px;
