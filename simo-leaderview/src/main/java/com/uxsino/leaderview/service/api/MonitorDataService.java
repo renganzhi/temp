@@ -2020,7 +2020,12 @@ public class MonitorDataService {
                     continue;
                 }
                 JSONObject resultObj = new JSONObject();
-                valueJSON = getValueJSON((JSON) indValue.getIndicatorValue(), componentName);
+                if ("cpu_usage_core".equals(ind.getName())){
+                    //对cpu_usage_core指标进行特殊处理
+                    valueJSON = getValueJSON(indValue.getIndicatorValue());
+                }else {
+                    valueJSON = getValueJSON(indValue.getIndicatorValue(), componentName);
+                }
                 // 进行属性有无的判断
                 if (!validHasFields(ind)) {
                     // 该指标若本身就无部件无属性就直接取值
@@ -2031,7 +2036,6 @@ public class MonitorDataService {
                     resultObj.put("unit", unit);
                     resultArray[i + 1].add(resultObj);
                 } else {
-                    valueJSON = getValueJSON((JSON) indValue.getIndicatorValue(), componentName);
                     String unit = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("unit"))).orElse(null);
                     String label = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("label"))).orElse(null);
                     String value = MonitorUtils.getValueStr(valueJSON.getString(fieldsName));
