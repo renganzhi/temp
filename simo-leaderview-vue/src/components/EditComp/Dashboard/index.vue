@@ -1,8 +1,17 @@
 <template>
   <div class="Dashboard">
     <div
+      v-show="showDashboard"
       ref="myDashboard"
       :style="boxStyle">
+    </div>
+    <div class="v-charts-data-empty"
+        v-show="!showDashboard"
+        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
     </div>
   </div>
 
@@ -15,6 +24,7 @@ export default {
   data () {
     return {
       mychart: null,
+      showDashboard: true,
       oldOption: '',
       timer: null
     }
@@ -40,6 +50,12 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
+        if (this.item.chartData.value === null) {
+          this.showDashboard = false
+        } else {
+          this.showDashboard = true
+          this.drawFlow()
+        }
         this.drawFlow()
       },
       deep: true
