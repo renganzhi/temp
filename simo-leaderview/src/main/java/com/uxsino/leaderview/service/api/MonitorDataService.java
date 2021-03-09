@@ -2377,7 +2377,7 @@ public class MonitorDataService {
         } else {
             criteria.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
         }
-        neList = rpcProcessService.getNeList(criteria);
+        neList = rpcProcessService.getAllNeList(criteria);
         JSONObject result = new JSONObject();
         if (ObjectUtils.isEmpty(neList)) {
             result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : "资源个数");
@@ -2431,6 +2431,9 @@ public class MonitorDataService {
             if ("healthy".equals(indicatorsLeft)){
                 filedList.add(indicatorsLeft);
             }else {
+                if (!MonitorUtils.validHasFields(leftInd)){
+                    fieldLeft = "result";
+                }
                 filedList.add(fieldLeft);
             }
             filedLabelMap.put(indicatorsLeft, label);
@@ -2444,6 +2447,9 @@ public class MonitorDataService {
         if ("healthy".equals(indicatorsRight)){
             filedList.add(indicatorsRight);
         }else {
+            if (!MonitorUtils.validHasFields(rightInd)){
+                fieldRight = "result";
+            }
             filedList.add(fieldRight);
         }
         filedLabelMap.put(indicatorsRight, label);
@@ -2501,6 +2507,9 @@ public class MonitorDataService {
         qo.setNeIds(Lists.newArrayList(ne.getId()));
         qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
         Map<String,List<String>> fieldMap = Maps.newHashMap();
+//        if (!MonitorUtils.validHasFields(ind)){
+//            field = "result";
+//        }
         fieldMap.put(ind.getName(), Lists.newArrayList(field));
         qo.setFields(fieldMap);
         Map<String,String> indicatorTypeMap = Maps.newHashMap();

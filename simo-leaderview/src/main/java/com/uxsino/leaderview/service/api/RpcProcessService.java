@@ -374,6 +374,17 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
+    public List<NetworkEntity> getAllNeList(NetworkEntityCriteria criteria) throws Exception{
+        Map<String , Object> map = BeanMap.create(criteria);
+        map.put("cls", null);
+        JsonModel jsonModel = monitorService.getNeList(map);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return this.toJavaBeanList(jsonModel, NetworkEntity.class);
+    }
+
+    @SuppressWarnings("unchecked")
     public List<NetworkEntity> getNeList(NetworkEntityCriteria criteria) throws Exception{
         Map<String , Object> map = BeanMap.create(criteria);
         map.put("cls", null);
