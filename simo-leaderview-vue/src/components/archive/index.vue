@@ -258,15 +258,17 @@ html[data-theme="blueWhite"] {
 }
 
 html[data-theme="default"] {
- .archive .el-submenu__title:focus, .el-submenu__title:hover {
-    outline: 0 !important;
-    // color: #409EFF !important;
-    background: none !important;
-    background-image: linear-gradient(to right, #12174e, #0f3858) !important;
-    box-sizing: border-box !important;
-    border-left: solid 3px #00a0e9;
-    .nav_icon {
-      color: #00a0e9;
+ .archive{
+    .el-submenu__title:focus, .el-submenu__title:hover {
+      outline: 0 !important;
+      // color: #409EFF !important;
+      background: none !important;
+      background-image: linear-gradient(to right, #12174e, #0f3858) !important;
+      box-sizing: border-box !important;
+      border-left: solid 3px #00a0e9;
+      .nav_icon {
+        color: #00a0e9;
+      }
     }
   }
 }
