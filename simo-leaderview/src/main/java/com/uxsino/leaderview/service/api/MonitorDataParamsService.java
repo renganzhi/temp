@@ -609,7 +609,9 @@ public class MonitorDataParamsService {
                         indicatorTables = filterToList(indicatorTables, ind -> !(indList != null && !indList.contains(ind.getName())));
                         // 过滤掉指标类型非String的指标
                         indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
-                        indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()));
+
+                        // 字符串指标可以选择非性能指标的指标
+                        //indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()));
 
                         indicatorTables.forEach(ind -> {
                             String indName = ind.getName();
