@@ -763,11 +763,33 @@ public class AlertDataService {
             } else {
                 row.put("资源类型", entry.getKey());
             }
-            StringBuilder ids = entry.getValue();
-            // 去掉最后一个逗号
-            ids.setLength(ids.length() - 1);
-            StatisticsQuery query = new StatisticsQuery(ids.toString(), chosenLevels, alertType, AlertHandleStatus.UNTREATED);
-            List<StatisticsResult> levelResult = rpcProcessService.getLevelStatisticsResult(query);
+            String[] idList = entry.getValue().toString().split(",");
+            String[] idParam = new String[idList.length%50==0?(idList.length/50):(idList.length/50 + 1)];
+            int j = 0;
+            List<StatisticsResult> levelResult = null;
+            for(int i=0; i<idParam.length; i++){
+                StringBuffer sb = new StringBuffer();
+                while(true){
+                    sb.append(idList[j]);
+                    sb.append(",");
+                    j++;
+                    //如果是前面几次查询，只能刚满50个
+                    if(i!=idParam.length-1 && j%50==0)
+                        break;
+                    //最后一次查询，有多少则加多少
+                    if(i==idParam.length-1 && j==idList.length)
+                        break;
+                }
+                //去掉最后一个逗号
+                sb.setLength(sb.length()-1);
+                idParam[i] = sb.toString();
+                StatisticsQuery query = new StatisticsQuery(idParam[i], chosenLevels, alertType, AlertHandleStatus.UNTREATED);
+                //如果是第一次查询，则将就这个List作为levelResult，之后的查询结果则全部加入之前的这个List
+                if(i == 0)
+                    levelResult = rpcProcessService.getLevelStatisticsResult(query);
+                else
+                    levelResult.addAll(rpcProcessService.getLevelStatisticsResult(query));
+            }
             List<Integer> existLevel = new ArrayList<>(chosenLevels);
             if (org.apache.commons.collections.CollectionUtils.isEmpty(levelResult)) {
                 chosenLevels.forEach(e -> row.put(levelNameMap.get(e), 0));
