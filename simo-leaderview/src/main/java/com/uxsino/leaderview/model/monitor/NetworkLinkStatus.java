@@ -9,7 +9,7 @@ package com.uxsino.leaderview.model.monitor;
  ***********************************************************
  */
 public enum NetworkLinkStatus {
-                               Unknown(0,"未知"),
+                               Unkown(0,"未知"),
                                Enable(1,"正常"),
                                Alert(2,"告警"),
                                Unconnection(3,"断开"),
