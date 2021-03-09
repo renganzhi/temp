@@ -3,8 +3,9 @@
     <div class="v-charts-data-empty"
          v-if="!item.srcList.length">请上传图片</div>
     <div v-else class="img_card"
-        :style="{...imgSctyle, 'background': `url(${imgSrc})`}"
+        :style="{...imgSctyle}"
         @click="toLinkPage">
+      <img :src="imgSrc" alt="">
       <template v-if="!item.autoplay">
         <div class="left_btn" @click="change(-1)">
           <i class="el-icon-back" v-show="item.loop || activeIndex != 0"></i>
@@ -100,19 +101,21 @@ export default {
     },
     setTimer () {
       this.interval = this.item.interval || 2
-      // console.log(this.interval);
-      this.timer = setInterval(() => {
+      this.clearTimer()
+      if (this.item.autoplay) {
+        this.timer = setInterval(() => {
         // 仅一张图时不轮播
-        if (this.item.srcList.length < 2) {
-          return
-        }
-        let activeIndex = this.activeIndex + 1
-        if (activeIndex === this.item.srcList.length) {
-          !this.item.loop && this.clearTimer()
-          activeIndex = 0
-        }
-        this.activeIndex = activeIndex
-      }, this.interval * 1000)
+          if (this.item.srcList.length < 2) {
+            return
+          }
+          let activeIndex = this.activeIndex + 1
+          if (activeIndex === this.item.srcList.length) {
+            !this.item.loop && this.clearTimer()
+            activeIndex = 0
+          }
+          this.activeIndex = activeIndex
+        }, this.interval * 1000)
+      }
     },
     clearTimer () {
       this.timer && clearTimeout(this.timer)
@@ -149,6 +152,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   transition: background-image 1s;
+}
+.img_card img{
+  z-index: -1;
+  position: absolute;
+  max-height: 100%;
+  max-width: 100%;
 }
 .left_btn, .right_btn {
   // width: 50%;
