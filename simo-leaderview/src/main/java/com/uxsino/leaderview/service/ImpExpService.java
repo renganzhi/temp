@@ -571,4 +571,21 @@ public class ImpExpService {
         }
     }
 
+    public void deleteTempFile(String path){
+        File folder = new File(path);
+        deleteTempFile(folder);
+    }
+
+    private void deleteTempFile(File folder) {
+        File[] files = folder.listFiles();
+        if (files != null){
+            for (File file: files) {
+                if (file.isDirectory()){
+                    deleteTempFile(file);
+                }else {
+                    file.delete();
+                }
+            }
+        }
+    }
 }
