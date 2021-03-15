@@ -17,6 +17,7 @@ export default [
   'Dashboard',
   'BulletFrame',
   'TreeMap',
+  'Ueditor',
   'NEWtextArea',
   'TDHistogram',
   'bubble',

@@ -6,6 +6,7 @@ import ChartStyle from './ChartStyle'
 import DragBox from '@/components/Common/DragBox'
 import Compose from '@/components/Common/Compose'
 import Select2 from '@/components/Common/Select2'
+// import UEidetBox from '@/components/Common/uEidetBox'
 import Vcolor from '@/components/Common/Vcolor'
 import PreView from '@/components/PreView/PreView'
 import Confirm from '@/components/Common/Confirm'
@@ -25,6 +26,7 @@ import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
 
+import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   // ...oldConfig,
@@ -40,6 +42,7 @@ let config = {
   ELine: require('@/components/EditComp/ELine/config.js'),
   DataFlow: require('@/components/EditComp/DataFlow/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
+  Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
@@ -49,7 +52,7 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
+  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -2825,6 +2828,9 @@ export default {
       this.saveDataChange() // 系统数据存历史
       if (this.selectedItem.ctDataSource !== 'static') {
         this.getUrlData()
+      } else if (this.selectedItem.chartType === 'Ueditor') {
+        let content = this.$refs.ue.getUEContent()
+        this.selectedItem.chartData = content
       } else if (this.selectedItem.chartType === 'v-map') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))

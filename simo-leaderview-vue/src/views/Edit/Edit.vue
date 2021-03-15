@@ -1964,7 +1964,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','ELine','KLine','Dashboard','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                     style="position: relative"
                     v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
@@ -2075,7 +2075,7 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'marquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'Ueditor' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'marquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
@@ -2087,6 +2087,9 @@
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
+                </div>
+                <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
+                    <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 </div>
                 <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='table'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
@@ -2518,6 +2521,14 @@ html[data-theme="blueWhite"] {
   .ring-icon:hover{
     // background: #0f1321;
     opacity: 1;
+  }
+}
+.edui-default .edui-editor-bottomContainer{
+ display: none;
+}
+.edui-default {
+  ::deep .edui1677_message_holder{
+    display: none;
   }
 }
 </style>

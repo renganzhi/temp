@@ -1,0 +1,22 @@
+/*可以在这里添加你自己的css*/
+html {
+  color: #cad6dd;
+}
+
+html.view::-webkit-scrollbar {
+  width: 10x;
+  height: 10px;
+}
+
+/*定义滑块 内阴影+圆角*/
+html.view::-webkit-scrollbar-thumb {
+  background-color: #02699c;
+}
+
+html.view::-webkit-scrollbar-corner {
+  background-color: #02699c;
+}
+
+body {
+  margin: 8px 6px 8px;
+}

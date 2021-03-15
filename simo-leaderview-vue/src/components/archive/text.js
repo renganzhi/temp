@@ -1,6 +1,7 @@
 import {morenData} from '@/views/Edit/chartJson'
 
 import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
+import Ueditor from '@/components/EditComp/Ueditor/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 
@@ -8,6 +9,7 @@ const text = {
   name: '文本',
   child: [
     NEWtextArea.item,
+    Ueditor.item,
     {
       text: '跑马灯',
       imgClass: 'icon-n-marquee',
