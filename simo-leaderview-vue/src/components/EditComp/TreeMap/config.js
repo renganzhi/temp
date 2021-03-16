@@ -87,218 +87,221 @@ export default {
     'base': [
       {
         'name': 'tips配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '显示tips',
-        'key': 'showTooltip',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '显示tips',
+          'key': 'showTooltip',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': 'tips背景色',
+          'key': 'TooltipBackColor',
+          'parentKey': {
+            'showTooltip': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
+          'tag': 'Color'
+        },
+        {
+          'name': 'tips字体色',
+          'key': 'TooltipColor',
+          'parentKey': {
+            'showTooltip': true
+          },
+          'tag': 'Color'
+        },
+        {
+          'name': 'tips字大小',
+          'key': 'TooltipSize',
+          'parentKey': {
+            'showTooltip': true
+          },
+          'tag': 'input'
+        }
         ]
-      },
-      {
-        'name': 'tips背景色',
-        'key': 'TooltipBackColor',
-        'parentKey': {
-          'showTooltip': true
-        },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体色',
-        'key': 'TooltipColor',
-        'parentKey': {
-          'showTooltip': true
-        },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字大小',
-        'key': 'TooltipSize',
-        'parentKey': {
-          'showTooltip': true
-        },
-        'tag': 'input'
       },
       {
         'name': '字体配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '字体颜色',
-        'key': 'fontColor',
-        'tag': 'Color'
-      },
-      {
-        'name': '字体大小',
-        'key': 'fontSize',
-        'tag': 'input'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '字体颜色',
+          'key': 'fontColor',
+          'tag': 'Color'
+        },
+        {
+          'name': '字体大小',
+          'key': 'fontSize',
+          'tag': 'input'
+        } ]
       },
       {
         'name': '面包屑配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '显示面包屑',
-        'key': 'breadcrumb',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '显示面包屑',
+          'key': 'breadcrumb',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': '面包屑位置',
+          'key': 'breadcrumbStation',
+          'parentKey': {
+            'breadcrumb': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': '面包屑位置',
-        'key': 'breadcrumbStation',
-        'parentKey': {
-          'breadcrumb': true
+          'tag': 'select',
+          'options': [
+            {
+              'name': '上方居中',
+              'value': 'top'
+            },
+            {
+              'name': '下方居中',
+              'value': 'bottom'
+            }
+          ]
         },
-        'tag': 'select',
-        'options': [
-          {
-            'name': '上方居中',
-            'value': 'top'
+        {
+          'name': '面包屑背景色',
+          'key': 'breadcrumbBackColor',
+          'parentKey': {
+            'breadcrumb': true
           },
-          {
-            'name': '下方居中',
-            'value': 'bottom'
-          }
+          'tag': 'Color'
+        },
+        {
+          'name': '面包屑字体色',
+          'key': 'breadcrumbColor',
+          'parentKey': {
+            'breadcrumb': true
+          },
+          'tag': 'Color'
+        },
+        {
+          'name': '面包屑字大小',
+          'key': 'breadcrumbsize',
+          'parentKey': {
+            'breadcrumb': true
+          },
+          'tag': 'input'
+        }
         ]
-      },
-      {
-        'name': '面包屑背景色',
-        'key': 'breadcrumbBackColor',
-        'parentKey': {
-          'breadcrumb': true
-        },
-        'tag': 'Color'
-      },
-      {
-        'name': '面包屑字体色',
-        'key': 'breadcrumbColor',
-        'parentKey': {
-          'breadcrumb': true
-        },
-        'tag': 'Color'
-      },
-      {
-        'name': '面包屑字大小',
-        'key': 'breadcrumbsize',
-        'parentKey': {
-          'breadcrumb': true
-        },
-        'tag': 'input'
       },
       {
         'name': '放缩拖动配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '开启放缩拖动',
-        'key': 'roam',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '开启放缩和拖动',
-            'value': true
-          },
-          {
-            'name': '关闭',
-            'value': false
-          },
-          {
-            'name': '仅放缩',
-            'value': 'zoom'
-          },
-          {
-            'name': '仅拖动',
-            'value': 'pan'
-          }
-        ]
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '开启放缩拖动',
+          'key': 'roam',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '开启放缩和拖动',
+              'value': true
+            },
+            {
+              'name': '关闭',
+              'value': false
+            },
+            {
+              'name': '仅放缩',
+              'value': 'zoom'
+            },
+            {
+              'name': '仅拖动',
+              'value': 'pan'
+            }
+          ]
+        }]
       },
       {
         'name': '间隔配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '矩形间隔大小',
-        'key': 'gapWidth',
-        'tag': 'input'
-      },
-      {
-        'name': '矩形间隔颜色',
-        'key': 'gapWidthColor',
-        'tag': 'Color'
-      },
-      {
-        'name': '最多显示层级',
-        'key': 'leafDepth',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '全部显示',
-            'value': null
-          },
-          {
-            'name': '显示一层',
-            'value': 1
-          },
-          {
-            'name': '自定义',
-            'value': 'false'
-          }
-        ]
-      },
-      {
-        'name': '自定义层级',
-        'key': 'leafDepthSelf',
-        'tag': 'input'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '矩形间隔大小',
+          'key': 'gapWidth',
+          'tag': 'input'
+        },
+        {
+          'name': '矩形间隔颜色',
+          'key': 'gapWidthColor',
+          'tag': 'Color'
+        },
+        {
+          'name': '最多显示层级',
+          'key': 'leafDepth',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '全部显示',
+              'value': null
+            },
+            {
+              'name': '显示一层',
+              'value': 1
+            },
+            {
+              'name': '自定义',
+              'value': 'false'
+            }
+          ]
+        },
+        {
+          'name': '自定义层级',
+          'key': 'leafDepthSelf',
+          'tag': 'input'
+        } ]
       },
       {
         'name': '颜色配置',
-        'tag': 'Hint'
-      }, {
-        'name': '颜色类型',
-        'key': 'ifGradual',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '渐变',
-            'value': 'true'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '颜色类型',
+          'key': 'ifGradual',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '渐变',
+              'value': 'true'
+            },
+            {
+              'name': '单色',
+              'value': 'false'
+            }
+          ]
+        }, {
+          'name': '矩形颜色',
+          'key': 'TreeMapColorArray',
+          'parentKey': {
+            'ifGradual': 'false'
           },
-          {
-            'name': '单色',
-            'value': 'false'
-          }
-        ]
-      }, {
-        'name': '矩形颜色',
-        'key': 'TreeMapColorArray',
-        'parentKey': {
-          'ifGradual': 'false'
-        },
-        'tag': 'ColorArray'
-      }, {
-        'name': '矩形颜色',
-        'key': 'DTreeMapColorArray',
-        'parentKey': {
-          'ifGradual': 'true'
-        },
-        'tag': 'ColorArray'
+          'tag': 'ColorArray'
+        }, {
+          'name': '矩形颜色',
+          'key': 'DTreeMapColorArray',
+          'parentKey': {
+            'ifGradual': 'true'
+          },
+          'tag': 'ColorArray'
+        }]
       }
     ]
   }

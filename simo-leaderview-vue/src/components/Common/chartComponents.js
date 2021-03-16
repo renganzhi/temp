@@ -20,6 +20,11 @@ import PolarBar from '@/components/EditComp/polarBar' //
 import Pyramid from '@/components/EditComp/pyramid' //
 import TDEarthLine from '@/components/EditComp/TDEarthLine' // 3D地图-飞线图
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 3D地图-柱状图
+import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
+import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
+import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
+import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
+import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
 import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
@@ -59,6 +64,11 @@ export default {
   Pyramid,
   TDEarthLine,
   TDEarthBar,
+  NewMarquee,
+  NewDoubler,
+  NewTime,
+  NewTable,
+  NewNumber,
   DataFlow,
   GradientPie,
   Sunrise,

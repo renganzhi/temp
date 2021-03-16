@@ -25,13 +25,15 @@ export default {
     base: [
       {
         'name': '图表样式',
-        'tag': 'Hint'
-      },
-      {
-        'name': '动画速度',
-        'key': 'speed',
-        'tag': 'select',
-        'options': speedOptions
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '动画速度',
+            'key': 'speed',
+            'tag': 'select',
+            'options': speedOptions
+          }
+        ]
       }
     ]
   }

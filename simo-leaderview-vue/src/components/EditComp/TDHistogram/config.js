@@ -68,172 +68,172 @@ export default {
       },
       {
         'name': 'tips配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否显示tips',
-        'key': 'tooltipShow',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否显示tips',
+          'key': 'tooltipShow',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': 'tips背景色',
+          'key': 'tooltipBackColor',
+          'parentKey': {
+            'tooltipShow': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': 'tips背景色',
-        'key': 'tooltipBackColor',
-        'parentKey': {
-          'tooltipShow': true
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体色',
-        'key': 'tooltipColor',
-        'parentKey': {
-          'tooltipShow': true
+        {
+          'name': 'tips字体色',
+          'key': 'tooltipColor',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体大小',
-        'key': 'tooltipSize',
-        'parentKey': {
-          'tooltipShow': true
-        },
-        'tag': 'input'
+        {
+          'name': 'tips字体大小',
+          'key': 'tooltipSize',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'input'
+        } ]
       },
       {
         'name': '旋转配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否旋转',
-        'key': 'autoRotate',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '是',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否旋转',
+          'key': 'autoRotate',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '是',
+              'value': true
+            },
+            {
+              'name': '否',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': '旋转方向',
+          'key': 'autoRotateDirection',
+          'tag': 'select',
+          'parentKey': {
+            'autoRotate': true
           },
-          {
-            'name': '否',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': '旋转方向',
-        'key': 'autoRotateDirection',
-        'tag': 'select',
-        'parentKey': {
-          'autoRotate': true
+          'options': [
+            {
+              'name': '顺时针',
+              'value': 'cw'
+            },
+            {
+              'name': '逆时针',
+              'value': 'ccw'
+            }
+          ]
         },
-        'options': [
-          {
-            'name': '顺时针',
-            'value': 'cw'
+        {
+          'name': '旋转速度',
+          'key': 'autoRotateSpeed',
+          'parentKey': {
+            'autoRotate': true
           },
-          {
-            'name': '逆时针',
-            'value': 'ccw'
-          }
-        ]
-      },
-      {
-        'name': '旋转速度',
-        'key': 'autoRotateSpeed',
-        'parentKey': {
-          'autoRotate': true
+          'tag': 'input'
         },
-        'tag': 'input'
-      },
-      {
-        'name': '操作静置时间',
-        'key': 'autoRotateAfterStill',
-        'parentKey': {
-          'autoRotate': true
+        {
+          'name': '操作静置时间',
+          'key': 'autoRotateAfterStill',
+          'parentKey': {
+            'autoRotate': true
+          },
+          'tag': 'input'
         },
-        'tag': 'input'
-      },
-      // {
-      //   'name': '视角高度',
-      //   'key': 'distance',
-      //   // 'parentKey': {
-      //   //   'autoRotate': true
-      //   // },
-      //   'tag': 'input'
-      // },
-      {
-        'name': '俯仰角',
-        'key': 'alpha',
-        'tag': 'input'
-      },
-      {
-        'name': '旋转角',
-        'key': 'beta',
-        'tag': 'input'
+        // {
+        //   'name': '视角高度',
+        //   'key': 'distance',
+        //   // 'parentKey': {
+        //   //   'autoRotate': true
+        //   // },
+        //   'tag': 'input'
+        // },
+        {
+          'name': '俯仰角',
+          'key': 'alpha',
+          'tag': 'input'
+        },
+        {
+          'name': '旋转角',
+          'key': 'beta',
+          'tag': 'input'
+        } ]
       },
       {
         'name': '坐标轴配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '显示坐标轴',
-        'key': 'showgrid3D',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '显示坐标轴',
+          'key': 'showgrid3D',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': '坐标轴颜色',
+          'key': 'grid3DLineColor',
+          'parentKey': {
+            'showgrid3D': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': '坐标轴颜色',
-        'key': 'grid3DLineColor',
-        'parentKey': {
-          'showgrid3D': true
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': '坐标文字大小',
-        'key': 'grid3DFontSize',
-        'parentKey': {
-          'showgrid3D': true
+        {
+          'name': '坐标文字大小',
+          'key': 'grid3DFontSize',
+          'parentKey': {
+            'showgrid3D': true
+          },
+          'tag': 'input'
         },
-        'tag': 'input'
-      },
-      {
-        'name': '指示线颜色',
-        'key': 'grid3DHLolor',
-        'parentKey': {
-          'showgrid3D': true
+        {
+          'name': '指示线颜色',
+          'key': 'grid3DHLolor',
+          'parentKey': {
+            'showgrid3D': true
+          },
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': '指示线字体',
-        'key': 'grid3DlineSize',
-        'parentKey': {
-          'showgrid3D': true
-        },
-        'tag': 'input'
-      }, {
-        'name': '柱体颜色',
-        'key': 'grid3DColorArray',
-        'tag': 'ColorArray'
+        {
+          'name': '指示线字体',
+          'key': 'grid3DlineSize',
+          'parentKey': {
+            'showgrid3D': true
+          },
+          'tag': 'input'
+        }, {
+          'name': '柱体颜色',
+          'key': 'grid3DColorArray',
+          'tag': 'ColorArray'
+        }]
       }
     ]
   }

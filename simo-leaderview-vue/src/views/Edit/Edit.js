@@ -44,7 +44,14 @@ let config = {
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
+  TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
+  TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
+  NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
+  NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
+  NewTime: require('@/components/EditComp/NewTime/config.js'),
+  NewNumber: require('@/components/EditComp/NewNumber/config.js'),
+  NewTable: require('@/components/EditComp/NewTable/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
   bubble: require('@/components/EditComp/bubble/config.js')
@@ -61,6 +68,7 @@ export default {
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
+      activeNames: ['1'],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
@@ -275,7 +283,7 @@ export default {
     curChartName () {
       if (['text', 'NEWtextArea'].includes(this.curChartType)) {
         return '文本框'
-      } else if (this.curChartType === 'marquee') {
+      } else if (this.curChartType === 'NewMarquee') {
         return '跑马灯'
       }
       return this.selectedItem.ctName || ''
@@ -2703,7 +2711,7 @@ export default {
             _this.selectedItem.url = curConf.url
             _this.selectedItem.method = curConf.method
             _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'NEWtextArea') {
               _this.selectedItem.ctName = data.obj.info
               if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
                 _this.selectedItem.chartData = data.obj
@@ -2836,7 +2844,8 @@ export default {
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
-      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NEWtextArea') {
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
+        console.log(this.$refs.textarea.innerText)
         this.selectedItem.ctName = this.$refs.textarea.innerText
         // this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {

@@ -79,44 +79,46 @@ export default {
     'base': [
       {
         'name': '基础配置',
-        'tag': 'Hint'
-      }, {
-        'name': '是否空心',
-        'key': 'isHollow',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '否',
-            'value': 0
-          },
-          {
-            'name': '是',
-            'value': 10
-          }
-        ]
-      }, {
-        'name': '字体颜色',
-        'key': 'FontColor',
-        'tag': 'Color'
-      }, {
-        'name': '字体大小',
-        'key': 'FontSize',
-        'tag': 'input'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否空心',
+          'key': 'isHollow',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '否',
+              'value': 0
+            },
+            {
+              'name': '是',
+              'value': 10
+            }
+          ]
+        }, {
+          'name': '字体颜色',
+          'key': 'FontColor',
+          'tag': 'Color'
+        }, {
+          'name': '字体大小',
+          'key': 'FontSize',
+          'tag': 'input'
+        } ]
       }, {
         'name': '分界线配置',
-        'tag': 'Hint'
-      }, {
-        'name': '分界线颜色',
-        'key': 'LineColor',
-        'tag': 'Color'
-      }, {
-        'name': '分界线粗细',
-        'key': 'LineWidth',
-        'tag': 'input'
-      }, {
-        'name': '旭日图颜色',
-        'key': 'PieColorArray',
-        'tag': 'ColorArray'
+        'tag': 'Hint',
+        'childoption': [ {
+          'name': '分界线颜色',
+          'key': 'LineColor',
+          'tag': 'Color'
+        }, {
+          'name': '分界线粗细',
+          'key': 'LineWidth',
+          'tag': 'input'
+        }, {
+          'name': '旭日图颜色',
+          'key': 'PieColorArray',
+          'tag': 'ColorArray'
+        }]
       }
     ]
   }
