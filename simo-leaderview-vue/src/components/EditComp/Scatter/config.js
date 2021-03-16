@@ -89,248 +89,249 @@ export default {
     'base': [
       {
         'name': '图例配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否显示图例',
-        'key': 'openlegend',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否显示图例',
+          'key': 'openlegend',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        }, {
+          'name': '图例颜色',
+          'key': 'legendColor',
+          'parentKey': {
+            'openlegend': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      }, {
-        'name': '图例颜色',
-        'key': 'legendColor',
-        'parentKey': {
-          'openlegend': true
-        },
-        'tag': 'Color'
-      }, {
-        'name': '图例字体大小',
-        'key': 'legendSize',
-        'parentKey': {
-          'openlegend': true
-        },
-        'tag': 'input'
-      },
-      {
-        'name': '图例位置',
-        'key': 'legendStation',
-        'tag': 'select',
-        'parentKey': {
-          'openlegend': true
-        },
-        'options': [
-          {
-            'name': '顶部居中',
-            'value': 'top'
+          'tag': 'Color'
+        }, {
+          'name': '图例字体大小',
+          'key': 'legendSize',
+          'parentKey': {
+            'openlegend': true
           },
-          {
-            'name': '底部居中',
-            'value': 'bottom'
-          }
+          'tag': 'input'
+        },
+        {
+          'name': '图例位置',
+          'key': 'legendStation',
+          'tag': 'select',
+          'parentKey': {
+            'openlegend': true
+          },
+          'options': [
+            {
+              'name': '顶部居中',
+              'value': 'top'
+            },
+            {
+              'name': '底部居中',
+              'value': 'bottom'
+            }
+          ]
+        },
+        {
+          'name': '图元间隙',
+          'key': 'legendY',
+          'tag': 'input'
+        }
         ]
-      },
-      {
-        'name': '图元间隙',
-        'key': 'legendY',
-        'tag': 'input'
       },
       {
         'name': 'tips配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否显示tips',
-        'key': 'tooltipShow',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否显示tips',
+          'key': 'tooltipShow',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': 'tips背景色',
+          'key': 'tooltipBackColor',
+          'parentKey': {
+            'tooltipShow': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': 'tips背景色',
-        'key': 'tooltipBackColor',
-        'parentKey': {
-          'tooltipShow': true
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体色',
-        'key': 'tooltipColor',
-        'parentKey': {
-          'tooltipShow': true
+        {
+          'name': 'tips字体色',
+          'key': 'tooltipColor',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体大小',
-        'key': 'tooltipSize',
-        'parentKey': {
-          'tooltipShow': true
-        },
-        'tag': 'input'
+        {
+          'name': 'tips字体大小',
+          'key': 'tooltipSize',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'input'
+        } ]
       },
       {
         'name': '背景线配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '显示背景线',
-        'key': 'splitLine',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
-          },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': '背景线类型',
-        'key': 'splitLinetype',
-        'parentKey': {
-          'splitLine': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '显示背景线',
+          'key': 'splitLine',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
         },
-        'tag': 'select',
-        'options': [
-          {
-            'name': '实线',
-            'value': 'solid'
+        {
+          'name': '背景线类型',
+          'key': 'splitLinetype',
+          'parentKey': {
+            'splitLine': true
           },
-          {
-            'name': '虚线',
-            'value': 'dashed'
-          },
-          {
-            'name': '点状线',
-            'value': 'dotted'
-          }
-        ]
-      },
-      {
-        'name': '背景线颜色',
-        'key': 'splitLinecolor',
-        'parentKey': {
-          'splitLine': true
+          'tag': 'select',
+          'options': [
+            {
+              'name': '实线',
+              'value': 'solid'
+            },
+            {
+              'name': '虚线',
+              'value': 'dashed'
+            },
+            {
+              'name': '点状线',
+              'value': 'dotted'
+            }
+          ]
         },
-        'tag': 'Color'
-      },
-      {
-        'name': '坐标轴颜色',
-        'key': 'axisLinecolor',
-        'tag': 'Color'
-      },
-      {
-        'name': '刻度字体颜色',
-        'key': 'axisLabelcolor',
-        'tag': 'Color'
-      },
-      {
-        'name': '刻度字体大小',
-        'key': 'axisLabelfontSize',
-        'tag': 'input'
-      },
-      {
-        'name': '坐标单位颜色',
-        'key': 'DanweiColor',
-        'tag': 'Color'
-      },
-      {
-        'name': '坐标单位大小',
-        'key': 'DanweiSize',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '8',
-            'value': 8
+        {
+          'name': '背景线颜色',
+          'key': 'splitLinecolor',
+          'parentKey': {
+            'splitLine': true
           },
-          {
-            'name': '10',
-            'value': 10
-          },
-          {
-            'name': '14',
-            'value': 14
-          },
-          {
-            'name': '16',
-            'value': 16
-          },
-          {
-            'name': '20',
-            'value': 20
-          },
-          {
-            'name': '24',
-            'value': 24
-          },
-          {
-            'name': '28',
-            'value': 28
-          },
-          {
-            'name': '30',
-            'value': 30
-          }
-        ]
-      },
-      {
-        'name': 'X轴刻度倾斜度',
-        'key': 'XaxisLabelrotate',
-        'tag': 'input'
-      },
-      {
-        'name': 'Y轴刻度倾斜度',
-        'key': 'YaxisLabelrotate',
-        'tag': 'input'
-      }, {
-        'name': '颜色类型',
-        'key': 'ifGradual',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '渐变',
-            'value': 'true'
-          },
-          {
-            'name': '单色',
-            'value': 'false'
-          }
-        ]
-      }, {
-        'name': '饼图颜色',
-        'key': 'ScatterColor',
-        'parentKey': {
-          'ifGradual': 'false'
+          'tag': 'Color'
         },
-        'tag': 'ColorArray'
-      }, {
-        'name': '饼图颜色',
-        'key': 'DScatterColor',
-        'parentKey': {
-          'ifGradual': 'true'
+        {
+          'name': '坐标轴颜色',
+          'key': 'axisLinecolor',
+          'tag': 'Color'
         },
-        'tag': 'ColorArray'
+        {
+          'name': '刻度字体颜色',
+          'key': 'axisLabelcolor',
+          'tag': 'Color'
+        },
+        {
+          'name': '刻度字体大小',
+          'key': 'axisLabelfontSize',
+          'tag': 'input'
+        },
+        {
+          'name': '坐标单位颜色',
+          'key': 'DanweiColor',
+          'tag': 'Color'
+        },
+        {
+          'name': '坐标单位大小',
+          'key': 'DanweiSize',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '8',
+              'value': 8
+            },
+            {
+              'name': '10',
+              'value': 10
+            },
+            {
+              'name': '14',
+              'value': 14
+            },
+            {
+              'name': '16',
+              'value': 16
+            },
+            {
+              'name': '20',
+              'value': 20
+            },
+            {
+              'name': '24',
+              'value': 24
+            },
+            {
+              'name': '28',
+              'value': 28
+            },
+            {
+              'name': '30',
+              'value': 30
+            }
+          ]
+        },
+        {
+          'name': 'X轴刻度倾斜度',
+          'key': 'XaxisLabelrotate',
+          'tag': 'input'
+        },
+        {
+          'name': 'Y轴刻度倾斜度',
+          'key': 'YaxisLabelrotate',
+          'tag': 'input'
+        }, {
+          'name': '颜色类型',
+          'key': 'ifGradual',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '渐变',
+              'value': 'true'
+            },
+            {
+              'name': '单色',
+              'value': 'false'
+            }
+          ]
+        }, {
+          'name': '饼图颜色',
+          'key': 'ScatterColor',
+          'parentKey': {
+            'ifGradual': 'false'
+          },
+          'tag': 'ColorArray'
+        }, {
+          'name': '饼图颜色',
+          'key': 'DScatterColor',
+          'parentKey': {
+            'ifGradual': 'true'
+          },
+          'tag': 'ColorArray'
+        }]
       }
     ]
   }

@@ -28,13 +28,13 @@
             </div>
         </template>
         <template v-if="item.tag === 'ImgFile'">
-            <div class="color-w200">
+            <div class="color-w200" style="position:relative">
               <input type="file"
                 id="Inputfile"
                 style="width: 147px!important;margin-right: 8px;"
                 accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                 @change='changeImg' />
-              <label :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
+              <label :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;right: 25px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
               <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
             </div>
         </template>
@@ -203,7 +203,7 @@ export default {
       var formdata = new FormData()
       formdata.append('uploaded_file', file)
       var _this = this
-      this.$parent.uploadFile('video', formdata, function (data) {
+      this.uploadFile('video', formdata, function (data) {
         if (_this.selectedItem.chartType === 'video' || _this.selectedItem.chartType === 'BulletFrame') {
           _this.selectedItem.videoSrc = gbs.host + data.obj
           _this.tempVideoUrl = _this.selectedItem.videoSrc
@@ -235,10 +235,10 @@ export default {
       var _this = this
       var formData = new FormData()
       formData.append('uploaded_file', e.target.files[0])
-      this.$parent.uploadFile('img', formData, function (data) {
+      this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
-        _this.$parent.saveHistory()
+        // _this.$parent.saveHistory()
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
@@ -252,10 +252,57 @@ export default {
       }
     },
     ChildGetColor (data) {
-      this.$parent.getColor(data)
+      // this.saveHistory()
+      if (data.type !== undefined) {
+        if (data.ColorNum) {
+          if (data.ColorNum === 1) {
+            this.selectedItem[data.type] = [data.color, this.selectedItem[data.type][1]]
+          } else {
+            this.selectedItem[data.type] = [this.selectedItem[data.type][0], data.color]
+          }
+        } else {
+          this.selectedItem[data.type] = data.color
+        }
+      } else {
+        // 用来解决不能监听直接赋值的数组变化
+        this.selectedItem.ctColors.splice(data.index, 1)
+        this.selectedItem.ctColors.splice(data.index, 0, data.color)
+      }
+    },
+    uploadFile: function (type, formData, cb) {
+      var _url = gbs.host + '/leaderview/home/file/upload'
+      if (type === 'video') {
+        _url = gbs.host + '/leaderview/home/file/uploadVideoFile'
+      }
+      $.ajax({
+        url: _url,
+        type: 'post',
+        data: formData,
+        async: false,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          if (data.success) {
+            // var _url = '/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            typeof cb === 'function' && cb(data)
+          } else {
+            // $("#lead-screen").hide()
+            if (gbs.inDev) {
+              Notification({
+                message: data.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', data.msg, 'error')
+            }
+          }
+        }
+      })
     },
     mygetSingleColor (data) {
-      this.$parent.saveHistory()
+      // this.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
           this.chartNum[i][this.item.key].splice(data.index, 1, data.color)
@@ -265,7 +312,7 @@ export default {
       }
     },
     mygetColorStart (data) {
-      this.$parent.saveHistory()
+      // this.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem[this.item.key][data.index]
         oldColor[0] = data.color
@@ -292,7 +339,7 @@ export default {
       }
     },
     mygetGradColor (data) {
-      this.$parent.saveHistory()
+      // this.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem[this.item.key][data.index]
         oldColor[1] = data.color

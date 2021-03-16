@@ -20,6 +20,11 @@ import PolarBar from '@/components/EditComp/polarBar' //
 import Pyramid from '@/components/EditComp/pyramid' //
 import TDEarthLine from '@/components/EditComp/TDEarthLine' // 3D地图-飞线图
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 3D地图-柱状图
+import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
+import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
+import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
+import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
+import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
 import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
@@ -29,6 +34,7 @@ import ELine from '@/components/EditComp/ELine' // 散点图
 import Dashboard from '@/components/EditComp/Dashboard' // 散点图
 import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
 import TreeMap from '@/components/EditComp/TreeMap' // 散点图
+import Ueditor from '@/components/EditComp/Ueditor' // 散点图
 import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
@@ -58,6 +64,11 @@ export default {
   Pyramid,
   TDEarthLine,
   TDEarthBar,
+  NewMarquee,
+  NewDoubler,
+  NewTime,
+  NewTable,
+  NewNumber,
   DataFlow,
   GradientPie,
   Sunrise,
@@ -67,6 +78,7 @@ export default {
   Dashboard,
   BulletFrame,
   TreeMap,
+  Ueditor,
   NEWtextArea,
   TDHistogram,
   Bubble,

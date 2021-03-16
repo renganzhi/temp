@@ -6,6 +6,7 @@ import ChartStyle from './ChartStyle'
 import DragBox from '@/components/Common/DragBox'
 import Compose from '@/components/Common/Compose'
 import Select2 from '@/components/Common/Select2'
+// import UEidetBox from '@/components/Common/uEidetBox'
 import Vcolor from '@/components/Common/Vcolor'
 import PreView from '@/components/PreView/PreView'
 import Confirm from '@/components/Common/Confirm'
@@ -25,6 +26,7 @@ import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
 
+import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   // ...oldConfig,
@@ -40,8 +42,16 @@ let config = {
   ELine: require('@/components/EditComp/ELine/config.js'),
   DataFlow: require('@/components/EditComp/DataFlow/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
+  Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
+  TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
+  TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
+  NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
+  NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
+  NewTime: require('@/components/EditComp/NewTime/config.js'),
+  NewNumber: require('@/components/EditComp/NewNumber/config.js'),
+  NewTable: require('@/components/EditComp/NewTable/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
   bubble: require('@/components/EditComp/bubble/config.js')
@@ -49,7 +59,7 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
+  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
@@ -58,6 +68,7 @@ export default {
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
+      activeNames: ['1'],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
@@ -272,7 +283,7 @@ export default {
     curChartName () {
       if (['text', 'NEWtextArea'].includes(this.curChartType)) {
         return '文本框'
-      } else if (this.curChartType === 'marquee') {
+      } else if (this.curChartType === 'NewMarquee') {
         return '跑马灯'
       }
       return this.selectedItem.ctName || ''
@@ -2700,7 +2711,7 @@ export default {
             _this.selectedItem.url = curConf.url
             _this.selectedItem.method = curConf.method
             _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'NEWtextArea') {
               _this.selectedItem.ctName = data.obj.info
               if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
                 _this.selectedItem.chartData = data.obj
@@ -2825,12 +2836,16 @@ export default {
       this.saveDataChange() // 系统数据存历史
       if (this.selectedItem.ctDataSource !== 'static') {
         this.getUrlData()
+      } else if (this.selectedItem.chartType === 'Ueditor') {
+        let content = this.$refs.ue.getUEContent()
+        this.selectedItem.chartData = content
       } else if (this.selectedItem.chartType === 'v-map') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
-      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NEWtextArea') {
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
+        console.log(this.$refs.textarea.innerText)
         this.selectedItem.ctName = this.$refs.textarea.innerText
         // this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {

@@ -42,6 +42,8 @@
               :item="item"></BulletFrame>
     <TreeMap v-else-if="item.chartType=='TreeMap'"
               :item="item"></TreeMap>
+    <Ueditor v-else-if="item.chartType=='Ueditor'"
+              :item="item"></Ueditor>
     <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
               :item="item"
               :disabled="editable"></NEWtextArea>

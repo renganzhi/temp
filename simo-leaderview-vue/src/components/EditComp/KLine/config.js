@@ -47,233 +47,233 @@ export default {
     'base': [
       {
         'name': '图例配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否显示图例',
-        'key': 'openlegend',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否显示图例',
+          'key': 'openlegend',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        }, {
+          'name': '图例颜色',
+          'key': 'legendColor',
+          'parentKey': {
+            'openlegend': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      }, {
-        'name': '图例颜色',
-        'key': 'legendColor',
-        'parentKey': {
-          'openlegend': true
-        },
-        'tag': 'Color'
-      }, {
-        'name': '图例字体大小',
-        'key': 'legendSize',
-        'parentKey': {
-          'openlegend': true
-        },
-        'tag': 'input'
-      },
-      {
-        'name': '图例位置',
-        'key': 'legendStation',
-        'tag': 'select',
-        'parentKey': {
-          'openlegend': true
-        },
-        'options': [
-          {
-            'name': '上方居中',
-            'value': 'top'
+          'tag': 'Color'
+        }, {
+          'name': '图例字体大小',
+          'key': 'legendSize',
+          'parentKey': {
+            'openlegend': true
           },
-          {
-            'name': '下方居中',
-            'value': 'bottom'
-          }
-        ]
-      }, {
-        'name': '图元间隙',
-        'key': 'legendY',
-        'max': 100,
-        'min': 0,
-        'tag': 'input'
+          'tag': 'input'
+        },
+        {
+          'name': '图例位置',
+          'key': 'legendStation',
+          'tag': 'select',
+          'parentKey': {
+            'openlegend': true
+          },
+          'options': [
+            {
+              'name': '上方居中',
+              'value': 'top'
+            },
+            {
+              'name': '下方居中',
+              'value': 'bottom'
+            }
+          ]
+        }, {
+          'name': '图元间隙',
+          'key': 'legendY',
+          'max': 100,
+          'min': 0,
+          'tag': 'input'
+        }]
       },
       {
         'name': 'tips配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '是否显示tips',
-        'key': 'tooltipShow',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '是否显示tips',
+          'key': 'tooltipShow',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': 'tips背景色',
+          'key': 'tooltipBackColor',
+          'parentKey': {
+            'tooltipShow': true
           },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': 'tips背景色',
-        'key': 'tooltipBackColor',
-        'parentKey': {
-          'tooltipShow': true
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体色',
-        'key': 'tooltipColor',
-        'parentKey': {
-          'tooltipShow': true
+        {
+          'name': 'tips字体色',
+          'key': 'tooltipColor',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'Color'
         },
-        'tag': 'Color'
-      },
-      {
-        'name': 'tips字体大小',
-        'key': 'tooltipSize',
-        'parentKey': {
-          'tooltipShow': true
-        },
-        'tag': 'input'
+        {
+          'name': 'tips字体大小',
+          'key': 'tooltipSize',
+          'parentKey': {
+            'tooltipShow': true
+          },
+          'tag': 'input'
+        }]
       },
       {
         'name': '时间轴配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '显示时间轴',
-        'key': 'dataZoom',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '显示',
-            'value': true
-          },
-          {
-            'name': '隐藏',
-            'value': false
-          }
-        ]
-      },
-      {
-        'name': '时间轴字颜色',
-        'key': 'dataZoomFontColor',
-        'tag': 'Color'
-      },
-      {
-        'name': '时间轴阴影色',
-        'key': 'dataZoomAreaStyle',
-        'tag': 'Color'
-      },
-      {
-        'name': '坐标轴颜色',
-        'key': 'axisLinecolor',
-        'tag': 'Color'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '显示时间轴',
+          'key': 'dataZoom',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
+        },
+        {
+          'name': '时间轴字颜色',
+          'key': 'dataZoomFontColor',
+          'tag': 'Color'
+        },
+        {
+          'name': '时间轴阴影色',
+          'key': 'dataZoomAreaStyle',
+          'tag': 'Color'
+        },
+        {
+          'name': '坐标轴颜色',
+          'key': 'axisLinecolor',
+          'tag': 'Color'
+        }]
       },
       {
         'name': '刻度配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': '刻度字体颜色',
-        'key': 'axisLabelcolor',
-        'tag': 'Color'
-      },
-      {
-        'name': '刻度字体大小',
-        'key': 'axisLabelfontSize',
-        'tag': 'input'
-      },
-      {
-        'name': '坐标单位颜色',
-        'key': 'DanweiColor',
-        'tag': 'Color'
-      },
-      {
-        'name': '坐标单位大小',
-        'key': 'DanweiSize',
-        'tag': 'select',
-        'options': [
-          {
-            'name': '8',
-            'value': 8
-          },
-          {
-            'name': '10',
-            'value': 10
-          },
-          {
-            'name': '14',
-            'value': 14
-          },
-          {
-            'name': '16',
-            'value': 16
-          },
-          {
-            'name': '20',
-            'value': 20
-          },
-          {
-            'name': '24',
-            'value': 24
-          },
-          {
-            'name': '28',
-            'value': 28
-          },
-          {
-            'name': '30',
-            'value': 30
-          }
-        ]
-      },
-      {
-        'name': 'X轴刻度倾斜度',
-        'key': 'XaxisLabelrotate',
-        'tag': 'input'
-      },
-      {
-        'name': 'Y轴刻度倾斜度',
-        'key': 'YaxisLabelrotate',
-        'tag': 'input'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '刻度字体颜色',
+          'key': 'axisLabelcolor',
+          'tag': 'Color'
+        },
+        {
+          'name': '刻度字体大小',
+          'key': 'axisLabelfontSize',
+          'tag': 'input'
+        },
+        {
+          'name': '坐标单位颜色',
+          'key': 'DanweiColor',
+          'tag': 'Color'
+        },
+        {
+          'name': '坐标单位大小',
+          'key': 'DanweiSize',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '8',
+              'value': 8
+            },
+            {
+              'name': '10',
+              'value': 10
+            },
+            {
+              'name': '14',
+              'value': 14
+            },
+            {
+              'name': '16',
+              'value': 16
+            },
+            {
+              'name': '20',
+              'value': 20
+            },
+            {
+              'name': '24',
+              'value': 24
+            },
+            {
+              'name': '28',
+              'value': 28
+            },
+            {
+              'name': '30',
+              'value': 30
+            }
+          ]
+        },
+        {
+          'name': 'X轴刻度倾斜度',
+          'key': 'XaxisLabelrotate',
+          'tag': 'input'
+        },
+        {
+          'name': 'Y轴刻度倾斜度',
+          'key': 'YaxisLabelrotate',
+          'tag': 'input'
+        }]
       },
       {
         'name': '颜色配置',
-        'tag': 'Hint'
-      },
-      {
-        'name': 'K线图阳线颜色',
-        'key': 'KlineColorYang',
-        'tag': 'GradientColor'
-      },
-      {
-        'name': '阳线边框颜色',
-        'key': 'borderColorYang',
-        'tag': 'Color'
-      },
-      {
-        'name': 'K线图阴线颜色',
-        'key': 'KlineColorYing',
-        'tag': 'GradientColor'
-      },
-      {
-        'name': '阴线边框颜色',
-        'key': 'borderColorYing',
-        'tag': 'Color'
-      }, {
-        'name': '直线颜色',
-        'key': 'LinerColor',
-        'tag': 'ColorArray'
+        'tag': 'Hint',
+        'childoption': [{
+          'name': 'K线图阳线颜色',
+          'key': 'KlineColorYang',
+          'tag': 'GradientColor'
+        },
+        {
+          'name': '阳线边框颜色',
+          'key': 'borderColorYang',
+          'tag': 'Color'
+        },
+        {
+          'name': 'K线图阴线颜色',
+          'key': 'KlineColorYing',
+          'tag': 'GradientColor'
+        },
+        {
+          'name': '阴线边框颜色',
+          'key': 'borderColorYing',
+          'tag': 'Color'
+        }, {
+          'name': '直线颜色',
+          'key': 'LinerColor',
+          'tag': 'ColorArray'
+        }]
       }
     ]
   }

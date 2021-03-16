@@ -604,7 +604,7 @@
                 </div>
               </div>
               <!--表格\文本框配置-->
-              <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
+              <div v-if="selectedItem.chartType=='table' || selectedItem.chartType=='text' || selectedItem.chartType=='Marquee' || selectedItem.chartType=='border' || selectedItem.chartType=='time'">
                 <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
@@ -981,294 +981,6 @@
                 </div>
               </div>
               <!-- 3d地图配置 -->
-              <div v-if="selectedItem.chartType=='TDEarthLine' || selectedItem.chartType=='TDEarthBar'">
-                <div class="m-gap form-group">地球配置</div>
-                <div class="form-group cols2">
-                  <label>地球类型</label>
-                  <select v-model="selectedItem.backPicName">
-                    <!-- <option value="Mapcolor">类型一</option> -->
-                    <option value="Mapcolor1-2">地球影像</option>
-                    <option value="Mapcolor1-1">地球影像(网格)</option>
-                    <option value="Mapcolor2-2"> 地球剪影-浅蓝蓝色</option>
-                    <option value="Mapcolor2-1">地球剪影-浅蓝蓝色(网格)</option>
-                    <option value="Mapcolor3-2">地球-深绿</option>
-                    <option value="Mapcolor3-1">地球-浅绿深绿(网格)</option>
-                    <option value="Mapcolor4">地球影像-黄绿色(纬度环)</option>
-                    <option value="Mapcolor5-2">地球剪影-浅灰</option>
-                    <option value="Mapcolor5-1">地球剪影-浅灰(网格)</option>
-                    <option value="Mapcolor6-2">地球剪影-深绿青色</option>
-                    <option value="Mapcolor6-1">地球剪影-深绿青色(网格)</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>地球凹凸感</label>
-                  <input  type="number"
-                          v-model="selectedItem.displacementScale">
-                </div>
-                <div class="form-group cols2">
-                  <label>地球粗糙度</label>
-                  <select v-model="selectedItem.roughness">
-                    <option value="0">完全光滑</option>
-                    <option value="0.2">光滑</option>
-                    <option value="0.5">中等</option>
-                    <option value="0.8">粗糙</option>
-                    <option value="1">完全粗糙</option>
-                  </select>
-                </div>
-                <div class="form-group cols2">
-                  <label>地球材质</label>
-                  <select v-model="selectedItem.metalness">
-                    <option value="0">非金属</option>
-                    <option value="1">金属</option>
-                  </select>
-                </div>
-                <div v-if="selectedItem.chartType=='TDEarthLine'">
-                  <div class="m-gap form-group" >线条配置</div>
-                  <div class="form-group cols2">
-                    <label>线条宽度</label>
-                    <select v-model="selectedItem.linewidth">
-                      <option v-for="item in 10"
-                              :key="item">{{item}}</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2">
-                    <label>线条颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.lineColor"
-                              :key="10"
-                              type="lineColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                  <div class="form-group cols2">
-                  <label>线条透明度</label>
-                  <select v-model="selectedItem.lineoption">
-                    <option v-for="item in 10"
-                            :key="(item*0.1).toFixed(1)">{{(item*0.1).toFixed(1)}}</option>
-                  </select>
-                  </div>
-                  <div class="m-gap form-group">落地点</div>
-                  <div class="form-group cols2">
-                  <label>落地点大小</label>
-                  <input  type="number"
-                          v-model="selectedItem.symbolSize">
-                  </div>
-                  <div class="form-group cols2">
-                  <label>落地点颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.symbolcolor"
-                            :key="10"
-                            type="symbolcolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                  </div>
-                  <div class="form-group cols2">
-                  <label>落地点透明度</label>
-                  <input  type="number"
-                            v-model="selectedItem.symbolopacity">
-                  </div>
-                  <div class="m-gap form-group">扫描点配置</div>
-                  <div class="form-group cols2">
-                    <label>显示扫描点</label>
-                    <select v-model="selectedItem.scanningspot">
-                      <option value="true">显示</option>
-                      <option value="false">隐藏</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
-                    <label>扫描点速度</label>
-                    <input  type="number"
-                            v-model="selectedItem.scanningspeed">
-                  </div>
-                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
-                    <label>扫描点半径</label>
-                    <select v-model="selectedItem.scanningradiu">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="4">4</option>
-                      <option value="6">6</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
-                    <label>扫描点长度</label>
-                    <select v-model="selectedItem.scanninglength">
-                      <option value="0.1">0.1</option>
-                      <option value="0.2">0.2</option>
-                      <option value="0.3">0.3</option>
-                      <option value="0.4">0.4</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
-                    <label>扫描点透明度</label>
-                    <select v-model="selectedItem.scanningopcity">
-                      <option value="1">1</option>
-                      <option value="0.8">0.8</option>
-                      <option value="0.6">0.6</option>
-                      <option value="0.4">0.4</option>
-                    </select>
-                  </div>
-                  <div class="form-group cols2" v-if="selectedItem.scanningspot==='true'">
-                    <label>扫描点颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.scanningcolor"
-                              :key="10"
-                              type="scanningcolor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="selectedItem.chartType=='TDEarthBar'">
-                  <div class="m-gap form-group">柱体配置</div>
-                  <div class="form-group cols2">
-                    <label>柱体大小</label>
-                    <input  type="number"
-                            v-model="selectedItem.barSize">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>柱体颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.itemStyleColor"
-                              :key="10"
-                              type="itemStyleColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                  <div class="m-gap form-group">标签配置</div>
-                  <div class="form-group cols2">
-                    <label>字体颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.labelColor"
-                              :key="10"
-                              type="labelColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                  <div class="form-group cols2">
-                    <label>字体大小</label>
-                    <input  type="number"
-                            v-model="selectedItem.labelSize">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>字体宽度</label>
-                    <input  type="number"
-                            v-model="selectedItem.labelWeight">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>边框宽度</label>
-                    <input  type="number"
-                            v-model="selectedItem.labelBorderwidth">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>边框颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.labelBorderColor"
-                              :key="10"
-                              type="labelBorderColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                  <div class="form-group cols2">
-                    <label>圆角大小</label>
-                    <input  type="number"
-                            v-model="selectedItem.labelBorderRadius">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>行高</label>
-                    <input  type="number"
-                            v-model="selectedItem.labellineHeight">
-                  </div>
-                  <div class="form-group cols2">
-                    <label>背景颜色</label>
-                    <div class="color-w200">
-                      <Vcolor :data="selectedItem.labelbackColor"
-                              :key="10"
-                              type="labelbackColor"
-                              @getdata="getColor"></Vcolor>
-                    </div>
-                  </div>
-                </div>
-                <div class="m-gap form-group">旋转配置</div>
-                <div class="form-group cols2">
-                  <label>是否旋转</label>
-                  <select v-model="selectedItem.needrotate">
-                    <option value="true">旋转</option>
-                    <option value="false">不旋转</option>
-                  </select>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
-                  <label>旋转方向</label>
-                  <select v-model="selectedItem.rotatedirection">
-                    <option value="ccw">由左往右</option>
-                    <option value="cw">由右往左</option>
-                  </select>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
-                  <label>旋转速度</label>
-                  <input  type="number"
-                          v-model="selectedItem.rotatespeed" placeholder="单位（度/秒）">
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.needrotate === 'true'">
-                  <label>操作后静止时长</label>
-                  <input  type="number"
-                          v-model="selectedItem.norotatetime" placeholder="鼠标操作后静置多久继续旋转，单位（秒）">
-                </div>
-                <div class="form-group cols2">
-                  <label>地图俯仰角</label>
-                  <input  type="number"
-                          v-model="selectedItem.alpha" placeholder="俯仰角（单位：度）">
-                </div>
-                <div class="form-group cols2">
-                  <label>地图旋转角</label>
-                  <input  type="number"
-                          v-model="selectedItem.beta" placeholder="俯仰角（单位：度）">
-                </div>
-                <div class="m-gap form-group">光照配置</div>
-                <div class="form-group cols2">
-                  <label>光源类型</label>
-                  <select v-model="selectedItem.shadingtype">
-                    <option value="color">平行光</option>
-                    <option value="realistic">自然光</option>
-                  </select>
-                </div>
-                <div class="form-group cols2"  v-if="selectedItem.shadingtype==='realistic'">
-                  <label>环境光颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.ambientcolor"
-                            :key="10"
-                            type="ambientcolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
-                  <label>环境光亮度</label>
-                  <input  type="number"
-                          v-model="selectedItem.ambientintensity">
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
-                  <label>主光源颜色</label>
-                  <div class="color-w200">
-                    <Vcolor :data="selectedItem.maincolor"
-                            :key="10"
-                            type="maincolor"
-                            @getdata="getColor"></Vcolor>
-                  </div>
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
-                  <label>主光源亮度</label>
-                  <input  type="number"
-                          v-model="selectedItem.mainintensity">
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
-                  <label>主光源y方向角度</label>
-                  <input  type="number"
-                          v-model="selectedItem.mainbeta">
-                </div>
-                <div class="form-group cols2" v-if="selectedItem.shadingtype==='realistic'">
-                  <label>主光源x方向角度</label>
-                  <input  type="number"
-                          v-model="selectedItem.mainalpha">
-                </div>
-              </div>
               <!-- 迁徙图 -->
               <!-- 3/4饼图 -->
               <!-- <div v-if="selectedItem.chartType=='GradientPie'">
@@ -1964,13 +1676,14 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','ELine','KLine','Dashboard','TreeMap','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
-                <div class="form-group cols2"
-                    style="position: relative"
-                    v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`"
-                  >
-                  <ChildTag :item="item" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
-                </div>
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','NewMarquee','ELine','NewNumber','NewTable','NewTime','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+                <el-collapse v-model="activeNames" class="form-group cols2">
+                  <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
+                    <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
+                      <ChildTag :item="data" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </template>
             </div>
 
@@ -2005,7 +1718,7 @@
                          @change='changeImg' />
                 </div>
               </div>
-              <div v-show="selectedItem.chartType == 'time'">
+              <div v-show="selectedItem.chartType == 'NewTime'">
                 <div class="form-group cols2">
                   <label>取值来源</label>
                   <select v-model="selectedItem.timeSource">
@@ -2014,7 +1727,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'time', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'border', 'NewTime', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2075,23 +1788,26 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'marquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'Ueditor' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'NewMarquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.chartData}}</div>
                 </div>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'NEWtextArea' || selectedItem.chartType === 'text' || selectedItem.chartType==='marquee')">
+                     v-if="selectedItem.ctDataSource === 'static' && (selectedItem.chartType === 'NEWtextArea' || selectedItem.chartType === 'text' || selectedItem.chartType==='NewMarquee')">
                   <div ref="textarea"
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
-                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='table'">
+                <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
+                    <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
+                </div>
+                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
                 </div>
-                <div v-if="advanced && selectedItem.chartType==='table'">
+                <div v-if="advanced && selectedItem.chartType==='NewTable'">
                   <div class="form-group cols2">
                     <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
@@ -2473,9 +2189,29 @@ html[data-theme="blueWhite"] {
     color: #444 !important;
   }
 }
+.el-collapse-item__header{
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  font-weight: bold;
+  color: inherit
+}
+.el-collapse-item__wrap{
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+}
+.el-collapse-item__content{
+  padding-top: 25px;
+  padding-bottom: 0px;
+  color: inherit
+}
+.el-collapse{
+      border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
 }
+.m-tabMain::-webkit-scrollbar { width: 0 !important }
 .m-tabMain .desc{
   background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC3SURBVChTtY49DoJAEIXfILKN8Sc2UFpY21B5HuMZ4ATScyQbC6i9AaWJoQA2Zsf9g3AA/YrNzHtvXwa/pai2fgKZR9yqZiAkVplhzIAI533Y3i+ndWDEa7M5aIPNPKIzNrhSEiZoNBsuy+MQMT3NPKG/ClLoEXnBn+FgCou6/8C5C93KzFBZOmVss4OYQA+/QOlgvMTbr5ZZsyMq6pcE73R9K7PU3joya3bknYhDkMy7JPbS3wG+t2IugdRfUNsAAAAASUVORK5CYII=') !important
 }
@@ -2518,6 +2254,14 @@ html[data-theme="blueWhite"] {
   .ring-icon:hover{
     // background: #0f1321;
     opacity: 1;
+  }
+}
+.edui-default .edui-editor-bottomContainer{
+ display: none;
+}
+.edui-default {
+  ::deep .edui1677_message_holder{
+    display: none;
   }
 }
 </style>
