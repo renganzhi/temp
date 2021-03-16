@@ -919,24 +919,33 @@ public class HomePageController {
 		return new JsonModel(true, sql);
 	}
 
+	/**
+	 * 将多个目标大屏制作成模板数据并且导出资源
+	 * @param ids 目标大屏id 用","分割
+	 * @param tempImg 是否下载模板图片，当目标大屏服务器的模板资源与当前大屏模板资源不一致时，需要通过此项获取目标大屏完整的模板数据
+	 * @return
+	 */
 	@ApiOperation("将多个目标大屏制作成模板数据并且导出资源")
-	@PostMapping(value = "/makeTemplateList")
-	public JsonModel makeTemplateList(@RequestParam("ids") String ids, @RequestParam("url") String url){
-		Set<String> sets = Sets.newHashSet();
+	@GetMapping(value = "/makeTemplateList")
+	public void makeTemplateList(@RequestParam("ids") String ids, @RequestParam(value = "tempImg", required = false) Boolean tempImg,
+									  HttpServletRequest request, HttpServletResponse response){
+		Set<HomePage> pages = Sets.newHashSet();
 		for (String str: ids.split(",")) {
 			Long id = Long.valueOf(str);
 			HomePage page = homePageService.getById(id);
 			if (ObjectUtils.isEmpty(page)){
-				return new JsonModel(false, "页面不存在");
+				logger.error("目标大屏不存在");
+				return;
 			}
-			sets = homePageService.makeTemplate(page,Lists.newArrayList());
+			pages.add(page);
 		}
-		try {
-			homePageService.outputVideo(sets,url);
-		}catch (NullPointerException e){
-			logger.info("未传入url");
-		}
-		return new JsonModel(true);
+		logger.info("导出开始");
+		tempImg = ObjectUtils.isEmpty(tempImg) ? false : tempImg;
+		String path = homePageService.makeTemplateList(pages, tempImg);
+		logger.info("缓存目标地址： "  + path);
+		impExpService.download(path, request, response);
+		impExpService.deleteTempFile(path);
+
 	}
 
 

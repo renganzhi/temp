@@ -1,9 +1,6 @@
 package com.uxsino.leaderview.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +21,7 @@ import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.entity.*;
 import com.uxsino.leaderview.model.ShareState;
+import com.uxsino.leaderview.utils.ZipUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,18 +40,28 @@ public class HomePageService {
     @Autowired
     private SiteUserRedis userRedis;
     @Autowired
-    private HomeTemplateImgService homeTemplateImgService;
+    private ImpExpService impExpService;
     @Autowired
     private UploadedFileService uploadedFileService;
     @Autowired
     private HomeTemplateService homeTemplateService;
     @Autowired
     private HomePageUserConfService homePageUserConfService;
+    @Autowired
+    private HomeTemplateImgService homeTemplateImgService;
 
     private static Set<String> videoSet = Sets.newHashSet();
     private static Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
     private static Pattern ipPattern = Pattern.compile("http://(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d*)/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
     private static Pattern localPattern = Pattern.compile("http://localhost:(\\d*)/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
+
+    private String zipPath  = this.getClass().getClassLoader().getResource("img").getFile();
+    private static Integer zipNum = 1;
+
+    private static Pattern strPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
+    private static Pattern numPattern = Pattern.compile("[^0-9]");
+    private static Pattern imgFalsePattern = Pattern.compile("/leaderview/home/getImg/false/(\\d*)\"");
+
 
     @Transactional
     public void add(HomePage homePage) {
@@ -400,11 +408,11 @@ public class HomePageService {
     @Transactional
     @SuppressWarnings("unchecked")
     public String makeTemplate(HomePage page) {
-        Integer num = homeTemplateImgService.getMaxId();
-        JSONObject viewConf = templateImgTransform(page.getViewConf(),num);
-        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getInteger("num"));
-        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getInteger("num"));
-        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getInteger("num"));
+        Long num = new Date().getTime();
+        JSONObject viewConf = templateImgTransform(page.getViewConf(),num, false);
+        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), false);
+        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), false);
+        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), false);
         HomeTemplate homeTemplate = new HomeTemplate();
         homeTemplate.setLastUpdateTime(new Date());
         homeTemplate.setPaintObj(paintObj.getString("str"));
@@ -426,32 +434,38 @@ public class HomePageService {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public Set<String> makeTemplate(HomePage page, List list) {
-        if (!videoSet.isEmpty()){
-            videoSet = Sets.newHashSet();
+    public String makeTemplateList(Set<HomePage> pages, Boolean tempImg) {
+//        if (!videoSet.isEmpty()){
+//            videoSet = Sets.newHashSet();
+//        }
+        StringBuilder sb = new StringBuilder();
+        for (HomePage page: pages) {
+            Long num = new Date().getTime();
+            JSONObject viewConf = templateImgTransform(page.getViewConf(),num, tempImg);
+            JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), tempImg);
+            JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), tempImg);
+            JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), tempImg);
+
+            String name = page.getName();
+            String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
+                    + "', now() ,'" + viewConf.getString("str")
+                    + "', '" + viewImage.getString("str")
+                    + "', '" + paintObj.getString("str")
+                    + "', '" + composeObj.getString("str")
+                    + "');";
+            sb.append(sql);
+            sb.append("\n");
         }
-        Integer num = homeTemplateImgService.getMaxId();
-        JSONObject viewConf = templateImgTransform(page.getViewConf(),num);
-        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getInteger("num"));
-        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getInteger("num"));
-        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getInteger("num"));
-        HomeTemplate homeTemplate = new HomeTemplate();
-        homeTemplate.setLastUpdateTime(new Date());
-        homeTemplate.setPaintObj(paintObj.getString("str"));
-        homeTemplate.setComposeObj(composeObj.getString("str"));
-        homeTemplate.setViewImage(viewImage.getString("str"));
-        homeTemplate.setViewConf(viewConf.getString("str"));
-        homeTemplate.setName(page.getName());
-        String name = page.getName();
-        String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
-                + "', now() ,'" + viewConf.getString("str")
-                + "', '" + viewImage.getString("str")
-                + "', '" + paintObj.getString("str")
-                + "', '" + composeObj.getString("str")
-                + "');";
-        System.out.println(sql);
-        homeTemplateService.save(homeTemplate);
-        return videoSet;
+        String jsonPath = zipPath + File.separator + "templateCustom" + zipNum + File.separator + "json" + File.separator + "template.txt";
+        impExpService.writeConfigJson(sb.toString(),jsonPath);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File(zipPath + File.separator +"templateCustom" + zipNum + ".zip"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ZipUtils.toZip(zipPath + File.separator +"templateCustom"  + zipNum + File.separator ,fos, true);
+        return zipPath + File.separator +"templateCustom"  + zipNum++ + ".zip";
     }
 
     public void outputVideo(Set<String> sets, String url) {
@@ -460,49 +474,54 @@ public class HomePageService {
         }
     }
 
-    private JSONObject templateImgTransform(String str, Integer num){
+    private JSONObject templateImgTransform(String str, Long num, Boolean tempImg){
+        String imgPath = zipPath +  File.separator +"templateCustom" + zipNum + File.separator + "img" + File.separator;
+        if (tempImg){
+            // 把模板中的图片也下载下来
+            Set<Long> tempImgIds = Sets.newHashSet();
+            Matcher m3 = imgFalsePattern.matcher(str);
+            List<String> imgFalseList = new ArrayList<>();
+            while (m3.find()){
+                if (imgFalseList.contains(m3.group())){
+                    continue;
+                }
+                imgFalseList.add(m3.group());
+                Matcher m2 = numPattern.matcher(m3.group());
+                tempImgIds.add(Long.valueOf(m2.replaceAll("").trim()));
+            }
+            for (Long id : tempImgIds) {
+                HomeTemplateImg templateImg = homeTemplateImgService.getById(id);
+                saveToFile(imgPath + templateImg.getName() , templateImg.getFileStream());
+            }
+        }
+
         JSONObject result = new JSONObject();
         List<String> list = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
-        Map<Long,Integer> map = Maps.newHashMap();
-        Pattern strPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
-        Pattern numPattern = Pattern.compile("[^0-9]");
-        Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
+        Map<Long,Long> map = Maps.newHashMap();
         Matcher m = strPattern.matcher(str);
         while (m.find()){
             if (list.contains(m.group())){
                 continue;
             }
             list.add(m.group());
-            //System.out.println(m.group());
             Matcher m2 = numPattern.matcher(m.group());
             ids.add(Long.valueOf(m2.replaceAll("").trim()));
         }
-        Matcher vm = strPattern.matcher(str);
+        Matcher vm = videoPattern.matcher(str);
         while (vm.find()){
             videoSet.add(vm.group());
         }
-        //System.out.println(str);
         for (String string : list) {
             str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
             Matcher m2 = numPattern.matcher(string);
             map.put(Long.valueOf(m2.replaceAll("").trim()), num);
         }
-        //System.out.println(str);
         List<UploadedFile> uploadedFiles = uploadedFileService.findByIds(ids);
-        List<HomeTemplateImg> imgs = Lists.newArrayList();
         for (UploadedFile uploadedFile: uploadedFiles) {
             String name = "templateCustom_" + map.get(uploadedFile.getId()) + "." + uploadedFile.getExtension();
-            HomeTemplateImg img = new HomeTemplateImg();
-            img.setExtension(uploadedFile.getExtension());
-            img.setId(Long.valueOf(map.get(uploadedFile.getId()).toString()));
-            img.setName(name);
-            img.setFileStream(uploadedFile.getFileStream());
-            String uploadPath = this.getClass().getClassLoader().getResource("img").getFile();
-            saveToFile(uploadPath + "/home/templateCustom/" + name, uploadedFile.getFileStream());
-            imgs.add(img);
+            saveToFile(imgPath + name , uploadedFile.getFileStream());
         }
-        homeTemplateImgService.saveAll(imgs);
         result.put("list", list);
         result.put("str", str);
         result.put("num", num);
