@@ -1,15 +1,11 @@
 package com.uxsino.leaderview.rpc;
 
-import com.alibaba.fastjson.JSONArray;
-import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.leaderview.model.alert.AlertLevelQuery;
 import com.uxsino.leaderview.model.alert.AlertQuery;
 import com.uxsino.leaderview.rpc.hystrix.AlertClinetHystrixLeaderview;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 

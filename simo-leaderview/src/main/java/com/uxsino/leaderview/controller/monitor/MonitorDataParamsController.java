@@ -7,7 +7,6 @@ import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
-import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Api(tags = { "大屏数据项接口" })
+@Api(tags = { "资源-大屏展示数据项接口" })
 @RestController
 @RequestMapping("/monitor/params")
 public class MonitorDataParamsController {

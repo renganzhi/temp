@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = { "告警-大屏展示数据接口" })
+@Api(tags = { "告警-大屏展示数据项接口" })
 @RestController
 @RequestMapping("/alert/params")
 @Business(name = BusinessConstants.ALERT)
