@@ -16,7 +16,6 @@ import javax.validation.constraints.Size;
  */
 @Data
 @Entity
-@Table(name = "simo_alert_level")
 @ApiModel(description = "告警等级信息")
 public class AlertLevel {
 

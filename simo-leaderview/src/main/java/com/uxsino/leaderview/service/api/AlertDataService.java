@@ -306,7 +306,7 @@ public class AlertDataService {
         query.setRecentAlertDate(Dates.from(new Date().getTime() - 1000 * 60 * 60 * period).formatDateTime());
         AlertLevelQuery alertLevelQuery = new AlertLevelQuery();
         alertLevelQuery.setStatus(AlertLevelStatus.ACTIVATED);
-        List<AlertLevel> levels = rpcProcessService.findAlertList(alertLevelQuery);
+        List<AlertLevel> levels = rpcProcessService.findAlertLevelList(alertLevelQuery);
         List<String> levelStr = Lists.newArrayList();
         if (ObjectUtils.isEmpty(alertLevel)) {
             for (AlertLevel level : levels) {
@@ -503,7 +503,7 @@ public class AlertDataService {
         List<Integer> levelList = new ArrayList<>();
         AlertLevelQuery query = new AlertLevelQuery();
         query.setStatus(AlertLevelStatus.ACTIVATED);
-        List<AlertLevel> activeLevel = rpcProcessService.findAlertList(query);
+        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(query);
         if (Strings.isNullOrEmpty(alertLevel)) {
             for (AlertLevel level : activeLevel) {
                 levelList.add(level.getLevel());
@@ -714,7 +714,7 @@ public class AlertDataService {
             }
         }
 
-        List<AlertLevel> allLevel = rpcProcessService.findAlertList(new AlertLevelQuery());
+        List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
         if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
             return empObj();
         }
@@ -723,7 +723,7 @@ public class AlertDataService {
         if (Strings.isNullOrEmpty(levels)) {
             AlertLevelQuery query = new AlertLevelQuery();
             query.setStatus(AlertLevelStatus.ACTIVATED);
-            List<AlertLevel> activeLevel = rpcProcessService.findAlertList(query);
+            List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(query);
             for (AlertLevel level : activeLevel) {
                 chosenLevels.add(level.getLevel());
             }
@@ -831,7 +831,7 @@ public class AlertDataService {
                 AlertHandleStatus.UNTREATED);
         // data可能为空
         List<StatisticsResult> data = rpcProcessService.getLevelStatisticsResult(query);
-        List<AlertLevel> allLevel = rpcProcessService.findAlertList(new AlertLevelQuery());
+        List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
         if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
             return empObj();
         }

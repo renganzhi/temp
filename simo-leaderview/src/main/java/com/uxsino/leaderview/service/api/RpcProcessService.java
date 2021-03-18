@@ -8,15 +8,14 @@ import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
-import com.uxsino.commons.model.AlertType;
-import com.uxsino.commons.model.BaseNeClass;
-import com.uxsino.commons.model.JsonModel;
-import com.uxsino.commons.model.NeClass;
+import com.uxsino.commons.model.*;
 import com.uxsino.leaderview.model.alert.*;
+import com.uxsino.leaderview.model.business.*;
+import com.uxsino.leaderview.model.business.ManageStatus;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
+import com.uxsino.leaderview.rpc.BusinessService;
 import com.uxsino.leaderview.rpc.MonitorService;
-import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -42,6 +42,9 @@ public class RpcProcessService {
 
     @Autowired
     private AlertService alertService;
+
+    @Autowired
+    private BusinessService businessService;
 
     @Autowired
     private DomainUtils domainUtils;
@@ -237,7 +240,7 @@ public class RpcProcessService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<AlertLevel> findAlertList(AlertLevelQuery alertLevelQuery) throws Exception{
+    public List<AlertLevel> findAlertLevelList(AlertLevelQuery alertLevelQuery) throws Exception{
         Map<String, Object> map = getBeanMap(alertLevelQuery);
         JsonModel jsonModel = alertService.getAlertLevels(map);
         if (!jsonModel.isSuccess()){
@@ -381,7 +384,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return this.toJavaBeanList(jsonModel, NetworkEntity.class);
+        return toJavaBeanList(jsonModel, NetworkEntity.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -393,7 +396,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return this.toJavaBeanList(jsonModel, NetworkEntity.class);
+        return toJavaBeanList(jsonModel, NetworkEntity.class);
     }
 
     public List<String> getNeIds(NetworkEntityCriteria criteria) throws Exception{
@@ -487,7 +490,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return this.toJavaBeanList(jsonModel, IndicatorTable.class);
+        return toJavaBeanList(jsonModel, IndicatorTable.class);
     }
 
     public IndicatorTable getIndicatorInfoByName(String indicator) throws Exception{
@@ -626,6 +629,80 @@ public class RpcProcessService {
             throw new Exception(jsonModel.getMsg());
         }
         return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    public List<BusinessSystem> findBusinessSystems(BusinessQuery businessQuery) throws Exception{
+        JsonModel jsonModel = businessService.findBusinessSystems(businessQuery);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        List<BusinessSystem> businessSystems = toJavaBeanList(jsonModel, BusinessSystem.class);
+        businessSystems = businessSystems.stream().filter(b -> b.getManageStatus() != ManageStatus.Delected).collect(Collectors.toList());
+        return businessSystems;
+    }
+
+    public List<BusinessRecord> indicatorTop(BnsIndValQuery query) throws Exception{
+        return findBusinessInfoAndCurIndValues(query);
+    }
+
+    public List<BusinessRecord> findBusinessInfoAndCurIndValues(BnsIndValQuery bnsIndValQuery) throws Exception{
+        JsonModel jsonModel = businessService.findBusinessInfoAndCurIndValues(bnsIndValQuery);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, BusinessRecord.class);
+    }
+
+    public JSONObject checkPermission(BusinessRecord businessRecord, DataSourceType dataSourceType, HttpSession session) throws Exception{
+        BusinessSystem businessSystem = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(businessRecord)), BusinessSystem.class);
+        return checkPermission(businessSystem, dataSourceType, session);
+    }
+
+    @SuppressWarnings("unchecked")
+    public JSONObject checkPermission(BusinessSystem businessSystem, DataSourceType dataSourceType, HttpSession session) throws Exception{
+        String cookie = "SESSION=" + session.getId();
+        JsonModel jsonModel = businessService.checkPermission(businessSystem, dataSourceType, cookie);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseObject(JSON.toJSONString(jsonModel.getObj()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public SortWayConf findSortWayByUserId(Long userId) throws Exception{
+        JsonModel jsonModel = businessService.findSortWayByUserId(userId);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBean(jsonModel, SortWayConf.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, JSONObject> calcStatistics(Map<String, Date> bnsCreateDateMap,
+                                           Date startDate, Date endDate) throws Exception{
+        JsonModel jsonModel = businessService.calcStatistics(bnsCreateDateMap, startDate, endDate);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        Map<String, LinkedHashMap> map = (Map<String, LinkedHashMap>)jsonModel.getObj();
+        Map<String, JSONObject> result = Maps.newHashMap();
+        for (Map.Entry<String, LinkedHashMap> entry: map.entrySet()) {
+            result.put(entry.getKey(), JSON.parseObject(JSON.toJSONString(entry.getValue())));
+        }
+        return result;
+    }
+
+    public ArrayList<ArrayList> getCurrIndVal(BusinessQuery query) throws Exception{
+        return findBnsInfoBySortWay(query);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<ArrayList> findBnsInfoBySortWay(BusinessQuery query) throws Exception{
+        JsonModel jsonModel = businessService.findBnsInfoBySortWay(query);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return (ArrayList<ArrayList>) jsonModel.getObj();
     }
 
     private static <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
