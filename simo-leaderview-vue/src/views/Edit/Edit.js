@@ -88,6 +88,8 @@ export default {
       guideStation: 'static',
       AllPageId: [],
       pageIdIndex: '',
+      AllHcnetData: [], // 设备
+      AllVideoData: [], // 视频
       showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
@@ -1018,7 +1020,7 @@ export default {
             }
           }
         }
-        if (item.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+        if (item.chartType === 'v-map' || item.chartType === 'NewVMap') {
           if (!item.cityShow) {
             this.$set(item, 'cityShow', 'false')
           }
@@ -1102,7 +1104,7 @@ export default {
                 this.$set(list, 'smooth', 'true')
               }
             }
-            if (list.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+            if (list.chartType === 'v-map' || list.chartType === 'NewVMap') {
               if (!list.cityShow) {
                 this.$set(list, 'cityShow', 'false')
               }
@@ -1153,7 +1155,7 @@ export default {
           refreshTm: 5, // 刷新周期
           zIndex: ++this.maxIndex,
           colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctColors: value.chartType === 'v-map' || value.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
           ctDataSource: 'static', // 数据来源system\static，默认static
           url: '', // 请求接口
           params: {}, // 请求接口参数
@@ -1173,13 +1175,13 @@ export default {
       // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
       this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
-      if (value.chartType === 'v-map' || value.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter' || this.selectedItem.chartType === 'NewVMap') {
+      if (value.chartType === 'v-map' || value.chartType === 'v-scatter' || value.chartType === 'NewScatter' || value.chartType === 'NewVMap') {
         this.areaArr = this.provinceArr
-        if (value.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+        if (value.chartType === 'v-map' || value.chartType === 'NewVMap') {
           this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
           this.editPieces = JSON.parse(JSON.stringify(obj.piecesData))
         }
-        if (value.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+        if (value.chartType === 'v-scatter' || value.chartType === 'NewScatter') {
           this.alertMapData = _.cloneDeep(obj.chartData)
         }
       }
@@ -1366,7 +1368,7 @@ export default {
             }
             this.borderRadius = item.radius || 0
           }
-          if (item.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+          if (item.chartType === 'v-map' || item.chartType === 'NewVMap') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
           // this.s
@@ -1410,7 +1412,6 @@ export default {
           this.ifSameItems()
         }
       }
-
       if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
@@ -2290,6 +2291,50 @@ export default {
       }
       return type
     },
+    getHcnetData () {
+      var _this = this
+      var url = gbs.host + '/monitor/ne/hcnet/tree?hasPermission=true'
+      $.ajax({
+        url: url,
+        type: 'get',
+        success: function (data) {
+          _this.AllHcnetData = []
+          if (data.success) {
+            data.obj.result.forEach(element => {
+              if (element.pId === null && element.monitoring) {
+                _this.AllHcnetData.push(element)
+              } else {
+
+              }
+            })
+          } else {
+            // AllVideoData
+          }
+        }
+      })
+    },
+    getVideoDate () {
+      var _this = this
+      var url = gbs.host + `/monitor/hcnet/channelList/${this.selectedItem.HcnetData}?keyWord=&enable=&channelType=&domainId=&id=${this.selectedItem.HcnetData}&ip=`
+      //
+      $.ajax({
+        url: url,
+        type: 'get',
+        success: function (data) {
+          _this.AllVideoData = []
+          if (data.success && data.obj !== null) {
+            data.obj.indicatorValue.object.forEach(element => {
+              if (element.enable === '在线') {
+                _this.AllVideoData.push(element)
+              } else {
+              }
+            })
+          } else {
+            // AllVideoData
+          }
+        }
+      })
+    },
     // 根据选中图标类型获取可以配置的接口
     getUrlByType (flag) {
       var _this = this
@@ -2708,7 +2753,7 @@ export default {
                 _this.selectedItem.ctColors = _this.defalutColors.concat()
               }
             }
-            if (_this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+            if (_this.selectedItem.chartType === 'v-map' || _this.selectedItem.chartType === 'NewVMap') {
               _this.selectMapData = data.obj
               _this.mapDataToChart()
               _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
@@ -4057,6 +4102,9 @@ export default {
       this.$nextTick(() => {
         this.selectChange = false
       })
+      if (newV.chartType === 'JSMpeg') {
+        this.getHcnetData()
+      }
     },
     showStyleTab: function (newV) {
       if (!newV && this.selectedItem.ctDataSource !== 'static') {
@@ -4171,6 +4219,12 @@ export default {
         this.saveOldData(tempId, 'proHeight', oldV)
       }
       this.changeTogether('proHeight', newV)
+    },
+    'selectedItem.HcnetData': function (newV, oldV) {
+      if (newV !== '') {
+        this.getVideoDate()
+        this.selectedItem.VideoData = ''
+      }
     },
     'selectedItem.radius': function (newV, oldV) {
       if (!this.selectChange && newV !== oldV) {
