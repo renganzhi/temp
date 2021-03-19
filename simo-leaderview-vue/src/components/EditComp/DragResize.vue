@@ -757,11 +757,11 @@ export default {
     vdrStick () {
       return (stick) => {
         const stickStyle = {
-          width: `${stickSize / this.parentScaleX}px`,
-          height: `${stickSize / this.parentScaleY}px`
+          width: `${stickSize / this.parentScaleX * 2}px`,
+          height: `${stickSize / this.parentScaleY * 2}px`
         }
-        stickStyle[styleMapping.y[stick[0]]] = `${stickSize / this.parentScaleX / -2}px`
-        stickStyle[styleMapping.x[stick[1]]] = `${stickSize / this.parentScaleX / -2}px`
+        stickStyle[styleMapping.y[stick[0]]] = `${stickSize / this.parentScaleX / -1}px`
+        stickStyle[styleMapping.x[stick[1]]] = `${stickSize / this.parentScaleX / -1}px`
         return stickStyle
       }
     },

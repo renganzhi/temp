@@ -153,23 +153,47 @@
                   <!-- <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                             </Select2> -->
-                  <select id="shareUsers"
+                  <el-select v-model="shareUsers"
+                    multiple
+                    clearable
+                    size='mini'
+                    placeholder="请选择">
+                    <el-option
+                      v-for="(item,i) in userList"
+                      :key="i"
+                      :label="item.userName +'('+item.loginName+')'"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                  <!-- <select id="shareUsers"
                           v-model="shareUsers">
                     <option v-for="(user, index) in userList"
                             :value="user.id"
                             :key="index">{{user.userName}}({{user.loginName}})</option>
-                  </select>
+                  </select> -->
                 </div>
               </div>
               <div class="form-group">
                 <label class="page-lable">分享给角色</label>
                 <div class="page-lable-content">
-                  <select v-model="shareRoles"
+                  <!-- <select v-model="shareRoles"
                           id="shareRoles">
                     <option v-for="(role, index) in roleList"
                             :value="role.id"
                             :key="index">{{role.name}}</option>
-                  </select>
+                  </select> -->
+                  <el-select v-model="shareRoles"
+                    multiple
+                    clearable
+                    size='mini'
+                    placeholder="请选择">
+                    <el-option
+                      v-for="(item,i) in roleList"
+                      :key="i"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
               <div class="form-group"
@@ -206,12 +230,12 @@ import ExportPage from './ExportPage'
 import PreView from '@/components/PreView/PreView'
 import { gbs } from '@/config/settings'
 import Confirm from '@/components/Common/Confirm'
-import Select2 from '@/components/Common/Select2'
+// import Select2 from '@/components/Common/Select2'
 import { Notification } from 'element-ui'
 import _ from 'lodash'
 export default {
   name: 'editPage',
-  components: { AddPage, PreView, PageSetting, ImportPage, ExportPage, Confirm, Select2, Notification },
+  components: { AddPage, PreView, PageSetting, ImportPage, ExportPage, Confirm, Notification },
   data () {
     return {
       baseUrl: gbs.host,
@@ -289,8 +313,6 @@ export default {
         this.shareRoles = []
         this.shareUsers = []
       }
-      this.initSelect2('shareUsers', this.shareUsers)
-      this.initSelect2('shareRoles', this.shareRoles)
       $('#homeShareModal').modal('show')
     },
     sureShare () {
@@ -338,77 +360,11 @@ export default {
       this.axios.get('/user/findAvailableUsers?isNotMe=true').then((res) => {
         if (res.success) {
           this.userList = res.obj
-          this.initSelect2('shareUsers')
-          this.initSelect2User()
         }
       })
       this.axios.get('/role/findAllEnableRoles').then((res) => {
         if (res.success) {
           this.roleList = res.obj
-          this.initSelect2('shareRoles')
-          this.initSelect2Role()
-        }
-      })
-    },
-    initSelect2 (id, v) {
-      var value = typeof v === 'undefined' ? [] : v
-      $('#' + id).select2({
-        multiple: true,
-        closeOnSelect: false
-      }).val(value).trigger('change')
-    },
-    initSelect2User () {
-      var _this = this
-      $('#shareUsers').on('change', function () {
-        // vm.$emit('input', $(this).val())
-        _this.shareUsers = $(this).val() ? $(this).val() : []
-      }).on('select2:selecting', function (e) {
-        if (e.params && e.params.args && e.params.args.data) {
-          var v = $(this).val()
-          if (e.params.args.data.id === '') { // 选择不限
-            $(this).val([])
-          } else { // 选中其他
-            if (v && v.indexOf('') !== -1) {
-              $(this).val([e.params.args.data.id])
-            }
-          }
-        }
-      }).on('select2:unselecting', function (e) {
-        if (e.params && e.params.args && e.params.args.data) {
-          var v = $(this).val()
-          if (v && v.length === 1) {
-            if (e.params.args.data.id === '') {
-              e.preventDefault()
-            }
-            $(this).val([])
-          }
-        }
-      })
-    },
-    initSelect2Role () {
-      var _this = this
-      $('#shareRoles').on('change', function () {
-        _this.shareRoles = $(this).val() ? $(this).val() : []
-      }).on('select2:selecting', function (e) {
-        if (e.params && e.params.args && e.params.args.data) {
-          var v = $(this).val()
-          if (e.params.args.data.id === '') { // 选择不限
-            $(this).val([])
-          } else { // 选中其他
-            if (v && v.indexOf('') !== -1) {
-              $(this).val([e.params.args.data.id])
-            }
-          }
-        }
-      }).on('select2:unselecting', function (e) {
-        if (e.params && e.params.args && e.params.args.data) {
-          var v = $(this).val()
-          if (v && v.length === 1) {
-            if (e.params.args.data.id === '') {
-              e.preventDefault()
-            }
-            $(this).val([])
-          }
         }
       })
     },

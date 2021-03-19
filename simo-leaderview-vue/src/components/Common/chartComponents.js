@@ -24,6 +24,12 @@ import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
 import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
 import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
 import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
+import NewMoveTable from '@/components/EditComp/NewMoveTable' // 3D地图-柱状图
+import NewProgress from '@/components/EditComp/NewProgress' // 3D地图-柱状图
+import NewVMap from '@/components/EditComp/NewVMap' // 3D地图-柱状图
+import NewScatter from '@/components/EditComp/NewScatter' // 3D地图-柱状图
+import NewBorder from '@/components/EditComp/NewBorder' // 3D地图-柱状图
+import JSMpeg from '@/components/EditComp/JSMpeg' // 3D地图-柱状图
 import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
@@ -68,7 +74,13 @@ export default {
   NewDoubler,
   NewTime,
   NewTable,
+  NewMoveTable,
   NewNumber,
+  NewProgress,
+  NewVMap,
+  NewScatter,
+  NewBorder,
+  JSMpeg,
   DataFlow,
   GradientPie,
   Sunrise,

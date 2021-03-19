@@ -136,7 +136,7 @@ input:not([type='checkbox']):not([type='radio']),
 textarea,
 select {
     width: 270px;
-    height: 28px !important;
+    height: 28px;
     border: solid 1px #3d445a !important;
     border-radius: 3px !important;
     background-color: transparent !important;

@@ -84,7 +84,7 @@
             @palyErr="palyErr"
             :item="item"></Player>
     <template v-else-if="dynamicList.includes(item.chartType)">
-      <component :is="capitalize(item.chartType)" :item="item"></component>
+      <component :is="capitalize(item.chartType)" :item="item" :moving="false"></component>
     </template>
     <Vchart v-else
             :item="item"></Vchart>

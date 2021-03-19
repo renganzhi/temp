@@ -218,10 +218,10 @@ export default {
         },
         color: optioncolor,
         grid: {
-          left: this.item.gridTop + '%',
-          right: this.item.gridTop + '%',
+          left: this.item.gridLeft + '%',
+          right: this.item.gridRight + '%',
           top: this.item.gridTop + '%',
-          bottom: this.item.gridTop + '%',
+          bottom: this.item.gridBotton + '%',
           containLabel: true
         },
         label: {

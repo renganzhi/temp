@@ -56,7 +56,7 @@
     <Player v-else-if="item.chartType=='video'"
             :item="item"></Player>
     <template v-else-if="dynamicList.includes(item.chartType)">
-      <component :is="capitalize(item.chartType)" :item="item"></component>
+      <component :is="capitalize(item.chartType)" :item="item" :moving="true"></component>
     </template>
     <Vchart v-else
             :item="item"></Vchart>

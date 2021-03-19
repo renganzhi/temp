@@ -51,7 +51,13 @@ let config = {
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
   NewTime: require('@/components/EditComp/NewTime/config.js'),
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
+  NewBorder: require('@/components/EditComp/NewBorder/config.js'),
+  JSMpeg: require('@/components/EditComp/JSMpeg/config.js'),
+  NewMoveTable: require('@/components/EditComp/NewMoveTable/config.js'),
   NewTable: require('@/components/EditComp/NewTable/config.js'),
+  NewProgress: require('@/components/EditComp/NewProgress/config.js'),
+  NewVMap: require('@/components/EditComp/NewVMap/config.js'),
+  NewScatter: require('@/components/EditComp/NewScatter/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
   bubble: require('@/components/EditComp/bubble/config.js')
@@ -64,6 +70,7 @@ export default {
   props: [],
   data: function () {
     return {
+      imgHeightLight: 0,
       advanced: false,
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
@@ -604,7 +611,7 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     chartDataToMap () {
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         // chartData转化为input输入数据
         this.selectMapData = {}
         var tempData = this.selectedItem.chartData.rows
@@ -821,14 +828,14 @@ export default {
           // console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
-            if (this.selectedItem.chartType === 'v-map') {
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               this.initLevelData()
-            } else if (this.selectedItem.chartType === 'v-scatter') {
+            } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           } else if (this.selectedItem.mapLevel === 'city') {
             this.selectedItem.cityCode = data[0].value
-            if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           }
@@ -842,10 +849,10 @@ export default {
         this.getMapData(id).then((data) => {
           this.areaArr = data
           this.selectedItem.cityCode = id
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.initLevelData()
           }
-          if (this.selectedItem.chartType === 'v-scatter') {
+          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
             if (this.selfMapLevel && id) {
               this.clearAlertMap()
             }
@@ -1011,7 +1018,7 @@ export default {
             }
           }
         }
-        if (item.chartType === 'v-map') {
+        if (item.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
           if (!item.cityShow) {
             this.$set(item, 'cityShow', 'false')
           }
@@ -1095,7 +1102,7 @@ export default {
                 this.$set(list, 'smooth', 'true')
               }
             }
-            if (list.chartType === 'v-map') {
+            if (list.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               if (!list.cityShow) {
                 this.$set(list, 'cityShow', 'false')
               }
@@ -1146,7 +1153,7 @@ export default {
           refreshTm: 5, // 刷新周期
           zIndex: ++this.maxIndex,
           colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctColors: value.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
           ctDataSource: 'static', // 数据来源system\static，默认static
           url: '', // 请求接口
           params: {}, // 请求接口参数
@@ -1166,13 +1173,13 @@ export default {
       // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
       this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
-      if (value.chartType === 'v-map' || value.chartType === 'v-scatter') {
+      if (value.chartType === 'v-map' || value.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter' || this.selectedItem.chartType === 'NewVMap') {
         this.areaArr = this.provinceArr
-        if (value.chartType === 'v-map') {
+        if (value.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
           this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
           this.editPieces = JSON.parse(JSON.stringify(obj.piecesData))
         }
-        if (value.chartType === 'v-scatter') {
+        if (value.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
           this.alertMapData = _.cloneDeep(obj.chartData)
         }
       }
@@ -1192,7 +1199,7 @@ export default {
           this.chooseIndexs.forEach((i) => {
             this.chartNum[i]['ctColors'].splice(0, 8)
           })
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.chooseIndexs.forEach((i) => {
               this.$set(this.chartNum[i], 'ctColors', this.defMapColors.concat())
             })
@@ -1202,7 +1209,7 @@ export default {
             })
           }
         } else {
-          if (this.selectedItem.chartType !== 'v-map') {
+          if (this.selectedItem.chartType !== 'v-map' && this.selectedItem.chartType !== 'NewVMap') {
             this.chooseIndexs.forEach((i) => {
               this.$set(this.chartNum[i], 'ctColors', JSON.parse(JSON.stringify(this.defGradColors)))
             })
@@ -1212,13 +1219,13 @@ export default {
       } else {
         if (this.selectedItem.colorType === 'defalut') {
           this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
           } else {
             this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
           }
         } else {
-          if (this.selectedItem.chartType !== 'v-map') {
+          if (this.selectedItem.chartType !== 'v-map' && this.selectedItem.chartType !== 'NewVMap') {
             this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
             let newColors = JSON.parse(JSON.stringify(this.defGradColors))
             this.$set(this.selectedItem, 'ctColors', newColors)
@@ -1287,7 +1294,7 @@ export default {
       }
     },
     selected: function (item, ev, type, i) {
-      $('.select2-container--open').remove()
+      $('--open').remove()
       this.selfMapLevel = false
       if (this.childResize && ev === 'context') {
         // 内部元件的右键
@@ -1359,7 +1366,7 @@ export default {
             }
             this.borderRadius = item.radius || 0
           }
-          if (item.chartType === 'v-map') {
+          if (item.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
           // this.s
@@ -1404,7 +1411,7 @@ export default {
         }
       }
 
-      if (this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
@@ -1437,7 +1444,7 @@ export default {
         }
         // this.selectToPoint() // 这里应该不需要
       }
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.showWindowBtn = false
         // 这里是不是少了点什么
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
@@ -1508,7 +1515,7 @@ export default {
       this.parentId = index // 父级元件的序号
       this.chooseCompIndexs = []
       this.childResize = true
-      if (this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.alertMapData = []
         if (this.selectedItem.mapLevel === 'country') {
           this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
@@ -1534,7 +1541,7 @@ export default {
           })
         }
       }
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
         this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
         // 地图元件重新加载右边的区域数据
@@ -2601,7 +2608,7 @@ export default {
           return
         }
       }
-      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter' || this.selectedItem.chartType === 'NewVMap') {
         let names = _.map(this.areaArr, 'name')
         let areaName = '中国'
         // console.log(names.join(','))
@@ -2701,7 +2708,7 @@ export default {
                 _this.selectedItem.ctColors = _this.defalutColors.concat()
               }
             }
-            if (_this.selectedItem.chartType === 'v-map') {
+            if (_this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               _this.selectMapData = data.obj
               _this.mapDataToChart()
               _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
@@ -2839,10 +2846,10 @@ export default {
       } else if (this.selectedItem.chartType === 'Ueditor') {
         let content = this.$refs.ue.getUEContent()
         this.selectedItem.chartData = content
-      } else if (this.selectedItem.chartType === 'v-map') {
+      } else if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
-      } else if (this.selectedItem.chartType === 'v-scatter') {
+      } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
         console.log(this.$refs.textarea.innerText)
@@ -3551,6 +3558,7 @@ export default {
     activeSrcList (index) {
       // console.log('index: ', index);
       this.$EventBus.$emit('activeSrcList', index)
+      this.imgHeightLight = index
     },
     deleteSrcList (index) {
       this.selectedItem.srcList.splice(index, 1)
@@ -3604,6 +3612,7 @@ export default {
             src: curSrc
           })
           _this.$EventBus.$emit('activeSrcList', 0)
+          _this.imgHeightLight = 0
         }
       })
       e.target.value = ''
@@ -4280,10 +4289,10 @@ export default {
       var _this = this
       if (newValue === 'country') {
         this.areaArr = this.provinceArr
-        if (this.selectedItem.chartType === 'v-scatter') {
+        if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
           this.clearAlertMap()
         }
-        if (this.selectedItem.chartType === 'v-map') {
+        if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
           this.initLevelData()
         }
       } else if (newValue === 'city') {
@@ -4321,10 +4330,10 @@ export default {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             this.cityArr = data
             this.areaArr = data
-            if (this.selectedItem.chartType === 'v-map') {
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               this.initLevelData()
             }
-            if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           })

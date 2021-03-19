@@ -1259,11 +1259,32 @@
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
-                    <label>图元边距</label>
+                    <label>图元上边距</label>
                     <input type="number"
                            max="50"
                            min="0"
                            v-model="selectedItem.gridTop">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元下边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridBotton">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元左边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridLeft">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元右边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridRight">
                   </div>
                   <div class="m-gap form-group">tips配置</div>
                   <div class="form-group cols2">
@@ -1676,7 +1697,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','NewMarquee','ELine','NewNumber','NewTable','NewTime','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
@@ -1727,7 +1748,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'NewTime', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -1788,7 +1809,7 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'Ueditor' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'NewMarquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'NewVMap' && selectedItem.chartType != 'Ueditor'&& selectedItem.chartType!=='NewScatter' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'NewMarquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
@@ -1804,10 +1825,10 @@
                 <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
                     <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 </div>
-                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable'">
+                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
                 </div>
-                <div v-if="advanced && selectedItem.chartType==='NewTable'">
+                <div v-if="advanced && (selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable')">
                   <div class="form-group cols2">
                     <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
@@ -1876,7 +1897,7 @@
                             :value="i">{{i}}</option>
                   </select>
                 </div>
-                <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
+                <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='NewVMap'|| selectedItem.chartType==='NewScatter'||selectedItem.chartType==='v-scatter'">
                   <div class="form-group cols2">
                     <label>展示范围</label>
                     <select v-model="selectedItem.mapLevel"
@@ -1905,7 +1926,7 @@
                              @input="chgCity(selectedItem.cityCode)"></Select2>
                   </div>
                   <div class="form-group cols2"
-                       v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
+                       v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
                          title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
@@ -1914,7 +1935,7 @@
                   </div>
 
                   <div class="form-group cols2"
-                       v-show="selectedItem.chartType!=='v-scatter' && selectedItem.ctDataSource == 'static'">
+                       v-show="!(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
                          title="设置每个地区的分布数量"></i></label>
@@ -1947,7 +1968,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                      v-show="selectedItem.chartType==='v-map'"
+                      v-show="selectedItem.chartType==='v-map' || selectedItem.chartType==='NewVMap'"
                       style="position: relative;">
                   <!-- editPieces -->
                   <div class="levelTips"
@@ -1990,7 +2011,7 @@
                           @click="addMapLevel">添加量级</button>
                 </div>
                 <div class="setMapData"
-                     v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
+                     v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                   <div class="area-item"
                        v-for="(item, index) in alertMapData"
                        :key="index">
@@ -2051,7 +2072,7 @@
               </div>
               <template v-if="selectedItem.chartType == 'ppt' || selectedItem.chartType == 'BulletFrame'">
                 <draggable class="img_src_list" v-model="selectedItem.srcList" handle=".handle">
-                  <div v-for="(item, index) in selectedItem.srcList" :key="index">
+                  <div v-for="(item, index) in selectedItem.srcList" :key="index" :class="imgHeightLight==index?'heightImgName':''">
                     <span class="src_item handle" @click="activeSrcList(index)">{{item.name}}</span>
                     <span class="delete_text" @click="deleteSrcList(index)">删除</span>
                     </div>
@@ -2255,6 +2276,9 @@ html[data-theme="blueWhite"] {
     // background: #0f1321;
     opacity: 1;
   }
+}
+.heightImgName{
+  color: #0088cc;
 }
 .edui-default .edui-editor-bottomContainer{
  display: none;

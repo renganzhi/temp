@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="item.chartData.tabs" class="tab_btn_box">
+    <div v-if="item.chartData && item.chartData.tabs" class="tab_btn_box">
       <button v-for="tab in item.chartData.tabs" :key="tab"
       :class="{'tab_btn': true, 'tab_active_btn': activeTab == tab}"
       :style="btnStyle"
@@ -40,10 +40,10 @@ export default {
     if (this.item.chartType.indexOf('ve-') !== -1) { // v-chart
       let setings = {
         grid: {
-          left: this.item.gridTop + '%',
-          right: this.item.gridTop + '%',
+          left: this.item.gridLeft + '%',
+          right: this.item.gridRight + '%',
           top: this.item.gridTop + '%',
-          bottom: this.item.gridTop + '%'
+          bottom: this.item.gridBotton + '%'
         },
         axis: {
           splitLine: {
@@ -184,8 +184,14 @@ export default {
     },
     'item.gridTop': function (newV) {
       this.extend.grid.top = newV + '%'
+    },
+    'item.gridBotton': function (newV) {
       this.extend.grid.bottom = newV + '%'
+    },
+    'item.gridLeft': function (newV) {
       this.extend.grid.left = newV + '%'
+    },
+    'item.gridRight': function (newV) {
       this.extend.grid.right = newV + '%'
     },
     'item.width': function (newV, oldValue) {
@@ -469,7 +475,7 @@ export default {
       this.extend.xAxis.axisLabel.rotate = newV
     },
     'item.chartData': function (newV) {
-      if (this.item.chartType === 've-gauge') {
+      if (this.item.chartType === 've-gauge' && newV) {
         if (newV.hasOwnProperty('value') && (newV.value || newV.value === 0)) {
           this.empty = false
         } else {
@@ -592,7 +598,7 @@ export default {
     }
   },
   beforeMount: function () {
-    if (this.item.chartData.tabs) {
+    if (this.item.chartData && this.item.chartData.tabs) {
       this.activeTab = this.item.chartData.tabs[0]
     }
     if (this.item.chartType === 've-gauge') {

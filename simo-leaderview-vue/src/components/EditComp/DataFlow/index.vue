@@ -269,7 +269,16 @@ export default {
             var res = ''
             var name = params.name
             var value = params.value[2] === undefined ? params.value : params.value[2]
-            res = '<span>' + name + '</span><br/>数据：' + value
+            if (params.componentSubType === 'lines') {
+              res = '<span>' + name + '</span>'
+              if (params.data.obj) {
+                params.data.obj.forEach(element => {
+                  res = res + '<br/>' + element
+                })
+              }
+            } else {
+              res = '<span>' + name + '</span><br/>数据：' + value + params.data.unit
+            }
             return res
           }
         },
