@@ -1,8 +1,6 @@
 <template>
-  <div class="components-container">
     <div class="editor-container" ref="myEditBox">
     </div>
-  </div>
 </template>
 <script>
 import UE from '../../Common/ue'
@@ -28,3 +26,10 @@ export default {
   }
 }
 </script>
+<style>
+.editor-container{
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+</style>

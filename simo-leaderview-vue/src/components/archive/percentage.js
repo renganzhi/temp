@@ -1,6 +1,7 @@
 import {morenData} from '@/views/Edit/chartJson'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
+import NewProgress from '@/components/EditComp/NewProgress/config.js'
 
 const percentage = {
   name: '百分比图',
@@ -15,6 +16,9 @@ const percentage = {
       axisLabelSize: '16',
       legendY: 85,
       gridTop: 50,
+      gridBotton: 50,
+      gridLeft: 50,
+      gridRight: 50,
       showline: true,
       tooltipShow: 'true',
       tooltipBackColor: '#57625d',
@@ -32,6 +36,9 @@ const percentage = {
       axisLabelSize: '16',
       legendY: 85,
       gridTop: 50,
+      gridBotton: 50,
+      gridLeft: 50,
+      gridRight: 50,
       showline: true,
       tooltipShow: 'true',
       tooltipBackColor: '#57625d',
@@ -52,6 +59,9 @@ const percentage = {
       showline: true,
       detailwidth: 12,
       gridTop: 50,
+      gridBotton: 50,
+      gridLeft: 50,
+      gridRight: 50,
       tooltipShow: 'true',
       tooltipBackColor: '#57625d',
       tooltipTextColor: '#fff',
@@ -87,6 +97,9 @@ const percentage = {
       axisLabelSize: '16',
       legendY: 85,
       gridTop: 50,
+      gridBotton: 50,
+      gridLeft: 50,
+      gridRight: 50,
       tooltipShow: 'true',
       tooltipBackColor: '#57625d',
       tooltipTextColor: '#fff',
@@ -108,21 +121,22 @@ const percentage = {
     //   bgClr: '#657992',
     //   chartData: morenData.single
     // },
-    {
-      text: '进度条',
-      imgClass: 'icon-n-progress',
-      chartType: 'progress',
-      width: 300,
-      height: 50,
-      bgClr: '#062e4d',
-      barClr: '#1fc3ce',
-      barClrs: ['#1068ed', '#69b1f3'],
-      clr: '#47b8f5',
-      colorful: 'true',
-      chartData: morenData.single,
-      proHeight: 16,
-      radius: 8
-    },
+    // {
+    //   text: '进度条',
+    //   imgClass: 'icon-n-progress',
+    //   chartType: 'progress',
+    //   width: 300,
+    //   height: 50,
+    //   bgClr: '#062e4d',
+    //   barClr: '#1fc3ce',
+    //   barClrs: ['#1068ed', '#69b1f3'],
+    //   clr: '#47b8f5',
+    //   colorful: 'true',
+    //   chartData: morenData.single,
+    //   proHeight: 16,
+    //   radius: 8
+    // },
+    NewProgress.item,
     liquidfill.item
   ]
 }

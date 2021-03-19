@@ -7,82 +7,82 @@ export const gbs = {
   // host: 'http://localhost:9999/leaderview'
 }
 
-let titleCase = [
-  {
-    mini: '/leaderview/border/titleMini1.png',
-    imgSrc: '/leaderview/border/titleBg1.png'
-  },
-  {
-    mini: '/leaderview/border/titleMini2.png',
-    imgSrc: '/leaderview/border/titleBg2.png'
-  },
-  {
-    mini: '/leaderview/border/titleBg3.png',
-    imgSrc: '/leaderview/border/titleBg3.png'
-  },
-  {
-    mini: '/leaderview/border/titleBg4.png',
-    imgSrc: '/leaderview/border/titleBg4.png'
-  },
-  {
-    mini: '/leaderview/border/titleBg5.png',
-    imgSrc: '/leaderview/border/titleBg5.png'
-  }
-]
+// let titleCase = [
+//   {
+//     mini: '/leaderview/border/titleMini1.png',
+//     imgSrc: '/leaderview/border/titleBg1.png'
+//   },
+//   {
+//     mini: '/leaderview/border/titleMini2.png',
+//     imgSrc: '/leaderview/border/titleBg2.png'
+//   },
+//   {
+//     mini: '/leaderview/border/titleBg3.png',
+//     imgSrc: '/leaderview/border/titleBg3.png'
+//   },
+//   {
+//     mini: '/leaderview/border/titleBg4.png',
+//     imgSrc: '/leaderview/border/titleBg4.png'
+//   },
+//   {
+//     mini: '/leaderview/border/titleBg5.png',
+//     imgSrc: '/leaderview/border/titleBg5.png'
+//   }
+// ]
 
-for (let i = 0; i < 8; i++) {
-  // console.log('i: ', typeof i);
-  const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
-  titleCase.push({
-    mini: src,
-    imgSrc: src
-  })
-}
-for (let i = 0; i < 3; i++) {
-  // console.log('i: ', typeof i);
-  const src = `/leaderview/border/titleBg${14 + Number(i)}.png`
-  titleCase.push({
-    mini: src,
-    imgSrc: src
-  })
-}
+// for (let i = 0; i < 11; i++) {
+//   // console.log('i: ', typeof i);
+//   const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
+//   titleCase.push({
+//     mini: src,
+//     imgSrc: src
+//   })
+// }
+// for (let i = 0; i < 3; i++) {
+//   // console.log('i: ', typeof i);
+//   const src = `/leaderview/border/titleBg${14 + Number(i)}.png`
+//   titleCase.push({
+//     mini: src,
+//     imgSrc: src
+//   })
+// }
 
-let cardCase = [
-  {
-    mini: '/leaderview/border/cardMini1.png',
-    imgSrc: '/leaderview/border/cardBg1.png'
-  },
-  {
-    mini: '/leaderview/border/cardMini2.png',
-    imgSrc: '/leaderview/border/cardBg2.png'
-  },
-  {
-    mini: '/leaderview/border/cardMini3.png',
-    imgSrc: '/leaderview/border/cardBg3.png'
-  },
-  {
-    mini: '/leaderview/border/cardBg4.png',
-    imgSrc: '/leaderview/border/cardBg4.png'
-  }
-]
+// let cardCase = [
+//   {
+//     mini: '/leaderview/border/cardMini1.png',
+//     imgSrc: '/leaderview/border/cardBg1.png'
+//   },
+//   {
+//     mini: '/leaderview/border/cardMini2.png',
+//     imgSrc: '/leaderview/border/cardBg2.png'
+//   },
+//   {
+//     mini: '/leaderview/border/cardMini3.png',
+//     imgSrc: '/leaderview/border/cardBg3.png'
+//   },
+//   {
+//     mini: '/leaderview/border/cardBg4.png',
+//     imgSrc: '/leaderview/border/cardBg4.png'
+//   }
+// ]
 
-for (let i = 0; i < 11; i++) {
-  // console.log('i: ', typeof i);
-  const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
-  cardCase.push({
-    mini: src,
-    imgSrc: src
-  })
-}
+// for (let i = 0; i < 14; i++) {
+//   // console.log('i: ', typeof i);
+//   const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
+//   cardCase.push({
+//     mini: src,
+//     imgSrc: src
+//   })
+// }
 
-for (let i = 0; i < 3; i++) {
-  // console.log('i: ', typeof i);
-  const src = `/leaderview/border/cardBg${16 + Number(i)}.png`
-  cardCase.push({
-    mini: src,
-    imgSrc: src
-  })
-}
+// for (let i = 0; i < 3; i++) {
+//   // console.log('i: ', typeof i);
+//   const src = `/leaderview/border/cardBg${16 + Number(i)}.png`
+//   cardCase.push({
+//     mini: src,
+//     imgSrc: src
+//   })
+// }
 
 // 装饰器
 let decoratorCase = []
@@ -171,7 +171,7 @@ export const baseData = {
       fontName: '思源黑体Heavy'
     }
   ],
-  cardCase,
-  titleCase,
+  // cardCase,
+  // titleCase,
   decoratorCase
 }

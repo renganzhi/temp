@@ -1,10 +1,12 @@
 import {morenData} from '@/views/Edit/chartJson'
 
 import NewTable from '@/components/EditComp/NewTable/config.js'
+import NewMoveTable from '@/components/EditComp/NewMoveTable/config.js'
 const table = {
   name: '表格',
   child: [
     NewTable.item,
+    NewMoveTable.item
     // {
     //   text: '表格',
     //   imgClass: 'icon-n-table',
@@ -34,39 +36,39 @@ const table = {
     //   bdpx: 0,
     //   chartData: morenData.table
     // },
-    {
-      text: '轮播表格',
-      imgClass: 'icon-n-table',
-      chartType: 'table',
-      thirdType: 'moveTable',
-      direction: 'top',
-      speed: 2,
-      pageNum: 5,
-      heightLinght: 36,
-      hdBgClr: '#1c2132',
-      hdClr: '#cad6dd',
-      hdfontSize: 12,
-      bgClr: 'rgba(34, 40, 58, 0.5)',
-      clr: '#919cc1',
-      bdClr: '#c2c6d7',
-      Internal: 'false',
-      Zebra: 'false',
-      Alignment: 'left',
-      ZebraColor: '#343c58',
-      tableBack: '',
-      tableBackName: '',
-      AlarmField: '',
-      AlarmType: 'num',
-      OneLineType: 'default',
-      OneLineSize: 86,
-      LineSizeArry: [],
-      AlarmChart: '',
-      AlarmNumType: 'greater',
-      AlarmNum: '',
-      AlarmColor: 'red',
-      bdpx: 0,
-      chartData: morenData.table
-    }
+    // {
+    //   text: '轮播表格',
+    //   imgClass: 'icon-n-table',
+    //   chartType: 'table',
+    //   thirdType: 'moveTable',
+    //   direction: 'top',
+    //   speed: 2,
+    //   pageNum: 5,
+    //   heightLinght: 36,
+    //   hdBgClr: '#1c2132',
+    //   hdClr: '#cad6dd',
+    //   hdfontSize: 12,
+    //   bgClr: 'rgba(34, 40, 58, 0.5)',
+    //   clr: '#919cc1',
+    //   bdClr: '#c2c6d7',
+    //   Internal: 'false',
+    //   Zebra: 'false',
+    //   Alignment: 'left',
+    //   ZebraColor: '#343c58',
+    //   tableBack: '',
+    //   tableBackName: '',
+    //   AlarmField: '',
+    //   AlarmType: 'num',
+    //   OneLineType: 'default',
+    //   OneLineSize: 86,
+    //   LineSizeArry: [],
+    //   AlarmChart: '',
+    //   AlarmNumType: 'greater',
+    //   AlarmNum: '',
+    //   AlarmColor: 'red',
+    //   bdpx: 0,
+    //   chartData: morenData.table
+    // }
   ]
 }
 

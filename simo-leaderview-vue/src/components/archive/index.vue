@@ -320,7 +320,7 @@ html[data-theme="default"] {
   }
 }
 .el-menu--vertical{
-  height: 700px;
+  height: calc(100% - 210px);
   overflow: auto;
 }
 .is-opened {

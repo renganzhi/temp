@@ -20,12 +20,48 @@
         <template v-if="item.tag === 'Hint'">
         </template>
         <template v-if="item.tag === 'Color'">
+          <!-- 颜色吸管 -->
+            <!-- <input ref="MyColorInput" id="mycolor" :name="item.key" type="color" :value="selectedItem[item.key]" @drag="colorchange" @change="colorchange" style="width: 45px !important;float: right;height: 30px !important;">
+            <div class="color-w200" style="width:130px"> -->
             <div class="color-w200">
                 <Vcolor :data="selectedItem[item.key]"
                         :key="10"
                         :type="[item.key]"
                         @getdata="ChildGetColor"></Vcolor>
             </div>
+        </template>
+        <template v-if="item.tag === 'GradualColor'">
+                  <select v-model="selectedItem[item.key]"
+                          style="width: 68px !important; margin-left: 3px;">
+                    <option value="false">单色</option>
+                    <option value="true">渐变</option>
+                  </select>
+                  <div v-show="selectedItem[item.key] !== 'true'"
+                       class="color-w200"
+                       style="width: 100px;">
+                    <Vcolor :data="selectedItem[item.ColorKey]"
+                            :key="6"
+                            :type="[item.ColorKey]"
+                            @getdata="ChildGetColor"></Vcolor>
+                  </div>
+                  <div v-show="selectedItem[item.key] === 'true'"
+                       class="barGradient"
+                       @click="reverseClr"
+                       :style="{'background': 'linear-gradient(45deg, ' + selectedItem[item.DoubleColorKey][0]  +',' + selectedItem[item.DoubleColorKey][1] + ')'}">
+                    <div class="color-w15">
+                      <Vcolor :data="selectedItem[item.DoubleColorKey][0]"
+                              :key="13"
+                              :index="0"
+                              @getdata="getBarClr"></Vcolor>
+                    </div>
+                    <div class="color-w15"
+                         style="float: right">
+                      <Vcolor :data="selectedItem[item.DoubleColorKey][1]"
+                              :key="14"
+                              :index="1"
+                              @getdata="getBarClr"></Vcolor>
+                    </div>
+                  </div>
         </template>
         <template v-if="item.tag === 'ImgFile'">
             <div class="color-w200" style="position:relative">
@@ -128,6 +164,26 @@
                 @click="delColor(index)"></i>
             </div>
         </template>
+        <template v-if="item.tag === 'NewBorder'">
+          <br><br>
+          <div class="form-group">
+            <div v-for="(item, index) in cardCase"
+                  :key="index"
+                  @click="chgImgSrc(item.imgSrc)"
+                  :class="{'fl': true, 'font-case': true, 'card-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+              <img :src="baseUrl + item.mini" />
+            </div>
+          </div>
+          <label style="display: block; clear: both;">标题栏背景</label><br>
+          <div class="form-group">
+            <div v-for="(item, index) in settingData.titleCase"
+                  :key="index"
+                  @click="chgImgSrc(item.imgSrc)"
+                  :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+              <img :src="baseUrl + item.mini" />
+            </div>
+          </div>
+        </template>
     </div>
 </template>
 <script>
@@ -141,7 +197,47 @@ export default {
     return {
       baseUrl: '',
       settingData: baseData,
-      picSrc: ''
+      picSrc: '',
+      cardCase: [
+        {
+          mini: '/leaderview/border/cardMini1.png',
+          imgSrc: '/leaderview/border/cardBg1.png'
+        },
+        {
+          mini: '/leaderview/border/cardMini2.png',
+          imgSrc: '/leaderview/border/cardBg2.png'
+        },
+        {
+          mini: '/leaderview/border/cardMini3.png',
+          imgSrc: '/leaderview/border/cardBg3.png'
+        },
+        {
+          mini: '/leaderview/border/cardBg4.png',
+          imgSrc: '/leaderview/border/cardBg4.png'
+        }
+      ],
+      titleCase: [
+        {
+          mini: '/leaderview/border/titleMini1.png',
+          imgSrc: '/leaderview/border/titleBg1.png'
+        },
+        {
+          mini: '/leaderview/border/titleMini2.png',
+          imgSrc: '/leaderview/border/titleBg2.png'
+        },
+        {
+          mini: '/leaderview/border/titleBg3.png',
+          imgSrc: '/leaderview/border/titleBg3.png'
+        },
+        {
+          mini: '/leaderview/border/titleBg4.png',
+          imgSrc: '/leaderview/border/titleBg4.png'
+        },
+        {
+          mini: '/leaderview/border/titleBg5.png',
+          imgSrc: '/leaderview/border/titleBg5.png'
+        }
+      ]
     }
   },
   beforeMount () {
@@ -150,6 +246,25 @@ export default {
       this.baseUrl = gbs.host
     }
   },
+  mounted: function () {
+    for (let i = 0; i < 11; i++) {
+      // console.log('i: ', typeof i);
+      const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
+      this.titleCase.push({
+        mini: src,
+        imgSrc: src
+      })
+    }
+    for (let i = 0; i < 14; i++) {
+      // console.log('i: ', typeof i);
+      const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
+      this.cardCase.push({
+        mini: src,
+        imgSrc: src
+      })
+    }
+  },
+
   computed: {
     itemsShow: function () {
       let canShow = true
@@ -174,6 +289,9 @@ export default {
   methods: {
     setFontFamily: function (val) {
       this.selectedItem.fontFamily = val
+    },
+    chgImgSrc (imgSrc) {
+      this.selectedItem[this.item.key] = imgSrc
     },
     uploadVideo (e) {
       // field, that
@@ -251,22 +369,44 @@ export default {
         this.selectedItem[this.item.keyName] = ''
       }
     },
+    getBarClr (data) {
+      // this.saveHistory()
+      this.selectedItem[this.item.DoubleColorKey].splice(data.index, 1, data.color)
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.DoubleColorKey].splice(data.index, 1, data.color)
+        })
+      }
+    },
+    reverseClr () {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.DoubleColorKey].reverse()
+        })
+      } else {
+        this.selectedItem[this.item.DoubleColorKey].reverse()
+      }
+    },
     ChildGetColor (data) {
       // this.saveHistory()
-      if (data.type !== undefined) {
-        if (data.ColorNum) {
-          if (data.ColorNum === 1) {
-            this.selectedItem[data.type] = [data.color, this.selectedItem[data.type][1]]
+      if (this.item.chartType === 'NewProgress') {
+        this.selectedItem[data.type] = data.color
+      } else {
+        if (data.type !== undefined) {
+          if (data.ColorNum) {
+            if (data.ColorNum === 1) {
+              this.selectedItem[data.type] = [data.color, this.selectedItem[data.type][1]]
+            } else {
+              this.selectedItem[data.type] = [this.selectedItem[data.type][0], data.color]
+            }
           } else {
-            this.selectedItem[data.type] = [this.selectedItem[data.type][0], data.color]
+            this.selectedItem[data.type] = data.color
           }
         } else {
-          this.selectedItem[data.type] = data.color
+          // 用来解决不能监听直接赋值的数组变化
+          this.selectedItem.ctColors.splice(data.index, 1)
+          this.selectedItem.ctColors.splice(data.index, 0, data.color)
         }
-      } else {
-        // 用来解决不能监听直接赋值的数组变化
-        this.selectedItem.ctColors.splice(data.index, 1)
-        this.selectedItem.ctColors.splice(data.index, 0, data.color)
       }
     },
     uploadFile: function (type, formData, cb) {
@@ -375,6 +515,11 @@ export default {
           this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
         }
       }
+    },
+    colorchange () {
+      var color = this.$refs.MyColorInput.value
+      var name = this.$refs.MyColorInput.name
+      this.selectedItem[name] = color
     },
     delColor (index) {
       // 删除自定义颜色

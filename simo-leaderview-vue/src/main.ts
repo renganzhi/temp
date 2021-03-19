@@ -7,6 +7,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './vuex/store'
+import '../static/js/jsmpeg.min'
 
 // import VueAxios from 'vue-axios'
 // import axios from '../config/axios-init'
@@ -35,6 +36,7 @@ if (gbs.inDev) {
 }
 
 Vue.prototype.$EventBus = new Vue()
+Vue.prototype.$MyEventBus = new Vue()
 /* eslint-disable no-new */
 ;(window as any).vm = new Vue({
   el: '#app',

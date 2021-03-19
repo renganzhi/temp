@@ -27,7 +27,7 @@ var colorSet = [
   '#cc8241'
 ]
 
-function cutWord(width, word) {
+function cutWord (width, word) {
   let count = Math.round(width / 20)
   if (word.length <= count) {
     return word
@@ -36,7 +36,7 @@ function cutWord(width, word) {
   }
 }
 
-function createItem(options) {
+function createItem (options) {
   let circle = document.createElement('div')
   const { size, name, value, color, marginTop, marginLeft, floatDir } = options
 
@@ -61,7 +61,7 @@ function createItem(options) {
   return circle
 }
 
-async function createBubble(width, height, chartData) {
+async function createBubble (width, height, chartData) {
   let bubbleBox = document.getElementById('bubbleBox')
   if (bubbleBox) {
     bubbleBox.remove()
@@ -71,7 +71,8 @@ async function createBubble(width, height, chartData) {
   container.classList.toggle('clear_float', true)
   // .setAttribute('id', 'bubbleDom')
   container.style.width = `${width}px`
-  //   container.style.position = 'absolute'
+  container.style.left = `${width * -1}px`
+  container.style.position = 'absolute'
   //   container.style.top = 0
   //   container.style.left = 0
   // container.style.visibility = 'hidden'
