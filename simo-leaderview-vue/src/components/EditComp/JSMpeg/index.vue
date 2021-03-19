@@ -25,7 +25,7 @@ export default {
     return {
       player: '',
       baseUrl: '',
-      vidoeShow: true
+      vidoeShow: false
     }
   },
   computed: {
@@ -36,25 +36,37 @@ export default {
       }
     }
   },
+  watch: {
+    'item.VideoData': function (newV) {
+      if (newV !== '') {
+        this.vidoeShow = true
+        this.getVideo()
+      } else {
+        this.vidoeShow = false
+      }
+    }
+  },
   mounted () {
-    let url = `ws://${location.host}/video/play?neId=3bcd576a-6382-4312-9448-35fff1ed59e3&stream=sub&channel=1`
-    // let url = 'ws://192.100.100.42:9999/video/play?neId=3bcd576a-6382-4312-9448-35fff1ed59e3&stream=sub&channel=1'
-    this.player = new JSMpeg.Player(url, {
-      canvas: this.$refs.canvas,
-      loop: false,
-      preserveDrawingBuffer: true
-    })
   },
   beforeMount () {
     var reg = /^\/api/
     if (!reg.test(this.item.imgSrc)) {
-      console.log(location.host)
       this.baseUrl = gbs.host
       // this.baseUrl = gbs.host + '/leaderview'
     }
   },
-  methods: {},
-  watch: {},
+  methods: {
+    getVideo: function () {
+      if (this.item.HcnetData !== '' && this.item.VideoData !== '') {
+        let url = `ws://${location.host}/video/play?neId=${this.item.HcnetData}&stream=sub&channel=${this.item.VideoData}`
+        this.player = new JSMpeg.Player(url, {
+          canvas: this.$refs.canvas,
+          loop: false,
+          preserveDrawingBuffer: true
+        })
+      }
+    }
+  },
   beforeDestroy () {
     this.player && this.player.destroy()
     this.recorder && this.recorder.state === 'recording' && this.recorder.stop()

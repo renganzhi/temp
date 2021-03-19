@@ -1739,6 +1739,20 @@
                          @change='changeImg' />
                 </div>
               </div>
+              <div v-show="['JSMpeg'].includes(selectedItem.chartType)">
+                <div class="form-group cols2">
+                  <label>选择设备</label>
+                  <select v-model="selectedItem.HcnetData">
+                    <option v-for="(val,key) in AllHcnetData" :key="key" :value="val.id">{{val.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>选择视频</label>
+                  <select v-model="selectedItem.VideoData">
+                    <option v-for="(val,key) in AllVideoData" :key="key" :value="val.channel">{{val.ip}}</option>
+                  </select>
+                </div>
+              </div>
               <div v-show="selectedItem.chartType == 'NewTime'">
                 <div class="form-group cols2">
                   <label>取值来源</label>
@@ -1748,7 +1762,7 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2210,24 +2224,26 @@ html[data-theme="blueWhite"] {
     color: #444 !important;
   }
 }
-.el-collapse-item__header{
-  background-color: transparent;
-  border-bottom: 1px solid transparent;
-  font-weight: bold;
-  color: inherit
-}
-.el-collapse-item__wrap{
-  background-color: transparent;
-  border-bottom: 1px solid transparent;
-}
-.el-collapse-item__content{
-  padding-top: 25px;
-  padding-bottom: 0px;
-  color: inherit
-}
-.el-collapse{
-      border-top: 1px solid transparent;
+.m-tabMain{
+  .el-collapse-item__header{
+    background-color: transparent;
     border-bottom: 1px solid transparent;
+    font-weight: bold;
+    color: inherit
+  }
+  .el-collapse-item__wrap{
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+  }
+  .el-collapse-item__content{
+    padding-top: 25px;
+    padding-bottom: 0px;
+    color: inherit
+  }
+  .el-collapse{
+        border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+  }
 }
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
