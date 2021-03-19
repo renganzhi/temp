@@ -3,17 +3,29 @@
        :style="JSMpegStyle">
     <canvas
       ref="canvas"
+      v-if="vidoeShow"
       class="canvas"
     />
+    <div class="v-charts-data-empty"
+        v-show="!vidoeShow"
+        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
+    </div>
   </div>
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   name: 'JSMpeg',
   props: ['item'],
   data () {
     return {
-      player: ''
+      player: '',
+      baseUrl: '',
+      vidoeShow: true
     }
   },
   computed: {
@@ -25,13 +37,21 @@ export default {
     }
   },
   mounted () {
-    // let url = `ws://${location.host}/video/play?neId=${pram.neId}&stream=sub&channel=${pram.channel}`
-    let url = 'ws://192.168.1.135:9999/video/play?neId=4ed1da95-e3dc-4e83-9a97-7a1243157b2b&stream=sub&channel=1'
+    let url = `ws://${location.host}/video/play?neId=3bcd576a-6382-4312-9448-35fff1ed59e3&stream=sub&channel=1`
+    // let url = 'ws://192.100.100.42:9999/video/play?neId=3bcd576a-6382-4312-9448-35fff1ed59e3&stream=sub&channel=1'
     this.player = new JSMpeg.Player(url, {
       canvas: this.$refs.canvas,
       loop: false,
       preserveDrawingBuffer: true
     })
+  },
+  beforeMount () {
+    var reg = /^\/api/
+    if (!reg.test(this.item.imgSrc)) {
+      console.log(location.host)
+      this.baseUrl = gbs.host
+      // this.baseUrl = gbs.host + '/leaderview'
+    }
   },
   methods: {},
   watch: {},
