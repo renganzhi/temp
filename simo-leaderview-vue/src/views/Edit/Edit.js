@@ -949,6 +949,9 @@ export default {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
+        if (!res.obj.viewConf) {
+          res.obj.viewConf = []
+        }
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
           if (res.obj.paintObj) {
@@ -3146,6 +3149,7 @@ export default {
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
+        this.resetPaint()
         if (this.showNextType === 0) {
           this.upOnePage()
         } else if (this.showNextType === 1) {
@@ -4223,8 +4227,10 @@ export default {
     'selectedItem.HcnetData': function (newV, oldV) {
       if (newV !== '') {
         this.getVideoDate()
-        this.selectedItem.VideoData = ''
       }
+    },
+    'selectedItem.VideoData': function (newV, oldV) {
+      console.log(this.selectedItem.VideoData)
     },
     'selectedItem.radius': function (newV, oldV) {
       if (!this.selectChange && newV !== oldV) {
