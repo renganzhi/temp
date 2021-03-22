@@ -307,7 +307,6 @@
             }
         ]
     },
-    //TODO 待测
     {
         "key": "enable_business_history_indicator_statistics",
         "name": "指标历史统计-业务",
@@ -354,6 +353,17 @@
                         "value": "_1month"
                     }
                 ]
+            },
+            {
+                "key": "interval",
+                "name": "时间间隔",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getInterval",
+                "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
+                "params": ["period"]
             }
         ]
     },

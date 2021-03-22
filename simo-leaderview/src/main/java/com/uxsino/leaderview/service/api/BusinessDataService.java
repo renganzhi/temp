@@ -16,6 +16,7 @@ import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.commons.utils.TimeUtils;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.business.*;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -362,13 +363,27 @@ public class BusinessDataService {
         columns.add("采集时间");
         Date endDate = new Date();
         Date startDate = new Date();
+        int interval = 1;
         if ("_1day".equals(period)){
             startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L));
+            interval = 5;
         }else if ("_1week".equals(period)){
             startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L * 7));
+            interval = 60 * 8;
         }else if ("_1month".equals(period)){
             startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L * 30));
+            interval = 60 * 12;
         }
+
+        List<Date> allDate = Lists.newArrayList();
+        Date tempDate = new Date(startDate.getTime());
+        Date tempEnd = new Date(endDate.getTime() + 1000 * 60 * interval);
+        while (tempDate.before(tempEnd)) {
+            Date itm = new Date(tempDate.getTime());
+            allDate.add(itm);
+            tempDate.setTime(tempDate.getTime() + 1000 * 60 * interval);
+        }
+
         //进行权限过滤
         JSONArray businessArr = getBusStatus(session, business);
         JSONObject allData = new JSONObject();
@@ -381,7 +396,21 @@ public class BusinessDataService {
             query.setEndDate(endDate);
             query.setPagination(false);
             JSONArray arr = rpcProcessService.findBnsHistoryValue(query);
-            allData.put(businessArr.getJSONObject(i).getString("name"), arr);
+            JSONArray filArr = new JSONArray();
+            // 遍历一遍数组，按照时间取值
+            for (int j = 0; j < allDate.size() - 1; j++) {
+                Long start = allDate.get(j).getTime();
+                Long end = allDate.get(j + 1).getTime();
+                JSONArray array = new JSONArray(arr);
+                array = MonitorUtils.filter(array, data -> data.getLong("fetchDate") < end && data.getLong("fetchDate") > start);
+                if (!ObjectUtils.isEmpty(array)){
+                    JSONObject obj = array.getJSONObject(0);
+                    obj.put("fetchDate", start);
+                    filArr.add(obj);
+                }
+            }
+            allData.put(businessArr.getJSONObject(i).getString("name"), filArr);
+
         }
         //组装返回数据
         JSONArray wrapArr = new JSONArray();
