@@ -3,7 +3,7 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
@@ -29,7 +29,7 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "Dashboard,liquidfill,progress",
+        "type": "Dashboard,liquidfill,NewProgress",
         "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
@@ -361,7 +361,7 @@
         "key": "business_count",
         "name": "全局统计-业务",
         "component": "business",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/business/countBusiness",
         "method" : "get",
         "params": [
