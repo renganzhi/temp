@@ -211,7 +211,7 @@ div.edui-box {
 
 .edui-default .edui-editor-bottomContainer {
   overflow: hidden;
-  /* display: none; */
+  display: none;
 }
 
 .edui-default .edui-editor-bottomContainer table {
