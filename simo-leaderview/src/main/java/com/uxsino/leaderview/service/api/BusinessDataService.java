@@ -181,6 +181,9 @@ public class BusinessDataService {
         List<String> businessList = Lists.newArrayList();
         List<String> nameList = Lists.newArrayList();
         JSONArray businessArr = getBusStatus(session, business);
+        if(ObjectUtils.isEmpty(businessArr)){
+            return new JsonModel(true, empObj());
+        }
         Iterator<Object> it = businessArr.iterator();
         for (JSONObject obj = (JSONObject) it.next(); it.hasNext();){
             businessList.add(obj.getString("id"));

@@ -723,7 +723,7 @@
         "key": "enable_monitor_indicator_statistics",
         "name": "指标统计-按资源",
         "component": "monitor",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/indicator/value",
         "method" : "get",
         "params": [
@@ -799,7 +799,7 @@
         "key": "enable_monitor_indicator_percent_statistics",
         "name": "指标统计-按资源",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,progress",
+        "type": "Dashboard,liquidfill,NewProgress",
         "url": "/leaderview/monitor/indicator/value",
         "method" : "get",
         "params": [
@@ -1219,7 +1219,7 @@
         "key": "ne_count",
         "name": "全局统计-资源",
         "component": "monitor",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/countNe",
         "method" : "get",
         "params": [
@@ -1262,7 +1262,7 @@
         "key": "neLink_count",
         "name": "全局统计-链路",
         "component": "monitor",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/countNeLink",
         "method" : "get",
         "params": [
@@ -1289,7 +1289,7 @@
         "key": "alert_count",
         "name": "全局统计-告警",
         "component": "alert",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/alert/countAlert",
         "method" : "get",
         "params": [
@@ -1467,7 +1467,7 @@
         "key": "enable_monitor_network_statistics",
         "name": "指标统计-链路",
         "component": "monitor",
-        "type": "doubler,number",
+        "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/indicator/valueNetwork",
         "method" : "get",
         "params": [
@@ -1537,7 +1537,7 @@
         "key": "enable_monitor_network_statistics",
         "name": "指标统计-链路",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,progress",
+        "type": "Dashboard,liquidfill,NewProgress",
         "url": "/leaderview/monitor/indicator/valueNetwork",
         "method" : "get",
         "params": [
