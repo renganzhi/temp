@@ -133,7 +133,7 @@ export default {
       paintObj: {
         width: 1920,
         height: 1080,
-        bgColor: '',
+        bgColor: '#141929',
         bgImg: '',
         scale: 100,
         bgStyle: '3', // 背景图铺满方式
@@ -950,7 +950,7 @@ export default {
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
-          res.obj.viewConf = []
+          res.obj.viewConf = '[]'
         }
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
@@ -2163,7 +2163,7 @@ export default {
       this.paintInput.height = 1080
       this.paintObj.width = 1920
       this.paintObj.height = 1080
-      this.paintObj.bgColor = ''
+      this.paintObj.bgColor = '#141929'
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
