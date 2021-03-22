@@ -3,7 +3,7 @@
         "key": "enable_ne_num_statistics",
         "name": "资源统计-按类型",
         "component": "monitor",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByClass",
         "method" : "get",
         "params": [
@@ -29,7 +29,7 @@
         "key": "enable_ne_status_statistics",
         "name": "资源统计-按状态",
         "component": "monitor",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByStatus",
         "method" : "get",
         "params": [
@@ -116,7 +116,7 @@
         "key": "enable_indicator_topn",
         "name": "指标TOPN-按资源",
         "component": "monitor",
-        "type": "ve-histogram",
+        "type": "ve-histogram,NewHistogram",
         "url": "/leaderview/monitor/indicator/topN",
         "method" : "post",
         "params": [
@@ -230,7 +230,7 @@
         "key": "enable_indicator_topn",
         "name": "指标TOPN-按资源",
         "component": "monitor",
-        "type": "ve-bar",
+        "type": "ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/topN?bar=true",
         "method" : "post",
         "params": [
@@ -344,7 +344,7 @@
         "key": "enable_alert_level_statistics",
         "name": "告警统计-按级别",
         "component": "alert",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar,NewBar",
         "url": "/leaderview/alert/getStatByLevel",
         "method" : "post",
         "params": [
@@ -396,7 +396,7 @@
         "key": "enable_alert_class_statistics",
         "name": "告警统计-按资源类型",
         "component": "alert",
-        "type": "groupHistogram",
+        "type": "groupHistogram,NewGroupHistogram",
         "url": "/leaderview/alert/getStatByClass",
         "method" : "post",
         "params": [
@@ -483,7 +483,7 @@
         "key": "enable_multiple_ne_indicator_statistics",
         "name": "多资源多指标统计",
         "component": "monitor",
-        "type": "groupHistogram",
+        "type": "groupHistogram,NewGroupHistogram",
         "url": "/leaderview/monitor/indicator/multipleIndicator",
         "method" : "post",
         "params": [
@@ -1784,7 +1784,7 @@
         "key": "double_indicator_statistics",
         "name": "多指标历史统计",
         "component": "monitor",
-        "type": "doubleAxis",
+        "type": "doubleAxis,NewDoubleAxis",
         "url": "/leaderview/monitor/multiple_indicator/recordDoubleAxis",
         "method" : "get",
         "params": [
