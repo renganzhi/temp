@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 @Api(tags = { "业务-大屏展示数据项接口" })
 @RestController
 @RequestMapping("/business/params")
-@Business(name = BusinessConstants.BUSINESS)
+//@Business(name = BusinessConstants.BUSINESS)
 @Slf4j
 public class BusinessParamsController {
 

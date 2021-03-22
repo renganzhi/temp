@@ -20,7 +20,7 @@ import java.util.Map;
 @Api(tags = { "业务-大屏展示数据接口" })
 @RestController
 @RequestMapping("/business")
-@Business(name = BusinessConstants.BUSINESS)
+//@Business(name = BusinessConstants.BUSINESS)
 @Slf4j
 public class BusinessDataController {
 
