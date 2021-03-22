@@ -1092,7 +1092,7 @@
         "key": "alert_ne_info",
         "name": "资源告警信息",
         "component": "alert",
-        "type": "table",
+        "type": "NewMoveTable,NewTable",
         "url": "/leaderview/alert/getAlertInfo",
         "method" : "post",
         "params": [
@@ -1391,7 +1391,7 @@
         "key": "enable_monitor_indicator_statistics_table",
         "name": "字符串指标",
         "component": "monitor",
-        "type": "table",
+        "type": "NewMoveTable,NewTable",
         "url": "/leaderview/monitor/indicator/valueStrTable",
         "method" : "get",
         "params": [
@@ -1595,7 +1595,7 @@
         "key": "enable_monitor_network_statistics_table",
         "name": "链路展示",
         "component": "monitor",
-        "type": "table",
+        "type": "NewMoveTable,NewTable",
         "url": "/leaderview/monitor/networkTable",
         "method" : "get",
         "params": [
@@ -1711,7 +1711,7 @@
         "key": "alert_table",
         "name": "其他告警信息",
         "component": "alert",
-        "type": "table",
+        "type": "NewMoveTable,NewTable",
         "url": "/leaderview/alert/getOtherAlertTable",
         "method" : "get",
         "params": [
