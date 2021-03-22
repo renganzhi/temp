@@ -8,6 +8,7 @@ import '../../../static/UE/ueditor.config.js'
 import '../../../static/UE/ueditor.all.js'
 import '../../../static/UE/lang/zh-cn/zh-cn.js'
 import '../../../static/UE/ueditor.parse.js'
+import '../../../static/UE/themes/default/css/ueditor.css'
 export default {
   name: 'UE',
   data () {

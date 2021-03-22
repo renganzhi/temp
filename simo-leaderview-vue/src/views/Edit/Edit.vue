@@ -2296,8 +2296,10 @@ html[data-theme="blueWhite"] {
 .heightImgName{
   color: #0088cc;
 }
-.edui-default .edui-editor-bottomContainer{
- display: none;
+.edui-default {
+  ::deep .edui-editor-bottomContainer{
+    display: none;
+  }
 }
 .edui-default {
   ::deep .edui1677_message_holder{
