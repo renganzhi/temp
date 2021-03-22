@@ -1924,7 +1924,7 @@
         "key": "network_status_division",
         "name": "资源状态分布",
         "component": "monitor",
-        "type": "v-map",
+        "type": "NewVMap",
         "url": "/leaderview/monitor/v_map/neDivision",
         "method" : "get",
         "params": [
@@ -1942,7 +1942,7 @@
         "key": "alert_division",
         "name": "告警分布",
         "component": "alert",
-        "type": "v-map",
+        "type": "NewVMap",
         "url": "/leaderview/alert/v_map/alertDivision",
         "method" : "get",
         "params": [
@@ -1981,7 +1981,7 @@
         "key": "alert_level_division",
         "name": "实时告警",
         "component": "alert",
-        "type": "v-scatter",
+        "type": "NewScatter",
         "url": "/leaderview/alert/v_scatter/alertLevelDivision",
         "method" : "get"
     },
