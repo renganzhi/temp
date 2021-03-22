@@ -109,7 +109,6 @@ export default {
       }
     },
     widthArry: function () {
-      console.log(this.item.LineSizeArry)
       let arr = this.item.LineSizeArry || []
       this.item.chartData.columns.forEach((element, i) => {
         if (arr[i]) {

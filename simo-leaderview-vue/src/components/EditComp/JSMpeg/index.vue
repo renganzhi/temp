@@ -3,7 +3,7 @@
        :style="JSMpegStyle">
     <canvas
       ref="canvas"
-      v-if="vidoeShow"
+      v-show="vidoeShow"
       class="canvas"
     />
     <div class="v-charts-data-empty"
@@ -24,8 +24,7 @@ export default {
   data () {
     return {
       player: '',
-      baseUrl: '',
-      vidoeShow: false
+      baseUrl: ''
     }
   },
   computed: {
@@ -33,6 +32,13 @@ export default {
       return {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
+      }
+    },
+    vidoeShow: function () {
+      if (this.item.HcnetData !== '' && this.item.VideoData !== '') {
+        return true
+      } else {
+        return false
       }
     }
   },
