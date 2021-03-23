@@ -3,7 +3,7 @@
         "key": "enable_ne_num_statistics",
         "name": "资源统计-按类型",
         "component": "monitor",
-        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByClass",
         "method" : "get",
         "params": [
@@ -29,7 +29,7 @@
         "key": "enable_ne_status_statistics",
         "name": "资源统计-按状态",
         "component": "monitor",
-        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByStatus",
         "method" : "get",
         "params": [
@@ -55,7 +55,7 @@
         "key": "enable_ne_status_list",
         "name": "资源状态列表",
         "component": "monitor",
-        "type": "table",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/monitor/neList",
         "method" : "post",
         "params": [
@@ -344,7 +344,7 @@
         "key": "enable_alert_level_statistics",
         "name": "告警统计-按级别",
         "component": "alert",
-        "type": "ve-pie,ve-ring,ve-histogram,NewHistogram,ve-bar,NewBar,NewBar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/alert/getStatByLevel",
         "method" : "post",
         "params": [
@@ -430,7 +430,7 @@
         "key": "enable_alert_class_radar_statistics",
         "name": "告警统计-按资源类型",
         "component": "alert",
-        "type": "ve-radar",
+        "type": "ve-radar,NewRadar",
         "url": "/leaderview/alert/getStatByClassForRadar",
         "method" : "post",
         "params": [
@@ -550,7 +550,7 @@
         "key": "enable_multiple_ne_indicator_statistics_percent",
         "name": "多资源多指标统计",
         "component": "monitor",
-        "type": "ve-radar",
+        "type": "ve-radar,NewRadar",
         "url": "/leaderview/monitor/indicator/multipleIndicator",
         "method" : "post",
         "params": [
@@ -799,7 +799,7 @@
         "key": "enable_monitor_indicator_percent_statistics",
         "name": "指标统计-按资源",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress",
         "url": "/leaderview/monitor/indicator/value",
         "method" : "get",
         "params": [
@@ -1092,7 +1092,7 @@
         "key": "alert_ne_info",
         "name": "资源告警信息",
         "component": "alert",
-        "type": "NewMoveTable,NewTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/alert/getAlertInfo",
         "method" : "post",
         "params": [
@@ -1183,7 +1183,7 @@
         "key": "alert_ne_info_for_text",
         "name": "资源告警信息",
         "component": "alert",
-        "type": "NEWtextArea,marquee",
+        "type": "NEWtextArea,marquee,NewMarquee",
         "url": "/leaderview/alert/getAlertInfoForText",
         "method" : "post",
         "params": [
@@ -1315,7 +1315,7 @@
         "key": "enable_monitor_indicator_statistics_str",
         "name": "字符串指标",
         "component": "monitor",
-        "type": "NEWtextArea,marquee",
+        "type": "NEWtextArea,marquee,NewMarquee",
         "url": "/leaderview/monitor/indicator/valueStr",
         "method" : "get",
         "params": [
@@ -1391,7 +1391,7 @@
         "key": "enable_monitor_indicator_statistics_table",
         "name": "字符串指标",
         "component": "monitor",
-        "type": "NewMoveTable,NewTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/monitor/indicator/valueStrTable",
         "method" : "get",
         "params": [
@@ -1537,7 +1537,7 @@
         "key": "enable_monitor_network_statistics",
         "name": "指标统计-链路",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress",
         "url": "/leaderview/monitor/indicator/valueNetwork",
         "method" : "get",
         "params": [
@@ -1595,7 +1595,7 @@
         "key": "enable_monitor_network_statistics_table",
         "name": "链路展示",
         "component": "monitor",
-        "type": "NewMoveTable,NewTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/monitor/networkTable",
         "method" : "get",
         "params": [
@@ -1672,7 +1672,7 @@
         "key": "alert_info",
         "name": "其他告警信息",
         "component": "alert",
-        "type": "NEWtextArea,marquee",
+        "type": "NEWtextArea,marquee,NewMarquee",
         "url": "/leaderview/alert/getOtherAlertInfo",
         "method" : "get",
         "params": [
@@ -1711,7 +1711,7 @@
         "key": "alert_table",
         "name": "其他告警信息",
         "component": "alert",
-        "type": "NewMoveTable,NewTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/alert/getOtherAlertTable",
         "method" : "get",
         "params": [
@@ -1989,7 +1989,7 @@
         "key": "multi_component_statistics",
         "name": "同资源多部件统计",
         "component": "monitor",
-        "type": "ve-radar",
+        "type": "ve-radar,NewRadar",
         "url": "/leaderview/monitor/indicator/multipleComponent",
         "method" : "get",
         "params": [

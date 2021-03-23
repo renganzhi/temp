@@ -29,7 +29,7 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "Dashboard,liquidfill,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress",
         "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
@@ -55,7 +55,7 @@
         "key": "business_indicator_statistics",
         "name": "多业务多指标统计",
         "component": "business",
-        "type": "groupHistogram,ve-radar",
+        "type": "groupHistogram,NewGroupHistogram,ve-radar,NewRadar",
         "url": "/leaderview/business/multipleBusinessIndicator",
         "method" : "get",
         "params": [
@@ -83,7 +83,7 @@
         "key": "enable_business_status_statistics",
         "name": "业务统计-按状态",
         "component": "business",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/business/businessStatisticsByStatus",
         "method" : "get",
         "params": [
@@ -97,12 +97,11 @@
             }
         ]
     },
-    //TODO 待测
     {
         "key": "enable_alert_business_statistics",
         "name": "告警统计-按业务",
         "component": "business",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/business/getStatByBusiness",
         "method" : "get",
         "params": [
@@ -121,7 +120,7 @@
         "key": "enable_business_indicator_topn",
         "name": "指标TOPN-按业务",
         "component": "business",
-        "type": "ve-histogram",
+        "type": "ve-histogram,NewHistogram",
         "url": "/leaderview/business/getIndicatorTOPN",
         "method" : "post",
         "params" : [
@@ -185,7 +184,7 @@
         "key": "enable_business_indicator_topn",
         "name": "指标TOPN-按业务",
         "component": "business",
-        "type": "ve-bar",
+        "type": "ve-bar,NewBar",
         "url": "/leaderview/business/getIndicatorTOPN?bar=true",
         "method" : "post",
         "params" : [
@@ -249,7 +248,7 @@
         "key": "enable_alert_business_info_table",
         "name": "业务告警信息",
         "component": "business",
-        "type": "NewMoveTable,NewTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/business/getBusinessAlertInfoForTable",
         "method" : "get",
         "params": [
@@ -292,7 +291,7 @@
         "key": "enable_alert_business_info_text",
         "name": "业务告警信息",
         "component": "business",
-        "type": "NEWtextArea,marquee",
+        "type": "NEWtextArea,marquee,NewMarquee",
         "url": "/leaderview/business/getBusinessAlertInfoForText",
         "method" : "get",
         "params": [
