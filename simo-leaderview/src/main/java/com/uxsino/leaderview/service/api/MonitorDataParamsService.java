@@ -764,7 +764,8 @@ public class MonitorDataParamsService {
                         break;
                     case "STRING":
                         fields = filter(fields, o -> FieldType.PERCENT.toString().equals(o.getString("fieldType"))
-                                || FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                                || FieldType.NUMBER.toString().equals(o.getString("fieldType"))
+                                || FieldType.STRING.toString().equals(o.getString("fieldType")));
                         break;
                 }
             }

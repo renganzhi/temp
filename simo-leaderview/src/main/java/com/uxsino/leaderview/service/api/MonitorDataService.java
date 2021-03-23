@@ -577,6 +577,11 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel getIndicatorValueStrTable(String neIds, String indicators, String[] componentName, String[] field) throws Exception{
+        JSONObject empObj = new JSONObject();
+        empObj.put("info", "数据获取发生错误");
+        if (ObjectUtils.isEmpty(field)){
+            return new JsonModel(true, empObj);
+        }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (Objects.equals("LIST", ind.getIndicatorType()) && ObjectUtils.isEmpty(componentName)) {
             return getListEmptyComponentTable(neIds, field, ind);
@@ -587,8 +592,6 @@ public class MonitorDataService {
         } else {
             columns.add("部件名");
         }
-        JSONObject empObj = new JSONObject();
-        empObj.put("info", "数据获取发生错误");
         // 资源ID和指标名为必选项
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj);
