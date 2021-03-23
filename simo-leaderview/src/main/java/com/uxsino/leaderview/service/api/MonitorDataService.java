@@ -2441,8 +2441,13 @@ public class MonitorDataService {
             }
             filedLabelMap.put(indicatorsLeft, label);
             leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period);
-            unit.add(leftValues.getString("unit"));
-            values.addAll(leftValues.getJSONArray("result"));
+            if (ObjectUtils.isEmpty(leftValues)){
+                unit.add("");
+                values.addAll(new JSONArray());
+            }else {
+                unit.add(leftValues.getString("unit"));
+                values.addAll(leftValues.getJSONArray("result"));
+            }
         }
         IndicatorTable rightInd = rpcProcessService.getIndicatorInfoByName(indicatorsRight);
         String label = getLabel(rightInd, fieldRight);
@@ -2457,8 +2462,13 @@ public class MonitorDataService {
         }
         filedLabelMap.put(indicatorsRight, label);
         rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period);
-        unit.add(rightValues.getString("unit"));
-        values.addAll(rightValues.getJSONArray("result"));
+        if (ObjectUtils.isEmpty(rightValues)){
+            unit.add("");
+            values.addAll(new JSONArray());
+        }else {
+            unit.add(rightValues.getString("unit"));
+            values.addAll(rightValues.getJSONArray("result"));
+        }
         List<String> cacheTime = Lists.newArrayList();
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);

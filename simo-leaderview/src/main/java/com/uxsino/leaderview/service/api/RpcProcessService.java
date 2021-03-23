@@ -738,6 +738,7 @@ public class RpcProcessService {
         for (LinkedHashMap map: list) {
             IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
             if (ObjectUtils.isEmpty(t.getIndicatorValue())){
+                if (ObjectUtils.isEmpty(map.get("indicatorValue"))) continue;
                 t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
             }
             ts.add(t);
