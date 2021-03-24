@@ -169,11 +169,11 @@ export default {
       var ele = document.querySelector('.paint-bg')
       if (ele) {
         if (this.scale > 100) {
-          this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0]).toFixed(0) + 'px'
-          this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0]).toFixed(0) + 500 + 'px'
+          this.Hstyle = (document.querySelector('.paint-bg').clientWidth).toFixed(0) + 'px'
+          this.Vstyle = (document.querySelector('.paint-bg').clientHeight).toFixed(0) + 500 + 'px'
         } else {
-          this.Hstyle = (window.getComputedStyle(ele).width.split('px')[0] / this.scale * 100).toFixed(0) + 'px'
-          this.Vstyle = (window.getComputedStyle(ele).height.split('px')[0] / this.scale * 100).toFixed(0) + 500 + 'px'
+          this.Hstyle = (document.querySelector('.paint-bg').clientWidth / this.scale * 100).toFixed(0) + 'px'
+          this.Vstyle = (document.querySelector('.paint-bg').clientHeight / this.scale * 100).toFixed(0) + 500 + 'px'
         }
       } else {
         this.Hstyle = (this.parentW / this.scale * 100).toFixed(0) + 'px'

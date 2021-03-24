@@ -206,7 +206,7 @@ export default {
             formatter: (params, index) => {
               var rows = this.item.chartData.rows
               let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-              let strLen = Math.round(barW / 10)
+              let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
               if (this.item.formatterType === '0') {
                 return params.length > strLen ? params.substr(0, strLen) + '...' : params
               } else {
@@ -357,7 +357,7 @@ export default {
       }
       var rows = this.item.chartData.rows
       let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
-      let strLen = Math.round(barW / 10)
+      let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
       if (this.item.formatterType === '0' && this.oldformatterType !== this.item.formatterType) {
         myoption.xAxis.axisLabel.formatter = function (params, index) {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
@@ -402,7 +402,9 @@ export default {
     }
   },
   beforeDestroy () {
-    this.mychart.dispose()
+    if (this.mychart) {
+      this.mychart.dispose()
+    }
     this.mychart = null
   }
 

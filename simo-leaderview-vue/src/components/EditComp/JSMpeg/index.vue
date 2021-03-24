@@ -45,6 +45,8 @@ export default {
   watch: {
     'item.VideoData': function (newV) {
       if (newV !== '') {
+        this.player && this.player.destroy()
+        this.recorder && this.recorder.state === 'recording' && this.recorder.stop()
         this.vidoeShow = true
         this.getVideo()
       } else {

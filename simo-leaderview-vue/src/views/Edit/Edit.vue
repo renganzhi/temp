@@ -84,7 +84,6 @@
       <div class="edit-body flex"
            @click="hideContext">
         <!--  <div class="m-contain full-height">-->
-        <!--右键-->
         <div class="btm-tools">
           <div class="btn-box">
             <span @click="preOther(0)"
@@ -101,15 +100,48 @@
                   data-original-title="下一页"><i class="icon-n-next"></i></span>
           </div>
         </div>
+        <!--右键-->
         <ul class="menu-list"
             style="width: 156px;"
             ref="copyMenu">
+          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
+              <span>鹰眼</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
+          <li class="context-menu-item context-menu-visible" @click="openMapChange">
+              <span>自动窗口</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
           <li class="context-menu-item context-menu-visible"
-              @click="paste"><span>粘贴</span></li>
+              @click="paste" v-if="this.tempItemArry.length > 0"><span>粘贴</span></li>
         </ul>
         <ul class="menu-list"
             style="width: 156px;"
             ref="contextMenu">
+          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
+              <span>鹰眼</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
+          <li class="context-menu-item context-menu-visible" @click="openMapChange" >
+              <span>自动窗口</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
@@ -140,7 +172,6 @@
               class="context-menu-item context-menu-visible"
               @click="toBottom"><span>置于底层</span></li>
         </ul>
-        <Archive @click="initChart"></Archive>
         <!-- <div class="m-left content-side flex"
              @click.self="clickPaint($event)">
           <div class="cs-item"
@@ -150,8 +181,9 @@
                @click="initChart(value)">
             {{value.text}}</div>
         </div> -->
+        <Archive @click="initChart"></Archive>
 
-        <div class="m-main flex-1 auto" ref="editCanvas"
+        <div class="m-main flex-1 auto" id="centerMapBox" ref="editCanvas"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
               @contextmenu.prevent="mycontextmenu($event)"
@@ -217,14 +249,6 @@
           >
           </vue-ruler>
         </div>
-
-        <div class="scaleBox">
-          <span>缩放比例</span>
-          <Slider :min="20"
-                  :max="200"
-                  v-model="paintObj.scale"></Slider>
-        </div>
-
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
           <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{curChartName}}</div>
@@ -1697,7 +1721,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewBar','polarBar','NewHistogram','DataFlow','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
@@ -1747,7 +1771,7 @@
                   </select>
                 </div>
                 <div class="form-group cols2">
-                  <label>选择视频</label>
+                  <label>选择通道</label>
                   <select v-model="selectedItem.VideoData">
                     <option v-for="(val,key) in AllVideoData" :key="key" :value="val.channel">{{val.ip}}</option>
                   </select>
@@ -2095,6 +2119,14 @@
             </div>
           </div>
         </div>
+        <div class="scaleBox">
+          <span>缩放比例</span>
+          <Slider :min="20"
+                  :max="200"
+                  v-model="paintObj.scale"></Slider>
+        </div>
+        <HawkEye v-if="ShowHawkEye" :scale = "paintObj.scale" :boxTop = "HawkEyeStyle.top" :boxLeft = "HawkEyeStyle.left"  :bgTop = "paintObj.top" :bgLeft = "paintObj.left"></HawkEye>
+
         <!-- </div> -->
       </div>
       <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
