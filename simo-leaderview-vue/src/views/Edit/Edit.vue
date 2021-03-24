@@ -1762,7 +1762,10 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','hotspot'].includes(selectedItem.chartType)" >
+              <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
+                  <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
+              </div>
+              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -1835,9 +1838,6 @@
                        class="confData"
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
-                </div>
-                <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
-                    <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 </div>
                 <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
