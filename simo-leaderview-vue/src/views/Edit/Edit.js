@@ -25,6 +25,7 @@ import ChildTag from '@/components/ChildTag/styleTag'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
+import HawkEye from '@/components/HawkEye'
 
 import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
@@ -49,6 +50,9 @@ let config = {
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
+  NewGroupHistogram: require('@/components/EditComp/NewGroupHistogram/config.js'),
+  NewGroupLeftHistogram: require('@/components/EditComp/NewGroupLeftHistogram/config.js'),
+  NewBar: require('@/components/EditComp/NewBar/config.js'),
   NewTime: require('@/components/EditComp/NewTime/config.js'),
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
   NewBorder: require('@/components/EditComp/NewBorder/config.js'),
@@ -56,6 +60,7 @@ let config = {
   NewMoveTable: require('@/components/EditComp/NewMoveTable/config.js'),
   NewTable: require('@/components/EditComp/NewTable/config.js'),
   NewProgress: require('@/components/EditComp/NewProgress/config.js'),
+  NewHistogram: require('@/components/EditComp/NewHistogram/config.js'),
   NewVMap: require('@/components/EditComp/NewVMap/config.js'),
   NewScatter: require('@/components/EditComp/NewScatter/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
@@ -65,12 +70,18 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
+  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive, HawkEye },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
     return {
       imgHeightLight: 0,
+      MapChange: false,
+      ShowHawkEye: false,
+      HawkEyeStyle: {
+        top: 0,
+        left: 0
+      },
       advanced: false,
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
@@ -136,6 +147,8 @@ export default {
         bgColor: '#141929',
         bgImg: '',
         scale: 100,
+        top: 0,
+        left: 0,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: false // 默认不显示网格
@@ -1288,14 +1301,16 @@ export default {
       if (ev.srcElement.className === 'vue-ruler-wrapper' || ev.srcElement.id === 'chooseWrap') {
         $(this.$refs.contextMenu).toggle(false)
         this.clickPaint() // 取消所有的选中
-        if (this.tempItemArry.length > 0) {
-          $(this.$refs.copyMenu)
-            .css({
-              left: ev.pageX,
-              top: ev.pageY
-            })
-            .toggle(true)
+        if (!this.ShowHawkEye) {
+          this.HawkEyeStyle.top = ev.pageY
+          this.HawkEyeStyle.left = ev.pageX
         }
+        $(this.$refs.copyMenu)
+          .css({
+            left: ev.pageX,
+            top: ev.pageY
+          })
+          .toggle(true)
       }
     },
     selected: function (item, ev, type, i) {
@@ -2169,6 +2184,8 @@ export default {
       this.paintObj.opacity = 100
       // this.paintObj.showGrid = true
       this.paintObj.scale = 100
+      this.paintObj.top = 100
+      this.paintObj.left = 100
       this.paintObj.showGrid = false
       this.helpLineColor = '#348cea'
     },
@@ -2481,6 +2498,23 @@ export default {
       })
     },
     // 发送接口下拉框改变时请求
+    openMapChange () {
+      this.MapChange = !this.MapChange
+      if (!this.MapChange) {
+        document.querySelector('.archive').style.order = 0
+        document.querySelector('#centerMapBox').style.order = 0
+      }
+    },
+    // 发送接口下拉框改变时请求
+    openHawkEye () {
+      if (!this.ShowHawkEye) {
+        this.paintObj.scale = 100
+      }
+      this.ShowHawkEye = !this.ShowHawkEye
+    },
+    closeHawkEye () {
+      this.ShowHawkEye = false
+    },
     sentReq (d, postData, selectedP) {
       let _this = this
       $.ajax({
@@ -3007,6 +3041,25 @@ export default {
             left: 0
           })
       )
+      $('#mainEdit-edit .JSMpeg')
+        .find('canvas')
+        .css('opacity', 0)
+      $('#mainEdit-edit .JSMpeg')
+        .find('.v-charts-data-empty')
+        .css('opacity', 0)
+      $('#mainEdit-edit .JSMpeg').append(
+        $('<img>')
+          .addClass('monitp')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
       $('.getPicSpan').show()
       html2canvas(_canvas, {
         width: this.paintObj.width * (cThis.paintObj.scale / 100),
@@ -3150,6 +3203,7 @@ export default {
       this.showBackModal = false
       if (data && data.sure === '1') {
         this.resetPaint()
+        this.ShowHawkEye = false
         if (this.showNextType === 0) {
           this.upOnePage()
         } else if (this.showNextType === 1) {
@@ -3173,6 +3227,10 @@ export default {
         _top = document.body.clientHeight - 188
       }
       $(this.$refs.copyMenu).toggle(false)
+      if (!this.ShowHawkEye) {
+        this.HawkEyeStyle.top = _top
+        this.HawkEyeStyle.left = ev.pageX
+      }
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
@@ -3920,6 +3978,15 @@ export default {
       }
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
+    changePaintStyle (scale, top, left) {
+      this.paintObj.scale = 100 / scale
+      let height = document.querySelector('.paint-bg').clientHeight
+      let width = document.querySelector('.paint-bg').clientWidth
+      let canvasheight = document.querySelector('.centerBox .mycanvas canvas').clientHeight
+      let canvaswidth = document.querySelector('.centerBox .mycanvas canvas').clientWidth
+      document.querySelector('#centerMapBox').scrollTop = height * (top - 10) / canvasheight * this.paintObj.scale / 100
+      document.querySelector('#centerMapBox').scrollLeft = width * (left - 10) / canvaswidth * this.paintObj.scale / 100
+    },
     // 改变画布大小
     changePaintSize (type) {
       this.$refs.rulertool.box()
@@ -4461,6 +4528,19 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
+    document.onmousemove = (e) => {
+      if (this.MapChange) {
+        var winWidth = window.screen.width
+        var ShuWidth = e.clientX
+        if (ShuWidth > Math.floor(winWidth * 3 / 4)) {
+          document.querySelector('.archive').style.order = 1
+          document.querySelector('#centerMapBox').style.order = -1
+        } else if (ShuWidth < Math.floor(winWidth / 4)) {
+          document.querySelector('.archive').style.order = -1
+          document.querySelector('#centerMapBox').style.order = 1
+        }
+      }
+    }
     $('#lead-screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {

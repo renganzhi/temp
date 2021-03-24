@@ -1,122 +1,147 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
   <!-- padding: 10px; padding-bottom: 0px; -->
-  <div id="editHome-wrap"
-       style="height: 100%; padding: 15px;">
-    <AddPage :showModal="addPage"
-             @hideModal="hideModal"></AddPage>
-    <PageSetting :showModal="pageSetting"
-                 @hideModal="hideSetting"></PageSetting>
+  <div id="editHome-wrap" style="height: 100%; padding: 15px">
+    <AddPage :showModal="addPage" @hideModal="hideModal"></AddPage>
+    <PageSetting
+      :showModal="pageSetting"
+      @hideModal="hideSetting"
+    ></PageSetting>
 
-    <ImportPage :showModal="showImport"
-                 @hideModal="hideImportModal"
-                 :tems="pageList"></ImportPage>
-    <ExportPage :showModal="showExport"
-                 @hideModal="showExport = false"
-                 :tems="pageList"></ExportPage>
+    <ImportPage
+      :showModal="showImport"
+      @hideModal="hideImportModal"
+      :tems="pageList"
+    ></ImportPage>
+    <ExportPage
+      :showModal="showExport"
+      @hideModal="showExport = false"
+      :tems="pageList"
+    ></ExportPage>
     <!-- <SettingPage></SettingPage> -->
-    <PreView :viewId="viewId"
-             :pageData="pageData"
-             :key="viewKey"
-             ref="PreView"></PreView>
-    <Confirm :showModal="showDelModal"
-             :message="'删除操作不可恢复，是否继续？'"
-             :okText="'是'"
-             @hideModal="sureDel"></Confirm>
+    <PreView
+      :viewId="viewId"
+      :pageData="pageData"
+      :key="viewKey"
+      ref="PreView"
+    ></PreView>
+    <Confirm
+      :showModal="showDelModal"
+      :message="'删除操作不可恢复，是否继续？'"
+      :okText="'是'"
+      @hideModal="sureDel"
+    ></Confirm>
     <div class="wrap-dialog">
       <div class="wrap-content">
         <div class="wrap-body flex flex-vertical">
           <div class="searchForm">
-            <select name="pageType"
-                    v-model="pageType"
-                    @change="changePage"
-                    style="margin-right: 10px;">
+            <select
+              name="pageType"
+              v-model="pageType"
+              @change="changePage"
+              style="margin-right: 10px"
+            >
               <option value="1">全部页面</option>
               <option value="2">我的页面</option>
               <option value="3">分享的页面</option>
             </select>
-            <button type="button"
-                    v-if="access === 'w'"
-                    @click="add">新增页面</button>
-            <button type="button"
-                    @click="openSetting">设置</button>
-            <button v-if="isSuperAdmin" type="button"
-                    @click="importTemplate">导入</button>
-            <button type="button"
-                    @click="exportTemplate">导出</button>
-            <button type="button"
-                    class="homeBack"
-                    @click="backHome"><i class="icon-n-back"></i> 返回</button>
+            <button type="button" v-if="access === 'w'" @click="add">
+              新增页面
+            </button>
+            <button type="button" @click="openSetting">设置</button>
+            <button v-if="isSuperAdmin" type="button" @click="importTemplate">
+              导入
+            </button>
+            <button type="button" @click="exportTemplate">导出</button>
+            <button type="button" class="homeBack" @click="backHome">
+              <i class="icon-n-back"></i> 返回
+            </button>
           </div>
-          <div id="pagesBox"
-               class="auto flex flex-wrap flex-1">
-            <div v-for="(item,index) in pageList"
-                 :key="index"
-                 class="page-item flex flex-vertical"
-                 @mouseenter="showHover(index)"
-                 @mouseleave="cancleHover">
-              <div :class="{'canSee': true, 'notSee': !item.visible}"></div>
-              <img class="page-img"
-                   v-if="item.viewImage"
-                   :src="baseUrl + item.viewImage" />
-              <img class="page-img"
-                   v-else />
-              <div class="operates"
-                   v-show="hoverIndex === index">
+          <div id="pagesBox" class="auto flex flex-wrap flex-1">
+            <div
+              v-for="(item, index) in pageList"
+              :key="index"
+              class="page-item flex flex-vertical"
+              @mouseenter="showHover(index)"
+              @mouseleave="cancleHover"
+            >
+              <div :class="{ canSee: true, notSee: !item.visible }"></div>
+              <img
+                class="page-img"
+                v-if="item.viewImage"
+                :src="baseUrl + item.viewImage"
+              />
+              <img class="page-img" v-else />
+              <div class="operates" v-show="hoverIndex === index">
+                <a
+                  class="opera-item noUse"
+                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                  >复制</a
+                >
+                <a class="opera-item" v-else @click.prevent="copy(item)"
+                  >复制</a
+                >
 
-                <a class="opera-item noUse"
-                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">复制</a>
-                <a class="opera-item"
-                   v-else
-                   @click.prevent="copy(item)">复制</a>
+                <a class="opera-item" @click.prevent="pev(item)">预览</a>
 
-                <a class="opera-item"
-                   @click.prevent="pev(item)">预览</a>
+                <a
+                  class="opera-item noUse"
+                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                  >编辑</a
+                >
+                <a class="opera-item" v-else @click.prevent="edit(item)"
+                  >编辑</a
+                >
 
-                <a class="opera-item noUse"
-                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">编辑</a>
-                <a class="opera-item"
-                   v-else
-                   @click.prevent="edit(item)">编辑</a>
-
-                <a class="opera-item noUse"
-                   v-if="item.belongCurrentUser === 'false' || access !== 'w'">删除</a>
-                <a class="opera-item"
-                   v-else
-                   @click.prevent="del(item)">删除</a>
-
+                <a
+                  class="opera-item noUse"
+                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                  >删除</a
+                >
+                <a class="opera-item" v-else @click.prevent="del(item)">删除</a>
               </div>
-              <div v-if="editIndex === index"
-                   class="page-title titleShow">
+              <div v-if="editIndex === index" class="page-title titleShow">
                 <form autocomplete="off">
-                  <input name="name"
-                         v-model="editName" />
+                  <input name="name" v-model="editName" />
                 </form>
                 <span class="operate-title">
-                  <a class="simoLink"
-                     @click="changeName(index,item)">确定</a>
-                  <a class="cancle"
-                     @click="cancleChange(index)">取消</a>
+                  <a class="simoLink" @click="changeName(index, item)">确定</a>
+                  <a class="cancle" @click="cancleChange(index)">取消</a>
                 </span>
               </div>
-              <div v-else
-                   class="page-title flex-1 flex">
-                <span class="shareIcon"
-                      v-show="item.belongCurrentUser === 'false'"><i class="icon-n-assetys"
-                     :title="'负责人：' + item.shareName"></i></span>
-                <span class="title-name flex-1">{{item.name}}</span>
+              <div v-else class="page-title flex-1 flex">
+                <span
+                  class="shareIcon"
+                  v-show="item.belongCurrentUser === 'false'"
+                  ><i
+                    class="icon-n-assetys"
+                    :title="'负责人：' + item.shareName"
+                  ></i
+                ></span>
+                <span class="title-name flex-1">{{ item.name }}</span>
 
-                <a class="icon-n-edit2 edit-icon noClk"
-                   v-if="(item.belongCurrentUser === 'false' || access !== 'w') && !isSuperAdmin"></a>
-                <a class="icon-n-edit2 edit-icon"
-                   v-else
-                   @click="changeEdit(index)"></a>
+                <a
+                  class="icon-n-edit2 edit-icon noClk"
+                  v-if="
+                    (item.belongCurrentUser === 'false' || access !== 'w') &&
+                    !isSuperAdmin
+                  "
+                ></a>
+                <a
+                  class="icon-n-edit2 edit-icon"
+                  v-else
+                  @click="changeEdit(index)"
+                ></a>
 
-                <a class="icon-n-share edit-icon noClk"
-                   v-if="item.belongCurrentUser === 'false' || access !== 'w'"></a>
-                <a class="icon-n-share edit-icon"
-                   v-else
-                   @click="toShare(item)"></a>
+                <a
+                  class="icon-n-share edit-icon noClk"
+                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                ></a>
+                <a
+                  class="icon-n-share edit-icon"
+                  v-else
+                  @click="toShare(item)"
+                ></a>
               </div>
             </div>
           </div>
@@ -124,36 +149,32 @@
       </div>
     </div>
 
-    <div id="homeShareModal"
-         class="modal"
-         style="z-index: 10086">
-      <div class="modal-dialog"
-           role="document"
-           style="margin: 206px auto;">
+    <div id="homeShareModal" class="modal" style="z-index: 10086">
+      <div class="modal-dialog" role="document" style="margin: 206px auto">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
               <span aria-hidden="true">×</span>
             </button>
             <h4 class="modal-title">
-              <span class="pre-page"
-                    data-dismiss="modal"></span>
+              <span class="pre-page" data-dismiss="modal"></span>
               <span class="now-page">分享设置</span>
             </h4>
           </div>
           <div class="modal-body">
-            <form autocomplete="off"
-                  id="shareFm1">
+            <form autocomplete="off" id="shareFm1">
               <div class="form-group">
                 <label class="page-lable">分享给用户</label>
                 <div class="page-lable-content">
                   <!-- <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
                                                       v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
                                             </Select2> -->
-                  <el-select v-model="shareUsers"
+                  <!-- <el-select v-model="shareUsers"
                     multiple
                     clearable
                     size='mini'
@@ -164,25 +185,32 @@
                       :label="item.userName +'('+item.loginName+')'"
                       :value="item.id">
                     </el-option>
-                  </el-select>
-                  <!-- <select id="shareUsers"
-                          v-model="shareUsers">
-                    <option v-for="(user, index) in userList"
-                            :value="user.id"
-                            :key="index">{{user.userName}}({{user.loginName}})</option>
-                  </select> -->
+                  </el-select> -->
+
+                  <select id="shareUsers" v-model="shareUsers">
+                    <option
+                      v-for="(user, index) in userList"
+                      :value="user.id"
+                      :key="index"
+                    >
+                      {{ user.userName }}({{ user.loginName }})
+                    </option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">
                 <label class="page-lable">分享给角色</label>
                 <div class="page-lable-content">
-                  <!-- <select v-model="shareRoles"
-                          id="shareRoles">
-                    <option v-for="(role, index) in roleList"
-                            :value="role.id"
-                            :key="index">{{role.name}}</option>
-                  </select> -->
-                  <el-select v-model="shareRoles"
+                  <select v-model="shareRoles" id="shareRoles">
+                    <option
+                      v-for="(role, index) in roleList"
+                      :value="role.id"
+                      :key="index"
+                    >
+                      {{ role.name }}
+                    </option>
+                  </select>
+                  <!-- <el-select v-model="shareRoles"
                     multiple
                     clearable
                     size='mini'
@@ -193,15 +221,12 @@
                       :label="item.name"
                       :value="item.id">
                     </el-option>
-                  </el-select>
+                  </el-select> -->
                 </div>
               </div>
-              <div class="form-group"
-                   id="hasChild"
-                   style="display: none;">
+              <div class="form-group" id="hasChild" style="display: none">
                 <label class="page-lable">
-                  <input type="checkbox"
-                         name="ifShareSub">
+                  <input type="checkbox" name="ifShareSub" />
                 </label>
                 <div class="page-lable-content">
                   <span class="share-checkcontent">同时分享其子结构</span>
@@ -210,10 +235,8 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button"
-                    @click="sureShare">确认</button>
-            <button type="button"
-                    data-dismiss="modal">取消</button>
+            <button type="button" @click="sureShare">确认</button>
+            <button type="button" data-dismiss="modal">取消</button>
           </div>
         </div>
       </div>
@@ -230,12 +253,21 @@ import ExportPage from './ExportPage'
 import PreView from '@/components/PreView/PreView'
 import { gbs } from '@/config/settings'
 import Confirm from '@/components/Common/Confirm'
-// import Select2 from '@/components/Common/Select2'
+import Select2 from '@/components/Common/Select2'
 import { Notification } from 'element-ui'
 import _ from 'lodash'
 export default {
   name: 'editPage',
-  components: { AddPage, PreView, PageSetting, ImportPage, ExportPage, Confirm, Notification },
+  components: {
+    AddPage,
+    PreView,
+    PageSetting,
+    ImportPage,
+    ExportPage,
+    Confirm,
+    Select2,
+    Notification
+  },
   data () {
     return {
       baseUrl: gbs.host,
@@ -295,9 +327,13 @@ export default {
     changePageType () {
       let type = this.pageType
       if (type === '3') {
-        this.pageList = _.filter(this.allPage, function (o) { return o.belongCurrentUser === 'false' })
+        this.pageList = _.filter(this.allPage, function (o) {
+          return o.belongCurrentUser === 'false'
+        })
       } else if (type === '2') {
-        this.pageList = _.filter(this.allPage, function (o) { return o.belongCurrentUser === 'true' })
+        this.pageList = _.filter(this.allPage, function (o) {
+          return o.belongCurrentUser === 'true'
+        })
       } else {
         this.pageList = this.allPage
       }
@@ -313,60 +349,149 @@ export default {
         this.shareRoles = []
         this.shareUsers = []
       }
+      this.initSelect2('shareUsers', this.shareUsers)
+      this.initSelect2('shareRoles', this.shareRoles)
       $('#homeShareModal').modal('show')
     },
     sureShare () {
       var data = {}
-      data.roles = (this.shareRoles && this.shareRoles.length > 0) ? this.shareRoles.join(',') : ''
-      data.uids = (this.shareUsers && this.shareUsers.length > 0) ? this.shareUsers.join(',') : ''
+      data.roles =
+        this.shareRoles && this.shareRoles.length > 0
+          ? this.shareRoles.join(',')
+          : ''
+      data.uids =
+        this.shareUsers && this.shareUsers.length > 0
+          ? this.shareUsers.join(',')
+          : ''
 
-      this.axios.get('/mc/role/findAllUserByRoleId?roleIds=' + data.roles).then((object) => {
-        if (object.success) {
-          data.uidsByRoles = object.obj.join(',')
-          this.axios({
-            method: 'post',
-            url: '/leaderview/home/share/' + this.shareId,
-            data: qs.stringify(data),
-            headers: { 'content-type': 'application/x-www-form-urlencoded' }
-          }).then((res) => {
-            if (res.success) {
-              this.search()
-              $('#homeShareModal').modal('hide')
-              if (gbs.inDev) {
-                Notification({
-                  message: '操作成功！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-success'
-                })
+      this.axios
+        .get('/mc/role/findAllUserByRoleId?roleIds=' + data.roles)
+        .then((object) => {
+          if (object.success) {
+            data.uidsByRoles = object.obj.join(',')
+            this.axios({
+              method: 'post',
+              url: '/leaderview/home/share/' + this.shareId,
+              data: qs.stringify(data),
+              headers: { 'content-type': 'application/x-www-form-urlencoded' }
+            }).then((res) => {
+              if (res.success) {
+                this.search()
+                $('#homeShareModal').modal('hide')
+                if (gbs.inDev) {
+                  Notification({
+                    message: '操作成功！',
+                    position: 'bottom-right',
+                    customClass: 'toast toast-success'
+                  })
+                } else {
+                  tooltip('', '操作成功！', 'success')
+                }
               } else {
-                tooltip('', '操作成功！', 'success')
+                if (gbs.inDev) {
+                  Notification({
+                    message: res.msg,
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', res.msg, 'error')
+                }
               }
-            } else {
-              if (gbs.inDev) {
-                Notification({
-                  message: res.msg,
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
-              } else {
-                tooltip('', res.msg, 'error')
-              }
-            }
-          })
-        }
-      })
+            })
+          }
+        })
     },
     saerchShareUser () {
       this.axios.get('/user/findAvailableUsers?isNotMe=true').then((res) => {
         if (res.success) {
           this.userList = res.obj
+          this.initSelect2('shareUsers')
+          this.initSelect2User()
         }
       })
       this.axios.get('/role/findAllEnableRoles').then((res) => {
         if (res.success) {
           this.roleList = res.obj
+          this.initSelect2('shareRoles')
+          this.initSelect2Role()
         }
       })
+    },
+    initSelect2 (id, v) {
+      var value = typeof v === 'undefined' ? [] : v
+      $('#' + id)
+        .select2({
+          multiple: true,
+          closeOnSelect: false
+        })
+        .val(value)
+        .trigger('change')
+    },
+    initSelect2User () {
+      var _this = this
+      $('#shareUsers')
+        .on('change', function () {
+          // vm.$emit('input', $(this).val())
+          _this.shareUsers = $(this).val() ? $(this).val() : []
+        })
+        .on('select2:selecting', function (e) {
+          if (e.params && e.params.args && e.params.args.data) {
+            var v = $(this).val()
+            if (e.params.args.data.id === '') {
+              // 选择不限
+              $(this).val([])
+            } else {
+              // 选中其他
+              if (v && v.indexOf('') !== -1) {
+                $(this).val([e.params.args.data.id])
+              }
+            }
+          }
+        })
+        .on('select2:unselecting', function (e) {
+          if (e.params && e.params.args && e.params.args.data) {
+            var v = $(this).val()
+            if (v && v.length === 1) {
+              if (e.params.args.data.id === '') {
+                e.preventDefault()
+              }
+              $(this).val([])
+            }
+          }
+        })
+    },
+    initSelect2Role () {
+      var _this = this
+      $('#shareRoles')
+        .on('change', function () {
+          _this.shareRoles = $(this).val() ? $(this).val() : []
+        })
+        .on('select2:selecting', function (e) {
+          if (e.params && e.params.args && e.params.args.data) {
+            var v = $(this).val()
+            if (e.params.args.data.id === '') {
+              // 选择不限
+              $(this).val([])
+            } else {
+              // 选中其他
+              if (v && v.indexOf('') !== -1) {
+                $(this).val([e.params.args.data.id])
+              }
+            }
+          }
+        })
+        .on('select2:unselecting', function (e) {
+          if (e.params && e.params.args && e.params.args.data) {
+            var v = $(this).val()
+            if (v && v.length === 1) {
+              if (e.params.args.data.id === '') {
+                e.preventDefault()
+              }
+              $(this).val([])
+            }
+          }
+        })
     },
     search () {
       this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
@@ -442,21 +567,25 @@ export default {
     },
     copy (item) {
       this.getAdminUsers().then(() => {
-        this.axios.get('/leaderview/home/homePage/copy', { params: { 'pageId': item.id, adminId: this.userIds.join(',') } }).then((res) => {
-          if (res.success) {
-            this.search()
-          } else {
-            if (gbs.inDev) {
-              Notification({
-                message: res.msg,
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
+        this.axios
+          .get('/leaderview/home/homePage/copy', {
+            params: { pageId: item.id, adminId: this.userIds.join(',') }
+          })
+          .then((res) => {
+            if (res.success) {
+              this.search()
             } else {
-              tooltip('', res.msg, 'error')
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              } else {
+                tooltip('', res.msg, 'error')
+              }
             }
-          }
-        })
+          })
       })
     },
     pev (item) {
@@ -498,21 +627,23 @@ export default {
     sureDel (data) {
       this.showDelModal = false
       if (data && data.sure === '1') {
-        this.axios.delete('/leaderview/home/homePage/deleteById/' + this.delId).then((res) => {
-          if (res.success) {
-            this.search()
-          } else {
-            if (gbs.inDev) {
-              Notification({
-                message: res.msg,
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
+        this.axios
+          .delete('/leaderview/home/homePage/deleteById/' + this.delId)
+          .then((res) => {
+            if (res.success) {
+              this.search()
             } else {
-              tooltip('', res.msg, 'error')
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              } else {
+                tooltip('', res.msg, 'error')
+              }
             }
-          }
-        })
+          })
       }
     },
     changeEdit (index) {
@@ -537,8 +668,11 @@ export default {
       //   })
       // }
       if (this.editName !== '') {
-        var data = { 'name': this.editName, 'id': item.id }
-        this.axios.post('/leaderview/home/homePage/edit', qs.stringify(data), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        var data = { name: this.editName, id: item.id }
+        this.axios
+          .post('/leaderview/home/homePage/edit', qs.stringify(data), {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+          })
           .then((res) => {
             item.name = this.editName
             if (gbs.inDev) {
@@ -573,8 +707,10 @@ export default {
       if (newV.length > 15) {
         this.editName = newV.slice(0, 15)
       } else {
-        var str = new RegExp("[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
-        var flag = (!str.test(newV)) && !/\s/.test(newV)
+        var str = new RegExp(
+          "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]"
+        )
+        var flag = !str.test(newV) && !/\s/.test(newV)
         if (!flag) {
           this.editName = oldV
         }
@@ -583,7 +719,8 @@ export default {
   },
   mounted: function () {
     this.search()
-    var _url = window.location.protocol + '//' + window.location.host + '/index'
+    var _url =
+      window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
     this.getAccess()
     this.saerchShareUser()
