@@ -55,6 +55,7 @@ export default {
     }
   },
   mounted () {
+    this.getVideo()
   },
   beforeMount () {
     var reg = /^\/api/
