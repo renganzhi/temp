@@ -38,7 +38,7 @@ if (gbs.inDev) {
 Vue.prototype.$EventBus = new Vue()
 Vue.prototype.$MyEventBus = new Vue()
 /* eslint-disable no-new */
-;(window as any).vm = new Vue({
+;(window).vm = new Vue({
   el: '#app',
   router,
   store,
