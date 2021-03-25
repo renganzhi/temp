@@ -1171,9 +1171,11 @@ public class MonitorDataParamsService {
         ArrayList oldNeArray = (ArrayList)((LinkedHashMap)deprecatedWrap.getObj()).get("object");
         for(Object object: oldNeArray){
             LinkedHashMap oldNe = (LinkedHashMap)object;
-            newNe.put("name", oldNe.get("ip"));
-            newNe.put("value", oldNe.get("id"));
-            newNeArray.add(newNe);
+            if ((boolean)oldNe.get("monitoring")) {
+                newNe.put("name", oldNe.get("neClassName"));
+                newNe.put("value", oldNe.get("id"));
+                newNeArray.add(newNe);
+            }
         }
         return new JsonModel(true, newNeArray);
     }
@@ -1185,10 +1187,12 @@ public class MonitorDataParamsService {
         ArrayList oldChannelArray = (ArrayList)((LinkedHashMap)((LinkedHashMap)deprecatedWrap.getObj()).get("indicatorValue")).get("object");
         for(Object object: oldChannelArray){
             LinkedHashMap oldChannel = (LinkedHashMap)object;
-            String channel = (String)oldChannel.get("channel");
-            newChannel.put("name", channel);
-            newChannel.put("value", channel);
-            newChannelArray.add(newChannel);
+            if ("在线".equals(oldChannel.get("enable"))) {
+                String channel = (String)oldChannel.get("channel");
+                newChannel.put("name", channel);
+                newChannel.put("value", channel);
+                newChannelArray.add(newChannel);
+            }
         }
         return new JsonModel(true, newChannelArray);
     }
