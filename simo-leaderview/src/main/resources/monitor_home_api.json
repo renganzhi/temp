@@ -2436,7 +2436,7 @@
         "name": "实时视频监控",
         "component": "collector",
         "type": "null",
-        "url": "/leaderview/collector/videoMonitoring",
+        "url": "/collector/videoMonitoring",
         "method": "get",
         "params": [
             {
