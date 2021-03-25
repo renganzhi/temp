@@ -349,4 +349,31 @@ public class MonitorDataParamsController {
         return getIndFieldByType(indicators, "ALL");
     }
 
+    @ApiOperation("实时视频监控获取摄像头设备信息下拉框")
+    @RequestMapping(value = "/getMonitorList", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel searchMonitor(){
+        try {
+            return monitorDataParamsService.searchNe("hcnet");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("实时视频监控获取指定类型摄像头的通道信息下拉框")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "摄像头设备id")
+    })
+    @RequestMapping(value = "/getChannelList", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getChannelList(@RequestParam("neId") String neId){
+        try {
+            return monitorDataParamsService.getChannelList(neId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
 }

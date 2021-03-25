@@ -182,7 +182,8 @@ public class BusinessDataService {
         List<String> nameList = Lists.newArrayList();
         JSONArray businessArr = getBusStatus(session, business);
         Iterator<Object> it = businessArr.iterator();
-        for (JSONObject obj = (JSONObject) it.next(); it.hasNext();){
+        while(it.hasNext()){
+            JSONObject obj = (JSONObject)it.next();
             businessList.add(obj.getString("id"));
             nameList.add(obj.getString("name"));
         }

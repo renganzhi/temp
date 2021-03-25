@@ -19,7 +19,9 @@ import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import com.uxsino.simo.indicator.FieldType;
 import com.uxsino.leaderview.utils.MonitorUtils;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.collections.CollectionUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -1154,7 +1156,40 @@ public class MonitorDataParamsService {
 //        }
 //    }
 
+    /**
+     * 视频监控组件参数1，获取摄像头的neId供用户选择
+     * @param neClass
+     * @return
+     * @throws Exception
+     */
+    public JsonModel searchNe(String neClass) throws Exception{
+        JsonModel deprecatedWrap = rpcProcessService.searchNe(neClass);
+        JSONObject newNe = new JSONObject();
+        JSONArray newNeArray = new JSONArray();
+        ArrayList oldNeArray = (ArrayList)((LinkedHashMap)deprecatedWrap.getObj()).get("object");
+        for(Object object: oldNeArray){
+            LinkedHashMap oldNe = (LinkedHashMap)object;
+            newNe.put("name", oldNe.get("ip"));
+            newNe.put("value", oldNe.get("id"));
+            newNeArray.add(newNe);
+        }
+        return new JsonModel(true, newNeArray);
+    }
 
+    public JsonModel getChannelList(String neId) throws Exception{
+        JsonModel deprecatedWrap = rpcProcessService.getChannelList(neId);
+        JSONObject newChannel = new JSONObject();
+        JSONArray newChannelArray = new JSONArray();
+        ArrayList oldChannelArray = (ArrayList)((LinkedHashMap)((LinkedHashMap)deprecatedWrap.getObj()).get("indicatorValue")).get("object");
+        for(Object object: oldChannelArray){
+            LinkedHashMap oldChannel = (LinkedHashMap)object;
+            String channel = (String)oldChannel.get("channel");
+            newChannel.put("name", channel);
+            newChannel.put("value", channel);
+            newChannelArray.add(newChannel);
+        }
+        return new JsonModel(true, newChannelArray);
+    }
 
     /** 对JSONArray进行遍历，根据predicate过滤 */
     private JSONArray filter(JSONArray array, Predicate<? super JSONObject> predicate){

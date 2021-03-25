@@ -1,6 +1,9 @@
 package com.uxsino.leaderview.controller.business;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.api.BusinessDataService;
 import com.uxsino.watcher.lib.annoation.Business;
@@ -76,6 +79,67 @@ public class BusinessDataController {
     }
 
 
+    @ApiOperation("根据选择的业务，按状态进行统计,用于列固定的元件")
+    @RequestMapping(value = "/businessStatisticsByStatusForRows", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "business", paramType = "query", dataType = "List<String>", value = "业务")
+    })
+    @ResponseBody
+    public JsonModel businessStatisticsByStatusForRows(HttpSession session, @RequestParam String[] business){
+        try {
+            JsonModel deprecatedWrap = businessDataService.businessStatisticsByStatus(session, business);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                newObject.put("name", oldObject.get("状态"));
+                newObject.put("value", oldObject.get("数量"));
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("根据选择的业务，按状态进行统计,用于值为范围的组件")
+    @RequestMapping(value = "/businessStatisticsByStatusForRange", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "business", paramType = "query", dataType = "List<String>", value = "业务")
+    })
+    @ResponseBody
+    public JsonModel businessStatisticsByStatusForRange(HttpSession session, @RequestParam String[] business){
+        try {
+            JsonModel deprecatedWrap = businessDataService.businessStatisticsByStatus(session, business);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                JSONArray average = new JSONArray();
+                range.add(0);
+                range.add(oldObject.get("数量"));
+                average.add(oldObject.get("数量"));
+                newObject.put("状态", oldObject.get("状态"));
+                newObject.put("数量", range);
+                newObject.put("均值", average);
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", new String[]{"状态","数量","均值"});
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
     @ApiOperation("根据选择的业务，对告警进行统计")
     @RequestMapping(value = "/getStatByBusiness", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -91,6 +155,67 @@ public class BusinessDataController {
         }
     }
 
+
+    @ApiOperation("根据选择的业务，对告警进行统计，用于列固定的组件")
+    @RequestMapping(value = "/getStatByBusinessForRows", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "business", paramType = "query", dataType = "List<String>", value = "业务")
+    })
+    @ResponseBody
+    public JsonModel getStatByBusinessForRows(HttpSession session, @RequestParam String[] business){
+        try {
+            JsonModel deprecatedWrap =  businessDataService.getStatByBusiness(session, business);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                newObject.put("name", oldObject.get("业务"));
+                newObject.put("value", oldObject.get("数量"));
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("根据选择的业务，对告警进行统计，用于值为范围的组件")
+    @RequestMapping(value = "/getStatByBusinessForRange", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "business", paramType = "query", dataType = "List<String>", value = "业务")
+    })
+    @ResponseBody
+    public JsonModel getStatByBusinessForRange(HttpSession session, @RequestParam String[] business){
+        try {
+            JsonModel deprecatedWrap =  businessDataService.getStatByBusiness(session, business);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                JSONArray average = new JSONArray();
+                range.add(0);
+                range.add(oldObject.get("数量"));
+                average.add(oldObject.get("数量"));
+                newObject.put("业务", oldObject.get("业务"));
+                newObject.put("数量", range);
+                newObject.put("均值", average);
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", new String[]{"业务","数量","均值"});
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
 
     @ApiOperation("根据业务ID和指标名和展示条数来展示指标TOPN")
     @RequestMapping(value = "/getIndicatorTOPN", method = RequestMethod.POST)

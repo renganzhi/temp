@@ -3,8 +3,8 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "doubler,number",
-        "url": "/business/homeData/indicatorValue",
+        "type": "NewDoubler,NewNumber",
+        "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
             {
@@ -13,7 +13,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -21,7 +21,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getIndicator"
+                "dataUrl": "/leaderview/business/params/getIndicator"
             }
         ]
     },
@@ -29,8 +29,8 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "Dashboard,liquidfill,progress",
-        "url": "/business/homeData/indicatorValue",
+        "type": "Dashboard,liquidfill,progress,NewProgress",
+        "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
             {
@@ -39,7 +39,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -47,7 +47,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getIndicatorPercent"
+                "dataUrl": "/leaderview/business/params/getIndicatorPercent"
             }
         ]
     },
@@ -55,8 +55,8 @@
         "key": "business_indicator_statistics",
         "name": "多业务多指标统计",
         "component": "business",
-        "type": "groupHistogram,ve-radar",
-        "url": "/business/homeData/multipleBusinessIndicator",
+        "type": "groupHistogram,NewGroupHistogram,ve-radar,NewRadar",
+        "url": "/leaderview/business/multipleBusinessIndicator",
         "method" : "get",
         "params": [
             {
@@ -66,7 +66,7 @@
                 "type": "multi-select",
                 "title": "建议选择业务不超过5个",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -75,7 +75,7 @@
                 "type": "multi-select",
                 "title": "建议选择指标不超过5个",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getIndicator"
+                "dataUrl": "/leaderview/business/params/getIndicator"
             }
         ]
     },
@@ -83,8 +83,8 @@
         "key": "enable_business_status_statistics",
         "name": "业务统计-按状态",
         "component": "business",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
-        "url": "/business/homeData/businessStatisticsByStatus",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "url": "/leaderview/business/businessStatisticsByStatus",
         "method" : "get",
         "params": [
             {
@@ -93,7 +93,43 @@
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_status_statistics_for_rows",
+        "name": "业务统计-按状态",
+        "component": "business",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/business/businessStatisticsByStatusForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_status_statistics_for_range",
+        "name": "业务统计-按状态",
+        "component": "business",
+        "type": "polarBar",
+        "url": "/leaderview/business/businessStatisticsByStatusForRange",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
             }
         ]
     },
@@ -101,8 +137,8 @@
         "key": "enable_alert_business_statistics",
         "name": "告警统计-按业务",
         "component": "business",
-        "type": "ve-pie,ve-ring,ve-histogram,ve-bar",
-        "url": "/business/homeData/getStatByBusiness",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "url": "/leaderview/business/getStatByBusiness",
         "method" : "get",
         "params": [
             {
@@ -112,7 +148,45 @@
                 "type": "multi-select",
                 "title": "建议选择业务不超过20个",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_statistics_for_rows",
+        "name": "告警统计-按业务",
+        "component": "business",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/business/getStatByBusinessForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过20个",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_statistics_for_range",
+        "name": "告警统计-按业务",
+        "component": "business",
+        "type": "polarBar",
+        "url": "/leaderview/business/getStatByBusinessForRange",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过20个",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
             }
         ]
     },
@@ -120,8 +194,8 @@
         "key": "enable_business_indicator_topn",
         "name": "指标TOPN-按业务",
         "component": "business",
-        "type": "ve-histogram",
-        "url": "/business/homeData/getIndicatorTOPN",
+        "type": "ve-histogram,NewHistogram",
+        "url": "/leaderview/business/getIndicatorTOPN",
         "method" : "post",
         "params" : [
             {
@@ -130,7 +204,7 @@
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -138,7 +212,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getIndicator"
+                "dataUrl": "/leaderview/business/params/getIndicator"
             },
             {
                 "key": "number",
@@ -184,8 +258,8 @@
         "key": "enable_business_indicator_topn",
         "name": "指标TOPN-按业务",
         "component": "business",
-        "type": "ve-bar",
-        "url": "/business/homeData/getIndicatorTOPN?bar=true",
+        "type": "ve-bar,NewBar",
+        "url": "/leaderview/business/getIndicatorTOPN?bar=true",
         "method" : "post",
         "params" : [
             {
@@ -194,7 +268,7 @@
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -202,7 +276,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getIndicator"
+                "dataUrl": "/leaderview/business/params/getIndicator"
             },
             {
                 "key": "number",
@@ -248,8 +322,8 @@
         "key": "enable_alert_business_info_table",
         "name": "业务告警信息",
         "component": "business",
-        "type": "table",
-        "url": "/alert/currencyAlertmanager/getBusinessAlertInfoForTable",
+        "type": "table,NewMoveTable,NewTable",
+        "url": "/leaderview/business/getBusinessAlertInfoForTable",
         "method" : "get",
         "params": [
             {
@@ -258,7 +332,7 @@
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "number",
@@ -291,8 +365,8 @@
         "key": "enable_alert_business_info_text",
         "name": "业务告警信息",
         "component": "business",
-        "type": "NEWtextArea,marquee",
-        "url": "/alert/currencyAlertmanager/getBusinessAlertInfoForText",
+        "type": "NEWtextArea,marquee,NewMarquee",
+        "url": "/leaderview/business/getBusinessAlertInfoForText",
         "method" : "get",
         "params": [
             {
@@ -302,7 +376,7 @@
                 "type": "multi-select",
                 "maxLength": 5,
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             }
         ]
     },
@@ -311,7 +385,7 @@
         "name": "指标历史统计-业务",
         "component": "business",
         "type": "ELine",
-        "url": "/business/homeData/history/record",
+        "url": "/leaderview/business/history/record",
         "method" : "get",
         "params": [
             {
@@ -321,7 +395,7 @@
                 "type": "multi-select",
                 "title": "业务可多选，展示效果为多条曲线，建议选择业务不超过5个",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             },
             {
                 "key": "indicator",
@@ -329,7 +403,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getHistoryIndicator",
+                "dataUrl": "/leaderview/business/params/getHistoryIndicator",
                 "params": ["business"]
             },
             {
@@ -359,8 +433,8 @@
         "key": "business_count",
         "name": "全局统计-业务",
         "component": "business",
-        "type": "doubler,number",
-        "url": "/business/homeData/countBusiness",
+        "type": "NewDoubler,NewNumber",
+        "url": "/leaderview/business/countBusiness",
         "method" : "get",
         "params": [
             {
@@ -387,7 +461,7 @@
         "name": "业务拓扑",
         "component": "business",
         "type": "topo",
-        "url": "/business/homeData/getTopo",
+        "url": "/leaderview/business/getTopo",
         "method" : "get",
         "params": [
             {
@@ -396,7 +470,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/business/homeData/params/getBusiness"
+                "dataUrl": "/leaderview/business/params/getBusiness"
             }
         ]
     }
