@@ -286,6 +286,7 @@ export default {
       },
       itemHistoryObj: [],
       historyArr: [],
+      tapsStation: 'left',
       tempHisObj: {},
       tempVideoUrl: '', // 用户输入的视频URL
       isThird: false, // 当前数据来源是否为第三方数据
@@ -2501,6 +2502,7 @@ export default {
     openMapChange () {
       this.MapChange = !this.MapChange
       if (!this.MapChange) {
+        this.tapsStation = 'left'
         document.querySelector('.archive').style.order = 0
         document.querySelector('#centerMapBox').style.order = 0
       }
@@ -3979,7 +3981,7 @@ export default {
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
     changePaintStyle (scale, top, left) {
-      this.paintObj.scale = 100 / scale
+      this.paintObj.scale = Math.floor(100 / scale)
       let height = document.querySelector('.paint-bg').clientHeight
       let width = document.querySelector('.paint-bg').clientWidth
       let canvasheight = document.querySelector('.centerBox .mycanvas canvas').clientHeight
@@ -4296,9 +4298,9 @@ export default {
         this.getVideoDate()
       }
     },
-    'selectedItem.VideoData': function (newV, oldV) {
-      console.log(this.selectedItem.VideoData)
-    },
+    // 'selectedItem.VideoData': function (newV, oldV) {
+    //   console.log(this.selectedItem.VideoData)
+    // },
     'selectedItem.radius': function (newV, oldV) {
       if (!this.selectChange && newV !== oldV) {
         let tempId = this.selectedItem.id
@@ -4533,9 +4535,11 @@ export default {
         var winWidth = window.screen.width
         var ShuWidth = e.clientX
         if (ShuWidth > Math.floor(winWidth * 3 / 4)) {
+          this.tapsStation = 'right'
           document.querySelector('.archive').style.order = 1
           document.querySelector('#centerMapBox').style.order = -1
         } else if (ShuWidth < Math.floor(winWidth / 4)) {
+          this.tapsStation = 'left'
           document.querySelector('.archive').style.order = -1
           document.querySelector('#centerMapBox').style.order = 1
         }
