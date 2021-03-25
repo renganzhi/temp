@@ -13,7 +13,10 @@ export default {
     'ctLegendSize': '16',
     'axisLabelSize': '16',
     'legendY': 90,
-    'gridTop': 20,
+    'gridTop': 10,
+    'gridBotton': 10,
+    'gridLeft': 10,
+    'gridRight': 10,
     'tooltipShow': true,
     'areaLineType': true,
     'tooltipBackColor': '#57625d',
@@ -151,11 +154,6 @@ export default {
             ]
           },
           {
-            'name': '图例字颜色',
-            'key': 'ctLegendColor',
-            'tag': 'Color'
-          },
-          {
             'name': '图例高度',
             'parentKey': {
               'ctLegendShow': true
@@ -164,11 +162,28 @@ export default {
             'tag': 'input'
           },
           {
-            'name': '图元边距',
+            'name': '图例字颜色',
+            'key': 'ctLegendColor',
+            'tag': 'Color'
+          },
+          {
+            'name': '图元上边距',
             'key': 'gridTop',
-            'parentKey': {
-              'ctLegendShow': true
-            },
+            'tag': 'input'
+          },
+          {
+            'name': '图元下边距',
+            'key': 'gridBotton',
+            'tag': 'input'
+          },
+          {
+            'name': '图元左边距',
+            'key': 'gridLeft',
+            'tag': 'input'
+          },
+          {
+            'name': '图元右边距',
+            'key': 'gridRight',
             'tag': 'input'
           }
         ]

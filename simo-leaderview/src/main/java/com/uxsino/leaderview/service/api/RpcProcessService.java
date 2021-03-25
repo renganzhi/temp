@@ -762,6 +762,14 @@ public class RpcProcessService {
         return (ArrayList<ArrayList>) jsonModel.getObj();
     }
 
+    public JSONArray findBnsHistoryValue(BnsIndValQuery query) throws Exception{
+        JsonModel jsonModel = businessService.findHisIndValues(query, Maps.newHashMap());
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return JSON.parseArray(JSON.toJSONString(jsonModel.getObj()));
+    }
+
     private static <T> T toJavaBean(JsonModel jsonModel, Class<T> clazz){
         LinkedHashMap map = (LinkedHashMap) jsonModel.getObj();
         return JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
@@ -787,6 +795,7 @@ public class RpcProcessService {
         for (LinkedHashMap map: list) {
             IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
             if (ObjectUtils.isEmpty(t.getIndicatorValue())){
+                if (ObjectUtils.isEmpty(map.get("indicatorValue"))) continue;
                 t.setIndicatorValue(JSON.parseObject(JSON.toJSONString(map.get("indicatorValue"))));
             }
             ts.add(t);

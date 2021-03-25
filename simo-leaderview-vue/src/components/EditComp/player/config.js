@@ -1,6 +1,6 @@
 export default {
   'item': {
-    'text': '视频流',
+    'text': '视频',
     'imgClass': 'icon-n-video',
     'chartType': 'video',
     'width': 300,

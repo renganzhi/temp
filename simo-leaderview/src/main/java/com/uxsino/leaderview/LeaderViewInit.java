@@ -26,6 +26,10 @@ import com.uxsino.reactorq.event.HeartbeatEvent;
 import com.uxsino.reactorq.event.ModuleOnLineEvent;
 import com.uxsino.reactorq.subscriber.EventSubscriber;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+
 @Component
 @Configuration
 @EnableScheduling
@@ -69,12 +73,14 @@ public class LeaderViewInit implements InitializingBean {
 		}
 		// 订阅大屏展示API注册
 		try {
-			rqFactory.createTopicFlux(EventTopicConstants.SIMO_LEADERVIEW_API, String.class).subscribe(
-					JMSFlux.Catch(homeDataApiHandler::register, LoggerFactory.getLogger(HomeDataApiHandler.class)));
-		} catch (JMSException e) {
-			logger.error("leader view conn mq error:{}", e);
+			homeDataApiHandler.register();
+//			rqFactory.createTopicFlux(EventTopicConstants.SIMO_LEADERVIEW_API, String.class).subscribe(
+//					JMSFlux.Catch(homeDataApiHandler::register, LoggerFactory.getLogger(HomeDataApiHandler.class)));
+		} catch (Exception e) {
+			logger.error("大屏注册接口失败");
+//			logger.error("leader view conn mq error:{}", e);
 		}
-		_outbox.onNext(ev);//先订阅在发送上线消息 否则消息business monitor发送的消息不会被消费
+//		_outbox.onNext(ev);//先订阅在发送上线消息 否则消息business monitor发送的消息不会被消费
 	}
 
 	@Override

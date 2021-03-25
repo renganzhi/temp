@@ -16,6 +16,7 @@ import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.commons.utils.TimeUtils;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.business.*;
+import com.uxsino.leaderview.utils.MonitorUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,6 +182,9 @@ public class BusinessDataService {
         List<String> businessList = Lists.newArrayList();
         List<String> nameList = Lists.newArrayList();
         JSONArray businessArr = getBusStatus(session, business);
+        if(ObjectUtils.isEmpty(businessArr)){
+            return new JsonModel(true, empObj());
+        }
         Iterator<Object> it = businessArr.iterator();
         while(it.hasNext()){
             JSONObject obj = (JSONObject)it.next();
@@ -209,6 +213,321 @@ public class BusinessDataService {
         }
         json.put("rows", rows);
         return new JsonModel(true, json);
+    }
+
+    /**
+     * 根据状态统计业务数量
+     * @param session 会话
+     * @param status 状态
+     */
+    public JsonModel countBusiness(HttpSession session, Boolean status) throws Exception {
+        BusinessQuery query = new BusinessQuery();
+        Period period = query.getPeriod();
+        period = period == null ? Period._1month : period;
+        query.setPeriod(period);
+        SortWay sortWay = query.getSortWay();
+        if (sortWay == null || SortWay.custom.equals(sortWay)) {
+            SortWayConf sortWayConf = getUserSortWay(session, businessDataParamsService.findNotDeletedIds());
+            sortWay = sortWayConf.getSortWay();
+        }
+        query.setSortWay(sortWay);
+        List<ArrayList> list = rpcProcessService.getCurrIndVal(query);
+        if (!ObjectUtils.isEmpty(status)){
+            List<ArrayList> newList = Lists.newArrayList();
+            for (ArrayList obj: list) {
+                if (obj == null || obj.get(3) == null) continue;
+                if (RunStatus.Unavailable.toString().equals(obj.get(3).toString()) ^ status){
+                    newList.add(obj);
+                }
+            }
+            list = newList;
+        }
+        JSONObject result = new JSONObject();
+        result.put("name","业务数量");
+        result.put("value", list.size());
+        result.put("unit", "");
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 业务告警信息接口，表格
+     * @param session 会话
+     * @param business 业务Id
+     * @param number 展示条数
+     */
+    public JsonModel getBusinessAlertInfoForTable(HttpSession session, String business, Integer number) throws Exception {
+        JSONArray columns = new JSONArray();
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        columns.add("告警级别");
+        columns.add("业务名称");
+        columns.add("业务指标");
+        columns.add("告警内容");
+        columns.add("首次告警时间");
+        List<AlertRecord> alertRecords = getAlertRecord(business, session);
+        if (CollectionUtils.isEmpty(alertRecords)) {
+            JSONObject obj = new JSONObject();
+            JSONArray emp = new JSONArray();
+            obj.put("columns", columns);
+            obj.put("rows", emp);
+            return new JsonModel(true, obj);
+        }
+        List<Indicator> indicators = Indicator.getLeaderviewIndicator();
+
+        Set<String> bnsIds = alertRecords.stream().map(AlertRecord::getObjectId).collect(Collectors.toSet());
+
+        // 根据业务id获取业务id与业务名称键值对
+        BusinessQuery query = new BusinessQuery();
+        query.setIds(Lists.newArrayList(bnsIds));
+        List<BusinessSystem> bnsList = rpcProcessService.findBusinessSystems(query);
+        Map<String, String> map = bnsList.stream().collect(Collectors.toMap(BusinessSystem::getId, BusinessSystem::getName));
+
+        // 获取告警级别键值对
+        AlertLevelQuery levelQuery = new AlertLevelQuery();
+        levelQuery.setStatus(AlertLevelStatus.ACTIVATED);
+        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(levelQuery);
+        Map<Integer, String> levelMap = activeLevel.stream().collect(Collectors.toMap(AlertLevel::getLevel, AlertLevel::getName));
+
+        int j = 1;
+        for (AlertRecord alertRecord : alertRecords) {
+            JSONObject row = new JSONObject(true);
+            row.put("告警级别", levelMap.get(alertRecord.getLevel()));
+            row.put("业务名称", map.get(alertRecord.getObjectId()));
+            for (Indicator ind: indicators) {
+                if (ind.toString().equals(alertRecord.getIndicatorName())) {
+                    row.put("业务指标", ind.getText());
+                    break;
+                }
+                // TODO 这里以后可以根据业务具体的告警定义展示不同的告警类型
+                row.put("业务指标", "业务节点告警");
+            }
+            row.put("告警内容", alertRecord.getRecentAlertBrief());
+            row.put("首次告警时间", simpleDateFormat.format(alertRecord.getFirstAlertDate()));
+            rows.add(row);
+            if (++j > number)
+                break;
+        }
+        result.put("columns", columns);
+        result.put("rows", rows);
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 业务告警信息接口，文字格式
+     * @param session 会话
+     * @param business 业务Id
+     */
+    public JsonModel getBusinessAlertInfoForText(HttpSession session, String business) throws Exception{
+        List<AlertRecord> typeList = getAlertRecord(business, session);
+        if (ObjectUtils.isEmpty(typeList)) {
+            JSONObject obj = new JSONObject();
+            obj.put("info", "抱歉，没有数据可供展示...");
+            return new JsonModel(true, null, obj);
+        }
+        JSONObject result = new JSONObject();
+        // 根据业务id获取业务id与业务名称键值对
+        BusinessQuery query = new BusinessQuery();
+        query.setIds(Lists.newArrayList(business));
+        List<BusinessSystem> bnsList = rpcProcessService.findBusinessSystems(query);
+        Map<String, String> map = bnsList.stream().collect(Collectors.toMap(BusinessSystem::getId, BusinessSystem::getName));
+
+        // 获取告警级别键值对
+        AlertLevelQuery levelQuery = new AlertLevelQuery();
+        levelQuery.setStatus(AlertLevelStatus.ACTIVATED);
+        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(levelQuery);
+        Map<Integer, String> levelMap = activeLevel.stream().collect(Collectors.toMap(AlertLevel::getLevel, AlertLevel::getName));
+
+        for (AlertRecord alertRecord : typeList) {
+            result.put("state", levelMap.get(alertRecord.getLevel()));
+            result.put("name", map.get(alertRecord.getObjectId()));
+            result.put("title", alertRecord.getObjectName());
+            result.put("info", alertRecord.getRecentAlertBrief());
+            result.put("time", TimeUtils.formatTime(alertRecord.getFirstAlertDate()));
+        }
+        return new JsonModel(true, null, result);
+    }
+
+    /**
+     * 根据业务ID和指标名来展示历史指标数据
+     * @param session 会话
+     * @param business 业务Id
+     * @param indicator 指标名
+     * @param period 统计时段
+     */
+    public JsonModel getHistoryValue(HttpSession session, String[] business, Indicator indicator, String period) throws Exception{
+        if (ObjectUtils.isEmpty(business) || ObjectUtils.isEmpty(indicator)){
+            return new JsonModel(true, empObj());
+        }
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("采集时间");
+        Date endDate = new Date();
+        Date startDate = new Date();
+        int interval = 1;
+        if ("_1day".equals(period)){
+            startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L));
+            interval = 5;
+        }else if ("_1week".equals(period)){
+            startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L * 7));
+            interval = 60 * 8;
+        }else if ("_1month".equals(period)){
+            startDate = new Date(endDate.getTime() - (1000 * 60 * 60 * 24L * 30));
+            interval = 60 * 12;
+        }
+
+        List<Date> allDate = Lists.newArrayList();
+        Date tempDate = new Date(startDate.getTime());
+        Date tempEnd = new Date(endDate.getTime() + 1000 * 60 * interval);
+        while (tempDate.before(tempEnd)) {
+            Date itm = new Date(tempDate.getTime());
+            allDate.add(itm);
+            tempDate.setTime(tempDate.getTime() + 1000 * 60 * interval);
+        }
+
+        //进行权限过滤
+        JSONArray businessArr = getBusStatus(session, business);
+        JSONObject allData = new JSONObject();
+        for (int i = 0; i < businessArr.size(); i++) {
+            String businessId = businessArr.getJSONObject(i).getString("id");
+            BnsIndValQuery query = new BnsIndValQuery();
+            query.setBnsId(businessId);
+            query.setIndicatorName(indicator.name());
+            query.setStartDate(startDate);
+            query.setEndDate(endDate);
+            query.setPagination(false);
+            JSONArray arr = rpcProcessService.findBnsHistoryValue(query);
+            JSONArray filArr = new JSONArray();
+            // 遍历一遍数组，按照时间取值
+            for (int j = 0; j < allDate.size() - 1; j++) {
+                Long start = allDate.get(j).getTime();
+                Long end = allDate.get(j + 1).getTime();
+                JSONArray array = new JSONArray(arr);
+                array = MonitorUtils.filter(array, data -> data.getLong("fetchDate") < end && data.getLong("fetchDate") > start);
+                if (!ObjectUtils.isEmpty(array)){
+                    JSONObject obj = array.getJSONObject(0);
+                    obj.put("fetchDate", start);
+                    filArr.add(obj);
+                }
+            }
+            allData.put(businessArr.getJSONObject(i).getString("name"), filArr);
+
+        }
+        //组装返回数据
+        JSONArray wrapArr = new JSONArray();
+        for (int i = 0; i < businessArr.size(); i++) {
+            String businessName = businessArr.getJSONObject(i).getString("name");
+            columns.add(businessName);
+            JSONArray array = allData.getJSONArray(businessName);
+            for (int j = 1; j < array.size(); j++) {
+                JSONObject obj = array.getJSONObject(j);
+                obj.put("name", businessName);
+                obj.getLong("fetchDate");
+                wrapArr.add(obj);
+            }
+        }
+        //遍历统计所有数据，将时间相同的数据归为一组数据用于展示
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Long> usedData = Lists.newArrayList();
+        for (int i = 0; i < wrapArr.size(); i++) {
+            JSONObject obj = wrapArr.getJSONObject(i);
+            JSONObject row = new JSONObject();
+            Long fetchDateLong = obj.getLong("fetchDate");
+            if (usedData.contains(fetchDateLong)) continue;
+            usedData.add(fetchDateLong);
+            row.put("采集时间", format.format(new Date(fetchDateLong)));
+            row.put(obj.getString("name"), obj.getDoubleValue("value"));
+            for (int j = i + 1; j < wrapArr.size(); j++) {
+                JSONObject temObj = wrapArr.getJSONObject(j);
+                if (fetchDateLong.compareTo(temObj.getLong("fetchDate")) == 0){
+                    row.put(temObj.getString("name"), temObj.getDoubleValue("value"));
+                }
+            }
+            rows.add(row);
+        }
+        result.put("columns", columns);
+        result.put("rows", rows);
+        result.put("unit", indicator.getUnit());
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 根据业务ID和指标名和展示条数来展示指标TOPN
+     * @param business 业务Id
+     * @param indicator 指标名
+     * @param number 展示条数
+     * @param order 排序方式
+     * @param bar 柱状图类型
+     */
+    public JsonModel getIndicatorTOPN(HttpSession session, String[] business, String indicator,
+                                      Integer number, String order, boolean bar)throws Exception {
+        Indicator indicatorEnum = Indicator.valueOf(indicator);
+        if (ObjectUtils.isEmpty(indicatorEnum)) {
+            return new JsonModel(true, "不支持该指标");
+        }
+        //排序获取可查看的前n个业务指标
+        JSONArray topBnsInds = getTopBusinessInd(session, business, indicatorEnum, order, number);
+        //根据order参数，对前n个业务指标值进行排序
+        sortByorder(order, topBnsInds);
+        // 封装返回的结果
+        JSONObject result = new JSONObject();
+        if (ObjectUtils.isEmpty(topBnsInds)){
+            return new JsonModel(true, empObj());
+        }
+        JSONArray columns = new JSONArray();
+        columns.add("业务名称");
+        String IndName = indicatorEnum.getText();
+        String unit = indicatorEnum.getUnit();
+        if (!Strings.isNullOrEmpty(unit)) {
+            IndName = IndName + "(" + unit + ")";
+        } else if (!topBnsInds.isEmpty() && topBnsInds.getJSONObject(0).containsKey("unit") && StringUtils
+                .isNotBlank(topBnsInds.getJSONObject(0).getString("unit"))) {
+            unit = topBnsInds.getJSONObject(0).getString("unit");
+            IndName = IndName + "(" + unit + ")";
+        }
+        columns.add(IndName);
+        JSONArray rows = new JSONArray();
+        for (Object topBnsIndObj : topBnsInds) {
+            JSONObject topBnsInd = JSONObject.parseObject(JSON.toJSONString(topBnsIndObj));
+            String businessName = topBnsInd.getString("name");
+            String indVal = topBnsInd.getString("indVal");
+            JSONObject row = new JSONObject();
+            row.put("业务名称",businessName);
+            row.put(IndName,indVal);
+            rows.add(row);
+        }
+        result.put("columns",columns);
+        result.put("rows",rows);
+        if (bar){
+            if (!ObjectUtils.isEmpty(rows)){
+                JSONArray temRows = new JSONArray();
+                for (int i = rows.size() - 1; i >= 0; i--) {
+                    JSONObject obj = rows.getJSONObject(i);
+                    temRows.add(obj);
+                }
+                result.put("rows",temRows);
+            }
+        }
+        return new JsonModel(true, result);
+    }
+
+    private List<AlertRecord> getAlertRecord(List<String> business, HttpSession session)throws Exception{
+        if (ObjectUtils.isEmpty(business)){
+            return getAlertRecord(new String() , session);
+        }
+        return getAlertRecord(StringUtils.join(business, ","), session);
+    }
+
+    private List<AlertRecord> getAlertRecord(String business, HttpSession session) throws Exception{
+        AlertQuery query = new AlertQuery();
+        query.setAlertType(AlertType.BusinessAlert);
+        query.setObjectIds(business);
+        // 进行域过滤
+        List<Long> domainId = domainUtils.getUserDomainIds(session);
+        query.setDomainIds(domainId.toArray(new Long[domainId.size()]));
+        query.setHandleStatusNotIn(new AlertHandleStatus[] { AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED,
+                AlertHandleStatus.RESTORED });
+        return rpcProcessService.findAlert(query, null);
     }
 
     /**
@@ -500,66 +819,6 @@ public class BusinessDataService {
         return obj;
     }
 
-    /**
-     * 根据业务ID和指标名和展示条数来展示指标TOPN
-     * @param business 业务Id
-     * @param indicator 指标名
-     * @param number 展示条数
-     * @param order 排序方式
-     * @param bar 柱状图类型
-     */
-    public JsonModel getIndicatorTOPN(HttpSession session, String[] business, String indicator,
-                                      Integer number, String order, boolean bar)throws Exception {
-        Indicator indicatorEnum = Indicator.valueOf(indicator);
-        if (ObjectUtils.isEmpty(indicatorEnum)) {
-            return new JsonModel(true, "不支持该指标");
-        }
-        //排序获取可查看的前n个业务指标
-        JSONArray topBnsInds = getTopBusinessInd(session, business, indicatorEnum, order, number);
-        //根据order参数，对前n个业务指标值进行排序
-        sortByorder(order, topBnsInds);
-        // 封装返回的结果
-        JSONObject result = new JSONObject();
-        if (ObjectUtils.isEmpty(topBnsInds)){
-            return new JsonModel(true, empObj());
-        }
-        JSONArray columns = new JSONArray();
-        columns.add("业务名称");
-        String IndName = indicatorEnum.getText();
-        String unit = indicatorEnum.getUnit();
-        if (!Strings.isNullOrEmpty(unit)) {
-            IndName = IndName + "(" + unit + ")";
-        } else if (!topBnsInds.isEmpty() && topBnsInds.getJSONObject(0).containsKey("unit") && StringUtils
-                .isNotBlank(topBnsInds.getJSONObject(0).getString("unit"))) {
-            unit = topBnsInds.getJSONObject(0).getString("unit");
-            IndName = IndName + "(" + unit + ")";
-        }
-        columns.add(IndName);
-        JSONArray rows = new JSONArray();
-        for (Object topBnsIndObj : topBnsInds) {
-            JSONObject topBnsInd = JSONObject.parseObject(JSON.toJSONString(topBnsIndObj));
-            String businessName = topBnsInd.getString("name");
-            String indVal = topBnsInd.getString("indVal");
-            JSONObject row = new JSONObject();
-            row.put("业务名称",businessName);
-            row.put(IndName,indVal);
-            rows.add(row);
-        }
-        result.put("columns",columns);
-        result.put("rows",rows);
-        if (bar){
-            if (!ObjectUtils.isEmpty(rows)){
-                JSONArray temRows = new JSONArray();
-                for (int i = rows.size() - 1; i >= 0; i--) {
-                    JSONObject obj = rows.getJSONObject(i);
-                    temRows.add(obj);
-                }
-                result.put("rows",temRows);
-            }
-        }
-        return new JsonModel(true, result);
-    }
-
     private JSONArray getTopBusinessInd(HttpSession session, String[] business,
                                         Indicator indicatorEnum, String order ,Integer number) throws Exception{
         JSONArray topBnsInds = new JSONArray();
@@ -590,7 +849,6 @@ public class BusinessDataService {
                 }
             }
         }else {
-            String reqHeader = "SESSION=" + session.getId();
             Period period = Period._7days;
             String unit = "";
             JSONObject alertInfos = new JSONObject();
@@ -709,157 +967,6 @@ public class BusinessDataService {
     private JSONObject getBnsAlertCountAndAlertLevel(List<BusinessSystem> business, HttpSession session) throws Exception {
         String[] bnsIds = business.stream().map(BusinessSystem::getId).toArray(String[]::new);
         return getBnsAlertCountAndAlertLevel(bnsIds, session);
-    }
-
-    /**
-     * 根据状态统计业务数量
-     * @param session 会话
-     * @param status 状态
-     */
-    public JsonModel countBusiness(HttpSession session, Boolean status) throws Exception {
-        BusinessQuery query = new BusinessQuery();
-        Period period = query.getPeriod();
-        period = period == null ? Period._1month : period;
-        query.setPeriod(period);
-        SortWay sortWay = query.getSortWay();
-        if (sortWay == null || SortWay.custom.equals(sortWay)) {
-            SortWayConf sortWayConf = getUserSortWay(session, businessDataParamsService.findNotDeletedIds());
-            sortWay = sortWayConf.getSortWay();
-        }
-        query.setSortWay(sortWay);
-        List<ArrayList> list = rpcProcessService.getCurrIndVal(query);
-        if (!ObjectUtils.isEmpty(status)){
-            List<ArrayList> newList = Lists.newArrayList();
-            for (ArrayList obj: list) {
-                if (obj == null || obj.get(3) == null) continue;
-                if (RunStatus.Unavailable.toString().equals(obj.get(3).toString()) ^ status){
-                    newList.add(obj);
-                }
-            }
-            list = newList;
-        }
-        JSONObject result = new JSONObject();
-        result.put("name","业务数量");
-        result.put("value", list.size());
-        result.put("unit", "");
-        return new JsonModel(true, result);
-    }
-
-    /**
-     * 业务告警信息接口，表格
-     * @param session 会话
-     * @param business 业务Id
-     * @param number 展示条数
-     */
-    public JsonModel getBusinessAlertInfoForTable(HttpSession session, String business, Integer number) throws Exception {
-        JSONArray columns = new JSONArray();
-        JSONObject result = new JSONObject();
-        JSONArray rows = new JSONArray();
-        columns.add("告警级别");
-        columns.add("业务名称");
-        columns.add("业务指标");
-        columns.add("告警内容");
-        columns.add("首次告警时间");
-        List<AlertRecord> alertRecords = getAlertRecord(business, session);
-        if (CollectionUtils.isEmpty(alertRecords)) {
-            JSONObject obj = new JSONObject();
-            JSONArray emp = new JSONArray();
-            obj.put("columns", columns);
-            obj.put("rows", emp);
-            return new JsonModel(true, obj);
-        }
-        List<Indicator> indicators = Indicator.getLeaderviewIndicator();
-
-        Set<String> bnsIds = alertRecords.stream().map(AlertRecord::getObjectId).collect(Collectors.toSet());
-
-        // 根据业务id获取业务id与业务名称键值对
-        BusinessQuery query = new BusinessQuery();
-        query.setIds(Lists.newArrayList(bnsIds));
-        List<BusinessSystem> bnsList = rpcProcessService.findBusinessSystems(query);
-        Map<String, String> map = bnsList.stream().collect(Collectors.toMap(BusinessSystem::getId, BusinessSystem::getName));
-
-        // 获取告警级别键值对
-        AlertLevelQuery levelQuery = new AlertLevelQuery();
-        levelQuery.setStatus(AlertLevelStatus.ACTIVATED);
-        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(levelQuery);
-        Map<Integer, String> levelMap = activeLevel.stream().collect(Collectors.toMap(AlertLevel::getLevel, AlertLevel::getName));
-
-        int j = 1;
-        for (AlertRecord alertRecord : alertRecords) {
-            JSONObject row = new JSONObject(true);
-            row.put("告警级别", levelMap.get(alertRecord.getLevel()));
-            row.put("业务名称", map.get(alertRecord.getObjectId()));
-            for (Indicator ind: indicators) {
-                if (ind.toString().equals(alertRecord.getIndicatorName())) {
-                    row.put("业务指标", ind.getText());
-                    break;
-                }
-                // TODO 这里以后可以根据业务具体的告警定义展示不同的告警类型
-                row.put("业务指标", "业务节点告警");
-            }
-            row.put("告警内容", alertRecord.getRecentAlertBrief());
-            row.put("首次告警时间", simpleDateFormat.format(alertRecord.getFirstAlertDate()));
-            rows.add(row);
-            if (++j > number)
-                break;
-        }
-        result.put("columns", columns);
-        result.put("rows", rows);
-        return new JsonModel(true, result);
-    }
-
-    /**
-     * 业务告警信息接口，文字格式
-     * @param session 会话
-     * @param business 业务Id
-     */
-    public JsonModel getBusinessAlertInfoForText(HttpSession session, String business) throws Exception{
-        List<AlertRecord> typeList = getAlertRecord(business, session);
-        if (ObjectUtils.isEmpty(typeList)) {
-            JSONObject obj = new JSONObject();
-            obj.put("info", "抱歉，没有数据可供展示...");
-            return new JsonModel(true, null, obj);
-        }
-        JSONObject result = new JSONObject();
-        // 根据业务id获取业务id与业务名称键值对
-        BusinessQuery query = new BusinessQuery();
-        query.setIds(Lists.newArrayList(business));
-        List<BusinessSystem> bnsList = rpcProcessService.findBusinessSystems(query);
-        Map<String, String> map = bnsList.stream().collect(Collectors.toMap(BusinessSystem::getId, BusinessSystem::getName));
-
-        // 获取告警级别键值对
-        AlertLevelQuery levelQuery = new AlertLevelQuery();
-        levelQuery.setStatus(AlertLevelStatus.ACTIVATED);
-        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(levelQuery);
-        Map<Integer, String> levelMap = activeLevel.stream().collect(Collectors.toMap(AlertLevel::getLevel, AlertLevel::getName));
-
-        for (AlertRecord alertRecord : typeList) {
-            result.put("state", levelMap.get(alertRecord.getLevel()));
-            result.put("name", map.get(alertRecord.getObjectId()));
-            result.put("title", alertRecord.getObjectName());
-            result.put("info", alertRecord.getRecentAlertBrief());
-            result.put("time", TimeUtils.formatTime(alertRecord.getFirstAlertDate()));
-        }
-        return new JsonModel(true, null, result);
-    }
-
-    private List<AlertRecord> getAlertRecord(List<String> business, HttpSession session)throws Exception{
-        if (ObjectUtils.isEmpty(business)){
-            return getAlertRecord(new String() , session);
-        }
-        return getAlertRecord(StringUtils.join(business, ","), session);
-    }
-
-    private List<AlertRecord> getAlertRecord(String business, HttpSession session) throws Exception{
-        AlertQuery query = new AlertQuery();
-        query.setAlertType(AlertType.BusinessAlert);
-        query.setObjectIds(business);
-        // 进行域过滤
-        List<Long> domainId = domainUtils.getUserDomainIds(session);
-        query.setDomainIds(domainId.toArray(new Long[domainId.size()]));
-        query.setHandleStatusNotIn(new AlertHandleStatus[] { AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED,
-                AlertHandleStatus.RESTORED });
-        return rpcProcessService.findAlert(query, null);
     }
 
 }

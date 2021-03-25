@@ -25,7 +25,7 @@ module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.ts'
+    app: './src/main.js'
   },
   output: {
     path: config.build.assetsRoot,
@@ -62,7 +62,7 @@ module.exports = {
       // },
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        loader: 'vue-loader'
         // options: vueLoaderConfig
       },
       {
@@ -70,7 +70,7 @@ module.exports = {
         loaders: ['thread-loader', 'babel-loader'],
         include: [
           resolve('src'),
-          resolve('test'),
+          resolve('test')
           // resolve('node_modules/webpack-dev-server/client')
         ]
       },
@@ -115,7 +115,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new VueLoaderPlugin(),
+    new VueLoaderPlugin()
   ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue

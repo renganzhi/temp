@@ -51,3 +51,12 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+#editor iframe {
+  background-image:linear-gradient(to right, #141a2d00 0%, #141a2d00 160px, #ffffff00 0%);
+  color: #cad6dd
+  span,p{
+    color: red;
+  }
+}
+</style>

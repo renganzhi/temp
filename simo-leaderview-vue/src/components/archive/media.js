@@ -2,6 +2,7 @@ import {morenData} from '@/views/Edit/chartJson'
 import ppt from '@/components/EditComp/ppt/config.js'
 import player from '@/components/EditComp/player/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
+import JSMpeg from '@/components/EditComp/JSMpeg/config.js'
 // import config from './config.json'
 // 改造过渡
 
@@ -22,7 +23,8 @@ const media = {
     },
     ppt.item,
     player.item,
-    BulletFrame.item
+    BulletFrame.item,
+    JSMpeg.item
     //   config.video.item
   ]
 }

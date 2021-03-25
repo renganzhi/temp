@@ -24,31 +24,31 @@ public class BusinessClientHystrixLeaderview implements BusinessService {
 
     @Override
     public JsonModel checkPermission(BusinessSystem businessSystem, DataSourceType dataSourceType, String cookie) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 
     @Override
     public JsonModel findSortWayByUserId(Long userId) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 
     @Override
     public JsonModel findHisIndValues(BnsIndValQuery bnsIndValQuery, Map<String, Object> map) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 
     @Override
     public JsonModel findBusinessInfoAndCurIndValues(BnsIndValQuery bnsIndValQuery) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 
     @Override
     public JsonModel findBnsInfoBySortWay(BusinessQuery query) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 
     @Override
     public JsonModel calcStatistics(Map<String, Date> bnsCreateDateMap, Date startDate, Date endDate) {
-        return new JsonModel(false, "Monitor服务调用失败");
+        return new JsonModel(false, "Business服务调用失败");
     }
 }

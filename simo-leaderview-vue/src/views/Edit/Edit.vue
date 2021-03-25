@@ -84,7 +84,6 @@
       <div class="edit-body flex"
            @click="hideContext">
         <!--  <div class="m-contain full-height">-->
-        <!--右键-->
         <div class="btm-tools">
           <div class="btn-box">
             <span @click="preOther(0)"
@@ -101,15 +100,48 @@
                   data-original-title="下一页"><i class="icon-n-next"></i></span>
           </div>
         </div>
+        <!--右键-->
         <ul class="menu-list"
             style="width: 156px;"
             ref="copyMenu">
+          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
+              <span>鹰眼</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
+          <li class="context-menu-item context-menu-visible" @click="openMapChange">
+              <span>自动窗口</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
           <li class="context-menu-item context-menu-visible"
-              @click="paste"><span>粘贴</span></li>
+              @click="paste" v-if="this.tempItemArry.length > 0"><span>粘贴</span></li>
         </ul>
         <ul class="menu-list"
             style="width: 156px;"
             ref="contextMenu">
+          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
+              <span>鹰眼</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
+          <li class="context-menu-item context-menu-visible" @click="openMapChange" >
+              <span>自动窗口</span>
+              <div class="fr">
+                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                  <div></div>
+                </div>
+              </div>
+          </li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
               @click="copy"><span>复制</span></li>
@@ -140,7 +172,6 @@
               class="context-menu-item context-menu-visible"
               @click="toBottom"><span>置于底层</span></li>
         </ul>
-        <Archive @click="initChart"></Archive>
         <!-- <div class="m-left content-side flex"
              @click.self="clickPaint($event)">
           <div class="cs-item"
@@ -150,8 +181,9 @@
                @click="initChart(value)">
             {{value.text}}</div>
         </div> -->
+        <Archive @click="initChart"></Archive>
 
-        <div class="m-main flex-1 auto" ref="editCanvas"
+        <div class="m-main flex-1 auto" id="centerMapBox" ref="editCanvas"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
               @contextmenu.prevent="mycontextmenu($event)"
@@ -217,14 +249,6 @@
           >
           </vue-ruler>
         </div>
-
-        <div class="scaleBox">
-          <span>缩放比例</span>
-          <Slider :min="20"
-                  :max="200"
-                  v-model="paintObj.scale"></Slider>
-        </div>
-
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
           <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{curChartName}}</div>
@@ -1259,11 +1283,32 @@
                            v-model="selectedItem.legendY">
                   </div>
                   <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
-                    <label>图元边距</label>
+                    <label>图元上边距</label>
                     <input type="number"
                            max="50"
                            min="0"
                            v-model="selectedItem.gridTop">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元下边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridBotton">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元左边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridLeft">
+                  </div>
+                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                    <label>图元右边距</label>
+                    <input type="number"
+                           max="50"
+                           min="0"
+                           v-model="selectedItem.gridRight">
                   </div>
                   <div class="m-gap form-group">tips配置</div>
                   <div class="form-group cols2">
@@ -1676,7 +1721,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','polarBar','DataFlow','NewMarquee','ELine','NewNumber','NewTable','NewTime','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewBar','polarBar','NewHistogram','DataFlow','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
@@ -1718,6 +1763,20 @@
                          @change='changeImg' />
                 </div>
               </div>
+              <div v-show="['JSMpeg'].includes(selectedItem.chartType)">
+                <div class="form-group cols2">
+                  <label>选择设备</label>
+                  <select v-model="selectedItem.HcnetData">
+                    <option v-for="(val,key) in AllHcnetData" :key="key" :value="val.id">{{val.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <label>选择通道</label>
+                  <select v-model="selectedItem.VideoData">
+                    <option v-for="(val,key) in AllVideoData" :key="key" :value="val.channel">{{val.ip}}</option>
+                  </select>
+                </div>
+              </div>
               <div v-show="selectedItem.chartType == 'NewTime'">
                 <div class="form-group cols2">
                   <label>取值来源</label>
@@ -1727,7 +1786,10 @@
                   </select>
                 </div>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'border', 'NewTime', 'video', 'ppt','BulletFrame', 'hotspot'].includes(selectedItem.chartType)" >
+              <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
+                  <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
+              </div>
+              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -1788,7 +1850,7 @@
                         class="addData"
                         style="display: block; margin-left: 85px; margin-bottom: 20px;">配置资源指标详细</button>
                 <div class="form-group"
-                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'Ueditor' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'NewMarquee'">
+                     v-if="selectedItem.ctDataSource === 'static' && selectedItem.chartType != 'v-map'&& selectedItem.chartType != 'NewVMap' && selectedItem.chartType != 'Ueditor'&& selectedItem.chartType!=='NewScatter' && selectedItem.chartType!=='v-scatter' && selectedItem.chartType != 'text'  && selectedItem.chartType != 'NEWtextArea' && selectedItem.chartType != 'NewMarquee'">
                   <div ref="textareaData"
                        class="confData"
                        v-if="refreshData"
@@ -1801,13 +1863,10 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
-                <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
-                    <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
-                </div>
-                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable'">
+                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable'">
                     <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
                 </div>
-                <div v-if="advanced && selectedItem.chartType==='NewTable'">
+                <div v-if="advanced && (selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable')">
                   <div class="form-group cols2">
                     <label>字段</label>
                     <select v-model="selectedItem.AlarmField">
@@ -1876,7 +1935,7 @@
                             :value="i">{{i}}</option>
                   </select>
                 </div>
-                <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='v-scatter'">
+                <div v-show="selectedItem.chartType === 'v-map' || selectedItem.chartType==='NewVMap'|| selectedItem.chartType==='NewScatter'||selectedItem.chartType==='v-scatter'">
                   <div class="form-group cols2">
                     <label>展示范围</label>
                     <select v-model="selectedItem.mapLevel"
@@ -1905,7 +1964,7 @@
                              @input="chgCity(selectedItem.cityCode)"></Select2>
                   </div>
                   <div class="form-group cols2"
-                       v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
+                       v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
                          title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
@@ -1914,7 +1973,7 @@
                   </div>
 
                   <div class="form-group cols2"
-                       v-show="selectedItem.chartType!=='v-scatter' && selectedItem.ctDataSource == 'static'">
+                       v-show="!(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
                          title="设置每个地区的分布数量"></i></label>
@@ -1947,7 +2006,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                      v-show="selectedItem.chartType==='v-map'"
+                      v-show="selectedItem.chartType==='v-map' || selectedItem.chartType==='NewVMap'"
                       style="position: relative;">
                   <!-- editPieces -->
                   <div class="levelTips"
@@ -1990,7 +2049,7 @@
                           @click="addMapLevel">添加量级</button>
                 </div>
                 <div class="setMapData"
-                     v-if="selectedItem.chartType==='v-scatter' && selectedItem.ctDataSource == 'static'">
+                     v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                   <div class="area-item"
                        v-for="(item, index) in alertMapData"
                        :key="index">
@@ -2051,7 +2110,7 @@
               </div>
               <template v-if="selectedItem.chartType == 'ppt' || selectedItem.chartType == 'BulletFrame'">
                 <draggable class="img_src_list" v-model="selectedItem.srcList" handle=".handle">
-                  <div v-for="(item, index) in selectedItem.srcList" :key="index">
+                  <div v-for="(item, index) in selectedItem.srcList" :key="index" :class="imgHeightLight==index?'heightImgName':''">
                     <span class="src_item handle" @click="activeSrcList(index)">{{item.name}}</span>
                     <span class="delete_text" @click="deleteSrcList(index)">删除</span>
                     </div>
@@ -2060,6 +2119,14 @@
             </div>
           </div>
         </div>
+        <div class="scaleBox">
+          <span>缩放比例</span>
+          <Slider :min="20"
+                  :max="200"
+                  v-model="paintObj.scale"></Slider>
+        </div>
+        <HawkEye v-if="ShowHawkEye" :scale = "paintObj.scale" :boxTop = "HawkEyeStyle.top" :boxLeft = "HawkEyeStyle.left"  :bgTop = "paintObj.top" :bgLeft = "paintObj.left"></HawkEye>
+
         <!-- </div> -->
       </div>
       <!-- <div class="form-group" style="position: fixed; z-index: 9999;">
@@ -2189,24 +2256,26 @@ html[data-theme="blueWhite"] {
     color: #444 !important;
   }
 }
-.el-collapse-item__header{
-  background-color: transparent;
-  border-bottom: 1px solid transparent;
-  font-weight: bold;
-  color: inherit
-}
-.el-collapse-item__wrap{
-  background-color: transparent;
-  border-bottom: 1px solid transparent;
-}
-.el-collapse-item__content{
-  padding-top: 25px;
-  padding-bottom: 0px;
-  color: inherit
-}
-.el-collapse{
-      border-top: 1px solid transparent;
+.m-tabMain{
+  .el-collapse-item__header{
+    background-color: transparent;
     border-bottom: 1px solid transparent;
+    font-weight: bold;
+    color: inherit
+  }
+  .el-collapse-item__wrap{
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+  }
+  .el-collapse-item__content{
+    padding-top: 25px;
+    padding-bottom: 0px;
+    color: inherit
+  }
+  .el-collapse{
+        border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+  }
 }
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
@@ -2256,8 +2325,13 @@ html[data-theme="blueWhite"] {
     opacity: 1;
   }
 }
-.edui-default .edui-editor-bottomContainer{
- display: none;
+.heightImgName{
+  color: #0088cc;
+}
+.edui-default {
+  ::deep .edui-editor-bottomContainer{
+    display: none;
+  }
 }
 .edui-default {
   ::deep .edui1677_message_holder{

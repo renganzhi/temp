@@ -25,6 +25,7 @@ import ChildTag from '@/components/ChildTag/styleTag'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
+import HawkEye from '@/components/HawkEye'
 
 import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
@@ -49,9 +50,19 @@ let config = {
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
+  NewGroupHistogram: require('@/components/EditComp/NewGroupHistogram/config.js'),
+  NewGroupLeftHistogram: require('@/components/EditComp/NewGroupLeftHistogram/config.js'),
+  NewBar: require('@/components/EditComp/NewBar/config.js'),
   NewTime: require('@/components/EditComp/NewTime/config.js'),
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
+  NewBorder: require('@/components/EditComp/NewBorder/config.js'),
+  JSMpeg: require('@/components/EditComp/JSMpeg/config.js'),
+  NewMoveTable: require('@/components/EditComp/NewMoveTable/config.js'),
   NewTable: require('@/components/EditComp/NewTable/config.js'),
+  NewProgress: require('@/components/EditComp/NewProgress/config.js'),
+  NewHistogram: require('@/components/EditComp/NewHistogram/config.js'),
+  NewVMap: require('@/components/EditComp/NewVMap/config.js'),
+  NewScatter: require('@/components/EditComp/NewScatter/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
   bubble: require('@/components/EditComp/bubble/config.js')
@@ -59,11 +70,18 @@ let config = {
 
 export default {
   name: 'edit',
-  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive },
+  components: { DragBox, VueRulerTool, VueRuler, UE, Compose, Select2, Vcolor, Confirm, PreView, Slider, draggable, ChartStyle, ChildTag, Archive, HawkEye },
   // mixins:[thirdLoginMix],
   props: [],
   data: function () {
     return {
+      imgHeightLight: 0,
+      MapChange: false,
+      ShowHawkEye: false,
+      HawkEyeStyle: {
+        top: 0,
+        left: 0
+      },
       advanced: false,
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
@@ -81,6 +99,8 @@ export default {
       guideStation: 'static',
       AllPageId: [],
       pageIdIndex: '',
+      AllHcnetData: [], // 设备
+      AllVideoData: [], // 视频
       showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
@@ -124,9 +144,11 @@ export default {
       paintObj: {
         width: 1920,
         height: 1080,
-        bgColor: '',
+        bgColor: '#141929',
         bgImg: '',
         scale: 100,
+        top: 0,
+        left: 0,
         bgStyle: '3', // 背景图铺满方式
         opacity: 100,
         showGrid: false // 默认不显示网格
@@ -604,7 +626,7 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     chartDataToMap () {
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         // chartData转化为input输入数据
         this.selectMapData = {}
         var tempData = this.selectedItem.chartData.rows
@@ -821,14 +843,14 @@ export default {
           // console.log('===========' + this.selectedItem.mapLevel + '=========')
           if (this.selectedItem.mapLevel === 'province') {
             this.areaArr = data
-            if (this.selectedItem.chartType === 'v-map') {
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               this.initLevelData()
-            } else if (this.selectedItem.chartType === 'v-scatter') {
+            } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           } else if (this.selectedItem.mapLevel === 'city') {
             this.selectedItem.cityCode = data[0].value
-            if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           }
@@ -842,10 +864,10 @@ export default {
         this.getMapData(id).then((data) => {
           this.areaArr = data
           this.selectedItem.cityCode = id
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.initLevelData()
           }
-          if (this.selectedItem.chartType === 'v-scatter') {
+          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
             if (this.selfMapLevel && id) {
               this.clearAlertMap()
             }
@@ -940,6 +962,9 @@ export default {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
         this.pageName = res.obj.name
+        if (!res.obj.viewConf) {
+          res.obj.viewConf = '[]'
+        }
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
           if (res.obj.paintObj) {
@@ -1011,7 +1036,7 @@ export default {
             }
           }
         }
-        if (item.chartType === 'v-map') {
+        if (item.chartType === 'v-map' || item.chartType === 'NewVMap') {
           if (!item.cityShow) {
             this.$set(item, 'cityShow', 'false')
           }
@@ -1095,7 +1120,7 @@ export default {
                 this.$set(list, 'smooth', 'true')
               }
             }
-            if (list.chartType === 'v-map') {
+            if (list.chartType === 'v-map' || list.chartType === 'NewVMap') {
               if (!list.cityShow) {
                 this.$set(list, 'cityShow', 'false')
               }
@@ -1146,7 +1171,7 @@ export default {
           refreshTm: 5, // 刷新周期
           zIndex: ++this.maxIndex,
           colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' ? this.defMapColors.concat() : this.defalutColors.concat(),
+          ctColors: value.chartType === 'v-map' || value.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
           ctDataSource: 'static', // 数据来源system\static，默认static
           url: '', // 请求接口
           params: {}, // 请求接口参数
@@ -1166,13 +1191,13 @@ export default {
       // this.testObj = this.selectedItem // 修改宽高等会直接修改元件
       this.testObj = JSON.parse(JSON.stringify(this.selectedItem))
       this.chooseIndexs = [this.chartNum.length - 1]
-      if (value.chartType === 'v-map' || value.chartType === 'v-scatter') {
+      if (value.chartType === 'v-map' || value.chartType === 'v-scatter' || value.chartType === 'NewScatter' || value.chartType === 'NewVMap') {
         this.areaArr = this.provinceArr
-        if (value.chartType === 'v-map') {
+        if (value.chartType === 'v-map' || value.chartType === 'NewVMap') {
           this.selectMapData = { '台湾': 25, '河北': 75, '山西': 125 }
           this.editPieces = JSON.parse(JSON.stringify(obj.piecesData))
         }
-        if (value.chartType === 'v-scatter') {
+        if (value.chartType === 'v-scatter' || value.chartType === 'NewScatter') {
           this.alertMapData = _.cloneDeep(obj.chartData)
         }
       }
@@ -1192,7 +1217,7 @@ export default {
           this.chooseIndexs.forEach((i) => {
             this.chartNum[i]['ctColors'].splice(0, 8)
           })
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.chooseIndexs.forEach((i) => {
               this.$set(this.chartNum[i], 'ctColors', this.defMapColors.concat())
             })
@@ -1202,7 +1227,7 @@ export default {
             })
           }
         } else {
-          if (this.selectedItem.chartType !== 'v-map') {
+          if (this.selectedItem.chartType !== 'v-map' && this.selectedItem.chartType !== 'NewVMap') {
             this.chooseIndexs.forEach((i) => {
               this.$set(this.chartNum[i], 'ctColors', JSON.parse(JSON.stringify(this.defGradColors)))
             })
@@ -1212,13 +1237,13 @@ export default {
       } else {
         if (this.selectedItem.colorType === 'defalut') {
           this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
-          if (this.selectedItem.chartType === 'v-map') {
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.$set(this.selectedItem, 'ctColors', this.defMapColors.concat())
           } else {
             this.$set(this.selectedItem, 'ctColors', this.defalutColors.concat())
           }
         } else {
-          if (this.selectedItem.chartType !== 'v-map') {
+          if (this.selectedItem.chartType !== 'v-map' && this.selectedItem.chartType !== 'NewVMap') {
             this.selectedItem.ctColors.splice(0, this.selectedItem.ctColors.length)
             let newColors = JSON.parse(JSON.stringify(this.defGradColors))
             this.$set(this.selectedItem, 'ctColors', newColors)
@@ -1276,18 +1301,20 @@ export default {
       if (ev.srcElement.className === 'vue-ruler-wrapper' || ev.srcElement.id === 'chooseWrap') {
         $(this.$refs.contextMenu).toggle(false)
         this.clickPaint() // 取消所有的选中
-        if (this.tempItemArry.length > 0) {
-          $(this.$refs.copyMenu)
-            .css({
-              left: ev.pageX,
-              top: ev.pageY
-            })
-            .toggle(true)
+        if (!this.ShowHawkEye) {
+          this.HawkEyeStyle.top = ev.pageY
+          this.HawkEyeStyle.left = ev.pageX
         }
+        $(this.$refs.copyMenu)
+          .css({
+            left: ev.pageX,
+            top: ev.pageY
+          })
+          .toggle(true)
       }
     },
     selected: function (item, ev, type, i) {
-      $('.select2-container--open').remove()
+      $('--open').remove()
       this.selfMapLevel = false
       if (this.childResize && ev === 'context') {
         // 内部元件的右键
@@ -1359,7 +1386,7 @@ export default {
             }
             this.borderRadius = item.radius || 0
           }
-          if (item.chartType === 'v-map') {
+          if (item.chartType === 'v-map' || item.chartType === 'NewVMap') {
             this.selectedItem = {} // 避免触发三级下拉的监听
           }
           // this.s
@@ -1403,8 +1430,7 @@ export default {
           this.ifSameItems()
         }
       }
-
-      if (this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
@@ -1437,7 +1463,7 @@ export default {
         }
         // this.selectToPoint() // 这里应该不需要
       }
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.showWindowBtn = false
         // 这里是不是少了点什么
         if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
@@ -1508,7 +1534,7 @@ export default {
       this.parentId = index // 父级元件的序号
       this.chooseCompIndexs = []
       this.childResize = true
-      if (this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.alertMapData = []
         if (this.selectedItem.mapLevel === 'country') {
           this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
@@ -1534,7 +1560,7 @@ export default {
           })
         }
       }
-      if (this.selectedItem.chartType === 'v-map') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.editPieces = JSON.parse(JSON.stringify(this.selectedItem.piecesData))
         this.editPiecesCopy = JSON.parse(JSON.stringify(this.selectedItem.piecesData)) // 副本
         // 地图元件重新加载右边的区域数据
@@ -2152,12 +2178,14 @@ export default {
       this.paintInput.height = 1080
       this.paintObj.width = 1920
       this.paintObj.height = 1080
-      this.paintObj.bgColor = ''
+      this.paintObj.bgColor = '#141929'
       this.paintObj.bgImg = ''
       this.paintObj.bgStyle = '3'
       this.paintObj.opacity = 100
       // this.paintObj.showGrid = true
       this.paintObj.scale = 100
+      this.paintObj.top = 100
+      this.paintObj.left = 100
       this.paintObj.showGrid = false
       this.helpLineColor = '#348cea'
     },
@@ -2282,6 +2310,50 @@ export default {
         }
       }
       return type
+    },
+    getHcnetData () {
+      var _this = this
+      var url = gbs.host + '/monitor/ne/hcnet/tree?hasPermission=true'
+      $.ajax({
+        url: url,
+        type: 'get',
+        success: function (data) {
+          _this.AllHcnetData = []
+          if (data.success) {
+            data.obj.result.forEach(element => {
+              if (element.pId === null && element.monitoring) {
+                _this.AllHcnetData.push(element)
+              } else {
+
+              }
+            })
+          } else {
+            // AllVideoData
+          }
+        }
+      })
+    },
+    getVideoDate () {
+      var _this = this
+      var url = gbs.host + `/monitor/hcnet/channelList/${this.selectedItem.HcnetData}?keyWord=&enable=&channelType=&domainId=&id=${this.selectedItem.HcnetData}&ip=`
+      //
+      $.ajax({
+        url: url,
+        type: 'get',
+        success: function (data) {
+          _this.AllVideoData = []
+          if (data.success && data.obj !== null) {
+            data.obj.indicatorValue.object.forEach(element => {
+              if (element.enable === '在线') {
+                _this.AllVideoData.push(element)
+              } else {
+              }
+            })
+          } else {
+            // AllVideoData
+          }
+        }
+      })
     },
     // 根据选中图标类型获取可以配置的接口
     getUrlByType (flag) {
@@ -2426,6 +2498,23 @@ export default {
       })
     },
     // 发送接口下拉框改变时请求
+    openMapChange () {
+      this.MapChange = !this.MapChange
+      if (!this.MapChange) {
+        document.querySelector('.archive').style.order = 0
+        document.querySelector('#centerMapBox').style.order = 0
+      }
+    },
+    // 发送接口下拉框改变时请求
+    openHawkEye () {
+      if (!this.ShowHawkEye) {
+        this.paintObj.scale = 100
+      }
+      this.ShowHawkEye = !this.ShowHawkEye
+    },
+    closeHawkEye () {
+      this.ShowHawkEye = false
+    },
     sentReq (d, postData, selectedP) {
       let _this = this
       $.ajax({
@@ -2601,7 +2690,7 @@ export default {
           return
         }
       }
-      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter') {
+      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter' || this.selectedItem.chartType === 'NewVMap') {
         let names = _.map(this.areaArr, 'name')
         let areaName = '中国'
         // console.log(names.join(','))
@@ -2701,7 +2790,7 @@ export default {
                 _this.selectedItem.ctColors = _this.defalutColors.concat()
               }
             }
-            if (_this.selectedItem.chartType === 'v-map') {
+            if (_this.selectedItem.chartType === 'v-map' || _this.selectedItem.chartType === 'NewVMap') {
               _this.selectMapData = data.obj
               _this.mapDataToChart()
               _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
@@ -2839,10 +2928,10 @@ export default {
       } else if (this.selectedItem.chartType === 'Ueditor') {
         let content = this.$refs.ue.getUEContent()
         this.selectedItem.chartData = content
-      } else if (this.selectedItem.chartType === 'v-map') {
+      } else if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
-      } else if (this.selectedItem.chartType === 'v-scatter') {
+      } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
         console.log(this.$refs.textarea.innerText)
@@ -2940,6 +3029,25 @@ export default {
         .find('video')
         .css('opacity', 0)
       $('#mainEdit-edit .main_video').append(
+        $('<img>')
+          .addClass('monitp')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
+      $('#mainEdit-edit .JSMpeg')
+        .find('canvas')
+        .css('opacity', 0)
+      $('#mainEdit-edit .JSMpeg')
+        .find('.v-charts-data-empty')
+        .css('opacity', 0)
+      $('#mainEdit-edit .JSMpeg').append(
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
@@ -3094,6 +3202,8 @@ export default {
     back: function (data) {
       this.showBackModal = false
       if (data && data.sure === '1') {
+        this.resetPaint()
+        this.ShowHawkEye = false
         if (this.showNextType === 0) {
           this.upOnePage()
         } else if (this.showNextType === 1) {
@@ -3117,6 +3227,10 @@ export default {
         _top = document.body.clientHeight - 188
       }
       $(this.$refs.copyMenu).toggle(false)
+      if (!this.ShowHawkEye) {
+        this.HawkEyeStyle.top = _top
+        this.HawkEyeStyle.left = ev.pageX
+      }
       $(this.$refs.contextMenu)
         .css({
           left: ev.pageX,
@@ -3551,6 +3665,7 @@ export default {
     activeSrcList (index) {
       // console.log('index: ', index);
       this.$EventBus.$emit('activeSrcList', index)
+      this.imgHeightLight = index
     },
     deleteSrcList (index) {
       this.selectedItem.srcList.splice(index, 1)
@@ -3604,6 +3719,7 @@ export default {
             src: curSrc
           })
           _this.$EventBus.$emit('activeSrcList', 0)
+          _this.imgHeightLight = 0
         }
       })
       e.target.value = ''
@@ -3862,6 +3978,15 @@ export default {
       }
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
+    changePaintStyle (scale, top, left) {
+      this.paintObj.scale = 100 / scale
+      let height = document.querySelector('.paint-bg').clientHeight
+      let width = document.querySelector('.paint-bg').clientWidth
+      let canvasheight = document.querySelector('.centerBox .mycanvas canvas').clientHeight
+      let canvaswidth = document.querySelector('.centerBox .mycanvas canvas').clientWidth
+      document.querySelector('#centerMapBox').scrollTop = height * (top - 10) / canvasheight * this.paintObj.scale / 100
+      document.querySelector('#centerMapBox').scrollLeft = width * (left - 10) / canvaswidth * this.paintObj.scale / 100
+    },
     // 改变画布大小
     changePaintSize (type) {
       this.$refs.rulertool.box()
@@ -4048,6 +4173,9 @@ export default {
       this.$nextTick(() => {
         this.selectChange = false
       })
+      if (newV.chartType === 'JSMpeg') {
+        this.getHcnetData()
+      }
     },
     showStyleTab: function (newV) {
       if (!newV && this.selectedItem.ctDataSource !== 'static') {
@@ -4162,6 +4290,14 @@ export default {
         this.saveOldData(tempId, 'proHeight', oldV)
       }
       this.changeTogether('proHeight', newV)
+    },
+    'selectedItem.HcnetData': function (newV, oldV) {
+      if (newV !== '') {
+        this.getVideoDate()
+      }
+    },
+    'selectedItem.VideoData': function (newV, oldV) {
+      console.log(this.selectedItem.VideoData)
     },
     'selectedItem.radius': function (newV, oldV) {
       if (!this.selectChange && newV !== oldV) {
@@ -4280,10 +4416,10 @@ export default {
       var _this = this
       if (newValue === 'country') {
         this.areaArr = this.provinceArr
-        if (this.selectedItem.chartType === 'v-scatter') {
+        if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
           this.clearAlertMap()
         }
-        if (this.selectedItem.chartType === 'v-map') {
+        if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
           this.initLevelData()
         }
       } else if (newValue === 'city') {
@@ -4321,10 +4457,10 @@ export default {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             this.cityArr = data
             this.areaArr = data
-            if (this.selectedItem.chartType === 'v-map') {
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               this.initLevelData()
             }
-            if (this.selectedItem.chartType === 'v-scatter') {
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
           })
@@ -4392,6 +4528,19 @@ export default {
     this.getMapData(100000).then((data) => {
       this.provinceArr = data
     })
+    document.onmousemove = (e) => {
+      if (this.MapChange) {
+        var winWidth = window.screen.width
+        var ShuWidth = e.clientX
+        if (ShuWidth > Math.floor(winWidth * 3 / 4)) {
+          document.querySelector('.archive').style.order = 1
+          document.querySelector('#centerMapBox').style.order = -1
+        } else if (ShuWidth < Math.floor(winWidth / 4)) {
+          document.querySelector('.archive').style.order = -1
+          document.querySelector('#centerMapBox').style.order = 1
+        }
+      }
+    }
     $('#lead-screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {

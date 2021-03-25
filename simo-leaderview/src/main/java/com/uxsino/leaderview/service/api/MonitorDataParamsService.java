@@ -385,6 +385,7 @@ public class MonitorDataParamsService {
                         if (validHasFields(ind)) {
                             JSONArray fields = ind.getFields();
                             boolean hasNumberType = false;
+                            fields = filter(fields, o -> "performance".equals(o.getString("tag")));
                             if (typeExist && "PERCENT".equals(typeString)) {
                                 fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
@@ -766,7 +767,8 @@ public class MonitorDataParamsService {
                         break;
                     case "STRING":
                         fields = filter(fields, o -> FieldType.PERCENT.toString().equals(o.getString("fieldType"))
-                                || FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                                || FieldType.NUMBER.toString().equals(o.getString("fieldType"))
+                                || FieldType.STRING.toString().equals(o.getString("fieldType")));
                         break;
                 }
             }

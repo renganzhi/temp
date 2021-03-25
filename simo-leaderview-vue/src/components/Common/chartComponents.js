@@ -24,6 +24,12 @@ import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
 import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
 import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
 import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
+import NewMoveTable from '@/components/EditComp/NewMoveTable' // 3D地图-柱状图
+import NewProgress from '@/components/EditComp/NewProgress' // 3D地图-柱状图
+import NewVMap from '@/components/EditComp/NewVMap' // 3D地图-柱状图
+import NewScatter from '@/components/EditComp/NewScatter' // 3D地图-柱状图
+import NewBorder from '@/components/EditComp/NewBorder' // 3D地图-柱状图
+import JSMpeg from '@/components/EditComp/JSMpeg' // 3D地图-柱状图
 import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
@@ -34,6 +40,10 @@ import ELine from '@/components/EditComp/ELine' // 散点图
 import Dashboard from '@/components/EditComp/Dashboard' // 散点图
 import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
 import TreeMap from '@/components/EditComp/TreeMap' // 散点图
+import NewHistogram from '@/components/EditComp/NewHistogram' // 散点图
+import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram' // 散点图
+import NewBar from '@/components/EditComp/NewBar' // 散点图
+import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram' // 散点图
 import Ueditor from '@/components/EditComp/Ueditor' // 散点图
 import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
@@ -68,7 +78,13 @@ export default {
   NewDoubler,
   NewTime,
   NewTable,
+  NewMoveTable,
   NewNumber,
+  NewProgress,
+  NewVMap,
+  NewScatter,
+  NewBorder,
+  JSMpeg,
   DataFlow,
   GradientPie,
   Sunrise,
@@ -78,6 +94,10 @@ export default {
   Dashboard,
   BulletFrame,
   TreeMap,
+  NewHistogram,
+  NewGroupHistogram,
+  NewBar,
+  NewGroupLeftHistogram,
   Ueditor,
   NEWtextArea,
   TDHistogram,

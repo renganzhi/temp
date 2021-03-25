@@ -77,8 +77,10 @@ export default {
   methods: {
     setScale () {
       var box = $('#mainPreview').find('.box')
-      var w = box.width()
-      var h = box.height()
+      // var w = box.width()
+      // var h = box.height()
+      var w = window.screen.width
+      var h = window.screen.height
 
       if (this.paintObj) {
         var scaleX = w / this.paintObj.width

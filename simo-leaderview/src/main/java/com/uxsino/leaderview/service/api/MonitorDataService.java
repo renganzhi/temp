@@ -587,6 +587,8 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel getIndicatorValueStrTable(String neIds, String indicators, String[] componentName, String[] field) throws Exception{
+        JSONObject empObj = new JSONObject();
+        empObj.put("info", "数据获取发生错误");
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (Objects.equals("LIST", ind.getIndicatorType()) && ObjectUtils.isEmpty(componentName)) {
             return getListEmptyComponentTable(neIds, field, ind);
@@ -597,8 +599,6 @@ public class MonitorDataService {
         } else {
             columns.add("部件名");
         }
-        JSONObject empObj = new JSONObject();
-        empObj.put("info", "数据获取发生错误");
         // 资源ID和指标名为必选项
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj);
@@ -821,7 +821,7 @@ public class MonitorDataService {
             e.printStackTrace();
             return false;
         }
-        return strategyField;
+        return ObjectUtils.isEmpty(strategyField) ? false : strategyField;
     }
 
     private String getMatcherString(Pattern p, String value) {
@@ -2448,8 +2448,13 @@ public class MonitorDataService {
             }
             filedLabelMap.put(indicatorsLeft, label);
             leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period);
-            unit.add(leftValues.getString("unit"));
-            values.addAll(leftValues.getJSONArray("result"));
+            if (ObjectUtils.isEmpty(leftValues)){
+                unit.add("");
+                values.addAll(new JSONArray());
+            }else {
+                unit.add(leftValues.getString("unit"));
+                values.addAll(leftValues.getJSONArray("result"));
+            }
         }
         IndicatorTable rightInd = rpcProcessService.getIndicatorInfoByName(indicatorsRight);
         String label = getLabel(rightInd, fieldRight);
@@ -2464,8 +2469,13 @@ public class MonitorDataService {
         }
         filedLabelMap.put(indicatorsRight, label);
         rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period);
-        unit.add(rightValues.getString("unit"));
-        values.addAll(rightValues.getJSONArray("result"));
+        if (ObjectUtils.isEmpty(rightValues)){
+            unit.add("");
+            values.addAll(new JSONArray());
+        }else {
+            unit.add(rightValues.getString("unit"));
+            values.addAll(rightValues.getJSONArray("result"));
+        }
         List<String> cacheTime = Lists.newArrayList();
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);

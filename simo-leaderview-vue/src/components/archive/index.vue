@@ -238,7 +238,7 @@ html[data-theme="blueWhite"] {
       color: #50607c !important
     }
     .is-opened .el-submenu__title{
-      background: #f6f6f6!important;
+      background: #3f475b!important;
       color: rgb(91,123,166)!important;
     }
     .archive {
@@ -320,7 +320,7 @@ html[data-theme="default"] {
   }
 }
 .el-menu--vertical{
-  height: 700px;
+  height: calc(100% - 210px);
   overflow: auto;
 }
 .is-opened {
@@ -353,7 +353,7 @@ html[data-theme="default"] {
 }
   .el-menu {
     border: none;
-    background: #1b2031;
+    background: #262e44;
     color: rgb(202, 214, 221);
   }
 
@@ -425,6 +425,7 @@ html[data-theme="default"] {
   .el-menu--popup {
     margin: 0;
     padding: 0;
+    box-shadow: #000000e6 0px 0px 15px;
   }
 }
 </style>
