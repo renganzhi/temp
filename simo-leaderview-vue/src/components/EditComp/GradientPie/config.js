@@ -35,7 +35,7 @@ export default {
       ['#85f8c0', '#62dc26']
     ],
     'chartData': {
-      'dataArry': [
+      'rows': [
         {
           'name': 'xxxxxx',
           'value': 30

@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "20595354",
+      "name": "realtimevideo",
+      "font_class": "realtimevideo",
+      "unicode": "e771",
+      "unicode_decimal": 59249
+    },
+    {
+      "icon_id": "20595336",
+      "name": "richtext",
+      "font_class": "richtext",
+      "unicode": "e770",
+      "unicode_decimal": 59248
+    },
+    {
+      "icon_id": "20432805",
+      "name": "微信图标",
+      "font_class": "n-wework",
+      "unicode": "e76f",
+      "unicode_decimal": 59247
+    },
+    {
+      "icon_id": "20409049",
+      "name": "修改责任人",
+      "font_class": "n-principal",
+      "unicode": "e76e",
+      "unicode_decimal": 59246
+    },
+    {
+      "icon_id": "18211400",
+      "name": "网络",
+      "font_class": "lan",
+      "unicode": "e7b8",
+      "unicode_decimal": 59320
+    },
+    {
+      "icon_id": "19572422",
+      "name": "SQL诊断",
+      "font_class": "SQLdiagnosis",
+      "unicode": "e76b",
+      "unicode_decimal": 59243
+    },
+    {
+      "icon_id": "19572423",
+      "name": "配置诊断",
+      "font_class": "diagnosis",
+      "unicode": "e76c",
+      "unicode_decimal": 59244
+    },
+    {
+      "icon_id": "19572424",
+      "name": "性能快照",
+      "font_class": "snapshot",
+      "unicode": "e76d",
+      "unicode_decimal": 59245
+    },
+    {
       "icon_id": "19290567",
       "name": "3dhistogrammap",
       "font_class": "3dhistogrammap",

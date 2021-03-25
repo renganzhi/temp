@@ -1,5 +1,5 @@
 <template>
-  <div class="archive">
+  <div class="archive" :id="tapsStation">
       <el-menu class="el-menu-vertical-demo" collapse="true"
         text-color="rgb(202, 214, 221)"
         active-text-color="#00a0e9"
@@ -180,6 +180,7 @@ import others from './others'
 
 export default {
   name: 'archive',
+  props: ['tapsStation'],
   data () {
     return {
       tabPosition: 'left',
@@ -328,13 +329,27 @@ html[data-theme="default"] {
     background: #2e3444 !important;
   }
 }
-.archive .is-opened {
-  .el-submenu__title {
-    background-image: linear-gradient(to right, #12174e, #0f3858) !important;
-    box-sizing: border-box !important;
-    border-left: solid 3px #00a0e9;
-    .nav_icon {
-      color: #00a0e9;
+#left{
+  .is-opened {
+    .el-submenu__title {
+      background-image: linear-gradient(to right, #12174e, #0f3858) !important;
+      box-sizing: border-box !important;
+      border-left: solid 3px #00a0e9;
+      .nav_icon {
+        color: #00a0e9;
+      }
+    }
+  }
+}
+#right{
+  .is-opened {
+    .el-submenu__title {
+      background-image: linear-gradient(to left, #12174e, #0f3858) !important;
+      box-sizing: border-box !important;
+      border-right: solid 5px #00a0e9;
+      .nav_icon {
+        color: #00a0e9;
+      }
     }
   }
 }

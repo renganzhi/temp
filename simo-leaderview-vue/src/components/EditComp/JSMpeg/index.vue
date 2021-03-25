@@ -3,7 +3,7 @@
        :style="JSMpegStyle">
     <canvas
       ref="canvas"
-      v-show="vidoeShow"
+      v-if="vidoeShow"
       class="canvas"
     />
     <div class="v-charts-data-empty"
@@ -24,7 +24,8 @@ export default {
   data () {
     return {
       player: '',
-      baseUrl: ''
+      baseUrl: '',
+      vidoeShow: false
     }
   },
   computed: {
@@ -33,20 +34,11 @@ export default {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
       }
-    },
-    vidoeShow: function () {
-      if (this.item.HcnetData !== '' && this.item.VideoData !== '') {
-        return true
-      } else {
-        return false
-      }
     }
   },
   watch: {
     'item.VideoData': function (newV) {
       if (newV !== '') {
-        this.player && this.player.destroy()
-        this.recorder && this.recorder.state === 'recording' && this.recorder.stop()
         this.vidoeShow = true
         this.getVideo()
       } else {
@@ -67,6 +59,7 @@ export default {
   methods: {
     getVideo: function () {
       if (this.item.HcnetData !== '' && this.item.VideoData !== '') {
+        this.vidoeShow = true
         let url = `ws://${location.host}/video/play?neId=${this.item.HcnetData}&stream=sub&channel=${this.item.VideoData}`
         this.player = new JSMpeg.Player(url, {
           canvas: this.$refs.canvas,

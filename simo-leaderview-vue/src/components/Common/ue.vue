@@ -59,4 +59,7 @@ export default {
     color: red;
   }
 }
+.edui-default .edui-editor-messageholder{
+  display: none !important;
+}
 </style>

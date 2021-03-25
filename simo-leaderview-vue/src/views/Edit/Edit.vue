@@ -181,7 +181,7 @@
                @click="initChart(value)">
             {{value.text}}</div>
         </div> -->
-        <Archive @click="initChart"></Archive>
+        <Archive @click="initChart" :tapsStation = 'tapsStation'></Archive>
 
         <div class="m-main flex-1 auto" id="centerMapBox" ref="editCanvas"
              @click.self="clickPaint($event)">
@@ -1787,7 +1787,8 @@
                 </div>
               </div>
               <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
-                  <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
+                <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
+                <button class="DataChangeBtn" @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">

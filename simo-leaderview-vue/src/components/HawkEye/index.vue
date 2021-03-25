@@ -55,6 +55,14 @@ export default {
       let newWidth = 180 * this.params.zoomVal * document.querySelector('#centerMapBox').clientWidth / document.querySelector('.paint-bg').clientWidth
       let newHeight = this.newHeight * this.params.zoomVal * document.querySelector('#centerMapBox').clientHeight / document.querySelector('.paint-bg').clientHeight
       var o = document.getElementById('HawkEye')
+      let MaxWidth = document.querySelector('.mycanvas').clientWidth - document.querySelector('#HawkEye').offsetLeft + 10
+      if (newWidth > MaxWidth && MaxWidth !== 0) {
+        newWidth = MaxWidth
+      }
+      let MaxHeight = document.querySelector('.mycanvas').clientHeight - document.querySelector('#HawkEye').offsetTop + 10
+      if (newHeight > MaxHeight && MaxHeight !== 0) {
+        newHeight = MaxHeight
+      }
       o.style.width = (newWidth) + 'px'
       o.style.height = (newHeight) + 'px'
     },
@@ -64,7 +72,6 @@ export default {
         : document.defaultView.getComputedStyle(o, false)[key]
     },
     bbimg (d) {
-      var o = document.getElementById('HawkEye')
       this.params.zoomVal += (d.wheelDelta / 1200).toFixed(2) * -1
       if (this.params.zoomVal >= 0.5) {
         if (this.params.zoomVal > 5) {
@@ -254,7 +261,7 @@ export default {
   height: 180px;
   width: 180px;
   position: absolute;
-  background-color: #ff000057;
+  box-shadow: #ff0100 0px 0px 5px inset;
   left: 10px;
   top: 10px;
 }

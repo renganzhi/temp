@@ -1,11 +1,7 @@
 <template>
-  <div class="GradientPie"  ref='Gradient'>
-    <div id="GradientPie2" ref='Gradient2'
-      :style="boxStyle">
-    </div>
-    <div id="GradientPie1" ref='Gradient1'
-      :style="boxStyle">
-    </div>
+  <div class="GradientPie" ref="Gradient">
+    <div id="GradientPie2" ref="Gradient2" :style="boxStyle"></div>
+    <div id="GradientPie1" ref="Gradient1" :style="boxStyle"></div>
   </div>
 </template>
 <script>
@@ -42,7 +38,7 @@ export default {
         this.mychart2.resize()
       })
     },
-    'item': {
+    item: {
       handler (newVal, oldVal) {
         console.log(newVal)
         this.drawPre()
@@ -53,9 +49,9 @@ export default {
   methods: {
     drawPre () {
       this.mychart1 = echarts.init(this.$refs.Gradient1)
-      let array = this.item.chartData.dataArry
+      let array = this.item.chartData.rows
       let allData = 0
-      array.forEach(element => {
+      array.forEach((element) => {
         allData = allData + element.value
       })
       let myseries = []
@@ -64,7 +60,7 @@ export default {
       array.forEach((d, index) => {
         let oneserise = {
           type: 'bar',
-          data: [d.value * 100 / allData * this.item.PieType],
+          data: [((d.value * 100) / allData) * this.item.PieType],
           showBackground: true,
           backgroundStyle: {
             color: 'transparent'
@@ -77,28 +73,53 @@ export default {
           itemStyle: {
             normal: {
               opacity: 1,
-              color: this.item.ifGradual === 'false' ? this.item.PieColorArray[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: this.item.DPieColorArray[index][0]
-              }, {
-                offset: 1,
-                color: this.item.DPieColorArray[index][1]
-              }])
+              color:
+                this.item.ifGradual === 'false'
+                  ? this.item.PieColorArray[index]
+                  : new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: this.item.DPieColorArray[index][0]
+                    },
+                    {
+                      offset: 1,
+                      color: this.item.DPieColorArray[index][1]
+                    }
+                  ])
             }
           }
         }
-        let myVale = Math.floor(d.value * 100 / allData)
+        let myVale = Math.floor((d.value * 100) / allData)
         if (index === array.length - 1) {
           myVale = AllNum
         } else {
           AllNum = AllNum - myVale
         }
         if (this.item.NotesType === 1) {
-          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '\n'
+          titleText =
+            titleText + d.name + ':' + d.value + (d.unit || '') + '\n'
         } else if (this.item.NotesType === 2) {
-          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '   ' + myVale + '%' + '\n'
+          titleText =
+            titleText +
+            d.name +
+            ':' +
+            d.value +
+            (d.unit || '') +
+            '   ' +
+            myVale +
+            '%' +
+            '\n'
         } else if (this.item.NotesType === 3) {
-          titleText = titleText + d.name + ':' + d.value + (d.unit || '') + '----' + myVale + '%' + '\n'
+          titleText =
+            titleText +
+            d.name +
+            ':' +
+            d.value +
+            (d.unit || '') +
+            '----' +
+            myVale +
+            '%' +
+            '\n'
         }
         myseries.push(oneserise)
       })
@@ -167,13 +188,19 @@ export default {
           itemStyle: {
             normal: {
               opacity: 0.1,
-              color: this.item.ifGradual === 'false' ? this.item.PieColorArray[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: this.item.DPieColorArray[index][0]
-              }, {
-                offset: 1,
-                color: this.item.DPieColorArray[index][1]
-              }])
+              color:
+                this.item.ifGradual === 'false'
+                  ? this.item.PieColorArray[index]
+                  : new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: this.item.DPieColorArray[index][0]
+                    },
+                    {
+                      offset: 1,
+                      color: this.item.DPieColorArray[index][1]
+                    }
+                  ])
             }
           }
         }
@@ -194,7 +221,6 @@ export default {
           },
           axisLine: {
             show: false
-
           },
           axisTick: {
             show: false
@@ -219,8 +245,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.GradientPie{
-  div{
+.GradientPie {
+  div {
     position: absolute;
   }
 }
