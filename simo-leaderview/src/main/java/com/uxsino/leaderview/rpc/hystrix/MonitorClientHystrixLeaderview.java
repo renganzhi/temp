@@ -68,4 +68,23 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
+    @Override
+    public JsonModel getMapNodesAndLinks(String userId, String mapLocationId){
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getMapLocationTree(String topoId){
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel searchNe(JSONObject jsonObject){
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel getChannelList(String neId){
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
 }

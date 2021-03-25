@@ -792,7 +792,7 @@ public class AlertDataService {
             }
             List<Integer> existLevel = new ArrayList<>(chosenLevels);
             if (org.apache.commons.collections.CollectionUtils.isEmpty(levelResult)) {
-                chosenLevels.forEach(e -> row.put(levelNameMap.get(e), 0));
+                chosenLevels.forEach(e -> row.put(levelNameMap.get(e), 0L));
                 existLevel.removeAll(chosenLevels);
             } else {
                 levelResult.forEach(e -> {
@@ -801,7 +801,7 @@ public class AlertDataService {
                 });
             }
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(existLevel)) {
-                existLevel.forEach(e -> row.put(levelNameMap.get(e), 0));
+                existLevel.forEach(e -> row.put(levelNameMap.get(e), 0L));
             }
             rows.add(row);
         }

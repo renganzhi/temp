@@ -55,5 +55,15 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getTopoData/{topoId}", consumes = "application/json")
     JsonModel getTopoData(@PathVariable("topoId") String topoId, @RequestParam("mapLocationId") String mapLocationId,@RequestParam("userId") Long userId);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/topo/mapTopoDomain", consumes = "application/json")
+    JsonModel getMapNodesAndLinks(@RequestParam("userId") String userId, @RequestParam("mapLocationId") String mapLocationId);
 
+    @RequestMapping(method = RequestMethod.GET, value = "/mapTopo/getMapLocationTree", consumes = "application/json")
+    JsonModel getMapLocationTree(@RequestParam("topoId") String topoId);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/ne/search", consumes = "application/json")
+    JsonModel searchNe(@RequestBody JSONObject jsonObject);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/hcnet/channelList/{neId}", consumes = "application/json")
+    JsonModel getChannelList(@PathVariable("neId") String neId);
 }

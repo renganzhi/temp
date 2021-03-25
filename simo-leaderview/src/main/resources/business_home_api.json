@@ -98,11 +98,85 @@
         ]
     },
     {
+        "key": "enable_business_status_statistics_for_rows",
+        "name": "业务统计-按状态",
+        "component": "business",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/business/businessStatisticsByStatusForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_business_status_statistics_for_range",
+        "name": "业务统计-按状态",
+        "component": "business",
+        "type": "polarBar",
+        "url": "/leaderview/business/businessStatisticsByStatusForRange",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
         "key": "enable_alert_business_statistics",
         "name": "告警统计-按业务",
         "component": "business",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/business/getStatByBusiness",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过20个",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_statistics_for_rows",
+        "name": "告警统计-按业务",
+        "component": "business",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/business/getStatByBusinessForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "business",
+                "name": "选择业务",
+                "notNull": true,
+                "type": "multi-select",
+                "title": "建议选择业务不超过20个",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/business/params/getBusiness"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_business_statistics_for_range",
+        "name": "告警统计-按业务",
+        "component": "business",
+        "type": "polarBar",
+        "url": "/leaderview/business/getStatByBusinessForRange",
         "method" : "get",
         "params": [
             {

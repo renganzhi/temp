@@ -3,6 +3,7 @@ package com.uxsino.leaderview.service.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONReader;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,6 +20,8 @@ import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.JSONUtils;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.commons.utils.TimeUtils;
+import com.uxsino.leaderview.model.MigrationLink;
+import com.uxsino.leaderview.model.MigrationStation;
 import com.uxsino.leaderview.model.monitor.FieldModel;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
 import com.uxsino.leaderview.model.monitor.*;
@@ -35,6 +38,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -209,13 +214,18 @@ public class MonitorDataService {
         statusList.forEach(v -> map.put(v.getName(), 0));
 
         list = list.stream().filter(v -> v.size() == 2).collect(Collectors.toList());
-        list.forEach(v -> map.put(RunStatus.valueOf(v.get(0).toString()).getName(), v.get(1)));
+        list.forEach(v -> map.put((String)v.get(0), v.get(1)));
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             rows.add(newResultObj("状态", entry.getKey(), "数量", entry.getValue()));
         }
         json.put("rows", rows);
         return new JsonModel(true, null, json);
+    }
+
+    public JsonModel statisticsResourceStatusForSunburst(HttpSession session, Long domainId, String baseNeClass) throws Exception{
+        List<Long> domainList = getDomainList(domainId, session);
+        return new JsonModel(true, rpcProcessService.neStatusStatisticsForSunburst(domainList, BaseNeClass.valueOf(baseNeClass)));
     }
 
     /**
@@ -2970,5 +2980,217 @@ public class MonitorDataService {
         result.put("columns", columns);
         result.put("unit", unit);
         return new JsonModel(true, result);
+    }
+
+    /**
+     * 由接口 链路统计-按城市 调用获取数据
+     *
+     * @param locationCode 前端需要展示的地图区域的区域代码
+     * @return
+     * @throws Exception 进行服务调用时产生的异常
+     */
+    public JsonModel getNELinkByCity(String locationCode) throws Exception{
+        //选择区域为不限时，默认返回全国地图的数据
+        if(locationCode == null)
+            locationCode = "100000";
+        /*
+            下面开始向monitor获取地图拓扑参数，分三步：
+                1.直接调取/mapTopoDomain获取topoId，作为第二步的参数
+                2.调取/getMapLocationTree，传入参数，获得当前帐号在IT基础监控下创建的所有拓扑地图
+                3.将当前想要展示的地图的区域代码和第二步中获得的地图信息中的区域代码匹配，获取到对应的
+                  mapLocationId，用于第四步传参
+                4.再次调用/mapTopoDomain，传入参数，获得将要显示的地图对应在IT基础监控那边的结点和
+                  链路信息
+         */
+        String topoId = rpcProcessService.getTopoId();
+        ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId);
+        String mapLocationId= null;
+        for(LinkedHashMap map: mapTree){
+            if(locationCode.equals(map.get("locationCode"))){
+                mapLocationId = (String)map.get("id");
+                break;
+            }
+        }
+        if(mapLocationId == null)
+            return new JsonModel(true, "地图拓扑中没有这张图的数据！");
+        LinkedHashMap<String, ArrayList> nodesAndLinks = rpcProcessService.getMapNodesAndLinkes(null, mapLocationId);
+        ArrayList nodes = nodesAndLinks.get("nodes");
+        ArrayList links = nodesAndLinks.get("links");
+
+        //获取想要显示区域的所有子区域的经纬度以及对应的地名
+        HashMap<String, ArrayList> coordinates = this.getCoordinateForArea(locationCode);
+        if(coordinates == null)
+            return new JsonModel(true, "该区域暂无详细地图！");
+
+        /*
+            下面开始将IT基础监控地图拓扑的数据和经纬度数据经过封装变成地图迁徙图可以识别的数据格式：
+                1.首先分配几个链路对象的内存空间，这里的每个内存空间序号对应于links数组中几个链路信息的
+                  序号，方便在二层循环中遍历links数组匹配到第i个link的起点ip或者终点ip与一层循环中当前
+                  nodes中的结点ip时立刻将该link相关信息存到相对应的第i个内存空间。第一个for循环用于声
+                  明这几个内存空间。
+                2.origins和terminations分别封装地图拓扑上的所有点，其中origins会将地图拓扑上的所有点
+                  全部装入，而terminations只会装入link中的所有终点信息对应的结点，一个结点可以同时在
+                  origins和terminations中。
+                3.第一层循环：将nodes遍历一遍，目的有两个。一是将所有结点全部加入到起点数组中，通过获取
+                  其最底层的区域编码来获得这个子区域对应的经纬度，然后放到MigrationStation中；二是将
+                  有用的信息（包括当前子区域的经纬度和所绑定在这个子区域的设备的ip）留在当前作用域，方便
+                  第二层循环使用。
+                4.第二层循环：将就当前这个结点信息，立刻遍历一次links，看有没有哪一条链路的起点或者终点
+                  是当前结点，判断方法就是看他们俩所绑定的设备的ip是否一致，如果一致则把经纬度也传给链路
+                  上的这个结点，同时如果这个结点是起点，还需要将这条链路的上下流量等属于链路本身的数据一
+                  并绑定到起点上，终点则只指定经纬度即可。
+            由于设有for循环，也就不用判断nodes和links的size是否为0了，为0自然不会进入循环，从而返回时也
+            只会返回几个空的json。
+         */
+        ArrayList<MigrationStation> origins = new ArrayList<>();
+        ArrayList<MigrationStation> terminations = new ArrayList<>();
+        ArrayList<ArrayList<MigrationLink>> paths = new ArrayList<>();
+        float maxValue = 1.0f;
+        float minValue = 1.0f;
+        int linkCount = links.size();
+        for(int i=0; i<linkCount; i++){
+            ArrayList<MigrationLink> path = new ArrayList<>();
+            path.add(new MigrationLink());
+            path.add(new MigrationLink());
+        }
+        for(Object object: nodes){
+            LinkedHashMap node = (LinkedHashMap)object;
+            MigrationStation origin = new MigrationStation();
+            String ip = (String)node.get("ip");
+            //monitor那边返回的结点的locationCode是从省份开始往下依次填写的区域代码并用','分割，
+            //但是实际上只用得到最后一个，因此要去取最后一个
+            String[] allCodes = ((String)node.get("locationCode")).split(",");
+            String subLocationCode = allCodes[allCodes.length-1];
+            ArrayList values = coordinates.get(subLocationCode);
+            /*
+                这里的coord按顺序存放三个值：
+                    coord.get(0): 结点的经度
+                    coord.get(1): 结点的纬度
+                    coord.get(2): 结点的value，在前端地图上将会影响该点的颜色样式
+             */
+            ArrayList<Float> coord = new ArrayList<>();
+            coord.add((float)values.get(0));
+            coord.add((float)values.get(1));
+            coord.add(1.0f);
+            origin.setValue(coord);
+            origin.setName((String)values.get(2));
+            origins.add(origin);
+            for(int i=0; i<linkCount; i++){
+                LinkedHashMap link = (LinkedHashMap)links.get(i);
+                MigrationLink temp;
+                MigrationStation termination;
+                ArrayList<String> obj;
+                //这里虽然也是存的经纬度，但是这里只能有经纬度两个值，上面的经纬度值还有第三个值用于
+                //前端渲染，必须但没有实际意义。不想要第三个变量又需要上面的经纬度，所以就只能新声明
+                //一段内存空间来单独储存上面的经纬度。
+                ArrayList<Float> copyCoord;
+                if(ip.equals(link.get("sourceIp"))){
+                    temp = paths.get(i).get(0);
+                    copyCoord = new ArrayList<>();
+                    copyCoord.add(coord.get(0));
+                    copyCoord.add(coord.get(1));
+                    temp.setCoord(copyCoord);
+                    temp.setName("下行流量");
+                    temp.setValue(((BigDecimal)node.get("downBps")).floatValue());
+                    obj = new ArrayList<>();
+                    float upBps = ((BigDecimal)node.get("upBps")).floatValue();
+                    if(maxValue<upBps)
+                        maxValue = upBps;
+                    if(minValue>upBps)
+                        minValue = upBps;
+                    float downBps = ((BigDecimal)node.get("downBps")).floatValue();
+                    if(maxValue<downBps)
+                        maxValue = downBps;
+                    if(minValue>downBps)
+                        minValue = downBps;
+                    obj.add("上行流量：" + upBps + "Bps");
+                    obj.add("下行流量：" + downBps + "Bps");
+                    temp.setObj(obj);
+                }else if(ip.equals(link.get("targetIp"))){
+                    temp = paths.get(i).get(1);
+                    copyCoord = new ArrayList<>();
+                    copyCoord.add(coord.get(0));
+                    copyCoord.add(coord.get(1));
+                    temp.setCoord(copyCoord);
+                    //如果这个点也是终点，则我们也应顺便把他加入到终点数组中
+                    termination = new MigrationStation();
+                    termination.setName((String)values.get(2));
+                    termination.setValue(coord);
+                    terminations.add(termination);
+                }
+            }
+        }
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("stationData", origins);
+        result.put("lineData", paths);
+        result.put("Statistical", terminations);
+        result.put("maxValue", maxValue);
+        result.put("minValue", minValue);
+
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 该方法用于获取一个指定区域地图上所有子区域中心位置的经纬度
+     *
+     * @param mapLocationCode 要显示在前端的区域地图的区域编码
+     * @return 由该显示区域的各个子区域的区域编码为key，value是一个ArrayList，按以下顺序返回：
+     *         arrayList.get(0): 该区域中心的经度-->float
+     *         arraylist.get(1): 该区域中心的纬度-->float
+     *         arrayList.get(2): 该区域的中文名称-->String
+     *         返回null表示该区域不能支持划分为子区域
+     */
+    public HashMap<String, ArrayList> getCoordinateForArea(String mapLocationCode){
+        //用于判断是不是显示的全国地图，因为全国地图的经纬度的key和其他地图的key不一样
+        boolean isCountryMap = mapLocationCode.equals("100000");
+
+        String jsonFilePath = "static/mapJson/";
+        /*
+            下面一部分代码完成geoJson文件相对路径的构造。
+            第2、3为同时为0表示显示的地图是全国地图、一个省级地图或者一个直辖市地图，这些地图的geoJson文件不需要
+            经过中间省级代码文件夹层，直接在mapJson文件夹下访问即可
+            否则需要通过mapLocationcode获得其省级代码，并加到路径中
+         */
+        if(mapLocationCode.charAt(2)=='0' && mapLocationCode.charAt(3)=='0'){
+            jsonFilePath += mapLocationCode;
+        }else{
+            String provinceCode = mapLocationCode.substring(0, 1) + "0000";
+            jsonFilePath += provinceCode + "/" + mapLocationCode;
+        }
+        jsonFilePath += ".geoJson";
+
+        JSONReader reader = new JSONReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(jsonFilePath)));
+        JSONObject object = JSONObject.parseObject(reader.readString());
+        JSONArray features = (JSONArray)object.get("features");
+        /*
+            四个直辖市geoJson文件与省级同层，所以直辖市的文件直接记载的是区县经纬度，所以其对应的省级文件夹层
+            下的文件是空的，虽然会直接输入四个直辖市的省级代码不会访问到那四个空文件夹，但是还是判断一下。
+            返回null就需要在上层直接返回提示信息不支持该区域划分。
+         */
+        if(features.size()==0)
+            return null;
+        /*
+            下一部分代码开始遍历整个geoJson文件，把该区域下的所有子区域的经纬度连同其区域代码形成一个
+            HashMap并返回
+         */
+        HashMap<String, ArrayList> coordinates = new HashMap<>();
+        for(Object obj: features){
+            JSONObject jsonObject = (JSONObject) obj;
+            ArrayList coordinate = new ArrayList();
+            JSONArray coord;
+            String locationCode;
+            if(isCountryMap)
+                coord = (JSONArray)((JSONObject)jsonObject.get("properties")).get("cp");
+            else
+                coord = (JSONArray)((JSONObject)jsonObject.get("properties")).get("center");
+            locationCode = String.valueOf((int)((JSONObject)jsonObject.get("properties")).get("adcode"));
+            coordinate.add(((BigDecimal)coord.get(0)).floatValue());
+            coordinate.add(((BigDecimal)coord.get(1)).floatValue());
+            coordinate.add((String)((JSONObject)jsonObject.get("properties")).get("name"));
+            coordinates.put(locationCode, coordinate);
+        }
+
+        return coordinates;
     }
 }

@@ -9,6 +9,7 @@ import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.*;
+import com.uxsino.commons.model.RunStatus;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.business.*;
 import com.uxsino.leaderview.model.business.ManageStatus;
@@ -192,12 +193,68 @@ public class RpcProcessService {
                         iterator.remove();
                     }
                 }
-                temp.add(runStatus);
+                temp.add(RunStatus.valueOf(runStatus).getName());
                 temp.add(count);
                 realResult.add(temp);
             }
         }
         return realResult;
+    }
+
+    /**
+     * 用于旭日图的按状态统计资源，本层进行第一层包装——即子类型下含有各种状态的数量
+     * @param domainId
+     * @param baseNeClass
+     * @return
+     * @throws Exception
+     */
+    public JSONArray neStatusStatisticsForSunburst(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
+        Map<String, Object> condition = new HashMap<>();
+        if(domainId != null){
+            condition.put("domainId", domainId);
+        }
+        if(baseNeClass != null){
+            List<NeClass> neClassList = baseNeClass.getNeClass();
+            condition.put("neClasses", neClassList);
+        }
+        condition.put("manageStatusNotIn", "Delected");
+        condition.put("pageSize", 9999);
+        JsonModel jsonModel = monitorService.getNeList(condition);
+        List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
+        // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
+        List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
+                networkEntity.getParentId() == null
+                        || networkEntity.getParentId().equals(networkEntity.getId())
+        ).collect(Collectors.toList());
+        JSONArray nCs = new JSONArray();
+        if(CollectionUtils.isNotEmpty(rawResult)){
+            String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
+            List<NeClass> neClasses = baseNeClass.getNeClass();
+            for (NeClass neClass: neClasses) {
+                JSONObject nC = new JSONObject();
+                JSONArray statusResult = new JSONArray();
+                JSONObject temp;
+                for(String runStatus : runStatuses){
+                    temp = new JSONObject();
+                    long count = 0;
+                    Iterator<NetworkEntity> iterator = networkEntityList.iterator();
+                    while(iterator.hasNext()){
+                        NetworkEntity networkEntity = iterator.next();
+                        if(networkEntity.getRunStatus().toString().equals(runStatus) && networkEntity.getNeClass().equals(neClass)){
+                            count++;
+                            iterator.remove();
+                        }
+                    }
+                    temp.put("name", RunStatus.valueOf(runStatus).getName());
+                    temp.put("value", count);
+                    statusResult.add(temp);
+                }
+                nC.put("name", neClass.getText());
+                nC.put("children", statusResult);
+                nCs.add(nC);
+            }
+        }
+        return nCs;
     }
 
 
@@ -762,4 +819,53 @@ public class RpcProcessService {
         return result;
     }
 
+    public String getTopoId() throws Exception{
+        JsonModel jsonModel = monitorService.getMapNodesAndLinks(null, null);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        //返回的结果是多个JsonModel嵌套，因此为了让service处理数据时简化操作，在这里先把有用的数据提取出来
+        //唯一要用到的就是topoId
+        return (String)((LinkedHashMap)jsonModel.getObj()).get("topoId");
+    }
+
+    public LinkedHashMap<String, ArrayList> getMapNodesAndLinkes(String userId, String mapLocationId) throws Exception{
+        JsonModel jsonModel = monitorService.getMapNodesAndLinks(userId, mapLocationId);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        //返回的结果是多个JsonModel嵌套，因此为了让service处理数据时简化操作，在这里先把有用的数据提取出来
+        //由于只能返回一个变量，因此在这一层不先把Nodes和Links取出来，而是返回封装他们的HashMap，然后让调用
+        //方法再把他们俩取出来
+        return (LinkedHashMap)((LinkedHashMap)((LinkedHashMap)jsonModel.getObj()).get("data")).get("obj");
+    }
+
+    public ArrayList<LinkedHashMap> getMapLocationTree(String topoId) throws Exception{
+        JsonModel jsonModel = monitorService.getMapLocationTree(topoId);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        //返回的结果是多个JsonModel嵌套，因此为了让service处理数据时简化操作，在这里先把有用的数据提取出来
+        //这里有用的数据就是指每一张地图的信息，返回给service后由service根据前端传过来的locationCode筛选
+        //出某张地图的信息，从中获取地图的id（也就是二次调用getMapNodesAndLinks）要传入的mapLocationId
+        return (ArrayList)((LinkedHashMap)jsonModel.getObj()).get("1");
+    }
+
+    public JsonModel searchNe(String neClass) throws Exception{
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("neClass", neClass);
+        JsonModel jsonModel = monitorService.searchNe(jsonObject);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
+    public JsonModel getChannelList(String neId) throws Exception{
+        JsonModel jsonModel = monitorService.getChannelList(neId);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
 }
