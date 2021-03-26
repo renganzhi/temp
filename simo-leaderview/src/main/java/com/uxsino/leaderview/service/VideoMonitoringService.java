@@ -2,6 +2,9 @@ package com.uxsino.leaderview.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.uxsino.leaderview.dao.INetworkEntityDao;
+import com.uxsino.leaderview.entity.NetworkEntity;
+import com.uxsino.leaderview.handler.VideoProduceHandler;
 import com.uxsino.reactorq.commons.ProcessUtil;
 import com.uxsino.reactorq.commons.ReactorQFactory;
 import com.uxsino.reactorq.constant.EventTopicConstants;
@@ -26,6 +29,8 @@ import java.util.function.Consumer;
 @Service
 public class VideoMonitoringService {
     private static final Logger log = LoggerFactory.getLogger(VideoMonitoringService.class);
+    //用于决定采用从采集器获取帧数据还是大屏自己去获取帧数据
+    private static final boolean isFromCollector = false;
 
     @Autowired
     @Qualifier("default_reactorq_factory")
@@ -34,6 +39,9 @@ public class VideoMonitoringService {
     @Autowired
     @Qualifier("outbox_lv")
     private EventSubscriber outbox;
+
+    @Autowired
+    private INetworkEntityDao networkEntityDao;
 
     @Getter
     public static abstract class VideoConsumer<T> implements Consumer<T>{
@@ -65,53 +73,53 @@ public class VideoMonitoringService {
 
     @PostConstruct
     public void init(){
-        VIDEO_PROCESSOR.subscribe(Runnable::run);
-        try{
-            rqFactory.createTopicFlux(EventTopicConstants.SIMO_VIDEO_BYTE, JSONObject.class).subscribe(jsonObject -> {
-                VIDEO_PROCESSOR.onNext(new Runnable() {
-                    @Override
-                    public void run() {
-                        String neId = jsonObject.getString("neId");
-                        String stream = jsonObject.getString("stream");
-                        String channel = jsonObject.getString("channel");
-                        byte[] data = jsonObject.getBytes("data");
-
-                        String key = neId + "_" + stream + "_" + channel;
-                        ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(key);
-                        for(VideoConsumer<byte[]> videoConsumer: videoConsumerArrayList){
-                            videoConsumer.append(data);
+        //如果采用大屏这边模仿采集器的VideoProducer，则不用对updateState设置定时，因为VideoProducerHandler会在while循环中
+        //不断通过传入的Predictor<String>来判断connectionParams中对应的Consumer是否还存在，因此此时updateState方法的作用
+        //就转化为了仅仅在新摄像头通道介入时新建一个对应摄像头连接的线程用于捕捉帧数据
+        if (isFromCollector) {
+            VIDEO_PROCESSOR.subscribe(Runnable::run);
+            try{
+                rqFactory.createTopicFlux(EventTopicConstants.SIMO_VIDEO_BYTE, JSONObject.class).subscribe(jsonObject -> {
+                    VIDEO_PROCESSOR.onNext(new Runnable() {
+                        @Override
+                        public void run() {
+                            consume(jsonObject);
                         }
-                    }
+                    });
                 });
-            });
-        }catch (JMSException e){
-            log.error("从采集器接收帧数据抛出异常：{}", e.getMessage());
+            }catch (JMSException e){
+                log.error("从采集器接收帧数据抛出异常：{}", e.getMessage());
+            }
+            scheduler.scheduleAtFixedRate(this::updateState, 0, 30, TimeUnit.SECONDS);
         }
-        scheduler.scheduleAtFixedRate(this::updateState, 0, 30, TimeUnit.SECONDS);
     }
 
-    public void register(VideoConsumer<byte[]> videoConsumer){
+    public void register(VideoConsumer<byte[]> videoConsumer) throws NullPointerException{
         String id = videoConsumer.getNeId() + "_" + videoConsumer.getStream() + "_" + videoConsumer.getChannel();
+        boolean isNewConnection = false;
         if(!connectionParams.containsKey(id)){
             connectionParams.put(id, new ArrayList<>());
+            isNewConnection = true;
         }
-        connectionParams.get(id).add(videoConsumer);
+        ArrayList<VideoConsumer<byte[]>> consumers = connectionParams.get(id);
+        consumers.add(videoConsumer);
 
-        this.updateState();
-    }
-
-    private void remove(VideoConsumer<byte[]> videoConsumer){
-        remove(videoConsumer.getSessionId());
+        if(isFromCollector || isNewConnection)
+            this.updateState();
     }
 
     public void remove(String sessionId){
         ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(sessionId);
-        if(videoConsumerArrayList==null || videoConsumerArrayList.size()==0){
-            connectionParams.remove(sessionId);
-        }else{
-            videoConsumerArrayList.removeIf(videoConsumer -> sessionId.equals(videoConsumer.getSessionId() ));
+        if(videoConsumerArrayList!=null && videoConsumerArrayList.size()>0){
+            videoConsumerArrayList.removeIf(videoConsumer -> sessionId.equals(videoConsumer.getSessionId()));
         }
-        this.updateState();
+        if(videoConsumerArrayList==null || videoConsumerArrayList.size() == 0) {
+            connectionParams.remove(sessionId);
+        }
+        //同init处注解，当不通过采集器时，VideoProduceHandler将会通过其Predicator<String>时时刻刻对connectionParams进行检查
+        //因此每一次删除其连接线程都能够感受到变化，就不用再调用updateState方法了
+        if(isFromCollector)
+            this.updateState();
     }
 
     private void updateState(){
@@ -121,16 +129,45 @@ public class VideoMonitoringService {
                 continue;
             //{neId, stream, channel}
             String[] key = connectionParam.getKey().split("_");
-            if(!conf.containsKey(key[0])){
-                conf.put(key[0], new HashSet<>());
+            if(isFromCollector) {
+                if (!conf.containsKey(key[0])) {
+                    conf.put(key[0], new HashSet<>());
+                }
+                conf.get(key[0]).add(key[1] + "_" + key[2]);
+                try {
+                    outbox.sendStringOnTopic(EventTopicConstants.SIMO_VIDEO_STATE, JSON.toJSONString(conf));
+                } catch (JMSException e) {
+                    log.error("向采集器发送消息抛出异常：{}", e.getMessage());
+                }
+            } else {
+                Optional<NetworkEntity> ne = networkEntityDao.findById(key[0]);
+                if (ne.isPresent()) {
+                    new VideoProduceHandler(ne.get(), key[1], key[2], "HCNET", this::consume,
+                            k -> connectionParams.containsKey(k) && connectionParams.get(k).size()>0,
+                            ()->{
+                                ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParam.getValue();
+                                for(VideoConsumer<byte[]> consumer: videoConsumerArrayList){
+                                    remove(consumer.getSessionId());
+                                }
+                            }
+                    ).start();
+                } else {
+                    throw new NullPointerException("传入neId有误，没有发现该摄像头平台！");
+                }
             }
-            conf.get(key[0]).add(key[1] + "_" + key[2]);
         }
+    }
 
-        try {
-            outbox.sendStringOnTopic(EventTopicConstants.SIMO_VIDEO_STATE, JSON.toJSONString(conf));
-        } catch (JMSException e) {
-            log.error("向采集器发送消息抛出异常：{}", e.getMessage());
+    private void consume(JSONObject jsonObject){
+        String neId = jsonObject.getString("neId");
+        String stream = jsonObject.getString("stream");
+        String channel = jsonObject.getString("channel");
+        byte[] data = jsonObject.getBytes("data");
+
+        String key = neId + "_" + stream + "_" + channel;
+        ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(key);
+        for(VideoConsumer<byte[]> videoConsumer: videoConsumerArrayList){
+            videoConsumer.append(data);
         }
     }
 }

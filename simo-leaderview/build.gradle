@@ -36,6 +36,9 @@ dependencies {
     compile "org.quartz-scheduler:quartz:2.2.2"
     compile "io.springfox:springfox-swagger2:2.7.0"
     compile "io.springfox:springfox-swagger-ui:2.7.0"
+
+    compile "org.bytedeco.javacpp-presets:ffmpeg-platform:4.1-1.4.4"
+    compile "org.bytedeco:javacv:1.4.4"
 }
 
 
