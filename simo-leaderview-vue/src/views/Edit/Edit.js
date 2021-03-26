@@ -86,7 +86,7 @@ export default {
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
-      activeNames: ['1'],
+      activeNames: [0],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
@@ -1315,6 +1315,9 @@ export default {
       }
     },
     selected: function (item, ev, type, i) {
+      if (ev === 'down') {
+        this.activeNames = [0]
+      }
       $('--open').remove()
       this.selfMapLevel = false
       if (this.childResize && ev === 'context') {
