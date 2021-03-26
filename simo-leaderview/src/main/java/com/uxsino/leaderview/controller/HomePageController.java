@@ -140,7 +140,7 @@ public class HomePageController {
 			JSONObject json = allApi.getJSONObject(i);
 			String type = json.getString("type");
 			if (Strings.isNullOrEmpty(type)) {
-				return new JsonModel(true);
+				continue;
 			}
 			List<String> types = Arrays.stream(type.split(",")).collect(Collectors.toList());
 			if (types.contains(typeStr)) {
