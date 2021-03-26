@@ -43,18 +43,27 @@ public class VideoMonitoringController {
             log.warn("摄像头设备参数有误，不能连接！");
             return;
         }
-        videoMonitoringService.register(new VideoMonitoringService.VideoConsumer<byte[]>() {
-            @Override
-            public void accept(byte[] data) {
-                try {
-                    if(session.isOpen()) {
-                        session.getBasicRemote().sendBinary(ByteBuffer.wrap(data));
+        try {
+            videoMonitoringService.register(new VideoMonitoringService.VideoConsumer<byte[]>() {
+                @Override
+                public void accept(byte[] data) {
+                    try {
+                        if(session.isOpen()) {
+                            session.getBasicRemote().sendBinary(ByteBuffer.wrap(data));
+                        }
+                    }catch (IOException e){
+                        log.error("向客户端推送帧数据抛出异常：", e.getMessage());
                     }
-                }catch (IOException e){
-                    log.error("向客户端推送帧数据抛出异常：", e.getMessage());
                 }
+            }.set(session.getId(), neId, stream, channel));
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+            try {
+                session.close();
+            } catch (IOException ex) {
+                log.error("关闭websocket连接异常！");
             }
-        }.set(session.getId(), neId, stream, channel));
+        }
     }
 
     @OnClose
