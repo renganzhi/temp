@@ -266,7 +266,6 @@ html[data-theme="default"] {
       background: none !important;
       background-image: linear-gradient(to right, #12174e, #0f3858) !important;
       box-sizing: border-box !important;
-      border-left: solid 3px #00a0e9;
       .nav_icon {
         color: #00a0e9;
       }
