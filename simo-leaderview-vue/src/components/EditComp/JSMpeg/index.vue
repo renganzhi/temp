@@ -3,7 +3,7 @@
        :style="JSMpegStyle">
     <canvas
       ref="canvas"
-      v-if="vidoeShow"
+      v-show="vidoeShow"
       class="canvas"
     />
     <div class="v-charts-data-empty"
@@ -39,6 +39,7 @@ export default {
   watch: {
     'item.VideoData': function (newV) {
       if (newV !== '') {
+        this.player && this.player.stop()
         this.vidoeShow = true
         this.getVideo()
       } else {
@@ -70,8 +71,7 @@ export default {
     }
   },
   beforeDestroy () {
-    this.player && this.player.destroy()
-    this.recorder && this.recorder.state === 'recording' && this.recorder.stop()
+    this.player && this.player.stop()
   },
   destroyed: function () {
   }
