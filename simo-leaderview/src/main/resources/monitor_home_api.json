@@ -26,11 +26,167 @@
         ]
     },
     {
+        "key": "enable_ne_num_statistics_for_rows",
+        "name": "资源统计-按类型",
+        "component": "monitor",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/monitor/neStatisticsByClassForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_num_statistics_for_range",
+        "name": "资源统计-按类型",
+        "component": "monitor",
+        "type": "",
+        "url": "/leaderview/monitor/neStatisticsByClassForRange",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_num_statistics_for_sunburst",
+        "name": "资源统计-按类型",
+        "component": "monitor",
+        "type": "Sunrise",
+        "url": "/leaderview/monitor/neStatisticsByClassForSunburst",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
         "key": "enable_ne_status_statistics",
         "name": "资源统计-按状态",
         "component": "monitor",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByStatus",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_status_statistics_for_rows",
+        "name": "资源统计-按状态",
+        "component": "monitor",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/monitor/neStatisticsByStatusForRows",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_status_statistics_for_range",
+        "name": "资源统计-按状态",
+        "component": "monitor",
+        "type": "",
+        "url": "/leaderview/monitor/neStatisticsByStatusForRange",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_status_statistics_for_sunburst",
+        "name": "资源统计-按状态",
+        "component": "monitor",
+        "type": "Sunrise",
+        "url": "/leaderview/monitor/neStatisticsByStatusForSunburst",
         "method" : "get",
         "params": [
             {
@@ -393,11 +549,217 @@
         ]
     },
     {
+        "key": "enable_alert_level_statistics_for_rows",
+        "name": "告警统计-按级别",
+        "component": "alert",
+        "type": "bubble,GradientPie",
+        "url": "/leaderview/alert/getStatByLevelForRows",
+        "method" : "post",
+        "params": [
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            },
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes",
+                "params": ["domainId","baseNeClass","neClass"]
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_level_statistics_for_range",
+        "name": "告警统计-按级别",
+        "component": "alert",
+        "type": "",
+        "url": "/leaderview/alert/getStatByLevelForRange",
+        "method" : "post",
+        "params": [
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            },
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes",
+                "params": ["domainId","baseNeClass","neClass"]
+            }
+        ]
+    },
+    {
         "key": "enable_alert_class_statistics",
         "name": "告警统计-按资源类型",
         "component": "alert",
         "type": "groupHistogram,NewGroupHistogram",
         "url": "/leaderview/alert/getStatByClass",
+        "method" : "post",
+        "params": [
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            },
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_class_statistics_for_rows",
+        "name": "告警统计-按资源类型",
+        "component": "alert",
+        "type": "bubble",
+        "url": "/leaderview/alert/getStatByClassForRows",
+        "method" : "post",
+        "params": [
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            },
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_class_statistics_for_range",
+        "name": "告警统计-按资源类型",
+        "component": "alert",
+        "type": "",
+        "url": "/leaderview/alert/getStatByClassForRange",
+        "method" : "post",
+        "params": [
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            },
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_class_statistics_for_sunburst",
+        "name": "告警统计-按资源类型",
+        "component": "alert",
+        "type": "Sunrise",
+        "url": "/leaderview/alert/getStatByClassForSunburst",
         "method" : "post",
         "params": [
             {
@@ -2058,6 +2420,43 @@
                 "method" : "get",
                 "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
                 "params": ["indicators"]
+            }
+        ]
+    },
+    {
+        "key": "get_NELink_by_city",
+        "name": "链路统计-按城市",
+        "component": "monitor",
+        "type": "DataFlow",
+        "url": "/leaderview/monitor/getNELinkByCity",
+        "method": "get"
+    },
+    {
+        "key": "video_monitor_from_collector",
+        "name": "实时视频监控",
+        "component": "collector",
+        "type": "null",
+        "url": "/collector/videoMonitoring",
+        "method": "get",
+        "params": [
+            {
+                "key": "neId",
+                "name": "视频设备",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method": "get",
+                "dataUrl": "/leaderview/monitor/params/getMonitorList"
+            },
+            {
+                "key": "channel",
+                "name": "通道号",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method": "get",
+                "dataUrl": "/leaderview/monitor/params/getChannelList",
+                "params": ["neId"]
             }
         ]
     }

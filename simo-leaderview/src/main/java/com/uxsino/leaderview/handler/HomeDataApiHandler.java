@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.uxsino.leaderview.cache.DataViewCache;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -109,11 +110,11 @@ public class HomeDataApiHandler {
         }
         */
         //上述方法因为耦合较高改为下面代码，通过判断收到的消息是哪个服务，一个一个地添加接口
+        InputStream inputStream = null;
         try {
             JSONArray jsonArray = JSON.parseArray(message);
             JSONObject jsonObject =(JSONObject) jsonArray.get(0);
             String key =(String) jsonObject.get("key");
-            InputStream inputStream = null;
             //读到的第一个json的key属性值为enable_ne_num_statistics，则该数据从monitor发送
             if(key.equals("enable_ne_num_statistics")){
                 inputStream = this.getClass().getClassLoader().getResourceAsStream(MONITOR_FILE_NAME);
@@ -137,6 +138,11 @@ public class HomeDataApiHandler {
             }
         } catch (UnsupportedEncodingException e) {
             logger.error("LEADERVIEW -> 文件【{}】读取出错！", currentFileName);
+            try {
+                inputStream.close();
+            }catch (IOException ex){
+                logger.error("LEADERVIEW -> 文件【{}】关闭失败！", currentFileName);
+            }
             return null;
         }
     }

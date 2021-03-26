@@ -1,6 +1,10 @@
 package com.uxsino.leaderview.controller.alert;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.utils.StringUtils;
 import com.uxsino.leaderview.service.api.AlertDataService;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 @Api(tags = { "告警-大屏展示数据接口" })
 @RestController
@@ -146,6 +151,77 @@ public class AlertDataController {
     }
 
 
+    @ApiOperation("按告警级别统计资源的未处理告警条数，用于列固定的组件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "多个资源ID用,分隔")
+    })
+    @RequestMapping(value = "/getStatByLevelForRows", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByLevelForRows(HttpSession session, String alertLevel, Long domainId,
+                                    String baseNeClass, String neClass, String neIds) {
+        try {
+            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                newObject.put("name", oldObject.get("告警类型"));
+                newObject.put("value", oldObject.get("数量"));
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按告警级别统计资源的未处理告警条数，用于值为范围的组件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "多个资源ID用,分隔")
+    })
+    @RequestMapping(value = "/getStatByLevelForRange", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByLevelForRange(HttpSession session, String alertLevel, Long domainId,
+                                    String baseNeClass, String neClass, String neIds) {
+        try {
+            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                JSONArray average = new JSONArray();
+                range.add(0);
+                range.add(oldObject.get("数量"));
+                average.add(oldObject.get("数量"));
+                newObject.put("告警类型", oldObject.get("告警类型"));
+                newObject.put("数量", range);
+                newObject.put("均值", average);
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", new String[]{"告警类型","数量","均值"});
+            return new JsonModel(true, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
     @ApiOperation("按资源类型统计资源的未处理告警条数")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
@@ -157,6 +233,170 @@ public class AlertDataController {
     public JsonModel getStatByClass(HttpSession session, String alertLevel, Long domainId, String baseNeClass) {
         try {
             return alertDataService.getStatByClass(session, alertLevel, domainId, baseNeClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation("按资源类型统计资源的未处理告警条数，用于列固定的组件，仅显示总和")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")
+    })
+    @RequestMapping(value = "/getStatByClassForRows", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByClassForRows(HttpSession session, String alertLevel, Long domainId, String baseNeClass) {
+        try {
+            JsonModel deprecatedWrap = alertDataService.getStatByClass(session, alertLevel, domainId, baseNeClass);
+            JSONObject json = new JSONObject();
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONArray oldColumns = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("columns");
+            JSONArray newRows = new JSONArray();
+            JSONObject temp = new JSONObject();
+            ArrayList<String> alertTypes = new ArrayList<>();
+            for(Object object: oldColumns){
+                String alertType = (String)object;
+                if(!alertType.equals("资源类型") && !alertType.equals("资源名")) {
+                    alertTypes.add(alertType);
+                    temp.put(alertType, 0L);
+                }
+            }
+            /*
+                由于气泡图等固定列只有name和value两个，不能做到多个设备都分别统计多个告警类型，
+                因此暂时决定返回的是选中类型的所有子类型的各种告警类型自己的总和
+             */
+            for(Object object: oldRows){
+                JSONObject oldRow = (JSONObject)object;
+                for(String alertType: alertTypes){
+                    temp.put(alertType, (long)temp.get(alertType) + (long)oldRow.get(alertType));
+                }
+            }
+            for(String alertType: alertTypes){
+                JSONObject t = new JSONObject();
+                t.put("name", alertType);
+                t.put("value", temp.get(alertType));
+                newRows.add(t);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+         } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按资源类型统计资源的未处理告警条数，用于值为范围的组件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")
+    })
+    @RequestMapping(value = "/getStatByClassForRange", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByClassForRange(HttpSession session, String alertLevel, Long domainId, String baseNeClass) {
+        try {
+            JsonModel deprecatedWrap = alertDataService.getStatByClass(session, alertLevel, domainId, baseNeClass);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                for(JSONObject.Entry entry: oldObject.entrySet()){
+                    if(!"资源类型".equals((String)entry.getKey()) && !"资源名".equals((String)entry.getKey())){
+                        range.add(entry.getValue());
+                        newObject.put((String)entry.getKey(), range);
+                    }else{
+                        newObject.put((String)entry.getKey(), (int)entry.getValue());
+                    }
+                }
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("columns"));
+            return new JsonModel(true, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按资源类型统计资源的未处理告警条数，用于旭日图")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")
+    })
+    @RequestMapping(value = "/getStatByClassForSunburst", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByClassForSunburst(HttpSession session, String alertLevel, Long domainId, String baseNeClass) {
+        try {
+            if(baseNeClass != null && !StringUtils.isEmpty(baseNeClass)){
+                JsonModel deprecatedWrap = alertDataService.getStatByClass(session, alertLevel, domainId, baseNeClass);
+                JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+                JSONArray children = new JSONArray();
+                for(Object object: oldRows){
+                    JSONObject oldRow = (JSONObject)object;
+                    JSONObject child = new JSONObject();
+                    JSONArray subChildren = new JSONArray();
+                    for(JSONObject.Entry<String, Object> entry: oldRow.entrySet()){
+                        JSONObject subChild;
+                        if(!entry.getKey().equals("资源类型")){
+                            subChild = new JSONObject();
+                            subChild.put("name", entry.getKey());
+                            subChild.put("value", entry.getValue());
+                            subChildren.add(subChild);
+                        }
+                    }
+                    child.put("name", oldRow.get("资源类型"));
+                    child.put("children", subChildren);
+                    children.add(child);
+                }
+                JSONObject father = new JSONObject();
+                father.put("name", BaseNeClass.valueOf(baseNeClass).getText());
+                father.put("children", children);
+                JSONArray dataArry = new JSONArray();
+                dataArry.add(father);
+                JSONObject result = new JSONObject();
+                result.put("dataArry", dataArry);
+                return new JsonModel(true, result);
+            }else{
+                BaseNeClass[] baseNeClasses = BaseNeClass.values();
+                JSONArray dataArry = new JSONArray();
+                for(BaseNeClass temp: baseNeClasses){
+                    JsonModel deprecatedWrap = alertDataService.getStatByClass(session, alertLevel, domainId, temp.toString());
+                    JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+                    JSONArray children = new JSONArray();
+                    for(Object object: oldRows){
+                        JSONObject oldRow = (JSONObject)object;
+                        JSONObject child = new JSONObject();
+                        JSONArray subChildren = new JSONArray();
+                        for(JSONObject.Entry<String, Object> entry: oldRow.entrySet()){
+                            JSONObject subChild;
+                            if(!entry.getKey().equals("资源类型")){
+                                subChild = new JSONObject();
+                                subChild.put("name", entry.getKey());
+                                subChild.put("value", entry.getValue());
+                                subChildren.add(subChild);
+                            }
+                        }
+                        child.put("name", oldRow.get("资源类型"));
+                        child.put("children", subChildren);
+                        children.add(child);
+                    }
+                    JSONObject father = new JSONObject();
+                    father.put("name", temp.getText());
+                    father.put("children", children);
+                    dataArry.add(father);
+                }
+                JSONObject result = new JSONObject();
+                result.put("dataArry", dataArry);
+                return new JsonModel(true, result);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

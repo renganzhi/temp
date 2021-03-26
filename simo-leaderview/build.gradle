@@ -27,6 +27,8 @@ dependencies {
     compile "org.springframework.cloud:spring-cloud-starter-oauth2:$securityVersion"
     compile "org.springframework.session:spring-session-data-redis:$sessionRedisVersion"
 
+    compile "org.springframework.boot:spring-boot-starter-websocket:$springBootVersion"
+
     compile "mysql:mysql-connector-java:5.1.9"
     compile "org.slf4j:slf4j-api"
     

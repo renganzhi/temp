@@ -1,10 +1,15 @@
 package com.uxsino.leaderview.controller.monitor;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
+import com.uxsino.leaderview.rpc.AlertService;
+import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.leaderview.service.VideoMonitoringService;
 import com.uxsino.leaderview.service.api.MonitorDataService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -15,9 +20,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 
@@ -46,6 +53,122 @@ public class MonitorDataController {
     }
 
 
+    @ApiOperation("按类型统计资源数量，用于列固定的元件")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByClassForRows", method = RequestMethod.GET)
+    public JsonModel statisticsResourceDataForRows(@RequestParam(required = false) Long domainId,
+                                            @RequestParam(required = false) String baseNeClass, HttpSession session) {
+        try {
+            JsonModel deprecatedWrap =  monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                newObject.put("name", oldObject.get("资源类型"));
+                newObject.put("value", oldObject.get("数量"));
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按类型统计资源数量，用于值为范围的元件")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByClassForRange", method = RequestMethod.GET)
+    public JsonModel statisticsResourceDataForRange(@RequestParam(required = false) Long domainId,
+                                            @RequestParam(required = false) String baseNeClass, HttpSession session) {
+        try {
+            JsonModel deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                JSONArray average = new JSONArray();
+                range.add(0);
+                range.add(oldObject.get("数量"));
+                average.add(oldObject.get("数量"));
+                newObject.put("资源类型", oldObject.get("资源类型"));
+                newObject.put("数量", range);
+                newObject.put("均值", average);
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", new String[]{"资源类型","数量","均值"});
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按类型统计资源数量，用于旭日图组件")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByClassForSunburst", method = RequestMethod.GET)
+    public JsonModel statisticsResourceDataForSunburst(@RequestParam(required = false) Long domainId,
+                                            @RequestParam(required = false) String baseNeClass, HttpSession session) {
+        try {
+            JsonModel deprecatedWrap;
+            if(baseNeClass != null && !StringUtils.isEmpty(baseNeClass)){
+                deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+                JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+                JSONObject json = new JSONObject();
+                JSONArray newRows = new JSONArray();
+                for(Object object: oldRows){
+                    JSONObject oldObject = (JSONObject) object;
+                    JSONObject newObject = new JSONObject();
+                    newObject.put("name", oldObject.get("资源类型"));
+                    newObject.put("value", oldObject.get("数量"));
+                    newRows.add(newObject);
+                }
+                json.put("name", BaseNeClass.valueOf(baseNeClass).getText());
+                json.put("children", newRows);
+                JSONArray realRes = new JSONArray();
+                realRes.add(json);
+                JSONObject res = new JSONObject();
+                res.put("dataArry", realRes);
+                return new JsonModel(true, res);
+            }else{
+                BaseNeClass[] baseNeClasses = BaseNeClass.values();
+                JSONObject res = new JSONObject();
+                JSONArray realRes = new JSONArray();
+                for(BaseNeClass temp: baseNeClasses){
+                    deprecatedWrap = monitorDataService.statisticsResourceData(domainId, temp.toString(), session);
+                    JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+                    JSONObject json = new JSONObject();
+                    JSONArray newRows = new JSONArray();
+                    for(Object object: oldRows){
+                        JSONObject oldObject = (JSONObject) object;
+                        JSONObject newObject = new JSONObject();
+                        newObject.put("name", oldObject.get("资源类型"));
+                        newObject.put("value", oldObject.get("数量"));
+                        newRows.add(newObject);
+                    }
+                    json.put("name", temp.getText());
+                    json.put("children", newRows);
+                    realRes.add(json);
+                }
+                res.put("dataArry", realRes);
+                return new JsonModel(true, res);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
     @ApiOperation("按状态统计资源数量")
     @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
             @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
@@ -54,6 +177,101 @@ public class MonitorDataController {
                                               @RequestParam(required = false) String baseNeClass) {
         try {
             return monitorDataService.statisticsResourceStatus(session, domainId, baseNeClass);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation("按状态统计资源数量，用于列固定的组件")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByStatusForRows", method = RequestMethod.GET)
+    public JsonModel statisticsResourceStatusForRows(HttpSession session, @RequestParam(required = false) Long domainId,
+                                              @RequestParam(required = false) String baseNeClass) {
+        try {
+            JsonModel deprecatedWrap = monitorDataService.statisticsResourceStatus(session, domainId, baseNeClass);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                newObject.put("name", oldObject.get("状态"));
+                newObject.put("value", oldObject.get("数量"));
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按状态统计资源数量，用于值为范围的组件")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByStatusForRange", method = RequestMethod.GET)
+    public JsonModel statisticsResourceStatusForRange(HttpSession session, @RequestParam(required = false) Long domainId,
+                                              @RequestParam(required = false) String baseNeClass) {
+        try {
+            JsonModel deprecatedWrap = monitorDataService.statisticsResourceStatus(session, domainId, baseNeClass);
+            JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
+            JSONObject json = new JSONObject();
+            JSONArray newRows = new JSONArray();
+            for(Object object: oldRows){
+                JSONObject oldObject = (JSONObject) object;
+                JSONObject newObject = new JSONObject();
+                JSONArray range = new JSONArray();
+                JSONArray average = new JSONArray();
+                range.add(0);
+                range.add(oldObject.get("数量"));
+                newObject.put("状态", oldObject.get("状态"));
+                newObject.put("数量", range);
+                newObject.put("均值", average);
+                newRows.add(newObject);
+            }
+            json.put("rows", newRows);
+            json.put("columns", new String[]{"状态","数量","均值"});
+            return new JsonModel(true, json);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按状态统计资源数量，用于旭日图")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型") })
+    @RequestMapping(value = "/neStatisticsByStatusForSunburst", method = RequestMethod.GET)
+    public JsonModel statisticsResourceStatusForSunburst(HttpSession session, @RequestParam(required = false) Long domainId,
+                                              @RequestParam(required = false) String baseNeClass) {
+        try {
+            JsonModel deprecatedWrap;
+            JSONArray dataArry = new JSONArray();
+            if(baseNeClass != null && !StringUtils.isEmpty(baseNeClass)){
+                deprecatedWrap = monitorDataService.statisticsResourceStatusForSunburst(session, domainId, baseNeClass);
+                JSONArray children = (JSONArray)deprecatedWrap.getObj();
+                JSONObject father = new JSONObject();
+                father.put("name", BaseNeClass.valueOf(baseNeClass).getText());
+                father.put("children", children);
+                dataArry.add(father);
+            }else{
+                BaseNeClass[] baseNeClasses = BaseNeClass.values();
+                for(BaseNeClass temp: baseNeClasses){
+                    deprecatedWrap = monitorDataService.statisticsResourceStatusForSunburst(session, domainId, temp.toString());
+                    JSONArray children = (JSONArray)deprecatedWrap.getObj();
+                    JSONObject father = new JSONObject();
+                    father.put("name", temp.getText());
+                    father.put("children", children);
+                    dataArry.add(father);
+                }
+            }
+            JSONObject result = new JSONObject();
+            result.put("dataArry", dataArry);
+            return new JsonModel(true, result);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -433,12 +651,46 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("链路统计-按城市")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "locationCode", paramType = "query", dataType = "String", value = "当前展示地图区域代码", required = false)
+    })
+    @RequestMapping(value = "/getNELinkByCity", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getNELinkByCity(
+            @RequestParam(value = "locationCode", required = false) String locationCode){
+        try {
+            return monitorDataService.getNELinkByCity(locationCode);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
     @Autowired
     RpcProcessService rpcProcessService;
 
+    @Autowired
+    private VideoMonitoringService videoMonitoringService;
+
+    @Autowired
+    private MonitorService monitorService;
+
     @GetMapping("/test")
     public JsonModel test(){
-        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("neClass", "hcnet");
+        JsonModel monitorResult = monitorService.searchNe(jsonObject);
+        LinkedHashMap monitor = (LinkedHashMap)((ArrayList)((LinkedHashMap)monitorResult.getObj()).get("object")).get(0);
+        String neId = (String)monitor.get("id");
+        JsonModel channelResult = monitorService.getChannelList(neId);
+        String channelNo = (String)((LinkedHashMap)((ArrayList)((LinkedHashMap)((LinkedHashMap)channelResult.getObj()).get("indicatorValue")).get("object")).get(0)).get("channel");
+        videoMonitoringService.register(new VideoMonitoringService.VideoConsumer<byte[]>() {
+            @Override
+            public void accept(byte[] bytes) {
+                System.out.println("接收到帧数据长度：" + bytes.length);
+            }
+        }.set("1", neId, "sub", channelNo));
         return new JsonModel(true);
     }
 
