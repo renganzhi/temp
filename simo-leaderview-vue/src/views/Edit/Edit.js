@@ -57,6 +57,7 @@ let config = {
   NewGroupLeftHistogram: require('@/components/EditComp/NewGroupLeftHistogram/config.js'),
   NewBar: require('@/components/EditComp/NewBar/config.js'),
   NewTime: require('@/components/EditComp/NewTime/config.js'),
+  NewGauge: require('@/components/EditComp/NewGauge/config.js'),
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
   NewBorder: require('@/components/EditComp/NewBorder/config.js'),
   JSMpeg: require('@/components/EditComp/JSMpeg/config.js'),
@@ -289,7 +290,7 @@ export default {
       },
       itemHistoryObj: [],
       historyArr: [],
-      tapsStation: 'left',
+      tapsStation: 'center',
       tempHisObj: {},
       tempVideoUrl: '', // 用户输入的视频URL
       isThird: false, // 当前数据来源是否为第三方数据
@@ -2508,7 +2509,7 @@ export default {
     openMapChange () {
       this.MapChange = !this.MapChange
       if (!this.MapChange) {
-        this.tapsStation = 'left'
+        this.tapsStation = 'center'
         document.querySelector('.archive').style.order = 0
         document.querySelector('#centerMapBox').style.order = 0
       }

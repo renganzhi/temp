@@ -6,6 +6,7 @@ import NewPie from '@/components/EditComp/NewPie/config.js'
 import NewPie2 from '@/components/EditComp/NewPie/config2.js'
 import NewPie3 from '@/components/EditComp/NewPie/config3.js'
 import NewRadar from '@/components/EditComp/NewRadar/config.js'
+import NewGauge from '@/components/EditComp/NewGauge/config.js'
 
 const percentage = {
   name: '百分比图',
@@ -13,6 +14,7 @@ const percentage = {
     NewPie.item,
     NewPie2.item,
     NewPie3.item,
+    NewGauge.item,
     // {
     //   text: '饼图',
     //   imgClass: 'icon-n-pie',
@@ -75,24 +77,24 @@ const percentage = {
     //   tooltipfontSize: 14,
     //   chartData: morenData.pie
     // },
-    {
-      text: '目标占比图',
-      width: 200,
-      height: 200,
-      imgClass: 'icon-n-percent',
-      chartType: 've-gauge',
-      ifGradual: 'false',
-      subType: 'progress',
-      bgClr: '#657992',
-      fontSize: 24,
-      ctLegendShow: 'true',
-      detailColor: '#52a8c0',
-      detailwidth: 12,
-      ctLegendSize: '16',
-      ctLegendColor: '#666f8b',
-      axisLabelSize: '16',
-      chartData: morenData.single
-    },
+    // {
+    //   text: '目标占比图',
+    //   width: 200,
+    //   height: 200,
+    //   imgClass: 'icon-n-percent',
+    //   chartType: 've-gauge',
+    //   ifGradual: 'false',
+    //   subType: 'progress',
+    //   bgClr: '#657992',
+    //   fontSize: 24,
+    //   ctLegendShow: 'true',
+    //   detailColor: '#52a8c0',
+    //   detailwidth: 12,
+    //   ctLegendSize: '16',
+    //   ctLegendColor: '#666f8b',
+    //   axisLabelSize: '16',
+    //   chartData: morenData.single
+    // },
     // {
     //   text: '雷达图',
     //   imgClass: 'icon-n-radar',

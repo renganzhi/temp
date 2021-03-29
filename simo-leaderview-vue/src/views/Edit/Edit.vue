@@ -21,25 +21,28 @@
     <div class="edit-content"
          @click.ctrl="bindCtrl">
       <div class="edit-header">
-        <a class="fr simoLink icon-n-withdraw edit-opt"
-           @click="preBack">返回</a>
-        <a class="fr simoLink icon-n-preview edit-opt"
-           @click="preview">预览</a>
-        <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
-        <a class="fr icon-n-save simoLink edit-opt"
-           @click="saveConf">保存</a>
-        <span class="fr">|</span>
-        <a class="fr simoLink icon-n-keyboard edit-opt"
-           @mouseover="showKeybd = true"
-           @mouseout="showKeybd = false">快捷键</a>
-        <h4 class="edit-title"
+        <h4 class='edit-title' style="margin: 0 18px;"
             @click.self="clickPaint($event)">{{pageName}}</h4>
-        <a class="fr simoLink icon-n-revoke edit-opt"
-           v-if="historyArr.length > 0"
-           @click="Revoke">撤销</a>
-        <a class="fr simoLink icon-n-revoke edit-opt"
-           style="color:#666F8B;"
-           v-else>撤销</a>
+          <span v-if="tapsStation==='left'" class="fl">|</span>
+        <div :class="tapsStation==='left'?'fl':'fr'">
+          <a class=" simoLink icon-n-revoke edit-opt"
+            v-if="historyArr.length > 0"
+            @click="Revoke">撤销</a>
+          <a class=" simoLink icon-n-revoke edit-opt"
+            style="color:#666F8B;"
+            v-else>撤销</a>
+          <a class=" simoLink icon-n-keyboard edit-opt"
+            @mouseover="showKeybd = true"
+            @mouseout="showKeybd = false">快捷键</a>
+          <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
+          <span>|</span>
+          <a class=" icon-n-save simoLink edit-opt"
+            @click="saveConf">保存</a>
+          <a class=" simoLink icon-n-preview edit-opt"
+            @click="preview">预览</a>
+          <a class=" simoLink icon-n-withdraw edit-opt"
+            @click="preBack">返回</a>
+        </div>
       </div>
       <div class="edit-keyboard"
            v-show="showKeybd"
@@ -84,8 +87,8 @@
       <div class="edit-body flex"
            @click="hideContext">
         <!--  <div class="m-contain full-height">-->
-        <div class="btm-tools">
-          <div class="btn-box">
+        <div class='btm-tools'>
+          <div   :class="tapsStation==='left'?'btn-box fl':'btn-box fr'" class="">
             <span @click="preOther(0)"
                   class="ring-icon"
                   style="line-height: 34px;margin: 0 8px;"
@@ -1721,7 +1724,7 @@
                   </div>
               </template>
 
-              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
@@ -2303,10 +2306,10 @@ html[data-theme="blueWhite"] {
 .edit-body .btm-tools{
   margin-bottom: -3px;
   position: fixed;
-  bottom: 12px;
+  bottom: 26px;
   width: 100%;
-  padding-right: 320px;
-  padding-left: 15px;
+  padding-right: 380px;
+  padding-left: 380px;
   z-index: 999;
   text-align: right;
   .ring-icon{
