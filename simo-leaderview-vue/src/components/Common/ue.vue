@@ -32,7 +32,7 @@ export default {
           'justifyright', // 居右对齐
           'justifycenter', 'superscript', 'fontfamily', 'fontsize', 'subscript', 'removeformat', 'horizontal', 'lineheight',
           'formatmatch', 'autotypeset', 'blockquote', '|',
-          'forecolor', 'backcolor', 'selectall', 'cleardoc']
+          'forecolor', 'backcolor', 'selectall']
       ],
       autoHeightEnabled: true,
       autoFloatEnabled: true
