@@ -5,7 +5,7 @@ export default {
     'chartType': 'Ueditor',
     'width': 200,
     'height': 50,
-    'chartData': '请输入文本'
+    'chartData': '<span style="color: rgb(255, 255, 255);">请输入文本</span>'
   },
   'styles': {
     'base': []

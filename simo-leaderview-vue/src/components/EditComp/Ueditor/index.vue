@@ -1,15 +1,13 @@
 <template>
-    <div class="editor-container" ref="myEditBox">
-    </div>
+  <div class="editor-container" ref="myEditBox"></div>
 </template>
 <script>
 import UE from '../../Common/ue'
 export default {
-  components: {UE},
+  components: { UE },
   props: ['item'],
   data () {
-    return {
-    }
+    return {}
   },
   watch: {
     'item.chartData': function () {
@@ -26,10 +24,16 @@ export default {
   }
 }
 </script>
-<style>
-.editor-container{
+<style lang='scss'>
+.editor-container {
   height: 100%;
   width: 100%;
   overflow: auto;
+  td,
+  th {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+  }
 }
 </style>

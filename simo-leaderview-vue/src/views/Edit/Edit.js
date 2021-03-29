@@ -50,6 +50,9 @@ let config = {
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
+  DoubleLinde: require('@/components/EditComp/DoubleLinde/config.js'),
+  NewPie: require('@/components/EditComp/NewPie/config.js'),
+  NewRadar: require('@/components/EditComp/NewRadar/config.js'),
   NewGroupHistogram: require('@/components/EditComp/NewGroupHistogram/config.js'),
   NewGroupLeftHistogram: require('@/components/EditComp/NewGroupLeftHistogram/config.js'),
   NewBar: require('@/components/EditComp/NewBar/config.js'),
@@ -306,7 +309,7 @@ export default {
     curChartName () {
       if (['text', 'NEWtextArea'].includes(this.curChartType)) {
         return '文本框'
-      } else if (this.curChartType === 'NewMarquee') {
+      } else if (this.curChartType === 'NewMarquee' || this.curChartType === 'marquee') {
         return '跑马灯'
       }
       return this.selectedItem.ctName || ''
@@ -2805,7 +2808,7 @@ export default {
             _this.selectedItem.url = curConf.url
             _this.selectedItem.method = curConf.method
             _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'NEWtextArea') {
+            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
               _this.selectedItem.ctName = data.obj.info
               if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
                 _this.selectedItem.chartData = data.obj
@@ -2938,7 +2941,7 @@ export default {
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
       } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
-      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
+      } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
         console.log(this.$refs.textarea.innerText)
         this.selectedItem.ctName = this.$refs.textarea.innerText
         // this.$refs.textarea.innerText = this.selectedItem.ctName

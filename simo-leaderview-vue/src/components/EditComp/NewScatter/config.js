@@ -7,6 +7,9 @@ export default{
     'height': 300,
     'mapLevel': 'country',
     'countryCode': 100000,
+    'colordirection': 1,
+    'roam': true,
+    'normalcolor': ['#15abd8', '#1559b0'],
     'ctLegendShow': 'false', // 地名是否展示
     'provinceCode': '',
     'cityCode': '',
@@ -45,20 +48,59 @@ export default{
           'parentKey': {
             'ctLegendShow': 'true'
           }
+        },
+        {
+          'name': '允许缩放拖拽',
+          'key': 'roam',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '允许',
+              'value': true
+            },
+            {
+              'name': '不允许',
+              'value': false
+            }
+          ]
         }]
       },
       {
         'name': '图表样式',
         'tag': 'Hint',
-        'childoption': [{
-          'name': '地图颜色',
-          'key': 'areaColor',
-          'tag': 'Color'
-        }, {
-          'name': '分界线颜色',
-          'key': 'borderColor',
-          'tag': 'Color'
-        }]
+        'childoption': [
+          {
+            'name': '地图颜色',
+            'key': 'normalcolor',
+            'tag': 'GradientColor'
+          },
+          {
+            'name': '颜色渐变角度',
+            'key': 'colordirection',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '0°',
+                'value': 0
+              },
+              {
+                'name': '45°',
+                'value': 1
+              },
+              {
+                'name': '90°',
+                'value': 2
+              },
+              {
+                'name': '135°',
+                'value': 3
+              }
+            ]
+          }, {
+            'name': '分界线颜色',
+            'key': 'borderColor',
+            'tag': 'Color'
+          }]
       }
     ]
   }
