@@ -239,8 +239,13 @@ html[data-theme="blueWhite"] {
       color: #50607c !important
     }
     .is-opened .el-submenu__title{
-      background: #3f475b!important;
+      background-image: linear-gradient(to right, #cedcdd, #ebeef1);
+      background-color:#e4e4e4 !important;
+      box-sizing: border-box !important;
       color: rgb(91,123,166)!important;
+      .nav_icon {
+        color: #00a0e9;
+      }
     }
     .archive {
       background: #fff !important;
@@ -265,6 +270,7 @@ html[data-theme="default"] {
       // color: #409EFF !important;
       background: none !important;
       background-image: linear-gradient(to right, #12174e, #0f3858) !important;
+      background-color:transparent;
       box-sizing: border-box !important;
       .nav_icon {
         color: #00a0e9;
@@ -298,7 +304,6 @@ html[data-theme="default"] {
   // }
   .el-submenu {
     width: calc(100% - 3px);
-    margin-left: 3px;
     height: 35px;
         margin-top: 10px;
     display: flex;
@@ -325,42 +330,41 @@ html[data-theme="default"] {
 }
 .is-opened {
   .el-submenu__title {
-    background: #2e3444 !important;
-  }
-}
-#left{
-  .is-opened {
-    .el-submenu__title {
-      background-image: linear-gradient(to right, #12174e, #0f3858) !important;
-      box-sizing: border-box !important;
-      border-left: solid 3px #00a0e9;
+    background-image: linear-gradient(to right, #12174e, #0f3858) ;
+      background-color:transparent;
+    box-sizing: border-box !important;
       .nav_icon {
         color: #00a0e9;
       }
+  }
+}
+#left{
+  .el-submenu {
+    margin-left: 3px;
+  }
+  .is-opened {
+    .el-submenu__title {
+      border-left: solid 2.5px #00a0e9;
     }
   }
 }
 #center{
+  .el-submenu {
+    margin-left: 3px;
+  }
   .is-opened {
     .el-submenu__title {
-      background-image: linear-gradient(to right, #12174e, #0f3858) !important;
-      box-sizing: border-box !important;
-      border-left: solid 3px #00a0e9;
-      .nav_icon {
-        color: #00a0e9;
-      }
+      border-left: solid 2.5px #00a0e9;
     }
   }
 }
 #right{
+  .el-submenu {
+    margin-right: 3px;
+  }
   .is-opened {
     .el-submenu__title {
-      background-image: linear-gradient(to left, #12174e, #0f3858) !important;
-      box-sizing: border-box !important;
-      border-right: solid 5px #00a0e9;
-      .nav_icon {
-        color: #00a0e9;
-      }
+      border-right: solid 2.5px #00a0e9;
     }
   }
 }
