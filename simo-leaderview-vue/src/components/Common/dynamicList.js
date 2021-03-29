@@ -26,6 +26,7 @@ export default [
   'NewRadar',
   'NewGroupHistogram',
   'NewBar',
+  'NewGauge',
   'NewGroupLeftHistogram',
   'NewTime',
   'NewTable',

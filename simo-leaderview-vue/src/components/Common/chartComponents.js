@@ -46,6 +46,7 @@ import TreeMap from '@/components/EditComp/TreeMap' // 散点图
 import NewHistogram from '@/components/EditComp/NewHistogram' // 散点图
 import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram' // 散点图
 import NewBar from '@/components/EditComp/NewBar' // 散点图
+import NewGauge from '@/components/EditComp/NewGauge' // 散点图
 import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram' // 散点图
 import Ueditor from '@/components/EditComp/Ueditor' // 散点图
 import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
@@ -103,6 +104,7 @@ export default {
   NewHistogram,
   NewGroupHistogram,
   NewBar,
+  NewGauge,
   NewGroupLeftHistogram,
   Ueditor,
   NEWtextArea,
