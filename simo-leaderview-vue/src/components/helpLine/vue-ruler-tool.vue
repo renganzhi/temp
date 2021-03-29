@@ -1,6 +1,6 @@
 <template>
   <!-- <div :style="wrapperStyle" class="vue-ruler-wrapper"> -->
-    <section v-show="rulerToggle" class="vue-ruler-wrapper">
+    <section v-show="rulerToggle"  :id="tapsStation" class="vue-ruler-wrapper">
       <div ref="horizontalRuler" class="vue-ruler-h" :style="{width:Hstyle}" @mousedown.stop="horizontalDragRuler">
       </div>
       <div ref="verticalRuler" class="vue-ruler-v" :style="{height:Vstyle}" @mousedown.stop="verticalDragRuler">
@@ -31,6 +31,10 @@ export default {
   name: 'VRuler',
   components: {},
   props: {
+    tapsStation: {
+      type: String,
+      default: ''
+    },
     isHotKey: {
       type: Boolean, default: true
     }, // 热键开关

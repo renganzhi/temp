@@ -199,6 +199,7 @@
                 v-model="presetLine"
                 :step-length="20"
                 :parent="true"
+                :tapsStation = 'tapsStation'
                 :parentW="paintObj.width"
                 :parentH="paintObj.height"
                 :is-scale-revise="true"
@@ -245,6 +246,7 @@
           <vue-ruler
             ref="ruler"
             v-model="presetLine"
+            :tapsStation = 'tapsStation'
             v-if="paintObj.showGrid"
             :scale="paintObj.scale"
             :parentW="paintObj.width"
