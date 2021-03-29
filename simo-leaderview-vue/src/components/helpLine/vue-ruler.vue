@@ -1,5 +1,5 @@
 <template>
-  <section class="vue-ruler">
+  <section class="vue-ruler"  :id="tapsStation">
     <div
       ref="horizontalRuler"
       class="vue-rulerh"
@@ -21,6 +21,10 @@ export default {
   name: 'VRuler',
   components: {},
   props: {
+    tapsStation: {
+      type: String,
+      default: ''
+    },
     scale: {
       type: Number,
       default: 100
@@ -105,6 +109,31 @@ export default {
 .vue-ruler {
   position: absolute;
   z-index: 999;
+}
+
+#left{
+  .vue-rulerh {
+    left: 360px;
+  }
+  .vue-rulerv {
+    left: 360px;
+  }
+}
+#center{
+  .vue-rulerh {
+    left: 60px;
+  }
+  .vue-rulerv {
+    left: 60px;
+  }
+}
+#right{
+  .vue-rulerh {
+    left: 0px;
+  }
+  .vue-rulerv {
+    left: 0px;
+  }
 }
 .vue-rulerh {
   height: 12px;
