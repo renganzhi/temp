@@ -5,6 +5,7 @@ import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
+import DoubleLinde from '@/components/EditComp/DoubleLinde/config.js'
 import NewHistogram from '@/components/EditComp/NewHistogram/config.js'
 import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram/config.js'
 import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram/config.js'
@@ -142,6 +143,7 @@ const coordinate = {
     //   chartData: morenData.pie
     // },
     ELine.item,
+    DoubleLinde.item,
     // {
     //   text: '曲线图',
     //   imgClass: 'icon-n-line',
@@ -158,46 +160,46 @@ const coordinate = {
     //   PointSize: '14',
     //   rotate: 0
     // },
-    {
-      text: '双轴曲线图',
-      height: 400,
-      width: 700,
-      imgClass: 'icon-n-line',
-      chartType: 've-line',
-      ifGradual: 'false',
-      subType: 'doubleAxis',
-      splitShow: 'false',
-      ctLegendSize: '16',
-      ctLegendColor: '#666f8b',
-      axisLabelSize: '16',
-      legendY: 90,
-      gridTop: 10,
-      gridBotton: 10,
-      gridLeft: 10,
-      gridRight: 10,
-      tooltipShow: 'true',
-      tooltipBackColor: '#57625d',
-      tooltipTextColor: '#fff',
-      tooltipfontSize: 14,
-      boundaryGap: 'true',
-      lineWidth: 1,
-      DanweiColor: '#828bac',
-      DanweiSize: 16,
-      splitColor: '#333849',
-      splitSize: 1,
-      chartData: morenData.times,
-      lineArea: 'true', // 是否为区域图
-      lineColorType: false, // 是否为区域图
-      smooth: 'true',
-      LineType: 'solid',
-      symbolType: 'circle',
-      formatterType: '0',
-      symbolSrc: '',
-      symbolSize: 6,
-      showPoint: 'true', // 是否标点
-      PointSize: '14',
-      rotate: 0
-    },
+    // {
+    //   text: '双轴曲线图',
+    //   height: 400,
+    //   width: 700,
+    //   imgClass: 'icon-n-line',
+    //   chartType: 've-line',
+    //   ifGradual: 'false',
+    //   subType: 'doubleAxis',
+    //   splitShow: 'false',
+    //   ctLegendSize: '16',
+    //   ctLegendColor: '#666f8b',
+    //   axisLabelSize: '16',
+    //   legendY: 90,
+    //   gridTop: 10,
+    //   gridBotton: 10,
+    //   gridLeft: 10,
+    //   gridRight: 10,
+    //   tooltipShow: 'true',
+    //   tooltipBackColor: '#57625d',
+    //   tooltipTextColor: '#fff',
+    //   tooltipfontSize: 14,
+    //   boundaryGap: 'true',
+    //   lineWidth: 1,
+    //   DanweiColor: '#828bac',
+    //   DanweiSize: 16,
+    //   splitColor: '#333849',
+    //   splitSize: 1,
+    //   chartData: morenData.times,
+    //   lineArea: 'true', // 是否为区域图
+    //   lineColorType: false, // 是否为区域图
+    //   smooth: 'true',
+    //   LineType: 'solid',
+    //   symbolType: 'circle',
+    //   formatterType: '0',
+    //   symbolSrc: '',
+    //   symbolSize: 6,
+    //   showPoint: 'true', // 是否标点
+    //   PointSize: '14',
+    //   rotate: 0
+    // },
     GradientPie.item,
     polarBar.item,
     TDHistogram.item,

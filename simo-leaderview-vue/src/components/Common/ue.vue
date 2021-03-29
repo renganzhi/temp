@@ -32,7 +32,7 @@ export default {
           'justifyright', // 居右对齐
           'justifycenter', 'superscript', 'fontfamily', 'fontsize', 'subscript', 'removeformat', 'horizontal', 'lineheight',
           'formatmatch', 'autotypeset', 'blockquote', '|',
-          'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc']
+          'forecolor', 'backcolor', 'selectall']
       ],
       autoHeightEnabled: true,
       autoFloatEnabled: true
@@ -58,6 +58,9 @@ export default {
   span,p{
     color: red;
   }
+}
+.edui-default .edui-editor-toolbarbox{
+  position: relative !important;
 }
 .edui-default .edui-editor-messageholder{
   display: none !important;

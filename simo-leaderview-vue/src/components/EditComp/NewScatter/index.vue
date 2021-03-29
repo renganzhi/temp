@@ -1,14 +1,16 @@
 <template>
-  <component :is="'ve-map'"
-             :width="comWidth"
-             :height="comHeight"
-             :settings="settings"
-             :data="dealChartData"
-             :extend="extend"
-             :init-options="initOption"
-             :id="'map_' + keyId"
-             :key="keyId"
-             :judge-width="true">
+  <component
+    :is="'ve-map'"
+    :width="comWidth"
+    :height="comHeight"
+    :settings="settings"
+    :data="dealChartData"
+    :extend="extend"
+    :init-options="initOption"
+    :id="'map_' + keyId"
+    :key="keyId"
+    :judge-width="true"
+  >
     <!-- <div class="v-charts-data-empty"
          v-if="empty"
          style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
@@ -42,6 +44,12 @@ export default {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
     }
+    var colordirectionArry = [
+      [0, 0, this.item.width, 0],
+      [0, 0, this.item.width, this.item.height],
+      [0, 0, 0, this.item.height],
+      [this.item.width, 0, 0, this.item.height]
+    ]
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
@@ -110,10 +118,25 @@ export default {
               show: false
             }
           },
-          roam: false,
+          roam: this.item.roam, // 是否允许缩放
           itemStyle: {
             normal: {
-              areaColor: this.item.areaColor,
+              // areaColor: this.item.areaColor,
+              color: {
+                type: 'linear',
+                x: colordirectionArry[this.item.colordirection][0],
+                y: colordirectionArry[this.item.colordirection][1],
+                x2: colordirectionArry[this.item.colordirection][2],
+                y2: colordirectionArry[this.item.colordirection][3],
+                colorStops: [{
+                  offset: 0,
+                  color: this.item.normalcolor[0] // 0% 处的颜色
+                }, {
+                  offset: 1,
+                  color: this.item.normalcolor[1] // 50% 处的颜色
+                }],
+                global: true // 缺省为 false
+              },
               borderColor: this.item.borderColor,
               borderWidth: 0.5,
               shadowColor: 'rgba(0, 0, 0, 0.5)'
@@ -206,6 +229,14 @@ export default {
         geoData[item.name] = item.geoCoord
       })
       return geoData
+    },
+    colordirectionArry: function () {
+      return [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
     },
     mapCode: function () {
       var code = 100000 // 中国
@@ -307,8 +338,53 @@ export default {
     'item.ctName': function (newV, oldValue) {
       this.extend.title.text = newV
     },
+    'item.roam': function (newV, oldValue) {
+      this.extend.geo.roam = newV
+    },
+    'item.normalcolor': function (newV, oldValue) {
+      this.extend.geo.itemStyle.normal.color.colorStops = [{
+        offset: 0,
+        color: this.item.normalcolor[0] // 0% 处的颜色
+      }, {
+        offset: 1,
+        color: this.item.normalcolor[1] // 50% 处的颜色
+      }]
+    },
     'item.width': function (newV, oldValue) {
-
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+    },
+    'item.height': function (newV, oldValue) {
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+    },
+    'item.colordirection': function (newV) {
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
     },
     'item.ctColors': function (newV) {
       var len = this.extend.visualMap.pieces.length

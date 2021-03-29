@@ -22,6 +22,9 @@ import TDEarthLine from '@/components/EditComp/TDEarthLine' // 3D地图-飞线�
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 3D地图-柱状图
 import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
 import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
+import DoubleLinde from '@/components/EditComp/DoubleLinde' // 3D地图-柱状图
+import NewPie from '@/components/EditComp/NewPie' // 3D地图-柱状图
+import NewRadar from '@/components/EditComp/NewRadar' // 3D地图-柱状图
 import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
 import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
 import NewMoveTable from '@/components/EditComp/NewMoveTable' // 3D地图-柱状图
@@ -76,6 +79,9 @@ export default {
   TDEarthBar,
   NewMarquee,
   NewDoubler,
+  DoubleLinde,
+  NewPie,
+  NewRadar,
   NewTime,
   NewTable,
   NewMoveTable,
