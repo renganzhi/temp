@@ -277,7 +277,7 @@ export default {
                 })
               }
             } else {
-              res = '<span>' + name + '</span><br/>数据：' + value + params.data.unit
+              res = '<span>' + name + '</span><br/>数据：' + value + (params.data.unit || '')
             }
             return res
           }

@@ -16,9 +16,9 @@ export default {
     'ifGradual': 'false',
     'tipsNotes': true,
     'NotesType': 1,
-    'NotesSize': 24,
-    'NotesToTop': 45,
-    'NotesToLeft': 45,
+    'NotesSize': 22,
+    'NotesToTop': 50,
+    'NotesToLeft': 35,
     'NotesColor': '#3ba5ed',
     'PieColorArray': [
       '#0083ff',
@@ -37,14 +37,17 @@ export default {
     'chartData': {
       'rows': [
         {
-          'name': 'xxxxxx',
-          'value': 30
-        }, {
-          'name': 'yyyyy',
+          'name': '主机',
+          'value': 30,
+          'unit': '个'
+        },
+        {
+          'name': '数据库',
           'value': 40,
           'unit': '个'
-        }, {
-          'name': 'yyyyy',
+        },
+        {
+          'name': '网络设备',
           'value': 60,
           'unit': '个'
         }

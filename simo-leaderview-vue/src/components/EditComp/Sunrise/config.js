@@ -19,57 +19,74 @@ export default {
       '#ffdb5c'],
     'chartData': {
       'dataArry': [{
-        'name': 'Grandpa',
+        'name': '主机',
         'children': [{
-          'name': 'Uncle Leo',
+          'name': 'Linux',
           'value': 11,
           'children': [{
-            'name': 'Cousin Jack',
+            'name': 'Linux1',
             'value': 2
           }, {
-            'name': 'Cousin Mary',
+            'name': 'Linux2',
             'value': 5,
             'children': [{
-              'name': 'Jackson',
+              'name': '部件1',
               'value': 2
             }]
           }, {
-            'name': 'Cousin Ben',
+            'name': 'Linux3',
             'value': 4
           }]
         }, {
-          'name': 'Father',
+          'name': 'Windows',
           'value': 10,
           'children': [{
-            'name': 'Me',
+            'name': 'Windows1',
             'value': 5
           }, {
-            'name': 'Brother Peter',
+            'name': 'Windows2',
             'value': 1
           }]
         }]
       }, {
-        'name': 'Nancy',
+        'name': '数据库',
+        'value': 7,
         'children': [{
-          'name': 'Uncle Nike',
+          'name': 'Oracle',
+          'value': 3,
           'children': [{
-            'name': 'Cousin Betty',
+            'name': 'Oracle1',
             'value': 1
           }, {
-            'name': 'Cousin Jenny',
+            'name': 'Oracle2',
             'value': 2
           }]
+        }, {
+          'name': 'uxsinoDB',
+          'value': 4
         }]
       }, {
-        'name': 'Nancy',
+        'name': '网络设备',
+        'value': 7,
         'children': [{
-          'name': 'Uncle Nike',
+          'name': '路由器',
+          'value': 3,
           'children': [{
-            'name': 'Cousin Betty',
+            'name': '路由器1',
             'value': 1
           }, {
-            'name': 'Cousin Jenny',
+            'name': '路由器2',
             'value': 2
+          }]
+        }, {
+          'name': '交换机',
+          'value': 4,
+          'children': [{
+            'name': '交换机1',
+            'value': 3
+          }, {
+            'name': '交换机2',
+            'value': 1
           }]
         }]
       }]

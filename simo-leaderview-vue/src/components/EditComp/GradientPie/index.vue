@@ -97,10 +97,9 @@ export default {
         }
         if (this.item.NotesType === 1) {
           titleText =
-            titleText + d.name + ':' + d.value + (d.unit || '') + '\n'
+             d.name + ':' + d.value + (d.unit || '') + '\n' + titleText
         } else if (this.item.NotesType === 2) {
           titleText =
-            titleText +
             d.name +
             ':' +
             d.value +
@@ -108,10 +107,9 @@ export default {
             '   ' +
             myVale +
             '%' +
-            '\n'
+            '\n' + titleText
         } else if (this.item.NotesType === 3) {
           titleText =
-            titleText +
             d.name +
             ':' +
             d.value +
@@ -119,7 +117,7 @@ export default {
             '----' +
             myVale +
             '%' +
-            '\n'
+            '\n' + titleText
         }
         myseries.push(oneserise)
       })
@@ -130,7 +128,7 @@ export default {
           textStyle: {
             color: this.item.NotesColor,
             fontSize: this.item.NotesSize,
-            lineHeight: 40
+            lineHeight: 30
           },
           left: this.item.NotesToLeft,
           top: this.item.NotesToTop

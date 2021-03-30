@@ -30,6 +30,18 @@ export default {
       '#9fe6b8',
       '#ffdb5c'],
     'chartData': {
+      'name': 'xx设备',
+      'xAxis': {
+        'name': '小时',
+        'value': ['0', '6', '12', '18', '24']
+      },
+      'yAxis': {
+        'name': '告警等级',
+        'value': ['致命', '严重', '警告', '一般', '次要']
+      },
+      'zAxis': {
+        'name': '次数'
+      },
       'dataArry': [
         [0, 0, 2],
         [0, 1, 4],
@@ -62,9 +74,14 @@ export default {
   'styles': {
     'base': [
       {
-        'name': '柱体大小',
-        'key': 'barSize',
-        'tag': 'input'
+        'name': '柱体配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '柱体大小',
+            'key': 'barSize',
+            'tag': 'input'
+          }]
       },
       {
         'name': 'tips配置',

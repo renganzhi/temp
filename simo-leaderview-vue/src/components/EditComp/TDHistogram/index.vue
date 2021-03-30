@@ -93,12 +93,17 @@ export default {
           }
         },
         xAxis3D: {
-          type: 'value'
+          name: this.item.chartData.xAxis.name,
+          data: this.item.chartData.xAxis.value,
+          type: 'category'
         },
         yAxis3D: {
-          type: 'value'
+          name: this.item.chartData.yAxis.name,
+          data: this.item.chartData.yAxis.value,
+          type: 'category'
         },
         zAxis3D: {
+          name: this.item.chartData.zAxis.name,
           type: 'value',
           max: Math.floor(valMax + valMax * 0.2),
           min: 0
@@ -136,6 +141,7 @@ export default {
           }
         },
         series: [{
+          name: this.item.chartData.name,
           type: 'bar3D',
           data: this.item.chartData.dataArry,
           shading: 'lambert',
