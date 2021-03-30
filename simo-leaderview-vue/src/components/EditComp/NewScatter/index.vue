@@ -172,7 +172,7 @@ export default {
               formatter: '{b}',
               position: 'right',
               color: this.item.ctLegendColor,
-              show: this.item.ctLegendShow === 'true' // false
+              show: this.item.ctLegendShow // false
             },
             emphasis: {
               show: true
@@ -280,7 +280,7 @@ export default {
       this.extend.geo.itemStyle.normal.borderColor = newV
     },
     'item.ctLegendShow': function (newV) {
-      this.extend.series.label.normal.show = newV === 'true'
+      this.extend.series.label.normal.show = newV
       this.keyId = new Date().getTime() + Math.random() * 10000
     },
     'item.visualPosition': function (newV, oldValue) {

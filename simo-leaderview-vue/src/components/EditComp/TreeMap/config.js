@@ -39,46 +39,41 @@ export default {
       ['#85f8c0', '#62dc26']
     ],
     'chartData': {
-      'name': '这是示例数据',
+      'name': '告警',
       'dataArry': [{
-        'name': 'nodeA',
+        'name': '主机',
         'value': 10,
         'children': [{
-          'name': 'nodeAa',
+          'name': 'Aix',
           'value': 4
         }, {
-          'name': 'nodeAb',
-          'value': 6
+          'name': 'Linux',
+          'value': 5
         }, {
-          'name': '-------',
+          'name': 'Windows',
           'value': 1
         }]
       }, {
-        'name': 'nodeB',
+        'name': '数据库',
         'value': 20,
         'children': [{
-          'name': 'nodeBa',
-          'value': 20,
-          'children': [{
-            'name': 'nodeBa1',
-            'value': 25
-          }, {
-            'name': 'nodeBa2',
-            'value': 25
-          }]
+          'name': 'cacheDB',
+          'value': 2
         }, {
-          'name': '99999999',
-          'value': 40,
-          'children': [{
-            'name': 'nodeBa1',
-            'value': 25
-          }, {
-            'name': 'nodeBa2',
-            'value': 25
-          }, {
-            'name': '2222222222222',
-            'value': 1
-          }]
+          'name': 'Oracle',
+          'value': 4
+        }, {
+          'name': 'Sybase',
+          'value': 5
+        }, {
+          'name': 'PostgreSQL',
+          'value': 3
+        }, {
+          'name': '	MySql',
+          'value': 2
+        }, {
+          'name': 'SQL Server',
+          'value': 4
         }]
       }]
     }

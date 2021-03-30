@@ -3,23 +3,23 @@ export default{
     'text': '地图实时图',
     'imgClass': 'icon-n-scatterMap',
     'chartType': 'NewScatter', // 散点图
-    'width': 300,
-    'height': 300,
+    'width': 600,
+    'height': 600,
     'mapLevel': 'country',
     'countryCode': 100000,
     'colordirection': 1,
     'roam': true,
-    'normalcolor': ['#15abd8', '#1559b0'],
-    'ctLegendShow': 'false', // 地名是否展示
+    'normalcolor': ['#38f9ff', '#3c1095'],
+    'ctLegendShow': true, // 地名是否展示
     'provinceCode': '',
     'cityCode': '',
     'themeType': '1',
-    'ctLegendColor': '#ffffff',
+    'ctLegendColor': '#d4ff7a',
     'areaColor': '#121a33',
-    'borderColor': '#38597b',
+    'borderColor': '#45fcf3',
     'visualPosition': 'left',
-    'scatterPoint': [{ name: '北京', value: [116.405285, 39.904989, 2] }], // 带有地理位置的散点数据
-    'chartData': [{ name: '北京', value: 2 }]
+    'scatterPoint': [{ name: '北京', value: [116.405285, 39.904989, 4] }], // 带有地理位置的散点数据
+    'chartData': [{ name: '北京', value: 4 }]
   },
   'styles': {
     'base': [
@@ -33,11 +33,11 @@ export default{
           'options': [
             {
               'name': '显示',
-              'value': 'true'
+              'value': true
             },
             {
               'name': '隐藏',
-              'value': 'false'
+              'value': false
             }
           ]
         },
@@ -46,7 +46,7 @@ export default{
           'key': 'ctLegendColor',
           'tag': 'Color',
           'parentKey': {
-            'ctLegendShow': 'true'
+            'ctLegendShow': true
           }
         },
         {

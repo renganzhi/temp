@@ -24,7 +24,7 @@ export default {
       '#67e0e3',
       '#9fe6b8',
       '#ffdb5c',
-      '#c23531'],
+      '#ffb092'],
     'DLineColorArray': [
       ['rgba(213, 153, 17, 0.52)', '#be4d24'],
       ['rgba(2, 210, 255, 0.49)', '#1bbcae'],

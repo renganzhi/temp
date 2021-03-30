@@ -45,7 +45,7 @@ export default {
       'unit': '次',
       'unitX': '日期',
       'dataArry': [{
-        'name': '资源1',
+        'name': '正常',
         'points': [
           [1, 3, 5],
           [2, 4, 10],
@@ -63,7 +63,7 @@ export default {
           [14, 7, 2]
         ]
       }, {
-        'name': '资源2',
+        'name': '告警',
         'points': [
           [1, 8, 5],
           [2, 6, 5],

@@ -2941,6 +2941,7 @@ export default {
       } else if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         this.mapDataToChart()
         this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
+        // this.selectedItem.chartData = JSON.parse(JSON.stringify(this.selectMapData))
       } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {

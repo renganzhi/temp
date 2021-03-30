@@ -3,8 +3,8 @@ export default{
     'text': '区域分布图',
     'imgClass': 'icon-n-areaMap',
     'chartType': 'NewVMap',
-    'width': 300,
-    'height': 300,
+    'width': 600,
+    'height': 600,
     'mapLevel': 'country',
     'countryCode': 100000,
     'provinceCode': '',
@@ -13,11 +13,13 @@ export default{
     'fontSize': 10,
     'cityShow': false,
     'ifGradual': 'false',
+    'roam': true,
     'ctLegendShow': 'true',
     'ctLegendColor': '#fff',
-    'areaColor': '#121a33',
-    'ColorArry': ['#bb2a52', '#bd3d50', '#bf4e4e', '#c2634b'],
-    'borderColor': '#38597b',
+    'normalcolor': ['#38f9ff', '#3c1095'],
+    'colordirection': 1,
+    'ColorArry': ['#56ccd8', '#5387f6', '#73cff8', '#c2634b'],
+    'borderColor': '#45fcf3',
     'cityColor': '#828bac',
     'themeType': '1', // 1深色 2浅色
     'piecesData': [
@@ -28,9 +30,8 @@ export default{
     'chartData': {
       'columns': ['位置', '资源', '告警'],
       'rows': [
-        { '位置': '台湾', '告警': 25 },
-        { '位置': '河北', '告警': 75 },
-        { '位置': '山西', '告警': 125 }
+        { '位置': '山西', '告警': 125 },
+        { '位置': '湖北', '告警': 25 }
       ]}
   },
   'styles': {
@@ -70,6 +71,21 @@ export default{
               'value': 'right'
             }
           ]
+        },
+        {
+          'name': '允许缩放拖拽',
+          'key': 'roam',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '允许',
+              'value': true
+            },
+            {
+              'name': '不允许',
+              'value': false
+            }
+          ]
         }]
       },
       {
@@ -82,25 +98,25 @@ export default{
           'options': [
             {
               'name': '显示',
-              'value': 'true'
+              'value': true
             },
             {
               'name': '隐藏',
-              'value': 'false'
+              'value': false
             }
           ]
         }, {
           'name': '地名颜色',
           'key': 'cityColor',
           'parentKey': {
-            'cityShow': 'true'
+            'cityShow': true
           },
           'tag': 'Color'
         }, {
           'name': '字号',
           'key': 'fontSize',
           'parentKey': {
-            'cityShow': 'true'
+            'cityShow': true
           },
           'tag': 'select',
           'options': [
@@ -125,10 +141,38 @@ export default{
               'value': 14
             }
           ]
-        }, {
+        // }, {
+        //   'name': '地图颜色',
+        //   'key': 'areaColor',
+        //   'tag': 'Color'
+        },
+        {
           'name': '地图颜色',
-          'key': 'areaColor',
-          'tag': 'Color'
+          'key': 'normalcolor',
+          'tag': 'GradientColor'
+        },
+        {
+          'name': '颜色渐变角度',
+          'key': 'colordirection',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '0°',
+              'value': 0
+            },
+            {
+              'name': '45°',
+              'value': 1
+            },
+            {
+              'name': '90°',
+              'value': 2
+            },
+            {
+              'name': '135°',
+              'value': 3
+            }
+          ]
         }, {
           'name': '分界线颜色',
           'key': 'borderColor',

@@ -1,5 +1,5 @@
 <template>
-  <ve-map :data="dealChartData"
+  <ve-map
           :width="comWidth"
           :height="comHeight"
           :init-options="initOption"
@@ -38,10 +38,23 @@ export default {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
     }
+    var colordirectionArry = [
+      [0, 0, this.item.width, 0],
+      [0, 0, this.item.width, this.item.height],
+      [0, 0, 0, this.item.height],
+      [this.item.width, 0, 0, this.item.height]
+    ]
+    let dataArry = []
+    this.item.chartData.rows.forEach(d => {
+      dataArry.push({
+        name: d[this.item.chartData.columns[0]],
+        value: d[this.item.chartData.columns[2]]
+      })
+    })
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
-      initOption: { renderer: 'svg' },
+      // initOption: { renderer: 'svg' },
       mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
       // settings: {
       //   // yAxisType: [0],
@@ -103,63 +116,53 @@ export default {
         legend: {
           show: false
         },
-        series: {
-          type: 'map',
-          showLegendSymbol: false, // 不展示，所以以下配置无用，暂且留着万一需求有变
-          // roam: true, // 允许鼠标缩放地图
-          // selectedMode: 'single',
-          // 图形上的文本标签
+        geo: { // 地图配置
+          silent: true, // 不响应和触发鼠标事件
+          show: true,
+          roam: this.item.roam, // 是否允许缩放
+          map: code === 100000 ? 'china' : 'map_' + code,
           label: {
             normal: {
-              show: this.item.cityShow === 'true', // 省份文字
-              textStyle: {
-                lineHeight: 16,
-                fontSize: this.item.fontSize || 8,
-                color: this.item.cityColor || '#828bac' // 默认的字体颜色! auto
-              }
-              // formatter: function (param) {
-              //   return param.name + '\n' + (param.value || 0)
-              // }
+              show: this.item.cityShow,
+              fontSize: this.item.fontSize,
+              color: this.item.cityColor
+            },
+            emphasis: {
+              show: false
             }
           },
           itemStyle: {
             normal: {
-              // color: 'red', // 展示指标及圆点的颜色
-              // areaColor: '#294671', // 地图区域的颜色!
-              areaColor: this.item.areaColor,
+              // areaColor: this.item.areaColor,
+              color: {
+                type: 'linear',
+                x: colordirectionArry[this.item.colordirection][0],
+                y: colordirectionArry[this.item.colordirection][1],
+                x2: colordirectionArry[this.item.colordirection][2],
+                y2: colordirectionArry[this.item.colordirection][3],
+                colorStops: [{
+                  offset: 0,
+                  color: this.item.normalcolor[0] // 0% 处的颜色
+                }, {
+                  offset: 1,
+                  color: this.item.normalcolor[1] // 50% 处的颜色
+                }],
+                global: true // 缺省为 false
+              },
               borderColor: this.item.borderColor,
-              borderWidth: 0.5
-              // shadowColor: 'rgba(0, 0, 0, 1)',
-              // shadowBlur: 6
-              // areaColor: {
-              //   type: 'linear',
-              //   x: 0,
-              //   y: 0,
-              //   x2: 0,
-              //   y2: 1,
-              //   colorStops: [{
-              //     offset: 0, color: '#3f15d6' // 0% 处的颜色
-              //   }, {
-              //     offset: 1, color: '#d243cd' // 100% 处的颜色
-              //   }],
-              //   globalCoord: false // 缺省为 false
-              // },
+              borderWidth: 0.5,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+              // shadowBlur: 1
             }
-          },
-          // 选中之后的状态
-          emphasis: {
-            label: {
-              show: false, // 选中区域的文字展示
-              textStyle: {
-                color: '#000' // 选中之后的字体颜色!
-              }
-            },
-            itemStyle: {
-              areaColor: '#0573bf', // 选中之后的颜色值
-              shadowColor: 'rgba(0, 0, 0, 0.5)',
-              shadowBlur: 0
-            }
+            // emphasis: {
+            //   areaColor: '#2B91B7'
+            // }
           }
+        },
+        series: {
+          type: 'map',
+          geoIndex: 0,
+          data: dataArry
         }
       }
     }
@@ -174,6 +177,14 @@ export default {
       }
       return code
     },
+    colordirectionArry: function () {
+      return [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+    },
     comWidth: function () {
       return this.item.width + 'px'
     },
@@ -185,33 +196,25 @@ export default {
         width: this.item.width + 'px',
         height: this.item.height + 'px'
       }
-    },
-    dealChartData: function () {
-      return this.item.chartData
     }
   },
   watch: {
     'item.cityColor': function (newV) {
-      this.extend.series.label.normal.textStyle.color = newV
+      this.extend.geo.label.normal.color = newV
     },
     'item.cityShow': function (newV) {
-      this.extend.series.label.normal.show = newV === 'true'
-      this.extend.emphasis.label.normal.show = newV === 'true'
+      this.extend.geo.label.normal.show = newV
     },
     'item.fontSize': function (newV) {
-      this.extend.series.label.normal.textStyle.fontSize = newV
+      this.extend.geo.label.normal.fontSize = newV
     },
     // 'item.themeType': function (newV) {
-    //   this.extend.series.itemStyle.normal.areaColor = newV === '1' ? '#121a33' : '#cfd9e3'
-    //   this.extend.series.itemStyle.normal.borderColor = newV === '1' ? '#38597b' : '#a2b1c0'
+    //   this.extend.geo.itemStyle.normal.areaColor = newV === '1' ? '#121a33' : '#cfd9e3'
+    //   this.extend.geo.itemStyle.normal.borderColor = newV === '1' ? '#38597b' : '#a2b1c0'
     //   this.extend.visualMap.textStyle.color = newV === '1' ? '#fff' : '#50607c'
     // },
-    'item.areaColor': function (newV) {
-      console.log(newV)
-      this.extend.series.itemStyle.normal.areaColor = newV
-    },
     'item.borderColor': function (newV) {
-      this.extend.series.itemStyle.normal.borderColor = newV
+      this.extend.geo.itemStyle.normal.borderColor = newV
     },
     'item.ctLegendShow': function (newV, oldValue) {
       this.extend.visualMap.show = newV === 'true'
@@ -232,56 +235,111 @@ export default {
       // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
     },
     'item.mapLevel': function (newV, oldV) {
-      // console.log('v-map mapLevel:' + oldV + ' to ' + newV)
       this.$nextTick(() => {
         if (newV === 'city') {
           if (this.item.cityCode) {
             this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
             this.settings.position = 'map_' + this.item.cityCode
+            this.extend.geo.map = 'map_' + this.item.cityCode
           }
         } else if (newV === 'province') {
           if (this.item.provinceCode) {
             this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
             this.settings.position = 'map_' + this.item.provinceCode
+            this.extend.geo.map = 'map_' + this.item.provinceCode
           }
         } else {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
+          this.extend.geo.map = 'china'
         }
         this.keyId = new Date().getTime() + Math.random() * 10000
       })
     },
     'item.provinceCode': function (newV) {
       if (this.item.mapLevel === 'province') {
-        // console.log('v-map procode:' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
+        this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
     },
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
-        console.log('v-map cityCode:' + oldV + ' to ' + newV)
         this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
+        this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
       }
+    },
+    'item.roam': function (newV, oldValue) {
+      this.extend.geo.roam = newV
     },
     'item.ctName': function (newV, oldValue) {
       this.extend.title.text = newV
     },
+    'item.normalcolor': function (newV, oldValue) {
+      this.extend.geo.itemStyle.normal.color.colorStops = [{
+        offset: 0,
+        color: this.item.normalcolor[0] // 0% 处的颜色
+      }, {
+        offset: 1,
+        color: this.item.normalcolor[1] // 50% 处的颜色
+      }]
+    },
     'item.width': function (newV, oldValue) {
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+    },
+    'item.height': function (newV, oldValue) {
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+    },
+    'item.colordirection': function (newV) {
+      var colordirectionArry = [
+        [0, 0, this.item.width, 0],
+        [0, 0, this.item.width, this.item.height],
+        [0, 0, 0, this.item.height],
+        [this.item.width, 0, 0, this.item.height]
+      ]
+      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
     },
     'item.ColorArry': function (newV) {
       var len = this.extend.visualMap.pieces.length
       this.extend.visualMap.inRange.color = newV.slice(0, len).reverse()
     },
-    'item.chartData': function (newV) {
-      // if (newV.rows && newV.rows.length > 0) {
-      //   this.empty = false
-      // } else {
-      //   this.empty = true
-      // }
+
+    'item.chartData': {
+      handler (newVal, oldVal) {
+        let dataArry = []
+        this.item.chartData.rows.forEach(d => {
+          dataArry.push({
+            name: d[this.item.chartData.columns[0]],
+            value: d[this.item.chartData.columns[2]]
+          })
+        })
+        this.extend.series.data = dataArry
+      },
+      deep: true
     }
 
   },

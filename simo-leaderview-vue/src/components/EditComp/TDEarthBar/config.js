@@ -11,7 +11,7 @@ export default {
     'scanninglength': 0.2,
     'scanningopcity': 1,
     'scanningcolor': '#6fa8dc',
-    'backPicName': 'Mapcolor1-2',
+    'backPicName': 'Mapcolor2-2',
     'linewidth': 1,
     'lineColor': '#1c4587',
     'lineoption': 0.8,
@@ -56,9 +56,9 @@ export default {
             'show': true
           },
           'labelvalue': {
-            '项目名称': '项目001',
-            '项目地址': '西班牙XXXXXXXXXX',
-            '数据量': 2
+            '单位': '北京XX有限公司',
+            '类型': '主机',
+            '数量': 40
           }
         },
         {
