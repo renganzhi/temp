@@ -80,5 +80,6 @@ export default {
 <style scoped>
 .JSMpeg canvas{
   width: 100%;
+  height: 100%;
 }
 </style>

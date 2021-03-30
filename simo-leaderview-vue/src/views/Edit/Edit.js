@@ -969,6 +969,7 @@ export default {
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
+          res.obj.composeObj = '[]'
         }
         if (res.obj.viewConf) {
           this.chartNum = JSON.parse(res.obj.viewConf)
