@@ -187,7 +187,8 @@ export default {
     },
     boxStyle1: function () {
       return {
-        width: '100%',
+        // width: '100%',
+        width: this.textWidth + 'px',
         height: this.textHeight + 'px',
         overflow: 'hidden',
         animation: this.stop ? '' : 'textMoveTop linear ' + this.speed2 + 's infinite',
