@@ -40,7 +40,8 @@ public class VideoProduceHandler extends Thread {
         JSONObject protocols;
         if(ne!=null){
             protocols = ne.j.getJSONObject("protocols");
-            if(protocols.containsKey(protocol)){
+            if(protocols.containsKey(protocol) || protocols.containsKey(protocol.toLowerCase())){
+                protocol = protocols.containsKey(protocol)? protocol: protocol.toLowerCase();
                 JSONObject protocolConfig = protocols.getJSONObject(protocol);
                 ip = protocolConfig.getString("host");
                 port = protocolConfig.getString("port");
