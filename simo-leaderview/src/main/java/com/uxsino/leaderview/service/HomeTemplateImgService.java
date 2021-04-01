@@ -112,7 +112,7 @@ public class HomeTemplateImgService {
         return imgDao.findOne(id);
     }
 
-    public Integer getMaxId() {
+    public Long getMaxId() {
         return imgDao.getMaxId();
     }
 

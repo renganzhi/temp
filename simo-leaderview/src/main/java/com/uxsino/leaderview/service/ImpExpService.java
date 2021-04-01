@@ -99,11 +99,11 @@ public class ImpExpService {
         if (!videoSet.isEmpty()){
             videoSet = Sets.newHashSet();
         }
-        Integer num = homeTemplateImgService.getMaxId();
+        Long num = homeTemplateImgService.getMaxId();
         JSONObject viewConf = templateTransform(page.getViewConf(),num,ids);
-        JSONObject viewImage = templateTransform(page.getViewImage(),viewConf.getInteger("num"));
-        JSONObject composeObj = templateTransform(page.getComposeObj(),viewImage.getInteger("num"));
-        JSONObject paintObj = templateTransform(page.getPaintObj(), composeObj.getInteger("num"));
+        JSONObject viewImage = templateTransform(page.getViewImage(),viewConf.getLong("num"));
+        JSONObject composeObj = templateTransform(page.getComposeObj(),viewImage.getLong("num"));
+        JSONObject paintObj = templateTransform(page.getPaintObj(), composeObj.getLong("num"));
         JSONObject result = new JSONObject();
         result.put("name",page.getName());
         result.put("id",page.getId());
@@ -115,7 +115,7 @@ public class ImpExpService {
         return result;
     }
 
-    private JSONObject templateTransform(String origin, Integer num, Set<Long> ids){
+    private JSONObject templateTransform(String origin, Long num, Set<Long> ids){
         JSONObject result = templateTransform(origin, num);
         //跳转处理
         linkProcess(result, ids);
@@ -124,7 +124,7 @@ public class ImpExpService {
 
 
 
-    private JSONObject templateTransform(String origin, Integer num){
+    private JSONObject templateTransform(String origin, Long num){
         JSONObject result = new JSONObject();
         result.put("str",origin);
         //图片处理
@@ -169,7 +169,7 @@ public class ImpExpService {
         return result;
     }
 
-    private JSONObject imgProcess(JSONObject result, Integer num){
+    private JSONObject imgProcess(JSONObject result, Long num){
         String str = result.getString("str");
         if (Strings.isEmpty(str)){
             return result;
@@ -197,7 +197,7 @@ public class ImpExpService {
         // 自定义图片id处理
         List<String> imgList = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
-        Map<Long,Integer> map = Maps.newHashMap();
+        Map<Long,Long> map = Maps.newHashMap();
         Matcher m = imgPattern.matcher(str);
         while (m.find()){
             if (imgList.contains(m.group())){
