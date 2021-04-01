@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface IHomeTemplateImgDao extends ICustomRepository<HomeTemplateImg, Long> {
 
     @Query("select max(id) from HomeTemplateImg ")
-    Integer getMaxId();
+    Long getMaxId();
 
 }
