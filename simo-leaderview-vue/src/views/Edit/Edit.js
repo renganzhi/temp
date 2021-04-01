@@ -947,7 +947,6 @@ export default {
       if (this.chartNum.length) {
         this.saveHistory()
       }
-      console.log(this.chartNum)
       this.chartNum.forEach((item) => {
         if ((['NewHistogram', 'NewGroupHistogram', 'NewGroupLeftHistogram', 'NewBar', 'ELine', 'DoubleLinde', 'GradientPie', 'polarBar', 'TDHistogram', 'Scatter', 'KLine'].includes(item.chartType))) {
           if (
@@ -957,7 +956,6 @@ export default {
           ) {
             // 接口返回的系统默认颜色不做修改
           } else {
-            console.log(item)
             if (item.DScatterColor && DScatterColor) {
               item.DScatterColor = JSON.parse(DScatterColor)
             }
@@ -2803,8 +2801,9 @@ export default {
     // 发送更新视图的请求
     sentViewReq (curConf, datas, param) {
       let _this = this
-      if (_this.selectedItem.chartType === 'null') {
+      if (_this.selectedItem.chartType === 'JSMpeg') {
         _this.selectedItem.chartData = JSON.stringify(param)
+        _this.selectedItem.urlData = _this.syst.curConf.url
       } else {
         $.ajax({
           url: this.isThird ? curConf.url : (/^\//.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url),

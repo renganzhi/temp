@@ -3,8 +3,9 @@ export default{
     'text': '实时视频',
     'imgClass': 'icon-realtimevideo',
     'chartType': 'JSMpeg',
-    'ctDataSource': 'system',
     'chartData': '{}',
+    'urlData': '',
+    'refreshTm': 10000000,
     'width': 300,
     'height': 300
   },

@@ -1996,7 +1996,7 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.ctDataSource !== 'static'">
+                     v-if="selectedItem.ctDataSource !== 'static'&&selectedItem.chartType !== 'JSMpeg'">
                   <div class="form-group"
                        contenteditable="false"
                        style="position: relative">
