@@ -54,9 +54,10 @@ export default {
   methods: {
     getVideo: function () {
       var myNewVale = JSON.parse(this.item.chartData || '')
-      if (myNewVale.channel !== '' && myNewVale.neId !== '') {
+      if (myNewVale.channel && myNewVale.neId) {
+        this.vidoeShow = true
         this.player && this.player.stop()
-        let url = `ws://${location.host}/video/play?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
+        let url = `ws://${location.hostname}:11100${this.item.urlData}?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
         this.player = new JSMpeg.Player(url, {
           canvas: this.$refs.canvas,
           loop: false,
