@@ -1182,13 +1182,14 @@ public class MonitorDataParamsService {
 
     public JsonModel getChannelList(String neId) throws Exception{
         JsonModel deprecatedWrap = rpcProcessService.getChannelList(neId);
-        JSONObject newChannel = new JSONObject();
+        JSONObject newChannel = null;
         JSONArray newChannelArray = new JSONArray();
         ArrayList oldChannelArray = (ArrayList)((LinkedHashMap)((LinkedHashMap)deprecatedWrap.getObj()).get("indicatorValue")).get("object");
         for(Object object: oldChannelArray){
             LinkedHashMap oldChannel = (LinkedHashMap)object;
             if ("在线".equals(oldChannel.get("enable"))) {
                 String channel = (String)oldChannel.get("channel");
+                newChannel = new JSONObject();
                 newChannel.put("name", channel);
                 newChannel.put("value", channel);
                 newChannelArray.add(newChannel);

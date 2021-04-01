@@ -2435,7 +2435,7 @@
         "key": "video_monitor_from_collector",
         "name": "实时视频监控",
         "component": "collector",
-        "type": "null",
+        "type": "JSMpeg",
         "url": "/collector/videoMonitoring",
         "method": "get",
         "params": [
