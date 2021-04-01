@@ -656,7 +656,7 @@
         "key": "enable_alert_class_statistics",
         "name": "告警统计-按资源类型",
         "component": "alert",
-        "type": "groupHistogram,NewGroupHistogram",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
         "url": "/leaderview/alert/getStatByClass",
         "method" : "post",
         "params": [
@@ -845,7 +845,7 @@
         "key": "enable_multiple_ne_indicator_statistics",
         "name": "多资源多指标统计",
         "component": "monitor",
-        "type": "groupHistogram,NewGroupHistogram",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
         "url": "/leaderview/monitor/indicator/multipleIndicator",
         "method" : "post",
         "params": [
@@ -1161,7 +1161,7 @@
         "key": "enable_monitor_indicator_percent_statistics",
         "name": "指标统计-按资源",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,progress,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/monitor/indicator/value",
         "method" : "get",
         "params": [
@@ -1899,7 +1899,7 @@
         "key": "enable_monitor_network_statistics",
         "name": "指标统计-链路",
         "component": "monitor",
-        "type": "Dashboard,liquidfill,progress,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/monitor/indicator/valueNetwork",
         "method" : "get",
         "params": [
@@ -2146,7 +2146,7 @@
         "key": "double_indicator_statistics",
         "name": "多指标历史统计",
         "component": "monitor",
-        "type": "doubleAxis,NewDoubleAxis",
+        "type": "doubleAxis,NewDoubleAxis,DoubleLinde",
         "url": "/leaderview/monitor/multiple_indicator/recordDoubleAxis",
         "method" : "get",
         "params": [
