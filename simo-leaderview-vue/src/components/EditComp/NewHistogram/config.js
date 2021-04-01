@@ -452,14 +452,14 @@ export default {
             }
           ]
         }, {
-          'name': '饼图颜色',
+          'name': '颜色配置',
           'key': 'ScatterColor',
           'parentKey': {
             'ifGradual': 'false'
           },
           'tag': 'ColorArray'
         }, {
-          'name': '饼图颜色',
+          'name': '颜色配置',
           'key': 'DScatterColor',
           'parentKey': {
             'ifGradual': 'true'

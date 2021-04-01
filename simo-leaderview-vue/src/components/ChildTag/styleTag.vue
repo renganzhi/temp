@@ -89,6 +89,7 @@
         <template v-if="item.tag === 'GradientColor'">
             <div class="color-w200" style="margin-top: 8px;">
               <div class="gradient"
+                    @click="reverseClr2"
                     :style="{'background': 'linear-gradient(45deg, ' +  twoColor0  +',' + twoColor1 + ')'}">
                   <div class="color-w15">
                     <Vcolor :data="twoColor0"
@@ -124,6 +125,9 @@
             <div class="form-group colorsConf">
               <span>序号</span>
               <span class="color-w70 text">颜色</span>
+              <span @click="colorToAll"
+                    v-if="selectedItem.chartType!=='TDHistogram' && selectedItem.chartType!=='KLine'"
+                    style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
             </div>
             <div class="form-group colorsConf"
                 v-for="(v,index) in selectedItem[item.key]"
@@ -356,7 +360,7 @@ export default {
       this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
-        // _this.$parent.saveHistory()
+        this.$parent.$parent.$parent.saveHistory()
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
@@ -370,7 +374,7 @@ export default {
       }
     },
     getBarClr (data) {
-      // this.saveHistory()
+      this.$parent.$parent.$parent.saveHistory()
       this.selectedItem[this.item.DoubleColorKey].splice(data.index, 1, data.color)
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
@@ -387,8 +391,17 @@ export default {
         this.selectedItem[this.item.DoubleColorKey].reverse()
       }
     },
+    reverseClr2 () {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i].reverse()
+        })
+      } else {
+        this.selectedItem[this.item.key].reverse()
+      }
+    },
     ChildGetColor (data) {
-      // this.saveHistory()
+      this.$parent.$parent.$parent.saveHistory()
       if (this.item.chartType === 'NewProgress') {
         this.selectedItem[data.type] = data.color
       } else {
@@ -442,7 +455,7 @@ export default {
       })
     },
     mygetSingleColor (data) {
-      // this.$parent.saveHistory()
+      this.$parent.$parent.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
           this.chartNum[i][this.item.key].splice(data.index, 1, data.color)
@@ -452,7 +465,7 @@ export default {
       }
     },
     mygetColorStart (data) {
-      // this.$parent.saveHistory()
+      this.$parent.$parent.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem[this.item.key][data.index]
         oldColor[0] = data.color
@@ -469,6 +482,9 @@ export default {
         }
       }
     },
+    colorToAll () {
+      this.$parent.$parent.$parent.colorToAll(JSON.stringify(this.selectedItem.ScatterColor), JSON.stringify(this.selectedItem.DScatterColor), this.selectedItem.ifGradual)
+    },
     myreverseColor (index) {
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
@@ -479,7 +495,7 @@ export default {
       }
     },
     mygetGradColor (data) {
-      // this.$parent.saveHistory()
+      this.$parent.$parent.$parent.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem[this.item.key][data.index]
         oldColor[1] = data.color
@@ -610,5 +626,8 @@ export default {
   background: #00000094;
   justify-content: center;
   align-items: center;
+}
+.colorsConf{
+  font-size: 12px;
 }
 </style>

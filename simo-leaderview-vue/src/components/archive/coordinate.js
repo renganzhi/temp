@@ -57,6 +57,13 @@ const coordinate = {
     NewGroupHistogram.item,
     NewGroupLeftHistogram.item,
     NewBar.item,
+    ELine.item,
+    DoubleLinde.item,
+    GradientPie.item,
+    polarBar.item,
+    TDHistogram.item,
+    Scatter.item,
+    KLine.item
     // {
     //   text: '分组柱图',
     //   imgClass: 'icon-n-grouphistogram',
@@ -142,8 +149,6 @@ const coordinate = {
     //   formatterType: '0',
     //   chartData: morenData.pie
     // },
-    ELine.item,
-    DoubleLinde.item,
     // {
     //   text: '曲线图',
     //   imgClass: 'icon-n-line',
@@ -200,11 +205,6 @@ const coordinate = {
     //   PointSize: '14',
     //   rotate: 0
     // },
-    GradientPie.item,
-    polarBar.item,
-    TDHistogram.item,
-    Scatter.item,
-    KLine.item
   ]
 }
 

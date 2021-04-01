@@ -20,11 +20,11 @@ export default {
     'NotesToTop': 50,
     'NotesToLeft': 35,
     'NotesColor': '#3ba5ed',
-    'PieColorArray': [
+    'ScatterColor': [
       '#0083ff',
       '#0ccef4',
       '#76f0f0'],
-    'DPieColorArray': [
+    'DScatterColor': [
       ['#6fcaf7', '#0c79c5'],
       ['#8feee5', '#1bbcae'],
       ['#fa8d76', '#db4222'],
@@ -231,15 +231,15 @@ export default {
             }
           ]
         }, {
-          'name': '饼图颜色',
-          'key': 'PieColorArray',
+          'name': '颜色配置',
+          'key': 'ScatterColor',
           'parentKey': {
             'ifGradual': 'false'
           },
           'tag': 'ColorArray'
         }, {
-          'name': '饼图颜色',
-          'key': 'DPieColorArray',
+          'name': '颜色配置',
+          'key': 'DScatterColor',
           'parentKey': {
             'ifGradual': 'true'
           },

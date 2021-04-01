@@ -1768,7 +1768,7 @@
                          @change='changeImg' />
                 </div>
               </div>
-              <div v-show="['JSMpeg'].includes(selectedItem.chartType)">
+              <!-- <div v-show="['JSMpeg'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>选择设备</label>
                   <select v-model="selectedItem.HcnetData">
@@ -1781,7 +1781,7 @@
                     <option v-for="(val,key) in AllVideoData" :key="key" :value="val.channel">{{val.ip}}</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
               <div v-show="selectedItem.chartType == 'NewTime'">
                 <div class="form-group cols2">
                   <label>取值来源</label>
@@ -1795,7 +1795,7 @@
                 <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 <button class="DataChangeBtn" @click="dataChange">更新视图</button>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'JSMpeg','Ueditor','hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
