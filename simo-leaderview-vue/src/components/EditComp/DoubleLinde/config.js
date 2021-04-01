@@ -41,13 +41,13 @@ export default {
     'showPoint': true, // 是否标点
     'PointSize': '14',
     'rotate': 0,
-    'LineColorArray': [
+    'ScatterColor': [
       '#2d98f1',
       '#32c5e9',
       '#67e0e3',
       '#9fe6b8',
       '#ffdb5c'],
-    'DLineColorArray': [
+    'DScatterColor': [
       ['rgba(213, 153, 17, 0.52)', '#be4d24'],
       ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
       ['#fa8d76', '#db4222'],
@@ -649,7 +649,7 @@ export default {
             ]
           }, {
             'name': '折线颜色',
-            'key': 'LineColorArray',
+            'key': 'ScatterColor',
             'parentKey': {
               'ifGradual': 'false',
               'ifEidetColor': true
@@ -657,7 +657,7 @@ export default {
             'tag': 'ColorArray'
           }, {
             'name': '折线颜色',
-            'key': 'DLineColorArray',
+            'key': 'DScatterColor',
             'parentKey': {
               'ifGradual': 'true',
               'ifEidetColor': true

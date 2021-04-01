@@ -103,8 +103,8 @@ export default {
       guideStation: 'static',
       AllPageId: [],
       pageIdIndex: '',
-      AllHcnetData: [], // 设备
-      AllVideoData: [], // 视频
+      // AllHcnetData: [], // 设备
+      // AllVideoData: [], // 视频
       showPlayErr: false,
       levelTipsShow: false, // 数据量级提示信息
       levelChangeIndex: -1, // 量级改变的输入框
@@ -942,11 +942,29 @@ export default {
         this.selectedItem.radius = this.progressObj.radius
       }
     },
-    colorToAll () {
+    colorToAll (ScatterColor, DScatterColor, ifGradual) {
       var _colors = this.selectedItem.ctColors
       if (this.chartNum.length) {
         this.saveHistory()
       }
+      console.log(this.chartNum)
+      this.chartNum.forEach((item) => {
+        if ((['NewHistogram', 'NewGroupHistogram', 'NewGroupLeftHistogram', 'NewBar', 'ELine', 'DoubleLinde', 'GradientPie', 'polarBar', 'TDHistogram', 'Scatter', 'KLine'].includes(item.chartType))) {
+          if (
+            item.chartData &&
+            item.chartData.colors &&
+            item.ctDataSource !== 'static'
+          ) {
+            // 接口返回的系统默认颜色不做修改
+          } else {
+            console.log(item)
+            if (item.DScatterColor && DScatterColor) {
+              item.DScatterColor = JSON.parse(DScatterColor)
+            }
+            item.ScatterColor = JSON.parse(ScatterColor)
+          }
+        }
+      })
       this.chartNum.forEach((item) => {
         if (item.chartType.indexOf('ve-') !== -1) {
           if (
@@ -2320,50 +2338,50 @@ export default {
       }
       return type
     },
-    getHcnetData () {
-      var _this = this
-      var url = gbs.host + '/monitor/ne/hcnet/tree?hasPermission=true'
-      $.ajax({
-        url: url,
-        type: 'get',
-        success: function (data) {
-          _this.AllHcnetData = []
-          if (data.success) {
-            data.obj.result.forEach(element => {
-              if (element.pId === null && element.monitoring) {
-                _this.AllHcnetData.push(element)
-              } else {
+    // getHcnetData () {
+    //   var _this = this
+    //   var url = gbs.host + '/monitor/ne/hcnet/tree?hasPermission=true'
+    //   $.ajax({
+    //     url: url,
+    //     type: 'get',
+    //     success: function (data) {
+    //       _this.AllHcnetData = []
+    //       if (data.success) {
+    //         data.obj.result.forEach(element => {
+    //           if (element.pId === null && element.monitoring) {
+    //             _this.AllHcnetData.push(element)
+    //           } else {
 
-              }
-            })
-          } else {
-            // AllVideoData
-          }
-        }
-      })
-    },
-    getVideoDate () {
-      var _this = this
-      var url = gbs.host + `/monitor/hcnet/channelList/${this.selectedItem.HcnetData}?keyWord=&enable=&channelType=&domainId=&id=${this.selectedItem.HcnetData}&ip=`
-      //
-      $.ajax({
-        url: url,
-        type: 'get',
-        success: function (data) {
-          _this.AllVideoData = []
-          if (data.success && data.obj !== null) {
-            data.obj.indicatorValue.object.forEach(element => {
-              if (element.enable === '在线') {
-                _this.AllVideoData.push(element)
-              } else {
-              }
-            })
-          } else {
-            // AllVideoData
-          }
-        }
-      })
-    },
+    //           }
+    //         })
+    //       } else {
+    //         // AllVideoData
+    //       }
+    //     }
+    //   })
+    // },
+    // getVideoDate () {
+    //   var _this = this
+    //   var url = gbs.host + `/monitor/hcnet/channelList/${this.selectedItem.HcnetData}?keyWord=&enable=&channelType=&domainId=&id=${this.selectedItem.HcnetData}&ip=`
+    //   //
+    //   $.ajax({
+    //     url: url,
+    //     type: 'get',
+    //     success: function (data) {
+    //       _this.AllVideoData = []
+    //       if (data.success && data.obj !== null) {
+    //         data.obj.indicatorValue.object.forEach(element => {
+    //           if (element.enable === '在线') {
+    //             _this.AllVideoData.push(element)
+    //           } else {
+    //           }
+    //         })
+    //       } else {
+    //         // AllVideoData
+    //       }
+    //     }
+    //   })
+    // },
     // 根据选中图标类型获取可以配置的接口
     getUrlByType (flag) {
       var _this = this
@@ -2785,65 +2803,69 @@ export default {
     // 发送更新视图的请求
     sentViewReq (curConf, datas, param) {
       let _this = this
-      $.ajax({
-        url: this.isThird ? curConf.url : (/^\//.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url),
-        data: datas,
-        type: curConf.method,
-        success: function (data) {
-          if (data.success) {
-            data.obj = data.obj || {}
-            if (data.obj.colors) {
-              _this.selectedItem.ctColors = data.obj.colors
-              _this.selectedItem.colorType = 'defalut'
-            } else {
-              if (_this.selectedItem.colorType === 'defalut') {
-                _this.selectedItem.ctColors = _this.defalutColors.concat()
+      if (_this.selectedItem.chartType === 'null') {
+        _this.selectedItem.chartData = JSON.stringify(param)
+      } else {
+        $.ajax({
+          url: this.isThird ? curConf.url : (/^\//.test(curConf.url) ? gbs.host + curConf.url : gbs.host + '/' + curConf.url),
+          data: datas,
+          type: curConf.method,
+          success: function (data) {
+            if (data.success) {
+              data.obj = data.obj || {}
+              if (data.obj.colors) {
+                _this.selectedItem.ctColors = data.obj.colors
+                _this.selectedItem.colorType = 'defalut'
+              } else {
+                if (_this.selectedItem.colorType === 'defalut') {
+                  _this.selectedItem.ctColors = _this.defalutColors.concat()
+                }
               }
-            }
-            if (_this.selectedItem.chartType === 'v-map' || _this.selectedItem.chartType === 'NewVMap') {
-              _this.selectMapData = data.obj
-              _this.mapDataToChart()
-              _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
-            } else {
-              _this.selectedItem.chartData = data.obj
-            }
-            _this.selectedItem.url = curConf.url
-            _this.selectedItem.method = curConf.method
-            _this.selectedItem.params = param
-            if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
-              _this.selectedItem.ctName = data.obj.info
-              if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
+              if (_this.selectedItem.chartType === 'v-map' || _this.selectedItem.chartType === 'NewVMap') {
+                _this.selectMapData = data.obj
+                _this.mapDataToChart()
+                _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+              } else {
                 _this.selectedItem.chartData = data.obj
               }
+              _this.selectedItem.url = curConf.url
+              _this.selectedItem.method = curConf.method
+              _this.selectedItem.params = param
+              if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
+                _this.selectedItem.ctName = data.obj.info
+                if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
+                  _this.selectedItem.chartData = data.obj
+                }
+              }
+            } else {
+              if (gbs.inDev) {
+                Notification({
+                  message: data.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-info'
+                })
+              } else {
+                tooltip('', data.msg, 'info')
+              }
             }
-          } else {
+          },
+          error: async function (xhr) {
+            if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
+              await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
+              return false
+            }
             if (gbs.inDev) {
               Notification({
-                message: data.msg,
+                message: '连接错误！',
                 position: 'bottom-right',
-                customClass: 'toast toast-info'
+                customClass: 'toast toast-error'
               })
             } else {
-              tooltip('', data.msg, 'info')
+              tooltip('', '连接错误！', 'error')
             }
           }
-        },
-        error: async function (xhr) {
-          if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
-            await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
-            return false
-          }
-          if (gbs.inDev) {
-            Notification({
-              message: '连接错误！',
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', '连接错误！', 'error')
-          }
-        }
-      })
+        })
+      }
     },
     saveTopoConf: function (param, curConf) {
       // 拓扑与其他组件不同，需要特殊处理
@@ -4184,9 +4206,9 @@ export default {
       this.$nextTick(() => {
         this.selectChange = false
       })
-      if (newV.chartType === 'JSMpeg') {
-        this.getHcnetData()
-      }
+      // if (newV.chartType === 'JSMpeg') {
+      //   this.getHcnetData()
+      // }
     },
     showStyleTab: function (newV) {
       if (!newV && this.selectedItem.ctDataSource !== 'static') {
@@ -4302,11 +4324,11 @@ export default {
       }
       this.changeTogether('proHeight', newV)
     },
-    'selectedItem.HcnetData': function (newV, oldV) {
-      if (newV !== '') {
-        this.getVideoDate()
-      }
-    },
+    // 'selectedItem.HcnetData': function (newV, oldV) {
+    //   if (newV !== '') {
+    //     this.getVideoDate()
+    //   }
+    // },
     // 'selectedItem.VideoData': function (newV, oldV) {
     //   console.log(this.selectedItem.VideoData)
     // },

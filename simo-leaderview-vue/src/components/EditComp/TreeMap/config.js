@@ -69,7 +69,7 @@ export default {
           'name': 'PostgreSQL',
           'value': 3
         }, {
-          'name': '	MySql',
+          'name': 'MySql',
           'value': 2
         }, {
           'name': 'SQL Server',
@@ -262,6 +262,9 @@ export default {
         {
           'name': '自定义层级',
           'key': 'leafDepthSelf',
+          'parentKey': {
+            'leafDepth': 'false'
+          },
           'tag': 'input'
         } ]
       },

@@ -37,14 +37,8 @@ export default {
     }
   },
   watch: {
-    'item.VideoData': function (newV) {
-      if (newV !== '') {
-        this.player && this.player.stop()
-        this.vidoeShow = true
-        this.getVideo()
-      } else {
-        this.vidoeShow = false
-      }
+    'item.chartData': function (newV) {
+      this.getVideo()
     }
   },
   mounted () {
@@ -59,14 +53,17 @@ export default {
   },
   methods: {
     getVideo: function () {
-      if (this.item.HcnetData !== '' && this.item.VideoData !== '') {
-        this.vidoeShow = true
-        let url = `ws://${location.host}/video/play?neId=${this.item.HcnetData}&stream=sub&channel=${this.item.VideoData}`
+      var myNewVale = JSON.parse(this.item.chartData || '')
+      if (myNewVale.channel !== '' && myNewVale.neId !== '') {
+        this.player && this.player.stop()
+        let url = `ws://${location.host}/video/play?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
         this.player = new JSMpeg.Player(url, {
           canvas: this.$refs.canvas,
           loop: false,
           preserveDrawingBuffer: true
         })
+      } else {
+        this.vidoeShow = false
       }
     }
   },

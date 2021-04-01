@@ -116,37 +116,37 @@ export default {
             showAllSymbol: false,
             symbolSize: this.item.symbolSize,
             areaStyle: {
-              color: this.item.ifGradual === 'true' ? this.item.DLineColorArray[index - 1] ? {
+              color: this.item.ifGradual === 'true' ? this.item.DScatterColor[index - 1] ? {
                 type: 'linear',
                 x: 0,
                 y: 0,
                 x2: 0,
                 y2: 1,
                 colorStops: [{
-                  offset: 0, color: this.item.DLineColorArray[index - 1][1] || '' // 0% 处的颜色
+                  offset: 0, color: this.item.DScatterColor[index - 1][1] || '' // 0% 处的颜色
                 }, {
-                  offset: 1, color: this.item.DLineColorArray[index - 1][0] || '' // 100% 处的颜色
+                  offset: 1, color: this.item.DScatterColor[index - 1][0] || '' // 100% 处的颜色
                 }],
                 global: false // 缺省为 false
-              } : '' : this.item.LineColorArray[index - 1] || '',
+              } : '' : this.item.ScatterColor[index - 1] || '',
               opacity: this.item.lineArea ? 1 : 0
             },
             itemStyle: {
               normal: {
                 lineStyle: {
-                  color: this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DLineColorArray[index - 1] ? {
+                  color: this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index - 1] ? {
                     type: 'linear',
                     x: 0,
                     y: 0,
                     x2: 0,
                     y2: 1,
                     colorStops: [{
-                      offset: 0, color: this.item.DLineColorArray[index - 1][1] || '' // 0% 处的颜色
+                      offset: 0, color: this.item.DScatterColor[index - 1][1] || '' // 0% 处的颜色
                     }, {
-                      offset: 1, color: this.item.DLineColorArray[index - 1][0] || '' // 100% 处的颜色
+                      offset: 1, color: this.item.DScatterColor[index - 1][0] || '' // 100% 处的颜色
                     }],
                     global: false // 缺省为 false
-                  } : '' : this.item.DLineColorArray[index - 1] ? this.item.DLineColorArray[index - 1][1] : '' || '' : this.item.LineColorArray[index - 1] || '',
+                  } : '' : this.item.DScatterColor[index - 1] ? this.item.DScatterColor[index - 1][1] : '' || '' : this.item.ScatterColor[index - 1] || '',
                   width: this.item.lineWidth, // 设置线条粗细
                   type: this.item.LineType || 'solid'
                 }
@@ -161,11 +161,11 @@ export default {
       })
       let optioncolor = []
       if (this.item.ifGradual === 'true') {
-        this.item.DLineColorArray.forEach(element => {
+        this.item.DScatterColor.forEach(element => {
           optioncolor.push(element[1])
         })
       } else {
-        optioncolor = this.item.LineColorArray
+        optioncolor = this.item.ScatterColor
       }
       let myYaxis = []
       myData.columns.forEach((d, i) => {
@@ -321,7 +321,7 @@ export default {
       errorArry.forEach((d, index) => {
         let pices = []
         d.forEach(element => {
-          pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DLineColorArray[0][0] || 'red' : this.item.LineColorArray[0] || 'red'})
+          pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red'})
         })
         myvisualMap.push({
           show: false,
@@ -329,7 +329,7 @@ export default {
           seriesIndex: index,
           pieces: pices,
           outOfRange: {
-            color: this.item.ifGradual === 'true' ? this.item.DLineColorArray[1][0] || '#009bff' : this.item.LineColorArray[1] || '#009bff'
+            color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || '#009bff' : this.item.ScatterColor[1] || '#009bff'
           }
         })
       })
@@ -341,19 +341,19 @@ export default {
             type: this.item.LineType || 'solid'
           }
           if (this.item.ifGradual === 'true' && this.item.lineArea) {
-            element.itemStyle.normal.lineStyle.color = this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DLineColorArray[index] ? {
+            element.itemStyle.normal.lineStyle.color = this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index] ? {
               type: 'linear',
               x: 0,
               y: 0,
               x2: 0,
               y2: 1,
               colorStops: [{
-                offset: 0, color: this.item.DLineColorArray[index][1] || '' // 0% 处的颜色
+                offset: 0, color: this.item.DScatterColor[index][1] || '' // 0% 处的颜色
               }, {
-                offset: 1, color: this.item.DLineColorArray[index][0] || '' // 100% 处的颜色
+                offset: 1, color: this.item.DScatterColor[index][0] || '' // 100% 处的颜色
               }],
               global: false // 缺省为 false
-            } : '' : this.item.DLineColorArray[index] ? this.item.DLineColorArray[index][1] : '' || '' : this.item.LineColorArray[index] || ''
+            } : '' : this.item.DScatterColor[index] ? this.item.DScatterColor[index][1] : '' || '' : this.item.ScatterColor[index] || ''
           }
           element.itemStyle.normal.areaStyle = {
             opacity: this.item.lineArea ? 1 : 0

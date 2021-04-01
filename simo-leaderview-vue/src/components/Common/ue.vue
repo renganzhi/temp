@@ -27,7 +27,7 @@ export default {
     const _this = this
     this.editor = UE.getEditor('editor', {
       toolbars: [
-        ['source', 'undo', 'redo'],
+        ['undo', 'redo'],
         ['bold', 'italic', 'indent', 'underline', 'fontborder', 'strikethrough', 'justifyleft', // 居左对齐
           'justifyright', // 居右对齐
           'justifycenter', 'superscript', 'fontfamily', 'fontsize', 'subscript', 'removeformat', 'horizontal', 'lineheight',
