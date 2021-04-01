@@ -29,7 +29,7 @@
         "key": "business_indicator_statistics",
         "name": "指标统计-按业务",
         "component": "business",
-        "type": "Dashboard,liquidfill,progress,NewProgress",
+        "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/business/indicatorValue",
         "method" : "get",
         "params": [
@@ -55,7 +55,7 @@
         "key": "business_indicator_statistics",
         "name": "多业务多指标统计",
         "component": "business",
-        "type": "groupHistogram,NewGroupHistogram,ve-radar,NewRadar",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram,ve-radar,NewRadar",
         "url": "/leaderview/business/multipleBusinessIndicator",
         "method" : "get",
         "params": [
