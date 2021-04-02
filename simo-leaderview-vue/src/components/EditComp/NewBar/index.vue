@@ -114,12 +114,12 @@ export default {
                       x2: 0,
                       y2: 1,
                       colorStops: [{
-                        offset: 0, color: this.item.DScatterColor[i][0] // 0% 处的颜色
+                        offset: 0, color: this.item.DScatterColor[i % this.item.DScatterColor.length][0] // 0% 处的颜色
                       }, {
-                        offset: 1, color: this.item.DScatterColor[i][1] // 100% 处的颜色
+                        offset: 1, color: this.item.DScatterColor[i % this.item.DScatterColor.length][1] // 100% 处的颜色
                       }],
                       global: false // 缺省为 false
-                    } : this.item.ScatterColor[i]
+                    } : this.item.ScatterColor[i % this.item.DScatterColor.length]
                   }
                 }
               })
@@ -269,7 +269,6 @@ export default {
             fontSize: this.item.tooltipfontSize
           },
           formatter: (params, index) => {
-            console.log(params)
             var value = ''
             params.forEach(element => {
               if (element.value !== 0) {

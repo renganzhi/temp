@@ -26,6 +26,7 @@ export default {
 </script>
 <style lang='scss'>
 .editor-container {
+  color: #afadad;
   height: 100%;
   width: 100%;
   overflow: auto;

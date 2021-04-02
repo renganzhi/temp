@@ -21,11 +21,16 @@ $headHeight: 50px;
     width: 100%;
     height: calc(100% - 50px);
   }
-
+  #fledit{
+    left: 50px;
+  }
+  #fredit{
+    right: 108px;
+  }
   .edit-keyboard {
     position: fixed;
     top: 48px;
-    right: 108px;
+    // right: 108px;
     z-index: 1002;
     background: #222739;
     width: 250px;
