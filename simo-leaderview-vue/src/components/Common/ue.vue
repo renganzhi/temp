@@ -23,6 +23,11 @@ export default {
       type: Object
     }
   },
+  watch: {
+    'defaultMsg': function () {
+      this.editor.setContent(this.defaultMsg)
+    }
+  },
   mounted () {
     const _this = this
     this.editor = UE.getEditor('editor', {
