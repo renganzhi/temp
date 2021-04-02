@@ -71,6 +71,7 @@ public class VideoMonitoringController {
         String sessionId = session.getId();
         webSocketMap.remove(sessionId);
         videoMonitoringService.remove(sessionId);
+        log.info("Websocket session关闭连接！sessionID=", sessionId);
     }
 
     @OnMessage
@@ -88,5 +89,6 @@ public class VideoMonitoringController {
                 log.error("WebSocket传输过程出错，且关闭session失败！抛出异常：{}", e.getMessage());
             }
         log.error("WebSocket传输过程出错抛出异常：{}", throwable.getMessage());
+        log.error("StackTrace如下：", throwable);
     }
 }
