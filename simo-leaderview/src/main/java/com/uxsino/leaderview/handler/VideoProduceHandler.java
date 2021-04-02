@@ -124,9 +124,11 @@ public class VideoProduceHandler extends Thread {
         os = new ByteArrayOutputStream();
         if(ip==null || port==null || username==null || password==null)
             throw new NullPointerException("摄像头设备登录信息不足，无法连接");
+        log.info("LEADERVIEW -> 生成rtsp协议url: {}", this.getRstpUrl());
         grabber = new FFmpegFrameGrabber(this.getRstpUrl());
         grabber.setOption("rtsp_transport", "tcp");
         grabber.start();
+        log.info("LEADERVIEW -> FFmpegGrabber开始捕获帧数据！");
 
         recorder = new FFmpegFrameRecorder(os, grabber.getImageWidth(), grabber.getImageHeight());
         recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG1VIDEO);
@@ -135,6 +137,7 @@ public class VideoProduceHandler extends Thread {
         recorder.setFormat("mpegts");
         recorder.setVideoQuality(4);
         recorder.start();
+        log.info("LEADERVIEW -> FFmpegRecorder开始临存捕获的帧数据！");
     }
 
     private void close(){
