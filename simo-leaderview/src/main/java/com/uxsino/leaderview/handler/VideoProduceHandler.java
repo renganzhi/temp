@@ -39,9 +39,11 @@ public class VideoProduceHandler extends Thread {
         this.onClose = onClose;
         JSONObject protocols;
         if(ne!=null){
+            log.info("LEADERVIEW -> 准备构建连接：id={},ip={},protocol={},stream={},channel={}", ne.id, ne.j.get("host"), protocol, stream, channel);
             protocols = ne.j.getJSONObject("protocols");
             if(protocols.containsKey(protocol) || protocols.containsKey(protocol.toLowerCase())){
                 protocol = protocols.containsKey(protocol)? protocol: protocol.toLowerCase();
+                log.info("LEADERVIEW -> 准备取出海康威视protocol信息, protocol={}", protocol);
                 JSONObject protocolConfig = protocols.getJSONObject(protocol);
                 ip = protocolConfig.getString("host");
                 port = protocolConfig.getString("port");
@@ -52,6 +54,8 @@ public class VideoProduceHandler extends Thread {
                     log.error("解析该设备登录密码错误！");
                 }
             }
+        }else{
+            log.warn("LEADERVIEW -> 没有获取到摄像头相关信息！");
         }
     }
 
