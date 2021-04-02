@@ -45,6 +45,7 @@
         </div>
       </div>
       <div class="edit-keyboard"
+          :id="tapsStation==='left'?'fledit':'fredit'"
            v-show="showKeybd"
            @mouseover="showKeybd = true"
            @mouseout="showKeybd = false">

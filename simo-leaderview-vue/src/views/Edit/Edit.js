@@ -90,6 +90,7 @@ export default {
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
+      canChangeId: [],
       activeNames: [0],
       config,
       chooseSameFlag: false, // 是否选中同样的元件
@@ -414,14 +415,14 @@ export default {
     upOnePage () {
       let id = this.pageId
       if (this.pageIdIndex * 1 === 0) {
-        id = this.AllPageId[this.AllPageId.length - 1]
+        id = this.canChangeId[this.canChangeId.length - 1]
       } else {
-        id = this.AllPageId[this.pageIdIndex - 1]
+        id = this.canChangeId[this.pageIdIndex - 1]
       }
       this.pageId = id
       this.getPageConf(id)
       sessionStorage.setItem('pageId', id)
-      this.AllPageId.forEach((d, index) => {
+      this.canChangeId.forEach((d, index) => {
         if (d * 1 === this.pageId * 1) {
           this.pageIdIndex = index
         }
@@ -429,15 +430,15 @@ export default {
     },
     downOnePage () {
       let id = this.pageId
-      if (this.pageIdIndex * 1 === this.AllPageId.length - 1) {
-        id = this.AllPageId[0]
+      if (this.pageIdIndex * 1 === this.canChangeId.length - 1) {
+        id = this.canChangeId[0]
       } else {
-        id = this.AllPageId[this.pageIdIndex + 1]
+        id = this.canChangeId[this.pageIdIndex + 1]
       }
       this.pageId = id
       this.getPageConf(id)
       sessionStorage.setItem('pageId', id)
-      this.AllPageId.forEach((d, index) => {
+      this.canChangeId.forEach((d, index) => {
         if (d * 1 === this.pageId * 1) {
           this.pageIdIndex = index
         }
@@ -457,6 +458,11 @@ export default {
     getAllPage () {
       this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
         this.allPageList = res.obj
+        res.obj.forEach(d => {
+          if (d.belongCurrentUser === 'true') {
+            this.canChangeId.push(d.id)
+          }
+        })
       })
     },
     ifSameItems () {
