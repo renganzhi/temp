@@ -14,6 +14,7 @@
 </div>
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   name: 'HawkEye',
   props: ['scale', 'bgTop', 'bgLeft', 'boxTop', 'boxLeft'],
@@ -186,6 +187,38 @@ export default {
           return false
         }
       }
+      $('#mainEdit-edit .main_video')
+        .find('video')
+        .css('opacity', 0)
+      $('#mainEdit-edit .main_video').append(
+        $('<img>')
+          .addClass('monitp')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
+      $('#mainEdit-edit .JSMpeg')
+        .find('canvas')
+        .css('opacity', 0)
+      $('#mainEdit-edit .JSMpeg').append(
+        $('<img>')
+          .addClass('monitp')
+          // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
       $('.getPicSpan').show()
       html2canvas(document.querySelector('.paint-bg'), {
         allowTaint: true, // 允许加载跨域资源
@@ -195,6 +228,13 @@ export default {
         scale: 1,
         onclone: function (doc) {
           $('.getPicSpan').hide()
+          $('#mainEdit-edit .JSMpeg')
+            .find('canvas')
+            .css('opacity', 1)
+          $('#mainEdit-edit .main_video')
+            .find('video')
+            .css('opacity', 1)
+          $('#mainEdit-edit .monitp').remove()
         }
       }).then(function (canvas) {
         document.querySelector('.mycanvas').appendChild(canvas)
