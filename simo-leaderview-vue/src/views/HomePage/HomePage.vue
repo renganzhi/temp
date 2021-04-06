@@ -1075,6 +1075,7 @@ export default {
     })
   },
   mounted: function () {
+    $('#screen').addClass('disShow')
     var _url = window.location.protocol + '//' + window.location.host + '/index'
     window.history.pushState({}, '', _url)
     this.getAccess()
