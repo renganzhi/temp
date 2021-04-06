@@ -1708,9 +1708,9 @@
 
               <ChartStyle v-if="selectedItem.chartType && selectedItem.chartType.indexOf('ve-') > -1" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
 
-              <template v-if="['video'].includes(selectedItem.chartType)">
+              <!-- <template v-if="['video'].includes(selectedItem.chartType)"> -->
                 <!-- <div class="m-gap form-group">基础样式</div> -->
-                <div class="form-group cols2"
+                <!-- <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >
                     <label :style="item.tag === 'Hint'? 'font-weight: bold; color: #fff;':''">{{item.name}}</label>
@@ -1725,9 +1725,9 @@
                       <input class="w-90" :type="item.type" v-model="selectedItem[item.key]"> {{ item.unit || '' }}
                     </template>
                   </div>
-              </template>
+              </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">

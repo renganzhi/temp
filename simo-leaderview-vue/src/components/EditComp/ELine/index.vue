@@ -44,7 +44,13 @@ export default {
       return this.item.chartData.max || 10000
     },
     minData: function () {
-      return this.item.chartData.min || 0
+      return this.item.chartData.min || 1
+    },
+    maxIndex: function () {
+      return this.item.chartData.maxIndex || 10000
+    },
+    minIndex: function () {
+      return this.item.chartData.minIndex || 1
     }
   },
   watch: {
@@ -95,16 +101,16 @@ export default {
           }
         })
       })
-      let errorArry = []
-      mySeriesData.forEach(data => {
-        let oneArry = []
-        data.forEach((d, index) => {
-          if (d >= this.minData && d <= this.maxData) {
-            oneArry.push(index)
-          }
-        })
-        errorArry.push(oneArry)
-      })
+      // let errorArry = []
+      // mySeriesData.forEach(data => {
+      //   let oneArry = []
+      //   data.forEach((d, index) => {
+      //     if (d >= this.minData && d <= this.maxData) {
+      //       oneArry.push(index)
+      //     }
+      //   })
+      //   errorArry.push(oneArry)
+      // })
       mySeriesData.forEach((data, index) => {
         if (data) {
           myseries.push({
@@ -312,22 +318,31 @@ export default {
         series: newseries
       }
       if (this.item.Linesubsection && this.item.subsectionType) {
-        let myvisualMap = []
-        errorArry.forEach((d, index) => {
-          let pices = []
-          d.forEach(element => {
-            pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red'})
-          })
-          myvisualMap.push({
-            show: false,
-            dimension: 0,
-            seriesIndex: index,
-            pieces: pices,
-            outOfRange: {
-              color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || '#009bff' : this.item.ScatterColor[1] || '#009bff'
-            }
-          })
-        })
+        // let myvisualMap = []
+        // errorArry.forEach((d, index) => {
+        //   let pices = []
+        //   d.forEach(element => {
+        //     pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red'})
+        //   })
+        //   myvisualMap.push({
+        //     show: false,
+        //     dimension: 0,
+        //     seriesIndex: index,
+        //     pieces: pices,
+        //     outOfRange: {
+        //       color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || '#009bff' : this.item.ScatterColor[1] || '#009bff'
+        //     }
+        //   })
+        // })
+        let myvisualMap = {
+          show: false,
+          dimension: 0,
+          pieces: [
+            { lte: this.minIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red' },
+            { gte: this.minIndex, lte: this.maxIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || 'red' : this.item.ScatterColor[1] || 'red' },
+            { gte: this.maxIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[2][0] || 'red' : this.item.ScatterColor[2] || 'red' }
+          ]
+        }
         myoption.visualMap = myvisualMap
         myoption.series.forEach((element, index) => {
           element.itemStyle.normal.lineStyle = {
