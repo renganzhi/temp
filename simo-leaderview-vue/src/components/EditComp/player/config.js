@@ -1,4 +1,4 @@
-export default {
+export default{
   'item': {
     'text': '视频',
     'imgClass': 'icon-n-video',

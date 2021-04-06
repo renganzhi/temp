@@ -19,7 +19,6 @@ import { checkLogin, newAjax } from '@/config/thirdLoginMix'
 import qs from 'qs'
 import _ from 'lodash'
 // import oldConfig from './config.json'
-import player from '@/components/EditComp/player/config.js'
 
 import ChildTag from '@/components/ChildTag/styleTag'
 import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
@@ -31,7 +30,7 @@ import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
 let config = {
   // ...oldConfig,
-  video: player,
+  video: require('@/components/EditComp/player/config.js'),
   // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.js'),
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),
@@ -3082,9 +3081,6 @@ export default {
       $('#mainEdit-edit .JSMpeg')
         .find('canvas')
         .css('opacity', 0)
-      $('#mainEdit-edit .JSMpeg')
-        .find('.v-charts-data-empty')
-        .css('opacity', 0)
       $('#mainEdit-edit .JSMpeg').append(
         $('<img>')
           .addClass('monitp')
@@ -3113,6 +3109,9 @@ export default {
             .css('opacity', 1)
           $('#mainEdit-edit .main_video')
             .find('video')
+            .css('opacity', 1)
+          $('#mainEdit-edit .JSMpeg')
+            .find('canvas')
             .css('opacity', 1)
           $('.getPicSpan').hide()
           $('#mainEdit-edit .monitp').remove()

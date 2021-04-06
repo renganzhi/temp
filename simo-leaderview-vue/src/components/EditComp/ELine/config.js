@@ -65,6 +65,8 @@ export default {
       'unit': '%',
       'min': 60,
       'max': 80,
+      'minIndex': 2,
+      'maxIndex': 3,
       'unitX': '时间',
       'rows': [{
         '日期': '2020-01-01',
