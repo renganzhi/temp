@@ -84,8 +84,12 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         String sessionId = session.getId();
+        Map<String, Object> params =(Map<String, Object>) session.getAttributes().get(SocketInterceptor.REQ_PARAMER_KEY);
+        String neId = (String)params.get("neId");
+        String stream = (String)params.get("stream");
+        String channel = (String)params.get("channel");
         webSocketMap.remove(sessionId);
-        videoMonitoringService.remove(sessionId);
+        videoMonitoringService.remove(sessionId, neId+"_"+stream+"_"+channel);
         if (session.isOpen())
             try {
                 session.close();
@@ -99,8 +103,12 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         String sessionId = session.getId();
+        Map<String, Object> params =(Map<String, Object>) session.getAttributes().get(SocketInterceptor.REQ_PARAMER_KEY);
+        String neId = (String)params.get("neId");
+        String stream = (String)params.get("stream");
+        String channel = (String)params.get("channel");
         webSocketMap.remove(sessionId);
-        videoMonitoringService.remove(sessionId);
+        videoMonitoringService.remove(sessionId, neId+"_"+stream+"_"+channel);
         log.info("Websocket session关闭连接！sessionID={}", sessionId);
     }
 
