@@ -7070,16 +7070,16 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 });
             }
             //trace:1518 ff3.6body不够寛，会导致点击空白处无法获得焦点
-            if (browser.gecko && browser.version <= 10902) {
-                //修复ff3.6初始化进来，不能点击获得焦点
-                me.body.contentEditable = false;
-                setTimeout(function () {
-                    me.body.contentEditable = true;
-                }, 100);
-                setInterval(function () {
-                    me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
-                }, 100)
-            }
+            // if (browser.gecko && browser.version <= 10902) {
+            //     //修复ff3.6初始化进来，不能点击获得焦点
+            //     me.body.contentEditable = false;
+            //     setTimeout(function () {
+            //         me.body.contentEditable = true;
+            //     }, 100);
+            //     setInterval(function () {
+            //         me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
+            //     }, 100)
+            // }
 
             !options.isShow && me.setHide();
             options.readonly && me.setDisabled();
@@ -16909,7 +16909,7 @@ UE.plugins['fiximgclick'] = (function () {
                 me.dragId = -1;
 
                 var hands = [],
-                    cover = me.cover = document.createElement('div'),
+                    cover = me.cover = document.creat/eElement('div'),
                     resizer = me.resizer = document.createElement('div');
 
                 cover.id = me.editor.ui.id + '_imagescale_cover';
