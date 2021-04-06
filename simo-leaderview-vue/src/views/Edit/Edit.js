@@ -4581,6 +4581,7 @@ export default {
       }
     }
     $('#lead-screen').addClass('disShow')
+    $('#screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {
     //   document.addEventListener('DOMMouseScroll', this.scrollFunc, false)
