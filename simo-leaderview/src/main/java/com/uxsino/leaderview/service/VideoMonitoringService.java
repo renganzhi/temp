@@ -20,10 +20,7 @@ import reactor.core.publisher.TopicProcessor;
 import javax.annotation.PostConstruct;
 import javax.jms.JMSException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 @Service
@@ -67,7 +64,7 @@ public class VideoMonitoringService {
         }
     }
 
-    private static ConcurrentHashMap<String, ArrayList<VideoConsumer<byte[]>>> connectionParams = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, CopyOnWriteArrayList<VideoConsumer<byte[]>>> connectionParams = new ConcurrentHashMap<>();
     public static final TopicProcessor<Runnable> VIDEO_PROCESSOR = ProcessUtil.createTopicProcessor("video", 32, false);
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -98,23 +95,23 @@ public class VideoMonitoringService {
         String id = videoConsumer.getNeId() + "_" + videoConsumer.getStream() + "_" + videoConsumer.getChannel();
         boolean isNewConnection = false;
         if(!connectionParams.containsKey(id)){
-            connectionParams.put(id, new ArrayList<>());
+            connectionParams.put(id, new CopyOnWriteArrayList<>());
             isNewConnection = true;
         }
-        ArrayList<VideoConsumer<byte[]>> consumers = connectionParams.get(id);
+        CopyOnWriteArrayList<VideoConsumer<byte[]>> consumers = connectionParams.get(id);
         consumers.add(videoConsumer);
 
         if(isFromCollector || isNewConnection)
             this.updateState();
     }
 
-    public void remove(String sessionId){
-        ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(sessionId);
+    public void remove(String sessionId, String key){
+        CopyOnWriteArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(key);
         if(videoConsumerArrayList!=null && videoConsumerArrayList.size()>0){
             videoConsumerArrayList.removeIf(videoConsumer -> sessionId.equals(videoConsumer.getSessionId()));
         }
         if(videoConsumerArrayList==null || videoConsumerArrayList.size() == 0) {
-            connectionParams.remove(sessionId);
+            connectionParams.remove(key);
         }
         //同init处注解，当不通过采集器时，VideoProduceHandler将会通过其Predicator<String>时时刻刻对connectionParams进行检查
         //因此每一次删除其连接线程都能够感受到变化，就不用再调用updateState方法了
@@ -124,7 +121,7 @@ public class VideoMonitoringService {
 
     private void updateState(){
         Map<String, Set<String>> conf = new HashMap<>();
-        for(ConcurrentHashMap.Entry<String, ArrayList<VideoConsumer<byte[]>>> connectionParam : connectionParams.entrySet()){
+        for(ConcurrentHashMap.Entry<String, CopyOnWriteArrayList<VideoConsumer<byte[]>>> connectionParam : connectionParams.entrySet()){
             if(connectionParam.getValue()==null)
                 continue;
             //{neId, stream, channel}
@@ -145,9 +142,9 @@ public class VideoMonitoringService {
                     new VideoProduceHandler(ne.get(), key[1], key[2], "HCNET", this::consume,
                             k -> connectionParams.containsKey(k) && connectionParams.get(k).size()>0,
                             ()->{
-                                ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParam.getValue();
+                                CopyOnWriteArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParam.getValue();
                                 for(VideoConsumer<byte[]> consumer: videoConsumerArrayList){
-                                    remove(consumer.getSessionId());
+                                    remove(consumer.getSessionId(), consumer.getNeId()+"_"+consumer.getStream()+"_"+consumer.getChannel());
                                 }
                             }
                     ).start();
@@ -165,7 +162,7 @@ public class VideoMonitoringService {
         byte[] data = jsonObject.getBytes("data");
 
         String key = neId + "_" + stream + "_" + channel;
-        ArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(key);
+        CopyOnWriteArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(key);
         for(VideoConsumer<byte[]> videoConsumer: videoConsumerArrayList){
             videoConsumer.append(data);
         }
