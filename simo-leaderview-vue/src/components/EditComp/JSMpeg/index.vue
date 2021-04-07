@@ -2,7 +2,7 @@
   <div class="JSMpeg"
        :style="JSMpegStyle">
     <canvas
-      ref="canvas"
+      ref="mycanvas"
       v-show="vidoeShow"
       class="canvas"
     />
@@ -56,20 +56,21 @@ export default {
       var myNewVale = JSON.parse(this.item.chartData || '')
       if (myNewVale.channel && myNewVale.neId) {
         this.vidoeShow = true
-        this.player && this.player.stop()
+        this.player && this.player.destroy()
         let url = `ws://${location.hostname}:11100${this.item.urlData}?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
         this.player = new JSMpeg.Player(url, {
-          canvas: this.$refs.canvas,
+          canvas: this.$refs.mycanvas,
           loop: false,
           preserveDrawingBuffer: true
         })
       } else {
+        this.player && this.player.destroy()
         this.vidoeShow = false
       }
     }
   },
   beforeDestroy () {
-    this.player && this.player.stop()
+    this.player && this.player.destroy()
   },
   destroyed: function () {
   }
