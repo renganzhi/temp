@@ -6922,7 +6922,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     'body{margin:8px;font-family:sans-serif;font-size:12px;color: #afadad;}' +
                     //设置段落间距
                     'p{margin:5px 0;}</style>' +
-                    ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +
+                    // ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +
                     (options.initialStyle ? '<style>' + options.initialStyle + '</style>' : '') +
                     '</head><body class=\'view\' ></body>' +
                     '<script type=\'text/javascript\' ' + (ie ? 'defer=\'defer\'' : '' ) +' id=\'_initialScript\'>' +
@@ -7070,16 +7070,16 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 });
             }
             //trace:1518 ff3.6body不够寛，会导致点击空白处无法获得焦点
-            // if (browser.gecko && browser.version <= 10902) {
-            //     //修复ff3.6初始化进来，不能点击获得焦点
-            //     me.body.contentEditable = false;
-            //     setTimeout(function () {
-            //         me.body.contentEditable = true;
-            //     }, 100);
-            //     setInterval(function () {
-            //         me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
-            //     }, 100)
-            // }
+            if (browser.gecko && browser.version <= 10902) {
+                //修复ff3.6初始化进来，不能点击获得焦点
+                me.body.contentEditable = false;
+                setTimeout(function () {
+                    me.body.contentEditable = true;
+                }, 100);
+                setInterval(function () {
+                    me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
+                }, 100)
+            }
 
             !options.isShow && me.setHide();
             options.readonly && me.setDisabled();
@@ -8228,8 +8228,8 @@ UE.ajax = function() {
         }, ajaxOpts.timeout);
 
         var method = ajaxOpts.method.toUpperCase();
-        var str = url + (url.indexOf("?")==-1?"?":"&") + (method=="POST"?"":submitStr+ "&noCache=" + +new Date);
-        xhr.open(method, str, ajaxOpts.async);
+        // var str = url + (url.indexOf("?")==-1?"?":"&") + (method=="POST"?"":submitStr+ "&noCache=" + +new Date);
+        // xhr.open(method, str, ajaxOpts.async);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (!timeIsOut && xhr.status == 200) {
@@ -10163,7 +10163,6 @@ UE.plugins['defaultfilter'] = function () {
                                 '_href': ''
                             })
                         }
-                        break;
                         break;
                     case 'span':
                         val = node.getAttr('id');
@@ -14491,14 +14490,14 @@ UE.plugin.register('copy', function () {
                     if (window.ZeroClipboard) {
                         initZeroClipboard();
                     } else {
-                        utils.loadFile(document, {
-                            src: me.options.UEDITOR_HOME_URL + "third-party/zeroclipboard/ZeroClipboard.js",
-                            tag: "script",
-                            type: "text/javascript",
-                            defer: "defer"
-                        }, function () {
-                            initZeroClipboard();
-                        });
+                        // utils.loadFile(document, {
+                        //     src: me.options.UEDITOR_HOME_URL + "third-party/zeroclipboard/ZeroClipboard.js",
+                        //     tag: "script",
+                        //     type: "text/javascript",
+                        //     defer: "defer"
+                        // }, function () {
+                        //     initZeroClipboard();
+                        // });
                     }
                 }
             }
@@ -16449,24 +16448,24 @@ UE.plugins['list'] = function () {
         if(opt.sourceEditor == "codemirror"){
 
             me.addListener("ready",function(){
-                utils.loadFile(document,{
-                    src : opt.codeMirrorJsUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.js",
-                    tag : "script",
-                    type : "text/javascript",
-                    defer : "defer"
-                },function(){
-                    if(opt.sourceEditorFirst){
-                        setTimeout(function(){
-                            me.execCommand("source");
-                        },0);
-                    }
-                });
-                utils.loadFile(document,{
-                    tag : "link",
-                    rel : "stylesheet",
-                    type : "text/css",
-                    href : opt.codeMirrorCssUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.css"
-                });
+                // utils.loadFile(document,{
+                //     src : opt.codeMirrorJsUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.js",
+                //     tag : "script",
+                //     type : "text/javascript",
+                //     defer : "defer"
+                // },function(){
+                //     if(opt.sourceEditorFirst){
+                //         setTimeout(function(){
+                //             me.execCommand("source");
+                //         },0);
+                //     }
+                // });
+                // utils.loadFile(document,{
+                //     tag : "link",
+                //     rel : "stylesheet",
+                //     type : "text/css",
+                //     href : opt.codeMirrorCssUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.css"
+                // });
 
             });
         }
@@ -29331,12 +29330,12 @@ UE.ui = baidu.editor.ui = {};
     UE.ui.Editor = function (options) {
         var editor = new UE.Editor(options);
         editor.options.editor = editor;
-        utils.loadFile(document, {
-            href:editor.options.themePath + editor.options.theme + "/css/ueditor.css",
-            tag:"link",
-            type:"text/css",
-            rel:"stylesheet"
-        });
+        // utils.loadFile(document, {
+        //     href:editor.options.themePath + editor.options.theme + "/css/ueditor.css",
+        //     tag:"link",
+        //     type:"text/css",
+        //     rel:"stylesheet"
+        // });
 
         var oldRender = editor.render;
         editor.render = function (holder) {

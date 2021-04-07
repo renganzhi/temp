@@ -23,117 +23,31 @@
               @bodymove="bodymove"
               @dbclick="vdbclick"
               @contextMenu="contextMenu">
-    <Vtextarea v-if="item.chartType=='text'"
-               :item="item"
-               ref="childtext"
-               :disabled="editable"></Vtextarea>
-    <Marquee v-else-if="item.chartType=='marquee'"
-             :item="item"
-             ref="childtext"
-             :disabled="editable"></Marquee>
-    <Border v-else-if="item.chartType=='border'"
-            :item="item"></Border>
-    <moveTable v-else-if="item.chartType=='table' && item.thirdType=='moveTable'"
-               :item="item"></moveTable>
-    <Vtable v-else-if="item.chartType=='table'"
-            :item="item"></Vtable>
-    <Vprogress v-else-if="item.chartType=='progress'"
-               :item="item"></Vprogress>
-    <Doubler v-else-if="item.chartType=='doubler'"
-             :item="item"></Doubler>
-    <Topo v-else-if="item.chartType=='topo'"
-          :item="item"></Topo>
-    <Vimg v-else-if="item.chartType=='image'"
-          :item="item"></Vimg>
-    <Vtime v-else-if="item.chartType=='time'"
-           :item="item"></Vtime>
-    <Vnumber v-else-if="item.chartType=='number'"
-             :item="item"></Vnumber>
-    <Vscatter v-else-if="item.chartType=='v-scatter'"
-              :item="item"></Vscatter>
-    <Vmap v-else-if="item.chartType=='v-map'"
-          :item="item"></Vmap>
-    <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
-          :item="item"></TDEarthLine>
-    <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
-          :item="item"></TDEarthBar>
-    <DataFlow v-else-if="item.chartType=='DataFlow'"
-          :item="item"></DataFlow>
-    <GradientPie v-else-if="item.chartType=='GradientPie'"
-          :item="item"></GradientPie>
-    <Sunrise v-else-if="item.chartType=='Sunrise'"
-          :item="item"></Sunrise>
-    <Scatter v-else-if="item.chartType=='Scatter'"
-          :item="item"></Scatter>
-    <KLine v-else-if="item.chartType=='KLine'"
-          :item="item"></KLine>
-    <ELine v-else-if="item.chartType=='ELine'"
-          :item="item"></ELine>
-    <Dashboard v-else-if="item.chartType=='Dashboard'"
-          :item="item"></Dashboard>
-    <BulletFrame v-else-if="item.chartType=='BulletFrame'"
-          :item="item"></BulletFrame>
-    <TreeMap v-else-if="item.chartType=='TreeMap'"
-          :item="item"></TreeMap>
-    <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
-          :item="item"
-          :disabled="editable"></NEWtextArea>
-    <TDHistogram v-else-if="item.chartType=='TDHistogram'"
-          :item="item"></TDHistogram>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
                 :item="item"></Liquidfill> -->
-    <Player v-else-if="item.chartType=='video'"
-            @palyErr="palyErr"
-            :item="item"></Player>
-    <Vchart v-else
-            :item="item"></Vchart>
+    <template v-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item"></component>
+    </template>
   </DragResize>
 </template>
 <script>
-import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
-import Vtextarea from '@/components/EditComp/Vtextarea' // 文本
-import Vprogress from '@/components/EditComp/Vprogress' // 进度条
-import Vimg from '@/components/EditComp/Vimg'
-import Doubler from '@/components/EditComp/Doubler' // 数字翻牌器
-import Border from '@/components/EditComp/Border' // 边框
-import Vchart from '@/components/EditComp/Vchart'
-import Vtable from '@/components/EditComp/Vtable' // 表格
-import Topo from '@/components/EditComp/Topo' // 拓扑
-import Marquee from '@/components/EditComp/Marquee' // 跑马灯
-import Vtime from '@/components/EditComp/Vtime' // 时间器
-import Vnumber from '@/components/EditComp/Vnumber' // 指标展示
-import Vmap from '@/components/EditComp/Vmap' // 指标展示
-import Vscatter from '@/components/EditComp/Vscatter' // 散点图
-import Liquidfill from '@/components/EditComp/liquidfill' // 水波图
-import Player from '@/components/EditComp/player' // 视频流
-import moveTable from '@/components/EditComp/moveTable' // 轮播表格
-import TDEarthLine from '@/components/EditComp/TDEarthLine' // 轮播表格
-import TDEarthBar from '@/components/EditComp/TDEarthBar' // 轮播表格
-import DataFlow from '@/components/EditComp/DataFlow' // 轮播表格
-import GradientPie from '@/components/EditComp/GradientPie' // 轮播表格
-import Sunrise from '@/components/EditComp/Sunrise' // 轮播表格
-import Scatter from '@/components/EditComp/Scatter' // 轮播表格
-import KLine from '@/components/EditComp/KLine' // 轮播表格
-import Dashboard from '@/components/EditComp/Dashboard' // 轮播表格
-import ELine from '@/components/EditComp/ELine' // 轮播表格
-import BulletFrame from '@/components/EditComp/BulletFrame' // 轮播表格
-import TreeMap from '@/components/EditComp/TreeMap' // 轮播表格
-import TDHistogram from '@/components/EditComp/TDHistogram' // 轮播表格
-import NEWtextArea from '@/components/EditComp/NEWtextArea' // 轮播表格
-
+import dynamicList from './dynamicList'
+import components from './chartComponents'
+import { capitalize } from '@/utils'
 export default {
   name: 'insideDrag',
   props: ['item', 'editable', 'index', 'parentIndex', 'sacleX', 'sacleY', 'parentW', 'parentH'],
-  components: { DragResize, Vtextarea, Vprogress, TDEarthLine, TDEarthBar, DataFlow, Sunrise, Scatter, ELine, KLine, Dashboard, BulletFrame, TreeMap, NEWtextArea, TDHistogram, GradientPie, Vimg, Doubler, Border, Vchart, Vtable, Topo, Marquee, Vtime, Vnumber, Vmap, Vscatter, Liquidfill, Player, moveTable },
+  components,
   data () {
     return {
-
+      dynamicList
     }
   },
   methods: {
     palyErr () {
       this.$emit('palyErr')
     },
+    capitalize,
     resizing (item, attr) {
       item.width = attr.width
       item.height = attr.height

@@ -40,7 +40,6 @@ export default {
     },
     item: {
       handler (newVal, oldVal) {
-        console.log(newVal)
         this.drawPre()
       },
       deep: true
@@ -75,15 +74,15 @@ export default {
               opacity: 1,
               color:
                 this.item.ifGradual === 'false'
-                  ? this.item.ScatterColor[index]
+                  ? this.item.ScatterColor[index % this.item.ScatterColor.length]
                   : new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                     {
                       offset: 0,
-                      color: this.item.DScatterColor[index][0]
+                      color: this.item.DScatterColor[index % this.item.DScatterColor.length][0]
                     },
                     {
                       offset: 1,
-                      color: this.item.DScatterColor[index][1]
+                      color: this.item.DScatterColor[index % this.item.DScatterColor.length][1]
                     }
                   ])
             }
@@ -188,15 +187,15 @@ export default {
               opacity: 0.1,
               color:
                 this.item.ifGradual === 'false'
-                  ? this.item.ScatterColor[index]
+                  ? this.item.ScatterColor[index % this.item.ScatterColor.length]
                   : new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                     {
                       offset: 0,
-                      color: this.item.DScatterColor[index][0]
+                      color: this.item.DScatterColor[index % this.item.DScatterColor.length][0]
                     },
                     {
                       offset: 1,
-                      color: this.item.DScatterColor[index][1]
+                      color: this.item.DScatterColor[index % this.item.DScatterColor.length][1]
                     }
                   ])
             }
