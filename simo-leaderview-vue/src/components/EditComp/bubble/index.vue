@@ -2,11 +2,20 @@
   <div class="bubble_box">
     <div
       id="circleWrap"
+      v-show="showBubbleChart"
       ref="circleWrap"
       class="circle_wrap"
       data-top="0"
       :style="{ top: `${top}px` }"
     ></div>
+    <div class="v-charts-data-empty"
+        v-show="!showBubbleChart"
+        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -27,22 +36,27 @@ export default {
   computed: {
     chartData () {
       let originData = this.item.chartData.rows
-      const minCount = Math.floor(
-        (this.item.width * this.item.height) / 200 ** 2
-      )
-      if (origin.length < minCount) {
-        let tmp = originData
-        for (let i = 1; i < minCount / origin.length; i++) {
-          originData.push(...tmp)
+      if (originData.length > 0) {
+        const minCount = Math.floor(
+          (this.item.width * this.item.height) / 200 ** 2
+        )
+        if (origin.length < minCount) {
+          let tmp = originData
+          for (let i = 1; i < minCount / origin.length; i++) {
+            originData.push(...tmp)
+          }
         }
+        return originData.map(d => {
+          let value = d.value
+          if (typeof (value * 1) !== 'number') {
+            d.value = 0
+          }
+          return d
+        })
       }
-      return originData.map(d => {
-        let value = d.value
-        if (typeof (value * 1) !== 'number') {
-          d.value = 0
-        }
-        return d
-      })
+    },
+    showBubbleChart () {
+      return this.item.chartData.rows.length > 0
     },
     len () {
       return this.chartData.length
