@@ -47,10 +47,10 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
                 || stream==null || StringUtils.isEmpty(stream)
                 || channel==null || StringUtils.isEmpty(channel)) {
 
-            log.warn("摄像头设备参数有误，不能连接！");
+            log.warn("LEADERVIEW -> 摄像头设备参数有误，不能连接！");
             return;
         }
-        log.info("{}准备连接到摄像头", neId + "_" + stream + "_" + channel);
+        log.info("LEADERVIEW -> {}准备连接到摄像头", neId + "_" + stream + "_" + channel);
         webSocketMap.put(session.getId(), session);
         try {
             videoMonitoringService.register(new VideoMonitoringService.VideoConsumer<byte[]>() {
@@ -62,7 +62,7 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
                             session.sendMessage(binaryMessage);
                         }
                     }catch (IOException e){
-                        log.error("向客户端推送帧数据抛出异常：", e.getMessage());
+                        log.error("LEADERVIEW -> 向客户端推送帧数据抛出异常：", e.getMessage());
                     }
                 }
             }.set(session.getId(), neId, stream, channel));
@@ -71,7 +71,7 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
             try {
                 session.close();
             } catch (IOException ex) {
-                log.error("关闭websocket连接异常！");
+                log.error("LEADERVIEW -> 关闭websocket连接异常！");
             }
         }
     }
@@ -88,16 +88,13 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
         String neId = (String)params.get("neId");
         String stream = (String)params.get("stream");
         String channel = (String)params.get("channel");
-        webSocketMap.remove(sessionId);
-        videoMonitoringService.remove(sessionId, neId+"_"+stream+"_"+channel);
         if (session.isOpen())
             try {
                 session.close();
             } catch (IOException e) {
-                log.error("WebSocket传输过程出错，且关闭session失败！抛出异常：{}", e.getMessage());
+                log.error("LEADERVIEW -> WebSocket传输过程出错，且关闭session失败！抛出异常：{}", e.getMessage());
             }
-        log.error("WebSocket传输过程出错抛出异常：{}", exception.getMessage());
-        log.error("StackTrace如下：", exception);
+        log.error("LEADERVIEW -> WebSocket传输过程出错抛出异常：{}", exception.getMessage());
     }
 
     @Override
@@ -109,7 +106,7 @@ public class VideoSocketHandler implements WebSocketHandler, InitializingBean, A
         String channel = (String)params.get("channel");
         webSocketMap.remove(sessionId);
         videoMonitoringService.remove(sessionId, neId+"_"+stream+"_"+channel);
-        log.info("Websocket session关闭连接！sessionID={}", sessionId);
+        log.info("LEADERVIEW -> Websocket session关闭连接！sessionID={}", sessionId);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class VideoMonitoringService {
             processor = ProcessUtil.createTopicProcessor("VIDEO_CONSUMER_" + neId, 8, false);
             processor.subscribe(this);
 
-            return this;
+            return VideoConsumer.this;
         }
 
         public void append(T data){
@@ -91,7 +91,7 @@ public class VideoMonitoringService {
         }
     }
 
-    public void register(VideoConsumer<byte[]> videoConsumer) throws NullPointerException{
+    public synchronized void register(VideoConsumer<byte[]> videoConsumer) throws NullPointerException{
         String id = videoConsumer.getNeId() + "_" + videoConsumer.getStream() + "_" + videoConsumer.getChannel();
         boolean isNewConnection = false;
         if(!connectionParams.containsKey(id)){
