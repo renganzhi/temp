@@ -85,9 +85,9 @@ public class VideoMonitoringService {
                     });
                 });
             }catch (JMSException e){
-                log.error("从采集器接收帧数据抛出异常：{}", e.getMessage());
+                log.error("LEADERVIEW -> 从采集器接收帧数据抛出异常：{}", e.getMessage());
             }
-            scheduler.scheduleAtFixedRate(this::updateState, 0, 30, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(()->this.updateState(null), 0, 30, TimeUnit.SECONDS);
         }
     }
 
@@ -102,7 +102,7 @@ public class VideoMonitoringService {
         consumers.add(videoConsumer);
 
         if(isFromCollector || isNewConnection)
-            this.updateState();
+            this.updateState(id);
     }
 
     public void remove(String sessionId, String key){
@@ -116,17 +116,21 @@ public class VideoMonitoringService {
         //同init处注解，当不通过采集器时，VideoProduceHandler将会通过其Predicator<String>时时刻刻对connectionParams进行检查
         //因此每一次删除其连接线程都能够感受到变化，就不用再调用updateState方法了
         if(isFromCollector)
-            this.updateState();
+            this.updateState(key);
     }
 
-    private void updateState(){
+    /**
+     *
+     * @param id 这里的id仅用于大屏直接获取数据模式下时，定位哪一个通道
+     */
+    private void updateState(String id){
         Map<String, Set<String>> conf = new HashMap<>();
-        for(ConcurrentHashMap.Entry<String, CopyOnWriteArrayList<VideoConsumer<byte[]>>> connectionParam : connectionParams.entrySet()){
-            if(connectionParam.getValue()==null)
-                continue;
-            //{neId, stream, channel}
-            String[] key = connectionParam.getKey().split("_");
-            if(isFromCollector) {
+        if (isFromCollector) {
+            for(ConcurrentHashMap.Entry<String, CopyOnWriteArrayList<VideoConsumer<byte[]>>> connectionParam : connectionParams.entrySet()){
+                if(connectionParam.getValue()==null)
+                    continue;
+                //{neId, stream, channel}
+                String[] key = connectionParam.getKey().split("_");
                 if (!conf.containsKey(key[0])) {
                     conf.put(key[0], new HashSet<>());
                 }
@@ -134,23 +138,28 @@ public class VideoMonitoringService {
                 try {
                     outbox.sendStringOnTopic(EventTopicConstants.SIMO_VIDEO_STATE, JSON.toJSONString(conf));
                 } catch (JMSException e) {
-                    log.error("向采集器发送消息抛出异常：{}", e.getMessage());
+                    log.error("LEADERVIEW -> 向采集器发送消息抛出异常：{}", e.getMessage());
                 }
-            } else {
-                Optional<NetworkEntity> ne = networkEntityDao.findById(key[0]);
-                if (ne.isPresent()) {
-                    new VideoProduceHandler(ne.get(), key[1], key[2], "HCNET", this::consume,
-                            k -> connectionParams.containsKey(k) && connectionParams.get(k).size()>0,
-                            ()->{
-                                CopyOnWriteArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParam.getValue();
-                                for(VideoConsumer<byte[]> consumer: videoConsumerArrayList){
-                                    remove(consumer.getSessionId(), consumer.getNeId()+"_"+consumer.getStream()+"_"+consumer.getChannel());
-                                }
+            }
+        }else {
+            if(id == null) {
+                log.error("LEADERVIEW -> 找不到对应监控设备！");
+                throw new NullPointerException("传入id为空，找不到对应监控设备");
+            }
+            String[] key = id.split("_");
+            Optional<NetworkEntity> ne = networkEntityDao.findById(key[0]);
+            if (ne.isPresent()) {
+                new VideoProduceHandler(ne.get(), key[1], key[2], "HCNET", this::consume,
+                        k -> connectionParams.containsKey(k) && connectionParams.get(k).size()>0,
+                        ()->{
+                            CopyOnWriteArrayList<VideoConsumer<byte[]>> videoConsumerArrayList = connectionParams.get(id);
+                            for(VideoConsumer<byte[]> consumer: videoConsumerArrayList){
+                                remove(consumer.getSessionId(), consumer.getNeId()+"_"+consumer.getStream()+"_"+consumer.getChannel());
                             }
-                    ).start();
-                } else {
-                    throw new NullPointerException("传入neId有误，没有发现该摄像头平台！");
-                }
+                        }
+                ).start();
+            } else {
+                throw new NullPointerException("LEADERVIEW -> 传入neId有误，没有发现该摄像头平台！");
             }
         }
     }
