@@ -5,61 +5,9 @@
        :style="boxStyle"
        @click="handleClick"
        >
-    <Vtextarea v-if="item.chartType==='text'"
-               :item="item"
-               :disabled="editable"></Vtextarea>
-    <Marquee v-else-if="item.chartType==='marquee'"
-             :item="item"
-             :disabled="editable"></Marquee>
-    <Border v-else-if="item.chartType==='border'"
-            :item="item"></Border>
-    <moveTable v-else-if="item.chartType=='table' && item.thirdType=='moveTable'"
-               :item="item"
-               :moving="true"></moveTable>
-    <Vtable v-else-if="item.chartType==='table'"
-            :item="item"></Vtable>
-    <Vprogress v-else-if="item.chartType==='progress'"
-               :item="item"></Vprogress>
-    <Doubler v-else-if="item.chartType==='doubler'"
-             :item="item"></Doubler>
-    <Topo v-else-if="item.chartType==='topo'"
-          :item="item"></Topo>
-    <Vimg v-else-if="item.chartType==='image'"
-          :item="item"></Vimg>
-    <Vtime v-else-if="item.chartType==='time'"
-           :item="item"></Vtime>
-    <Vnumber v-else-if="item.chartType==='number'"
-             :item="item"></Vnumber>
-    <Vscatter v-else-if="item.chartType=='v-scatter'"
-              :item="item"></Vscatter>
-    <KLine v-else-if="item.chartType=='KLine'"
-              :item="item"></KLine>
-    <ELine v-else-if="item.chartType=='ELine'"
-              :item="item"></ELine>
-    <Dashboard v-else-if="item.chartType=='Dashboard'"
-              :item="item"></Dashboard>
-    <BulletFrame v-else-if="item.chartType=='BulletFrame'"
-              :item="item"></BulletFrame>
-    <TreeMap v-else-if="item.chartType=='TreeMap'"
-              :item="item"></TreeMap>
-    <Ueditor v-else-if="item.chartType=='Ueditor'"
-              :item="item"></Ueditor>
-    <NEWtextArea v-else-if="item.chartType=='NEWtextArea'"
-              :item="item"
-              :disabled="editable"></NEWtextArea>
-    <TDHistogram v-else-if="item.chartType=='TDHistogram'"
-              :item="item"></TDHistogram>
-    <Vmap v-else-if="item.chartType=='v-map'"
-          :item="item"></Vmap>
-    <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"
-                :item="item"></Liquidfill> -->
-    <Player v-else-if="item.chartType=='video'"
-            :item="item"></Player>
-    <template v-else-if="dynamicList.includes(item.chartType)">
-      <component :is="capitalize(item.chartType)" :item="item" :moving="true"></component>
+    <template v-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item" :moving="true" :disabled="editable"></component>
     </template>
-    <Vchart v-else
-            :item="item"></Vchart>
   </div>
 </template>
 <script>
