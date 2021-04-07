@@ -2013,6 +2013,14 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
+                     v-if="selectedItem.ctDataSource !== 'static'&&selectedItem.chartType !== 'JSMpeg'" style="display: none;">
+                  <div class="form-group"
+                       contenteditable="false"
+                       style="position: relative">
+                    <label></label>
+                  </div>
+                </div>
+                <div class="form-group cols2"
                       v-show="selectedItem.chartType==='v-map' || selectedItem.chartType==='NewVMap'"
                       style="position: relative;">
                   <!-- editPieces -->
