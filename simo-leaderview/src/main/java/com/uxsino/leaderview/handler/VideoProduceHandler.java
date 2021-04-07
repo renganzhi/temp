@@ -69,11 +69,11 @@ public class VideoProduceHandler extends Thread {
             this.init();
         }catch (Exception e){
             if (e instanceof NullPointerException){
-                log.error(e.getMessage());
+                log.error("LEADERVIEW -> 帧捕获初始化空指针异常: {}", e.getMessage());
             }else if(e instanceof FrameGrabber.Exception){
-                log.error("捕捉器启动失败！");
+                log.error("LEADERVIEW -> 捕捉器启动失败！");
             }else if(e instanceof FrameRecorder.Exception){
-                log.error("记录器启动失败！");
+                log.error("LEADERVIEW -> 记录器启动失败！");
             }
             this.close();
             return;
@@ -91,7 +91,7 @@ public class VideoProduceHandler extends Thread {
                 if(frame == null){
                     count++;
                     if(count == 3){
-                        log.error("丢失帧数据过多，断开连接");
+                        log.error("LEADERVIEW -> 丢失帧数据过多，断开连接");
                         break;
                     }
                 }else {
@@ -108,11 +108,11 @@ public class VideoProduceHandler extends Thread {
                 }
             }catch (Exception e){
                 if (e instanceof NullPointerException){
-                    log.error(e.getMessage());
+                    log.error("LEADERVIEW -> 帧捕获线程内部循环抛出异常：{}", e.getMessage());
                 }else if(e instanceof FrameGrabber.Exception){
-                    log.error("捕捉器捕捉失败！");
+                    log.error("LEADERVIEW -> 捕捉器捕捉失败！");
                 }else if(e instanceof FrameRecorder.Exception){
-                    log.error("记录器记录失败！");
+                    log.error("LEADERVIEW -> 记录器记录失败！");
                 }
                 break;
             }
@@ -145,17 +145,17 @@ public class VideoProduceHandler extends Thread {
             try {
                 grabber.close();
             }catch (FrameGrabber.Exception e){
-                log.error("关闭捕捉器失败！");
+                log.error("LEADERVIEW -> 关闭捕捉器失败！");
             }
         }
         if(recorder!=null){
             try {
                 recorder.close();
             }catch (FrameRecorder.Exception e){
-                log.error("关闭记录器失败！");
+                log.error("LEADERVIEW -> 关闭记录器失败！");
             }
         }
-        onClose.run();
+//        onClose.run();
     }
 
     private String getRstpUrl(){
