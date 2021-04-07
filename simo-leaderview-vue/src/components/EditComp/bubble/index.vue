@@ -38,7 +38,7 @@ export default {
       }
       return originData.map(d => {
         let value = d.value
-        if (typeof value !== 'number') {
+        if (typeof (value * 1) !== 'number') {
           d.value = 0
         }
         return d
