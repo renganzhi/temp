@@ -7,7 +7,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './vuex/store'
-import '../static/js/jsmpeg.min'
+import '../static/js/jsmpeg'
 
 // import VueAxios from 'vue-axios'
 // import axios from '../config/axios-init'

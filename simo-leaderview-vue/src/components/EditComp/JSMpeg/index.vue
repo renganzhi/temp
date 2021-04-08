@@ -56,15 +56,18 @@ export default {
       var myNewVale = JSON.parse(this.item.chartData || '')
       if (myNewVale.channel && myNewVale.neId) {
         this.vidoeShow = true
-        this.player && this.player.destroy()
-        let url = `ws://${location.hostname}:11100${this.item.urlData}?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
-        this.player = new JSMpeg.Player(url, {
-          canvas: this.$refs.mycanvas,
-          loop: false,
-          preserveDrawingBuffer: true
+        this.$nextTick(function () {
+          this.player && this.player.stop()
+          let url = `ws://${location.hostname}:11100${this.item.urlData}?neId=${myNewVale.neId}&stream=sub&channel=${myNewVale.channel}`
+          // let url = `ws://192.100.100.42:11100/collector/videoMonitoring?neId=3bcd576a-6382-4312-9448-35fff1ed59e3&stream=sub&channel=${myNewVale.channel}`
+          this.player = new JSMpeg.Player(url, {
+            canvas: this.$refs.mycanvas,
+            loop: false,
+            preserveDrawingBuffer: true
+          })
         })
       } else {
-        this.player && this.player.destroy()
+        this.player && this.player.stop()
         this.vidoeShow = false
       }
     }
