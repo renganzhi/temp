@@ -1727,7 +1727,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
@@ -1741,7 +1741,7 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div class="form-group cols2" v-show="['image', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
+              <div class="form-group cols2" v-show="['image', 'Newimage', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
                   <label>跳转大屏</label>
                   <select v-model="selectedItem.linkId">
                     <option value="">无跳转</option>
@@ -1750,7 +1750,7 @@
                             :value="item.id">{{item.name}}</option>
                   </select>
               </div>
-              <div v-show="['image'].includes(selectedItem.chartType)">
+              <div v-show="['image','Newimage'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                      style="position: relative;">
                   <label>选择文件</label>
@@ -1796,7 +1796,7 @@
                 <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 <button class="DataChangeBtn" @click="dataChange">更新视图</button>
               </div>
-              <div style="height: 100%;" v-show="!['image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"

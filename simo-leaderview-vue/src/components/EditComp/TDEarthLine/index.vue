@@ -88,7 +88,6 @@ export default {
       this.drawLine()
     },
     'item.ambientcolor': function () {
-      console.log(888888888)
       this.drawLine()
     },
     'item.ambientintensity': function () {

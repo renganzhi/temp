@@ -33,6 +33,7 @@ import NewVMap from '@/components/EditComp/NewVMap' // 3D地图-柱状图
 import NewScatter from '@/components/EditComp/NewScatter' // 3D地图-柱状图
 import NewBorder from '@/components/EditComp/NewBorder' // 3D地图-柱状图
 import JSMpeg from '@/components/EditComp/JSMpeg' // 3D地图-柱状图
+import Newimage from '@/components/EditComp/Newimage' // 3D地图-柱状图
 import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
@@ -72,6 +73,7 @@ export default {
   Vnumber,
   Vmap,
   Vscatter,
+  Newimage,
   Liquidfill,
   Player,
   moveTable,

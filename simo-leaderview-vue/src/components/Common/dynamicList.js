@@ -38,6 +38,7 @@ export default [
   'NewBorder',
   'NEWtextArea',
   'JSMpeg',
+  'Newimage',
   'TDHistogram',
   'bubble',
   'hotspot',

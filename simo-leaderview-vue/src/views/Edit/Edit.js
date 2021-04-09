@@ -60,6 +60,7 @@ let config = {
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
   NewBorder: require('@/components/EditComp/NewBorder/config.js'),
   JSMpeg: require('@/components/EditComp/JSMpeg/config.js'),
+  Newimage: require('@/components/EditComp/Newimage/config.js'),
   NewMoveTable: require('@/components/EditComp/NewMoveTable/config.js'),
   NewTable: require('@/components/EditComp/NewTable/config.js'),
   NewProgress: require('@/components/EditComp/NewProgress/config.js'),
@@ -3739,7 +3740,7 @@ export default {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
-        if (_this.selectedItem.chartType === 'image' || chartType === 'DataFlow') {
+        if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'Newimage' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
           _this.selectedItem.imgName = e.target.files[0].name
         } if (_this.selectedItem.chartType === 'table') {
@@ -3763,7 +3764,7 @@ export default {
     },
     removeImg (e) {
       let {chartType} = this.selectedItem
-      if (chartType === 'image') {
+      if (chartType === 'image' || chartType === 'Newimage') {
         this.selectedItem.imgSrc = ''
         this.selectedItem.imgName = ''
       } else if (chartType === 'video') {
