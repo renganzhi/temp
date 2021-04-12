@@ -63,8 +63,15 @@ export default {
           this.player = new JSMpeg.Player(url, {
             canvas: this.$refs.mycanvas,
             loop: false,
+            autoplay: true,
+            disableGl: true,
+            disableWebAssembly: true,
+            onPlay: function () {
+              console.log('开始播放')
+            },
             preserveDrawingBuffer: true
           })
+          this.player.play()
         })
       } else {
         this.player && this.player.stop()
@@ -75,12 +82,11 @@ export default {
   beforeDestroy () {
     this.player && this.player.destroy()
   },
-  destroyed: function () {
-  }
+  destroyed: function () {}
 }
 </script>
 <style scoped>
-.JSMpeg canvas{
+.JSMpeg canvas {
   width: 100%;
   height: 100%;
 }
