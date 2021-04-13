@@ -8,11 +8,11 @@ import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
-import com.uxsino.commons.model.*;
 import com.uxsino.commons.model.RunStatus;
+import com.uxsino.commons.model.*;
 import com.uxsino.leaderview.model.alert.*;
-import com.uxsino.leaderview.model.business.*;
 import com.uxsino.leaderview.model.business.ManageStatus;
+import com.uxsino.leaderview.model.business.*;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.BusinessService;
@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -160,10 +159,10 @@ public class RpcProcessService {
     }
 
 
-    public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
+    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
         Map<String, Object> condition = new HashMap<>();
-        if(domainId != null){
-            condition.put("domainId", domainId);
+        if(domainIds != null){
+            condition.put("domainIds", domainIds);
         }
         if(baseNeClass != null){
             List<NeClass> neClassList = baseNeClass.getNeClass();
