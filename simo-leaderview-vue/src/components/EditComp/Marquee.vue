@@ -94,7 +94,7 @@ export default {
       this.textWidth = this.$refs.hideText.getBoundingClientRect().width + 20 // textarea 默认有padding10
       this.textHeight = this.$refs.hideText.getBoundingClientRect().height + 20
       var _transform = $(this.$el).parents('.full-height').css('transform')
-      if (!_transform) {
+      if (!_transform || _transform === 'none') {
         _transform = $('.paint-bg').css('transform')
       }
       if (_transform && _transform !== 'none') {
@@ -362,5 +362,8 @@ export default {
     top: 12px;
     transform: translateY(-100%);
   }
+}
+.text-wrap textarea{
+  padding: 0;
 }
 </style>
