@@ -2,8 +2,10 @@ package com.uxsino.leaderview.controller.alert;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.StringUtils;
 import com.uxsino.leaderview.service.api.AlertDataService;
 import com.uxsino.watcher.lib.annoation.Business;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Api(tags = { "告警-大屏展示数据接口" })
 @RestController
@@ -256,13 +260,21 @@ public class AlertDataController {
             JSONArray oldColumns = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("columns");
             JSONArray newRows = new JSONArray();
             JSONObject temp = new JSONObject();
-            ArrayList<String> alertTypes = new ArrayList<>();
-            for(Object object: oldColumns){
-                String alertType = (String)object;
-                if(!alertType.equals("资源类型") && !alertType.equals("资源名")) {
-                    alertTypes.add(alertType);
-                    temp.put(alertType, 0L);
+            ArrayList<String> keys = new ArrayList<>();
+            if(baseNeClass == null || StringUtils.isEmpty(baseNeClass)) {
+                BaseNeClass[] baseNeClasses = BaseNeClass.values();
+                for(BaseNeClass bnc: baseNeClasses){
+                    keys.add(bnc.getText());
                 }
+            } else {
+                BaseNeClass bnc = BaseNeClass.valueOf(baseNeClass);
+                List<NeClass> ncList = bnc.getNeClass();
+                for(NeClass nc: ncList){
+                    keys.add(nc.getText());
+                }
+            }
+            for(String key: keys){
+                temp.put(key, 0L);
             }
             /*
                 由于气泡图等固定列只有name和value两个，不能做到多个设备都分别统计多个告警类型，
@@ -270,14 +282,23 @@ public class AlertDataController {
              */
             for(Object object: oldRows){
                 JSONObject oldRow = (JSONObject)object;
-                for(String alertType: alertTypes){
-                    temp.put(alertType, (long)temp.get(alertType) + (long)oldRow.get(alertType));
+                String type = (String)oldRow.get("资源类型");
+                long count = (long)temp.get(type);
+                for(JSONObject.Entry entry: oldRow.entrySet()){
+                    String k = (String)entry.getKey();
+                    if(!k.equals("资源类型") && !k.equals("资源名")){
+                        //在没有指定哪种告警级别时则全部都加入
+                        if(alertLevel==null || StringUtils.isEmpty(alertLevel) || alertLevel.contains(k)){
+                            count += (long)entry.getValue();
+                        }
+                    }
                 }
+                temp.put(type, count);
             }
-            for(String alertType: alertTypes){
+            for(String key: keys){
                 JSONObject t = new JSONObject();
-                t.put("name", alertType);
-                t.put("value", temp.get(alertType));
+                t.put("name", key);
+                t.put("value", temp.get(key));
                 newRows.add(t);
             }
             json.put("rows", newRows);
