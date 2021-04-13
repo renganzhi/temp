@@ -13,6 +13,7 @@ export default{
     'fontSize': 10,
     'cityShow': false,
     'ifGradual': 'false',
+    'areaColor': '#121a33',
     'roam': true,
     'ctLegendShow': 'true',
     'ctLegendColor': '#fff',
@@ -87,102 +88,102 @@ export default{
             }
           ]
         }]
-      },
-      {
-        'name': '图表样式',
-        'tag': 'Hint',
-        'childoption': [{
-          'name': '地名可见性',
-          'key': 'cityShow',
-          'tag': 'select',
-          'options': [
-            {
-              'name': '显示',
-              'value': true
-            },
-            {
-              'name': '隐藏',
-              'value': false
-            }
-          ]
-        }, {
-          'name': '地名颜色',
-          'key': 'cityColor',
-          'parentKey': {
-            'cityShow': true
-          },
-          'tag': 'Color'
-        }, {
-          'name': '字号',
-          'key': 'fontSize',
-          'parentKey': {
-            'cityShow': true
-          },
-          'tag': 'select',
-          'options': [
-            {
-              'name': '8',
-              'value': 8
-            },
-            {
-              'name': '9',
-              'value': 9
-            },
-            {
-              'name': '10',
-              'value': 10
-            },
-            {
-              'name': '12',
-              'value': 12
-            },
-            {
-              'name': '14',
-              'value': 14
-            }
-          ]
-        // }, {
-        //   'name': '地图颜色',
-        //   'key': 'areaColor',
-        //   'tag': 'Color'
-        },
-        {
-          'name': '地图颜色',
-          'key': 'normalcolor',
-          'tag': 'GradientColor'
-        },
-        {
-          'name': '颜色渐变角度',
-          'key': 'colordirection',
-          'tag': 'select',
-          'options': [
-            {
-              'name': '0°',
-              'value': 0
-            },
-            {
-              'name': '45°',
-              'value': 1
-            },
-            {
-              'name': '90°',
-              'value': 2
-            },
-            {
-              'name': '135°',
-              'value': 3
-            }
-          ]
-        }, {
-          'name': '分界线颜色',
-          'key': 'borderColor',
-          'tag': 'Color'
-        }, {
-          'name': '配色',
-          'key': 'ColorArry',
-          'tag': 'ColorArray'
-        }]
       }
+      // {
+      //   'name': '图表样式',
+      //   'tag': 'Hint',
+      //   'childoption': [{
+      //     'name': '地名可见性',
+      //     'key': 'cityShow',
+      //     'tag': 'select',
+      //     'options': [
+      //       {
+      //         'name': '显示',
+      //         'value': true
+      //       },
+      //       {
+      //         'name': '隐藏',
+      //         'value': false
+      //       }
+      //     ]
+      //   }, {
+      //     'name': '地名颜色',
+      //     'key': 'cityColor',
+      //     'parentKey': {
+      //       'cityShow': true
+      //     },
+      //     'tag': 'Color'
+      //   }, {
+      //     'name': '字号',
+      //     'key': 'fontSize',
+      //     'parentKey': {
+      //       'cityShow': true
+      //     },
+      //     'tag': 'select',
+      //     'options': [
+      //       {
+      //         'name': '8',
+      //         'value': 8
+      //       },
+      //       {
+      //         'name': '9',
+      //         'value': 9
+      //       },
+      //       {
+      //         'name': '10',
+      //         'value': 10
+      //       },
+      //       {
+      //         'name': '12',
+      //         'value': 12
+      //       },
+      //       {
+      //         'name': '14',
+      //         'value': 14
+      //       }
+      //     ]
+      //   // }, {
+      //   //   'name': '地图颜色',
+      //   //   'key': 'areaColor',
+      //   //   'tag': 'Color'
+      //   },
+      //   {
+      //     'name': '地图颜色',
+      //     'key': 'normalcolor',
+      //     'tag': 'GradientColor'
+      //   },
+      //   {
+      //     'name': '颜色渐变角度',
+      //     'key': 'colordirection',
+      //     'tag': 'select',
+      //     'options': [
+      //       {
+      //         'name': '0°',
+      //         'value': 0
+      //       },
+      //       {
+      //         'name': '45°',
+      //         'value': 1
+      //       },
+      //       {
+      //         'name': '90°',
+      //         'value': 2
+      //       },
+      //       {
+      //         'name': '135°',
+      //         'value': 3
+      //       }
+      //     ]
+      //   }, {
+      //     'name': '分界线颜色',
+      //     'key': 'borderColor',
+      //     'tag': 'Color'
+      //   }, {
+      //     'name': '配色',
+      //     'key': 'ColorArry',
+      //     'tag': 'ColorArray'
+      //   }]
+      // }
     ]
   }
 }
