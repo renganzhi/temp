@@ -160,10 +160,10 @@ public class RpcProcessService {
     }
 
 
-    public List<ArrayList> neStatusStatistics(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
+    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
         Map<String, Object> condition = new HashMap<>();
-        if(domainId != null){
-            condition.put("domainId", domainId);
+        if(domainIds != null){
+            condition.put("domainIds", domainIds);
         }
         if(baseNeClass != null){
             List<NeClass> neClassList = baseNeClass.getNeClass();
