@@ -21,18 +21,18 @@ dependencies {
   testCompile "junit:junit:4.12"
 }
 
-task domesticNpmInstall(type: NpmTask) {
-  group = 'node'
-  args = ['ci']
+task domesticNpmInstall(type: YarnTask) {
+    group = 'node'
+    args = ['install', '--registry=https://registry.npm.taobao.org']
 }
 
 
-task npmBuild(type: NpmTask, dependsOn: domesticNpmInstall) {
+task npmBuild(type: YarnTask, dependsOn: domesticNpmInstall) {
   group = 'node'
   args = ['run', 'build']
 }
 
-task npmDev(type: NpmTask, dependsOn: domesticNpmInstall) {
+task npmDev(type: YarnTask, dependsOn: domesticNpmInstall) {
   group = 'node'
   args = ['run', 'dev']
 }
@@ -53,7 +53,6 @@ task copyDist {
   }
 }
 
-copyDist.dependsOn npmBuild
-jar.dependsOn copyDist
-
+tasks.build.dependsOn npmBuild
+tasks.copyDist.dependsOn build
 

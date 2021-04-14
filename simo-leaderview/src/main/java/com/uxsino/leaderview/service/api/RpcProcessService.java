@@ -18,7 +18,7 @@ import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.BusinessService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;

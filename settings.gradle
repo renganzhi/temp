@@ -1,1 +1,9 @@
-rootProject.name = 'simo-leaderview'
+rootProject.name = 'simo-view'
+
+apply from: 'config.gradle'
+apply from: '../simo-build/simo-setting.gradle'
+
+include ':simo-leaderview'
+project(':simo-leaderview').projectDir = new File(settingsDir, './simo-leaderview')
+include ':simo-leaderview-vue'
+project(':simo-leaderview-vue').projectDir = new File(settingsDir, './simo-leaderview-vue')

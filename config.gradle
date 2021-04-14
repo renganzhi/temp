@@ -1,0 +1,13 @@
+ext {
+    zipName = "simo-leaderview.zip"
+    services= ['simo-leaderview']
+    dependence = [
+            "simo-commons",
+            "simo-commons-db",
+            "simo-commons-authority",
+            "simo-commons-reactorq",
+            "simo-component-watcher",
+            'simo-commons-web-support',
+            "simo-collector-data"
+    ]
+}

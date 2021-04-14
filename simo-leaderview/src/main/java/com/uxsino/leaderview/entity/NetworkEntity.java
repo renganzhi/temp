@@ -2,7 +2,7 @@ package com.uxsino.leaderview.entity;
 
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.JsonObjectUserType;
-import com.uxsino.simo.networkentity.EntityInfo.SOURCE_TYPE;
+import com.uxsino.reactorq.model.SOURCE_TYPE;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
