@@ -1067,7 +1067,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/monitor/mapTopo/findMapLocationByUserId/true",
+                "dataUrl": "/monitor/mapTopo/findMapLocationByUserId",
                 "params": ["userId"]
             },
             {
@@ -1076,7 +1076,7 @@
                 "notNull": false,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/monitor/mapTopo/findMapLocationByUserId/false",
+                "dataUrl": "/monitor/mapTopo/findMapLocationByUserId",
                 "params": ["userId","pLocationCode"]
             }
         ]
