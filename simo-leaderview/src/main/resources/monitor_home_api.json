@@ -2429,26 +2429,7 @@
         "component": "monitor",
         "type": "DataFlow",
         "url": "/leaderview/monitor/getNELinkByCity",
-        "method": "get",
-        "params": [
-            {
-                "key": "displayMode",
-                "name": "选择绑定模式",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "经纬度",
-                        "value": "coordinate"
-                    },
-                    {
-                        "name": "地名",
-                        "value": "name"
-                    }
-                ]
-            }
-        ]
+        "method": "get"
     },
     {
         "key": "video_monitor_from_collector",
