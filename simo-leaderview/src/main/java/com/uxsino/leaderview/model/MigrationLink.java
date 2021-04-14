@@ -27,7 +27,7 @@ public class MigrationLink {
     /*
         value对应的是标题信息的值，这个值同样将会影响到迁徙线在地图上的颜色，同理终点实体的value没有作用
      */
-    private float value;
+    private double value;
 
     /*
         迁徙线上除了name一个值外，可能额外还有其他值也要展示，这些值与value不同，将按照 信息标题:对应值

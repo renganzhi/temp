@@ -2989,7 +2989,7 @@ public class MonitorDataService {
      * @return
      * @throws Exception 进行服务调用时产生的异常
      */
-    public JsonModel getNELinkByCity(String locationCode) throws Exception{
+    public JsonModel getNELinkByCity(String locationCode, String displayMode) throws Exception{
         //选择区域为不限时，默认返回全国地图的数据
         if(locationCode == null)
             locationCode = "100000";
@@ -3045,13 +3045,14 @@ public class MonitorDataService {
         ArrayList<MigrationStation> origins = new ArrayList<>();
         ArrayList<MigrationStation> terminations = new ArrayList<>();
         ArrayList<ArrayList<MigrationLink>> paths = new ArrayList<>();
-        float maxValue = 1.0f;
-        float minValue = 1.0f;
+        double maxValue = 1.0d;
+        double minValue = 1.0d;
         int linkCount = links.size();
         for(int i=0; i<linkCount; i++){
             ArrayList<MigrationLink> path = new ArrayList<>();
             path.add(new MigrationLink());
             path.add(new MigrationLink());
+            paths.add(path);
         }
         for(Object object: nodes){
             LinkedHashMap node = (LinkedHashMap)object;
@@ -3069,8 +3070,10 @@ public class MonitorDataService {
                     coord.get(2): 结点的value，在前端地图上将会影响该点的颜色样式
              */
             ArrayList<Float> coord = new ArrayList<>();
-            coord.add((float)values.get(0));
-            coord.add((float)values.get(1));
+            if (!"name".equals(displayMode)) {
+                coord.add((float)values.get(0));
+                coord.add((float)values.get(1));
+            }
             coord.add(1.0f);
             origin.setValue(coord);
             origin.setName((String)values.get(2));
@@ -3087,18 +3090,21 @@ public class MonitorDataService {
                 if(ip.equals(link.get("sourceIp"))){
                     temp = paths.get(i).get(0);
                     copyCoord = new ArrayList<>();
-                    copyCoord.add(coord.get(0));
-                    copyCoord.add(coord.get(1));
+                    //不会出现数组超界，因为这里取0、1的条件和那里加入0、1的条件相同，那边没加则这边也不会取
+                    if (!"name".equals(displayMode)) {
+                        copyCoord.add(coord.get(0));
+                        copyCoord.add(coord.get(1));
+                    }
                     temp.setCoord(copyCoord);
-                    temp.setName("下行流量");
-                    temp.setValue(((BigDecimal)node.get("downBps")).floatValue());
+                    temp.setName((String)values.get(2));
+                    temp.setValue((double)link.get("downBps"));
                     obj = new ArrayList<>();
-                    float upBps = ((BigDecimal)node.get("upBps")).floatValue();
+                    double upBps = (double)link.get("upBps");
                     if(maxValue<upBps)
                         maxValue = upBps;
                     if(minValue>upBps)
                         minValue = upBps;
-                    float downBps = ((BigDecimal)node.get("downBps")).floatValue();
+                    double downBps = (double)link.get("downBps");
                     if(maxValue<downBps)
                         maxValue = downBps;
                     if(minValue>downBps)
@@ -3109,12 +3115,16 @@ public class MonitorDataService {
                 }else if(ip.equals(link.get("targetIp"))){
                     temp = paths.get(i).get(1);
                     copyCoord = new ArrayList<>();
-                    copyCoord.add(coord.get(0));
-                    copyCoord.add(coord.get(1));
+                    if (!"name".equals(displayMode)) {
+                        copyCoord.add(coord.get(0));
+                        copyCoord.add(coord.get(1));
+                    }
                     temp.setCoord(copyCoord);
+                    temp.setName((String)values.get(2));
                     //如果这个点也是终点，则我们也应顺便把他加入到终点数组中
                     termination = new MigrationStation();
                     termination.setName((String)values.get(2));
+                    //上面进行了判断，如果是name模式则coord数组size=0，因此直接装入即可，不用再判断是否需要new ArrayList
                     termination.setValue(coord);
                     terminations.add(termination);
                 }
