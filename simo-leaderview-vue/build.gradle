@@ -68,13 +68,13 @@ task copyDist(dependsOn: npmBuild){
         }
     }
 
-    doLast {//整合到 simo-mc build 构建目录中
+    /*doLast {//整合到 simo-mc build 构建目录中
         copy {
             from "build/resources/main/templates"
             include "/**"
             into "$rootDir/../simo-public/build/libs/simo-mc/web-res"
         }
-    }
+    }*/
     doLast {// 整合到mc开发环境目录下
         copy {
             from "build/resources/main/templates"

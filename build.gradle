@@ -3,4 +3,4 @@ apply from: "../simo-build/simo-3.5.gradle"
 
 
 //构建前端
-project.tasks.simo.dependsOn(":simo-leaderview-vue:build")
+project.tasks.build.dependsOn(":simo-leaderview-vue:build")
