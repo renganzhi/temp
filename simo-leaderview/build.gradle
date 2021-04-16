@@ -17,6 +17,7 @@ dependencies {
     compile project(":simo-commons-reactorq")
     compile project(":simo-component-watcher")
     compile project(":simo-collector-data")
+    compile project(":simo-commons-web-support")
 
     compile "org.slf4j:slf4j-api:1.7.21"
     compile "org.projectlombok:lombok:1.18.16"
