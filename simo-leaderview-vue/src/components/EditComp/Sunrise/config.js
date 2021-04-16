@@ -28,11 +28,7 @@ export default {
             'value': 2
           }, {
             'name': 'Linux2',
-            'value': 5,
-            'children': [{
-              'name': '部件1',
-              'value': 2
-            }]
+            'value': 5
           }, {
             'name': 'Linux3',
             'value': 4
