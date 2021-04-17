@@ -462,7 +462,6 @@ export default {
       this.rawBottom = newBottom
       this.rawLeft = newLeft
       this.rawRight = newRight
-      console.log(this.rawTop, this.rawBottom, this.rawLeft, this.rawRight)
       this.$emit('bodymove', this.item, this.rect)
       if (this.insideFlag) {
         this.rect.id = this.item.id
