@@ -29026,7 +29026,9 @@ UE.ui = baidu.editor.ui = {};
                 '</div>' +
                 '<div id="##_message_holder" class="%%-messageholder"></div>' +
                 '</div>' +
-                '<div id="##_iframeholder" class="%%-iframeholder">' +
+                '<div style="max-height: 500px;overflow: auto;">' +
+                    '<div id="##_iframeholder" class="%%-iframeholder">' +
+                    '</div>' +
                 '</div>' +
                 //modify wdcount by matao
                 '<div id="##_bottombar" class="%%-bottomContainer"><table><tr>' +
