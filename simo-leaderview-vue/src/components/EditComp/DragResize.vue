@@ -54,6 +54,9 @@ export default {
     parentScaleX: {
       type: Number, default: 1
     },
+    scale: {
+      type: Number, default: 100
+    },
     parentScaleY: {
       type: Number, default: 1
     },
@@ -288,9 +291,11 @@ export default {
 
       if (this.stickDrag) {
         this.stickMove(ev)
+        console.log('222')
       }
       if (this.bodyDrag) {
         this.bodyMove(ev)
+        console.log('')
       }
     },
 
@@ -395,10 +400,10 @@ export default {
         y: (this.axis !== 'x' && this.axis !== 'none' ? stickStartPos.mouseY - pageY : 0) / this.parentScaleY
       }
 
-      let newTop = stickStartPos.top - delta.y
-      let newBottom = Number(stickStartPos.bottom) + Number(delta.y)
-      let newLeft = stickStartPos.left - delta.x
-      let newRight = Number(stickStartPos.right) + Number(delta.x)
+      let newTop = stickStartPos.top - delta.y / this.scale * 100
+      let newBottom = Number(stickStartPos.bottom) + Number(delta.y) / this.scale * 100
+      let newLeft = stickStartPos.left - delta.x / this.scale * 100
+      let newRight = Number(stickStartPos.right) + Number(delta.x) / this.scale * 100
 
       if (this.snapToGrid) {
         let alignTop = true
@@ -459,6 +464,7 @@ export default {
       this.rawBottom = newBottom
       this.rawLeft = newLeft
       this.rawRight = newRight
+      console.log(this.rawTop, this.rawBottom, this.rawLeft, this.rawRight)
       this.$emit('bodymove', this.item, this.rect)
       if (this.insideFlag) {
         this.rect.id = this.item.id
