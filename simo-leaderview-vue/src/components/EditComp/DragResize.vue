@@ -291,11 +291,9 @@ export default {
 
       if (this.stickDrag) {
         this.stickMove(ev)
-        console.log('222')
       }
       if (this.bodyDrag) {
         this.bodyMove(ev)
-        console.log('')
       }
     },
 
