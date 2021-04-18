@@ -19,17 +19,13 @@ import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.JSONUtils;
 import com.uxsino.commons.utils.SessionUtils;
-import com.uxsino.commons.utils.TimeUtils;
 import com.uxsino.leaderview.model.MigrationLink;
 import com.uxsino.leaderview.model.MigrationStation;
-import com.uxsino.leaderview.model.monitor.FieldModel;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
-
 import com.uxsino.leaderview.utils.MonitorUtils;
-import com.uxsino.simo.indicator.INDICATOR_TYPE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,10 +34,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
@@ -2433,6 +2427,8 @@ public class MonitorDataService {
         }
 
         JSONArray values = new JSONArray();
+        //当前时间作为聚合的末尾时间，左右侧指标该事件需要为一致
+        Date curDate = new Date();
         if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
                 (indicatorsRight + componentNameRight + fieldRight))) {
             IndicatorTable leftInd = rpcProcessService.getIndicatorInfoByName(indicatorsLeft);
@@ -2447,7 +2443,7 @@ public class MonitorDataService {
                 filedList.add(fieldLeft);
             }
             filedLabelMap.put(indicatorsLeft, label);
-            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period);
+            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period, curDate);
             if (ObjectUtils.isEmpty(leftValues)){
                 unit.add("");
                 values.addAll(new JSONArray());
@@ -2468,7 +2464,8 @@ public class MonitorDataService {
             filedList.add(fieldRight);
         }
         filedLabelMap.put(indicatorsRight, label);
-        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period);
+        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period,
+                curDate);
         if (ObjectUtils.isEmpty(rightValues)){
             unit.add("");
             values.addAll(new JSONArray());
@@ -2477,6 +2474,8 @@ public class MonitorDataService {
             values.addAll(rightValues.getJSONArray("result"));
         }
         List<String> cacheTime = Lists.newArrayList();
+        //日期升序处理
+        values = sortByDate(values);
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);
             JSONObject row = new JSONObject();
@@ -2485,7 +2484,16 @@ public class MonitorDataService {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
                 row.put("采集时间", fetchDate);
-                MonitorUtils.action(filter, o -> row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList))));
+                MonitorUtils.action(filter, o -> {
+                    row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList)));
+                    if (row.containsKey("identifier") && StringUtils.isNotBlank(row.getString("identifier"))) {
+                        String left = row.getString("identifier");
+                        row.put("identifier",
+                                left + (o.containsKey("identifier") ? "," + o.getString("identifier") : null));
+                    } else {
+                        row.put("identifier", o.containsKey("identifier") ? o.getString("identifier") : null);
+                    }
+                });
                 cacheTime.add(fetchDate);
                 rows.add(row);
             }
@@ -2497,8 +2505,28 @@ public class MonitorDataService {
         return new JsonModel().success(result);
     }
 
-    private JSONObject getHistoryValues(String neId, String indName, String component,
-                                       String field, IntervalType intervalType, Integer interval, IndPeriod period) throws Exception{
+    private JSONArray sortByDate(JSONArray values) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        values = values.stream().sorted((o1, o2) -> {
+            JSONObject obj1 = JSONObject.parseObject(JSON.toJSONString(o1));
+            JSONObject obj2 = JSONObject.parseObject(JSON.toJSONString(o2));
+            String date1 = obj1.getString("fetchDate");
+            String date2 = obj2.getString("fetchDate");
+            try {
+                Date dt1 = sdf.parse(date1);
+                Date dt2 = sdf.parse(date2);
+                //升序
+                return Long.compare(dt1.getTime(), dt2.getTime());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }).collect(Collectors.toCollection(JSONArray::new));
+        return values;
+    }
+
+    private JSONObject getHistoryValues(String neId, String indName, String component, String field, IntervalType intervalType, Integer interval, IndPeriod period,
+            Date curDate) throws Exception{
         // 健康度历史值特殊处理
         if ("healthy".equals(indName)){
             String[] neIds = new String[]{neId};
@@ -2537,6 +2565,7 @@ public class MonitorDataService {
         qo.setIndicatorTypes(indicatorTypeMap);
         qo.setIntervalType(intervalType);
         qo.setInterval(Long.valueOf(interval));
+        qo.setDateTo(curDate);
         if (!ObjectUtils.isEmpty(component)){
             qo.setIdentifiers(Lists.newArrayList(component));
         }
