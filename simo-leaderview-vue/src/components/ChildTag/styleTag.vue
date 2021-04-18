@@ -180,7 +180,7 @@
           </div>
           <label style="display: block; clear: both;">标题栏背景</label><br>
           <div class="form-group">
-            <div v-for="(item, index) in settingData.titleCase"
+            <div v-for="(item, index) in titleCase"
                   :key="index"
                   @click="chgImgSrc(item.imgSrc)"
                   :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
