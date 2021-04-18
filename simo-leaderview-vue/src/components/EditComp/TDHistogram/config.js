@@ -13,7 +13,8 @@ export default {
     'tooltipBackColor': '#57625d',
     'tooltipColor': '#fff',
     'tooltipSize': 14,
-    'grid3DFontSize': 16,
+    'grid3DFontSize': 12,
+    'grid3DDWFontSize': 12,
     'ifGradual': 'false',
     'grid3DlineSize': 16,
     'autoRotate': false,
@@ -222,6 +223,14 @@ export default {
             'showgrid3D': true
           },
           'tag': 'Color'
+        },
+        {
+          'name': '坐标单位大小',
+          'key': 'grid3DDWFontSize',
+          'parentKey': {
+            'showgrid3D': true
+          },
+          'tag': 'input'
         },
         {
           'name': '坐标文字大小',
