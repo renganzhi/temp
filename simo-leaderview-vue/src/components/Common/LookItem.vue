@@ -9,6 +9,9 @@
                :item="item"
                ref="childtext"
                :disabled="editable"></Vtextarea>
+    <template v-else-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item" :moving="true" :disabled="editable"></component>
+    </template>
     <Marquee v-else-if="item.chartType=='marquee'"
              :item="item"
              ref="childtext"
@@ -65,9 +68,6 @@
     <Player v-else-if="item.chartType=='video'"
             @palyErr="palyErr"
             :item="item"></Player>
-    <template v-else-if="dynamicList.includes(item.chartType)">
-      <component :is="capitalize(item.chartType)" :item="item" :moving="true" :disabled="editable"></component>
-    </template>
     <Vchart v-else
             :item="item"></Vchart>
   </div>
