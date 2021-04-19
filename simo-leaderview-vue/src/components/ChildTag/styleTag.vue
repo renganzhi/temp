@@ -360,10 +360,10 @@ export default {
       this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
         const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
-        this.$parent.$parent.$parent.saveHistory()
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
+        _this.$parent.$parent.$parent.saveHistory()
       })
       e.target.value = ''
     },
