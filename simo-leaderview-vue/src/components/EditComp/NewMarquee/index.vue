@@ -81,9 +81,9 @@ export default {
       if (!val) {
         val = this.item.speed
       }
-      if (val === 1) {
+      if (val === '1') {
         this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 70)
-      } else if (val === 3) {
+      } else if (val === '3') {
         this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 30)
       } else {
         this.speed = parseFloat((Number(this.textWidth) + Number(this.item.width)) / 50)
