@@ -59,7 +59,7 @@ export default {
     ],
     'chartData': {
       'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
-      'unit': '%',
+      'unit': ['%', '%'],
       'rows': [{
         '日期': '2020-01-01',
         'CPU核心利用率': 15,

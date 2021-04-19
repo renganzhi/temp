@@ -308,7 +308,7 @@ export default {
                 if (typeof (value * 1) !== 'number') {
                   value = '--'
                 }
-                showHtm += name + '：' + value + (this.item.chartData.unit || '') + '<br>'
+                showHtm += name + '：' + value + (this.item.chartData.unit[i] || this.item.chartData.unit[0] || this.item.chartData.unit || '') + '<br>'
               }
             })
             return showHtm
