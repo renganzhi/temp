@@ -95,6 +95,8 @@ export default {
             name: myData.columns[index],
             data: data,
             type: 'bar',
+            barWidth: this.item.barWidth, // 柱图宽度
+            barGap: this.item.barGap,
             itemStyle: {
               normal: {
                 color: this.item.ifGradual === 'true' ? {
