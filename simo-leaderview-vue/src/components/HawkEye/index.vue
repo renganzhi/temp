@@ -187,41 +187,45 @@ export default {
           return false
         }
       }
-      $('#mainEdit-edit .main_video')
-        .find('video')
-        .css('opacity', 0)
-      $('#mainEdit-edit .main_video').append(
-        $('<img>')
-          .addClass('monitp')
+      if ($('#mainEdit-edit .main_video').length > 0) {
+        $('#mainEdit-edit .main_video')
+          .find('video')
+          .css('opacity', 0)
+        $('#mainEdit-edit .main_video').append(
+          $('<img>')
+            .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
-          .css({
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0
-          })
-      )
-      $('#mainEdit-edit .JSMpeg')
-        .find('canvas')
-        .css('opacity', 0)
-      $('#mainEdit-edit .JSMpeg').append(
-        $('<img>')
-          .addClass('monitp')
+            .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+            .css({
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0
+            })
+        )
+      }
+      if ($('#mainEdit-edit .JSMpeg').length > 0) {
+        $('#mainEdit-edit .JSMpeg')
+          .find('canvas')
+          .css('opacity', 0)
+        $('#mainEdit-edit .JSMpeg').append(
+          $('<img>')
+            .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
-          .css({
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0
-          })
-      )
+            .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+            .css({
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0
+            })
+        )
+      }
       $('.getPicSpan').show()
       html2canvas(document.querySelector('.paint-bg'), {
-        allowTaint: true, // 允许加载跨域资源
+        allowTaint: false, // 允许加载跨域资源
         with: document.querySelector('.paint-bg').clientWidth,
         backgroundColor: 'transparent', // 设置背景透明
         height: document.querySelector('.paint-bg').clientHeight,

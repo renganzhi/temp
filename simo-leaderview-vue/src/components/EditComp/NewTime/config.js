@@ -108,19 +108,19 @@ export default{
             'options': [
               {
                 'name': '时分秒',
-                'value': 1
+                'value': '1'
               },
               {
                 'name': '年月日',
-                'value': 2
+                'value': '2'
               },
               {
                 'name': '年月日+时分',
-                'value': 3
+                'value': '3'
               },
               {
                 'name': '年月日+时分秒',
-                'value': 4
+                'value': '4'
               }
             ]
           }
