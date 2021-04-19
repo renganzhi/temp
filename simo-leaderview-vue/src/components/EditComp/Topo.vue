@@ -12,6 +12,7 @@
 import MainTp from '#/js/topo/mainTopo'
 import initBusTp from '#/js/businessTopo/businessTopostart'
 import initMapTopo from '#/js/newMapTopo/topostart'
+import { gbs } from '@/config/settings'
 // import mapTopology from '#/js/newMapTopo/topology'
 
 export default {
@@ -78,12 +79,31 @@ export default {
     }
   },
   mounted: function () {
-    if (this.item.tptype !== 'maptp' && !this.item.tpId) {
+    var _this = this
+    if (_this.item.tptype !== 'maptp' && !this.item.tpId) {
     } else {
       this.initTp()
       if (this.item.cityColor) {
         $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
       }
+      if (_this.item.chartData) {
+        let dataArry = {
+          userId: _this.item.chartData.userId,
+          pLocationCode: `${_this.item.chartData.mapCode};${_this.item.chartData.mpId}`,
+          mapLocationId: ''
+        }
+        $.ajax({
+          url: gbs.host + '/monitor/mapTopo/getMapTopoParams', // 第三方的ur已经拼接好host
+          data: dataArry,
+          type: 'get',
+          cache: false,
+          ascyn: false,
+          success: function (res) {
+            _this.item.chartData = res.obj
+          }
+        })
+      }
+      console.log(this.item.chartData)
     }
   },
   watch: {
