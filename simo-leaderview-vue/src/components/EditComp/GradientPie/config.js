@@ -57,7 +57,7 @@ export default {
   'styles': {
     'base': [
       {
-        'name': '基础属性',
+        'name': '图元配置',
         'tag': 'Hint',
         'childoption': [{
           'name': '开始方向',
@@ -147,10 +147,10 @@ export default {
           'tag': 'input'
         } ]
       }, {
-        'name': '注释配置',
+        'name': '图例配置',
         'tag': 'Hint',
         'childoption': [ {
-          'name': '是否显示注释',
+          'name': '是否显示图例',
           'key': 'tipsNotes',
           'tag': 'select',
           'options': [
@@ -164,7 +164,7 @@ export default {
             }
           ]
         }, {
-          'name': '注释类型',
+          'name': '图例类型',
           'key': 'NotesType',
           'tag': 'select',
           'parentKey': {
@@ -185,28 +185,28 @@ export default {
             }
           ]
         }, {
-          'name': '注释字体颜色',
+          'name': '图例字体颜色',
           'key': 'NotesColor',
           'parentKey': {
             'tipsNotes': true
           },
           'tag': 'Color'
         }, {
-          'name': '注释字体大小',
+          'name': '图例字体大小',
           'key': 'NotesSize',
           'parentKey': {
             'tipsNotes': true
           },
           'tag': 'input'
         }, {
-          'name': '注释距上距离',
+          'name': '图例距上距离',
           'key': 'NotesToTop',
           'parentKey': {
             'tipsNotes': true
           },
           'tag': 'input'
         }, {
-          'name': '注释距左距离',
+          'name': '图例距左距离',
           'key': 'NotesToLeft',
           'parentKey': {
             'tipsNotes': true
@@ -214,7 +214,7 @@ export default {
           'tag': 'input'
         } ]
       }, {
-        'name': '注释配置',
+        'name': '颜色配置',
         'tag': 'Hint',
         'childoption': [{
           'name': '颜色类型',
