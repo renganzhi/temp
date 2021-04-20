@@ -216,6 +216,7 @@
                        :parentW="paintObj.width"
                        :parentH="paintObj.height"
                        :editable="editable"
+                       :scale="paintObj.scale"
                        @draged="draged"
                        @selected="selected"
                        @resized="resized"

@@ -4,10 +4,13 @@ export default {
     'imgClass': 'icon-n-grouphistogram',
     'chartType': 'NewGroupHistogram',
     'ifGradual': 'false',
-    'splitShow': 'false',
-    'splitColor': '#333849',
+    'splitShow': false,
+    'splitColor': 'rgba(108, 108, 108, 0.51)',
+    'ctLegendShow': true,
     'splitSize': 1,
     'ctLegendSize': '16',
+    'barWidth': 7,
+    'barGap': 0.1,
     'ctLegendColor': '#666f8b',
     'axisLabelSize': '14',
     'DanweiColor': '#828bac',
@@ -26,9 +29,9 @@ export default {
     'rotate': 0,
     'formatterType': '0',
     'ScatterColor': [
-      '#6fcaf7',
-      '#8feee5',
-      '#fa8d76',
+      '#37a2da',
+      '#30a4f9',
+      '#5cfbff',
       '#af8af3',
       '#f5739c',
       'ffdf91',
@@ -92,6 +95,43 @@ export default {
         'tag': 'Hint',
         'childoption': [
           {
+            'name': '柱体宽度',
+            'key': 'barWidth',
+            'tag': 'input',
+            'min': 0
+          },
+          {
+            'name': '柱体间距',
+            'key': 'barGap',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '0',
+                'value': 0
+              },
+              {
+                'name': '0.1',
+                'value': 0.1
+              },
+              {
+                'name': '0.2',
+                'value': 0.2
+              },
+              {
+                'name': '0.4',
+                'value': 0.4
+              },
+              {
+                'name': '0.6',
+                'value': 0.6
+              },
+              {
+                'name': '1',
+                'value': 1
+              }
+            ]
+          },
+          {
             'name': '图例可见性',
             'key': 'ctLegendShow',
             'tag': 'select',
@@ -114,6 +154,14 @@ export default {
             },
             'tag': 'select',
             'options': [
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
               {
                 'name': '14',
                 'value': 14
@@ -143,6 +191,9 @@ export default {
           {
             'name': '图例字颜色',
             'key': 'ctLegendColor',
+            'parentKey': {
+              'ctLegendShow': true
+            },
             'tag': 'Color'
           },
           {

@@ -79,7 +79,6 @@ export default {
     initCanvas () {
       createBubble(this.item.width, this.item.height, this.chartData).then(
         canvas => {
-          console.log(canvas)
           const imgUrl = canvas.toDataURL('image/png')
           let Img = document.createElement('img')
           Img.style.width = '100%'

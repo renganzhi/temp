@@ -8,6 +8,7 @@
               :key="item.id"
               :parentW="parentW"
               :parentH="parentH"
+              :scale="scale"
               :w="Number(item.width)"
               :h="Number(item.height)"
               :x.sync="item.x"
@@ -27,6 +28,9 @@
                :item="item"
                ref="childtext"
                :disabled="editable"></Vtextarea>
+    <template v-else-if="dynamicList.includes(item.chartType)">
+      <component :is="capitalize(item.chartType)" :item="item" :moving="false"></component>
+    </template>
     <Marquee v-else-if="item.chartType=='marquee'"
              :item="item"
              ref="childtext"
@@ -83,9 +87,6 @@
     <Player v-else-if="item.chartType=='video'"
             @palyErr="palyErr"
             :item="item"></Player>
-    <template v-else-if="dynamicList.includes(item.chartType)">
-      <component :is="capitalize(item.chartType)" :item="item" :moving="false"></component>
-    </template>
     <Vchart v-else
             :item="item"></Vchart>
   </DragResize>
@@ -98,7 +99,7 @@ import { capitalize } from '@/utils'
 
 export default {
   name: 'dragBox',
-  props: ['item', 'editable', 'index', 'parentW', 'parentH'],
+  props: ['item', 'editable', 'index', 'parentW', 'parentH', 'scale'],
   components: {
     DragResize,
     ...components

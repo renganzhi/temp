@@ -54,6 +54,9 @@ export default {
     parentScaleX: {
       type: Number, default: 1
     },
+    scale: {
+      type: Number, default: 100
+    },
     parentScaleY: {
       type: Number, default: 1
     },
@@ -395,10 +398,10 @@ export default {
         y: (this.axis !== 'x' && this.axis !== 'none' ? stickStartPos.mouseY - pageY : 0) / this.parentScaleY
       }
 
-      let newTop = stickStartPos.top - delta.y
-      let newBottom = Number(stickStartPos.bottom) + Number(delta.y)
-      let newLeft = stickStartPos.left - delta.x
-      let newRight = Number(stickStartPos.right) + Number(delta.x)
+      let newTop = stickStartPos.top - delta.y / this.scale * 100
+      let newBottom = Number(stickStartPos.bottom) + Number(delta.y) / this.scale * 100
+      let newLeft = stickStartPos.left - delta.x / this.scale * 100
+      let newRight = Number(stickStartPos.right) + Number(delta.x) / this.scale * 100
 
       if (this.snapToGrid) {
         let alignTop = true
