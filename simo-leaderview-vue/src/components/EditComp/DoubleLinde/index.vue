@@ -302,13 +302,14 @@ export default {
             let showHtm = time + '<br>'
             params.forEach((element, i) => {
               let name = element.seriesName
+              let index = this.item.chartData.columns.indexOf(name) - 1
               if (nameArr.indexOf(name) === -1) {
                 nameArr.push(name)
                 let value = element.value
                 if (typeof (value * 1) !== 'number') {
                   value = '--'
                 }
-                showHtm += name + '：' + value + (this.item.chartData.unit[i] || '') + '<br>'
+                showHtm += name + '：' + value + (this.item.chartData.unit[index] || '') + '<br>'
               }
             })
             return showHtm
