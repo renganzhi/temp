@@ -11,7 +11,7 @@
             <th v-for="(title, index) in item.chartData.columns"
                 :key="index"
                 :style="[thStyle,heightLinght,widthLinght(index)]"
-                v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
+                v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"           
               >{{title}}</th>
           </tr>
         </thead>
@@ -264,7 +264,6 @@ export default {
       if (this.item.AlarmField) {
         if (this.item.AlarmType === 'chart') {
           if (this.item.AlarmChart !== '' && JSON.stringify(this.item.chartData.rows[index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
-            console.log(11)
             return {
               'color': this.item.AlarmColor + ' !important'
             }
