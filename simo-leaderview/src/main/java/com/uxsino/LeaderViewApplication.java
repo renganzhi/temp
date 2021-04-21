@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -17,7 +18,7 @@ import com.uxsino.commons.db.repository.impl.CustomRepositoryImpl;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {MongoAutoConfiguration.class})
 @EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
 @EnableRedisHttpSession
 @EnableEurekaClient
