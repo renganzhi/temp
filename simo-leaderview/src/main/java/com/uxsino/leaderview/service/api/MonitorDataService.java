@@ -2468,7 +2468,7 @@ public class MonitorDataService {
             //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
             //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
             filedLabelMap.put(indicatorsLeft + (componentNameLeft==null?"":componentNameLeft) + (fieldLeft==null?"":fieldLeft), label);
-            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period);
+            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period, new Date());
             if (ObjectUtils.isEmpty(leftValues)){
                 unit.add("");
                 values.addAll(new JSONArray());
@@ -2501,7 +2501,7 @@ public class MonitorDataService {
         //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
         //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
         filedLabelMap.put(indicatorsRight + (componentNameRight==null?"":componentNameRight) + (fieldRight==null?"":fieldRight), label);
-        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period);
+        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period, new Date());
         if (ObjectUtils.isEmpty(rightValues)){
             unit.add("");
             values.addAll(new JSONArray());
