@@ -21,9 +21,12 @@ import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
+import com.uxsino.leaderview.service.api.ImageService;
 import com.uxsino.leaderview.utils.ZipUtils;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hpsf.Thumbnail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +63,9 @@ public class HomePageController {
 
 	private final int MIN_PAGE_INDEX = 1;
 
-	private final List<String> IMG_EXTENSION_LIST = Lists
-			.newArrayList("bmp,jpg,jpeg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,wmf,webp,jfif"
-					.split(","));
+    private final List<String> IMG_EXTENSION_LIST = Lists
+            .newArrayList("bmp,jpg,jpeg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,wmf,webp,jfif"
+                    .split(","));
 
 	private final Map<String, String> CONTENT_TYPE_MAP = new HashMap<String, String>() {
 		private static final long serialVersionUID = 1L;
@@ -103,6 +106,9 @@ public class HomePageController {
 
 	@Autowired
 	private ImpExpService impExpService;
+
+	@Autowired
+    private ImageService imageService;
 
 	@Value("${datasource.source:#{null}}")
 	private String datasource;
@@ -744,39 +750,67 @@ public class HomePageController {
 						 @ApiParam(value = "是否是用户自定义图片") @PathVariable Boolean isCustom,
 						 HttpServletResponse resp) {
 
-		byte[] data;
-		String ext;
+		imageService.getImg(id, isCustom,
+                (dataWrap, ext) -> {
+                    try {
+                        resp.setContentType(CONTENT_TYPE_MAP.getOrDefault(ext, "image/png"));
+                        ServletOutputStream out = resp.getOutputStream();
+                        byte[] data = new byte[dataWrap.length];
+                        for(int i=0; i<dataWrap.length; i++)
+                            data[i] = dataWrap[i];
+                        out.write(data);
+                        out.flush();
+                    } catch (IOException e) {
+                        logger.error("下载图片失败:" + id, e);
+                    }
+                }
+        );
+	}
 
-		if (isCustom) {
-			UploadedFile f = uploadedFileService.findById(id);
-			if(f == null){
-				logger.error("文件 -> {} not exists ！", id);
-				return;
-			}
-			ext = f.getExtension();
-			data = f.getFileStream();
-		}else {
-			HomeTemplateImg f = templateImgService.getById(id);
-			if(f == null){
-				logger.error("文件 -> {} not exists ！", id);
-				return;
-			}
-			ext = f.getExtension();
-			data = f.getFileStream();
-		}
+	/**
+	 * 根据文件ID获取图片（鹰眼重新获取图片需要压缩）
+	 * @param id 文件ID
+	 * @param resp 响应消息
+	 */
+	@ApiOperation("根据文件ID获取图片")
+	@RequestMapping(value = "/getImg/{isCustom}/{id}/HawEye/{quality}", method = RequestMethod.GET)
+	public void getImageForHawEye(@ApiParam("文件ID") @PathVariable Long id,
+						 @ApiParam(value = "是否是用户自定义图片") @PathVariable Boolean isCustom,
+						 @PathVariable float quality,
+						 HttpServletResponse resp) {
 
-		if (!IMG_EXTENSION_LIST.contains(ext)) {
-			logger.error("文件 -> {} 非图片！", id);
-			return;
-		}
-		try {
-			resp.setContentType(CONTENT_TYPE_MAP.getOrDefault(ext, "image/png"));
-			ServletOutputStream out = resp.getOutputStream();
-			out.write(data);
-			out.flush();
-		} catch (IOException e) {
-			logger.error("下载图片失败:" + id, e);
-		}
+        imageService.getImg(id, isCustom,
+                (dataWrap, ext) -> {
+                    byte[] data = new byte[dataWrap.length];
+                    for(int i=0; i<dataWrap.length; i++)
+                        data[i] = dataWrap[i];
+                    try {
+                        if(dataWrap.length/1024 < 1000){
+                            resp.setContentType("image/png");
+                            OutputStream os = resp.getOutputStream();
+                            os.write(data);
+                            os.flush();
+                        }else {
+                            resp.setContentType("image/jpeg");
+                            long past = System.currentTimeMillis();
+                            Thumbnails.of(new ByteArrayInputStream(data))
+                                // Transfer to jpeg format, so that the function 'outputQuality'
+                                // can take effect.
+                                .outputFormat("jpeg")
+                                // Under the format of 'jpeg', the less quality of photo is set,
+                                // the lower definition of the image is, and also the smaller
+                                // data size of the photo is.
+                                .scale(1.0)
+                                .outputQuality(quality)
+                                .toOutputStream(resp.getOutputStream());
+                            long now = System.currentTimeMillis();
+                            logger.info("压缩该图片花费时间：{}ms", now-past);
+                        }
+                    } catch (IOException e) {
+                        logger.error("下载图片失败:" + id, e);
+                    }
+                }
+        );
 	}
 
 	/**

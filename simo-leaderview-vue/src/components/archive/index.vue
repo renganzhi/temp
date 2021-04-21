@@ -397,6 +397,9 @@ html[data-theme="default"] {
 
     }
   }
+  .is-opened .el-submenu__title{
+        background: #2e3444 !important;
+  }
   .cs-item-container ul{
     width: 180px;
     display: flex;
