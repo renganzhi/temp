@@ -73,6 +73,9 @@ public class MonitorDataService {
     @Autowired
     private MCService mcService;
 
+    @Autowired
+    private MonitorDataParamsService monitorDataParamsService;
+
     /**
      * 按类型统计资源数量
      * @param domainId 域ID
@@ -781,7 +784,9 @@ public class MonitorDataService {
     }
 
 //    private JSONObject getValueJSON(JSON indicatorValues) {
-//        return MonitorUtils.getValueJSON(indicatorValues);
+//        return MonitorUtils.getVa
+//
+// lueJSON(indicatorValues);
 //    }
 
 //    private JSONObject getValueJSON(JSON indicatorValues, String componentName) {
@@ -2404,6 +2409,14 @@ public class MonitorDataService {
                                               String fieldLeft, String indicatorsRight, String componentNameRight,
                                               String fieldRight, IndPeriod period) throws Exception{
         // 由于双轴曲线没有可选的时间间隔,故统计时段为天、周、月时的时间间隔分别为5分钟、20分钟、60分钟
+
+        //由于会出现indicatorName和fieldName相同但ComponentName不同的情况，如果只将indicatorName+fieldName
+        //作为key传给前端，当出现上述情况时就会导致同样的key有不同的值，前端无法区分，因此需要将中间的component
+        //Name也加入，所以必须要依据给出的componentName代码来查到其名字。
+        JsonModel leftJsonModel = monitorDataParamsService.getComponentName(new String[]{neId}, indicatorsLeft);
+        JSONArray leftComponentNameKVs = (JSONArray) leftJsonModel.getObj();
+        JsonModel rightJsonModel = monitorDataParamsService.getComponentName(new String[]{neId}, indicatorsRight);
+        JSONArray rightComponentNameKVs = (JSONArray) rightJsonModel.getObj();
         IntervalType intervalType = IntervalType.minute;
         Integer interval = 5;
         if (Objects.equals("_1week", period.name())) {
@@ -2432,7 +2445,16 @@ public class MonitorDataService {
         if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
                 (indicatorsRight + componentNameRight + fieldRight))) {
             IndicatorTable leftInd = rpcProcessService.getIndicatorInfoByName(indicatorsLeft);
-            String label = getLabel(leftInd, fieldLeft);
+            String[] leftTemp = getLabel(leftInd, fieldLeft).split(":");
+            String leftComponentNameString = null;
+            for(Object obj: leftComponentNameKVs){
+                JSONObject map = (JSONObject) obj;
+                if(componentNameLeft.equals(map.get("value"))) {
+                    leftComponentNameString = (String)map.get("name");
+                    break;
+                }
+            }
+            String label = leftTemp[0] + (leftComponentNameString==null? "": (":" + leftComponentNameString)) + ((leftTemp.length==1)? "": (":" + leftTemp[1]));
             columns.add(label);
             if ("healthy".equals(indicatorsLeft)){
                 filedList.add(indicatorsLeft);
@@ -2442,8 +2464,11 @@ public class MonitorDataService {
                 }
                 filedList.add(fieldLeft);
             }
-            filedLabelMap.put(indicatorsLeft, label);
-            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period, curDate);
+            //利用代码来区分名字，一定是将indicator + componentName + fieldName组合在一起来区分左右指标，
+            //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
+            //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
+            filedLabelMap.put(indicatorsLeft + (componentNameLeft==null?"":componentNameLeft) + (fieldLeft==null?"":fieldLeft), label);
+            leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period, new Date());
             if (ObjectUtils.isEmpty(leftValues)){
                 unit.add("");
                 values.addAll(new JSONArray());
@@ -2453,7 +2478,16 @@ public class MonitorDataService {
             }
         }
         IndicatorTable rightInd = rpcProcessService.getIndicatorInfoByName(indicatorsRight);
-        String label = getLabel(rightInd, fieldRight);
+        String[] rightTemp = getLabel(rightInd, fieldRight).split(":");
+        String rightComponentNameString = null;
+        for(Object obj: rightComponentNameKVs){
+            JSONObject map = (JSONObject) obj;
+            if(componentNameRight.equals(map.get("value"))) {
+                rightComponentNameString = (String)map.get("name");
+                break;
+            }
+        }
+        String label = rightTemp[0] + (rightComponentNameString==null? "": (":" + rightComponentNameString)) + ((rightTemp.length==1)? "": (":" + rightTemp[1]));
         columns.add(label);
         if ("healthy".equals(indicatorsRight)){
             filedList.add(indicatorsRight);
@@ -2463,9 +2497,11 @@ public class MonitorDataService {
             }
             filedList.add(fieldRight);
         }
-        filedLabelMap.put(indicatorsRight, label);
-        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period,
-                curDate);
+        //利用代码来区分名字，一定是将indicator + componentName + fieldName组合在一起来区分左右指标，
+        //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
+        //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
+        filedLabelMap.put(indicatorsRight + (componentNameRight==null?"":componentNameRight) + (fieldRight==null?"":fieldRight), label);
+        rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period, new Date());
         if (ObjectUtils.isEmpty(rightValues)){
             unit.add("");
             values.addAll(new JSONArray());
@@ -2484,16 +2520,57 @@ public class MonitorDataService {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
                 row.put("采集时间", fetchDate);
-                MonitorUtils.action(filter, o -> {
-                    row.put( filedLabelMap.get(o.getString("indicator_name")), o.getString(MonitorUtils.getValueKey(o, filedList)));
-                    if (row.containsKey("identifier") && StringUtils.isNotBlank(row.getString("identifier"))) {
-                        String left = row.getString("identifier");
-                        row.put("identifier",
-                                left + (o.containsKey("identifier") ? "," + o.getString("identifier") : null));
-                    } else {
-                        row.put("identifier", o.containsKey("identifier") ? o.getString("identifier") : null);
+                /*
+                    如果依照时间作为划分标准，则每一次循环filter的size一定是<=2，因为这是双轴曲线，也就是最多
+                    在同一时间只能由两个目标。这里会出现两种极端情况：
+                    1.某一次循环只有一个指标有值，另一个指标没有值，也就是filter的size=1的情况，这种情况下如·
+                      果直接将row返回，则前端在该时间点上另一个没有的指标会出现undefined；
+                    2.filter的size=2，但是其中某一个指标没有fieldName作为键的值（因为返回的数据结构中，这个
+                      指标的值对应的键实际上就是这个指标的fieldName，但是有些情况下可能会出现filter中有这个
+                      指标，但是这个指标却没有对应的fieldName作为键的值，因此会导致组合出来的key对应不上
+                      filedLabelMap中的任何键，就会导致在这个row中会装有一个null->null，在该方法返回前不会
+                      有任何问题，但是返回到前端时会抛出异常表明key不能为null
+                    为了处理上面的两种极端情况，我们需要用一个count对当前row的指标计数，即表示当前行不为null的
+                    指标数量，如果=2，代表该时间点两个指标都有值，则不作任何处理；如果==1，则代表要么filter中
+                    本来就只有一个指标，要么代表其中一个指标monitor那边不给值，我们就需要在循环中将有值的那个
+                    指标的key用变量existDataKey保存起来，在下面对map进行遍历时，如果第一个key=existDataKey，
+                    则证明是第二个key对应的指标没有值，则继续循环到第二个key然后把0值加入到row；如果是第二个key
+                    =existDataKey，则证明第一个key没有值，则直接把第一个加入row后break，因为第二个指标肯定有
+                    值；如果count=0，则两个指标都没有值，就遍历一遍filedLabelMap，全部加入0值。
+                */
+                int count = 0;
+                String existDataKey = null;
+                for(Object o: filter){
+                    count++;
+                    JSONObject object = (JSONObject)o;
+                    String key = object.getString("indicator_name");
+                    String identifier = object.getString("identifier");
+                    key += identifier==null? "": identifier;
+                    if(object.getString(fieldLeft) != null){
+                        key += fieldLeft;
+                    }else if(object.getString(fieldRight) != null){
+                        key += fieldRight;
                     }
-                });
+                    String tryNullKey = filedLabelMap.get(key);
+                    if(tryNullKey == null) {
+                        count--;
+                        continue;
+                    }
+                    row.put( tryNullKey, object.getString(MonitorUtils.getValueKey(object, filedList)));
+                    existDataKey = key;
+                }
+                if(count == 1){
+                    for(Map.Entry<String, String> entry: filedLabelMap.entrySet()){
+                        if(!entry.getKey().equals(existDataKey)){
+                            row.put(entry.getValue(), "0");
+                            break;
+                        }
+                    }
+                }else if(count == 0){
+                    for(Map.Entry<String, String> entry: filedLabelMap.entrySet()){
+                        row.put(entry.getValue(), "0");
+                    }
+                }
                 cacheTime.add(fetchDate);
                 rows.add(row);
             }
