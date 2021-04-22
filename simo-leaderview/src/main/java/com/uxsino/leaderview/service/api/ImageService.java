@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 
 @Service
@@ -23,23 +21,20 @@ public class ImageService {
             .newArrayList("bmp,jpg,jpeg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,wmf,webp,jfif"
                     .split(","));
 
-    private final Map<String, String> CONTENT_TYPE_MAP = new HashMap<String, String>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put("gif", "image/gif");
-            put("jpg", "image/jpeg");
-            put("jpeg", "image/jpeg");
-            put("png", "image/png");
-        }
-    };
-
     @Autowired
     private UploadedFileService uploadedFileService;
 
     @Autowired
     private HomeTemplateImgService templateImgService;
 
-    public void getImg(long id, boolean isCustom, BiConsumer<Byte[], String> action){
+    /**
+     *
+     * @param id
+     * @param isCustom
+     * @param isCompressed
+     * @param action 用于不同接口对图片进行不同的处理，比如直接返回、加水印等其他处理
+     */
+    public void getImg(long id, boolean isCustom, boolean isCompressed, BiConsumer<Byte[], String> action){
         byte[] data;
         String ext;
 
@@ -50,7 +45,7 @@ public class ImageService {
                 return;
             }
             ext = f.getExtension();
-            data = f.getFileStream();
+            data = isCompressed? f.getUploadedFileCompressed().getCompressedFileStream(): f.getFileStream();
         }else {
             HomeTemplateImg f = templateImgService.getById(id);
             if(f == null){
@@ -58,7 +53,8 @@ public class ImageService {
                 return;
             }
             ext = f.getExtension();
-            data = f.getFileStream();
+            data = isCompressed? f.getHomeTemplateImgCompressed().getCompressedFileStream(): f.getFileStream();
+            data = data==null? f.getFileStream(): data;
         }
 
         if (!IMG_EXTENSION_LIST.contains(ext)) {
@@ -70,6 +66,6 @@ public class ImageService {
         for(int i=0; i<data.length; i++)
             dataWrap[i] = data[i];
 
-        action.accept(dataWrap, CONTENT_TYPE_MAP.getOrDefault(ext, "image/png"));
+        action.accept(dataWrap, ext);
     }
 }
