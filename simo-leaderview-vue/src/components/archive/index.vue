@@ -1,6 +1,6 @@
 <template>
   <div class="archive" :id="tapsStation">
-      <el-menu class="el-menu-vertical-demo" collapse="true"
+      <el-menu class="el-menu-vertical-demo" collapse
         text-color="rgb(202, 214, 221)"
         active-text-color="#00a0e9"
       >
@@ -183,6 +183,7 @@ export default {
   props: ['tapsStation'],
   data () {
     return {
+      index:'',
       tabPosition: 'left',
       compsArr: {
         coordinate,
@@ -396,6 +397,9 @@ html[data-theme="default"] {
       }
 
     }
+  }
+  .is-opened .el-submenu__title{
+        background: #2e3444 !important;
   }
   .cs-item-container ul{
     width: 180px;

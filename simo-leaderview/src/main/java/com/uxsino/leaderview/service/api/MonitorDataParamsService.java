@@ -14,26 +14,22 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
-import com.uxsino.leaderview.model.monitor.*;
+import com.uxsino.leaderview.model.monitor.IndicatorTable;
+import com.uxsino.leaderview.model.monitor.NetworkEntity;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
+import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.reactorq.model.INDICATOR_TYPE;
 import com.uxsino.reactorq.model.FieldType;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.collections4.CollectionUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -553,21 +549,14 @@ public class MonitorDataParamsService {
         }
         // 将所有的指标列表遍历取交集
         JSONArray result = arrs.get(0);
-        JSONArray intersection_arr = new JSONArray();
-        for (JSONArray arr : arrs) {
-            for (int i = 0; i < arr.size(); i++) {
-                if (result.indexOf(arr.getJSONObject(i)) == -1) {
-                    intersection_arr = new JSONArray();
-                    break;
-                } else {
-                    intersection_arr.add(result.getJSONObject(i));
+        if (arrs.size() > 1) {
+            for (int j = 1; j < arrs.size(); j++) {
+                JSONArray arr = arrs.get(j);
+                result.retainAll(arr);
+                if(result.isEmpty()){
+                    return new JsonModel(false, "没有相同属性部件");
                 }
             }
-            result = intersection_arr;
-            intersection_arr = new JSONArray();
-        }
-        if (result.isEmpty()) {
-            return new JsonModel(false, "没有相同属性部件");
         }
         return new JsonModel(true, result);
     }

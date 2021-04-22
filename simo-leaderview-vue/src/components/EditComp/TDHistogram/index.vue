@@ -94,16 +94,25 @@ export default {
         },
         xAxis3D: {
           name: this.item.chartData.xAxis.name,
+          nameTextStyle: {
+            fontSize: this.item.grid3DDWFontSize
+          },
           data: this.item.chartData.xAxis.value,
           type: 'category'
         },
         yAxis3D: {
           name: this.item.chartData.yAxis.name,
+          nameTextStyle: {
+            fontSize: this.item.grid3DDWFontSize
+          },
           data: this.item.chartData.yAxis.value,
           type: 'category'
         },
         zAxis3D: {
           name: this.item.chartData.zAxis.name,
+          nameTextStyle: {
+            fontSize: this.item.grid3DDWFontSize
+          },
           type: 'value',
           max: Math.floor(valMax + valMax * 0.2),
           min: 0

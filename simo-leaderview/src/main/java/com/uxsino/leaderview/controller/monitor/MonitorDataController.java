@@ -653,14 +653,16 @@ public class MonitorDataController {
 
     @ApiOperation("链路统计-按城市")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "locationCode", paramType = "query", dataType = "String", value = "当前展示地图区域代码", required = false)
+            @ApiImplicitParam(name = "locationCode", paramType = "query", dataType = "String", value = "当前展示地图区域代码", required = false),
+            @ApiImplicitParam(name = "displayMode", paramType = "query", dataType = "String", value = "按名字绑定还是按经纬度绑定", required = false)
     })
     @RequestMapping(value = "/getNELinkByCity", method = RequestMethod.GET)
     @ResponseBody
     public JsonModel getNELinkByCity(
-            @RequestParam(value = "locationCode", required = false) String locationCode){
+            @RequestParam(value = "locationCode", required = false) String locationCode,
+            @RequestParam(value = "displayMode", required = false) String displayMode){
         try {
-            return monitorDataService.getNELinkByCity(locationCode);
+            return monitorDataService.getNELinkByCity(locationCode, displayMode);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

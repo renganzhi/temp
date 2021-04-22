@@ -253,7 +253,7 @@ public class MonitorUtils {
             if (!StringUtils.isEmpty(componentName)) {
                 JSONArray indicatorValuesArray = (JSONArray) indicatorValues;
                 for (int k = 0; k < indicatorValuesArray.size(); k++) {
-                    if (indicatorValuesArray.getJSONObject(k).get("identifier").equals(componentName)) {
+                    if (indicatorValuesArray.getJSONObject(k).getString("identifier").equals(componentName)) {
                         valueJSON = indicatorValuesArray.getJSONObject(k);
                         break;
                     }

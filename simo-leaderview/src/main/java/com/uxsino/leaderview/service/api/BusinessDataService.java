@@ -272,7 +272,6 @@ public class BusinessDataService {
             obj.put("rows", emp);
             return new JsonModel(true, obj);
         }
-        List<Indicator> indicators = Indicator.getLeaderviewIndicator();
 
         Set<String> bnsIds = alertRecords.stream().map(AlertRecord::getObjectId).collect(Collectors.toSet());
 
@@ -293,13 +292,10 @@ public class BusinessDataService {
             JSONObject row = new JSONObject(true);
             row.put("告警级别", levelMap.get(alertRecord.getLevel()));
             row.put("业务名称", map.get(alertRecord.getObjectId()));
-            for (Indicator ind: indicators) {
+            for (Indicator ind: Indicator.values()) {
                 if (ind.toString().equals(alertRecord.getIndicatorName())) {
                     row.put("业务指标", ind.getText());
-                    break;
                 }
-                // TODO 这里以后可以根据业务具体的告警定义展示不同的告警类型
-                row.put("业务指标", "业务节点告警");
             }
             row.put("告警内容", alertRecord.getRecentAlertBrief());
             row.put("首次告警时间", simpleDateFormat.format(alertRecord.getFirstAlertDate()));

@@ -26,6 +26,7 @@ export default {
       mychart: null,
       showLine: true,
       oldOption: '',
+      oldmyData: '',
       Oldcolorful: '',
       //   Linesubsection: '',
       oldformatterType: ''
@@ -302,6 +303,10 @@ export default {
         this.Oldcolorful = this.item.colorful
         this.mychart.clear()
         this.mychart.setOption(myoption)
+      }
+      if (this.oldmyData !== JSON.stringify(myData.columns)) {
+        this.oldmyData = JSON.stringify(myData.columns)
+        this.mychart.clear()
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)

@@ -70,4 +70,9 @@ export default {
 .edui-default .edui-editor-messageholder{
   display: none !important;
 }
+#editor>.edui-editor>div:first-child{
+  &:not(.edui-default){
+    height: 0 !important;
+  }
+}
 </style>

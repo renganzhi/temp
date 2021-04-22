@@ -41,6 +41,8 @@ dependencies {
 
     compile "org.bytedeco.javacpp-presets:ffmpeg-platform:4.1-1.4.4"
     compile "org.bytedeco:javacv:1.4.4"
+
+    compile "net.coobird:thumbnailator:0.4.8"
 }
 
 
