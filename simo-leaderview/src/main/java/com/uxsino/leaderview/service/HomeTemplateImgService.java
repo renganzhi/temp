@@ -6,6 +6,8 @@ import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.dao.IHomeTemplateImgDao;
 import com.uxsino.leaderview.entity.HomeTemplateImg;
 
+import com.uxsino.leaderview.entity.HomeTemplateImgCompressed;
+import com.uxsino.leaderview.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +67,14 @@ public class HomeTemplateImgService {
                         out.write(cache, 0, size);
                     }
                     HomeTemplateImg img = new HomeTemplateImg();
+                    HomeTemplateImgCompressed compressedImg = new HomeTemplateImgCompressed();
                     img.setId(id);
                     img.setExtension(extension);
                     img.setFileStream(out.toByteArray());
                     img.setName(name + "." + extension);
+                    compressedImg.setId(id);
+                    compressedImg.setCompressedFileStream(ImageUtils.compressImage(out.toByteArray(), extension));
+                    img.setHomeTemplateImgCompressed(compressedImg);
                     this.save(img);
                 } catch (IOException e) {
                     logger.error("", e);
