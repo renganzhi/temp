@@ -22,11 +22,11 @@ import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.model.ShareState;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.api.ImageService;
+import com.uxsino.leaderview.utils.ImageUtils;
 import com.uxsino.leaderview.utils.ZipUtils;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hpsf.Thumbnail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -692,10 +692,12 @@ public class HomePageController {
 			String fileName = file.getOriginalFilename();
 			String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
 			UploadedFile fileInfo = new UploadedFile();
+			UploadedFileCompressed uploadedFileCompressed = new UploadedFileCompressed();
 			fileInfo.setName(fileName);
 			fileInfo.setExtension(extension);
 			fileInfo.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
 			fileInfo.setFileStream(file.getBytes());
+			uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(file.getBytes(), extension));
 			uploadedFileService.save(fileInfo);
 			JSONObject result = new JSONObject();
 			result.put("id", fileInfo.getId());
@@ -750,21 +752,21 @@ public class HomePageController {
 						 @ApiParam(value = "是否是用户自定义图片") @PathVariable Boolean isCustom,
 						 HttpServletResponse resp) {
 
-		imageService.getImg(id, isCustom,
-                (dataWrap, ext) -> {
-                    try {
-                        resp.setContentType(CONTENT_TYPE_MAP.getOrDefault(ext, "image/png"));
-                        ServletOutputStream out = resp.getOutputStream();
-                        byte[] data = new byte[dataWrap.length];
-                        for(int i=0; i<dataWrap.length; i++)
-                            data[i] = dataWrap[i];
-                        out.write(data);
-                        out.flush();
-                    } catch (IOException e) {
-                        logger.error("下载图片失败:" + id, e);
-                    }
-                }
-        );
+		imageService.getImg(id, isCustom, false,
+				(dataWrap, ext) -> {
+					byte[] data = new byte[dataWrap.length];
+					for(int i=0; i<dataWrap.length; i++)
+						data[i] = dataWrap[i];
+					try {
+						resp.setContentType(CONTENT_TYPE_MAP.get(ext));
+						OutputStream os = resp.getOutputStream();
+						os.write(data);
+						os.flush();
+					} catch (IOException e) {
+						logger.error("下载图片失败:" + id, e);
+					}
+				}
+		);
 	}
 
 	/**
@@ -773,45 +775,40 @@ public class HomePageController {
 	 * @param resp 响应消息
 	 */
 	@ApiOperation("根据文件ID获取图片")
-	@RequestMapping(value = "/getImg/{isCustom}/{id}/HawEye/{quality}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getImg/{isCustom}/{id}/HawEye", method = RequestMethod.GET)
 	public void getImageForHawEye(@ApiParam("文件ID") @PathVariable Long id,
 						 @ApiParam(value = "是否是用户自定义图片") @PathVariable Boolean isCustom,
-						 @PathVariable float quality,
 						 HttpServletResponse resp) {
 
-        imageService.getImg(id, isCustom,
-                (dataWrap, ext) -> {
-                    byte[] data = new byte[dataWrap.length];
-                    for(int i=0; i<dataWrap.length; i++)
-                        data[i] = dataWrap[i];
-                    try {
-                        if(dataWrap.length/1024 < 1000){
-                            resp.setContentType("image/png");
-                            OutputStream os = resp.getOutputStream();
-                            os.write(data);
-                            os.flush();
-                        }else {
-                            resp.setContentType("image/jpeg");
-                            long past = System.currentTimeMillis();
-                            Thumbnails.of(new ByteArrayInputStream(data))
-                                // Transfer to jpeg format, so that the function 'outputQuality'
-                                // can take effect.
-                                .outputFormat("jpeg")
-                                // Under the format of 'jpeg', the less quality of photo is set,
-                                // the lower definition of the image is, and also the smaller
-                                // data size of the photo is.
-                                .scale(1.0)
-                                .outputQuality(quality)
-                                .toOutputStream(resp.getOutputStream());
-                            long now = System.currentTimeMillis();
-                            logger.info("压缩该图片花费时间：{}ms", now-past);
-                        }
-                    } catch (IOException e) {
-                        logger.error("下载图片失败:" + id, e);
-                    }
-                }
-        );
+        imageService.getImg(id, isCustom, true,
+				(dataWrap, ext) -> {
+					byte[] data = new byte[dataWrap.length];
+					for(int i=0; i<dataWrap.length; i++)
+						data[i] = dataWrap[i];
+					try {
+						resp.setContentType(CONTENT_TYPE_MAP.get(ext));
+						OutputStream os = resp.getOutputStream();
+						os.write(data);
+						os.flush();
+					} catch (IOException e) {
+						logger.error("下载图片失败:" + id, e);
+					}
+				}
+		);
 	}
+
+
+	@ApiOperation("新增表储存压缩后的用户上传图片，如果原表中已经有图片了，需要遍历一遍来生成压缩图")
+	@RequestMapping(value = "/generateCompressedCustomizedImage", method = RequestMethod.GET)
+	public JsonModel generateCompressedCustomizedImage(){
+		try {
+			return new JsonModel(uploadedFileService.generateCompressedCustomImage(), "操作成功！");
+		}catch (Exception e){
+			logger.error("LEADERVIEW -> 生成自定义上传图片的压缩数据抛出异常! stackTrace如下：", e);
+			return new JsonModel(false, "操作失败！");
+		}
+	}
+
 
 	/**
 	 * 返回当前服务端的时间
