@@ -715,7 +715,7 @@ public class AlertDataService {
         }
 
         List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
-        if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(allLevel)) {
             return empObj();
         }
         // 用户选定的告警等级列表
@@ -791,7 +791,7 @@ public class AlertDataService {
                     levelResult.addAll(rpcProcessService.getLevelStatisticsResult(query));
             }
             List<Integer> existLevel = new ArrayList<>(chosenLevels);
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(levelResult)) {
+            if (org.apache.commons.collections4.CollectionUtils.isEmpty(levelResult)) {
                 chosenLevels.forEach(e -> row.put(levelNameMap.get(e), 0L));
                 existLevel.removeAll(chosenLevels);
             } else {
@@ -800,7 +800,7 @@ public class AlertDataService {
                     existLevel.remove(Integer.valueOf(e.getScopeValue()));
                 });
             }
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(existLevel)) {
+            if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(existLevel)) {
                 existLevel.forEach(e -> row.put(levelNameMap.get(e), 0L));
             }
             rows.add(row);
@@ -832,7 +832,7 @@ public class AlertDataService {
         // data可能为空
         List<StatisticsResult> data = rpcProcessService.getLevelStatisticsResult(query);
         List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
-        if (org.apache.commons.collections.CollectionUtils.isEmpty(allLevel)) {
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(allLevel)) {
             return empObj();
         }
         // 告警等级和告警名称的映射集合
@@ -853,7 +853,7 @@ public class AlertDataService {
             List<Integer> chosenIds = new ArrayList<>(chosenLevels);
             row.put("资源名称", idNameMap.get(objId));
             // 如果data为null，代表根据条件未能查询到这些资源的告警信息
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(data)) {
+            if (org.apache.commons.collections4.CollectionUtils.isEmpty(data)) {
                 chosenIds.forEach(e -> row.put(levelNameMap.get(e), 0));
             } else {
                 // 在data中已经查询出来的level集合，用于后续判断哪些为空
@@ -864,7 +864,7 @@ public class AlertDataService {
                 });
                 // 移除掉已经添加的等级，只剩下应该为0的告警个数
                 chosenIds.removeAll(existLevels);
-                if (org.apache.commons.collections.CollectionUtils.isNotEmpty(chosenIds)) {
+                if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(chosenIds)) {
                     chosenIds.forEach(e -> row.put(levelNameMap.get(e), 0));
                 }
             }

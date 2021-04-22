@@ -27,7 +27,7 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -2382,7 +2382,7 @@ public class MonitorDataService {
         }
         List<NetworkEntity> neList = Lists.newArrayList();
         if ("abnormal".equals(status)) {
-            criteria.setRunStatusIn(Lists.newArrayList(RunStatus.Warning, RunStatus.Unconnection, RunStatus.Unknow));
+            criteria.setRunStatusIn(Lists.newArrayList(RunStatus.Warning, RunStatus.Unconnection, RunStatus.Unknown));
         } else {
             criteria.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
         }

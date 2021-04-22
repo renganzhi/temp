@@ -8,7 +8,7 @@ import com.uxsino.leaderview.model.monitor.IndicatorTable;
 import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import lombok.Data;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import static com.uxsino.leaderview.utils.MonitorUtils.empObj;
