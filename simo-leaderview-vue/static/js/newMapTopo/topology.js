@@ -167,7 +167,9 @@ mapTopology.prototype = {
       d3.xml('/resources/img/topo/southchinasea.svg', function (error, xmlDocument) {
         var taiwan = _this.svgContainer.select('[idName="tai_wan"]')
         _this.svgContainer.append('g').attr('transform', 'translate(' + (Number(taiwan.attr('x')) + 30) + ',' + (taiwan.attr('y')) + ')scale(1)').attr('class', 'southsea').html(function (d) {
-          return xmlDocument.getElementsByTagName('g')[0].outerHTML
+          if (xmlDocument) {
+            return xmlDocument.getElementsByTagName('g')[0].outerHTML
+          }
         })
         _this = null
       })
@@ -192,41 +194,33 @@ mapTopology.prototype = {
   },
   updateNodeImg: function (selection) {
     var _this = this
-    var colors = {
-      'Warning': '#fe943e',
-      'Good': '#0088cc',
-      'Unconnection': '#ef2446',
-      'Unknow': 'grey',
-      'Loading': 'grey'
-    }
+    var newthis = this
     var nodes = selection || this.china.selectAll('.node')
+    var iconArr = []
+    var topoIcons = mapTopology.prototype.iconsCollections
     nodes.each(function (d) {
-      if (_this.iconChange) {
-        getTopoIcon({
-          curThis: _this,
-          url: _this.setNodeImg(d),
-          callback: function (curThis, src) {
-            d3.select(curThis).select('.nodeImg').attr({
-              'width': d.width,
-              'height': d.height,
-              'id': d.id,
-              'href': src
-            })
-          }
-        })
+      var icon = d.iconId + '_' + (d.runStatus || 'Loading')
+      d3.select(this).select('.nodeImg').attr({
+        'width': d.width,
+        'height': d.height,
+        'id': d.id
+      })
+      if (topoIcons) {
+        d.iconId && iconArr.indexOf(icon) == -1 && !topoIcons[icon] && iconArr.push(icon)
       } else {
-        d3.select(this).select('.sport').attr({
-          'fill': colors[d.runStatus]
-        })
-        d3.select(this).select('.sportOne').attr({
-          'stroke': colors[d.runStatus]
-        })
-        d3.select(this).select('.sportTwo').attr({
-          'stroke': colors[d.runStatus]
-        })
+        iconArr.push(icon)
       }
     })
-    _this = nodes = null
+    if (iconArr.length) {
+      getTopoIcon({iconInfo: JSON.stringify(iconArr)}, function (res) {
+        var resObj = res.obj
+        mapTopology.prototype.iconsCollections = $.extend(resObj, mapTopology.prototype.iconsCollections)
+        console.log(newthis)
+        newthis.setNodeImg(nodes)
+      })
+    } else {
+      this.setNodeImg(nodes)
+    }
     return this
   },
   updateNode: function () { // 隐藏网元
@@ -257,10 +251,16 @@ mapTopology.prototype = {
     nodes = null
     return this
   },
-  setNodeImg: function (d) {
-    if (d.iconId) {
-      return gbs.host + '/monitor/topo/getIcon/' + d.iconId + '/' + (d.runStatus || 'Loading')
-    }
+  setNodeImg: function (nodes) {
+    var icons = mapTopology.prototype.iconsCollections
+    nodes.each(function (d) {
+      var icon = d.iconId + '_' + (d.runStatus || 'Loading')
+      if (d.iconId && icons[icon]) {
+        d3.select(this).select('.nodeImg').attr({
+          'href': 'data:image/png;base64,' + icons[icon]
+        })
+      }
+    })
   },
   enterEnableLink: function () {
     var _this = this
@@ -323,7 +323,7 @@ mapTopology.prototype = {
         }
         if (label == 'Traffic') {
           var str = bytesToSize(d.upBps === null ? undefined : d.upBps) ? '↑ ' + bytesToSize(d.upBps) + 'ps ↓' +
-                        bytesToSize(d.downBps) + 'ps' : '↑-- ↓--'
+            bytesToSize(d.downBps) + 'ps' : '↑-- ↓--'
           return str
         }
         return ''
@@ -469,28 +469,28 @@ mapTopology.prototype = {
                     if (idc.indicatorName == 'physical_memory') {
                       if (Array.isArray(idc.indicatorValue)) {
                         idc.indicatorValue.length > 0 &&
-                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                          (d.memoryAvg = idc.indicatorValue[0].memory_usage)
                       } else {
                         d.memoryAvg = idc.indicatorValue.memory_usage
                       }
                     } else if (idc.indicatorName == 'cpu_usage_avg') {
                       if (Array.isArray(idc.indicatorValue)) {
                         idc.indicatorValue.length > 0 &&
-                                                        (d.cpuAvg = idc.indicatorValue[0].result)
+                          (d.cpuAvg = idc.indicatorValue[0].result)
                       } else {
                         d.cpuAvg = idc.indicatorValue.result
                       }
                     } else if (idc.indicatorName == 'network_memory') {
                       if (Array.isArray(idc.indicatorValue)) {
                         idc.indicatorValue.length > 0 &&
-                                                        (d.memoryAvg = idc.indicatorValue[0].memory_usage)
+                          (d.memoryAvg = idc.indicatorValue[0].memory_usage)
                       } else {
                         d.memoryAvg = idc.indicatorValue.memory_usage
                       }
                     } else if (idc.indicatorName == 'network_cpu') {
                       if (Array.isArray(idc.indicatorValue)) {
                         idc.indicatorValue.length > 0 &&
-                                                        (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
+                          (d.cpuAvg = idc.indicatorValue[0].used_cpu_usage)
                       } else {
                         d.cpuAvg = idc.indicatorValue.used_cpu_usage
                       }
@@ -532,7 +532,7 @@ mapTopology.prototype = {
       // }
       v = ((v || v === 0) ? v : '--')
       if (d.runStatus == 'Unknow' &&
-                (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
+        (o.key == 'cpuAvg' || o.key == 'memoryAvg' || o.key == 'alertLevelText')) { // 资源状态为未知，不展示cpu、内存、告警
         v = '--'
       }
       str += (o.name + '：' + v + '\n')
@@ -858,10 +858,10 @@ mapTopology.prototype = {
             id: d.targetNodeId
           })[0]
           if (s &&
-                        t &&
-                        ((!_this.dragNodeId && !_this.dragLinkId) ||
-                            _this.dragNodeId.indexOf(s.id) !== -1 ||
-                            _this.dragNodeId.indexOf(t.id) !== -1 || _this.dragLinkId == d.id)) {
+            t &&
+            ((!_this.dragNodeId && !_this.dragLinkId) ||
+              _this.dragNodeId.indexOf(s.id) !== -1 ||
+              _this.dragNodeId.indexOf(t.id) !== -1 || _this.dragLinkId == d.id)) {
             d = $.extend(d, _this.changeLinkData(s, t, d, _this.tpId))
             this.__data__ = d
             var path = _this.polygonalLine(s, t, d)
@@ -872,9 +872,9 @@ mapTopology.prototype = {
     _this.nodeLine.selectAll('use').each(
       function (d) {
         if ((!_this.dragNodeId && !_this.dragLinkId) ||
-                    _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
-                    _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
-                    _this.dragLinkId == d.id) {
+          _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
+          _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
+          _this.dragLinkId == d.id) {
           var id = d3.select(this).attr('id')
           var path = _this.nodeLine.selectAll('.link[id="' + id + '"]').attr('d')
           d3.select(this).select('animateMotion').attr('path', path)
@@ -884,9 +884,9 @@ mapTopology.prototype = {
     _this.nodeLine.selectAll('.lineWrap').each(
       function (d) {
         if ((!_this.dragNodeId && !_this.dragLinkId) ||
-                    _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
-                    _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
-                    _this.dragLinkId == d.id) {
+          _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 ||
+          _this.dragNodeId.indexOf(d.targetNodeId) !== -1 ||
+          _this.dragLinkId == d.id) {
           d3.select(this).attr('class', 'lineWrap ' + d.linkClass.lineType)
         }
       })
@@ -895,8 +895,8 @@ mapTopology.prototype = {
         d3.select(this.parentNode).attr('transform', '')
         if (d != undefined) {
           if (!_this.dragNodeId ||
-                        (_this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId
-                          .indexOf(d.targetNodeId) !== -1)) {
+            (_this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId
+              .indexOf(d.targetNodeId) !== -1)) {
             if ((d.target.x - d.source.x) < 0) {
               var b_box = d3.select(this.parentNode).node().getBBox()
               var x = b_box.x + b_box.width / 2
