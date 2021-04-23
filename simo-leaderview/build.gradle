@@ -43,6 +43,7 @@ dependencies {
     compile "org.bytedeco:javacv:1.4.4"
 
     compile "net.coobird:thumbnailator:0.4.8"
+    compile "org.jpedal:OpenViewerFX:6.6.14"
 }
 
 
