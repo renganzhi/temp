@@ -2,19 +2,19 @@
   <div id="homeSetting-modal"
        style="z-index: 20100"
        class="modal">
-    <div class="modal-dialog modal-lg"
+    <div class="modal-lg modal-dialog modal-dialog-centered"
          role="document">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title">
+            设置
+          </h4>
           <button type="button"
                   class="close"
                   data-dismiss="modal"
                   aria-hidden="true">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">
-            设置
-          </h4>
         </div>
         <div class="modal-body">
           <form autocomplete="off"
@@ -67,7 +67,7 @@
                     <th>操作</th>
                   </tr>
                 </thead>
-                <tbody>
+                <!-- <tbody>
                   <tr v-for="(tr, index) in tableData"
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
@@ -84,7 +84,7 @@
                       <a class="simoLink">置顶</a><a class="simoLink">上移</a><a class="simoLink">下移</a><a class="simoLink">置底</a>
                     </td>
                   </tr>
-                </tbody>
+                </tbody> -->
               </table>
             </div>
             <div class="bootstrap-table fixed-table-body"
