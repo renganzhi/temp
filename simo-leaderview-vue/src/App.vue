@@ -2,7 +2,7 @@
   <div id="app">
     <!-- 等待蒙板层 -->
     <!-- 这里关于screen及其css最好在打包时注释掉，simo里已经存在 -->
-    <div id='lead-screen'>
+    <div id="lead-screen">
       <div id="loading">
         <div class="ld-cir"></div>
         <div class="ld-cir"></div>
@@ -29,7 +29,8 @@ export default {
   created: function () {
     var _hash = window.location.hash
     if (_hash.split('/')[1]) {
-      var _url = window.location.protocol + '//' + window.location.host + '/index'
+      var _url =
+        window.location.protocol + '//' + window.location.host + '/index'
       if (process.env.NODE_ENV != 'development') {
         window.location.href = _url
       }
@@ -39,7 +40,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'main.scss';
+@import "main.scss";
 
 html,
 body {
@@ -74,7 +75,7 @@ body {
 #app {
   width: 100%;
   height: 100%;
- /* 指标显示器字体，时间器字体 */
+  /* 指标显示器字体，时间器字体 */
 }
 /* 框选区域样式 */
 #bottom {
@@ -103,17 +104,109 @@ body {
 .clear_float:after {
   display: block;
   clear: both;
-  content: '';
+  content: "";
 }
 .text_overflow {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.modal.in .modal-dialog{
-    position: relative;
-    margin: 0 auto !important;
-    top: 50%;
-    transform: translateY(-50%);
+.modal.in .modal-dialog {
+  position: relative;
+  margin: 0 auto !important;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+html[data-theme="default"] {
+.select2-selection {
+  border: solid 1px #3d445a !important;
+  background-color: transparent !important;
+  color: #cad6dd !important;
+}
+
+.select2-container.select2-container--focus .select2-selection {
+  border: solid 1px #0088cc !important;
+}
+
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  background-color: #323746;
+  color: #cad6dd;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+  background-color: #222938;
+}
+
+.select2-container--default
+  .select2-results__option--highlighted[aria-selected] {
+  background-color: transparent;
+}
+
+.select2-dropdown {
+  border: 1px solid #3d445a;
+  background-color: #0a0e1a;
+  color: #b2b2b2;
+}
+}
+/*
+    select2
+*/
+html[data-theme="blackWhite"],
+html[data-theme="blueWhite"] {
+  .select2-selection {
+    border: solid 1px #adb9ca !important;
+    background-color: #ffffff !important;
+    color: inherit !important;
+  }
+
+  .select2-container.select2-container--focus .select2-selection {
+    border: solid 1px #026bf4 !important;
+  }
+
+  .select2-container .select2-selection__placeholder {
+    color: #8a94a4 !important;
+  }
+
+  .select2-selection__rendered {
+    color: #50607c;
+  }
+
+  .select2-container--default
+    .select2-selection--multiple
+    .select2-selection__choice {
+    background-color: #adb9ca;
+    color: #ffffff;
+  }
+  .select2-container--default
+    .select2-selection--multiple
+    .select2-selection__choice:hover {
+    background-color: #8a94a4;
+  }
+
+  .select2-container--default
+    .select2-selection--multiple
+    .select2-selection__choice__remove {
+    color: #ffffff;
+  }
+
+  .select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #adb9ca;
+    color: #ffffff;
+  }
+
+  .select2-container--default
+    .select2-results__option--highlighted[aria-selected] {
+    background-color: #ebedf1;
+    color: #50607c;
+  }
+
+  .select2-dropdown {
+    border: 1px solid #adb9ca;
+    background-color: #ffffff;
+    color: #50607c;
+  }
 }
 </style>
