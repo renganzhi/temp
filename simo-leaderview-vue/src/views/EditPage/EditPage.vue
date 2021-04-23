@@ -46,7 +46,7 @@
               <option value="3">分享的页面</option>
             </select>
             <button type="button" v-if="access === 'w'" @click="add">
-              新增页面
+              新增页
             </button>
             <button type="button" @click="openSetting">设置</button>
             <button v-if="isSuperAdmin" type="button" @click="importTemplate">
@@ -150,9 +150,13 @@
     </div>
 
     <div id="homeShareModal" class="modal" style="z-index: 10086">
-      <div class="modal-dialog" role="document" style="margin: 206px auto">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="margin: 206px auto">
         <div class="modal-content">
           <div class="modal-header">
+            <h4 class="modal-title">
+              <span class="pre-page" data-dismiss="modal"></span>
+              <span class="now-page">分享设置</span>
+            </h4>
             <button
               type="button"
               class="close"
@@ -161,10 +165,6 @@
             >
               <span aria-hidden="true">×</span>
             </button>
-            <h4 class="modal-title">
-              <span class="pre-page" data-dismiss="modal"></span>
-              <span class="now-page">分享设置</span>
-            </h4>
           </div>
           <div class="modal-body">
             <form autocomplete="off" id="shareFm1">

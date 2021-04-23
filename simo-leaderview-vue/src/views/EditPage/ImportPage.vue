@@ -5,14 +5,14 @@
          class="modal in"
          role="dialog"
          aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
+            <h4 class="modal-title">导入</h4>
             <button type="button"
                     class="close"
                     data-dismiss="modal"
                     aria-hidden="true">&times;</button>
-            <h4 class="modal-title">导入</h4>
           </div>
           <div class="modal-body">
             <form autocomplete="off">
@@ -71,7 +71,7 @@ export default {
   components: { Notification },
   data () {
     return {
-        file: null,
+      file: null,
       name: '',
       visible: true,
       baseUrl: gbs.host,
@@ -132,7 +132,7 @@ export default {
       if (e.value === '') {
         return
       }
-    //   console.log('e.target.files[0]: ', e.target.files[0]);
+      //   console.log('e.target.files[0]: ', e.target.files[0]);
       this.file = e.target.files[0]
     },
     changeName () {
@@ -197,7 +197,7 @@ export default {
     },
     choosePage (id) {
       if (this.temId.includes(id)) {
-        // remove 
+        // remove
         const index = this.temId.indexOf(id)
         this.temId.splice(index, 1)
       } else {

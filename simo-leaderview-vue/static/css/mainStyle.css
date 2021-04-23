@@ -196,7 +196,7 @@ select.error {
 }
 
 textarea {
-    resize: none;
+    resize: none !important;
     height: 100px !important;
     width: 550px !important;
     padding: 10px !important;
@@ -402,6 +402,7 @@ button + button {
 }
 
 .table tbody tr:hover {
+    color: inherit;
     background-color: #303852 !important;
 }
 

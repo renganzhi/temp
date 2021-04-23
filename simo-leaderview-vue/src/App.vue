@@ -110,4 +110,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.modal.in .modal-dialog{
+    position: relative;
+    margin: 0 auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+}
 </style>

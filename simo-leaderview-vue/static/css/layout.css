@@ -451,9 +451,11 @@ modal
 }
 
 .modal-header .close {
-    margin-top: -2px;
+    height: 40px;
+    width: 40px;
+    margin-top: 0px;
     border: none !important;
-    line-height: 40px;
+    line-height: 20px;
 }
 
 .modal-header .close:hover {
@@ -466,6 +468,7 @@ modal
 .modal-title {
     vertical-align: middle;
     line-height: 40px;
+    width: 100%;
     height: 100%;
     padding: 0 13px 0 20px;
     font-size: 14px;
@@ -513,13 +516,17 @@ modal
 .modal-dialog.modal-sm {
     width: 580px;
 }
+.modal-dialog {
+    max-width: none !important;
+}
 
 .modal-dialog.modal-md {
     width: 820px;
 }
 
 .modal-dialog.modal-lg {
-    width: 980px;
+    width: 980px !important;
+    max-width:  980px !important;
 }
 
 /*

@@ -5,14 +5,14 @@
          class="modal in"
          role="dialog"
          aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
+            <h4 class="modal-title">新建页面</h4>
             <button type="button"
                     class="close"
                     data-dismiss="modal"
                     aria-hidden="true">&times;</button>
-            <h4 class="modal-title">新建页面</h4>
           </div>
           <div class="modal-body">
             <form autocomplete="off">
