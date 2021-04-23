@@ -9,8 +9,10 @@ var data = ''
 var argument = process.argv.splice(2)
 var replaceText = argument[0] || '/leaderview-static/' // 目标目录
 
-var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
-var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'select2']
+// var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
+// var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'select2']
+var ignoreJs = []
+var ignoreCss = []
 
 var readStream = fs.createReadStream(sourceFile)
 var writeStream = fs.createWriteStream(destPath)
