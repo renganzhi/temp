@@ -2,7 +2,7 @@
   <ve-map
           :width="comWidth"
           :height="comHeight"
-          :init-options="initOption"
+     
           :settings="settings"
           :extend="extend"
           :id="'map_' + keyId"
