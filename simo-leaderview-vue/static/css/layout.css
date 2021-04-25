@@ -169,7 +169,7 @@ Page container
 
 #page_container {
     /* background-color: $default-container-bg;*/
-    padding: 15px;
+    /* padding: 15px; */
     font-size: 12px;
 }
 

@@ -46,7 +46,7 @@
               <option value="3">分享的页面</option>
             </select>
             <button type="button" v-if="access === 'w'" @click="add">
-              新增页
+              新增页面
             </button>
             <button type="button" @click="openSetting">设置</button>
             <button v-if="isSuperAdmin" type="button" @click="importTemplate">
