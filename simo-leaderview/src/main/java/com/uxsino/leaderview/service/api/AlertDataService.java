@@ -562,6 +562,7 @@ public class AlertDataService {
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
+        criteria.setMonitoring(true);
         List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
         JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
         return new JsonModel(true, getStatByClass(neArray, baseNeClass, alertLevel,
@@ -582,6 +583,7 @@ public class AlertDataService {
         rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         criteria.setIds(Lists.newArrayList(neIds.split(",")));
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        criteria.setMonitoring(true);
         List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
         JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
         return new JsonModel(true, getStatByNe(neArray, alertLevel, AlertType.Alert));
@@ -671,6 +673,7 @@ public class AlertDataService {
         rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
         criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        criteria.setMonitoring(true);
         List<NetworkEntity> nes = rpcProcessService.getNeList(criteria);
         JSONArray neArray = JSON.parseArray(JSON.toJSONString(nes));
         return new JsonModel(true, getStatByClass(neArray, baseNeClass, alertLevel,

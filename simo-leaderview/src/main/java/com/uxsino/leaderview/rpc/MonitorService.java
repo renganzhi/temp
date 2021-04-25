@@ -26,8 +26,8 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/homeData/params/networkEntity/findAllByDomainIdIn", consumes = "application/json")
     JsonModel findAllByDomainIdIn(@RequestParam(value = "domainIds") List<Long> domainIds);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getNeList", consumes = "application/json")
-    JsonModel getNeList(@RequestParam Map<String , Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getNeList", consumes = "application/json")
+    JsonModel getNeList(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
     JsonModel getUsableInd(@RequestParam Map<String,Object> map);

@@ -24,7 +24,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel getNeList(Map<String, Object> map) {
+    public JsonModel getNeList(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 

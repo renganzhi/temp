@@ -256,6 +256,7 @@ public class MonitorDataService {
         if (!ObjectUtils.isEmpty(neIds)){
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         }
+        criteria.setMonitoring(true);
         List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
         if (CollectionUtils.isEmpty(list)) {
             return new JsonModel(true, newResultObj("columns",columns,"rows",new JSONArray()));
@@ -1627,10 +1628,12 @@ public class MonitorDataService {
             } else {
                 return new JsonModel(true, "子类型与资源均未选择！", empObj());
             }
+            criteria.setMonitoring(true);
             nes = rpcProcessService.getNeList(criteria);
             neIds = nes.stream().map(NetworkEntity::getId).collect(Collectors.joining(","));
         }else {
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
+            criteria.setMonitoring(true);
             nes = rpcProcessService.getNeList(criteria);
         }
         if (CollectionUtils.isEmpty(nes)) {
@@ -2344,6 +2347,7 @@ public class MonitorDataService {
                     List<NetworkEntity> neList = Lists.newArrayList();
                     NetworkEntityCriteria criteria = new NetworkEntityCriteria();
                     criteria.setDomainId(Long.parseLong(map.get("id").toString()));
+                    criteria.setMonitoring(true);
                     for (RunStatus runStatus : statusList) {
                         criteria.setRunStatus(runStatus);
                         neList.addAll(rpcProcessService.getNeList(criteria));

@@ -51,22 +51,16 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<Map<String,Object>> vmStatics(Long domain) throws Exception {
-        Map<String, Object> condition = new HashMap<>();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domain != null){
-            condition.put("domainId", domain);
+            criteria.setDomainId(domain);
         }
         List<NeClass> neClasses = BaseNeClass.virtualization.getNeClass();
-        condition.put("neClasses", neClasses);
-        condition.put("pagination", false);
-//        condition.put("sourceManage", false);
-        condition.put("manageStatusNotIn", "Delected");
-        condition.put("pageSize", 9999);
-        JsonModel jsonModel = monitorService.getNeList(condition);
-        if(!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
+        criteria.setNeClasses(neClasses);
+        criteria.setPagination(false);
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        List<NetworkEntity> rawResult = getNeList(criteria);
         List<NeHealthHistory> list = new ArrayList<>();
-        List<NetworkEntity> rawResult = toJavaBeanList(jsonModel, NetworkEntity.class);
         List<Map<String, Object>> realResult = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(rawResult)) {
             for (NeClass neClass : neClasses) {
@@ -89,19 +83,13 @@ public class RpcProcessService {
     }
 
     public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
-        Map<String, Object> condition = new HashMap<>();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domain != null){
-            condition.put("domainId", domain);
+            criteria.setDomainId(domain);
         }
-        condition.put("pagination", false);
-//        condition.put("sourceManage", false);
-        condition.put("manageStatusNotIn", "Delected");
-        condition.put("pageSize", 9999);
-        JsonModel jsonModel = monitorService.getNeList(condition);
-        if(!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        List<NetworkEntity> rawResult = toJavaBeanList(jsonModel, NetworkEntity.class);
+        criteria.setPagination(false);
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        List<NetworkEntity> rawResult = getNeList(criteria);
         List<Map<String, Object>> realResult = new ArrayList<>();
         if(baseClass == null){
             List<BaseNeClass> baseNeClassList = Arrays.asList(BaseNeClass.values());
@@ -160,18 +148,17 @@ public class RpcProcessService {
 
 
     public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
-        Map<String, Object> condition = new HashMap<>();
-        if(domainIds != null){
-            condition.put("domainIds", domainIds);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if(domainIds != null && !domainIds.isEmpty()){
+            criteria.setDomainIds(domainIds);
         }
+        criteria.setPagination(false);
         if(baseNeClass != null){
             List<NeClass> neClassList = baseNeClass.getNeClass();
-            condition.put("neClasses", neClassList);
+            criteria.setNeClasses(neClassList);
         }
-        condition.put("manageStatusNotIn", "Delected");
-        condition.put("pageSize", 9999);
-        JsonModel jsonModel = monitorService.getNeList(condition);
-        List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        List<NetworkEntity> networkEntityList = getNeList(criteria);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
         List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
             networkEntity.getParentId() == null
@@ -201,24 +188,23 @@ public class RpcProcessService {
 
     /**
      * 用于旭日图的按状态统计资源，本层进行第一层包装——即子类型下含有各种状态的数量
-     * @param domainId
+     * @param domainIds
      * @param baseNeClass
      * @return
      * @throws Exception
      */
-    public JSONArray neStatusStatisticsForSunburst(List<Long> domainId, BaseNeClass baseNeClass) throws Exception{
-        Map<String, Object> condition = new HashMap<>();
-        if(domainId != null){
-            condition.put("domainId", domainId);
+    public JSONArray neStatusStatisticsForSunburst(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if(domainIds != null && !domainIds.isEmpty()){
+            criteria.setDomainIds(domainIds);
         }
+        criteria.setPagination(false);
         if(baseNeClass != null){
             List<NeClass> neClassList = baseNeClass.getNeClass();
-            condition.put("neClasses", neClassList);
+            criteria.setNeClasses(neClassList);
         }
-        condition.put("manageStatusNotIn", "Delected");
-        condition.put("pageSize", 9999);
-        JsonModel jsonModel = monitorService.getNeList(condition);
-        List<NetworkEntity> networkEntityList = toJavaBeanList(jsonModel, NetworkEntity.class);
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        List<NetworkEntity> networkEntityList = getNeList(criteria);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
         List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
                 networkEntity.getParentId() == null
@@ -355,6 +341,7 @@ public class RpcProcessService {
     public NetworkEntity findNetworkEntityById(String ids) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setId(ids);
+        criteria.setMonitoring(true);
         List<NetworkEntity> list = getNeList(criteria);
         if (ObjectUtils.isEmpty(list)){
             return null;
@@ -412,6 +399,7 @@ public class RpcProcessService {
     public NetworkEntity findNetworkEntityByIdIn(String id) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setId(id);
+        criteria.setMonitoring(true);
         List<NetworkEntity> neList = getNeList(criteria);
         if (ObjectUtils.isEmpty(neList)){
             return null;
@@ -422,20 +410,20 @@ public class RpcProcessService {
     public List<NetworkEntity> findNetworkEntityByIdIn(List<String > ids) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setIds(ids);
+        criteria.setMonitoring(true);
         return getNeList(criteria);
     }
 
     public List<NetworkEntity> findNetworkEntityByIdIn(String[] ids) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setIds(Lists.newArrayList(ids));
+        criteria.setMonitoring(true);
         return getNeList(criteria);
     }
 
     @SuppressWarnings("unchecked")
     public List<NetworkEntity> getAllNeList(NetworkEntityCriteria criteria) throws Exception{
-        Map<String , Object> map = BeanMap.create(criteria);
-        map.put("cls", null);
-        JsonModel jsonModel = monitorService.getNeList(map);
+        JsonModel jsonModel = monitorService.getNeList(JSON.toJSONString(criteria));
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -444,10 +432,8 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<NetworkEntity> getNeList(NetworkEntityCriteria criteria) throws Exception{
-        Map<String , Object> map = BeanMap.create(criteria);
-        map.put("cls", null);
-        map.put("monitoring", true);
-        JsonModel jsonModel = monitorService.getNeList(map);
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.getNeList(param);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -455,6 +441,7 @@ public class RpcProcessService {
     }
 
     public List<String> getNeIds(NetworkEntityCriteria criteria) throws Exception{
+        criteria.setMonitoring(true);
         List<NetworkEntity> neList = getNeList(criteria);
         List<String> result = Lists.newArrayList();
         for (NetworkEntity ne:neList) {
@@ -615,13 +602,7 @@ public class RpcProcessService {
         }
         criteria.setPagination(false);
         criteria.setSourceManage(null);
-        Map<String, Object> beanMap = getBeanMap(criteria);
-        beanMap.put("cls", null);
-        JsonModel jsonModel = monitorService.getNeList(beanMap);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        List<NetworkEntity> nes = toJavaBeanList(jsonModel, NetworkEntity.class);
+        List<NetworkEntity> nes = getNeList(criteria);
         return nes.stream().map(NetworkEntity::getId).collect(Collectors.toList());
     }
 
