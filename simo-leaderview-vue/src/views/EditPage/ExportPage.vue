@@ -45,6 +45,9 @@
                            style="width:100%;height:100%;" />
               <img class="page-img"
                    v-else />
+                       <div class="mask"  :class="{ maskActive: temId.includes(item.id) }">
+                     <div class="mask-text">{{item.name}}</div>
+                   </div>
                     </div>
                   </div>
                 </div>
@@ -263,7 +266,44 @@ export default {
 #exportPage-modal .first-item {
   text-align: center;
   line-height: 152px;
+  position: relative;
 }
+
+
+.mask {
+   width: 255px;
+   height: 155px;
+   position: absolute;
+   top:0;
+   left:0;
+  // background: #0088cc;
+   //display: none;
+   display: none;
+   align-items: flex-end;
+   padding: 0;
+}
+ .mask-text{
+   width: 255px;
+   height: 20%;
+   background: rgba($color: #000000, $alpha: 0.45);
+   color: white;
+  text-shadow: #000000 3px 3px 2px;
+   line-height: 0;
+   display: flex;
+   padding-left: 12px;
+ //  font-weight: bold;
+  // font-size: 14px;
+   justify-content: flex-start;
+   align-items: center;
+   
+}
+.maskActive{
+  display: flex;
+}
+.flex-item:hover .mask{
+    display: flex;
+}
+
 
 #exportPage-modal .active {
   outline: 2px solid #0088cc;
