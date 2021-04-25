@@ -179,20 +179,19 @@ public class RpcProcessService {
         ).collect(Collectors.toList());
         List<ArrayList> realResult = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(rawResult)){
-            String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
             ArrayList<Object> temp = new ArrayList<>();
-            for(String runStatus : runStatuses){
+            for(RunStatus runStatus : RunStatus.values()){
                 temp = new ArrayList<>();
                 long count = 0;
                 Iterator<NetworkEntity> iterator = networkEntityList.iterator();
                 while(iterator.hasNext()){
                     NetworkEntity networkEntity = iterator.next();
-                    if(networkEntity.getRunStatus().toString().equals(runStatus)){
+                    if(runStatus.equals(networkEntity.getRunStatus())){
                         count++;
                         iterator.remove();
                     }
                 }
-                temp.add(RunStatus.valueOf(runStatus).getName());
+                temp.add(runStatus.getName());
                 temp.add(count);
                 realResult.add(temp);
             }
