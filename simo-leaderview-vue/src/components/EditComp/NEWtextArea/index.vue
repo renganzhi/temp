@@ -13,6 +13,7 @@
               :id="!item.ColorType ? 'jianBian':''"
               :class="item.overflow ? 'getTextArea homeText':'getTextArea homeText hiddeLeft'"
               v-model="item.ctName"
+              placeholder="请输入文本框内容"
               ref="NEWtextArea"
               :disabled="dis"></textarea>
   </div>
