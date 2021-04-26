@@ -249,7 +249,7 @@ public class MonitorDataParamsService {
                 }
                 if (validHasFields(ind)) {
                     JSONArray fields = ind.getFields();
-                    fields = filter(fields, o -> Objects.equals(o.getString("fieldType"), FieldType.NUMBER.toString()));
+                    fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                     action(fields, o ->{
                         String unit = o.getString("unit");
                         unit = Strings.isNullOrEmpty(unit) ? "NUMBER" : unit;
@@ -389,7 +389,7 @@ public class MonitorDataParamsService {
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             } else {
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
-                                fields = filter(fields, o -> Objects.equals(o.getString("fieldType"), FieldType.NUMBER.toString()));
+                                fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                                 if (unitExist) {
                                     fields = filter(fields, o -> Objects.equals(o.getString("unit"), unitString));
                                 }
@@ -455,7 +455,7 @@ public class MonitorDataParamsService {
                     // 类型为NUMBER和PERCENT的指标是无属性的
                     if (validHasFields(ind)) {
                         JSONArray fields = ind.getFields();
-                        fields = filter(fields, o -> Objects.equals(o.getString("fieldType"), FieldType.NUMBER.toString()));
+                        fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                         boolean hasNumberType = !CollectionUtils.isEmpty(fields);
                         // 过滤掉属性中没有NUMBER类型的指标
                         if (!hasNumberType) {
@@ -518,7 +518,7 @@ public class MonitorDataParamsService {
                         // 类型为NUMBER和PERCENT的指标是无属性的
                         if (validHasFields(ind)) {
                             JSONArray fields = ind.getFields();
-                            fields = filter(fields, o -> Objects.equals(o.getString("fieldType"), FieldType.NUMBER.toString()));
+                            fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                             fields = filter(fields, o -> !o.containsKey("withoutrule"));
                             boolean hasNumberType = !CollectionUtils.isEmpty(fields);
                             // 过滤掉属性中没有NUMBER类型的指标
@@ -615,8 +615,8 @@ public class MonitorDataParamsService {
                                 JSONArray fields = ind.getFields();
                                 boolean hasStringType;
                                 if (!ObjectUtils.isEmpty(fields)){
-                                    fields = filter(fields, o -> Objects.equals(o.getString("fieldType"), FieldType.NUMBER.toString())
-                                            || Objects.equals(o.getString("fieldType"), FieldType.STRING.toString()));
+                                    fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString())
+                                            || Objects.equals(o.getString("type"), FieldType.STRING.toString()));
                                     fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                     hasStringType = !CollectionUtils.isEmpty(fields);
                                 }else {
@@ -704,7 +704,7 @@ public class MonitorDataParamsService {
                 return new JsonModel(false, "该指标的属性为空");
             }
             fields = filter(fields, o -> !o.containsKey("withoutrule"));
-            fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+            fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
             action(fields, o -> result.add(newResultObj(o.getString("label"), o.getString("name"))));
         }
         return new JsonModel(true, result);
@@ -742,23 +742,23 @@ public class MonitorDataParamsService {
             fields = filter(fields, o -> !o.containsKey("withoutrule"));
             if ("ALL".equals(type)) {
                 // 只展示数值类和需要展示的指标
-                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
 //                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 fields = filter(fields, o -> Objects.equals("performance", o.getString("tag")));
             } else {
                 switch (type){
                     case "PERCENT":
-                        fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                        fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
                         fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                         break;
                     case "NUMBER":
-                        fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                        fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
                         fields = filter(fields, o -> !Objects.equals(o.getString("unit"), "%"));
                         break;
                     case "STRING":
-                        fields = filter(fields, o -> FieldType.PERCENT.toString().equals(o.getString("fieldType"))
-                                || FieldType.NUMBER.toString().equals(o.getString("fieldType"))
-                                || FieldType.STRING.toString().equals(o.getString("fieldType")));
+                        fields = filter(fields, o -> FieldType.PERCENT.toString().equals(o.getString("type"))
+                                || FieldType.NUMBER.toString().equals(o.getString("type"))
+                                || FieldType.STRING.toString().equals(o.getString("type")));
                         break;
                 }
             }
@@ -821,7 +821,7 @@ public class MonitorDataParamsService {
                 fieldsResult.add(newResultObj("值",null));
             } else {
                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
-                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
                 if ("PERCENT".equals(type)) {
                     fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 }
@@ -932,7 +932,7 @@ public class MonitorDataParamsService {
                 fieldsResult.add(newResultObj("值", null));
             } else {
                 // LIST指标存在属性，则获取属性列表
-                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("fieldType")));
+                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                 action(fields, o -> fieldsResult.add(newResultObj(o.getString("label"), o.getString("name"))));
             }
