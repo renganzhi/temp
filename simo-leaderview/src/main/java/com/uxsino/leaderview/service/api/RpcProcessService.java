@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
+import com.uxsino.commons.db.criteria.IndicatorValueCriteria;
+import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.RunStatus;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -545,19 +548,56 @@ public class RpcProcessService {
         return usableInd.get(0);
     }
 
-    public IndValue getIndValue(IndicatorValueQO indicatorValueQO) throws Exception{
-        List<IndValue> indValues = getIndValues(indicatorValueQO);
+    /**
+     * 获取单个实时指标值
+     * @param indicatorValueQO
+     * @return
+     * @throws Exception
+     */
+    public IndValue getIndValue(IndicatorValueCriteria indicatorValueQO) throws Exception{
+        List<IndValue> indValues = getCurIndValues(indicatorValueQO);
         if (ObjectUtils.isEmpty(indValues)){
             return null;
         }
-        return getIndValues(indicatorValueQO).get(0);
+        return indValues.get(0);
     }
 
-    public List<IndValue> getIndValues(IndicatorValueQO indicatorValueQO) throws Exception{
-        Map<String, Object> beanMap = getBeanMap(indicatorValueQO);
+    /**
+     * 根据条件获取多个实时指标值
+     * @param criteria
+     * @return
+     * @throws Exception
+     */
+    public List<IndValue> getIndValues(IndicatorValueCriteria criteria) throws Exception{
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.getCurIndValues(param);
+        if (!jsonModel.isSuccess()){
+            log.error("实时指标查询失败，",jsonModel.getMsg());
+        }
+        return toJavaBeanListIndValue(jsonModel);
+        /*Map<String, Object> beanMap = getBeanMap(indicatorValueQO);
         JsonModel jsonModel = monitorService.getIndValues(beanMap);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanListIndValue(jsonModel);*/
+    }
+
+    public List<IndValue> getCurIndValues(IndicatorValueCriteria criteria) {
+        //处理指标名传参
+        List<String> indicatorName = criteria.getIndicatorName();
+        indicatorName = indicatorName == null || indicatorName.isEmpty() ? new ArrayList<>() : indicatorName;
+        if (StringUtils.isNotBlank(criteria.getIndicatorId())) {
+            String[] split = criteria.getIndicatorId().split(",");
+            indicatorName.addAll(Arrays.asList(split));
+        }
+        String join = StringUtils.join(indicatorName, ",");
+        criteria.setIndicatorId(join);
+        //数据中心获取指标值
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.getCurIndValues(param);
+        if (!jsonModel.isSuccess()){
+            log.error("实时指标查询失败，",jsonModel.getMsg());
         }
         return toJavaBeanListIndValue(jsonModel);
     }
