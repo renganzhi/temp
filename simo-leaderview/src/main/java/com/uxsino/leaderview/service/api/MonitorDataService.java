@@ -379,7 +379,7 @@ public class MonitorDataService {
 
         // 如果是类型为NUMBER、PERCENT的指标，直接取值返回。就不用做之后的部件判断了
         if (!validHasFields(ind)) {
-            String value = valueJSON.getString("result");
+            String value = valueJSON.getString(ind.getName());
             value = getMatcherString(NUMBER_PATTERN, value);
             if (Objects.equals(value, "false")) {
                 value = "0";
@@ -538,7 +538,7 @@ public class MonitorDataService {
         JSONObject valueJSON = new JSONObject();
         if (!validHasFields(ind)) {
             valueJSON = getValueJSON(indicatorValues,componentName);
-            String value = valueJSON.getString("result");
+            String value = valueJSON.getString(indValue.getIndicatorName());
             result = newResultObj(ind.getLabel(), value);
             result.put("info", value);
             // 直接返回值显示
@@ -632,7 +632,7 @@ public class MonitorDataService {
             columns.add("参数");
             JSONArray rows = new JSONArray();
             valueJSON = getValueJSON(indicatorValues);
-            String value = valueJSON.getString("result");
+            String value = valueJSON.getString(indValue.getIndicatorName());
             JSONObject row = new JSONObject(true);
             row.put("指标名", ind.getLabel());
             row.put("参数", value);
@@ -1015,7 +1015,7 @@ public class MonitorDataService {
         List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
         nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected) && ne.isMonitoring()).collect(Collectors.toList());
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
-        field = !MonitorUtils.validHasFields(ind)? "result" : field ;
+        field = !MonitorUtils.validHasFields(ind)? ind.getName() : field ;
         String finalField = field;
         if (ObjectUtils.isEmpty(ind)) {
             return new JsonModel(true, empObj());
@@ -1049,7 +1049,7 @@ public class MonitorDataService {
         qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
         if (!MonitorUtils.validHasFields(ind)){
-            field = "result";
+            field = ind.getName();
         }
         Map<String,List<String>> fieldMap = Maps.newHashMap();
         fieldMap.put(ind.getName(), Lists.newArrayList(field));
@@ -1384,7 +1384,7 @@ public class MonitorDataService {
                 o.put("value", v.getJSONObject(0).get(model.getField()));
             });
         }else {
-            String field = Strings.isNullOrEmpty(model.getField()) ? "result" : model.getField();
+            String field = Strings.isNullOrEmpty(model.getField()) ? model.getIndicator().getName() : model.getField();
             action(result, o -> {
                 JSONObject v ;
                 JSON json = (JSON) o.get("v");
@@ -1736,7 +1736,6 @@ public class MonitorDataService {
                 return null;
             }
         }
-        List<String> indicators = Lists.newArrayList(ind.getName());
 //        IndicatorValueCriteria InvCriteria = new IndicatorValueCriteria();
 //        JSONObject should = new JSONObject();
 //        should.put("ne", new ArrayList<>(availableIds));
@@ -1744,12 +1743,11 @@ public class MonitorDataService {
 //        InvCriteria.setIndicatorName(indicators);
 //        InvCriteria.setPagination(false);
 //        InvCriteria = indicatorService.searchIndicatorValue(InvCriteria);
-        IndicatorValueQO qo = new IndicatorValueQO();
-        qo.setIndicatorNames(Lists.newArrayList(indicators));
+        com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
+        qo.setIndicatorName(Lists.newArrayList(ind.getName()));
         List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
         qo.setNeIds(neIds);
-        qo.setCurrent(true);
-        List<IndValue> indValues = rpcProcessService.getIndValues(qo);
+        List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
         if (ObjectUtils.isEmpty(indValues)) {
             return null;
         }
@@ -1837,9 +1835,9 @@ public class MonitorDataService {
             for (IndValue value : indValues) {
                 JSONObject obj = new JSONObject();
                 JSONObject valueJson = getValueJSON(value.getIndicatorValue());
-                obj.put("num", valueJson.getString("result"));
+                obj.put("num", valueJson.getString(value.getIndicatorName()));
                 obj.put("id", value.getNeId());
-                obj.put("value", valueJson.getString("result") + unit);
+                obj.put("value", valueJson.getString(value.getIndicatorName()) + unit);
                 obj.put("unit", unit);
                 allValue.add(obj);
             }
@@ -2041,7 +2039,7 @@ public class MonitorDataService {
                 // 进行属性有无的判断
                 if (!validHasFields(ind)) {
                     // 该指标若本身就无部件无属性就直接取值
-                    String value = MonitorUtils.getValueStr(valueJSON.getString("result"));
+                    String value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
                     String unit = "PERCENT".equals(ind.getIndicatorType())? "%" : "";
                     resultObj.put("name", ind.getLabel() + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
                     resultObj.put("value", value);
@@ -2464,7 +2462,7 @@ public class MonitorDataService {
                 filedList.add(indicatorsLeft);
             }else {
                 if (!MonitorUtils.validHasFields(leftInd)){
-                    fieldLeft = "result";
+                    fieldLeft = leftInd.getName();
                 }
                 filedList.add(fieldLeft);
             }
@@ -3008,10 +3006,10 @@ public class MonitorDataService {
             }
         }
         // 获取指标的值
-        IndicatorValueQO indValueQo = new IndicatorValueQO();
-        indValueQo.setNeIds(Lists.newArrayList(neIds));
-        indValueQo.setIndicatorNames(Lists.newArrayList(indicators));
-        IndValue indValue = rpcProcessService.getIndValue(indValueQo);
+        com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
+        qo.setNeId(neIds);
+        qo.setIndicatorName(Lists.newArrayList(indicators));
+        IndValue indValue = rpcProcessService.getIndValue(qo);
         Boolean strategyField = getStrategy(neIds, indicators, field);
         // 若指标未监控，取消其数值展示
         if (!strategyField) {

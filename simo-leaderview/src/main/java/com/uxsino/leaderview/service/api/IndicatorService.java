@@ -60,11 +60,10 @@ public class IndicatorService {
     }
 
     public IndValue getIndValueByIdInd(String neId, String indicatorName) throws Exception{
-        IndicatorValueQO qo = new IndicatorValueQO();
-        qo.setCurrent(true);
-        qo.setNeIds(Lists.newArrayList(neId));
-        qo.setIndicatorNames(Lists.newArrayList(indicatorName));
-        List<IndValue> indValues = rpcProcessService.getIndValues(qo);
+        com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
+        qo.setNeId(neId);
+        qo.setIndicatorName(Lists.newArrayList(indicatorName));
+        List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
         if (ObjectUtils.isEmpty(indValues)){
             return null;
         }
