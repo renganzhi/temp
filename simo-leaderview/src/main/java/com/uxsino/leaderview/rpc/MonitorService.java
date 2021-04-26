@@ -41,8 +41,8 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeComps", consumes = "application/json")
     JsonModel findNeComps(@RequestParam Map<String, Object> map);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeLinks", consumes = "application/json")
-    JsonModel findNeLinks(@RequestParam Map<String, Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/findNeLinks", consumes = "application/json")
+    JsonModel findNeLinks(@RequestParam("pagination") boolean pagination, @RequestBody NetworkLinkModel networkLinkModel);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
     JsonModel findNeHealth(@RequestParam("neIds")List<String> neIds,
