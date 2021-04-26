@@ -177,6 +177,7 @@ public class MonitorDataParamsService {
         List<Map<String, String>> list = new ArrayList<>();
         List<NetworkEntity> nes;
         try {
+            criteria.setMonitoring(true);
             nes = rpcProcessService.getNeList(criteria);
         }catch (Exception e){
             e.printStackTrace();
