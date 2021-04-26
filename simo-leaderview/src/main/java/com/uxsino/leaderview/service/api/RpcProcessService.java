@@ -435,6 +435,7 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<NetworkEntity> getNeList(NetworkEntityCriteria criteria) throws Exception{
+        criteria.setPagination(false);
         String param = JSON.toJSONString(criteria);
         JsonModel jsonModel = monitorService.getNeList(param);
         if (!jsonModel.isSuccess()){
