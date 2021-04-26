@@ -451,6 +451,7 @@ modal
 }
 
 .modal-header .close {
+    background-color: transparent !important;
     height: 40px;
     width: 40px;
     margin-top: 0px;
