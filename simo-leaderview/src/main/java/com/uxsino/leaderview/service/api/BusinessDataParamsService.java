@@ -29,7 +29,7 @@ public class BusinessDataParamsService {
     @Autowired
     private RpcProcessService rpcProcessService;
 
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
     public JsonModel getBusiness(HttpSession session) throws Exception{
         JSONArray arr = getAllCurrIndVal(session);
