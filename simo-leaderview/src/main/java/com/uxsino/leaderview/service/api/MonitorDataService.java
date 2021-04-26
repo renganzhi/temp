@@ -2495,7 +2495,7 @@ public class MonitorDataService {
             filedList.add(indicatorsRight);
         }else {
             if (!MonitorUtils.validHasFields(rightInd)){
-                fieldRight = "result";
+                fieldRight = rightInd.getName();
             }
             filedList.add(fieldRight);
         }
@@ -2644,6 +2644,8 @@ public class MonitorDataService {
         qo.setIndicatorTypes(indicatorTypeMap);
         qo.setIntervalType(intervalType);
         qo.setInterval(Long.valueOf(interval));
+        Date startDate = IndPeriod.getStartDate(period, curDate);
+        qo.setDateFrom(startDate);
         qo.setDateTo(curDate);
         if (!ObjectUtils.isEmpty(component)){
             qo.setIdentifiers(Lists.newArrayList(component));

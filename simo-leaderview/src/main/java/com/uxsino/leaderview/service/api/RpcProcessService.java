@@ -215,24 +215,23 @@ public class RpcProcessService {
         ).collect(Collectors.toList());
         JSONArray nCs = new JSONArray();
         if(CollectionUtils.isNotEmpty(rawResult)){
-            String[] runStatuses = new String[]{"Unknow", "Loading", "Good", "Warning", "Unconnection"};
             List<NeClass> neClasses = baseNeClass.getNeClass();
             for (NeClass neClass: neClasses) {
                 JSONObject nC = new JSONObject();
                 JSONArray statusResult = new JSONArray();
                 JSONObject temp;
-                for(String runStatus : runStatuses){
+                for(RunStatus runStatus : RunStatus.values()){
                     temp = new JSONObject();
                     long count = 0;
                     Iterator<NetworkEntity> iterator = networkEntityList.iterator();
                     while(iterator.hasNext()){
                         NetworkEntity networkEntity = iterator.next();
-                        if(networkEntity.getRunStatus().toString().equals(runStatus) && networkEntity.getNeClass().equals(neClass)){
+                        if(runStatus.equals(networkEntity.getRunStatus()) && networkEntity.getNeClass().equals(neClass)){
                             count++;
                             iterator.remove();
                         }
                     }
-                    temp.put("name", RunStatus.valueOf(runStatus).getName());
+                    temp.put("name", runStatus.getName());
                     temp.put("value", count);
                     statusResult.add(temp);
                 }
