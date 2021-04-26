@@ -43,6 +43,8 @@ public class HomeTemplateImgService {
             if (count > 0) {
                 delAll();
             }
+            logger.info("LEADERVIEW -> Start reading template images and compressing each image...");
+            long justNow = System.currentTimeMillis();
             new ClassPathResourceWalker(FILEPATH).forEach(file -> {
                 InputStream in;
                 try {
@@ -86,6 +88,8 @@ public class HomeTemplateImgService {
                     }
                 }
             });
+            long difference = (System.currentTimeMillis()-justNow)/1000;
+            logger.info("LEADERVIEW -> Finished loading all template images and their compression, cost " + difference + "s");
         } catch (IOException e) {
             logger.error("初始化主页大屏模板的图片失败：", e);
         }
