@@ -119,6 +119,11 @@ body {
 }
 
 html[data-theme="default"] {
+  option,
+  optgroup {
+    background: #0a0e1a;
+    color: #e5e5e5;
+  }
   .page-header.navbar {
     background: #1c2132;
   }
@@ -237,6 +242,11 @@ html[data-theme="blueWhite"] {
   }
   .page-header.navbar .page-logo {
     background-color: #02112d;
+  }
+  option,
+  optgroup {
+    background: #ffffff;
+    color: #50607c;
   }
   .page-header.navbar .header_icon {
     color: #50607c;
