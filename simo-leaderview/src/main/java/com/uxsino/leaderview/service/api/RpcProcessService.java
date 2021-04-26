@@ -648,13 +648,9 @@ public class RpcProcessService {
 
     @SuppressWarnings("unchecked")
     public List<NetworkLinkModel> findNeLinks(PageModel temPage, NetworkLinkModel networkLinkModel) throws Exception{
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("pagination", false);
-        Map<String, Object> pageMap = getBeanMap(temPage);
-        Map<String, Object> linkModelMap = getBeanMap(networkLinkModel);
-        map.putAll(pageMap);
-        map.putAll(linkModelMap);
-        JsonModel jsonModel = monitorService.findNeLinks(map);
+        networkLinkModel.setPageSize(temPage.getPageSize());
+        networkLinkModel.setCurrentNo(temPage.getCurrentNo());
+        JsonModel jsonModel = monitorService.findNeLinks(false, networkLinkModel);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }

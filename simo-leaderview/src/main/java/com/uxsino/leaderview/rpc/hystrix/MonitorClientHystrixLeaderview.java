@@ -11,6 +11,8 @@ import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel findNeLinks(Map<String, Object> map) {
+    public JsonModel findNeLinks(boolean pagination, NetworkLinkModel networkLinkModel) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 

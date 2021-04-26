@@ -2388,6 +2388,7 @@ public class MonitorDataService {
         } else {
             criteria.setRunStatus(Strings.isNullOrEmpty(status) ? null : RunStatus.valueOf(status));
         }
+        criteria.setPagination(false);
         neList = rpcProcessService.getAllNeList(criteria);
         JSONObject result = new JSONObject();
         if (ObjectUtils.isEmpty(neList)) {
