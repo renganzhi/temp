@@ -3100,7 +3100,7 @@ public class MonitorDataService {
      * @return
      * @throws Exception 进行服务调用时产生的异常
      */
-    public JsonModel getNELinkByCity(String locationCode, String displayMode) throws Exception{
+    public JsonModel getNELinkByCity(String locationCode, String displayMode,HttpSession session) throws Exception{
         //选择区域为不限时，默认返回全国地图的数据
         if(locationCode == null)
             locationCode = "100000";
@@ -3114,7 +3114,8 @@ public class MonitorDataService {
                   链路信息
          */
         String topoId = rpcProcessService.getTopoId();
-        ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId);
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId, userId);
         String mapLocationId= null;
         for(LinkedHashMap map: mapTree){
             if(locationCode.equals(map.get("locationCode"))){
