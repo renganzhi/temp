@@ -191,6 +191,45 @@ html[data-theme="default"] {
     color: #cad6dd;
     background-color: #02699c;
   }
+  .modal-header .close {
+    background-color: transparent;
+  }
+
+  /*
+表格
+*/
+  .table {
+    color: #cad6dd;
+    background: #222739;
+  }
+  .table thead {
+    background: #1c2132;
+  }
+  .table th {
+    border-right: 1px solid #1b2031;
+    background: #1c2132;
+  }
+  .table td {
+    border-right: 1px solid #22283a;
+  }
+  .table tbody tr:nth-of-type(2n + 1) {
+    background-color: transparent !important;
+  }
+  .table tbody tr:nth-of-type(2n) {
+    background-color: #1f2434 !important;
+  }
+  .table tbody tr:hover {
+    background-color: #303852 !important;
+  }
+
+  .table .table {
+    background: #222739;
+  }
+
+  .table tbody tr.active,
+  .fixed-table-container tbody .selected td {
+    background-color: #242c4a !important;
+  }
 
   input:not([type="checkbox"]):not([type="radio"]),
   textarea,
@@ -335,6 +374,36 @@ html[data-theme="blueWhite"] {
   }
 
   /*
+表格
+*/
+  .table {
+    color: #50607c;
+    background: #ffffff;
+  }
+  .table tr {
+    border-bottom: solid 1px #ebedf1 !important;
+  }
+  .table thead {
+    background: #ebedf1;
+  }
+  .table th {
+    background: #ebedf1;
+  }
+  .table tbody tr:hover {
+    background-color: #ffffff !important;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .table .table {
+    background: #ffffff;
+  }
+
+  .table tbody tr.active,
+  .fixed-table-container tbody .selected td {
+    background-color: #ffffff !important;
+  }
+
+  /*
     select2
 */
   .select2-selection {
@@ -403,6 +472,7 @@ modal
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   .modal-header .close {
+    background-color: transparent;
     color: #8a94a4;
     opacity: 1;
   }
