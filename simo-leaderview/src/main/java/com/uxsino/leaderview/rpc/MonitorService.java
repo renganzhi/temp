@@ -32,8 +32,11 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
     JsonModel getUsableInd(@RequestParam Map<String,Object> map);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getIndValues", consumes = "application/json")
-    JsonModel getIndValues(@RequestParam Map<String,Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/current/getIndValues", consumes = "application/json")
+    JsonModel getCurIndValues(@RequestBody String param);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/history/getIndValues", consumes = "application/json")
+    JsonModel getHisIndValues(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeComps", consumes = "application/json")
     JsonModel findNeComps(@RequestParam Map<String, Object> map);

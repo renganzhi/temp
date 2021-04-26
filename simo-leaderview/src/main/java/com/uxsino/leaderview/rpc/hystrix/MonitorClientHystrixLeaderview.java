@@ -33,8 +33,11 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
-    @Override
-    public JsonModel getIndValues(Map<String, Object> map) {
+    @Override public JsonModel getCurIndValues(String param) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override public JsonModel getHisIndValues(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
