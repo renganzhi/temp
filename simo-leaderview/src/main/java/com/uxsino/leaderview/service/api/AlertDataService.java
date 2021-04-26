@@ -485,7 +485,8 @@ public class AlertDataService {
                                     String baseNeClass, String neClass, String neIds) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
-        criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        if(neIds!=null && !neIds.isEmpty())
+            criteria.setIds(Lists.newArrayList(neIds.split(",")));
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
         ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
         return new JsonModel(true, getStatByLevel(arr, alertLevel, AlertType.Alert));
