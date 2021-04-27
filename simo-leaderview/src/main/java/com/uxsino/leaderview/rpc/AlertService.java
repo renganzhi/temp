@@ -23,14 +23,14 @@ public interface AlertService {
     @RequestMapping(method = RequestMethod.POST, value = "/alertApi/getAlertRecord", consumes = "application/json")
     JsonModel getAlertRecord(@RequestBody AlertQuery alertQuery, @RequestParam("orderBy") Map<String, String> orderBy);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/alertApi/getAlertCount", consumes = "application/json")
-    JsonModel getAlertCount(@RequestParam Map<String, Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/alertApi/getAlertCount", consumes = "application/json")
+    JsonModel getAlertCount(@RequestBody Map<String, Object> map);
 
     @RequestMapping(method = RequestMethod.POST, value = "/alertApi/getObjectIdsByAlertType", consumes = "application/json")
     JsonModel getObjectIdsByAlertType(@RequestHeader("Cookie") String cookie, @RequestBody AlertQuery query);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/alertApi/getLevelStatisticsResult", consumes = "application/json")
-    JsonModel getLevelStatisticsResult(@RequestParam Map<String, Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/alertApi/getLevelStatisticsResult", consumes = "application/json")
+    JsonModel getLevelStatisticsResult(@RequestBody Map<String, Object> map);
 
     //TODO 还没开发出来的接口
     @RequestMapping(method = RequestMethod.GET, value = "/homeData/findByChooseForLeaderview", consumes = "application/json")
