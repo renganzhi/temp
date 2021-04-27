@@ -259,8 +259,8 @@ public class RpcProcessService {
     public long getAlertCount(AlertQuery query, AlertType alert) throws Exception{
         query.setAlertType(alert);
         Map<String, Object> map = getBeanMap(query);
-        map.put("params", null);
-        map.put("objectInfo", null);
+//        map.remove("params");
+//        map.remove("objectInfo");
         JsonModel jsonModel = alertService.getAlertCount(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -331,7 +331,9 @@ public class RpcProcessService {
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
-        map.put("params", null);
+//        map.remove("params");
+//        map.remove("endAlertDate");
+//        map.remove("startAlertDate");
         JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
