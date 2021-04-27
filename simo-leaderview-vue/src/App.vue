@@ -95,6 +95,12 @@ body {
   /* filter:alpha(opacity: 10); */
   opacity: 0.3;
 }
+#toast-container{
+  color: white;
+  button{
+    background-color: transparent !important;
+  }
+}
 
 /* .modal-backdrop {
   z-index: 20099;
@@ -200,7 +206,6 @@ html[data-theme="default"] {
 */
   .table {
     color: #cad6dd;
-    background: #222739;
   }
   .table thead {
     background: #1c2132;
@@ -378,7 +383,6 @@ html[data-theme="blueWhite"] {
 */
   .table {
     color: #50607c;
-    background: #ffffff;
   }
   .table tr {
     border-bottom: solid 1px #ebedf1 !important;
@@ -388,6 +392,9 @@ html[data-theme="blueWhite"] {
   }
   .table th {
     background: #ebedf1;
+  }
+  .table tbody tr{
+    background-color: transparent !important;
   }
   .table tbody tr:hover {
     background-color: #ffffff !important;
