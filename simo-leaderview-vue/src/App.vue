@@ -139,29 +139,6 @@ html[data-theme="default"] {
     background: #0a0e1a;
     color: #e5e5e5;
   }
-  .page-header.navbar {
-    background: #1c2132;
-  }
-  .page-header.navbar .page-logo {
-    background-color: #141a2d;
-  }
-  .page-header.navbar .header_icon {
-    color: #828bac;
-    background-color: #141a2d;
-  }
-  .page-header.navbar .top-menu {
-    margin: 0;
-  }
-  .page-header.navbar .top-menu .navbar-nav .header_icon {
-    background-color: #1c2132;
-  }
-  .page-header.navbar .top-menu .navbar-nav .header_icon:hover {
-    background-color: rgba(130, 139, 171, 0.2);
-  }
-
-  .page-header-inner .header_icon:hover {
-    background-color: rgba(130, 139, 171, 0.2);
-  }
 
   #menu_1 .nav-item:hover,
   #menu_1 .nav-item.active {
@@ -292,36 +269,6 @@ html[data-theme="blueWhite"] {
   .dropdown-menu{
     background-color: #fff !important;
     color: #50607c !important;
-  }
-  .page-header.navbar {
-    background: #ffffff;
-    box-shadow: 0 0 16px rgba(0, 0, 0, 0.1) !important;
-  }
-  .page-header.navbar .page-logo {
-    background-color: #02112d;
-  }
-  option,
-  optgroup {
-    background: #ffffff;
-    color: #50607c;
-  }
-  .page-header.navbar .header_icon {
-    color: #50607c;
-    background-color: #02112d;
-  }
-  .page-header.navbar .header_icon.menu-conf-toggle {
-    color: #dae0e7;
-  }
-  .page-header.navbar .top-menu .navbar-nav .header_icon {
-    background-color: #ffffff;
-  }
-  .page-header.navbar .top-menu .navbar-nav .header_icon:hover {
-    background-color: rgba(130, 139, 171, 0.2);
-    color: #026bf4;
-  }
-
-  .page-header-inner .header_icon:hover {
-    background-color: #02112d;
   }
 
   #menu_1 .nav-link:hover {
