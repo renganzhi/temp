@@ -394,16 +394,16 @@ button + button {
 }
 
 .table tbody tr:nth-of-type(2n + 1) {
-    background-color: transparent !important;
+    background-color: transparent ;
 }
 
 .table tbody tr:nth-of-type(2n) {
-    background-color: #1f2434 !important;
+    background-color: #1f2434 ;
 }
 
 .table tbody tr:hover {
     color: inherit;
-    background-color: #303852 !important;
+    background-color: #303852 ;
 }
 
 .table .longContent {
