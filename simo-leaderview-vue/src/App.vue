@@ -123,6 +123,15 @@ body {
   top: 50%;
   transform: translateY(-50%);
 }
+#toast-container{
+  .toast-close-button{
+    background-color: transparent;
+  }
+}
+.simoLink:hover {
+    color: #0253f5 !important;;
+    text-decoration: underline;
+}
 
 html[data-theme="default"] {
   option,
@@ -280,6 +289,10 @@ html[data-theme="default"] {
 */
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
+  .dropdown-menu{
+    background-color: #fff !important;
+    color: #50607c !important;
+  }
   .page-header.navbar {
     background: #ffffff;
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.1) !important;
