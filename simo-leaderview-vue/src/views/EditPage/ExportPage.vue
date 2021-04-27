@@ -306,7 +306,8 @@ export default {
 
 
 #exportPage-modal .active {
-  outline: 2px solid #0088cc;
+   outline: 2px solid #0088cc;
+  box-shadow: #85d6ff 0px 0px 10px ;
 }
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
