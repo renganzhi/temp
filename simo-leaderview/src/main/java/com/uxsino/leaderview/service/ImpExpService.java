@@ -482,17 +482,25 @@ public class ImpExpService {
                 }
             }
             zin.closeEntry();
+            Long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
+            List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
             int pageCount = homePageUserConfService.getMaxMinePage(userId, false);
             //跳转处理
             for (j = 0; j<config.size() && pageCount<MAX_PAGE_INDEX; j++, pageCount++) {
                 JSONObject obj = config.getJSONObject(j);
                 HomePage page = new HomePage();
+                String pageName = tempName == null ? obj.getString("name") : obj.getString("name") + "_" + tempName;
+                for(HomePage temp : allHomePages){
+                    if(temp.getName().equals(pageName)){
+                        pageName += "_" + new Date().getTime();
+                    }
+                }
                 page.setCreateUserId(userId);
                 page.setHandoverId(userId);
                 page.setUserId(userId);
                 page.setLastUpdateTime(new Date());
                 page.setComposeObj(obj.getString("composeObj"));
-                page.setName(tempName == null ? obj.getString("name") : obj.getString("name") + "_" + tempName);
+                page.setName(pageName);
                 page.setViewConf(obj.getString("viewConf"));
                 page.setViewImage(obj.getString("viewImage"));
                 page.setPaintObj(obj.getString("paintObj"));

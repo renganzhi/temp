@@ -235,6 +235,15 @@ public class HomePageController {
 		if (homePage == null) {
 			return new JsonModel(false, "预修改的页面不存在，请刷新重试！");
 		}
+		Long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
+		List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
+		for(HomePage temp : allHomePages){
+			if(temp.getId().equals(id))
+				continue;
+			if(temp.getName().equals(name)){
+				return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+			}
+		}
 		homePage.setName(name);
 		homePageService.update(homePage);
 		return new JsonModel(true);
