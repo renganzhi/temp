@@ -77,7 +77,8 @@
              v-show="!isNewUser">
           <span @click="editPage"
                 class="ring-icon"
-                title="设置"
+                title
+                data-original-title="设置"
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
           <span @click="toEditPage()"
                 class="ring-icon"
