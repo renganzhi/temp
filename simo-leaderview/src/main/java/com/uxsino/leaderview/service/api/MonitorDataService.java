@@ -2136,7 +2136,7 @@ public class MonitorDataService {
             int count = 0;
             // 异常链路的状态为：告警、断开、未知
             List<NetworkLinkStatus> statuses = Lists.newArrayList(NetworkLinkStatus.Alert,
-                    NetworkLinkStatus.Unconnection, NetworkLinkStatus.Unkown);
+                    NetworkLinkStatus.Unconnection, NetworkLinkStatus.Unknown);
             for (NetworkLinkModel linkModel : list) {
                 if (statuses.contains(linkModel.getLinkStatus())) {
                     count++;
