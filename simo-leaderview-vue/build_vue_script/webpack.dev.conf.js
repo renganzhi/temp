@@ -55,7 +55,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       // template: 'index.html',
-      template: process.env.NODE_ENV === 'production' ? 'indexJq.html' : 'index.html',
+      template: 'index.html',
       inject: true,
       favicon: path.resolve(__dirname, '../src/icons/favicon.ico')
     }),
