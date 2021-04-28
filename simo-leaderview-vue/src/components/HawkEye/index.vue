@@ -205,6 +205,22 @@ export default {
             })
         )
       }
+      $('#mainEdit-edit .main_topo')
+        .find('svg')
+        .css('opacity', 0)
+      $('#mainEdit-edit .main_topo').append(
+        $('<img>')
+          .addClass('monitp')
+          // .attr('src', gbs.host + '/leaderview/border/tpstander.png')
+          .attr('src', gbs.host + '/leaderview/border/topoBg.png')
+          .css({
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          })
+      )
       if ($('#mainEdit-edit .JSMpeg').length > 0) {
         $('#mainEdit-edit .JSMpeg')
           .find('canvas')
@@ -234,6 +250,10 @@ export default {
           $('.getPicSpan').hide()
           $('#mainEdit-edit .JSMpeg')
             .find('canvas')
+            .css('opacity', 1)
+          // 提前还原拓扑
+          $('#mainEdit-edit .main_topo')
+            .find('svg')
             .css('opacity', 1)
           $('#mainEdit-edit .main_video')
             .find('video')
