@@ -103,6 +103,21 @@ public class AlertDataService {
                 queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
             }
         }
+        queryObject.setHandleStatusIn(new AlertHandleStatus[]{AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED});
+        if(!alertLevel.isEmpty()){
+            String[] split = StringUtils.split(alertLevel, ",");
+            List<Integer> levels = Lists.newArrayList();
+            if (ObjectUtils.isEmpty(split)) {
+                levels.add(Integer.valueOf(alertLevel));
+            } else {
+                for(String temp: split){
+                    levels.add(Integer.valueOf(temp));
+                }
+            }
+            queryObject.setLevels(levels);
+        }
+    //当alert上10w时，直接将整个告警list全部查过来耗费内存过多，且会造cpu占用飙升，改为使用count()方式获取
+    /*
         List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
         List<AlertHandleStatus> statuses =
                 Lists.newArrayList(AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
@@ -131,7 +146,8 @@ public class AlertDataService {
             });
             list = temList;
         }
-        result.put("value", list.size());
+    */
+        result.put("value", rpcProcessService.getAlertCount(queryObject, alertType1));
         return new JsonModel(true, result);
     }
 

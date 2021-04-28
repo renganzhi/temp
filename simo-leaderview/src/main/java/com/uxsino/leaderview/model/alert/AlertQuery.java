@@ -125,6 +125,12 @@ public class AlertQuery {
     private Integer level;
 
     /**
+     * 多个告警等级值（取值范围1~10，值越大表示告警越严重）
+     */
+    @ApiModelProperty(value = "多个告警等级值")
+    private List<Integer> levels;
+
+    /**
      * 最近告警信息描述
      */
     @ApiModelProperty(value = "最近告警信息描述")
