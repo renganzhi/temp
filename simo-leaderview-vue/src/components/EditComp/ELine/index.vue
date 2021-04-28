@@ -144,7 +144,8 @@ export default {
                     type: 'linear',
                     x: 0,
                     y: 0,
-                    x2: 0,
+                    // x2: 0,
+                    x2: 1,
                     y2: 1,
                     colorStops: [{
                       offset: 0, color: this.item.DScatterColor[index - 1][1] || '' // 0% 处的颜色

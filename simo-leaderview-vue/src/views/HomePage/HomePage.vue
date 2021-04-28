@@ -81,40 +81,28 @@
                 v-show="!isFullScreen"><i class="icon-n-set"></i></span>
           <span @click="toEditPage()"
                 class="ring-icon"
-                data-toggle='tooltip'
-                title
-                data-original-title="编辑当前页"
+                title="编辑当前页"
                 v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
           <span @click="refresh"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+                :title="isFullScreen ? '刷新' : ' 刷新 '"
+                class="ring-icon"><i class="icon-n-freshen"></i></span>
           <span @click="fullScreen"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+                :title="isFullScreen ? '退出全屏' : '全屏'"
+                class="ring-icon"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
         </div>
         <div class="fr btn-box">
           <span @click="prev"
                 class="ring-icon"
-                data-toggle='tooltip'
-                title
-                v-show="showPagination"
-                :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+                :title="isFullScreen ? '上一页' : ' 上一页 '"
+                v-show="showPagination"><i class="icon-n-prev"></i></span>
           <span @click="togglePlay"
                 class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
+                :title="!timer ? '开启轮播' : '暂停轮播'"
                 v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
           <span @click="next"
                 class="ring-icon"
-                data-toggle='tooltip'
-                title
-                v-show="showPagination"
-                :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+                :title="isFullScreen ? '下一页' : ' 下一页 '"
+                v-show="showPagination"><i class="icon-n-next"></i></span>
         </div>
       </div>
 
