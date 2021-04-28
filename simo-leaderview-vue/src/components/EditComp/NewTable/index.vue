@@ -10,7 +10,9 @@
           <tr :style="[trStyle,theadTrStyle]">
             <th v-for="(title, index) in item.chartData.columns"
                 :style="[thStyle,heightLinght,widthLinght(index)]"
-                :key="index"><span :title="title"><div :class="noworder[title] ? noworder[title]==='up'?'sortable desc':'sortable asc' :'sortable' " v-if="tableData[0] && !isNaN(tableData[0][title]*1)" @click="sortArry(title)">{{title}}</div> <div v-else>{{title}}</div></span></th>
+                :key="index"><span data-toggle='tooltip'
+                    title
+                    :data-original-title="title"><div :class="noworder[title] ? noworder[title]==='up'?'sortable desc':'sortable asc' :'sortable' " v-if="tableData[0] && !isNaN(tableData[0][title]*1)" @click="sortArry(title)">{{title}}</div> <div v-else>{{title}}</div></span></th>
           </tr>
         </thead>
         <!-- <tbody>
