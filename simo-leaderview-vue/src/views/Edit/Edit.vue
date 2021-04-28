@@ -97,15 +97,13 @@
             <span @click="preOther(0)"
                   class="ring-icon"
                   style="line-height: 34px;margin: 0 8px;"
-                  data-toggle='tooltip'
-                  title
-                  data-original-title="上一页"><i class="icon-n-prev"></i></span>
+                  :title="上一页"
+                  ><i class="icon-n-prev"></i></span>
             <span @click="preOther(1)"
                   class="ring-icon"
-                  data-toggle='tooltip'
                   style="line-height: 34px;margin: 0 8px;"
-                  title
-                  data-original-title="下一页"><i class="icon-n-next"></i></span>
+                  :title="下一页"
+                  ><i class="icon-n-next"></i></span>
           </div>
         </div>
         <!--右键-->

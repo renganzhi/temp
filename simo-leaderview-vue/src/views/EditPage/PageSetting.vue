@@ -96,9 +96,8 @@
                       :key="index">
                     <td>{{tr.visible ? index + 1 : '--'}}</td>
                     <td>
-                      <span data-toggle='tooltip'
-                        title
-                        :data-original-title="tr.name">{{tr.name}}
+                      <span
+                      :title="tr.name">{{tr.name}}
                       </span>
                     </td>
                     <td>
