@@ -22,9 +22,13 @@
          @click.ctrl="bindCtrl">
       <div class="edit-header">
         <h4 class='edit-title' style="margin: 0 18px;"
+            v-if="tapsStation==='center'"
             @click.self="clickPaint($event)">{{pageName}}</h4>
-          <span v-if="tapsStation==='left'" class="fl">|</span>
         <div :class="tapsStation==='left'?'fl':'fr'">
+          <h4 class='edit-title' style="margin: 0 18px;"
+              v-if="tapsStation!=='center'"
+              @click.self="clickPaint($event)">{{pageName}}</h4>
+          <span v-if="tapsStation!=='center'" class="fl">|</span>
           <a class=" simoLink icon-n-revoke edit-opt"
             v-if="historyArr.length > 0"
             @click="Revoke">撤销</a>
