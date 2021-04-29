@@ -136,8 +136,8 @@ body {
 html[data-theme="default"] {
   option,
   optgroup {
-    background: #0a0e1a;
-    color: #e5e5e5;
+    background: #0a0e1a !important;
+    color: #e5e5e5 !important;
   }
 
   #menu_1 .nav-item:hover,
@@ -266,6 +266,12 @@ html[data-theme="default"] {
 */
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
+
+  option,
+  optgroup {
+    background: #ffffff!important;
+    color: #666666 ;
+  }
   .dropdown-menu{
     background-color: #fff !important;
     color: #50607c !important;
