@@ -76,7 +76,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         : config.build.index,
       template: 'index.html',
       inject: true,
-      favicon: path.resolve(__dirname, '../src/icons/favicon.ico'),
+      // favicon: path.resolve(__dirname, '../src/icons/favicon.ico'),
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -149,13 +149,13 @@ const webpackConfig = merge(baseWebpackConfig, {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           chunks: 'initial',
-          name: 'vendors',
+          name: 'vendors'
         },
         'async-vendors': {
           test: /[\\/]node_modules[\\/]/,
           minChunks: 3,
           chunks: 'async',
-          name: 'async-vendors',
+          name: 'async-vendors'
         },
         manifest: {
           test: /[\\/]src[\\/]/,

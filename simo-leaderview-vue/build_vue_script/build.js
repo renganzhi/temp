@@ -36,8 +36,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     var fileName = 'index.html'
     var targetName = 'main.html'
     // path.resolve(__dirname, '..')
-    var sourceFile = path.resolve(__dirname, '../dist', fileName)
-    var destPath = path.resolve(__dirname, '../dist', targetName)
+    var sourceFile = path.resolve(__dirname, '../dist/leaderview-static', fileName)
+    var destPath = path.resolve(__dirname, '../dist/leaderview-static', targetName)
     var data = ''
     // var arguments = process.argv.splice(2)
     var replaceText = '/leaderview-static/' // 目标目录

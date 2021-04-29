@@ -684,7 +684,7 @@
                     style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
-                  <label data-original-title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
+                  <label :data-original-title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
@@ -1734,7 +1734,7 @@
 
               <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group m-gap cols2">
-                  <el-collapse-item data-original-title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
+                  <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
                       <ChildTag :item="data" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
                     </div>
@@ -1846,7 +1846,7 @@
                              class="e-legend">{{v.name}}<i class="icon-n-tip"
                            v-if="v.title"
                            style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                           data-original-title="v.title"></i></label>
+                           :data-original-title="v.title"></i></label>
                       <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'"
                                :name="v.key"
                                v-model="syst.curConf.params[v.key]"
@@ -2120,7 +2120,7 @@
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
-                  <label data-original-title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
+                  <label :data-original-title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>
