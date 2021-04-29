@@ -244,10 +244,11 @@ public class RpcProcessService {
     }
 
 
-    public List<Alert> findByChooseForLeaderview(String[] neIds, Long number) throws Exception{
+    public List<Alert> findByChooseForLeaderview(String[] neIds, int number) throws Exception{
         AlertQuery query = new AlertQuery();
         query.setAlertType(AlertType.Alert);
         query.setObjectIds(StringUtils.join(neIds,","));
+        query.setLimit(number);
         JsonModel jsonModel = alertService.getAlertRecord(query, Maps.newHashMap());
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());

@@ -466,7 +466,7 @@ public class AlertDataService {
                 return new JsonModel(true, "无资源数据", result);
             }
         }
-        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1L);
+        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1);
         List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
                 AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
         list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
@@ -617,7 +617,7 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
-                                  Long number, HttpSession session, String[] column) throws Exception{
+                                  Integer number, HttpSession session, String[] column) throws Exception{
         JSONObject result = new JSONObject();
         List<String > diffColumns = Lists.newArrayList("状态","告警来源","IP地址","告警内容","告警时间");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
