@@ -1054,7 +1054,7 @@ export default {
       //   transform: 'scale(1)'
       // })
       if ($('#paintWrap').find('[title]').length > 0) {
-        $('#paintWrap').find('[title]').tooltip('destroy') // 取消本页的表格tips
+        // $('#paintWrap').find('[title]').tooltip('destroy') // 取消本页的表格tips
       }
       this.stopRefreshTimer()
       if (!newV) {
