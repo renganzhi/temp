@@ -467,9 +467,6 @@ public class AlertDataService {
             }
         }
         List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1);
-        List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
-                AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
-        list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
         list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).collect(Collectors.toList());
         if (ObjectUtils.isEmpty(list)){
             result.put("info", "抱歉，没有数据可供展示...");
@@ -639,9 +636,6 @@ public class AlertDataService {
             return new JsonModel(true, obj);
         }
         JSONArray rows = new JSONArray();
-        List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
-                AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
-        list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
         list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {
