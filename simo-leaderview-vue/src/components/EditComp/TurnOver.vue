@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'countNum': true, 'down': true, 'changed':changed, 'changing': changing}"
+  <div :class="{'countNum': true, 'up': true, 'changed':changed, 'changing': changing}"
        :style="countStyle">
     <span class="current top"
           :style="spanStyle">{{currentNum}}</span>
