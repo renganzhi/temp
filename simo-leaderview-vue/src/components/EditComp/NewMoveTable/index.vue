@@ -31,7 +31,7 @@
                 :key="id">
               <td v-for="(tdText, ind) in tr"
                   :key="ind"
-                  :title="tdText">{{tdText}}</td>
+                  data-original-title="tdText">{{tdText}}</td>
             </tr>
           </tbody>
         </table>
