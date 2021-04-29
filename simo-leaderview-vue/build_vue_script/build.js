@@ -44,7 +44,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
 
     // var ignoreJs = ['jquery', 'jquery-ui', 'bootstrap', 'topo', 'echarts']
     // var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'spectrum', 'flexStyle', 'echarts']
-    var ignoreJs = ['bootstrap', 'jquery']
+    var ignoreJs = ['bootstrap', 'jquery', 'popper']
     var ignoreCss = ['bootstrap']
 
     var readStream = fs.createReadStream(sourceFile)
