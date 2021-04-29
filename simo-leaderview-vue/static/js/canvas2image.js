@@ -6806,6 +6806,9 @@ var ResourceLoader = function () {
                     }
 
                     img.onerror = reject;
+                    if(src.indexOf('leaderview')>0){
+                        src = src + '/HawEye'
+                    }
                     img.src = src;
                     if (img.complete === true) {
                         // Inline XML images may fail to parse, throwing an Error later on
