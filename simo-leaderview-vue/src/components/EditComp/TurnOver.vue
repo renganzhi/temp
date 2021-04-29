@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'countNum': true, 'down': true, 'changed':changed, 'changing': changing}"
+  <div :class="{'countNum': true, 'up': true, 'changed':changed, 'changing': changing}"
        :style="countStyle">
     <span class="current top"
           :style="spanStyle">{{currentNum}}</span>
@@ -35,7 +35,7 @@ export default {
     spanStyle: function () {
       return {
         backgroundColor: this.bgClr,
-        transformRrigin: '0 ' + parseInt(this.numHeight / 2) + 'px 0'
+        transformOrigin: '0 ' + parseInt(this.numHeight / 2) + 'px 0'
       }
     }
   },
