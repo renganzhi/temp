@@ -45,7 +45,10 @@ public class ImageService {
                 return;
             }
             ext = f.getExtension();
-            data = isCompressed? f.getUploadedFileCompressed().getCompressedFileStream(): f.getFileStream();
+            if(!isCompressed || f.getUploadedFileCompressed()==null)
+                data = f.getFileStream();
+            else
+                data = f.getUploadedFileCompressed().getCompressedFileStream();
         }else {
             HomeTemplateImg f = templateImgService.getById(id);
             if(f == null){
@@ -53,8 +56,10 @@ public class ImageService {
                 return;
             }
             ext = f.getExtension();
-            data = isCompressed? f.getHomeTemplateImgCompressed().getCompressedFileStream(): f.getFileStream();
-            data = data==null? f.getFileStream(): data;
+            if(!isCompressed || f.getHomeTemplateImgCompressed()==null)
+                data = f.getFileStream();
+            else
+                data = f.getHomeTemplateImgCompressed().getCompressedFileStream();
         }
 
         if (!IMG_EXTENSION_LIST.contains(ext)) {
