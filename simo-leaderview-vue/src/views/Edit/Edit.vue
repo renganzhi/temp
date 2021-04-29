@@ -684,7 +684,7 @@
                     style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
-                  <label :title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
+                  <label data-original-title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
@@ -1626,7 +1626,7 @@
                      v-show="selectedItem.secondType !== 'liquidfill'">
                   <label>配色<i class="icon-n-tip"
                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                       title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
+                       data-original-title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
                   <select v-model="selectedItem.colorType"
                           @change="chgColorType"
                           :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '90px !important' : ''}">
@@ -1734,7 +1734,7 @@
 
               <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group m-gap cols2">
-                  <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
+                  <el-collapse-item data-original-title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
                       <ChildTag :item="data" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
                     </div>
@@ -1762,7 +1762,7 @@
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
                          accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
-                  <label :title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
+                  <label data-original-title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
               </div>
@@ -1846,7 +1846,7 @@
                              class="e-legend">{{v.name}}<i class="icon-n-tip"
                            v-if="v.title"
                            style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                           :title="v.title"></i></label>
+                           data-original-title="v.title"></i></label>
                       <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'"
                                :name="v.key"
                                v-model="syst.curConf.params[v.key]"
@@ -1979,7 +1979,7 @@
                        v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                         title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
+                         data-original-title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
                             @click="addAlertLevel">添加数据点</button>
                     <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                   </div>
@@ -1988,7 +1988,7 @@
                        v-show="!(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                         title="设置每个地区的分布数量"></i></label>
+                         data-original-title="设置每个地区的分布数量"></i></label>
                     <div class="setMapData"
                          style="height: 180px;">
                       <div class="area-item"
@@ -2040,8 +2040,7 @@
                           @click="cancelLevelTips">否</span>
                   </div>
                   <label class="e-legend">数据量级<i class="icon-n-tip"
-                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                        title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"></i></label>
+                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"></i></label>
                   <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
                                     <span>量级一</span>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -
@@ -2121,7 +2120,7 @@
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
-                  <label :title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
+                  <label data-original-title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>

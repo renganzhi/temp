@@ -9,7 +9,7 @@
       <div :style="{left:horizontalDottedLeft + 'px',height:Vstyle}" class="vue-ruler-ref-dot-v" />
       <div
         v-for="item in lineList"
-        :title="item.title"
+        data-original-title="item.title"
         :style="getLineStyle(item)"
         :key="item.id"
         :class="`vue-ruler-ref-line-${item.type}`"

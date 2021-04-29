@@ -35,7 +35,7 @@ export default {
     spanStyle: function () {
       return {
         backgroundColor: this.bgClr,
-        transformRrigin: '0 ' + parseInt(this.numHeight / 2) + 'px 0'
+        transformOrigin: '0 ' + parseInt(this.numHeight / 2) + 'px 0'
       }
     }
   },

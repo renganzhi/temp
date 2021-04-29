@@ -70,7 +70,7 @@
                 style="width: 147px!important;margin-right: 8px;"
                 accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                 @change='changeImg' />
-              <label :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;right: 25px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
+              <label data-original-title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;right: 25px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
               <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
             </div>
         </template>
@@ -82,7 +82,7 @@
               id="myfiles"
               accept="video/*"
               @change="uploadVideo">
-          <label :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
+          <label data-original-title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
           <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
           </div>
         </template>
