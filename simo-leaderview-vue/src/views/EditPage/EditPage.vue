@@ -115,7 +115,7 @@
                   v-show="item.belongCurrentUser === 'false'"
                   ><i
                     class="icon-n-assetys"
-                    data-original-title="'负责人：' + item.shareName"
+                    :data-original-title="'负责人：' + item.shareName"
                   ></i
                 ></span>
                 <span class="title-name flex-1">{{ item.name }}</span>

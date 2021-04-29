@@ -12,7 +12,9 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: 'http://localhost:9999',
-        target: 'http://192.168.1.160:9999',
+        target: 'http://192.100.100.42:9999',
+        // target: 'http://192.168.1.135:9999',
+        // target: 'http://192.168.1.160:9999',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
         pathRewrite: {
           '^/api': '' // 重写
@@ -53,7 +55,7 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
+    index: path.resolve(__dirname, '../dist/leaderview-static/index.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
