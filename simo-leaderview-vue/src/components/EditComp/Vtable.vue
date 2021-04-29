@@ -291,7 +291,7 @@ export default {
   },
   beforeDestroy: function () {
     if ($(this.$el).find('[title]').length > 0) {
-      $(this.$el).find('[title]').tooltip('destroy')
+      // $(this.$el).find('[title]').tooltip('destroy')
     }
     // this.$destroy(true)
   }
