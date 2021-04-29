@@ -45,7 +45,7 @@ public class UploadedFile {
     private Long userId;
 
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "compressed_id", referencedColumnName = "id")
     private UploadedFileCompressed uploadedFileCompressed;
 }
