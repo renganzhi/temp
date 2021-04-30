@@ -95,17 +95,15 @@
         <div class='btm-tools'>
           <div   :class="tapsStation==='left'?'btn-box fl':'btn-box fr'" class="">
             <span @click="preOther(0)"
-                  class="ring-icon"
+                  class="ring-icon hoverTips"
                   style="line-height: 34px;margin: 0 8px;"
                   data-toggle='tooltip'
-                  title
-                  data-original-title="上一页"><i class="icon-n-prev"></i></span>
+                  title="上一页"><i class="icon-n-prev"></i></span>
             <span @click="preOther(1)"
-                  class="ring-icon"
+                  class="ring-icon hoverTips"
                   data-toggle='tooltip'
                   style="line-height: 34px;margin: 0 8px;"
-                  title
-                  data-original-title="下一页"><i class="icon-n-next"></i></span>
+                  title="下一页"><i class="icon-n-next"></i></span>
           </div>
         </div>
         <!--右键-->
@@ -684,7 +682,7 @@
                     style="width: 147px!important;margin-right: 8px;"
                     accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                     @change='changeImg' />
-                  <label :data-original-title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
+                  <label class="hoverTips" data-toggle="tooltip" :title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
@@ -1624,9 +1622,10 @@
                 </div>
                 <div class="form-group cols2"
                      v-show="selectedItem.secondType !== 'liquidfill'">
-                  <label>配色<i class="icon-n-tip"
+                  <label>配色<i class="icon-n-tip hoverTips"
                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                       data-original-title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
+                       data-toggle="tooltip"
+                       title="可增加多个配色项，依次对应各项颜色，配色项少于数据组时循环取色"></i></label>
                   <select v-model="selectedItem.colorType"
                           @change="chgColorType"
                           :style="{width: (selectedItem.chartType=='ve-histogram' || selectedItem.chartType=='ve-bar') && !selectedItem.subType ? '90px !important' : ''}">
@@ -1762,7 +1761,7 @@
                   <input type="file" style="width: 147px!important;margin-right: 8px;"
                          accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
-                  <label data-original-title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
+                  <label  class="hoverTips" data-toggle="tooltip"  :title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                 </div>
               </div>
@@ -1843,10 +1842,11 @@
                          v-for="(v,idx) in syst.curUrl"
                          :key="idx">
                       <label v-if="v.type=='drop-down' || v.type=='multi-select'"
-                             class="e-legend">{{v.name}}<i class="icon-n-tip"
+                             class="e-legend">{{v.name}}<i class="icon-n-tip hoverTips"
                            v-if="v.title"
                            style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                           :data-original-title="v.title"></i></label>
+                            data-toggle="tooltip"
+                           :title="v.title"></i></label>
                       <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'"
                                :name="v.key"
                                v-model="syst.curConf.params[v.key]"
@@ -1977,18 +1977,20 @@
                   </div>
                   <div class="form-group cols2"
                        v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
-                    <label class="e-legend">数据设置<i class="icon-n-tip"
+                    <label class="e-legend">数据设置<i class="icon-n-tip hoverTips"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                         data-original-title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
+                         data-toggle="tooltip"
+                         title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
                             @click="addAlertLevel">添加数据点</button>
                     <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                   </div>
 
                   <div class="form-group cols2"
                        v-show="!(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
-                    <label class="e-legend">数据设置<i class="icon-n-tip"
+                    <label class="e-legend">数据设置<i class="icon-n-tip hoverTips"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                         data-original-title="设置每个地区的分布数量"></i></label>
+                        data-toggle="tooltip"
+                        title="设置每个地区的分布数量"></i></label>
                     <div class="setMapData"
                          style="height: 180px;">
                       <div class="area-item"
@@ -2120,7 +2122,7 @@
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
-                  <label :data-original-title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
+                  <label class="hoverTips" data-toggle='tooltip' :title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
                   <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
                   </div>
                 </div>

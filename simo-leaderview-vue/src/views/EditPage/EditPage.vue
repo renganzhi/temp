@@ -111,11 +111,13 @@
               </div>
               <div v-else class="page-title flex-1 flex">
                 <span
-                  class="shareIcon"
+                  class="shareIcon hoverTips"
+                  data-toggle="tooltip"
+                  :title="'负责人：' + item.shareName"
                   v-show="item.belongCurrentUser === 'false'"
-                  ><i
+                  >
+                  <i
                     class="icon-n-assetys"
-                    :data-original-title="'负责人：' + item.shareName"
                   ></i
                 ></span>
                 <span class="title-name flex-1">{{ item.name }}</span>
@@ -728,6 +730,12 @@ export default {
     window.history.pushState({}, '', _url)
     this.getAccess()
     this.saerchShareUser()
+    $('.hoverTips').on('mouseenter', function () { // 绑定鼠标进入事件
+      $(this).tooltip('show')
+    })
+    $('hoverTips').on('mouseleave', function () { // 绑定鼠标划出事件
+      $(this).tooltip('hide')
+    })
   },
   beforeDestroy: function () {
     $('.modal-backdrop').remove()
