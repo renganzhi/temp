@@ -103,6 +103,21 @@ public class AlertDataService {
                 queryObject.setIndicatorIdNotIn(Lists.newArrayList("useable_state"));
             }
         }
+        queryObject.setHandleStatusIn(new AlertHandleStatus[]{AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED});
+        if(!alertLevel.isEmpty()){
+            String[] split = StringUtils.split(alertLevel, ",");
+            List<Integer> levels = Lists.newArrayList();
+            if (ObjectUtils.isEmpty(split)) {
+                levels.add(Integer.valueOf(alertLevel));
+            } else {
+                for(String temp: split){
+                    levels.add(Integer.valueOf(temp));
+                }
+            }
+            queryObject.setLevels(levels);
+        }
+    //当alert上10w时，直接将整个告警list全部查过来耗费内存过多，且会造cpu占用飙升，改为使用count()方式获取
+    /*
         List<AlertRecord> list = rpcProcessService.findAlert(queryObject, null);
         List<AlertHandleStatus> statuses =
                 Lists.newArrayList(AlertHandleStatus.INVALID, AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
@@ -131,7 +146,8 @@ public class AlertDataService {
             });
             list = temList;
         }
-        result.put("value", list.size());
+    */
+        result.put("value", rpcProcessService.getAlertCount(queryObject, alertType1));
         return new JsonModel(true, result);
     }
 
@@ -450,10 +466,7 @@ public class AlertDataService {
                 return new JsonModel(true, "无资源数据", result);
             }
         }
-        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1L);
-        List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
-                AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
-        list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
+        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1);
         list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).collect(Collectors.toList());
         if (ObjectUtils.isEmpty(list)){
             result.put("info", "抱歉，没有数据可供展示...");
@@ -601,7 +614,7 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
-                                  Long number, HttpSession session, String[] column) throws Exception{
+                                  Integer number, HttpSession session, String[] column) throws Exception{
         JSONObject result = new JSONObject();
         List<String > diffColumns = Lists.newArrayList("状态","告警来源","IP地址","告警内容","告警时间");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
@@ -623,9 +636,6 @@ public class AlertDataService {
             return new JsonModel(true, obj);
         }
         JSONArray rows = new JSONArray();
-        List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
-                AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
-        list = list.stream().filter(alert -> !statuses.contains(alert.getHandleStatus())).collect(Collectors.toList());
         list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {

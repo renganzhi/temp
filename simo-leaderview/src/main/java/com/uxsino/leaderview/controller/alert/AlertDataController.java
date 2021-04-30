@@ -456,7 +456,7 @@ public class AlertDataController {
     public JsonModel getAlertInfo(@RequestParam(required = false) Long domainId,
                                   @RequestParam(required = false) String baseNeClass,
                                   @RequestParam(required = false) String[] neIds,
-                                  @RequestParam Long number,
+                                  @RequestParam Integer number,
                                   @RequestParam(required = false) String[] column,
                                   HttpSession session){
         try {
