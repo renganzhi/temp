@@ -45,7 +45,7 @@ export default {
         } else {
           this.busTp = initBusTp({ 'businessId': this.item.tpId, el: this.$el })
         }
-      } else if (this.item.tptype == 'maptp') {
+      } else if (this.item.tptype === 'maptp') {
         $(this.$el).empty() // 刷新有问题，直接清空绘制
         // initMapTopo({el: this.$el, mapCode: '510000', mpId: '34f820b1-3fd2-4fa3-9ddb-1c87fd7654fc', userId: ''})
         initMapTopo({el: this.$el, mapCode: this.item.chartData.mapCode, mpId: this.item.chartData.mpId, userId: this.item.chartData.userId})
@@ -86,7 +86,7 @@ export default {
       if (this.item.cityColor) {
         $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
       }
-      if (_this.item.chartData) {
+      if (_this.item.chartData && this.item.tptype === 'maptp') {
         let dataArry = {
           userId: _this.item.chartData.userId,
           pLocationCode: `${_this.item.chartData.mapCode};${_this.item.chartData.mpId}`,
@@ -103,7 +103,6 @@ export default {
           }
         })
       }
-      console.log(this.item.chartData)
     }
   },
   watch: {

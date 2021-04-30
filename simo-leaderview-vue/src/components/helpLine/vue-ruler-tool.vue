@@ -10,10 +10,10 @@
       <div
         v-for="item in lineList"
         data-toggle='tooltip'
-        :data-original-title="item.title"
+        :title="item.title"
         :style="getLineStyle(item)"
         :key="item.id"
-        :class="`vue-ruler-ref-line-${item.type}`"
+        :class="`vue-ruler-ref-line-${item.type} hoverTips` "
         @mousedown.stop="handleDragLine(item)">
         <div v-if="item.type==='h'" class="line" :style="{'width':Hstyle,'background-color':helpLineColor}"></div>
         <div v-else class="line" :style="{height:Vstyle,'background-color':helpLineColor}"></div>
