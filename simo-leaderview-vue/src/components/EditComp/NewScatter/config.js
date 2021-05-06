@@ -9,14 +9,14 @@ export default{
     'countryCode': 100000,
     'colordirection': 1,
     'roam': true,
-    'normalcolor': ['#38f9ff', '#3c1095'],
+    'normalcolor': ['#21f7ff', '#3b23ef'],
     'ctLegendShow': true, // 地名是否展示
     'provinceCode': '',
     'cityCode': '',
     'themeType': '1',
-    'ctLegendColor': '#d4ff7a',
+    'ctLegendColor': '#fff423',
     'areaColor': '#121a33',
-    'borderColor': '#45fcf3',
+    'borderColor': '#45eafc',
     'visualPosition': 'left',
     'scatterPoint': [{ name: '北京', value: [116.405285, 39.904989, 4] }], // 带有地理位置的散点数据
     'chartData': [{ name: '北京', value: 4 }]
@@ -64,44 +64,44 @@ export default{
             }
           ]
         }]
+      },
+      {
+        'name': '图表样式',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '地图颜色',
+            'key': 'normalcolor',
+            'tag': 'GradientColor'
+          },
+          {
+            'name': '颜色渐变角度',
+            'key': 'colordirection',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '0°',
+                'value': 0
+              },
+              {
+                'name': '45°',
+                'value': 1
+              },
+              {
+                'name': '90°',
+                'value': 2
+              },
+              {
+                'name': '135°',
+                'value': 3
+              }
+            ]
+          }, {
+            'name': '分界线颜色',
+            'key': 'borderColor',
+            'tag': 'Color'
+          }]
       }
-      // {
-      //   'name': '图表样式',
-      //   'tag': 'Hint',
-      //   'childoption': [
-      //     {
-      //       'name': '地图颜色',
-      //       'key': 'normalcolor',
-      //       'tag': 'GradientColor'
-      //     },
-      //     {
-      //       'name': '颜色渐变角度',
-      //       'key': 'colordirection',
-      //       'tag': 'select',
-      //       'options': [
-      //         {
-      //           'name': '0°',
-      //           'value': 0
-      //         },
-      //         {
-      //           'name': '45°',
-      //           'value': 1
-      //         },
-      //         {
-      //           'name': '90°',
-      //           'value': 2
-      //         },
-      //         {
-      //           'name': '135°',
-      //           'value': 3
-      //         }
-      //       ]
-      //     }, {
-      //       'name': '分界线颜色',
-      //       'key': 'borderColor',
-      //       'tag': 'Color'
-      //     }]
-      // }
     ]
   }
 }
