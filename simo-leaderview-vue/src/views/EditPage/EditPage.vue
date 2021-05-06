@@ -152,7 +152,7 @@
     </div>
 
     <div id="homeShareModal" class="modal" style="z-index: 10086">
-      <div class="modal-dialog modal-dialog-centered" role="document" style="margin: 206px auto">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">
@@ -688,7 +688,15 @@ export default {
                 tooltip('', '操作成功！', 'success')
               }
             } else {
-              tooltip('', res.msg, 'error')
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              }else{
+                tooltip('', res.msg, 'error')
+              }
             }
           })
       }
