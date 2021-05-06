@@ -674,15 +674,27 @@ export default {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
           })
           .then((res) => {
-            item.name = this.editName
-            if (gbs.inDev) {
-              Notification({
-                message: '操作成功！',
-                position: 'bottom-right',
-                customClass: 'toast toast-success'
-              })
+                   if (res.success) {
+              item.name = this.editName
+              if (gbs.inDev) {
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
+              } else {
+                tooltip('', '操作成功！', 'success')
+              }
             } else {
-              tooltip('', '操作成功！', 'success')
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              }else{
+                tooltip('', res.msg, 'error')
+              }
             }
           })
       }
