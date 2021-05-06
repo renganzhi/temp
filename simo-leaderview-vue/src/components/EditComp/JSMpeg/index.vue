@@ -9,8 +9,7 @@
     <div class="v-charts-data-empty"
         v-show="!vidoeShow"
         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-        <div><i class="icon-n-nodata"
-            style="font-size: 108px;"></i><br>
+        <div>
           <p>请选择视频</p>
         </div>
     </div>
