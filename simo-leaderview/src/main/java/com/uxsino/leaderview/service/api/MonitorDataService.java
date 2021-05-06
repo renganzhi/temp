@@ -3095,7 +3095,7 @@ public class MonitorDataService {
      * @return
      * @throws Exception 进行服务调用时产生的异常
      */
-    public JsonModel getNELinkByCity(String locationCode, String displayMode) throws Exception{
+    public JsonModel getNELinkByCity(String locationCode, String displayMode,HttpSession session) throws Exception{
         //选择区域为不限时，默认返回全国地图的数据
         if(locationCode == null)
             locationCode = "100000";
@@ -3109,7 +3109,10 @@ public class MonitorDataService {
                   链路信息
          */
         String topoId = rpcProcessService.getTopoId();
-        ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId);
+        Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId, userId);
+        if(mapTree == null)
+            return new JsonModel(false,"请先再基础监控中设置对应的地图拓扑！");
         String mapLocationId= null;
         for(LinkedHashMap map: mapTree){
             if(locationCode.equals(map.get("locationCode"))){
@@ -3163,7 +3166,8 @@ public class MonitorDataService {
         for(Object object: nodes){
             LinkedHashMap node = (LinkedHashMap)object;
             MigrationStation origin = new MigrationStation();
-            String ip = (String)node.get("ip");
+            String neId = (String)node.get("neId");
+            String nodeId = (String)node.get("id");
             //monitor那边返回的结点的locationCode是从省份开始往下依次填写的区域代码并用','分割，
             //但是实际上只用得到最后一个，因此要去取最后一个
             String[] allCodes = ((String)node.get("locationCode")).split(",");
@@ -3193,7 +3197,7 @@ public class MonitorDataService {
                 //前端渲染，必须但没有实际意义。不想要第三个变量又需要上面的经纬度，所以就只能新声明
                 //一段内存空间来单独储存上面的经纬度。
                 ArrayList<Float> copyCoord;
-                if(ip.equals(link.get("sourceIp"))){
+                if(neId.equals(link.get("sourceId")) || nodeId.equals(link.get("sourceNodeId"))){
                     temp = paths.get(i).get(0);
                     copyCoord = new ArrayList<>();
                     //不会出现数组超界，因为这里取0、1的条件和那里加入0、1的条件相同，那边没加则这边也不会取
@@ -3203,14 +3207,20 @@ public class MonitorDataService {
                     }
                     temp.setCoord(copyCoord);
                     temp.setName((String)values.get(2));
-                    temp.setValue((double)link.get("downBps"));
+                    Object downBpsTry = link.get("downBps");
+                    double downBps = 0.0;
+                    if(downBpsTry != null)
+                        downBps = (double)downBpsTry;
+                    Object upBpsTry = link.get("upBps");
+                    double upBps = 0.0;
+                    if(upBpsTry != null)
+                        upBps = (double)upBpsTry;
+                    temp.setValue(downBps);
                     obj = new ArrayList<>();
-                    double upBps = (double)link.get("upBps");
                     if(maxValue<upBps)
                         maxValue = upBps;
                     if(minValue>upBps)
                         minValue = upBps;
-                    double downBps = (double)link.get("downBps");
                     if(maxValue<downBps)
                         maxValue = downBps;
                     if(minValue>downBps)
@@ -3218,7 +3228,7 @@ public class MonitorDataService {
                     obj.add("上行流量：" + upBps + "Bps");
                     obj.add("下行流量：" + downBps + "Bps");
                     temp.setObj(obj);
-                }else if(ip.equals(link.get("targetIp"))){
+                }else if(neId.equals(link.get("targetId")) || nodeId.equals(link.get("targetNodeId"))){
                     temp = paths.get(i).get(1);
                     copyCoord = new ArrayList<>();
                     if (!"name".equals(displayMode)) {
@@ -3235,6 +3245,31 @@ public class MonitorDataService {
                     terminations.add(termination);
                 }
             }
+        }
+
+
+        Iterator<MigrationStation> iterator = origins.iterator();
+        Label:
+        while(iterator.hasNext()){
+            boolean isTermination = false;
+            MigrationStation origin = iterator.next();
+            ArrayList<Float> originCoord = origin.getValue();
+            for(ArrayList<MigrationLink> mls: paths){
+                ArrayList<Float> pathOriginCoord = mls.get(0).getCoord();
+                //如果能够找到一条链路，使得当前节点的经纬度和这条链路上的起点经纬度一致，则该节点的确是一个起点
+                if(originCoord.get(0).equals(pathOriginCoord.get(0)) && originCoord.get(1).equals(pathOriginCoord.get(1))){
+                    continue Label;
+                }
+                //如果该节点是一个终点，记录一下
+                ArrayList<Float> pathTerminationCoord = mls.get(1).getCoord();
+                if(originCoord.get(0).equals(pathTerminationCoord.get(0)) && originCoord.get(1).equals(pathTerminationCoord.get(1))){
+                    isTermination = true;
+                }
+            }
+            //如果找不到上述条件的一个链路，且该节点是一个终点，则证明它只是终点，应该将其从起点中删去
+            //如果既不是起点，也不是终点，但却被加入了起点集合，则它是一个孤点，就不删去，否则视图不一致
+            if(isTermination)
+                iterator.remove();
         }
 
         HashMap<String, Object> result = new HashMap<>();
