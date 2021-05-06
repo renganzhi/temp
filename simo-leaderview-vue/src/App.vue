@@ -101,6 +101,13 @@ body {
     background-color: transparent !important;
   }
 }
+.modal-dialog-centered{
+  .row{
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+  }
+}
 
 /* .modal-backdrop {
   z-index: 20099;
