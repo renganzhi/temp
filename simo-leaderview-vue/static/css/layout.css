@@ -395,6 +395,14 @@ modal
     border: none !important;
     line-height: 20px;
 }
+.modal-header .close {    
+    position: absolute;
+    right: -6px;
+    line-height: 0;
+    outline: none;
+    margin: 0;
+    padding: 0;
+}
 
 .modal-header .close:hover {
     background-color: transparent !important;
