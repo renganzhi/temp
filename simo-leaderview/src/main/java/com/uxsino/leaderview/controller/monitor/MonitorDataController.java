@@ -660,9 +660,10 @@ public class MonitorDataController {
     @ResponseBody
     public JsonModel getNELinkByCity(
             @RequestParam(value = "locationCode", required = false) String locationCode,
-            @RequestParam(value = "displayMode", required = false) String displayMode){
+            @RequestParam(value = "displayMode", required = false) String displayMode,
+            HttpSession httpSession){
         try {
-            return monitorDataService.getNELinkByCity(locationCode, displayMode);
+            return monitorDataService.getNELinkByCity(locationCode, displayMode, httpSession);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

@@ -839,7 +839,7 @@ public class RpcProcessService {
         return (LinkedHashMap)((LinkedHashMap)((LinkedHashMap)jsonModel.getObj()).get("data")).get("obj");
     }
 
-    public ArrayList<LinkedHashMap> getMapLocationTree(String topoId) throws Exception{
+    public ArrayList<LinkedHashMap> getMapLocationTree(String topoId, Long userId) throws Exception{
         JsonModel jsonModel = monitorService.getMapLocationTree(topoId);
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
@@ -847,7 +847,11 @@ public class RpcProcessService {
         //返回的结果是多个JsonModel嵌套，因此为了让service处理数据时简化操作，在这里先把有用的数据提取出来
         //这里有用的数据就是指每一张地图的信息，返回给service后由service根据前端传过来的locationCode筛选
         //出某张地图的信息，从中获取地图的id（也就是二次调用getMapNodesAndLinks）要传入的mapLocationId
-        return (ArrayList)((LinkedHashMap)jsonModel.getObj()).get("1");
+        if (userId != null) {
+            String userIdStr = userId.toString();
+            return (ArrayList)((LinkedHashMap)jsonModel.getObj()).get(userIdStr);
+        }
+        return new ArrayList<>();
     }
 
     public JsonModel searchNe(String neClass) throws Exception{
