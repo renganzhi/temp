@@ -201,13 +201,8 @@ public class AlertDataService {
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         List<String > diffColumns;
-        if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type) && !"ThirdPartyAlert".equals(type)
-                && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
-            if ("NELinkAlert".equals(type)) {
-                diffColumns = Lists.newArrayList("状态","告警来源","告警内容","告警时间");
-            } else {
-                diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
-            }
+        if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
+            diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
         }else {
             diffColumns = Lists.newArrayList("状态","告警内容","告警时间");
         }
@@ -261,14 +256,9 @@ public class AlertDataService {
         for (AlertRecord alert : list) {
             JSONObject row = new JSONObject(true);
             row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
-            if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type)
-                    && !"ThirdPartyAlert".equals(type) && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
-                if ("NELinkAlert".equals(type)) {
-                    row.put("告警来源", alert.getObjectName());
-                } else {
-                    NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
-                    row.put("IP地址", ne.getIp());
-                }
+            if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
+                NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
+                row.put("IP地址", ne.getIp());
             }
             row.put("告警内容", alert.getRecentAlertBrief());
             row.put("告警时间", alert.getRecentAlertDateStr());
