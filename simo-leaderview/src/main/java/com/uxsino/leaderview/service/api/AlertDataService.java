@@ -273,8 +273,7 @@ public class AlertDataService {
             JSONObject row = new JSONObject(true);
             row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
             if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
-                NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
-                row.put("IP地址", ne.getIp());
+                row.put("IP地址", alert.getIp());
             }
             row.put("告警内容", alert.getRecentAlertBrief());
             row.put("告警时间", alert.getRecentAlertDateStr());
