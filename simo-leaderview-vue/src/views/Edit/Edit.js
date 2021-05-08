@@ -791,7 +791,7 @@ export default {
       var mapData = []
       for (var i = 0; i < mapJson.features.length; i++) {
         mapData.push({
-          value: mapJson.features[i].id,
+          value: mapJson.features[i].id ||  mapJson.features[i].properties.adcode,
           name: mapJson.features[i].properties.name,
           geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates)
           // geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
@@ -4481,6 +4481,7 @@ export default {
           }
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            console.log(data)
             _this.cityArr = data
             // if (!_this.selectedItem.cityCode) {
             _this.selectedItem.cityCode = data[0].value
