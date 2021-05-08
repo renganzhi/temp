@@ -743,7 +743,62 @@ export default {
     // 发送请求
     sentReq (d) {
       let ct = this
-      let xhrobj = $.ajax({
+      let xhrobj=''
+      if(d.url==='/monitor/topo/domainTopo'){
+            xhrobj = $.ajax({
+        url: (d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url)+'/'+d.params.topoId, // 第三方的ur已经拼接好host
+        // data: d.params,
+        type: d.method || 'get',
+        cache: false,
+        ascyn: false,
+        success: function (res) {
+          res.obj = res.obj || []
+          if (res.obj.colors) {
+            d.ctColors = res.obj.colors
+          }
+          if (d.chartType === 'marquee' || d.chartType === 'text') {
+            d.ctName = res.obj.info
+          }
+          if (d.chartType !== 'marquee') {
+            if (d.chartType === 'v-map') {
+              d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
+            } else {
+              d.chartData = res.obj // 会触发刷新
+            }
+          }
+        },
+        error: async function (xhr) {
+          if (xhr.status === 776) {
+            if (d.ctDataSource !== 'static' && d.ctDataSource !== 'system') { // 第三方登录过期:重新登录后再请求
+              ct.xhrArr.pop()
+              let curUrl = d.url.split('://')[1].split('/')[0]
+              await checkLogin(curUrl) && ct.sentReq(d)
+              return false
+            }
+            // 776 取消页面刷新
+            ct.freshInterval && clearTimeout(ct.freshInterval)
+            ct.freshInterval = null
+          }
+          if (xhr.status !== 776 && xhr.statusText !== 'abort') {
+            if (gbs.inDev) {
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
+            } else {
+              tooltip('', '连接错误！', 'error')
+            }
+          }
+        },
+        complete: function (XHR, textStatus) {
+          XHR = null
+        }
+      })
+      
+      }
+      else{
+          xhrobj = $.ajax({
         url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url, // 第三方的ur已经拼接好host
         data: d.params,
         type: d.method || 'get',
@@ -793,6 +848,9 @@ export default {
           XHR = null
         }
       })
+      
+      }
+       
       ct.xhrArr.push(xhrobj)
     },
     refreshFn: function (newV) { // 刷新本页数据
