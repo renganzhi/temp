@@ -278,7 +278,7 @@ export default {
               }
             ]
           }, {
-            'name': '区域图线条',
+            'name': '描边线条',
             'key': 'areaLineType',
             'parentKey': {
               'ifGradual': 'true',
