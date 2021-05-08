@@ -3116,6 +3116,8 @@ public class MonitorDataService {
         String topoId = rpcProcessService.getTopoId();
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
         ArrayList<LinkedHashMap> mapTree = rpcProcessService.getMapLocationTree(topoId, userId);
+        if(mapTree == null)
+            return new JsonModel(false,"请先再基础监控中设置对应的地图拓扑！");
         String mapLocationId= null;
         for(LinkedHashMap map: mapTree){
             if(locationCode.equals(map.get("locationCode"))){
