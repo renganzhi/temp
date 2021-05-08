@@ -217,13 +217,8 @@ public class AlertDataService {
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         List<String > diffColumns;
-        if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type) && !"ThirdPartyAlert".equals(type)
-                && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
-            if ("NELinkAlert".equals(type)) {
-                diffColumns = Lists.newArrayList("状态","告警来源","告警内容","告警时间");
-            } else {
-                diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
-            }
+        if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
+            diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
         }else {
             diffColumns = Lists.newArrayList("状态","告警内容","告警时间");
         }
@@ -277,14 +272,8 @@ public class AlertDataService {
         for (AlertRecord alert : list) {
             JSONObject row = new JSONObject(true);
             row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
-            if (!"ThirdPartyAlert".equals(type) && !"BusinessAlert".equals(type)
-                    && !"ThirdPartyAlert".equals(type) && !"SystemAlert".equals(type) && !"TerminalAlert".equals(type)) {
-                if ("NELinkAlert".equals(type)) {
-                    row.put("告警来源", alert.getObjectName());
-                } else {
-                    NetworkEntity ne = rpcProcessService.findNetworkEntityById(alert.getObjectId());
-                    row.put("IP地址", ne.getIp());
-                }
+            if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
+                row.put("IP地址", alert.getIp());
             }
             row.put("告警内容", alert.getRecentAlertBrief());
             row.put("告警时间", alert.getRecentAlertDateStr());
@@ -528,6 +517,7 @@ public class AlertDataService {
                 return level != null ? level.intValue() : null;
             }).filter(Objects::nonNull).collect(Collectors.toList());
         }
+        /*
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setAlertType(alertType);
         alertQuery.setHandleStatus(AlertHandleStatus.UNTREATED);
@@ -539,6 +529,11 @@ public class AlertDataService {
         if (ObjectUtils.isEmpty(activeLevel)) {
             return empObj();
         }
+         */
+        //上述查询是将所有警告结果全部查询回来，然后在内存中用list.size()方法获取数量，这样数据库方面查询花费时间过多，且内存有可能溢出，
+        //因此将count操作由alert方面在数据库中完成。
+        StatisticsQuery statisticsQuery = new StatisticsQuery(org.apache.commons.lang3.StringUtils.join(arr, ","), levelList, alertType, AlertHandleStatus.UNTREATED);
+        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
         Map<Object, String> levelMap = new LinkedHashMap<>();
         Map<Object, String> colorMap = new LinkedHashMap<>();
         activeLevel.forEach(e -> {
@@ -556,7 +551,13 @@ public class AlertDataService {
         for (Integer level: levelList) {
             JSONObject row = new JSONObject();
             row.put("告警类型", levelMap.get(level));
-            row.put("数量", alertList.stream().filter(alert -> alert.getLevel().equals(level)).count());
+            //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
+            row.put("数量", 0L);
+            statisticsResults.forEach(e -> {
+                if(e.getScopeValue().equals(String.valueOf(level))) {
+                    row.put("数量", e.getAlertCount());
+                }
+            });
             rows.add(row);
             colors.add(colorMap.get(level));
         }
