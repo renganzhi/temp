@@ -47,6 +47,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0px;
+  overflow: hidden;
 }
 .sp-replacer {
   width: 100% !important;

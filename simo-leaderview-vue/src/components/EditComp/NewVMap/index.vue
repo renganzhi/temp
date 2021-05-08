@@ -2,7 +2,6 @@
   <ve-map
           :width="comWidth"
           :height="comHeight"
-     
           :settings="settings"
           :extend="extend"
           :id="'map_' + keyId"
@@ -54,7 +53,6 @@ export default {
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
-      // initOption: { renderer: 'svg' },
       mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
       // settings: {
       //   // yAxisType: [0],

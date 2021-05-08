@@ -1240,7 +1240,7 @@ html[data-theme="blueWhite"] {
 }
 // add 轮播相关
 .portlet {
-  position: absolute;
+  position: absolute !important;
   top:0px;
   left: 0px;
   width: 100%;

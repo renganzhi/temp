@@ -1,25 +1,14 @@
 <template>
-  <component
-    :is="'ve-map'"
-    :width="comWidth"
-    :height="comHeight"
-    :settings="settings"
-    :data="dealChartData"
-    :extend="extend"
-    :init-options="initOption"
-    :id="'map_' + keyId"
-    :key="keyId"
-    :judge-width="true"
-  >
-    <!-- <div class="v-charts-data-empty"
-         v-if="empty"
-         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-      <div><i class="icon-n-nodata"
-           style="font-size: 108px;"></i><br>
-        <p>抱歉，没有数据可供展示...</p>
-      </div>
-    </div> -->
-  </component>
+  <ve-map
+          :width="comWidth"
+          :height="comHeight"
+          :settings="settings"
+          :data="dealChartData"
+          :extend="extend"
+          :id="'map_' + keyId"
+          :key="keyId"
+          :judge-width="true">
+  </ve-map>
 </template>
 <script>
 import { VeMap } from 'v-charts'
