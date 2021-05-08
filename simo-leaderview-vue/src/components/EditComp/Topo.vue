@@ -86,7 +86,7 @@ export default {
       if (this.item.cityColor) {
         $('.map' + this.item.id).find('.province').css('fill', this.item.cityColor)
       }
-      if (_this.item.chartData && this.item.tptype === 'maptp') {
+      if (_this.item.chartData && this.item.tptype === 'maptp'&&_this.item.chartData.userId) {
         let dataArry = {
           userId: _this.item.chartData.userId,
           pLocationCode: `${_this.item.chartData.mapCode};${_this.item.chartData.mpId}`,
