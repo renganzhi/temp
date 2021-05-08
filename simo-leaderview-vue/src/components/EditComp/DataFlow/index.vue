@@ -75,21 +75,35 @@ export default {
           data.value = newArry
         }
       })
-      ChartData.lineData.forEach(arrydata => {
-        arrydata.forEach(data => {
-          if (!data.coord) {
-            if (data.name) {
-              let arr = JSON.parse(JSON.stringify(NewstationData[data.name] || NewstationData['北京']))
-              data.coord = arr
-            }
-          } else {
-            if (data.coord.length < 2) {
-              let arr = JSON.parse(JSON.stringify(NewstationData[data.name] || NewstationData['北京']))
-              data.coord = arr
+     for(let i=0;i<ChartData.lineData.length;i++)
+      {
+        let arrydata=ChartData.lineData[i];
+        for(let j=0;j<arrydata.length;j++)
+        {
+         
+          if(!arrydata[j].coord){
+              if(arrydata[j].name){
+                let arr = JSON.parse(JSON.stringify(NewstationData[arrydata[j].name] || NewstationData['北京']))
+                arrydata[j].coord = arr
+              }
+              else {
+                arrydata.splice(j,1);
+                j--;
+              }
+          }
+          else {
+               if (arrydata[j].coord.length < 2) {
+              let arr = JSON.parse(JSON.stringify(NewstationData[arrydata[j].name] || NewstationData['北京']))
+              arrydata[j].coord = arr
             }
           }
-        })
-      })
+        }
+        if(arrydata.length==0)
+        {
+          ChartData.lineData.splice(i,1);
+          i--;
+        }
+      }
       ChartData.Statistical.forEach(data => {
         if (data.value.length < 3 && data.name) {
           let oldData = data.value
