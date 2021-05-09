@@ -110,6 +110,7 @@ public class HomeTemplateImgService {
 
     @Transactional
     public void delAll() {
+        imgCompressedDao.deleteAll();
         imgDao.deleteAll();
     }
 

@@ -676,7 +676,7 @@ export default {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
           })
           .then((res) => {
-            if (res.success) {
+                   if (res.success) {
               item.name = this.editName
               if (gbs.inDev) {
                 Notification({
@@ -688,7 +688,15 @@ export default {
                 tooltip('', '操作成功！', 'success')
               }
             } else {
-              tooltip('', res.msg, 'error')
+              if (gbs.inDev) {
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
+              }else{
+                tooltip('', res.msg, 'error')
+              }
             }
           })
       }
