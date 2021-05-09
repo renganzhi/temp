@@ -2,7 +2,9 @@ package com.uxsino.leaderview.service.api;
 
 import com.google.common.collect.Lists;
 import com.uxsino.leaderview.entity.HomeTemplateImg;
+import com.uxsino.leaderview.entity.HomeTemplateImgCompressed;
 import com.uxsino.leaderview.entity.UploadedFile;
+import com.uxsino.leaderview.entity.UploadedFileCompressed;
 import com.uxsino.leaderview.service.HomeTemplateImgService;
 import com.uxsino.leaderview.service.UploadedFileService;
 import org.slf4j.Logger;
@@ -39,27 +41,30 @@ public class ImageService {
         String ext;
 
         if (isCustom) {
-            UploadedFile f = uploadedFileService.findById(id);
+            UploadedFileCompressed uploadedFileCompressed = uploadedFileService.findByOriginFileId(id);
+            UploadedFile f = uploadedFileCompressed.getUploadedFile();
             if(f == null){
                 logger.error("文件 -> {} not exists ！", id);
                 return;
             }
+
             ext = f.getExtension();
-            if(!isCompressed || f.getUploadedFileCompressed()==null)
+            if(!isCompressed || uploadedFileCompressed.getCompressedFileStream()==null)
                 data = f.getFileStream();
             else
-                data = f.getUploadedFileCompressed().getCompressedFileStream();
+                data = uploadedFileCompressed.getCompressedFileStream();
         }else {
-            HomeTemplateImg f = templateImgService.getById(id);
+            HomeTemplateImgCompressed imgCompressed = templateImgService.getCompressedImgByOriginId(id);
+            HomeTemplateImg f = imgCompressed.getHomeTemplateImg();
             if(f == null){
                 logger.error("文件 -> {} not exists ！", id);
                 return;
             }
             ext = f.getExtension();
-            if(!isCompressed || f.getHomeTemplateImgCompressed()==null)
+            if(!isCompressed || imgCompressed.getCompressedFileStream()==null)
                 data = f.getFileStream();
             else
-                data = f.getHomeTemplateImgCompressed().getCompressedFileStream();
+                data = imgCompressed.getCompressedFileStream();
         }
 
         if (!IMG_EXTENSION_LIST.contains(ext)) {

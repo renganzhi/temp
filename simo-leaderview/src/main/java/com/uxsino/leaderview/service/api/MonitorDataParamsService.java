@@ -1175,6 +1175,8 @@ public class MonitorDataParamsService {
         JSONObject newChannel = null;
         JSONArray newChannelArray = new JSONArray();
         ArrayList oldChannelArray = (ArrayList)((LinkedHashMap)((LinkedHashMap)deprecatedWrap.getObj()).get("indicatorValue")).get("object");
+        if(oldChannelArray == null)
+            return new JsonModel(false, "暂无可用的通道！");
         for(Object object: oldChannelArray){
             LinkedHashMap oldChannel = (LinkedHashMap)object;
             if ("在线".equals(oldChannel.get("enable"))) {
