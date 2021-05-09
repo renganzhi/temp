@@ -3,6 +3,8 @@ package com.uxsino.leaderview.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
@@ -26,4 +28,9 @@ public class UploadedFileCompressed {
     private Long id;
 
     private byte[] compressedFileStream;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "origin_file_id", referencedColumnName = "id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private UploadedFile uploadedFile;
 }
