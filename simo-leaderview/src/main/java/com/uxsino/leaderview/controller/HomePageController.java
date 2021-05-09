@@ -706,9 +706,11 @@ public class HomePageController {
 			fileInfo.setExtension(extension);
 			fileInfo.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
 			fileInfo.setFileStream(file.getBytes());
-			uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(file.getBytes(), extension));
-			uploadedFileService.save(fileInfo);
-			JSONObject result = new JSONObject();
+			if ("jpg,jpeg,png,gif".contains(extension))
+				uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(file.getBytes(), extension));
+			uploadedFileCompressed.setUploadedFile(fileInfo);
+			uploadedFileService.save(fileInfo, uploadedFileCompressed);
+ 			JSONObject result = new JSONObject();
 			result.put("id", fileInfo.getId());
 			result.put("isCustom", true);
 			return new JsonModel(true, "上传成功", result);
@@ -742,7 +744,10 @@ public class HomePageController {
 			// Base64解码
 			byte[] fileStream = Base64.decodeBase64(img);
 			fileInfo.setFileStream(fileStream);
-			uploadedFileService.save(fileInfo);
+			UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+			if("jpg,jpeg,png,gif".contains(extension))
+				fileCompressed.setCompressedFileStream(ImageUtils.compressImage(fileStream, extension));
+			uploadedFileService.save(fileInfo, fileCompressed);
 			return new JsonModel(true, "保存成功", fileInfo.getId());
 		} catch (Exception e) {
 			logger.error("保存失败", e);

@@ -2,6 +2,7 @@ package com.uxsino.leaderview.service;
 
 import javax.transaction.Transactional;
 
+import com.uxsino.leaderview.dao.IUploadedFileCompressedDao;
 import com.uxsino.leaderview.entity.UploadedFileCompressed;
 import com.uxsino.leaderview.utils.ImageUtils;
 import org.slf4j.Logger;
@@ -25,12 +26,16 @@ public class UploadedFileService {
     @Autowired
     private IUploadedFileDao uploadedFileDao;
 
+    @Autowired
+    private IUploadedFileCompressedDao uploadedFileCompressedDao;
+
     /**
      * 保存文件
      * @param file
      */
-    public void save(UploadedFile file) {
+    public void save(UploadedFile file, UploadedFileCompressed fileCompressed) {
         uploadedFileDao.save(file);
+        uploadedFileCompressedDao.save(fileCompressed);
     }
 
     /**
@@ -38,8 +43,8 @@ public class UploadedFileService {
      * @param id 文件ID
      * @return
      */
-    public UploadedFile findById(Long id) {
-        return uploadedFileDao.findOne(id);
+    public UploadedFileCompressed findByOriginFileId(Long id) {
+        return uploadedFileCompressedDao.findByOriginFileId(id);
     }
 
     public List<UploadedFile> findByIds(List<Long> ids){
@@ -61,17 +66,11 @@ public class UploadedFileService {
             Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
             for(UploadedFile temp: uploadedFiles){
                 byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
-                if(compressedData != null){
-                    try {
-                        UploadedFileCompressed compressedFile = new UploadedFileCompressed();
-                        compressedFile.setCompressedFileStream(compressedData);
-                        temp.setUploadedFileCompressed(compressedFile);
-                    } catch (Exception e) {
-                        log.error("id为{}的文件长度为0！", temp.getId());
-                    }
-                    uploadedFileDao.update(temp.getId(), temp);
-                    uploadedFileDao.flush();
-                }
+                UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+                fileCompressed.setUploadedFile(temp);
+                if(compressedData != null)
+                    fileCompressed.setCompressedFileStream(compressedData);
+                uploadedFileCompressedDao.save(fileCompressed);
             }
             log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
         }
