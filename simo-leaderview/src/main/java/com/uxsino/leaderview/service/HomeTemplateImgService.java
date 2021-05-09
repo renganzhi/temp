@@ -3,6 +3,7 @@ package com.uxsino.leaderview.service;
 import com.google.common.io.Files;
 import com.google.common.primitives.Longs;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
+import com.uxsino.leaderview.dao.IHomeTemplateImgCompressedDao;
 import com.uxsino.leaderview.dao.IHomeTemplateImgDao;
 import com.uxsino.leaderview.entity.HomeTemplateImg;
 
@@ -27,6 +28,9 @@ public class HomeTemplateImgService {
 
     @Autowired
     private IHomeTemplateImgDao imgDao;
+
+    @Autowired
+    private IHomeTemplateImgCompressedDao imgCompressedDao;
 
     private Logger logger = LoggerFactory.getLogger(HomeTemplateImgService.class);
 
@@ -76,8 +80,8 @@ public class HomeTemplateImgService {
                     img.setName(name + "." + extension);
                     compressedImg.setId(id);
                     compressedImg.setCompressedFileStream(ImageUtils.compressImage(out.toByteArray(), extension));
-                    img.setHomeTemplateImgCompressed(compressedImg);
-                    this.save(img);
+                    compressedImg.setHomeTemplateImg(img);
+                    this.save(img, compressedImg);
                 } catch (IOException e) {
                     logger.error("", e);
                 } finally {
@@ -113,12 +117,17 @@ public class HomeTemplateImgService {
      * 保存单个的图片文件
      */
     @Transactional
-    public void save(HomeTemplateImg img) {
+    public void save(HomeTemplateImg img, HomeTemplateImgCompressed compressedImg) {
         imgDao.save(img);
+        imgCompressedDao.save(compressedImg);
     }
 
 
-    public HomeTemplateImg getById(Long id) {
+    public HomeTemplateImgCompressed getCompressedImgByOriginId(Long id) {
+        return imgCompressedDao.findByOriginImgId(id);
+    }
+
+    public HomeTemplateImg getById(Long id){
         return imgDao.findOne(id);
     }
 

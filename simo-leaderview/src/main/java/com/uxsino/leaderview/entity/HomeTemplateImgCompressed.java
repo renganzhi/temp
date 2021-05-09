@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -31,4 +28,8 @@ public class HomeTemplateImgCompressed {
      * 文件内容，这里储存的是被压缩后的图片内容
      */
     private byte[] compressedFileStream;
+
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "origin_img_id", referencedColumnName = "id")
+    private HomeTemplateImg homeTemplateImg;
 }
