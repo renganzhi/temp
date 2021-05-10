@@ -1837,7 +1837,7 @@
                               :key="v.key">{{v.name}}</option>
                     </select>
                   </div>
-                  <div id="mainSystemConf">
+                  <div id="mainSystemConf" v-if="syst.urlSel.length>0">
                     <div class="form-group cols2"
                          v-for="(v,idx) in syst.curUrl"
                          :key="idx">
