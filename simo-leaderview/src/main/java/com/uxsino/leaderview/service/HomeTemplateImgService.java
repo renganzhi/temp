@@ -5,6 +5,7 @@ import com.google.common.primitives.Longs;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.leaderview.dao.IHomeTemplateImgCompressedDao;
 import com.uxsino.leaderview.dao.IHomeTemplateImgDao;
+import com.uxsino.leaderview.dao.IUploadedFileCompressedDao;
 import com.uxsino.leaderview.entity.HomeTemplateImg;
 
 import com.uxsino.leaderview.entity.HomeTemplateImgCompressed;
@@ -31,6 +32,12 @@ public class HomeTemplateImgService {
 
     @Autowired
     private IHomeTemplateImgCompressedDao imgCompressedDao;
+
+    @Autowired
+    private IUploadedFileCompressedDao fileCompressedDao;
+
+    @Autowired
+    private UploadedFileService uploadedFileService;
 
     private Logger logger = LoggerFactory.getLogger(HomeTemplateImgService.class);
 
@@ -96,6 +103,17 @@ public class HomeTemplateImgService {
             logger.info("LEADERVIEW -> Finished loading all template images and their compression, cost " + difference + "s");
         } catch (IOException e) {
             logger.error("初始化主页大屏模板的图片失败：", e);
+        }
+
+        //对自定义图片是否已经压缩进行判断，如果simo_uploaded_file_compressed表中没有数据，则证明当前用户的大屏是从
+        //老版本升级上来，有原图没有压缩图，需要进行一遍遍历压缩。
+        if(fileCompressedDao.count() == 0){
+            logger.info("LEADERVIEW -> 检测到自定义图片没有压缩版本，如果有原图将会进行压缩操作");
+            boolean isSuccess = uploadedFileService.generateCompressedCustomImage();
+            if(isSuccess)
+                logger.info("LEADERVIEW -> 回复自定义图片压缩版本成功！");
+            else
+                logger.warn("LEADERVIEW -> 压缩自定义图片失败，向前查看异常详细");
         }
     }
 

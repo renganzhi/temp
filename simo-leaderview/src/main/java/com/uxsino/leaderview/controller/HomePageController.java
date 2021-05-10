@@ -811,17 +811,20 @@ public class HomePageController {
 		);
 	}
 
-
-	@ApiOperation("新增表储存压缩后的用户上传图片，如果原表中已经有图片了，需要遍历一遍来生成压缩图")
-	@RequestMapping(value = "/generateCompressedCustomizedImage", method = RequestMethod.GET)
-	public JsonModel generateCompressedCustomizedImage(){
-		try {
-			return new JsonModel(uploadedFileService.generateCompressedCustomImage(), "操作成功！");
-		}catch (Exception e){
-			logger.error("LEADERVIEW -> 生成自定义上传图片的压缩数据抛出异常! stackTrace如下：", e);
-			return new JsonModel(false, "操作失败！");
-		}
-	}
+	/*
+		考虑到所有老版本用户升级到有压缩图片的版本时，都会遇到补充图片压缩版本的问题，因此将手动访问该接口启动该操作
+		变成了在大屏启动时自动判断该表中是否有压缩数据，没有则自动进行压缩
+	 */
+//	@ApiOperation("新增表储存压缩后的用户上传图片，如果原表中已经有图片了，需要遍历一遍来生成压缩图")
+//	@RequestMapping(value = "/generateCompressedCustomizedImage", method = RequestMethod.GET)
+//	public JsonModel generateCompressedCustomizedImage(){
+//		try {
+//			return new JsonModel(uploadedFileService.generateCompressedCustomImage(), "操作成功！");
+//		}catch (Exception e){
+//			logger.error("LEADERVIEW -> 生成自定义上传图片的压缩数据抛出异常! stackTrace如下：", e);
+//			return new JsonModel(false, "操作失败！");
+//		}
+//	}
 
 
 	/**

@@ -62,17 +62,22 @@ public class UploadedFileService {
         int pageSize = 50;
         int totalPage = size%pageSize==0? (int)size/pageSize: (int)size/pageSize+1;
         long justNow = System.currentTimeMillis();
-        for(int i=0; i<totalPage; i++){
-            Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
-            for(UploadedFile temp: uploadedFiles){
-                byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
-                UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
-                fileCompressed.setUploadedFile(temp);
-                if(compressedData != null)
-                    fileCompressed.setCompressedFileStream(compressedData);
-                uploadedFileCompressedDao.save(fileCompressed);
+        try {
+            for(int i=0; i<totalPage; i++){
+                Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
+                for(UploadedFile temp: uploadedFiles){
+                    byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
+                    UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+                    fileCompressed.setUploadedFile(temp);
+                    if(compressedData != null)
+                        fileCompressed.setCompressedFileStream(compressedData);
+                    uploadedFileCompressedDao.save(fileCompressed);
+                }
+                log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
             }
-            log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
+        } catch (Exception e) {
+            log.error("LEADERVIEW -> 压缩自定义图片抛出异常，stacktrace如下：", e);
+            return false;
         }
         long difference = System.currentTimeMillis() - justNow;
         log.info("LEADERVIEW -> 压缩自定义图片完成，总共花费时间：" + difference/1000 + "s");
