@@ -33,7 +33,7 @@ export default {
     this.editor = UE.getEditor('editor', {
       toolbars: [
         ['undo', 'redo'],
-        ['bold', 'italic', 'indent', 'underline', 'fontborder', 'strikethrough', 'justifyleft', // 居左对齐
+        ['source', '|', 'bold', 'italic', 'indent', 'underline', 'fontborder', 'strikethrough', 'justifyleft', // 居左对齐
           'justifyright', // 居右对齐
           'justifycenter', 'superscript', 'fontfamily', 'fontsize', 'subscript', 'removeformat', 'horizontal', 'lineheight',
           'formatmatch', 'autotypeset', 'blockquote', '|',
