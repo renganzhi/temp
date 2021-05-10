@@ -9,7 +9,7 @@ export default{
     'countryCode': 100000,
     'colordirection': 1,
     'roam': true,
-    'normalcolor': ['#21f7ff', '#3b23ef'],
+    'normalcolor': ['#38f9ff', '#3c1095'],
     'ctLegendShow': true, // 地名是否展示
     'provinceCode': '',
     'cityCode': '',
