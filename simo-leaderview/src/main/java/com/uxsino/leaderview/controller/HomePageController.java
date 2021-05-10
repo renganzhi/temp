@@ -191,7 +191,7 @@ public class HomePageController {
 		List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
 		for(HomePage homePage : allHomePages){
 		    if(homePage.getName().equals(name)){
-		        return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+		        return new JsonModel(false, "所选页面名称已存在，请更换一个名称！");
             }
         }
 		if (index == null || index < MIN_PAGE_INDEX || index > maxIndex + 1) {
@@ -241,7 +241,7 @@ public class HomePageController {
 			if(temp.getId().equals(id))
 				continue;
 			if(temp.getName().equals(name)){
-				return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+				return new JsonModel(false, "所选页面名称已存在，请更换一个名称！");
 			}
 		}
 		homePage.setName(name);
