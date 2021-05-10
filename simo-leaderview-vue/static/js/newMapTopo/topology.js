@@ -164,7 +164,7 @@ mapTopology.prototype = {
     this.createLiquid()
     // _this = null
     if (selectMapNum === '100000') { // 全国地图加九段线
-      d3.xml('/resources/img/topo/southchinasea.svg', function (error, xmlDocument) {
+      d3.xml('/static/img/southchinasea.svg', function (error, xmlDocument) {
         var taiwan = _this.svgContainer.select('[idName="tai_wan"]')
         _this.svgContainer.append('g').attr('transform', 'translate(' + (Number(taiwan.attr('x')) + 30) + ',' + (taiwan.attr('y')) + ')scale(1)').attr('class', 'southsea').html(function (d) {
           if (xmlDocument) {
