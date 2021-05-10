@@ -268,16 +268,16 @@ export default {
           textStyle: {
             color: this.item.tooltipTextColor,
             fontSize: this.item.tooltipfontSize
-          },
-          formatter: (params, index) => {
-            var value = ''
-            params.forEach(element => {
-              if (element.value !== 0) {
-                value = element.axisValue + '<br>' + element.seriesName + ':' + element.value
-              }
-            })
-            return value
           }
+          // formatter: (params, index) => {
+          //   var value = ''
+          //   params.forEach(element => {
+          //     if (element.value !== 0) {
+          //       value = element.axisValue + '<br>' + element.seriesName + ':' + element.value
+          //     }
+          //   })
+          //   return value
+          // }
         },
         series: myseries
       }
