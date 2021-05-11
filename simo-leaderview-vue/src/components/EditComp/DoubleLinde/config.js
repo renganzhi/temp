@@ -3,7 +3,7 @@ export default {
     'text': '双轴曲线图',
     'height': 400,
     'width': 700,
-    'imgClass': 'icon-n-line',
+    'imgClass': 'icon-biaxialline',
     'chartType': 'DoubleLinde',
     'ifGradual': 'false',
     'subType': 'DoubleLinde',

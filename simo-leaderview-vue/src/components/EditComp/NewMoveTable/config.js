@@ -1,7 +1,7 @@
 export default{
   'item': {
     'text': '轮播表格',
-    'imgClass': 'icon-n-table',
+    'imgClass': 'icon-slidertable',
     'chartType': 'NewMoveTable',
     'thirdType': 'moveTable',
     'direction': 'top',
