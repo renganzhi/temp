@@ -2039,7 +2039,12 @@ public class MonitorDataService {
                 // 进行属性有无的判断
                 if (!validHasFields(ind)) {
                     // 该指标若本身就无部件无属性就直接取值
-                    String value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
+                    String value = null;
+                    // 健康度比较特殊，因为在返回的IndValue中，健康度的indicatorName是null
+                    if("healthy".equals(ind.getName()))
+                        value = MonitorUtils.getValueStr(valueJSON.getString("healthy"));
+                    else
+                        value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
                     String unit = "PERCENT".equals(ind.getIndicatorType())? "%" : "";
                     resultObj.put("name", ind.getLabel() + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
                     resultObj.put("value", value);
