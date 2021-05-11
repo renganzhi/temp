@@ -75,14 +75,14 @@
             </div>
         </template>
         <template v-if="item.tag === 'videoFile'">
-          <div class="color-w200">
+          <div class="color-w200" style="position:relative">
             <input type="file"
               style="width: 147px!important;margin-right: 8px;"
               name="myfiles"
               id="myfiles"
               accept="video/*"
               @change="uploadVideo">
-          <label class="hoverTips" data-toggle='tooltip' :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
+          <label class="hoverTips" data-toggle='tooltip' :title='selectedItem[item.keyName]' style="position: absolute;float: left;height: 28px;right: 25px;width: 70px;overflow: hidden;">{{selectedItem[item.keyName]}}</label>
           <i class="icon-n-deleteNew delete_text" style="float: right;margin-top: 5px;" @click="removeFile"></i>
           </div>
         </template>
@@ -597,7 +597,7 @@ export default {
 .hoverShow{
   font-size: 20px;
 }
-.color-w200 input[type="file"] {
+#mainEdit-edit .color-w200 input[type="file"] {
   color: transparent !important;
 }
 .delete_text{
