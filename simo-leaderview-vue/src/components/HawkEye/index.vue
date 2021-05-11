@@ -241,10 +241,11 @@ export default {
       }
       $('.getPicSpan').show()
       html2canvas(document.querySelector('.paint-bg'), {
-        allowTaint: true, // 允许加载跨域资源
         with: document.querySelector('.paint-bg').clientWidth,
-        backgroundColor: 'transparent', // 设置背景透明
         height: document.querySelector('.paint-bg').clientHeight,
+        backgroundColor: 'transparent', // 设置背景透明
+        allowTaint: true, // 允许加载跨域资源
+        logging: false,
         scale: 1,
         onclone: function (doc) {
           $('.getPicSpan').hide()
