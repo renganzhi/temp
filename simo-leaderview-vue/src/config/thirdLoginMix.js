@@ -93,6 +93,14 @@ function toAjax (opt, i) {
 
 export const getTopoIcon = function (opt, callback) {
   if (opt.iconInfo) {
+    let arr = JSON.parse(opt.iconInfo)
+    let arrNonull = []
+    arr.forEach(element => {
+      if (element.indexOf('null') < 0) {
+        arrNonull.push(element)
+      }
+    })
+    opt.iconInfo = JSON.stringify(arrNonull)
     $.ajax({
       url: gbs.host + '/monitor/topo/getIconByIdAndRunStatus',
       type: 'post',
