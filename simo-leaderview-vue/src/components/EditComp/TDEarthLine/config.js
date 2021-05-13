@@ -203,7 +203,7 @@ export default {
           'key': 'scanningspot',
           'tag': 'select',
           'options': [{'name': '显示', 'value': 'true'},
-            {'name': '显示', 'value': 'false'} ]
+            {'name': '隐藏', 'value': 'false'} ]
         }, {
           'name': '扫描点速度',
           'key': 'scanningspeed',
