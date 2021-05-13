@@ -2554,6 +2554,14 @@ public class MonitorDataService {
                     String key = object.getString("indicator_name");
                     String identifier = object.getString("identifier");
                     key += identifier==null? "": identifier;
+                    if(identifier == null){
+                        if(componentNameLeft!=null && StringUtils.isNotEmpty(componentNameLeft)){
+                            filedLabelMap.put(indicatorsLeft+fieldLeft, filedLabelMap.get(indicatorsLeft+componentNameLeft+fieldLeft));
+                        }
+                        if(componentNameRight!=null && StringUtils.isNotEmpty(componentNameRight)){
+                            filedLabelMap.put(indicatorsRight+fieldRight, filedLabelMap.get(indicatorsRight+componentNameRight+fieldRight));
+                        }
+                    }
                     if(object.getString(fieldLeft) != null){
                         key += fieldLeft;
                     }else if(object.getString(fieldRight) != null){
