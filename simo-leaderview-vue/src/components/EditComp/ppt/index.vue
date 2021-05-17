@@ -118,7 +118,7 @@ export default {
       }
     },
     clearTimer () {
-      this.timer && clearTimeout(this.timer)
+      this.timer && clearInterval(this.timer)
     },
     change (num) {
       let activeIndex = this.activeIndex + num

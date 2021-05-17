@@ -26,7 +26,8 @@ export default {
       mychart: null,
       showDashboard: true,
       oldOption: '',
-      timer: null
+      timer: null,
+      Timeout: null
     }
   },
   computed: {
@@ -579,7 +580,7 @@ export default {
         this.oldOption = JSON.stringify(myoption)
         this.mychart.clear()
         this.mychart.setOption(myoption)
-        setTimeout(this.startTimer, 0)
+        this.Timeout = setTimeout(this.startTimer, 0)
       }
     },
     _dashed () {
@@ -623,11 +624,15 @@ export default {
         option.series[1].startAngle = option.series[1].startAngle - 2
         echarts.init(this.$refs.myDashboard).setOption(option)
       } else {
-        clearInterval(this.timer)
+        if (this.timer) {
+          clearInterval(this.timer)
+        }
       }
     },
     startTimer () {
-      clearInterval(this.timer)
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
       this.timer = setInterval(this.doing, 500)
     }
 
@@ -636,7 +641,12 @@ export default {
     this.drawFlow()
   },
   beforeDestroy () {
-    clearInterval(this.timer)
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
+    if (this.Timeout) {
+      clearTimeout(this.Timeout)
+    }
     this.mychart.dispose()
     this.mychart = null
   }
