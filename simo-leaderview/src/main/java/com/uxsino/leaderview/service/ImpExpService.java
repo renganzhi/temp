@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.entity.*;
+import com.uxsino.leaderview.utils.ImageUtils;
 import com.uxsino.leaderview.utils.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -407,7 +408,11 @@ public class ImpExpService {
                             img.setId(Long.valueOf(name.substring(name.indexOf("_") + 1,name.indexOf("."))));
                             img.setFileStream(b);
                             img.setName(name.substring(name.indexOf("img/") + 4 ));
-                            homeTemplateImgService.save(img);
+                            HomeTemplateImgCompressed imgCompressed = new HomeTemplateImgCompressed();
+                            imgCompressed.setId(img.getId());
+                            imgCompressed.setCompressedFileStream(ImageUtils.compressImage(b, img.getExtension()));
+                            imgCompressed.setHomeTemplateImg(img);
+                            homeTemplateImgService.save(img, imgCompressed);
                         }catch (Exception e){
                             log.error("图片解析错误");
                             e.printStackTrace();

@@ -191,7 +191,7 @@ public class HomePageController {
 		List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
 		for(HomePage homePage : allHomePages){
 		    if(homePage.getName().equals(name)){
-		        return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+		        return new JsonModel(false, "所选页面名称已存在，请更换一个名称！");
             }
         }
 		if (index == null || index < MIN_PAGE_INDEX || index > maxIndex + 1) {
@@ -241,7 +241,7 @@ public class HomePageController {
 			if(temp.getId().equals(id))
 				continue;
 			if(temp.getName().equals(name)){
-				return new JsonModel(false, "所取页面名字已存在，请换一个名字！");
+				return new JsonModel(false, "所选页面名称已存在，请更换一个名称！");
 			}
 		}
 		homePage.setName(name);
@@ -706,9 +706,11 @@ public class HomePageController {
 			fileInfo.setExtension(extension);
 			fileInfo.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
 			fileInfo.setFileStream(file.getBytes());
-			uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(file.getBytes(), extension));
-			uploadedFileService.save(fileInfo);
-			JSONObject result = new JSONObject();
+			if ("jpg,jpeg,png,gif".contains(extension))
+				uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(file.getBytes(), extension));
+			uploadedFileCompressed.setUploadedFile(fileInfo);
+			uploadedFileService.save(fileInfo, uploadedFileCompressed);
+ 			JSONObject result = new JSONObject();
 			result.put("id", fileInfo.getId());
 			result.put("isCustom", true);
 			return new JsonModel(true, "上传成功", result);
@@ -742,7 +744,10 @@ public class HomePageController {
 			// Base64解码
 			byte[] fileStream = Base64.decodeBase64(img);
 			fileInfo.setFileStream(fileStream);
-			uploadedFileService.save(fileInfo);
+			UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+			if("jpg,jpeg,png,gif".contains(extension))
+				fileCompressed.setCompressedFileStream(ImageUtils.compressImage(fileStream, extension));
+			uploadedFileService.save(fileInfo, fileCompressed);
 			return new JsonModel(true, "保存成功", fileInfo.getId());
 		} catch (Exception e) {
 			logger.error("保存失败", e);
@@ -806,17 +811,20 @@ public class HomePageController {
 		);
 	}
 
-
-	@ApiOperation("新增表储存压缩后的用户上传图片，如果原表中已经有图片了，需要遍历一遍来生成压缩图")
-	@RequestMapping(value = "/generateCompressedCustomizedImage", method = RequestMethod.GET)
-	public JsonModel generateCompressedCustomizedImage(){
-		try {
-			return new JsonModel(uploadedFileService.generateCompressedCustomImage(), "操作成功！");
-		}catch (Exception e){
-			logger.error("LEADERVIEW -> 生成自定义上传图片的压缩数据抛出异常! stackTrace如下：", e);
-			return new JsonModel(false, "操作失败！");
-		}
-	}
+	/*
+		考虑到所有老版本用户升级到有压缩图片的版本时，都会遇到补充图片压缩版本的问题，因此将手动访问该接口启动该操作
+		变成了在大屏启动时自动判断该表中是否有压缩数据，没有则自动进行压缩
+	 */
+//	@ApiOperation("新增表储存压缩后的用户上传图片，如果原表中已经有图片了，需要遍历一遍来生成压缩图")
+//	@RequestMapping(value = "/generateCompressedCustomizedImage", method = RequestMethod.GET)
+//	public JsonModel generateCompressedCustomizedImage(){
+//		try {
+//			return new JsonModel(uploadedFileService.generateCompressedCustomImage(), "操作成功！");
+//		}catch (Exception e){
+//			logger.error("LEADERVIEW -> 生成自定义上传图片的压缩数据抛出异常! stackTrace如下：", e);
+//			return new JsonModel(false, "操作失败！");
+//		}
+//	}
 
 
 	/**

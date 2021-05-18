@@ -2039,7 +2039,12 @@ public class MonitorDataService {
                 // 进行属性有无的判断
                 if (!validHasFields(ind)) {
                     // 该指标若本身就无部件无属性就直接取值
-                    String value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
+                    String value = null;
+                    // 健康度比较特殊，因为在返回的IndValue中，健康度的indicatorName是null
+                    if("healthy".equals(ind.getName()))
+                        value = MonitorUtils.getValueStr(valueJSON.getString("healthy"));
+                    else
+                        value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
                     String unit = "PERCENT".equals(ind.getIndicatorType())? "%" : "";
                     resultObj.put("name", ind.getLabel() + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
                     resultObj.put("value", value);
@@ -2445,8 +2450,11 @@ public class MonitorDataService {
         JSONArray values = new JSONArray();
         //当前时间作为聚合的末尾时间，左右侧指标该事件需要为一致
         Date curDate = new Date();
-        if (!Objects.equals((indicatorsLeft + componentNameLeft + fieldLeft),
-                (indicatorsRight + componentNameRight + fieldRight))) {
+        //用于保存返回前端的中文名称键的key
+        String leftNameKey = indicatorsLeft + (componentNameLeft==null?"":componentNameLeft) + (fieldLeft==null?"":fieldLeft);
+        String rightNameKey = indicatorsRight + (componentNameRight==null?"":componentNameRight) + (fieldRight==null?"":fieldRight);
+        boolean isOnlyOne = leftNameKey.equals(rightNameKey);
+        if (!isOnlyOne) {
             IndicatorTable leftInd = rpcProcessService.getIndicatorInfoByName(indicatorsLeft);
             String[] leftTemp = getLabel(leftInd, fieldLeft).split(":");
             String leftComponentNameString = null;
@@ -2470,7 +2478,7 @@ public class MonitorDataService {
             //利用代码来区分名字，一定是将indicator + componentName + fieldName组合在一起来区分左右指标，
             //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
             //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
-            filedLabelMap.put(indicatorsLeft + (componentNameLeft==null?"":componentNameLeft) + (fieldLeft==null?"":fieldLeft), label);
+            filedLabelMap.put(leftNameKey, label);
             leftValues = getHistoryValues(neId, indicatorsLeft, componentNameLeft, fieldLeft, intervalType, interval, period, new Date());
             if (ObjectUtils.isEmpty(leftValues)){
                 unit.add("");
@@ -2503,7 +2511,7 @@ public class MonitorDataService {
         //利用代码来区分名字，一定是将indicator + componentName + fieldName组合在一起来区分左右指标，
         //因为可能会出现indicator相同另外两个不同、indicator和componentName都相同但fieldName不同这
         //两种极端情况，如果map只使用indicatorName来区分左右指标，则有可能出现区分不出来的情况
-        filedLabelMap.put(indicatorsRight + (componentNameRight==null?"":componentNameRight) + (fieldRight==null?"":fieldRight), label);
+        filedLabelMap.put(rightNameKey, label);
         rightValues = getHistoryValues(neId, indicatorsRight, componentNameRight, fieldRight, intervalType, interval, period, new Date());
         if (ObjectUtils.isEmpty(rightValues)){
             unit.add("");
@@ -2512,6 +2520,7 @@ public class MonitorDataService {
             unit.add(rightValues.getString("unit"));
             values.addAll(rightValues.getJSONArray("result"));
         }
+        /*
         List<String> cacheTime = Lists.newArrayList();
         //日期升序处理
         values = sortByDate(values);
@@ -2541,6 +2550,7 @@ public class MonitorDataService {
                     =existDataKey，则证明第一个key没有值，则直接把第一个加入row后break，因为第二个指标肯定有
                     值；如果count=0，则两个指标都没有值，就遍历一遍filedLabelMap，全部加入0值。
                 */
+        /*
                 int count = 0;
                 String existDataKey = null;
                 for(Object o: filter){
@@ -2549,6 +2559,14 @@ public class MonitorDataService {
                     String key = object.getString("indicator_name");
                     String identifier = object.getString("identifier");
                     key += identifier==null? "": identifier;
+                    if(identifier == null){
+                        if(componentNameLeft!=null && StringUtils.isNotEmpty(componentNameLeft)){
+                            filedLabelMap.put(indicatorsLeft+fieldLeft, filedLabelMap.get(indicatorsLeft+componentNameLeft+fieldLeft));
+                        }
+                        if(componentNameRight!=null && StringUtils.isNotEmpty(componentNameRight)){
+                            filedLabelMap.put(indicatorsRight+fieldRight, filedLabelMap.get(indicatorsRight+componentNameRight+fieldRight));
+                        }
+                    }
                     if(object.getString(fieldLeft) != null){
                         key += fieldLeft;
                     }else if(object.getString(fieldRight) != null){
@@ -2578,6 +2596,65 @@ public class MonitorDataService {
                 rows.add(row);
             }
         }
+        */
+        //上述代码将左右value放在一起在一些特殊情况下无法区分，因此改为下述方式将两个value分别按时间排序后再按一个一个时间点放到row中
+        JSONArray leftValueArray = leftValues==null||leftValues.size()==0? new JSONArray(): sortByDate(leftValues.getJSONArray("result"));
+        JSONArray rightValueArray = rightValues==null||rightValues.size()==0? new JSONArray(): sortByDate(rightValues.getJSONArray("result"));
+        int leftCount = leftValueArray.size();
+        int rightCount = rightValueArray.size();
+        int i=0, j=0;
+        while(i<leftCount && j<rightCount){
+            JSONObject leftObj = leftValueArray.getJSONObject(i);
+            JSONObject rightObj = rightValueArray.getJSONObject(j);
+            String leftTime = leftObj.getString("fetchDate");
+            String rightTime = rightObj.getString("fetchDate");
+            JSONObject row = new JSONObject();
+            switch (this.compareTime(leftTime, rightTime)) {
+                case -1:
+                    row.put("采集时间", leftTime);
+                    row.put(filedLabelMap.get(leftNameKey), leftObj.getString(MonitorUtils.getValueKey(leftObj, filedList)));
+                    row.put(filedLabelMap.get(rightNameKey), "0");
+                    i++;
+                    break;
+                case 0:
+                    row.put("采集时间", leftTime);
+                    if(!isOnlyOne) {
+                        row.put(filedLabelMap.get(leftNameKey), leftObj.getString(MonitorUtils.getValueKey(leftObj, filedList)));
+                    }
+                    row.put(filedLabelMap.get(rightNameKey), rightObj.getString(MonitorUtils.getValueKey(rightObj, filedList)));
+                    i++;
+                    j++;
+                    break;
+                case 1:
+                    row.put("采集时间", rightTime);
+                    row.put(filedLabelMap.get(rightNameKey), rightObj.getString(MonitorUtils.getValueKey(rightObj, filedList)));
+                    row.put(filedLabelMap.get(leftNameKey), "0");
+                    j++;
+            }
+            rows.add(row);
+        }
+        while(i < leftCount) {
+            JSONObject leftObj = leftValueArray.getJSONObject(i);
+            String leftTime = leftObj.getString("fetchDate");
+            JSONObject row = new JSONObject();
+            row.put("采集时间", leftTime);
+            row.put(filedLabelMap.get(leftNameKey), leftObj.getString(MonitorUtils.getValueKey(leftObj, filedList)));
+            row.put(filedLabelMap.get(rightNameKey), "0");
+            i++;
+            rows.add(row);
+        }
+        while(j< rightCount) {
+            JSONObject rightObj = rightValueArray.getJSONObject(j);
+            String rightTime = rightObj.getString("fetchDate");
+            JSONObject row = new JSONObject();
+            row.put("采集时间", rightTime);
+            row.put(filedLabelMap.get(rightNameKey), rightObj.getString(MonitorUtils.getValueKey(rightObj, filedList)));
+            if(!isOnlyOne)
+                row.put(filedLabelMap.get(leftNameKey), "0");
+            j++;
+            rows.add(row);
+        }
+
         JSONObject result = new JSONObject();
         result.put("unit", unit);
         result.put("columns", columns);
@@ -2586,23 +2663,27 @@ public class MonitorDataService {
     }
 
     private JSONArray sortByDate(JSONArray values) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         values = values.stream().sorted((o1, o2) -> {
             JSONObject obj1 = JSONObject.parseObject(JSON.toJSONString(o1));
             JSONObject obj2 = JSONObject.parseObject(JSON.toJSONString(o2));
             String date1 = obj1.getString("fetchDate");
             String date2 = obj2.getString("fetchDate");
-            try {
-                Date dt1 = sdf.parse(date1);
-                Date dt2 = sdf.parse(date2);
-                //升序
-                return Long.compare(dt1.getTime(), dt2.getTime());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 0;
+            return this.compareTime(date1, date2);
         }).collect(Collectors.toCollection(JSONArray::new));
         return values;
+    }
+
+    private int compareTime(String date1, String date2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date dt1 = sdf.parse(date1);
+            Date dt2 = sdf.parse(date2);
+            //升序
+            return Long.compare(dt1.getTime(), dt2.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private JSONObject getHistoryValues(String neId, String indName, String component, String field, IntervalType intervalType, Integer interval, IndPeriod period,

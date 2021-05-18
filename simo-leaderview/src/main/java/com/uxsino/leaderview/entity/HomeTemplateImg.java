@@ -39,8 +39,4 @@ public class HomeTemplateImg {
     */
     private byte[] fileStream;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "compressed_id", referencedColumnName = "id")
-    private HomeTemplateImgCompressed homeTemplateImgCompressed;
-
 }

@@ -2,6 +2,7 @@ package com.uxsino.leaderview.service;
 
 import javax.transaction.Transactional;
 
+import com.uxsino.leaderview.dao.IUploadedFileCompressedDao;
 import com.uxsino.leaderview.entity.UploadedFileCompressed;
 import com.uxsino.leaderview.utils.ImageUtils;
 import org.slf4j.Logger;
@@ -25,12 +26,16 @@ public class UploadedFileService {
     @Autowired
     private IUploadedFileDao uploadedFileDao;
 
+    @Autowired
+    private IUploadedFileCompressedDao uploadedFileCompressedDao;
+
     /**
      * 保存文件
      * @param file
      */
-    public void save(UploadedFile file) {
+    public void save(UploadedFile file, UploadedFileCompressed fileCompressed) {
         uploadedFileDao.save(file);
+        uploadedFileCompressedDao.save(fileCompressed);
     }
 
     /**
@@ -38,8 +43,8 @@ public class UploadedFileService {
      * @param id 文件ID
      * @return
      */
-    public UploadedFile findById(Long id) {
-        return uploadedFileDao.findOne(id);
+    public UploadedFileCompressed findByOriginFileId(Long id) {
+        return uploadedFileCompressedDao.findByOriginFileId(id);
     }
 
     public List<UploadedFile> findByIds(List<Long> ids){
@@ -57,23 +62,22 @@ public class UploadedFileService {
         int pageSize = 50;
         int totalPage = size%pageSize==0? (int)size/pageSize: (int)size/pageSize+1;
         long justNow = System.currentTimeMillis();
-        for(int i=0; i<totalPage; i++){
-            Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
-            for(UploadedFile temp: uploadedFiles){
-                byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
-                if(compressedData != null){
-                    try {
-                        UploadedFileCompressed compressedFile = new UploadedFileCompressed();
-                        compressedFile.setCompressedFileStream(compressedData);
-                        temp.setUploadedFileCompressed(compressedFile);
-                    } catch (Exception e) {
-                        log.error("id为{}的文件长度为0！", temp.getId());
-                    }
-                    uploadedFileDao.update(temp.getId(), temp);
-                    uploadedFileDao.flush();
+        try {
+            for(int i=0; i<totalPage; i++){
+                Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
+                for(UploadedFile temp: uploadedFiles){
+                    byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
+                    UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+                    fileCompressed.setUploadedFile(temp);
+                    if(compressedData != null)
+                        fileCompressed.setCompressedFileStream(compressedData);
+                    uploadedFileCompressedDao.save(fileCompressed);
                 }
+                log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
             }
-            log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
+        } catch (Exception e) {
+            log.error("LEADERVIEW -> 压缩自定义图片抛出异常，stacktrace如下：", e);
+            return false;
         }
         long difference = System.currentTimeMillis() - justNow;
         log.info("LEADERVIEW -> 压缩自定义图片完成，总共花费时间：" + difference/1000 + "s");
