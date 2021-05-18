@@ -580,7 +580,10 @@ export default {
         this.oldOption = JSON.stringify(myoption)
         this.mychart.clear()
         this.mychart.setOption(myoption)
-        this.Timeout = setTimeout(this.startTimer, 0)
+        if (this.Timeout) {
+          clearTimeout(this.Timeout)
+        }
+        this.Timeout = setTimeout(this.startTimer, 10)
       }
     },
     _dashed () {
@@ -630,10 +633,12 @@ export default {
       }
     },
     startTimer () {
-      if (this.timer) {
-        clearInterval(this.timer)
+      if (this.item.DashboardType === 4) {
+        if (this.timer) {
+          clearInterval(this.timer)
+        }
+        this.timer = setInterval(this.doing, 500)
       }
-      this.timer = setInterval(this.doing, 500)
     }
 
   },
