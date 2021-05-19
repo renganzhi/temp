@@ -238,6 +238,16 @@ export default {
   },
   mounted () {
     this.drawPre()
+  },
+  beforeDestroy () {
+    if (this.mychart2) {
+      this.mychart2.dispose()
+    }
+    this.mychart2 = null
+    if (this.mychart1) {
+      this.mychart1.dispose()
+    }
+    this.mychart1 = null
   }
 }
 </script>
