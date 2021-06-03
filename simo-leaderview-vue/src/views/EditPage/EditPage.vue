@@ -676,7 +676,7 @@ export default {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
           })
           .then((res) => {
-            if (res.success) {
+                   if (res.success) {
               item.name = this.editName
               if (gbs.inDev) {
                 Notification({

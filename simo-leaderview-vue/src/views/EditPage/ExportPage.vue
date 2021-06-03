@@ -268,6 +268,28 @@ export default {
   line-height: 152px;
   position: relative;
 }
+ .mask-text{
+   width: 255px;
+   height: 20%;
+   background: rgba($color: #000000, $alpha: 0.45);
+   color: white;
+  text-shadow: #000000 3px 3px 2px;
+   line-height: 0;
+   display: flex;
+   padding-left: 12px;
+ //  font-weight: bold;
+  // font-size: 14px;
+   justify-content: flex-start;
+   align-items: center;
+   
+}
+.maskActive{
+  display: flex;
+}
+.flex-item:hover .mask{
+    display: flex;
+}
+
 
 
 .mask {
@@ -306,7 +328,8 @@ export default {
 
 
 #exportPage-modal .active {
-  outline: 2px solid #0088cc;
+   outline: 2px solid #0088cc;
+  box-shadow: #85d6ff 0px 0px 10px ;
 }
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
