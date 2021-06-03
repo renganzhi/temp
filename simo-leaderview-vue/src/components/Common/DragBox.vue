@@ -8,7 +8,6 @@
               :key="item.id"
               :parentW="parentW"
               :parentH="parentH"
-              :scale="scale"
               :w="Number(item.width)"
               :h="Number(item.height)"
               :x.sync="item.x"
@@ -99,7 +98,7 @@ import { capitalize } from '@/utils'
 
 export default {
   name: 'dragBox',
-  props: ['item', 'editable', 'index', 'parentW', 'parentH', 'scale'],
+  props: ['item', 'editable', 'index', 'parentW', 'parentH'],
   components: {
     DragResize,
     ...components

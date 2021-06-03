@@ -113,6 +113,12 @@ export default {
         this.mychart1.setOption(myoption1)
       }
     }
+  },
+  beforeDestroy () {
+    if (this.mychart1) {
+      this.mychart1.dispose()
+    }
+    this.mychart1 = null
   }
 }
 </script>

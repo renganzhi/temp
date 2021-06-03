@@ -3,7 +3,7 @@ export default {
     'text': '双轴曲线图',
     'height': 400,
     'width': 700,
-    'imgClass': 'icon-n-line',
+    'imgClass': 'icon-biaxialline',
     'chartType': 'DoubleLinde',
     'ifGradual': 'false',
     'subType': 'DoubleLinde',
@@ -630,7 +630,7 @@ export default {
               }
             ]
           }, {
-            'name': '区域图线条',
+            'name': '描边线条',
             'key': 'areaLineType',
             'parentKey': {
               'ifGradual': 'true',

@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '堆叠柱图',
-    'imgClass': 'icon-n-grouphistogram',
+    'imgClass': 'icon-n-duidiezhutu',
     'chartType': 'NewGroupLeftHistogram',
     'subType': 'groupHistogram',
     'thirdType': 'stackHistogram',

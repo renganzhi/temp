@@ -10,10 +10,17 @@
             :style="imgSctyle"/>
 
         <img :src="baseUrl + PlayimgSrc"
-            v-if="item.isPlay"
+            v-if="item.isPlay && PlayimgSrc"
             class="playImg"
             @click="toLinkPage"
             :style="imgPlaySctyle" />
+        <div
+          class="v-charts-data-empty"
+          style="height: 300px; width: 500px; border: 1px solid #7b7070"
+          v-if="item.isPlay && !PlayimgSrc"
+        >
+          请上传图片
+        </div>
 
         <video v-if="item.videoSrc"
               ref="videoItem"

@@ -218,7 +218,6 @@
                        :parentW="paintObj.width"
                        :parentH="paintObj.height"
                        :editable="editable"
-                       :scale="paintObj.scale"
                        @draged="draged"
                        @selected="selected"
                        @resized="resized"
@@ -1837,7 +1836,7 @@
                               :key="v.key">{{v.name}}</option>
                     </select>
                   </div>
-                  <div id="mainSystemConf">
+                  <div id="mainSystemConf" v-if="syst.urlSel.length>0">
                     <div class="form-group cols2"
                          v-for="(v,idx) in syst.curUrl"
                          :key="idx">
@@ -2042,6 +2041,8 @@
                           @click="cancelLevelTips">否</span>
                   </div>
                   <label class="e-legend">数据量级<i class="icon-n-tip"
+                        data-toggle="tooltip"
+                        title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"
                         style="font-size: 16px; position: relative; top: 1px; left: 3px;"></i></label>
                   <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
                                     <span>量级一</span>

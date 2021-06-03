@@ -1,25 +1,14 @@
 <template>
-  <component
-    :is="'ve-map'"
-    :width="comWidth"
-    :height="comHeight"
-    :settings="settings"
-    :data="dealChartData"
-    :extend="extend"
-    :init-options="initOption"
-    :id="'map_' + keyId"
-    :key="keyId"
-    :judge-width="true"
-  >
-    <!-- <div class="v-charts-data-empty"
-         v-if="empty"
-         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-      <div><i class="icon-n-nodata"
-           style="font-size: 108px;"></i><br>
-        <p>抱歉，没有数据可供展示...</p>
-      </div>
-    </div> -->
-  </component>
+  <ve-map
+          :width="comWidth"
+          :height="comHeight"
+          :settings="settings"
+          :data="dealChartData"
+          :extend="extend"
+          :id="'map_' + keyId"
+          :key="keyId"
+          :judge-width="true">
+  </ve-map>
 </template>
 <script>
 import { VeMap } from 'v-charts'
@@ -121,26 +110,26 @@ export default {
           roam: this.item.roam, // 是否允许缩放
           itemStyle: {
             normal: {
-              areaColor: this.item.areaColor
-              // color: {
-              //   type: 'linear',
-              //   x: colordirectionArry[this.item.colordirection][0],
-              //   y: colordirectionArry[this.item.colordirection][1],
-              //   x2: colordirectionArry[this.item.colordirection][2],
-              //   y2: colordirectionArry[this.item.colordirection][3],
-              //   colorStops: [{
-              //     offset: 0,
-              //     color: this.item.normalcolor[0] // 0% 处的颜色
-              //   }, {
-              //     offset: 1,
-              //     color: this.item.normalcolor[1] // 50% 处的颜色
-              //   }],
-              //   global: true // 缺省为 false
-              // },
-              // borderColor: this.item.borderColor,
-              // borderWidth: 0.5,
-              // shadowColor: 'rgba(0, 0, 0, 0.5)'
-              // shadowBlur: 1
+              // areaColor: this.item.areaColor,
+              color: {
+                type: 'linear',
+                x: colordirectionArry[this.item.colordirection][0],
+                y: colordirectionArry[this.item.colordirection][1],
+                x2: colordirectionArry[this.item.colordirection][2],
+                y2: colordirectionArry[this.item.colordirection][3],
+                colorStops: [{
+                  offset: 0,
+                  color: this.item.normalcolor[0] // 0% 处的颜色
+                }, {
+                  offset: 1,
+                  color: this.item.normalcolor[1] // 50% 处的颜色
+                }],
+                global: true // 缺省为 false
+              },
+              borderColor: this.item.borderColor,
+              borderWidth: 0.5,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 1
             }
             // emphasis: {
             //   areaColor: '#2B91B7'

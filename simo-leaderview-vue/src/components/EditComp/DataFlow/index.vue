@@ -75,7 +75,7 @@ export default {
           data.value = newArry
         }
       })
-   for(let i=0;i<ChartData.lineData.length;i++)
+     for(let i=0;i<ChartData.lineData.length;i++)
       {
         let arrydata=ChartData.lineData[i];
         for(let j=0;j<arrydata.length;j++)

@@ -3377,7 +3377,6 @@ var html2canvas = function html2canvas(element, conf) {
             throw e;
         });
     }
-    return result;
 };
 
 html2canvas.CanvasRenderer = _CanvasRenderer2.default;
@@ -5512,7 +5511,6 @@ var Renderer = function () {
                     return output;
                 });
             }
-            return target;
         }
     }]);
 
@@ -6806,7 +6804,7 @@ var ResourceLoader = function () {
                     }
 
                     img.onerror = reject;
-                    if(src.indexOf('leaderview')>=0 && src.indexOf('topoBg')<0  && src.indexOf('videoBg2')<0){
+                    if(src.indexOf('leaderview')>=0 && src.indexOf('topoBg')<0  && src.indexOf('videoBg2')<0 && src.indexOf('png')<0){
                         src = src + '/HawEye'
                     }
                     img.src = src;
