@@ -338,7 +338,7 @@ public class HomePageController {
 			result = JSON.parseObject(JSON.toJSONString(homeCarousel));
 		}
 		// 添加页面的信息
-		result.put("pages", homePageService.findVisible(userId));
+		result.put("pages", homePageService.findVisible(userId, session));
 		// 判断是不是一个页面都没有的全新用户
 		Boolean isNewUser = false;
 		Integer pageCount = homePageUserConfService.getMaxPageByUserId(userId);
