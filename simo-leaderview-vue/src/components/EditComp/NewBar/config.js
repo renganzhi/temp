@@ -360,7 +360,7 @@ export default {
         'name': '坐标轴样式',
         'tag': 'Hint',
         'childoption': [{
-          'name': 'x轴标注倾斜',
+          'name': 'y轴标注倾斜',
           'key': 'rotate',
           'tag': 'select',
           'options': [
@@ -403,7 +403,7 @@ export default {
           ]
         },
         {
-          'name': 'x轴标注剪裁',
+          'name': 'y轴标注剪裁',
           'key': 'formatterType',
           'tag': 'select',
           'options': [
