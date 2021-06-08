@@ -289,23 +289,23 @@ export default {
         }
         this.oldformatterType = this.item.formatterType
         this.mychart.clear()
-        this.mychart.setOption(myoption)
+        this.mychart.setOption(myoption,true)
       } else if (this.oldformatterType !== this.item.formatterType) {
         myoption.xAxis.axisLabel.formatter = function (params, index) {
           return params
         }
         this.oldformatterType = this.item.formatterType
         this.mychart.clear()
-        this.mychart.setOption(myoption)
+        this.mychart.setOption(myoption,true)
       }
       if (this.item.colorful !== this.Oldcolorful) {
         this.Oldcolorful = this.item.colorful
         this.mychart.clear()
-        this.mychart.setOption(myoption)
+        this.mychart.setOption(myoption,true)
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
-        this.mychart.setOption(myoption)
+        this.mychart.setOption(myoption,true)
       } else {
 
       }
