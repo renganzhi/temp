@@ -83,6 +83,7 @@
           <span @click="toEditPage()"
                 class="ring-icon"
                 data-toggle='tooltip'
+                ref='editbutton'
                 title
                 data-original-title="编辑当前页"
                 v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
@@ -1155,6 +1156,12 @@ export default {
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
     $('#lead-screen').addClass('disShow')
+  },
+  updated:function(){
+       if(this.pageList[(this.pageIndex - 1) % this.pageSize] && this.pageList[(this.pageIndex - 1) % this.pageSize].belongCurrentUser!=='true')
+      {
+        this.$refs.editbutton.style.display='none'
+      }
   },
   beforeDestroy: function () {
     $('#lead-screen').removeClass('disShow')
