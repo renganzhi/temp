@@ -17,6 +17,7 @@ export default {
     'tipsNotes': true,
     'NotesType': 1,
     'NotesSize': 22,
+    'NotesSpacing': 30,
     'NotesToTop': 50,
     'NotesToLeft': 35,
     'NotesColor': '#3ba5ed',
@@ -194,6 +195,13 @@ export default {
         }, {
           'name': '图例字体大小',
           'key': 'NotesSize',
+          'parentKey': {
+            'tipsNotes': true
+          },
+          'tag': 'input'
+        }, {
+          'name': '图例行间距',
+          'key': 'NotesSpacing',
           'parentKey': {
             'tipsNotes': true
           },

@@ -127,7 +127,7 @@ export default {
           textStyle: {
             color: this.item.NotesColor,
             fontSize: this.item.NotesSize,
-            lineHeight: 30
+            lineHeight: parseInt(this.item.NotesSpacing)
           },
           left: this.item.NotesToLeft,
           top: this.item.NotesToTop
