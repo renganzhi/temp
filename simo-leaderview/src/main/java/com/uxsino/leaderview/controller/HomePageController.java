@@ -313,7 +313,7 @@ public class HomePageController {
 			}
 		}
 		if(isNameExisted) {
-			int maxReplicaIndex = 2;
+			int maxReplicaIndex = 1;
 			Pattern pattern = Pattern.compile("_副本\\(\\d+\\)");
 			String[] targetParts = null;
 			String[] tempParts = null;
