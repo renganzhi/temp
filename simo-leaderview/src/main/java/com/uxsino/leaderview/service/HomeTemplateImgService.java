@@ -57,10 +57,8 @@ public class HomeTemplateImgService {
         }
         logger.info("LEADERVIEW -> Start reading original template image resources...");
         this.readAndInsert(ORIGINALFILEPATH, ORIGINAL_IMAGE);
-        logger.info("LEADERVIEW -> Start asynchronously reading compressed template image resources...");
-        new Thread(() -> {
-            this.readAndInsert(ORIGINALFILEPATH, ORIGINAL_IMAGE);
-        });
+        logger.info("LEADERVIEW -> Start reading compressed template image resources...");
+        this.readAndInsert(COMPRESSEDFILEPATH, COMPRESSED_IMAGE);
 
         //对自定义图片是否已经压缩进行判断，如果simo_uploaded_file_compressed表中没有数据，则证明当前用户的大屏是从
         //老版本升级上来，有原图没有压缩图，需要进行一遍遍历压缩。
