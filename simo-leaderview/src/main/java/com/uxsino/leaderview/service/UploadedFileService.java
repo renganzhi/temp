@@ -56,24 +56,15 @@ public class UploadedFileService {
      * 一个一个生成对应的压缩数据
      * @return
      */
-    @Transactional
     public boolean generateCompressedCustomImage(){
         long size = uploadedFileDao.count();
         int pageSize = 50;
         int totalPage = size%pageSize==0? (int)size/pageSize: (int)size/pageSize+1;
         long justNow = System.currentTimeMillis();
+        log.info("LEADERVIEW -> 开始分页读取用户图片并压缩，共" + totalPage + "页");
         try {
             for(int i=0; i<totalPage; i++){
-                Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
-                for(UploadedFile temp: uploadedFiles){
-                    byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
-                    UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
-                    fileCompressed.setUploadedFile(temp);
-                    if(compressedData != null)
-                        fileCompressed.setCompressedFileStream(compressedData);
-                    uploadedFileCompressedDao.save(fileCompressed);
-                }
-                log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
+                this.compressInPage(i, pageSize);
             }
         } catch (Exception e) {
             log.error("LEADERVIEW -> 压缩自定义图片抛出异常，stacktrace如下：", e);
@@ -82,5 +73,19 @@ public class UploadedFileService {
         long difference = System.currentTimeMillis() - justNow;
         log.info("LEADERVIEW -> 压缩自定义图片完成，总共花费时间：" + difference/1000 + "s");
         return true;
+    }
+
+    @Transactional
+    public void compressInPage(int currentPage, int pageSize) {
+        Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(currentPage, pageSize));
+        for(UploadedFile temp: uploadedFiles){
+            byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
+            UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+            fileCompressed.setUploadedFile(temp);
+            if(compressedData != null)
+                fileCompressed.setCompressedFileStream(compressedData);
+            uploadedFileCompressedDao.save(fileCompressed);
+        }
+        log.info("LEADERVIEW -> 分页压缩完成第" + (currentPage+1) + "页");
     }
 }
