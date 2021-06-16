@@ -14,8 +14,8 @@ export default {
       '#fa8d76',
       '#af8af3',
       '#f5739c',
-      'ffdf91',
-      '5c84e7'],
+      '#ffdf91',
+      '#5c84e7'],
     'DScatterColor': [
       ['#6fcaf7', '#0c79c5'],
       ['#8feee5', '#1bbcae'],
