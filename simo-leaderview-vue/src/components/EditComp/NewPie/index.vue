@@ -23,6 +23,13 @@ export default {
   props: ['item'],
   data () {
     return {
+      defaultcolor:[
+      '#2d98f1',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c',
+      '#ffb092'],
       mychart: null,
       showLine: true,
       oldOption: '',
@@ -73,13 +80,21 @@ export default {
       this.mychart = echarts.init(this.$refs.NewPie)
       let myData = this.item.chartData
       let optioncolor = []
-      if (this.item.ifGradual === 'true') {
-        this.item.DLineColorArray.forEach((element, index) => {
-          optioncolor.push(new echarts.graphic.LinearGradient(0, 0, 1, 1, [{ offset: 0, color: element[0] }, { offset: 1, color: element[1] }]))
-        })
-      } else {
-        optioncolor = this.item.LineColorArray
+      if(this.item.ifEidetColor)
+      {
+          if (this.item.ifGradual === 'true') {
+          this.item.DLineColorArray.forEach((element, index) => {
+            optioncolor.push(new echarts.graphic.LinearGradient(0, 0, 1, 1, [{ offset: 0, color: element[0] }, { offset: 1, color: element[1] }]))
+          })
+        } else {
+          optioncolor = this.item.LineColorArray
+        }
       }
+      else
+      {
+        optioncolor=this.defaultcolor
+      }
+     
       var SericeData = []
       myData.rows.forEach((element,index) => {
         SericeData.push({
@@ -144,7 +159,7 @@ export default {
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
-        this.mychart.setOption(myoption)
+        this.mychart.setOption(myoption,true)
       }
     }
   },
