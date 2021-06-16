@@ -7,6 +7,7 @@ export default [
   'polarBar',
   'pyramid',
   'TDEarthLine',
+  'BaiDuMap',
   'TDEarthBar',
   'DataFlow',
   'GradientPie',

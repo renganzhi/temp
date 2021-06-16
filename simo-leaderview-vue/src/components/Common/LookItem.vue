@@ -41,6 +41,8 @@
           :item="item"></Vmap>
     <TDEarthLine v-else-if="item.chartType=='TDEarthLine'"
           :item="item"></TDEarthLine>
+    <BaiDuMap v-else-if="item.chartType=='BaiDuMap'"
+          :item="item"></BaiDuMap>
     <TDEarthBar v-else-if="item.chartType=='TDEarthBar'"
           :item="item"></TDEarthBar>
     <GradientPie v-else-if="item.chartType=='GradientPie'"

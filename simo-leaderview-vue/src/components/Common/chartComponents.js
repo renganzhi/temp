@@ -19,6 +19,7 @@ import Heatmap from '@/components/EditComp/heatmap' //
 import PolarBar from '@/components/EditComp/polarBar' //
 import Pyramid from '@/components/EditComp/pyramid' //
 import TDEarthLine from '@/components/EditComp/TDEarthLine' // 3D地图-飞线图
+import BaiDuMap from '@/components/EditComp/BaiDuMap' // 3D地图-飞线图
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 3D地图-柱状图
 import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
 import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
@@ -81,6 +82,7 @@ export default {
   PolarBar,
   Pyramid,
   TDEarthLine,
+  BaiDuMap,
   TDEarthBar,
   NewMarquee,
   NewDoubler,

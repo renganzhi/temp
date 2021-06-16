@@ -45,6 +45,7 @@ let config = {
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
+  BaiDuMap: require('@/components/EditComp/BaiDuMap/config.js'),
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
@@ -791,7 +792,7 @@ export default {
       var mapData = []
       for (var i = 0; i < mapJson.features.length; i++) {
         mapData.push({
-          value: mapJson.features[i].id ||  mapJson.features[i].properties.adcode,
+          value: mapJson.features[i].id || mapJson.features[i].properties.adcode,
           name: mapJson.features[i].properties.name,
           geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates)
           // geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]

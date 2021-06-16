@@ -1,6 +1,7 @@
 import {morenData} from '@/views/Edit/chartJson'
 import DataFlow from '@/components/EditComp/DataFlow/config.js'
 import TDEarthLine from '@/components/EditComp/TDEarthLine/config.js'
+import BaiDuMap from '@/components/EditComp/BaiDuMap/config.js'
 import TDEarthBar from '@/components/EditComp/TDEarthBar/config.js'
 import NewVMap from '@/components/EditComp/NewVMap/config.js'
 import NewScatter from '@/components/EditComp/NewScatter/config.js'
@@ -56,7 +57,8 @@ const map = {
     NewVMap.item,
     TDEarthLine.item,
     TDEarthBar.item,
-    DataFlow.item
+    DataFlow.item,
+    BaiDuMap.item
   ]
 }
 
