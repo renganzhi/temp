@@ -81,11 +81,26 @@ export default {
         optioncolor = this.item.LineColorArray
       }
       var SericeData = []
-      myData.rows.forEach(element => {
+      myData.rows.forEach((element,index) => {
         SericeData.push({
           name: element[myData.columns[0]],
-          value: element[myData.columns[1]] * 1
+          value: element[myData.columns[1]] * 1,
+          label:{color:''}
         })
+        if(this.item.ifEidetColor)  //判断是否是默认还是自定义颜色
+        {
+            if(this.item.ifGradual==='true')  //判断是否渐变
+          {
+            let i=index%this.item.DLineColorArray.length;
+            SericeData[index].label.color=this.item.DLineColorArray[i][0]
+          }
+          else
+          {
+            let i=index%this.item.LineColorArray.length;
+            SericeData[index].label.color=this.item.LineColorArray[i]
+          }
+        }
+       
       })
       let myoption = {
         tooltip: {
