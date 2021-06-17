@@ -54,7 +54,7 @@ public class ImageService {
             }
 
             ext = f.getExtension();
-            if(!isCompressed || uploadedFileCompressed.getCompressedFileStream()==null)
+            if(!isCompressed || uploadedFileCompressed==null || uploadedFileCompressed.getCompressedFileStream()==null)
                 data = f.getFileStream();
             else
                 data = uploadedFileCompressed.getCompressedFileStream();
