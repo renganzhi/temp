@@ -50,6 +50,7 @@ public class UploadedFileService {
     public List<UploadedFile> findByIds(List<Long> ids){
         return uploadedFileDao.getByIdIn(ids);
     }
+    public UploadedFile findOne(Long id) {return uploadedFileDao.findOne(id);}
 
     /**
      * 对老环境下的数据库，已经在simo_upload_file存有一些图片而没有对应的压缩数据时，调用该方法后将会遍历该表
