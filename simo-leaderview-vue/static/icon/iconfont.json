@@ -6,6 +6,230 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "22297440",
+      "name": "地图-23",
+      "font_class": "dituonline",
+      "unicode": "e78f",
+      "unicode_decimal": 59279
+    },
+    {
+      "icon_id": "22182828",
+      "name": "用户及权限",
+      "font_class": "n-userAuthor",
+      "unicode": "e778",
+      "unicode_decimal": 59256
+    },
+    {
+      "icon_id": "22182833",
+      "name": "上传",
+      "font_class": "n-imgUpload",
+      "unicode": "e78e",
+      "unicode_decimal": 59278
+    },
+    {
+      "icon_id": "22019832",
+      "name": "调整部门(2)",
+      "font_class": "n-adjustOrg",
+      "unicode": "e78c",
+      "unicode_decimal": 59276
+    },
+    {
+      "icon_id": "22019853",
+      "name": "调整直属上级(2)",
+      "font_class": "n-adjustMng",
+      "unicode": "e78d",
+      "unicode_decimal": 59277
+    },
+    {
+      "icon_id": "22013650",
+      "name": "系统设置",
+      "font_class": "n-sys",
+      "unicode": "e78b",
+      "unicode_decimal": 59275
+    },
+    {
+      "icon_id": "22013722",
+      "name": "组织架构",
+      "font_class": "n-org",
+      "unicode": "e779",
+      "unicode_decimal": 59257
+    },
+    {
+      "icon_id": "22013725",
+      "name": "域管理",
+      "font_class": "n-domin",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
+    },
+    {
+      "icon_id": "21940570",
+      "name": "非法",
+      "font_class": "feifa",
+      "unicode": "e718",
+      "unicode_decimal": 59160
+    },
+    {
+      "icon_id": "21940188",
+      "name": "activeMQ死信队列数量",
+      "font_class": "activeMQsixinduilieshuliang",
+      "unicode": "e783",
+      "unicode_decimal": 59267
+    },
+    {
+      "icon_id": "21940189",
+      "name": "activeMQ总出列数",
+      "font_class": "activeMQzongchulieshu",
+      "unicode": "e784",
+      "unicode_decimal": 59268
+    },
+    {
+      "icon_id": "21940190",
+      "name": "Nodejs进程数",
+      "font_class": "Nodejsjinchengshu",
+      "unicode": "e785",
+      "unicode_decimal": 59269
+    },
+    {
+      "icon_id": "21940191",
+      "name": "activeMQ总入列计数",
+      "font_class": "activeMQzongruliejishu",
+      "unicode": "e786",
+      "unicode_decimal": 59270
+    },
+    {
+      "icon_id": "21940193",
+      "name": "Nodejs运行状态",
+      "font_class": "Nodejsyunhangzhuangtai",
+      "unicode": "e787",
+      "unicode_decimal": 59271
+    },
+    {
+      "icon_id": "21940194",
+      "name": "Weblodic—执行线程数",
+      "font_class": "Weblodiczhihangxianchengshu",
+      "unicode": "e788",
+      "unicode_decimal": 59272
+    },
+    {
+      "icon_id": "21940195",
+      "name": "Weblodic服务请求总数",
+      "font_class": "Weblodicfuwuqingqiuzongshu",
+      "unicode": "e789",
+      "unicode_decimal": 59273
+    },
+    {
+      "icon_id": "21940196",
+      "name": "Weblodic请求等待数",
+      "font_class": "Weblodicqingqiudengdaishu",
+      "unicode": "e78a",
+      "unicode_decimal": 59274
+    },
+    {
+      "icon_id": "21939908",
+      "name": "use memory",
+      "font_class": "usememory",
+      "unicode": "e77b",
+      "unicode_decimal": 59259
+    },
+    {
+      "icon_id": "21939909",
+      "name": "used memory %",
+      "font_class": "usedmemory",
+      "unicode": "e781",
+      "unicode_decimal": 59265
+    },
+    {
+      "icon_id": "21939910",
+      "name": "total keys",
+      "font_class": "totalkeys",
+      "unicode": "e782",
+      "unicode_decimal": 59266
+    },
+    {
+      "icon_id": "21750751",
+      "name": "备份系统—netbackup图标",
+      "font_class": "netbackup",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "21750755",
+      "name": "中间件—Apache服务器版本",
+      "font_class": "fuwuqibanben",
+      "unicode": "e77a",
+      "unicode_decimal": 59258
+    },
+    {
+      "icon_id": "21750757",
+      "name": "中间件—Tomcat次数",
+      "font_class": "cishu",
+      "unicode": "e77d",
+      "unicode_decimal": 59261
+    },
+    {
+      "icon_id": "21750759",
+      "name": "中间件—Tomcat耗时",
+      "font_class": "haoshi",
+      "unicode": "e77f",
+      "unicode_decimal": 59263
+    },
+    {
+      "icon_id": "21750760",
+      "name": "中间件—Tomcat线程数",
+      "font_class": "xianchengshu",
+      "unicode": "e780",
+      "unicode_decimal": 59264
+    },
+    {
+      "icon_id": "21466099",
+      "name": "监控视图",
+      "font_class": "monView",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "21172186",
+      "name": "视频监控",
+      "font_class": "monitorView",
+      "unicode": "e775",
+      "unicode_decimal": 59253
+    },
+    {
+      "icon_id": "21172187",
+      "name": "虚拟化",
+      "font_class": "ux-vm",
+      "unicode": "e776",
+      "unicode_decimal": 59254
+    },
+    {
+      "icon_id": "21172188",
+      "name": "业务管理",
+      "font_class": "ux-business",
+      "unicode": "e777",
+      "unicode_decimal": 59255
+    },
+    {
+      "icon_id": "21016156",
+      "name": "3D机房",
+      "font_class": "n-3dsroom",
+      "unicode": "e774",
+      "unicode_decimal": 59252
+    },
+    {
+      "icon_id": "21015671",
+      "name": "系统自定义",
+      "font_class": "n-system",
+      "unicode": "e77c",
+      "unicode_decimal": 59260
+    },
+    {
+      "icon_id": "21015593",
+      "name": "大数据可视化系统",
+      "font_class": "n-visualize",
+      "unicode": "e773",
+      "unicode_decimal": 59251
+    },
+    {
       "icon_id": "20595354",
       "name": "realtimevideo",
       "font_class": "realtimevideo",
@@ -225,14 +449,14 @@
     {
       "icon_id": "19194218",
       "name": "可视化",
-      "font_class": "n-visualize",
+      "font_class": "n-visualize-before",
       "unicode": "e74b",
       "unicode_decimal": 59211
     },
     {
       "icon_id": "19194089",
       "name": "报表",
-      "font_class": "n-reportTh",
+      "font_class": "n-report",
       "unicode": "e74c",
       "unicode_decimal": 59212
     },
@@ -295,7 +519,7 @@
     {
       "icon_id": "19192880",
       "name": "报表",
-      "font_class": "n-report",
+      "font_class": "n-reportTh",
       "unicode": "e735",
       "unicode_decimal": 59189
     },
@@ -620,13 +844,6 @@
       "font_class": "circleDown",
       "unicode": "e71b",
       "unicode_decimal": 59163
-    },
-    {
-      "icon_id": "15383331",
-      "name": "实时监控",
-      "font_class": "monitorView",
-      "unicode": "e718",
-      "unicode_decimal": 59160
     },
     {
       "icon_id": "15383332",
@@ -2008,13 +2225,6 @@
       "unicode_decimal": 58986
     },
     {
-      "icon_id": "8055548",
-      "name": "虚拟化",
-      "font_class": "ux-vm",
-      "unicode": "e66b",
-      "unicode_decimal": 58987
-    },
-    {
       "icon_id": "8055549",
       "name": "系统管理",
       "font_class": "ux-sys",
@@ -2027,13 +2237,6 @@
       "font_class": "n-platformMg",
       "unicode": "e66e",
       "unicode_decimal": 58990
-    },
-    {
-      "icon_id": "8055552",
-      "name": "业务拓扑",
-      "font_class": "ux-business",
-      "unicode": "e66f",
-      "unicode_decimal": 58991
     },
     {
       "icon_id": "8055553",
