@@ -3,6 +3,8 @@ package com.uxsino.leaderview.controller;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +26,11 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.api.ImageService;
 import com.uxsino.leaderview.utils.ImageUtils;
 import com.uxsino.leaderview.utils.ZipUtils;
+import io.swagger.models.auth.In;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -282,16 +286,97 @@ public class HomePageController {
 	@Transactional
 	public JsonModel copyHomePage(HttpSession session, @ApiParam("待复制页面ID") @RequestParam Long pageId,
 								  @RequestParam(required = false) String[] adminId) {
-		HomePage sourcePage = homePageService.getById(pageId);
-		if (ObjectUtils.isEmpty(sourcePage)) {
+		//由于已经保证了每个用户页面不能超过20个，因此全部查到内存中影响不大
+		Long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
+		List<HomePage> homePages = homePageService.findByUserId(currentUserId);
+		HomePage sourcePage = null;
+		for(HomePage temp : homePages) {
+			if(pageId.equals(temp.getId())) {
+				sourcePage = temp;
+				break;
+			}
+		}
+		if (sourcePage==null || ObjectUtils.isEmpty(sourcePage)) {
 			return new JsonModel(false, "待复制页面不存在!");
 		}
-		int maxIndex = homePageUserConfService.getMaxMinePage(SessionUtils.getCurrentUserIdFromSession(session), false);
+		int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
 		if (maxIndex >= MAX_PAGE_INDEX) {
 			return new JsonModel(false, "当前页面已达到最大数[20]");
 		}
 		HomePage targetPage = new HomePage();
-		targetPage.setName(sourcePage.getName() + "_副本");
+		String targetName = sourcePage.getName() + "_副本";
+		boolean isNameExisted = false;
+		for(HomePage temp: homePages) {
+			if(targetName.equals(temp.getName())) {
+				isNameExisted = true;
+				break;
+			}
+		}
+		if(isNameExisted) {
+			int maxReplicaIndex = 1;
+			Pattern pattern = Pattern.compile("_副本\\(\\d+\\)");
+			String[] targetParts = null;
+			String[] tempParts = null;
+			if(pattern.matcher(targetName).find()){
+				int leftBracketIndex = targetName.lastIndexOf('(');
+				int rightBracketIndex = targetName.lastIndexOf(')');
+				targetParts = new String[]{
+						targetName.substring(0, leftBracketIndex+1),
+						targetName.substring(leftBracketIndex+1, rightBracketIndex),
+						targetName.substring(rightBracketIndex)
+				};
+				int targetIndex = Integer.parseInt(targetParts[1]);
+				if(targetIndex > maxReplicaIndex)
+					maxReplicaIndex = targetIndex;
+				for(HomePage temp: homePages) {
+					String tempName = temp.getName();
+					leftBracketIndex = tempName.lastIndexOf('(');
+					if(leftBracketIndex == -1)
+						continue;
+					rightBracketIndex = tempName.lastIndexOf(')');
+					if(rightBracketIndex == -1)
+						continue;
+					tempParts = new String[]{
+							tempName.substring(0, leftBracketIndex+1),
+							tempName.substring(leftBracketIndex+1, rightBracketIndex),
+							tempName.substring(rightBracketIndex)
+					};
+					if(targetParts[0].equals(tempParts[0])
+							&& targetParts[2].equals(tempParts[2]) && Pattern.matches("\\d+",tempParts[1])){
+						int tempIndex = Integer.parseInt(tempParts[1]);
+						if(tempIndex > maxReplicaIndex)
+							maxReplicaIndex = tempIndex;
+					}
+				}
+				int currentIndex = maxReplicaIndex + 1;
+				targetPage.setName(targetParts[0] + currentIndex + targetParts[2]);
+			}else {
+				for(HomePage temp: homePages) {
+					String tempName = temp.getName();
+					int leftBracketIndex = tempName.lastIndexOf('(');
+					if(leftBracketIndex == -1)
+						continue;
+					int rightBracketIndex = tempName.lastIndexOf(')');
+					if(rightBracketIndex == -1)
+						continue;
+					tempParts = new String[]{
+							tempName.substring(0, leftBracketIndex+1),
+							tempName.substring(leftBracketIndex+1, rightBracketIndex),
+							tempName.substring(rightBracketIndex)
+					};
+					if(targetName.equals(tempParts[0].substring(0, tempParts[0].length()-1))
+							&& Pattern.matches("\\d+",tempParts[1])){
+						int tempIndex = Integer.parseInt(tempParts[1]);
+						if(tempIndex > maxReplicaIndex)
+							maxReplicaIndex = tempIndex;
+					}
+				}
+				int currentIndex = maxReplicaIndex + 1;
+				targetPage.setName(targetName + "(" + currentIndex + ")");
+			}
+		}else {
+			targetPage.setName(targetName);
+		}
 		targetPage.setPageIndex(maxIndex + 1);
 		targetPage.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
 		targetPage.setRoleIds(SessionUtils.getSessionUserRoleIds(session));
@@ -338,7 +423,7 @@ public class HomePageController {
 			result = JSON.parseObject(JSON.toJSONString(homeCarousel));
 		}
 		// 添加页面的信息
-		result.put("pages", homePageService.findVisible(userId));
+		result.put("pages", homePageService.findVisible(userId, session));
 		// 判断是不是一个页面都没有的全新用户
 		Boolean isNewUser = false;
 		Integer pageCount = homePageUserConfService.getMaxPageByUserId(userId);
@@ -1034,15 +1119,19 @@ public class HomePageController {
 		 * 解压文件
 		 */
 		String fileName = file.getOriginalFilename();
+		//upload_path = simo_file
 		File filePath = new File( upload_path + "/zipTemp");
 		File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
 		fileDir.mkdirs();
 		File saveFile = new File(fileDir, fileName);//将压缩包解析到指定位置
-		//导入的文件名统一添加后缀“_导入”
+		//导入的文件名统一添加后缀“_导入” 问题：为什么为空则name = "导入"，而不是添加"_导入"
+		//因为这个name是在processzip里面添加到name后面的，那里会拼接"_"
 		name = Strings.isNullOrEmpty(name)? "导入" : name;
 		try {
+			//将压缩包文件传输到saveFile
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;
+			//解压文件
 			result = impExpService.processZip(newFilePath, name, session);
 		} catch (Exception e) {
 			e.printStackTrace();

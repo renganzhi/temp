@@ -7,7 +7,12 @@
       class="circle_wrap"
       data-top="0"
       :style="{ top: `${top}px` }"
-    ></div>
+    >
+    <div class="AllBox" ref="AllBox" style="position:relative">
+      <div id="box1" style="position:absolute"></div>
+      <div id="box2" style="position: absolute;"></div>
+    </div>
+    </div>
     <div class="v-charts-data-empty"
         v-show="!showBubbleChart"
         style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
@@ -20,7 +25,6 @@
 </template>
 
 <script>
-import TWEEN from '@tweenjs/tween.js'
 import createBubble from './createBubble'
 
 export default {
@@ -30,6 +34,9 @@ export default {
     return {
       top: 0,
       targetHeight: 300,
+      topX: 0,
+      oldchartData: '',
+      Interval: null,
       canvasBox: {}
     }
   },
@@ -68,8 +75,11 @@ export default {
   },
   watch: {
     'item.chartData': function (newV, oldV) {
-      cancelAnimationFrame(this.animate)
-      this.initCanvas()
+      if (JSON.stringify(newV) !== this.oldchartData) {
+        console.log(newV)
+        this.oldchartData = JSON.stringify(newV)
+        this.initCanvas()
+      }
     }
   },
   mounted () {
@@ -79,38 +89,41 @@ export default {
     initCanvas () {
       createBubble(this.item.width, this.item.height, this.chartData).then(
         canvas => {
+          var _box1 = document.getElementById('box1')
+          var _box2 = document.getElementById('box2')
           const imgUrl = canvas.toDataURL('image/png')
           let Img = document.createElement('img')
           Img.style.width = '100%'
           Img.src = imgUrl
-          this.$refs.circleWrap.innerHTML = null
-          this.$refs.circleWrap.appendChild(Img)
-          this.$refs.circleWrap.appendChild(Img.cloneNode(true))
+          _box1.innerHTML = null
+          _box2.innerHTML = null
+          _box1.appendChild(Img)
+          _box2.appendChild(Img.cloneNode(true))
           this.targetHeight = canvas.height
-          // console.log(this.targetHeight)
-          this.scroll()
-          this.animate()
+          if (this.Interval) {
+            clearInterval(this.Interval)
+            this.Interval = null
+          }
+          this.Interval = setInterval(this.socall, 20)
         }
       )
     },
-    animate () {
-      requestAnimationFrame(this.animate)
-      TWEEN.update()
-    },
-    scroll () {
-      let initPos = { top: 0 }
-      const targetTop = this.targetHeight
-      this.tween = new TWEEN.Tween(initPos)
-        .to({ top: targetTop }, this.targetHeight * this.speed)
-        .easing(TWEEN.Easing.Linear.None)
-        .onUpdate(obj => {
-          // console.log(obj, this.targetHeight)
-          this.top = `-${obj.top}`
-          if (obj.top >= targetTop) {
-            this.scroll()
-          }
-        })
-        .start()
+    socall () {
+      var _box1 = document.getElementById('box1')
+      var _box2 = document.getElementById('box2')
+      var height = document.querySelector('#box1 img').clientHeight
+      _box1.style.top = this.topX + 'px'
+      _box2.style.top = (this.topX + height) + 'px'
+      this.topX--
+      if ((this.topX + height) <= 0) {
+        this.topX = 0
+      }
+    }
+  },
+  beforeDestroy () {
+    if (this.Interval) {
+      clearInterval(this.Interval)
+      this.Interval = null
     }
   }
 }

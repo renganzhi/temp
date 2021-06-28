@@ -2,7 +2,6 @@
   <ve-map
           :width="comWidth"
           :height="comHeight"
-     
           :settings="settings"
           :extend="extend"
           :id="'map_' + keyId"
@@ -54,7 +53,6 @@ export default {
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
-      // initOption: { renderer: 'svg' },
       mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
       // settings: {
       //   // yAxisType: [0],
@@ -133,30 +131,30 @@ export default {
           },
           itemStyle: {
             normal: {
-              areaColor: this.item.areaColor
-              // color: {
-              //   type: 'linear',
-              //   x: colordirectionArry[this.item.colordirection][0],
-              //   y: colordirectionArry[this.item.colordirection][1],
-              //   x2: colordirectionArry[this.item.colordirection][2],
-              //   y2: colordirectionArry[this.item.colordirection][3],
-              //   colorStops: [{
-              //     offset: 0,
-              //     color: this.item.normalcolor[0] // 0% 处的颜色
-              //   }, {
-              //     offset: 1,
-              //     color: this.item.normalcolor[1] // 50% 处的颜色
-              //   }],
-              //   global: true // 缺省为 false
-              // },
-              // borderColor: this.item.borderColor,
-              // borderWidth: 0.5,
-              // shadowColor: 'rgba(0, 0, 0, 0.5)'
-              // shadowBlur: 1
+              // areaColor: this.item.areaColor,
+              color: {
+                type: 'linear',
+                x: colordirectionArry[this.item.colordirection][0],
+                y: colordirectionArry[this.item.colordirection][1],
+                x2: colordirectionArry[this.item.colordirection][2],
+                y2: colordirectionArry[this.item.colordirection][3],
+                colorStops: [{
+                  offset: 0,
+                  color: this.item.normalcolor[0] // 0% 处的颜色
+                }, {
+                  offset: 1,
+                  color: this.item.normalcolor[1] // 50% 处的颜色
+                }],
+                global: true // 缺省为 false
+              },
+              borderColor: this.item.borderColor,
+              borderWidth: 0.5,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 1
+            },
+            emphasis: {
+              areaColor: '#2B91B7'
             }
-            // emphasis: {
-            //   areaColor: '#2B91B7'
-            // }
           }
         },
         series: {

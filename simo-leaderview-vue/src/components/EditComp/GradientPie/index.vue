@@ -127,7 +127,7 @@ export default {
           textStyle: {
             color: this.item.NotesColor,
             fontSize: this.item.NotesSize,
-            lineHeight: 30
+            lineHeight: parseInt(this.item.NotesSpacing)
           },
           left: this.item.NotesToLeft,
           top: this.item.NotesToTop
@@ -238,6 +238,16 @@ export default {
   },
   mounted () {
     this.drawPre()
+  },
+  beforeDestroy () {
+    if (this.mychart2) {
+      this.mychart2.dispose()
+    }
+    this.mychart2 = null
+    if (this.mychart1) {
+      this.mychart1.dispose()
+    }
+    this.mychart1 = null
   }
 }
 </script>

@@ -45,6 +45,7 @@ let config = {
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
+  BaiDuMap: require('@/components/EditComp/BaiDuMap/config.js'),
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
@@ -4481,6 +4482,7 @@ export default {
           }
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            console.log(data)
             _this.cityArr = data
             // if (!_this.selectedItem.cityCode) {
             _this.selectedItem.cityCode = data[0].value

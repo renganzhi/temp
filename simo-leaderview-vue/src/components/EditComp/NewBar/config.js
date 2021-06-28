@@ -31,8 +31,8 @@ export default {
       '#fa8d76',
       '#af8af3',
       '#f5739c',
-      'ffdf91',
-      '5c84e7'],
+      '#ffdf91',
+      '#5c84e7'],
     'DScatterColor': [
       ['#6fcaf7', '#0c79c5'],
       ['#8feee5', '#1bbcae'],
@@ -360,7 +360,7 @@ export default {
         'name': '坐标轴样式',
         'tag': 'Hint',
         'childoption': [{
-          'name': 'x轴标注倾斜',
+          'name': 'y轴标注倾斜',
           'key': 'rotate',
           'tag': 'select',
           'options': [
@@ -403,7 +403,7 @@ export default {
           ]
         },
         {
-          'name': 'x轴标注剪裁',
+          'name': 'y轴标注剪裁',
           'key': 'formatterType',
           'tag': 'select',
           'options': [

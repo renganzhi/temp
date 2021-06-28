@@ -42,14 +42,19 @@ public class ImageService {
 
         if (isCustom) {
             UploadedFileCompressed uploadedFileCompressed = uploadedFileService.findByOriginFileId(id);
-            UploadedFile f = uploadedFileCompressed.getUploadedFile();
+            UploadedFile f;
+            //防止用户在自定义图片压缩未完成时访问大屏
+            if(uploadedFileCompressed == null)
+                f = uploadedFileService.findOne(id);
+            else
+                f = uploadedFileCompressed.getUploadedFile();
             if(f == null){
                 logger.error("文件 -> {} not exists ！", id);
                 return;
             }
 
             ext = f.getExtension();
-            if(!isCompressed || uploadedFileCompressed.getCompressedFileStream()==null)
+            if(!isCompressed || uploadedFileCompressed==null || uploadedFileCompressed.getCompressedFileStream()==null)
                 data = f.getFileStream();
             else
                 data = uploadedFileCompressed.getCompressedFileStream();

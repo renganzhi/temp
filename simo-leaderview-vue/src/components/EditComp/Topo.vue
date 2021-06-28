@@ -92,6 +92,7 @@ export default {
           pLocationCode: `${_this.item.chartData.mapCode};${_this.item.chartData.mpId}`,
           mapLocationId: ''
         }
+        console.log(9999)
         $.ajax({
           url: gbs.host + '/monitor/mapTopo/getMapTopoParams', // 第三方的ur已经拼接好host
           data: dataArry,
