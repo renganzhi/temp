@@ -112,7 +112,7 @@ public class HomeTemplateImgService {
                     } else if (type == HomeTemplateImgService.COMPRESSED_IMAGE) {
                         HomeTemplateImgCompressed compressedImg = new HomeTemplateImgCompressed();
                         compressedImg.setId(id);
-                        compressedImg.setCompressedFileStream(ImageUtils.compressImage(out.toByteArray(), extension));
+                        compressedImg.setCompressedFileStream(out.toByteArray());
                         compressedImg.setHomeTemplateImg(imgDao.findOne(id));
                         imgCompressedDao.save(compressedImg);
                     }
