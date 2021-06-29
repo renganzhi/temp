@@ -101,23 +101,16 @@ public class HomeTemplateImgService {
                     while ((size = in.read(cache)) != -1) {
                         out.write(cache, 0, size);
                     }
-                    // 如果以后图片还会进行其他特殊处理，可以继续追加其他图片类型的读取
-                    if (type == HomeTemplateImgService.ORIGINAL_IMAGE) {
-                        HomeTemplateImg img = new HomeTemplateImg();
-                        img.setId(id);
-                        img.setExtension(extension);
-                        img.setFileStream(out.toByteArray());
-                        img.setName(name + "." + extension);
-                        imgDao.save(img);
-                    } else if (type == HomeTemplateImgService.COMPRESSED_IMAGE) {
-                        HomeTemplateImgCompressed compressedImg = new HomeTemplateImgCompressed();
-                        compressedImg.setId(id);
-                        //compressedImg.setCompressedFileStream(ImageUtils.compressImage(out.toByteArray(), extension));
-                        compressedImg.setCompressedFileStream(out.toByteArray());
-                        compressedImg.setHomeTemplateImg(imgDao.findOne(id));
-                        imgCompressedDao.save(compressedImg);
-                    }
-
+                    HomeTemplateImg img = new HomeTemplateImg();
+                    HomeTemplateImgCompressed compressedImg = new HomeTemplateImgCompressed();
+                    img.setId(id);
+                    img.setExtension(extension);
+                    img.setFileStream(out.toByteArray());
+                    img.setName(name + "." + extension);
+                    compressedImg.setId(id);
+                    compressedImg.setCompressedFileStream(ImageUtils.compressImage(out.toByteArray(), extension));
+                    compressedImg.setHomeTemplateImg(img);
+                    this.save(img, compressedImg);
                 } catch (IOException e) {
                     logger.error("", e);
                 } finally {
@@ -130,6 +123,17 @@ public class HomeTemplateImgService {
             });
         } catch (IOException e) {
             logger.error("初始化主页大屏模板的图片失败：", e);
+        }
+
+        //对自定义图片是否已经压缩进行判断，如果simo_uploaded_file_compressed表中没有数据，则证明当前用户的大屏是从
+        //老版本升级上来，有原图没有压缩图，需要进行一遍遍历压缩。
+        if(fileCompressedDao.count() == 0){
+            logger.info("LEADERVIEW -> 检测到自定义图片没有压缩版本，如果有原图将会进行压缩操作");
+            boolean isSuccess = uploadedFileService.generateCompressedCustomImage();
+            if(isSuccess)
+                logger.info("LEADERVIEW -> 回复自定义图片压缩版本成功！");
+            else
+                logger.warn("LEADERVIEW -> 压缩自定义图片失败，向前查看异常详细");
         }
     }
 

@@ -62,10 +62,18 @@ public class UploadedFileService {
         int pageSize = 50;
         int totalPage = size%pageSize==0? (int)size/pageSize: (int)size/pageSize+1;
         long justNow = System.currentTimeMillis();
-        log.info("LEADERVIEW -> 开始分页读取用户图片并压缩，共" + totalPage + "页");
         try {
             for(int i=0; i<totalPage; i++){
-                this.compressInPage(i, pageSize);
+                Page<UploadedFile> uploadedFiles = uploadedFileDao.findAll(PageRequest.of(i, pageSize));
+                for(UploadedFile temp: uploadedFiles){
+                    byte[] compressedData = ImageUtils.compressImage(temp.getFileStream(), temp.getExtension());
+                    UploadedFileCompressed fileCompressed = new UploadedFileCompressed();
+                    fileCompressed.setUploadedFile(temp);
+                    if(compressedData != null)
+                        fileCompressed.setCompressedFileStream(compressedData);
+                    uploadedFileCompressedDao.save(fileCompressed);
+                }
+                log.info("LEADERVIEW -> 分页完成第" + i + "页， 共" + totalPage + "页");
             }
         } catch (Exception e) {
             log.error("LEADERVIEW -> 压缩自定义图片抛出异常，stacktrace如下：", e);
