@@ -1119,15 +1119,19 @@ public class HomePageController {
 		 * 解压文件
 		 */
 		String fileName = file.getOriginalFilename();
+		//upload_path = simo_file
 		File filePath = new File( upload_path + "/zipTemp");
 		File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
 		fileDir.mkdirs();
 		File saveFile = new File(fileDir, fileName);//将压缩包解析到指定位置
-		//导入的文件名统一添加后缀“_导入”
+		//导入的文件名统一添加后缀“_导入” 问题：为什么为空则name = "导入"，而不是添加"_导入"
+		//因为这个name是在processzip里面添加到name后面的，那里会拼接"_"
 		name = Strings.isNullOrEmpty(name)? "导入" : name;
 		try {
+			//将压缩包文件传输到saveFile
 			file.transferTo(saveFile);
 			String newFilePath = fileDir + File.separator + fileName;
+			//解压文件
 			result = impExpService.processZip(newFilePath, name, session);
 		} catch (Exception e) {
 			e.printStackTrace();
