@@ -722,7 +722,7 @@ export default {
         this.editName = newV.slice(0, 15)
       } else {
         var str = new RegExp(
-          "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]"
+          "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？ ]"
         )
         var flag = !str.test(newV) && !/\s/.test(newV)
         if (!flag) {
