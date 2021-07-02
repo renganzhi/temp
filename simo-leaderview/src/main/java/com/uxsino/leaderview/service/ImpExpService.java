@@ -289,12 +289,19 @@ public class ImpExpService {
         return result;
     }
 
+    /**
+     * 处理导出页面的viewconf中的linkId
+     * @param result
+     * @param ids
+     * @return
+     */
     private JSONObject linkProcess(JSONObject result, Set<Long> ids) {
         //str是TemplateTransform中的参数origin，调用时传入的是需要处理的内容，如page.getViewConf()
         String str = result.getString("str");
         if (Strings.isEmpty(str)){
             return result;
         }
+        //用正则表达式匹配出viewconfig中linkId的部分
         Matcher m = linkPattern.matcher(str);
         Integer i = 0;
         Map<String ,String > map = Maps.newHashMap();
@@ -302,14 +309,18 @@ public class ImpExpService {
         JSONObject linkConfig = new JSONObject();
         Set<Long> processedId = Sets.newHashSet();
         while (m.find()){
+            //去掉匹配出的linkId中非数字的部分
             Matcher numMatcher = numPattern.matcher(m.group());
+            //去掉所有空格
             String trim = numMatcher.replaceAll("").trim();
             log.info(trim);
             if (Strings.isBlank(trim)) continue;
             Long id = Long.valueOf(trim);
+            //如果已经处理过，跳过此次循环
             if (processedId.contains(id)){
                 continue;
             }
+            //如果导出pages的ids中包含取出的id
             if (ids.contains(id)){
                 s = "linkId\":${" + i + "}";
                 linkConfig.put("${" + i + "}", id);
@@ -442,7 +453,7 @@ public class ImpExpService {
             //存放uploadfile表新生成的自增id，下面替换原id的时候要用
             List<Long> ids = Lists.newArrayList();
             while (zipEnum.hasMoreElements()) {
-                //返回的是zip枚举的下一个元素，那么第一个元素呢？
+
                 ze = (ZipEntry) zipEnum.nextElement();
                 //如果ze是个目录文件，则不处理
                 if (ze.isDirectory()) {
@@ -586,7 +597,7 @@ public class ImpExpService {
             //跳转处理
             for (j = 0; j<config.size() && pageCount<MAX_PAGE_INDEX;j++, pageCount++ ) {
                 //这里的config是上面导出配置解析出的config,有几个config就有几个页面
-                //查看导出接口，确认这里的config是什么配置
+                //将config.json文件的内容转换为json对象赋给obj
                 JSONObject obj = config.getJSONObject(j);
                 HomePage page = new HomePage();
                 //给pageName后面添加"_导入"
@@ -653,10 +664,7 @@ public class ImpExpService {
                 //在这里就添加了页面并且得到了它的自增id
                 //可能这里需要打个断点
                 Long pageId = homePageService.addAndGetId(page);
-
-                //为了防止此次循环无法执行完成，导致for循环第三个表达式无法正常执行，基本操作完成后在这里完成第三个表达式。
-                //log.info("导入页面的自增ID是:"+pageId);
-
+                //key为config.json中导出页面的原来的id，value为导入后新生成的page的自增id
                 idMap.put(obj.getLong("id"), pageId);
                 HomePageUserConf homePageUserConf = new HomePageUserConf();
                 homePageUserConf.setPageId(pageId);
@@ -664,7 +672,8 @@ public class ImpExpService {
                 homePageUserConf.setVisible(true);
                 homePageUserConfService.add(homePageUserConf, true, null);
             }
-            //linkImpProcess(idMap, config);
+            //page中的viewconf属性中有一个linkconfig，它一般为null,所以下面的处理方法，但是下面这个方法又把viewconf中的url中的id改回去了，所以把它注释掉
+            linkImpProcess(idMap, config);
         } catch (Exception e) {
             log.error("解析错误，请检查导入文件是否为正确的模板zip");
             e.printStackTrace();
@@ -681,24 +690,20 @@ public class ImpExpService {
     private void linkImpProcess(Map<Long,Long> idMap, JSONArray config) {
         //这里原来是config.size()，因为限制20个的缘故，idMap.size()<=config.size(),否则会引起空指针异常
         for (int i = 0; i < idMap.size(); i++) {
-            //obj就是传入的config信息
+            //obj就是传入的config信息,包含linkConfig、viewImage、viewConf
             JSONObject obj = config.getJSONObject(i);
 
             HomePage page = homePageService.getById(idMap.get(obj.getLong("id")));
-            //这个linkConfig是哪写入的？ 应该是导出的时候写入的
-            //从数据库中得知它为空，不用管它。
             JSONObject linkConfig = obj.getJSONObject("linkConfig");
-            //输出一下它是否为空，为空则后面while的处理都没有生效。
-            log.info("lonkConfig的值为:"+linkConfig);
 
             Integer num = 0;
             //viewconf需要处理下
-            // 把里面的getimg/true/后面的num换成插入upload_file表生成的自增id
-            String viewConf = obj.getString("viewConf");
-            //这里的num不是导出接口中url里getimg/true/后面的ID那个num,是上面的Integer num.
+            //String viewConf = obj.getString("viewConf");
+            //此处只是处理linkid，所以应该直接从page里拿对应好的处理好的viewconf,否则前面对viewconf做的处理都会丢失。
+            String viewConf = page.getViewConf();
             while (linkConfig!=null && linkConfig.getLong("${" + num + "}") != null){
                 String replace = "${" + num + "}";
-                //从replace中取出num，赋值给originId
+                //从linkConfig中取出linkid
                 Long originId = linkConfig.getLong(replace);
                 //从idMap中取出新id
                 //这个新id应该从upload_file表中取生成的自增id.在这里能用现有的信息查询到对应的id吗？还是说需要上面插入的时候就把id一路传下来。
@@ -708,6 +713,7 @@ public class ImpExpService {
                 num ++;
             }
             //将viewConf设置到page中
+            log.info(viewConf);
             page.setViewConf(viewConf);
             homePageService.save(page);
         }
