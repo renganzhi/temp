@@ -1,22 +1,22 @@
 server:
-  port: 11100 
-  tomcat: 
+  port: 11100
+  tomcat:
     uri-encoding: UTF-8
 security:
   oauth2:
     resource:
       userInfoUri: BUGFIX
 
-banner: 
+banner:
   charset: UTF-8
 
 spring:
 #log mode ,in development enviroument set to 'dev' and set to 'prod' in production environment
   profiles:
     active: dev
-  application: 
-    name: leaderview 
-  redis: 
+  application:
+    name: leaderview
+  redis:
     host: 127.0.0.1
     port: 6379
     password: uxsino@2016
@@ -28,7 +28,7 @@ spring:
   http:
     encoding:
       charset: UTF-8
-      enabled: true 
+      enabled: true
       force: true
   messages:
     encoding: UTF-8
@@ -51,22 +51,22 @@ spring:
     poolPreparedStatements: true
     maxPoolPreparedStatementPerConnectionSize: 20
     filters: stat
-    connectionProperties: 
-      druid: 
-        stat: 
+    connectionProperties:
+      druid:
+        stat:
           mergeSql: true;
           slowSqlMillis: 5000
     useGlobalDataSourceStat: true
-  jpa: 
+  jpa:
     database: DEFAULT
     show-sql: false
-    generate-ddl: true   
-    hibernate: 
-      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy  
-    database-platform: com.uxsino.uxdb.UXDBDialect
-    properties: 
-      hibernate: 
-        hbm2ddl: 
+    generate-ddl: true
+    hibernate:
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    database-platform: com.uxsino.commons.db.dialect.SIMODialect
+    properties:
+      hibernate:
+        hbm2ddl:
           auto: update
 
 eureka:
@@ -101,7 +101,7 @@ simo:
 #druid state whitelist  eg: 127.0.0.1,192.168.1.1
     allow: 127.0.0.1
   mq:
-    broker: 
+    broker:
       url: failover:tcp://localhost:61616
   leaderview:
     templateInit: true
@@ -109,8 +109,8 @@ simo:
 heartbeat:
     send_interval: 20000
 
-datasource: 
-  source: 
+datasource:
+  source:
 
 web:
   upload:
