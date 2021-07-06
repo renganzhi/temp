@@ -171,6 +171,7 @@ public class ImpExpService {
             str = str.replace(s,"");
         }
 
+
         //视频移植
         set = Sets.newHashSet();
         Matcher videoMatcher = videoNamePattern.matcher(str);
@@ -212,12 +213,13 @@ public class ImpExpService {
 //        }
 
 
+
         // 自定义图片id处理
         // 问题：系统模板中的图片需要处理吗
         List<String> imgList = new ArrayList<>();
         List<Long> ids = Lists.newArrayList();
         Map<Long,Long> map = Maps.newHashMap();
-        //匹配viewconf中的url
+        //匹配viewconf、composeobj中的url
         Matcher m = imgPattern.matcher(str);
         while (m.find()){
             if (imgList.contains(m.group())){
@@ -227,21 +229,26 @@ public class ImpExpService {
             imgList.add(m.group());
             Matcher m2 = numPattern.matcher(m.group());
             //将除数字外的所有部分删除（用空字符串替换），并去掉空格，转化为long，赋给ids
-            //将uploadfile的id添加进ids集合
+            //将要导出的uploadfile中的图片的id添加进ids集合
             ids.add(Long.valueOf(m2.replaceAll("")  .trim()));
         }
+
+        /*因为因为在导入的时候，需要原url中的id作为name来匹配，所以导出时不对url做处理
         for (String string : imgList) {
             //这里需要将isCustom的值false改为true
             //这里num后面的"\"是什么意思：\" 是转义一个"
 
             //str = str.replace(string, "/leaderview/home/getImg/false/" + ++num +"\"");
+            //在导出时不修改url，保留里面的原uploadfile表的id,后面导入时好匹配。
             str = str.replace(string, "/leaderview/home/getImg/true/" + ++num +"\"");
             //这一步是做什么的？
             //将num存入map。key为uploadfile的id（原url的数字部分）,值为num
+
+            //因为不移植到本地模板库，所以这里map.put的id没用了
             Matcher m2 = numPattern.matcher(string);
             map.put(Long.valueOf(m2.replaceAll("").trim()), num);
-        }
-        //如果imgList为空，则说明上面的imgPattern没有匹配上,说明str不是viewConf，则进行下面viewImage的匹配
+        }*/
+        //如果imgList为空，则说明上面的imgPattern没有匹配上,说明str不是viewConf和composeobj，则进行下面viewImage的匹配
         if (ObjectUtils.isEmpty(imgList)){
             m = img2Pattern.matcher(str);
             while (m.find()){
@@ -250,39 +257,46 @@ public class ImpExpService {
                 }
                 imgList.add(m.group());
                 Matcher m2 = numPattern.matcher(m.group());
-                //将缩略图的id存入ids集合
                 ids.add(Long.valueOf(m2.replaceAll("").trim()));
             }
-            for (String string : imgList) {
+            //因为因为在导入的时候，需要原url中的id作为name来匹配，所以导出时不对url做处理
+            /*for (String string : imgList) {
                 //这里需要将isCustom的值false改为true
                 //str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
                 str = str.replace(string, "/leaderview/home/getImg/true/" + ++num);
-                Matcher m2 = numPattern.matcher(string);
-                map.put(Long.valueOf(m2.replaceAll("").trim()), num);
-            }
+                //Matcher m2 = numPattern.matcher(string);
+                //map.put(Long.valueOf(m2.replaceAll("").trim()), num);
+            }*/
         }
 
 
-        //图片移植：将图片从uploadfile表中存入要导出的文件中，并且插入homeTemplateImg表中
+        //图片移植：将图片从uploadfile表中写入要导出的文件中，//并且插入homeTemplateImg表中(不移植)
         List<UploadedFile> uploadedFiles = uploadedFileService.findByIds(ids);
-        List<HomeTemplateImg> imgs = Lists.newArrayList();
+        //List<HomeTemplateImg> imgs = Lists.newArrayList();
         for (UploadedFile uploadedFile: uploadedFiles) {
             //将图片id设置为templateCustom_+num.png
             //可以将templateCustom_换成import_/,以表示是导入的图片,id也可以不用num，就用upload原来的id
             //也可以将name设置成uploadfile表中它原本的id
             //String name = "templateCustom_" + map.get(uploadedFile.getId()) + "." + uploadedFile.getExtension();
-            String name = "import_" + uploadedFile.getId() + "." + uploadedFile.getExtension();
-            HomeTemplateImg img = new HomeTemplateImg();
+            //如果导出时，不改图片name，那么导入时，图片name用原来的，是否能够匹配上
+//            String name = "import_" + uploadedFile.getId() + "." + uploadedFile.getExtension();
+            String name = uploadedFile.getId() + "." + uploadedFile.getExtension();
+
+            //这里不将图片移植到本地模板库中
+            /*HomeTemplateImg img = new HomeTemplateImg();
             img.setExtension(uploadedFile.getExtension());
             img.setId(Long.valueOf(map.get(uploadedFile.getId()).toString()));
             img.setName(name);
             img.setFileStream(uploadedFile.getFileStream());
+            imgs.add(img);*/
+
+            //将图片写入到zip文件里/templateZipzipNum/img/中
             String imgPath = zipPath + "/templateZip" + zipNum + "/img/";
             saveToFile(imgPath + name, uploadedFile.getFileStream());
-            imgs.add(img);
+
         }
         //为什么要将图片插入到模板图片表？
-        homeTemplateImgService.saveAll(imgs);
+        //homeTemplateImgService.saveAll(imgs);
         result.put("list", imgList);
         result.put("num", num);
         result.put("str", str);
@@ -481,27 +495,9 @@ public class ImpExpService {
                             //这两个表字段的唯一区别是upload_file表有user_id字段，因为它是上传表，需要标注属于哪个用户的
                             //这里导入的时候也应该标注属于哪个user
 
-                            //原代码 修改2021年6月25日 10:11:36
-                            /*HomeTemplateImg img = new HomeTemplateImg();
-                            img.setExtension(name.substring(name.indexOf(".") + 1));
-                            img.setId(Long.valueOf(name.substring(name.indexOf("_") + 1,name.indexOf("."))));
-                            img.setFileStream(b);
-                            img.setName(name.substring(name.indexOf("img/") + 4 ));
-                            HomeTemplateImgCompressed imgCompressed = new HomeTemplateImgCompressed();
-                            imgCompressed.setId(img.getId());
-                            imgCompressed.setCompressedFileStream(ImageUtils.compressImage(b, img.getExtension()));
-                            imgCompressed.setHomeTemplateImg(img);
-                            //调用的这个方法只有这里用到了
-                            //存到upload_file表则调用uploadedFileService.save(fileInfo, uploadedFileCompressed);
-                            //这里需要获取插入uploadfile表中的自增id
-                            //由于可能有多个图片，所以需要创建一个int数组，把它们都存进去
-                            homeTemplateImgService.save(img, imgCompressed);*/
-
                             //从存到模板图表改为存到上传文件表，这样初始化的时候就不会被清除了
                             UploadedFile fileInfo = new UploadedFile();
                             UploadedFileCompressed uploadedFileCompressed = new UploadedFileCompressed();
-                            //文件名能不能取到view_conf中的imgsrc的原图片名
-                            //templateZip3/img/templateCustom_1621323644623.png
                             fileInfo.setName(name.substring(name.indexOf("img/") + 4 ));
                             String extension = name.substring(name.indexOf(".") + 1);
                             fileInfo.setExtension(extension);
@@ -514,6 +510,7 @@ public class ImpExpService {
                             //取出id放入数组
                             //如果id为空，则这里没取到id
                             ids.add(fileInfo.getId());
+
 
                         }catch (Exception e){
                             log.error("图片解析错误");
@@ -612,9 +609,12 @@ public class ImpExpService {
                 //处理page中的viewconf和viewimage
                 List<String> imgList = new ArrayList<>();
                 List<String> imgList2 = new ArrayList<>();
+                List<String> imgList3 = new ArrayList<>();
                 String viewConf = obj.getString("viewConf");
                 String viewImage = obj.getString("viewImage");
+                String composeObj = obj.getString("composeObj");
                 long num;
+                //String oldId;
                 int i = 0;
                 //处理viewConf
                 Matcher m = imgPattern.matcher(viewConf);
@@ -625,8 +625,15 @@ public class ImpExpService {
                     imgList.add(m.group());
                 }
                 for (String string : imgList) {
-                    num = ids.get(i++);
+                    //从string中提取出原来的ID，然后用id作为name，获取插入图片后的最新id
+                    //num = ids.get(i++);
+                    Matcher m1 = numPattern.matcher(string);
+                    //拼接图片的name
+                    String oldId = m1.replaceAll("").trim()+".png";
+                    List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
+                    num = fileList.get(fileList.size()-1).getId();
                     viewConf = viewConf.replace(string, "/leaderview/home/getImg/true/" + num +"\"");
+                    num = 0;
                 }
 
                 //处理viewImage
@@ -638,15 +645,38 @@ public class ImpExpService {
                     imgList2.add(m2.group());
                 }
                 for (String string : imgList2) {
-                    num = ids.get(i++);
+                    //num = ids.get(i++);
+                    Matcher m22 = numPattern.matcher(string);
+                    String oldId = m22.replaceAll("").trim()+".png";
+                    List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
+                    num = fileList.get(fileList.size()-1).getId();
                     viewImage = viewImage.replace(string, "/leaderview/home/getImg/true/" + num);
+                    num = 0;
+                }
+                //处理composeObj
+                Matcher m3 = imgPattern.matcher(composeObj);
+                while (m3.find()){
+                    if (imgList3.contains(m3.group())){
+                        continue;
+                    }
+                    imgList3.add(m3.group());
+                }
+                for (String string : imgList3) {
+                    //从string中提取出原来的ID，然后用id作为name，获取插入图片后的最新id
+                    //num = ids.get(i++);
+                    Matcher m33 = numPattern.matcher(string);
+                    String oldId = m33.replaceAll("").trim()+".png";
+                    List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
+                    num = fileList.get(fileList.size()-1).getId();
+                    composeObj = composeObj.replace(string, "/leaderview/home/getImg/true/" + num +"\"");
+                    num = 0;
                 }
 
                 page.setCreateUserId(userId);
                 page.setHandoverId(userId);
                 page.setUserId(userId);
                 page.setLastUpdateTime(new Date());
-                page.setComposeObj(obj.getString("composeObj"));
+                page.setComposeObj(composeObj);
                 page.setName(pageName);
                 //这里需要将获取到的viewConf中url里getimg/true/后面的id替换为上面获取到的插入上传表的自增id
                 //如果viewConf中有多个图片，需要用到前面的id来匹配对应的url
