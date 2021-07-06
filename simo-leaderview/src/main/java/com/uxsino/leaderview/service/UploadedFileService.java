@@ -52,6 +52,12 @@ public class UploadedFileService {
     }
     public UploadedFile findOne(Long id) {return uploadedFileDao.findOne(id);}
 
+    public List<UploadedFile> findByName(String name) {
+        return  uploadedFileDao.getByName(name);
+    }
+
+
+
     /**
      * 对老环境下的数据库，已经在simo_upload_file存有一些图片而没有对应的压缩数据时，调用该方法后将会遍历该表
      * 一个一个生成对应的压缩数据
