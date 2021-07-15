@@ -262,7 +262,7 @@ export default {
           containLabel: true
         },
         tooltip: {
-          trigger: 'axis',
+          // trigger: 'axis',
           show: this.item.tooltipShow,
           backgroundColor: this.item.tooltipBackColor,
           textStyle: {
