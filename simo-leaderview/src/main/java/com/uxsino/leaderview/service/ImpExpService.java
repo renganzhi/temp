@@ -58,6 +58,7 @@ public class ImpExpService {
     //以\结尾的为目录文件
     private static Pattern imgPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)\"");
     private static Pattern img2Pattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
+    private static Pattern img3Pattern = Pattern.compile("\"bgImg\":\"/home/getImg/true/(\\d*)\"");
 
     private static Pattern imgFalsePattern = Pattern.compile("/leaderview/home/getImg/false/(\\d*)\"");
 
@@ -259,14 +260,19 @@ public class ImpExpService {
                 Matcher m2 = numPattern.matcher(m.group());
                 ids.add(Long.valueOf(m2.replaceAll("").trim()));
             }
-            //因为因为在导入的时候，需要原url中的id作为name来匹配，所以导出时不对url做处理
-            /*for (String string : imgList) {
-                //这里需要将isCustom的值false改为true
-                //str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
-                str = str.replace(string, "/leaderview/home/getImg/true/" + ++num);
-                //Matcher m2 = numPattern.matcher(string);
-                //map.put(Long.valueOf(m2.replaceAll("").trim()), num);
-            }*/
+        }
+        //如果到这里imgList还是为空，则str该匹配paintObj了
+        if (ObjectUtils.isEmpty(imgList)){
+            m = img3Pattern.matcher(str);
+            while (m.find()){
+                if (imgList.contains(m.group())){
+                    continue;
+                }
+                imgList.add(m.group());
+                Matcher m2 = numPattern.matcher(m.group());
+                //将大屏画布中图片的id存入ids集合
+                ids.add(Long.valueOf(m2.replaceAll("").trim()));
+            }
         }
 
 
@@ -584,7 +590,6 @@ public class ImpExpService {
                         zfIn.close();
                         return new JsonModel(false,"文件内容有误，请检查导入文件是否为正确的模板zip");
                     }
-
                 }
             }
             zin.closeEntry();
@@ -606,13 +611,15 @@ public class ImpExpService {
                     }
                 }
 
-                //处理page中的viewconf和viewimage
+                //处理page中的viewconf和viewimage、composeObj、paintObj
                 List<String> imgList = new ArrayList<>();
                 List<String> imgList2 = new ArrayList<>();
                 List<String> imgList3 = new ArrayList<>();
+                List<String> imgList4 = new ArrayList<>();
                 String viewConf = obj.getString("viewConf");
                 String viewImage = obj.getString("viewImage");
                 String composeObj = obj.getString("composeObj");
+                String paintObj = obj.getString("paintObj");
                 long num;
                 //String oldId;
                 int i = 0;
@@ -671,6 +678,23 @@ public class ImpExpService {
                     composeObj = composeObj.replace(string, "/leaderview/home/getImg/true/" + num +"\"");
                     num = 0;
                 }
+                //处理paintObj
+                Matcher m4 = img3Pattern.matcher(paintObj);
+                while (m4.find()){
+                    if (imgList4.contains(m4.group())){
+                        continue;
+                    }
+                    imgList4.add(m4.group());
+                }
+                for (String string : imgList4) {
+                    //从string中提取出原来的ID，然后用id作为name，获取插入图片后的最新id
+                    Matcher m44 = numPattern.matcher(string);
+                    String oldId = m44.replaceAll("").trim()+".png";
+                    List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
+                    num = fileList.get(fileList.size()-1).getId();
+                    paintObj = paintObj.replace(string, "\"bgImg\":\"/home/getImg/true/" + num +"\"");
+                    num = 0;
+                }
 
                 page.setCreateUserId(userId);
                 page.setHandoverId(userId);
@@ -688,7 +712,8 @@ public class ImpExpService {
                 //这里viewImage需要修改url中的id为uploadfile中插入的
                 //page.setViewImage(obj.getString("viewImage"));
                 page.setViewImage(viewImage);
-                page.setPaintObj(obj.getString("paintObj"));
+//                page.setPaintObj(obj.getString("paintObj"));
+                page.setPaintObj(paintObj);
                 page.setPageIndex(pageCount);
 
                 //在这里就添加了页面并且得到了它的自增id
