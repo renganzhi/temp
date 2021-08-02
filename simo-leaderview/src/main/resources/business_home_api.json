@@ -1,7 +1,7 @@
 [
     {
         "key": "business_indicator_statistics",
-        "name": "指标统计-按业务",
+        "name": "业务指标监控",
         "component": "business",
         "type": "NewDoubler,NewNumber",
         "url": "/leaderview/business/indicatorValue",
@@ -27,7 +27,7 @@
     },
     {
         "key": "business_indicator_statistics",
-        "name": "指标统计-按业务",
+        "name": "业务指标监控",
         "component": "business",
         "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/business/indicatorValue",
@@ -81,7 +81,7 @@
     },
     {
         "key": "enable_business_status_statistics",
-        "name": "业务统计-按状态",
+        "name": "业务状态统计",
         "component": "business",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/business/businessStatisticsByStatus",
@@ -99,7 +99,7 @@
     },
     {
         "key": "enable_business_status_statistics_for_rows",
-        "name": "业务统计-按状态",
+        "name": "业务状态统计",
         "component": "business",
         "type": "bubble,GradientPie",
         "url": "/leaderview/business/businessStatisticsByStatusForRows",
@@ -117,7 +117,7 @@
     },
     {
         "key": "enable_business_status_statistics_for_range",
-        "name": "业务统计-按状态",
+        "name": "业务状态统计",
         "component": "business",
         "type": "",
         "url": "/leaderview/business/businessStatisticsByStatusForRange",
@@ -135,7 +135,7 @@
     },
     {
         "key": "enable_alert_business_statistics",
-        "name": "告警统计-按业务",
+        "name": "业务告警数统计",
         "component": "business",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/business/getStatByBusiness",
@@ -154,7 +154,7 @@
     },
     {
         "key": "enable_alert_business_statistics_for_rows",
-        "name": "告警统计-按业务",
+        "name": "业务告警数统计",
         "component": "business",
         "type": "bubble,GradientPie",
         "url": "/leaderview/business/getStatByBusinessForRows",
@@ -173,7 +173,7 @@
     },
     {
         "key": "enable_alert_business_statistics_for_range",
-        "name": "告警统计-按业务",
+        "name": "业务告警数统计",
         "component": "business",
         "type": "",
         "url": "/leaderview/business/getStatByBusinessForRange",
@@ -192,7 +192,7 @@
     },
     {
         "key": "enable_business_indicator_topn",
-        "name": "指标TOPN-按业务",
+        "name": "业务指标TOPN",
         "component": "business",
         "type": "ve-histogram,NewHistogram",
         "url": "/leaderview/business/getIndicatorTOPN",
@@ -256,7 +256,7 @@
     },
     {
         "key": "enable_business_indicator_topn",
-        "name": "指标TOPN-按业务",
+        "name": "业务指标TOPN",
         "component": "business",
         "type": "ve-bar,NewBar",
         "url": "/leaderview/business/getIndicatorTOPN?bar=true",
@@ -382,7 +382,7 @@
     },
     {
         "key": "enable_business_history_indicator_statistics",
-        "name": "指标历史统计-业务",
+        "name": "业务指标趋势监控",
         "component": "business",
         "type": "ELine",
         "url": "/leaderview/business/history/record",
