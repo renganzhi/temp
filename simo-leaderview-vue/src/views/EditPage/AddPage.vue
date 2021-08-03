@@ -61,6 +61,9 @@
                       <img :src="baseUrl + item.viewImage"
                            alt=""
                            style="width:100%;height:100%;" />
+                           <div class="mask"  :class="{ maskActive: temId===item.id }">
+                     <div class="mask-text">{{item.name}}</div>
+                   </div>
                     </div>
                   </div>
                 </div>
@@ -245,6 +248,7 @@ export default {
   height: 155px;
   box-shadow: 0px 0px 2px 2px #141929;
   margin: 10px;
+  position: relative;
 }
 
 #addHomePage-modal .first-item {
@@ -270,5 +274,39 @@ html[data-theme="blackWhite"] {
   #addHomePage-modal .active {
     outline: 2px solid #026bf4;
   }
+}
+
+.mask {
+   width: 255px;
+   height: 155px;
+   position: absolute;
+   top:0;
+   left:0;
+  // background: #0088cc;
+   //display: none;
+   display: none;
+   align-items: flex-end;
+   padding: 0;
+}
+ .mask-text{
+   width: 255px;
+   height: 20%;
+   background: rgba($color: #000000, $alpha: 0.45);
+   color: white;
+  text-shadow: #000000 3px 3px 2px;
+   line-height: 0;
+   display: flex;
+   padding-left: 12px;
+ //  font-weight: bold;
+  // font-size: 14px;
+   justify-content: flex-start;
+   align-items: center;
+
+}
+.maskActive{
+  display: flex;
+}
+.flex-item:hover .mask{
+    display: flex;
 }
 </style>
