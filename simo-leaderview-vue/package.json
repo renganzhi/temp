@@ -29,6 +29,7 @@
     "select2": "^4.0.8",
     "v-charts": "^1.19.0",
     "v-tooltip": "^2.0.3",
+    "view-design": "^4.6.1",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",

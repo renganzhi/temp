@@ -27,6 +27,7 @@ export default {
     }
   },
   created: function () {
+    $('html').attr('data-theme', 'default')
     var _hash = window.location.hash
     if (_hash.split('/')[1]) {
       var _url =
@@ -233,12 +234,12 @@ html[data-theme="default"] {
   input:not([type="checkbox"]):not([type="radio"]),
   textarea,
   select {
-    border: solid 1px #3d445a !important;
+    border: solid 1px #3d445a;
     background-color: transparent !important;
     color: #cad6dd !important;
   }
   .select2-selection {
-    border: solid 1px #3d445a !important;
+    border: solid 1px #3d445a;
     background-color: transparent !important;
     color: #cad6dd !important;
   }

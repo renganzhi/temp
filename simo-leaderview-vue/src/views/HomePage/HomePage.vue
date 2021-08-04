@@ -1,135 +1,138 @@
 <template>
-  <div id="home-html"
-       class="flex flex-vertical full-height full-width">
-    <div style="width: 100%; height: 100%;"
-         v-if="loadAll && pageList.length < 1">
-      <div class="homeEmpty">
-        <img v-if="defTheme"
-             src="../../assets/image/homeEmpty1.png" />
-        <img v-else
-             src="../../assets/image/homeEmpty.png" />
-        <div>
-          <p v-show="isNewUser"
-             style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
-          <p v-show="!isNewUser"
-             style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
-          <button type="button"
-                  v-if="access==='w' && isNewUser"
-                  @click="addPage = true">新增</button>
-          <button type="button"
-                  v-if="isSuperAdmin && isNewUser"
-                  @click="showImport = true">导入</button>
+  <div style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;">
+    <navBar></navBar>
+    <div id="home-html"
+        class="flex flex-vertical full-height full-width">
+      <div style="width: 100%; height: 100%;"
+          v-if="loadAll && pageList.length < 1">
+        <div class="homeEmpty">
+          <img v-if="defTheme"
+              src="../../assets/image/homeEmpty1.png" />
+          <img v-else
+              src="../../assets/image/homeEmpty.png" />
+          <div>
+            <p v-show="isNewUser"
+              style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+            <p v-show="!isNewUser"
+              style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
+            <button type="button"
+                    v-if="access==='w' && isNewUser"
+                    @click="addPage = true">新增</button>
+            <button type="button"
+                    v-if="isSuperAdmin && isNewUser"
+                    @click="showImport = true">导入</button>
+          </div>
         </div>
-      </div>
-      <AddPage :showModal="addPage"
-               @hideModal="hideModal"></AddPage>
+        <AddPage :showModal="addPage"
+                @hideModal="hideModal"></AddPage>
 
-      <ImportPage :showModal="showImport"
-                  @hideModal="hideImportModal"
-                  :tems="pageList"></ImportPage>
-    </div>
-    <transition v-else :name="moveBox1">
-      <div class="portlet light bordered flex-1"
-          v-show="moveFlag"
-          id="paintWrap">
-        <div id="mainbox"
-            v-show="pageList.length >= 1"></div>
-        <div class="home_wrapBox">
-          <div class="full-height pagebox">
-            <LookItem v-for="(item,index) in nowPage"
-                      :index="index"
-                      :item="item"
-                      :key="item.id"></LookItem>
-            <LookCompose v-for="(list, index1) in combinList"
-                        :index="index1"
-                        :key="list.id"
-                        :list="list"></LookCompose>
+        <ImportPage :showModal="showImport"
+                    @hideModal="hideImportModal"
+                    :tems="pageList"></ImportPage>
+      </div>
+      <transition v-else :name="moveBox1">
+        <div class="portlet light bordered flex-1"
+            v-show="moveFlag"
+            id="paintWrap">
+          <div id="mainbox"
+              v-show="pageList.length >= 1"></div>
+          <div class="home_wrapBox">
+            <div class="full-height pagebox">
+              <LookItem v-for="(item,index) in nowPage"
+                        :index="index"
+                        :item="item"
+                        :key="item.id"></LookItem>
+              <LookCompose v-for="(list, index1) in combinList"
+                          :index="index1"
+                          :key="list.id"
+                          :list="list"></LookCompose>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
-    <!-- 下一页 -->
-    <transition :name="moveBox2">
-      <div class="portlet light bordered flex-1"
-          v-show="!moveFlag"
-          id="paintWrap2">
-        <div id="mainbox2"
-            v-show="pageList.length >= 1"></div>
-        <div class="home_wrapBox">
-          <div class="full-height pagebox">
-            <LookItem v-for="(item,index) in nowPage2"
-                      :index="index"
-                      :item="item"
-                      :key="item.id"></LookItem>
-            <LookCompose v-for="(list, index1) in combinList2"
-                        :index="index1"
-                        :key="list.id"
-                        :list="list"></LookCompose>
+      </transition>
+      <!-- 下一页 -->
+      <transition :name="moveBox2">
+        <div class="portlet light bordered flex-1"
+            v-show="!moveFlag"
+            id="paintWrap2">
+          <div id="mainbox2"
+              v-show="pageList.length >= 1"></div>
+          <div class="home_wrapBox">
+            <div class="full-height pagebox">
+              <LookItem v-for="(item,index) in nowPage2"
+                        :index="index"
+                        :item="item"
+                        :key="item.id"></LookItem>
+              <LookCompose v-for="(list, index1) in combinList2"
+                          :index="index1"
+                          :key="list.id"
+                          :list="list"></LookCompose>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
-    <!-- 下一页 -->
-    <div v-show="loadAll" id="homeTips">
-      <div class="btm-tools"
-           :class="isFullScreen?'full':''">
-        <div class="fl"
-             v-show="!isNewUser">
-          <span @click="editPage"
-                class="ring-icon"
-                title
-                data-original-title="设置"
-                v-show="!isFullScreen"><i class="icon-n-set"></i></span>
-          <span @click="toEditPage()"
-                class="ring-icon"
-                data-toggle='tooltip'
-                ref='editbutton'
-                title
-                data-original-title="编辑当前页"
-                v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
-          <span @click="refresh"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
-          <span @click="fullScreen"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+      </transition>
+      <!-- 下一页 -->
+      <div v-show="loadAll" id="homeTips">
+        <div class="btm-tools"
+            :class="isFullScreen?'full':''">
+          <div class="fl"
+              v-show="!isNewUser">
+            <span @click="editPage"
+                  class="ring-icon"
+                  title
+                  data-original-title="设置"
+                  v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+            <span @click="toEditPage()"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  ref='editbutton'
+                  title
+                  data-original-title="编辑当前页"
+                  v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
+            <span @click="refresh"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+            <span @click="fullScreen"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
+          </div>
+          <div class="fr">
+            <span @click="prev"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  v-show="showPagination"
+                  :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+            <span @click="togglePlay"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
+                  v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+            <span @click="next"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  v-show="showPagination"
+                  :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
+          </div>
         </div>
-        <div class="fr">
-          <span @click="prev"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                v-show="showPagination"
-                :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
-          <span @click="togglePlay"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
-                v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
-          <span @click="next"
-                class="ring-icon"
-                data-toggle='tooltip'
-                title
-                v-show="showPagination"
-                :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
-        </div>
-      </div>
 
-      <div role="alert"
-           v-if="showTip"
-           class="el-notification toast toast-info right"
-           style="bottom: 16px; z-index: 2001;">
-        <div class="el-notification__group">
-          <h2 class="el-notification__title"></h2>
-          <div class="el-notification__content">
-            <p>鼠标移动到左/右下角对大屏操作</p>
+        <div role="alert"
+            v-if="showTip"
+            class="el-notification toast toast-info right"
+            style="bottom: 16px; z-index: 2001;">
+          <div class="el-notification__group">
+            <h2 class="el-notification__title"></h2>
+            <div class="el-notification__content">
+              <p>鼠标移动到左/右下角对大屏操作</p>
+            </div>
+            <div class="el-notification__closeBtn el-icon-close"></div>
           </div>
-          <div class="el-notification__closeBtn el-icon-close"></div>
         </div>
       </div>
     </div>
@@ -137,6 +140,7 @@
 </template>
 
 <script>
+import navBar from '../../../src/navBar/index.vue'
 import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
@@ -148,7 +152,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex'
 import {checkLogin} from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
-  components: { Notification, LookItem, LookCompose, AddPage, ImportPage },
+  components: { Notification, LookItem, LookCompose, AddPage, ImportPage, navBar },
   // mixins:[thirdLoginMix],
   data () {
     return {
@@ -524,7 +528,7 @@ export default {
     timeFn: function () { // 轮播
       this.cancleRequest()
       // window.$.cache = {}
-      if (this.refreshType != '1') {
+      if (this.refreshType !== '1') {
         this.timeFnMove()
         return
       }
@@ -1157,11 +1161,10 @@ export default {
     titleShowFn('top', $('#homeTips'), '#homeTips')
     $('#lead-screen').addClass('disShow')
   },
-  updated:function(){
-       if(this.pageList[(this.pageIndex - 1) % this.pageSize] && this.pageList[(this.pageIndex - 1) % this.pageSize].belongCurrentUser!=='true')
-      {
-        this.$refs.editbutton.style.display='none'
-      }
+  updated () {
+    if (this.pageList[(this.pageIndex - 1) % this.pageSize] && this.pageList[(this.pageIndex - 1) % this.pageSize].belongCurrentUser !== 'true') {
+      this.$refs.editbutton.style.display = 'none'
+    }
   },
   beforeDestroy: function () {
     $('#lead-screen').removeClass('disShow')
