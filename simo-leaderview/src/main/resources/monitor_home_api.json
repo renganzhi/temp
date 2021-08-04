@@ -1,7 +1,7 @@
 [
     {
         "key": "enable_ne_num_statistics",
-        "name": "资源统计-按类型",
+        "name": "资源类型统计",
         "component": "monitor",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByClass",
@@ -27,7 +27,7 @@
     },
     {
         "key": "enable_ne_num_statistics_for_rows",
-        "name": "资源统计-按类型",
+        "name": "资源类型统计",
         "component": "monitor",
         "type": "bubble,GradientPie",
         "url": "/leaderview/monitor/neStatisticsByClassForRows",
@@ -53,7 +53,7 @@
     },
     {
         "key": "enable_ne_num_statistics_for_range",
-        "name": "资源统计-按类型",
+        "name": "资源类型统计",
         "component": "monitor",
         "type": "",
         "url": "/leaderview/monitor/neStatisticsByClassForRange",
@@ -79,7 +79,7 @@
     },
     {
         "key": "enable_ne_num_statistics_for_sunburst",
-        "name": "资源统计-按类型",
+        "name": "资源类型统计",
         "component": "monitor",
         "type": "Sunrise",
         "url": "/leaderview/monitor/neStatisticsByClassForSunburst",
@@ -105,7 +105,7 @@
     },
     {
         "key": "enable_ne_status_statistics",
-        "name": "资源统计-按状态",
+        "name": "资源状态统计",
         "component": "monitor",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/neStatisticsByStatus",
@@ -131,7 +131,7 @@
     },
     {
         "key": "enable_ne_status_statistics_for_rows",
-        "name": "资源统计-按状态",
+        "name": "资源状态统计",
         "component": "monitor",
         "type": "bubble,GradientPie",
         "url": "/leaderview/monitor/neStatisticsByStatusForRows",
@@ -157,7 +157,7 @@
     },
     {
         "key": "enable_ne_status_statistics_for_range",
-        "name": "资源统计-按状态",
+        "name": "资源状态统计",
         "component": "monitor",
         "type": "",
         "url": "/leaderview/monitor/neStatisticsByStatusForRange",
@@ -183,7 +183,7 @@
     },
     {
         "key": "enable_ne_status_statistics_for_sunburst",
-        "name": "资源统计-按状态",
+        "name": "资源状态统计",
         "component": "monitor",
         "type": "Sunrise",
         "url": "/leaderview/monitor/neStatisticsByStatusForSunburst",
@@ -270,7 +270,7 @@
     },
     {
         "key": "enable_indicator_topn",
-        "name": "指标TOPN-按资源",
+        "name": "资源指标TOPN",
         "component": "monitor",
         "type": "ve-histogram,NewHistogram",
         "url": "/leaderview/monitor/indicator/topN",
@@ -384,7 +384,7 @@
     },
     {
         "key": "enable_indicator_topn",
-        "name": "指标TOPN-按资源",
+        "name": "资源指标TOPN",
         "component": "monitor",
         "type": "ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/topN?bar=true",
@@ -498,7 +498,7 @@
     },
     {
         "key": "enable_alert_level_statistics",
-        "name": "告警统计-按级别",
+        "name": "各级别未处理告警数统计",
         "component": "alert",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/alert/getStatByLevel",
@@ -550,7 +550,7 @@
     },
     {
         "key": "enable_alert_level_statistics_for_rows",
-        "name": "告警统计-按级别",
+        "name": "各级别未处理告警数统计",
         "component": "alert",
         "type": "bubble,GradientPie",
         "url": "/leaderview/alert/getStatByLevelForRows",
@@ -602,7 +602,7 @@
     },
     {
         "key": "enable_alert_level_statistics_for_range",
-        "name": "告警统计-按级别",
+        "name": "各级别未处理告警数统计",
         "component": "alert",
         "type": "",
         "url": "/leaderview/alert/getStatByLevelForRange",
@@ -654,7 +654,7 @@
     },
     {
         "key": "enable_alert_class_statistics",
-        "name": "告警统计-按资源类型",
+        "name": "各类型资源告警数统计",
         "component": "alert",
         "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
         "url": "/leaderview/alert/getStatByClass",
@@ -688,7 +688,7 @@
     },
     {
         "key": "enable_alert_class_statistics_for_rows",
-        "name": "告警统计-按资源类型",
+        "name": "各类型资源告警数统计",
         "component": "alert",
         "type": "bubble",
         "url": "/leaderview/alert/getStatByClassForRows",
@@ -722,7 +722,7 @@
     },
     {
         "key": "enable_alert_class_statistics_for_range",
-        "name": "告警统计-按资源类型",
+        "name": "各类型资源告警数统计",
         "component": "alert",
         "type": "",
         "url": "/leaderview/alert/getStatByClassForRange",
@@ -756,7 +756,7 @@
     },
     {
         "key": "enable_alert_class_statistics_for_sunburst",
-        "name": "告警统计-按资源类型",
+        "name": "各类型资源告警数统计",
         "component": "alert",
         "type": "Sunrise",
         "url": "/leaderview/alert/getStatByClassForSunburst",
@@ -790,7 +790,7 @@
     },
     {
         "key": "enable_alert_class_radar_statistics",
-        "name": "告警统计-按资源类型",
+        "name": "各类型资源告警数统计",
         "component": "alert",
         "type": "ve-radar,NewRadar",
         "url": "/leaderview/alert/getStatByClassForRadar",
@@ -1083,7 +1083,7 @@
     },
     {
         "key": "enable_monitor_indicator_statistics",
-        "name": "指标统计-按资源",
+        "name": "资源指标监控",
         "component": "monitor",
         "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/indicator/value",
@@ -1159,7 +1159,7 @@
     },
     {
         "key": "enable_monitor_indicator_percent_statistics",
-        "name": "指标统计-按资源",
+        "name": "资源指标监控",
         "component": "monitor",
         "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/monitor/indicator/value",
@@ -1235,7 +1235,7 @@
     },
     {
         "key": "enable_history_indicator_statistics",
-        "name": "指标历史统计-资源",
+        "name": "多资源单指标趋势监控",
         "component": "monitor",
         "type": "ELine",
         "url": "/leaderview/monitor/indicator/history/record",
@@ -1344,7 +1344,7 @@
     },
     {
         "key": "enable_multiple_indicator_statistics",
-        "name": "指标历史统计-指标",
+        "name": "单资源多指标趋势监控",
         "component": "monitor",
         "type": "ELine",
         "url": "/leaderview/monitor/multiple_indicator/record",
@@ -1827,7 +1827,7 @@
     },
     {
         "key": "enable_monitor_network_statistics",
-        "name": "指标统计-链路",
+        "name": "链路指标监控",
         "component": "monitor",
         "type": "NewDoubler,NewNumber",
         "url": "/leaderview/monitor/indicator/valueNetwork",
@@ -1897,7 +1897,7 @@
     },
     {
         "key": "enable_monitor_network_statistics",
-        "name": "指标统计-链路",
+        "name": "链路指标监控",
         "component": "monitor",
         "type": "Dashboard,liquidfill,progress,NewProgress,NewGauge",
         "url": "/leaderview/monitor/indicator/valueNetwork",
