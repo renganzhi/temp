@@ -1,0 +1,67 @@
+//用户相关公共样式
+$info-themes:(
+  default:(
+    color:#cad6dd,
+  ),
+  blueWhite:(
+    color:#fff,
+  ),
+  blackWhite:(
+    color:#fff,
+  )
+);
+.imgBox{
+  width: 100px;
+  height:100px;
+  border: 1px dashed;
+  // @include getTheme($themes){
+  //   border-color: themed('button-primary-border-color');
+  // }
+  .imgIcon{
+    padding-left: 40px;
+    padding-top: 20px;
+    // @include getTheme($themes){
+    //   color: themed('input-placeholder-color');
+    // }
+  }
+  .imgFont{
+    padding-left: 23px;
+    // @include getTheme($themes){
+    //   color: themed('input-placeholder-color');
+    // }
+  }
+}
+.ivu-upload-select{
+  position: relative;
+}
+.showImg{
+   width: 100px;
+   position: absolute;
+   top: 0;
+  .imgSet{
+    width: 100px;
+    height:100px;
+  }
+  .uploadCover{
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.6);
+    width: 100px;
+    height: 100px;
+    padding: 40px 5px 30px 5px;
+    i{
+      font-size: 20px !important;
+      padding: 3px;
+      // @include getTheme($info-themes){
+      //   color: themed('color') !important;
+      // }
+    }
+  }
+}
+.showImg:hover  .uploadCover{
+  display: block;
+}

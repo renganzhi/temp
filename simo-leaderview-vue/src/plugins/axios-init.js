@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from 'vue'
 import axios from 'axios'
 import { Notification } from 'element-ui'
 import { gbs } from '@/config/settings'
@@ -40,11 +40,11 @@ axios.interceptors.response.use(
         position: 'bottom-right',
         customClass: 'toast toast-error'
       })
-      if (error.toString().includes('776')) {
+      if (error.toString().includes('776') || error.toString().includes('779')) {
         window.location.href = window.location.origin + '/#/login'
       }
     } else {
-      if (error.toString().includes('776')) {
+      if (error.toString().includes('776') || error.toString().includes('779')) {
         window.location.href = window.location.origin + '/loginPage'
       }
       tooltip('', '连接错误！', 'error')
@@ -57,22 +57,22 @@ axios.interceptors.response.use(
 
 // eslint-disable-next-line
 Plugin.install = function (Vue) {
-  Vue.axios = axios;
-  window.axios = axios;
+  Vue.axios = axios
+  window.axios = axios
   Object.defineProperties(Vue.prototype, {
     axios: {
-      get() {
-        return axios;
-      },
+      get () {
+        return axios
+      }
     },
     $axios: {
-      get() {
-        return axios;
-      },
-    },
-  });
-};
+      get () {
+        return axios
+      }
+    }
+  })
+}
 
-Vue.use(Plugin);
+Vue.use(Plugin)
 
-export default Plugin;
+export default Plugin

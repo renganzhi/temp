@@ -1,0 +1,398 @@
+html[data-theme="default"] {
+    body {
+        background-color: #222739;
+        color: #cad6dd;
+    }
+    .navbarWrap {
+        background-color: #1c2132;
+        .dropdownMenuWrap {
+            background-color: #0d111f;
+            .head-nav-name p {
+                color: #36a0f3;
+            }
+        }
+        .navLeft {
+            .headIcon {
+                color: #828bac;
+            }
+            .headIcon:hover {
+                background-color: #30364a;
+            }
+        }
+        .navRight {
+            ul {
+                background-color: #0d111f;
+                font-size: 12px;
+                color: #cad6dd;
+                li:hover {
+                    background-color: #30364a;
+                }
+            }
+            li > a,
+            i:hover {
+                cursor: pointer;
+                background-color: #30364a;
+                color: #828bac;
+            }
+            .msgPop {
+                background-color: #0d111f;
+                border: 1px solid #3d445a;
+            }
+        }
+    }
+    .ivu-select .ivu-select-selection {
+        color: #cad6dd;
+        background-color: transparent;
+    }
+    .ivu-tabs .ivu-tabs-bar {
+        border-bottom: solid 1px #383f54;
+    }
+    .us-border-bottom {
+        border-bottom: 1px solid #3d445a;
+    }
+    .ivu-modal-header-inner{
+        color: #cad6dd;
+    }
+    .ivu-btn.ivu-btn-default {
+        background-color: #08c;
+        color: #cad6dd;
+        border: none;
+        padding: 5px 10px;
+        min-width: 60px;
+        height: 28px;
+        line-height: 18px;
+        font-size: 12px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    .ivu-select-dropdown{
+        .ivu-select-item{
+            color: #cad6dd;
+        }
+        color: #cad6dd;
+        list-style: none;
+        background-color: #0a0e1a;
+        font-size: 12px !important;
+    }
+    .ivu-select-item:hover {
+        background-color: #08c;
+        color: #fff;
+    }    
+    .ivu-btn.ivu-btn-default:hover {
+        background-color: #02699c;
+        color: #cad6dd;
+        border: none;
+    }
+    .ivu-btn.ivu-btn-default[cancel] {
+        background-color: #666f8b;
+    }
+    .ivu-btn.ivu-btn-default[cancel]:hover {
+        background-color: #5e667e;
+        border: none;
+    }
+    .ivu-btn + .ivu-btn {
+        margin-left: 10px;
+    }
+    .showImg .uploadCover i{
+        color: #cad6dd !important;
+    }
+    .ivu-form-item{
+        color: #cad6dd;
+    }
+    .ivu-modal-body{
+        color: #cad6dd;
+    }
+    .ivu-form .ivu-form-item .ivu-form-item-label {
+        color: #cad6dd
+    }
+    .ivu-modal-wrap .ivu-modal .ivu-modal-content {
+        background: #222739;
+        .ivu-modal-header {
+            box-shadow: 0px 0px 20px 0px #0d080966;
+            background: #222739;
+        }
+    }
+    .ivu-btn-text {
+        color: #cad6dd ;
+    }
+    .ivu-btn-text:hover {
+        background-color: #5e667e;
+        border: none;
+        color: #cad6dd !important;
+    }
+    .ivu-btn-primary {
+        color: #cad6dd;
+    }
+    .ivu-btn-primary:hover {
+        background-color: #02699c !important;
+        border: none !important;
+    }
+}
+
+html[data-theme="blackWhite"] {
+    body {
+        background-color: #f8f8f8;
+        color: #50607c;
+    }
+    .navbarWrap {
+        background-color: #fff;
+        .dropdownMenuWrap {
+            background-color: #fff;
+            .head-nav-name p {
+                color: #298dff;
+            }
+        }
+        .navLeft {
+            background-color: #02112d;
+            .headIcon {
+                color: #dae0e7;
+            }
+            .headIcon:hover {
+                background-color: #30364a;
+            }
+        }
+        .navRight {
+            ul {
+                background-color: #fff;
+                font-size: 12px;
+                color: #50607c;
+                li:hover {
+                    background-color: rgba(130, 139, 171, 0.2);
+                }
+            }
+            li > a,
+            i:hover {
+                cursor: pointer;
+                background-color: rgba(130, 139, 171, 0.2);
+                color: #026bf4;
+            }
+            .msgPop {
+                background-color: #fff;
+                border: 1px solid #ebedf1;
+            }
+        }
+    }
+    .theme-blackWhite .ivu-tabs .ivu-tabs-bar {
+        border-bottom: solid 1px #ebedf1;
+    }
+    .ivu-select .ivu-select-selection {
+        color: #50607c;
+        background-color: #fff;
+    }
+    .ivu-modal-header-inner{
+        color: #50607c;
+    }
+    .showImg .uploadCover i{
+        color: #fff !important;
+    }
+    .ivu-form-item{
+        color: #50607c;
+    }
+    .ivu-btn.ivu-btn-default {
+        background-color: #fff;
+        color: #026bf4;
+        border: solid 1px #026bf4;
+        padding: 5px 10px;
+        min-width: 60px;
+        height: 28px;
+        line-height: 18px;
+        font-size: 12px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    .ivu-select-dropdown{
+        .ivu-select-item{
+            color: #50607c;
+        }
+        color: #50607c;
+        background-color: #fff;
+        list-style: none;
+        font-size: 12px !important;
+    }
+    .ivu-select-item:hover {
+        background-color: #08c;
+        color: #fff;
+    }
+    .theme-blackWhite .ivu-btn.ivu-btn-default:hover {
+        background-color: #ebedf17c;
+        color: #026bf4;
+        border: solid 1px #026bf4;
+    }
+    .ivu-btn.ivu-btn-default[cancel] {
+        background-color: #fff;
+    }
+    .ivu-btn.ivu-btn-default[cancel]:hover {
+        background-color: #ebedf1;
+        border: solid 1px #026bf4;
+    }
+    .ivu-btn + .ivu-btn {
+        margin-left: 10px;
+    }
+    .ivu-modal-body{
+        color: #50607c;
+    }
+    .us-border-bottom {
+        border-bottom: 1px solid #ebedf1;
+    }
+    .ivu-form .ivu-form-item .ivu-form-item-label {
+        color: #3e4554
+    }
+    .ivu-modal-wrap .ivu-modal .ivu-modal-content {
+        background: #fff;
+        .ivu-modal-header {
+            box-shadow: 0px 0px 20px 0px #0000001a;
+            background: #ebedf1;
+        }
+    }
+    .ivu-btn-text {
+        background-color: #fff;
+        border: solid 1px #026bf4;
+        color: #026bf4 !important;
+    }
+    .ivu-btn-text:hover {
+        background-color: #ebedf1;
+        border: solid 1px #026bf4;
+        color: #026bf4 !important;
+    }
+    .ivu-btn-primary {
+        color: #fff;
+    }
+    .ivu-btn-primary:hover {
+        color: #fff;
+        background-color: #0253f5 !important;
+        border: none !important;
+    }
+}
+
+html[data-theme="blueWhite"] {
+    body {
+        background-color: #f8f8f8;
+        color: #50607c;
+    }
+    .navbarWrap {
+        background-color: #fff;
+        .dropdownMenuWrap {
+            background-color: #fff;
+            .head-nav-name p {
+                color: #298dff;
+            }
+        }
+        .navLeft {
+            background-color: #407cc0;
+            .headIcon {
+                color: #dae0e7;
+            }
+            .headIcon:hover {
+                background-color: #2f619a;
+            }
+        }
+        .navRight {
+            ul {
+                background-color: #fff;
+                font-size: 12px;
+                color: #50607c;
+                li:hover {
+                    background-color: rgba(130, 139, 171, 0.2);
+                }
+            }
+            li > a,
+            i:hover {
+                cursor: pointer;
+                background-color: rgba(130, 139, 171, 0.2);
+                color: #60abff;
+            }
+            .msgPop {
+                background-color: #fff;
+                border: 1px solid #ebedf1;
+            }
+        }
+    }
+    .theme-blackWhite .ivu-tabs .ivu-tabs-bar {
+        border-bottom: solid 1px #ebedf1;
+    }
+    .ivu-modal-header-inner{
+        color: #50607c;
+    }
+    .ivu-select .ivu-select-selection {
+        color: #50607c;
+        border: solid 1px #adb9ca;
+        background-color: #fff;
+    }
+    .showImg .uploadCover i{
+        color: #fff !important;
+    }
+    .ivu-select-dropdown{
+        .ivu-select-item{
+            color: #50607c;
+        }
+        color: #50607c;
+        background-color: #fff;
+        list-style: none;
+        font-size: 12px !important;
+    }
+    .ivu-select-item:hover {
+        background-color: #08c;
+        color: #fff;
+    }
+    .ivu-form-item{
+        color: #50607c;
+    }
+    .ivu-modal-body{
+        color: #50607c;
+    }
+    .ivu-btn.ivu-btn-default {
+        background-color: #fff;
+        color: #026bf4;
+        border: solid 1px #026bf4;
+        padding: 5px 10px;
+        min-width: 60px;
+        height: 28px;
+        line-height: 18px;
+        font-size: 12px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    .theme-blackWhite .ivu-btn.ivu-btn-default:hover {
+        background-color: #ebedf17c;
+        color: #026bf4;
+        border: solid 1px #026bf4;
+    }
+    .ivu-btn.ivu-btn-default[cancel] {
+        background-color: #fff;
+    }
+    .ivu-btn.ivu-btn-default[cancel]:hover {
+        background-color: #ebedf1;
+        border: solid 1px #026bf4;
+    }
+    .us-border-bottom {
+        border-bottom: 1px solid #ebedf1;
+    }
+    .ivu-form .ivu-form-item .ivu-form-item-label {
+        color: #3e4554
+    }
+    .ivu-modal-wrap .ivu-modal .ivu-modal-content {
+        background: #fff;
+        .ivu-modal-header {
+            box-shadow: 0px 0px 20px 0px #0000001a;
+            background: #ebedf1;
+        }
+    }
+    .ivu-btn-text {
+        background-color: #fff;
+        border: solid 1px #026bf4;
+        color: #026bf4 !important;
+    }
+    .ivu-btn-text:hover {
+        background-color: #ebedf1;
+        border: solid 1px #026bf4;
+        color: #026bf4 !important;
+    }
+    .ivu-btn-primary {
+        color: #fff;
+    }
+    .ivu-btn-primary:hover {
+        color: #fff;
+        background-color: #0253f5 !important;
+        border: none !important;
+    }
+}

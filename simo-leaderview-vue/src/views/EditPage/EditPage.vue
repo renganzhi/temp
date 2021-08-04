@@ -1,246 +1,249 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
   <!-- padding: 10px; padding-bottom: 0px; -->
-  <div id="editHome-wrap" style="height: 100%; padding: 15px">
-    <AddPage :showModal="addPage" @hideModal="hideModal"></AddPage>
-    <PageSetting
-      :showModal="pageSetting"
-      @hideModal="hideSetting"
-    ></PageSetting>
+  <div style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;">
+    <navBar></navBar>
+    <div id="editHome-wrap" style="height: 100%; padding: 15px">
+      <AddPage :showModal="addPage" @hideModal="hideModal"></AddPage>
+      <PageSetting
+        :showModal="pageSetting"
+        @hideModal="hideSetting"
+      ></PageSetting>
 
-    <ImportPage
-      :showModal="showImport"
-      @hideModal="hideImportModal"
-      :tems="pageList"
-    ></ImportPage>
-    <ExportPage
-      :showModal="showExport"
-      @hideModal="showExport = false"
-      :tems="pageList"
-    ></ExportPage>
-    <!-- <SettingPage></SettingPage> -->
-    <PreView
-      :viewId="viewId"
-      :pageData="pageData"
-      :key="viewKey"
-      ref="PreView"
-    ></PreView>
-    <Confirm
-      :showModal="showDelModal"
-      :message="'删除操作不可恢复，是否继续？'"
-      :okText="'是'"
-      @hideModal="sureDel"
-    ></Confirm>
-    <div class="wrap-dialog">
-      <div class="wrap-content">
-        <div class="wrap-body flex flex-vertical">
-          <div class="searchForm">
-            <select
-              name="pageType"
-              v-model="pageType"
-              @change="changePage"
-              style="margin-right: 10px"
-            >
-              <option value="1">全部页面</option>
-              <option value="2">我的页面</option>
-              <option value="3">分享的页面</option>
-            </select>
-            <button type="button" v-if="access === 'w'" @click="add">
-              新增页面
-            </button>
-            <button type="button" @click="openSetting">设置</button>
-            <button v-if="isSuperAdmin" type="button" @click="importTemplate">
-              导入
-            </button>
-            <button type="button" @click="exportTemplate">导出</button>
-            <button type="button" class="homeBack" @click="backHome">
-              <i class="icon-n-back"></i> 返回
-            </button>
-          </div>
-          <div id="pagesBox" class="auto flex flex-wrap flex-1">
-            <div
-              v-for="(item, index) in pageList"
-              :key="index"
-              class="page-item flex flex-vertical"
-              @mouseenter="showHover(index)"
-              @mouseleave="cancleHover"
-            >
-              <div :class="{ canSee: true, notSee: !item.visible }"></div>
-              <img
-                class="page-img"
-                v-if="item.viewImage"
-                :src="baseUrl + item.viewImage"
-              />
-              <img class="page-img" v-else />
-              <div class="operates" v-show="hoverIndex === index">
-                <a
-                  class="opera-item noUse"
-                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
-                  >复制</a
-                >
-                <a class="opera-item" v-else @click.prevent="copy(item)"
-                  >复制</a
-                >
-
-                <a class="opera-item" @click.prevent="pev(item)">预览</a>
-
-                <a
-                  class="opera-item noUse"
-                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
-                  >编辑</a
-                >
-                <a class="opera-item" v-else @click.prevent="edit(item)"
-                  >编辑</a
-                >
-
-                <a
-                  class="opera-item noUse"
-                  v-if="access !== 'w'"
-                  >删除</a
-                >
-                <a class="opera-item" v-else @click.prevent="del(item)">删除</a>
-              </div>
-              <div v-if="editIndex === index" class="page-title titleShow">
-                <form autocomplete="off">
-                  <input name="name" v-model="editName" />
-                </form>
-                <span class="operate-title">
-                  <a class="simoLink" @click="changeName(index, item)">确定</a>
-                  <a class="cancle" @click="cancleChange(index)">取消</a>
-                </span>
-              </div>
-              <div v-else class="page-title flex-1 flex">
-                <span
-                  class="shareIcon hoverTips"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  data-trigger="hover"
-                  :title="'分享人：' + item.shareName"
-                  v-show="item.belongCurrentUser === 'false'"
+      <ImportPage
+        :showModal="showImport"
+        @hideModal="hideImportModal"
+        :tems="pageList"
+      ></ImportPage>
+      <ExportPage
+        :showModal="showExport"
+        @hideModal="showExport = false"
+        :tems="pageList"
+      ></ExportPage>
+      <!-- <SettingPage></SettingPage> -->
+      <PreView
+        :viewId="viewId"
+        :pageData="pageData"
+        :key="viewKey"
+        ref="PreView"
+      ></PreView>
+      <Confirm
+        :showModal="showDelModal"
+        :message="'删除操作不可恢复，是否继续？'"
+        :okText="'是'"
+        @hideModal="sureDel"
+      ></Confirm>
+      <div class="wrap-dialog">
+        <div class="wrap-content">
+          <div class="wrap-body flex flex-vertical">
+            <div class="searchForm">
+              <select
+                name="pageType"
+                v-model="pageType"
+                @change="changePage"
+                style="margin-right: 10px"
+              >
+                <option value="1">全部页面</option>
+                <option value="2">我的页面</option>
+                <option value="3">分享的页面</option>
+              </select>
+              <button type="button" v-if="access === 'w'" @click="add">
+                新增页面
+              </button>
+              <button type="button" @click="openSetting">设置</button>
+              <button v-if="isSuperAdmin" type="button" @click="importTemplate">
+                导入
+              </button>
+              <button type="button" @click="exportTemplate">导出</button>
+              <button type="button" class="homeBack" @click="backHome">
+                <i class="icon-n-back"></i> 返回
+              </button>
+            </div>
+            <div id="pagesBox" class="auto flex flex-wrap flex-1">
+              <div
+                v-for="(item, index) in pageList"
+                :key="index"
+                class="page-item flex flex-vertical"
+                @mouseenter="showHover(index)"
+                @mouseleave="cancleHover"
+              >
+                <div :class="{ canSee: true, notSee: !item.visible }"></div>
+                <img
+                  class="page-img"
+                  v-if="item.viewImage"
+                  :src="baseUrl + item.viewImage"
+                />
+                <img class="page-img" v-else />
+                <div class="operates" v-show="hoverIndex === index">
+                  <a
+                    class="opera-item noUse"
+                    v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                    >复制</a
                   >
-                  <i
-                    class="icon-n-assetys"
-                  ></i
-                ></span>
-                <span class="title-name flex-1">{{ item.name }}</span>
+                  <a class="opera-item" v-else @click.prevent="copy(item)"
+                    >复制</a
+                  >
 
-                <a
-                  class="icon-n-edit2 edit-icon noClk"
-                  v-if="
-                    (item.belongCurrentUser === 'false' || access !== 'w') &&
-                    !isSuperAdmin
-                  "
-                ></a>
-                <a
-                  class="icon-n-edit2 edit-icon"
-                  v-else
-                  @click="changeEdit(index)"
-                ></a>
+                  <a class="opera-item" @click.prevent="pev(item)">预览</a>
 
-                <a
-                  class="icon-n-share edit-icon noClk"
-                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
-                ></a>
-                <a
-                  class="icon-n-share edit-icon"
-                  v-else
-                  @click="toShare(item)"
-                ></a>
+                  <a
+                    class="opera-item noUse"
+                    v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                    >编辑</a
+                  >
+                  <a class="opera-item" v-else @click.prevent="edit(item)"
+                    >编辑</a
+                  >
+
+                  <a
+                    class="opera-item noUse"
+                    v-if="access !== 'w'"
+                    >删除</a
+                  >
+                  <a class="opera-item" v-else @click.prevent="del(item)">删除</a>
+                </div>
+                <div v-if="editIndex === index" class="page-title titleShow">
+                  <form autocomplete="off">
+                    <input name="name" v-model="editName" />
+                  </form>
+                  <span class="operate-title">
+                    <a class="simoLink" @click="changeName(index, item)">确定</a>
+                    <a class="cancle" @click="cancleChange(index)">取消</a>
+                  </span>
+                </div>
+                <div v-else class="page-title flex-1 flex">
+                  <span
+                    class="shareIcon hoverTips"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-trigger="hover"
+                    :title="'分享人：' + item.shareName"
+                    v-show="item.belongCurrentUser === 'false'"
+                    >
+                    <i
+                      class="icon-n-assetys"
+                    ></i
+                  ></span>
+                  <span class="title-name flex-1">{{ item.name }}</span>
+
+                  <a
+                    class="icon-n-edit2 edit-icon noClk"
+                    v-if="
+                      (item.belongCurrentUser === 'false' || access !== 'w') &&
+                      !isSuperAdmin
+                    "
+                  ></a>
+                  <a
+                    class="icon-n-edit2 edit-icon"
+                    v-else
+                    @click="changeEdit(index)"
+                  ></a>
+
+                  <a
+                    class="icon-n-share edit-icon noClk"
+                    v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                  ></a>
+                  <a
+                    class="icon-n-share edit-icon"
+                    v-else
+                    @click="toShare(item)"
+                  ></a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div id="homeShareModal" class="modal" style="z-index: 10086">
-      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">
-              <span class="pre-page" data-dismiss="modal"></span>
-              <span class="now-page">分享设置</span>
-            </h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form autocomplete="off" id="shareFm1">
-              <div class="form-group">
-                <label class="page-lable">分享给用户</label>
-                <div class="page-lable-content">
-                  <!-- <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
-                                                      v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
-                                            </Select2> -->
-                  <!-- <el-select v-model="shareUsers"
-                    multiple
-                    clearable
-                    size='mini'
-                    placeholder="请选择">
-                    <el-option
-                      v-for="(item,i) in userList"
-                      :key="i"
-                      :label="item.userName +'('+item.loginName+')'"
-                      :value="item.id">
-                    </el-option>
-                  </el-select> -->
+      <div id="homeShareModal" class="modal" style="z-index: 10086">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">
+                <span class="pre-page" data-dismiss="modal"></span>
+                <span class="now-page">分享设置</span>
+              </h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-hidden="true"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form autocomplete="off" id="shareFm1">
+                <div class="form-group">
+                  <label class="page-lable">分享给用户</label>
+                  <div class="page-lable-content">
+                    <!-- <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'" :name="v.key"
+                                                        v-model="syst.curConf.params[v.key]" :obj="v" @input="chgSelects(v)">
+                                              </Select2> -->
+                    <!-- <el-select v-model="shareUsers"
+                      multiple
+                      clearable
+                      size='mini'
+                      placeholder="请选择">
+                      <el-option
+                        v-for="(item,i) in userList"
+                        :key="i"
+                        :label="item.userName +'('+item.loginName+')'"
+                        :value="item.id">
+                      </el-option>
+                    </el-select> -->
 
-                  <select id="shareUsers" v-model="shareUsers">
-                    <option
-                      v-for="(user, index) in userList"
-                      :value="user.id"
-                      :key="index"
-                    >
-                      {{ user.userName }}({{ user.loginName }})
-                    </option>
-                  </select>
+                    <select id="shareUsers" v-model="shareUsers">
+                      <option
+                        v-for="(user, index) in userList"
+                        :value="user.id"
+                        :key="index"
+                      >
+                        {{ user.userName }}({{ user.loginName }})
+                      </option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="page-lable">分享给角色</label>
-                <div class="page-lable-content">
-                  <select v-model="shareRoles" id="shareRoles">
-                    <option
-                      v-for="(role, index) in roleList"
-                      :value="role.id"
-                      :key="index"
-                    >
-                      {{ role.name }}
-                    </option>
-                  </select>
-                  <!-- <el-select v-model="shareRoles"
-                    multiple
-                    clearable
-                    size='mini'
-                    placeholder="请选择">
-                    <el-option
-                      v-for="(item,i) in roleList"
-                      :key="i"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select> -->
+                <div class="form-group">
+                  <label class="page-lable">分享给角色</label>
+                  <div class="page-lable-content">
+                    <select v-model="shareRoles" id="shareRoles">
+                      <option
+                        v-for="(role, index) in roleList"
+                        :value="role.id"
+                        :key="index"
+                      >
+                        {{ role.name }}
+                      </option>
+                    </select>
+                    <!-- <el-select v-model="shareRoles"
+                      multiple
+                      clearable
+                      size='mini'
+                      placeholder="请选择">
+                      <el-option
+                        v-for="(item,i) in roleList"
+                        :key="i"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select> -->
+                  </div>
                 </div>
-              </div>
-              <div class="form-group" id="hasChild" style="display: none">
-                <label class="page-lable">
-                  <input type="checkbox" name="ifShareSub" />
-                </label>
-                <div class="page-lable-content">
-                  <span class="share-checkcontent">同时分享其子结构</span>
+                <div class="form-group" id="hasChild" style="display: none">
+                  <label class="page-lable">
+                    <input type="checkbox" name="ifShareSub" />
+                  </label>
+                  <div class="page-lable-content">
+                    <span class="share-checkcontent">同时分享其子结构</span>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" @click="sureShare">确认</button>
-            <button type="button" data-dismiss="modal">取消</button>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" @click="sureShare">确认</button>
+              <button type="button" data-dismiss="modal">取消</button>
+            </div>
           </div>
         </div>
       </div>
@@ -259,6 +262,7 @@ import { gbs } from '@/config/settings'
 import Confirm from '@/components/Common/Confirm'
 import Select2 from '@/components/Common/Select2'
 import { Notification } from 'element-ui'
+import navBar from '../../../src/navBar/index.vue'
 import _ from 'lodash'
 export default {
   name: 'editPage',
@@ -269,6 +273,7 @@ export default {
     ImportPage,
     ExportPage,
     Confirm,
+    navBar,
     Select2,
     Notification
   },
@@ -678,7 +683,7 @@ export default {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
           })
           .then((res) => {
-                   if (res.success) {
+            if (res.success) {
               item.name = this.editName
               if (gbs.inDev) {
                 Notification({
@@ -696,7 +701,7 @@ export default {
                   position: 'bottom-right',
                   customClass: 'toast toast-error'
                 })
-              }else{
+              } else {
                 tooltip('', res.msg, 'error')
               }
             }
