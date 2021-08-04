@@ -95,7 +95,7 @@
 
                 <a
                   class="opera-item noUse"
-                  v-if="item.belongCurrentUser === 'false' || access !== 'w'"
+                  v-if="access !== 'w'"
                   >删除</a
                 >
                 <a class="opera-item" v-else @click.prevent="del(item)">删除</a>
@@ -113,7 +113,9 @@
                 <span
                   class="shareIcon hoverTips"
                   data-toggle="tooltip"
-                  :title="'负责人：' + item.shareName"
+                  data-placement="bottom"
+                  data-trigger="hover"
+                  :title="'分享人：' + item.shareName"
                   v-show="item.belongCurrentUser === 'false'"
                   >
                   <i
@@ -730,6 +732,9 @@ export default {
         }
       }
     }
+  },
+  updated: function () {
+    $('.shareIcon').tooltip()
   },
   mounted: function () {
     this.search()
