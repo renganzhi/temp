@@ -277,6 +277,7 @@ export default {
     },
     changeSkin (name) {
       $('html').attr('data-theme', name)
+      this.theme = name
       this.$notify({
         message: '更新皮肤成功！',
         position: 'bottom-right',

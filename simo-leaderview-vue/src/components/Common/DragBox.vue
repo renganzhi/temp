@@ -81,6 +81,8 @@
           :disabled="editable"></NEWtextArea>
     <TDHistogram v-else-if="item.chartType=='TDHistogram'"
           :item="item"></TDHistogram>
+    <TDModel v-else-if="item.chartType=='TDModel'"
+          :item="item"></TDModel>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

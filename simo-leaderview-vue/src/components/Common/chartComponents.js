@@ -57,6 +57,7 @@ import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
 import Decorator from '@/components/EditComp/decorator'
 import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
+import TDModel from '@/components/EditComp/TDModel' // drag拖拽组件
 
 export default {
   DragResize,
@@ -116,6 +117,7 @@ export default {
   NEWtextArea,
   TDHistogram,
   Bubble,
+  TDModel,
   Hotspot,
   Decorator
 }

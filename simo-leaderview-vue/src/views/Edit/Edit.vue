@@ -1730,7 +1730,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames" class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name" :name="index"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
                     <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
