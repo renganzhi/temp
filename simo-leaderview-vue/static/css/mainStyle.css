@@ -8,8 +8,8 @@ body {
     color: #cad6dd;
     background: #222739;
     font-weight: normal !important;
-    font-size: 12px;
-    font-family: 'SourceHanSansCN-Regular';
+    font-size: 12px !important;
+    font-family: 'SourceHanSansCN-Regular' !important;
 }
 
 a,
@@ -326,7 +326,7 @@ button,
     min-width: 60px;
     border-radius: 0;
     vertical-align: middle;
-    font-size: 12px;
+    font-size: 12px !important;
     height: 28px;
 }
 

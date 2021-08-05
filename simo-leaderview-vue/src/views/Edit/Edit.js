@@ -44,6 +44,7 @@ let config = {
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
+  TDModel: require('@/components/EditComp/TDModel/config.js'),
   TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
   BaiDuMap: require('@/components/EditComp/BaiDuMap/config.js'),
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
@@ -955,7 +956,7 @@ export default {
         this.saveHistory()
       }
       this.chartNum.forEach((item) => {
-        if ((['NewHistogram', 'NewGroupHistogram', 'NewGroupLeftHistogram', 'NewBar', 'ELine', 'DoubleLinde', 'GradientPie', 'polarBar', 'TDHistogram', 'Scatter', 'KLine'].includes(item.chartType))) {
+        if ((['NewHistogram', 'NewGroupHistogram', 'NewGroupLeftHistogram', 'NewBar', 'ELine', 'DoubleLinde', 'GradientPie', 'polarBar', 'TDHistogram', 'TDModel', 'Scatter', 'KLine'].includes(item.chartType))) {
           if (
             item.chartData &&
             item.chartData.colors &&

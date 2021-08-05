@@ -41,6 +41,7 @@ export default [
   'JSMpeg',
   'Newimage',
   'TDHistogram',
+  'TDModel',
   'bubble',
   'hotspot',
   'decorator'
