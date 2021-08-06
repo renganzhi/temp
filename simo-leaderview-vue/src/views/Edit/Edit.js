@@ -47,6 +47,7 @@ let config = {
   TDModel: require('@/components/EditComp/TDModel/config.js'),
   TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
   BaiDuMap: require('@/components/EditComp/BaiDuMap/config.js'),
+  IntegratedHistogram: require('@/components/EditComp/IntegratedHistogram/config.js'),
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
@@ -309,12 +310,60 @@ export default {
       'thirdUser',
       'editId'
     ]),
+    itemShow () { // 右侧折叠面板根据条件显示隐藏
+      return function (val) {
+        var show = true
+        if (val.parentKey) {
+          for (const key in val.parentKey) {
+            if (this.selectedItem[key] !== val.parentKey[key]) {
+              show = false
+            }
+          }
+        }
+        return show
+      }
+    },
+    staticData () {
+      if (this.selectedItem.chartType === 'IntegratedHistogram') {
+        if (this.selectedItem.barType === 'NewHistogram') {
+          return this.selectedItem.chartData1
+        }
+        if (this.selectedItem.barType === 'NewGroupHistogram') {
+          return this.selectedItem.chartData2
+        }
+        if (this.selectedItem.barType === 'NewGroupLeftHistogram') {
+          return this.selectedItem.chartData3
+        }
+        if (this.selectedItem.barType === 'NewBar') {
+          return this.selectedItem.chartData4
+        }
+      } else {
+        return this.selectedItem.chartData
+      }
+    },
     curChartType () { return this.selectedItem.chartType },
     curChartName () {
       if (['text', 'NEWtextArea'].includes(this.curChartType)) {
         return '文本框'
       } else if (this.curChartType === 'NewMarquee' || this.curChartType === 'marquee') {
         return '跑马灯'
+      }
+      if (this.selectedItem.chartType === 'IntegratedHistogram') {
+        if (this.selectedItem.barType === 'NewHistogram') {
+          return '柱状图'
+        }
+        if (this.selectedItem.barType === 'NewGroupHistogram') {
+          return '分组柱图'
+        }
+        if (this.selectedItem.barType === 'NewGroupLeftHistogram') {
+          return '堆叠柱图'
+        }
+        if (this.selectedItem.barType === 'NewBar') {
+          return '条形图'
+        }
+      }
+      if (this.selectedItem.chartType === 'NewPie') {
+        return this.selectedItem.pieType
       }
       return this.selectedItem.ctName || ''
     },
@@ -382,6 +431,11 @@ export default {
   },
   provide: {
     editing: true
+  },
+  updated: function () {
+    if ($('.typeSelect').parents('div').length) {
+      $('.typeSelect').parents('div')[0].style.height = '50px'
+    }
   },
   created () {
     $('.getPicSpan').hide()
@@ -2334,6 +2388,9 @@ export default {
     dealTypeStr: function () {
       // 根据需求传值给后端对应的接口
       var type = this.selectedItem.chartType
+      if (this.selectedItem.chartType === 'IntegratedHistogram') {
+        return this.selectedItem.barType
+      }
       if (type.indexOf('ve-') !== -1) {
         if (type === 've-gauge') {
           return 'progress'
@@ -2832,6 +2889,19 @@ export default {
                 _this.selectMapData = data.obj
                 _this.mapDataToChart()
                 _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+              } else if (_this.selectedItem.chartType === 'IntegratedHistogram') {
+                if (_this.selectedItem.barType === 'NewHistogram') {
+                  _this.selectedItem.chartData1 = data.obj
+                }
+                if (_this.selectedItem.barType === 'NewGroupHistogram') {
+                  _this.selectedItem.chartData2 = data.obj
+                }
+                if (_this.selectedItem.barType === 'NewGroupLeftHistogram') {
+                  _this.selectedItem.chartData3 = data.obj
+                }
+                if (_this.selectedItem.barType === 'NewBar') {
+                  _this.selectedItem.chartData4 = data.obj
+                }
               } else {
                 _this.selectedItem.chartData = data.obj
               }
@@ -2983,7 +3053,22 @@ export default {
         // 先判断是{}类型的对象，而不是new Object
         if (reg.test(textData.trim())) {
           try {
-            this.selectedItem.chartData = this.formatJson(textData)
+            if (this.selectedItem.chartType === 'IntegratedHistogram') {
+              if (this.selectedItem.barType === 'NewHistogram') {
+                this.selectedItem.chartData1 = this.formatJson(textData)
+              }
+              if (this.selectedItem.barType === 'NewGroupHistogram') {
+                this.selectedItem.chartData2 = this.formatJson(textData)
+              }
+              if (this.selectedItem.barType === 'NewGroupLeftHistogram') {
+                this.selectedItem.chartData3 = this.formatJson(textData)
+              }
+              if (this.selectedItem.barType === 'NewBar') {
+                this.selectedItem.chartData4 = this.formatJson(textData)
+              }
+            } else {
+              this.selectedItem.chartData = this.formatJson(textData)
+            }
           } catch (err) {
             if (gbs.inDev) {
               Notification({

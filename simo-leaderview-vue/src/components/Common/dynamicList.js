@@ -8,6 +8,7 @@ export default [
   'pyramid',
   'TDEarthLine',
   'BaiDuMap',
+  'IntegratedHistogram',
   'TDEarthBar',
   'DataFlow',
   'GradientPie',
