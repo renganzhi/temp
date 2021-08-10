@@ -3,7 +3,8 @@
 import mapTopology from './topology'
 import { gbs } from '@/config/settings'
 import { newAjax } from '@/config/thirdLoginMix'
-// var mapTp = ''
+var mapCodeArry = []
+var interValTime = 0
 var mpTopo = {
   initTopo: function (mapTp, userId, mpId, el) {
     // this.initToolBar()
@@ -60,7 +61,7 @@ var mpTopo = {
 //   judgeBindMapEvent(mapTp)
 // }
 
-function judgeBindMapEvent (mapTp) {
+function judgeBindMapEvent (mapTp, data) {
   // $('#networkMapTopo').off('click.hidetl').on('click.hidetl', function (e) {
   //   if (mapTp.isMarquee) {
   //     mapTp.isMarquee = false
@@ -100,26 +101,93 @@ function judgeBindMapEvent (mapTp) {
   mapTp.svgContainer.selectAll('.province').on('mouseenter', function (e) {
     var dom = $(this)
     mapTp.svgContainer.selectAll('.mptText').filter(function (d) {
-      if (d.properties.name == $(e)[0].properties.name) {
+      if (d.properties.name === $(e)[0].properties.name) {
         $(this).css('display', 'block')
       }
     })
     $.each($('#topoMapTree .node_name'), function (i, d) {
-      if ($(this).attr('acode') == $(e)[0].properties.adcode && !$(e)[0].properties.sole) {
+      if ($(this).attr('acode') === $(e)[0].properties.adcode && !$(e)[0].properties.sole) {
         dom.attr('class', 'province hoverMp')
       }
     })
   }).on('mouseleave', function (e) {
     mapTp.svgContainer.selectAll('.mptText').filter(function (d) {
-      if (d.properties.name == $(e)[0].properties.name) {
+      if (d.properties.name === $(e)[0].properties.name) {
         $(this).css('display', 'none')
       }
     })
     $(this).attr('class', 'province')
+  }).on('click', function (e) {
+    let len = 3
+    if (e.properties.acroutes.indexOf(110000) > 0) {
+      len = 2
+    }
+    if (e.properties.acroutes.length < len) {
+      mapCodeArry = e.properties.acroutes
+      if (mapCodeArry.length > 0) {
+        let className = mapTp.ele.className.split('map')[1]
+        document.querySelector(`.BackBtn${className}`).style.display = 'block'
+      }
+      data.mapCode = e.properties.adcode + ''
+      data.el.innerHTML = ''
+      getMapId(data, e.properties.adcode)
+    }
   })
   // mapTp.svgContainer.on('contextmenu', null).on('contextmenu', function () {
   //   baseData.topo.menuXY = d3.mouse(this)
   // })
+  let className = mapTp.ele.className.split('map')[1]
+  $(`.BackBtn${className}`).on('click', function () {
+    if (new Date().getTime() - interValTime >= 1500) {
+      interValTime = new Date().getTime()
+      if (mapCodeArry.length > 0) {
+        data.mapCode = mapCodeArry[mapCodeArry.length - 1] + ''
+        mapCodeArry = mapCodeArry.splice(0, mapCodeArry.length - 1)
+        if (mapCodeArry.length <= 0) {
+          document.querySelector(`.BackBtn${className}`).style.display = 'none'
+        }
+        data.el.innerHTML = ''
+        getMapId(data, data.mapCode)
+      }
+    }
+  })
+}
+function getMapId (topdata, clickNodeId) { // 地图拓扑数据加载
+  newAjax({
+    method: 'get',
+    url: gbs.host + `/monitor/mapTopo/findMapLocationByUserId?userId=${topdata.userId}`,
+    async: false,
+    success: function (data) {
+      if (data.success) {
+        data.obj.forEach(element => {
+          if (element.value.split(';')[0].split(',').length === 1 && clickNodeId === '100000') {
+            topdata.mpId = element.value.split(';')[1]
+          } else if (clickNodeId !== '100000') {
+            if (element.value.split(';')[0].indexOf(clickNodeId) >= 0) {
+              topdata.mpId = element.value.split(';')[1]
+            }
+          }
+        })
+        if (clickNodeId % 10000 > 0) {
+          newAjax({
+            method: 'get',
+            url: gbs.host + `/monitor/mapTopo/findMapLocationByUserId?userId=${topdata.userId}&pLocationCode=100000,${clickNodeId - clickNodeId % 10000};${topdata.mpId}`,
+            async: false,
+            success: function (data) {
+              data.obj.forEach(element => {
+                if (element.value.indexOf(clickNodeId) >= 0) {
+                  topdata.mpId = element.value.split(';')[1]
+                }
+              })
+            }
+          })
+          initMapTopo(topdata)
+        } else {
+          initMapTopo(topdata)
+        }
+      }
+    }
+  })
 }
 
 function newDomainTopo (mapId, userId, callback) { // 地图拓扑数据加载
@@ -151,6 +219,6 @@ function initMapTopo (data) {
     mpCode: data.mapCode || '100000'
   })
   mpTopo.initTopo(mapTp, data.userId, data.mpId)
-  judgeBindMapEvent(mapTp)
+  judgeBindMapEvent(mapTp, data)
 }
 export default initMapTopo

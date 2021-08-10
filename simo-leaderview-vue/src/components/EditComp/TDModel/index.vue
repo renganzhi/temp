@@ -17,6 +17,7 @@ let controls
 let transformControls
 let renderer
 let light
+let helper
 export default {
   data () {
     return {
@@ -48,11 +49,21 @@ export default {
     },
     'item.ModelRotation': function (val) {
       let Cameragltf = scene.getObjectByName('GltfName')
-      console.log(Cameragltf)
       Cameragltf.rotation.y = Math.PI * val / 90
     },
     'item.ZoomLimitMin': function (val) {
       controls.minDistance = val
+    },
+    'item.ShowHelpLine': function (val) {
+      if (val) {
+        helper.scale.x = 1
+        helper.scale.y = 1
+        helper.scale.z = 1
+      } else {
+        helper.scale.x = 0
+        helper.scale.y = 0
+        helper.scale.z = 0
+      }
     },
     'item.ZoomLimitMax': function (val) {
       controls.maxDistance = val
@@ -102,8 +113,16 @@ export default {
       this.$refs.mycanvas.addEventListener('click', this.onMouseclick, false)
       this.initDragControls()
 
-      var helper = new THREE.GridHelper(1200, 50, 0xcd3700, 0x4a4a4a)
-
+      helper = new THREE.GridHelper(1200, 50, 0xcd3700, 0x4a4a4a)
+      if (this.item.ShowHelpLine) {
+        helper.scale.x = 1
+        helper.scale.y = 1
+        helper.scale.z = 1
+      } else {
+        helper.scale.x = 0
+        helper.scale.y = 0
+        helper.scale.z = 0
+      }
       scene.add(helper)
 
       this.creatSixBall()
@@ -112,7 +131,7 @@ export default {
       var loader = new GLTFLoader()
       var _this = this
       loader.load(
-        `/static/Glft/qiuji.gltf`,
+        `/static/Glft/${_this.item.gltfName}`,
         function (gltf) {
           gltf.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
           gltf.scene.position.set(0, 0, 0)
