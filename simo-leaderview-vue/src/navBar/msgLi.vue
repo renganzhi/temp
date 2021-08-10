@@ -73,24 +73,25 @@ export default {
   methods: {
     // 消息-查看详情
     lookDetail () {
-      this.$api.msgTagRead({ ids: this.pram.data.id })
-      this.$emit('close-pop')
-      this.$store.commit('base/setCurrentMenu', { id: 'MSG05', parentId: 'MSG02', typeId: 'MSG01' })
-      let extParam = JSON.parse(this.pram.data.extParam)
-      this.$router.push({ name: 'altContent',
-        params: {
-          row: extParam,
-          // alertId: extParam.alertId,
-          type: extParam.alertType,
-          alertType: extParam.alertType,
-          // originArr: this.pram.originArr,
-          // color: this.pram.levelMap[extParam.level].color,
-          paths: [{ title: '未读消息', name: 'msgReadNew' }, { title: '告警内容', name: 'altContent' }]
-        },
-        query: {
-          t: Date.now() // 解决-已经在告警内容页面-跳转相同路由参数不更新问题
-        }
-      })
+      window.location = `${window.location.origin}/index.html?msgId=${this.pram.data.id}#/msg/unread`
+      // this.$api.msgTagRead({ ids: this.pram.data.id })
+      // this.$emit('close-pop')
+      // this.$store.commit('base/setCurrentMenu', { id: 'MSG05', parentId: 'MSG02', typeId: 'MSG01' })
+      // let extParam = JSON.parse(this.pram.data.extParam)
+      // this.$router.push({ name: 'altContent',
+      //   params: {
+      //     row: extParam,
+      //     // alertId: extParam.alertId,
+      //     type: extParam.alertType,
+      //     alertType: extParam.alertType,
+      //     // originArr: this.pram.originArr,
+      //     // color: this.pram.levelMap[extParam.level].color,
+      //     paths: [{ title: '未读消息', name: 'msgReadNew' }, { title: '告警内容', name: 'altContent' }]
+      //   },
+      //   query: {
+      //     t: Date.now() // 解决-已经在告警内容页面-跳转相同路由参数不更新问题
+      //   }
+      // })
     }
   }
 }

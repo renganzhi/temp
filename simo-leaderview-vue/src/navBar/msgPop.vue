@@ -80,7 +80,8 @@ export default {
   },
   methods: {
     checkAll () {
-      this.$emit('show-all-msg')
+      // this.$emit('show-all-msg')
+      window.location = `${window.location.origin}/index.html#/msg/unread`
     },
     clickOpenVoice () {
       // $store.commit('base/setVoice', !openVoice)
