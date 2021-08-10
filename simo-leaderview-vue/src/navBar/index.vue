@@ -311,6 +311,22 @@ export default {
         }
       })
     },
+    toggleMenu (item) {
+      const urlArry = {
+        IT基础监控: '/index.html#/mon/neList',
+        智能运维: '/index.html#/recovery/view',
+        系统设置: '/index.html#/domain',
+        消息中心: '/index.html#/msg/unread',
+        知识库: '/index.html#/knowledgebase',
+        报表: '/index.html#/report',
+        ITSM: '/itsm/index.html#/overview',
+        数据可视化: '/leaderview-static/main.html',
+        '3D机房': '/3dsroom/index.html',
+        资产: '/vue_asset/index.html'
+      }
+      // console.log(item)
+      window.location = window.location.origin + urlArry[item.name]
+    },
     iconDropDown (str) {
       if (this.openName === str) {
         this.isOpen = !this.isOpen
