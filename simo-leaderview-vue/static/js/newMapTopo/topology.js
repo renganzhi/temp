@@ -25,6 +25,7 @@ function mapTopology (opt) {
   this.force.start()
   this.nodes = []
   this.links = []
+  this.firstIn = true
   this.nodes = this.force.nodes()
   this.links = this.force.links()
 
@@ -141,7 +142,19 @@ mapTopology.prototype = {
         return d.backColor
       })
       .attr('d', this.path)
-
+    // this.provinces.append('text').attr('class', 'BackText').text(function (d) {
+    //   return '返回'
+    // })
+    //   .each(function (d, index) {
+    //     // var p = projection(d.properties.cp);
+    //     var p = path.centroid(d.geometry)
+    //     d.isBind = false
+    //     d3.select(this).attr({
+    //       x: 50,
+    //       y: 50,
+    //       idName: index
+    //     })
+    //   })
     this.provinces.append('text').attr('class', 'mptText').text(function (d) {
       return d.properties.name
     })

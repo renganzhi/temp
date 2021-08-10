@@ -6,11 +6,13 @@ export default {
     'width': 600,
     'height': 400,
     lightColor: '#fff',
+    ShowHelpLine: true,
     lightStrength: 1,
     cameraX: 20,
     cameraY: 20,
     cameraZ: 10,
     ModelScal: 1,
+    gltfName: 'qiuji.gltf',
     ModelRotation: 0,
     ZoomLimitMax: 1000,
     ZoomLimitMin: 0
@@ -53,6 +55,15 @@ export default {
       'name': '模型配置',
       'tag': 'Hint',
       'childoption': [
+        {
+          'name': '辅助线显隐',
+          'key': 'ShowHelpLine',
+          'tag': 'select',
+          'options': [
+            {'name': '显示', 'value': true},
+            {'name': '隐藏', 'value': false}
+          ]
+        },
         {
           'name': '模型放缩',
           'key': 'ModelScal',

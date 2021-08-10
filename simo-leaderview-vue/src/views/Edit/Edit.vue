@@ -18,6 +18,41 @@
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
              @hideModal="back"></Confirm>
+
+    <Modal
+      v-model="showUpload"
+      title="导入模型">
+      <Form ref="importModelForm" :label-width="80">
+        <div class="input-item" style="margin-bottom: 20px;">
+          <span>模型名称：</span>
+          <Input style="width: 300px; margin: 0px 5px;" v-model="importModelForm.name"/>
+          <!-- <div class="check_font" v-show="importCheckRules.nameCheck">模型名称不能为空</div> -->
+        </div>
+        <div class="input-item" style="position: relative; margin-bottom: 20px;">
+          <span>上传模型：</span>
+          <input type="file" id="uploadZip"
+            accept=".zip,.rar,application/zip,application/x-zip-compressed"
+            @change="getZip" style="opacity: 0; position: absolute; z-index: -1;"/>
+          <Input style="width: 236px; margin: 0px 5px;"
+           disabled v-model="importModelForm.fileName"/>
+          <Button class="ivu-primary" @click="upload">预览</Button>
+          <!-- <div class="check_font" v-show="importCheckRules.fileNameCheck">上传模型不能为空</div> -->
+        </div>
+        <!-- <div class="input-item" style="margin-bottom: 20px;">
+          <span>上传缩略图：</span>
+          <input type="file" id="uploadImg" accept="image/*"
+            @change="getImg" style="opacity: 0; position: absolute; z-index: -1;"/>
+          <Input style="width: 236px; margin: 0px 5px;" disabled v-model="importModelForm.imgName"/>
+          <Button class="ivu-primary" @click="uploadImg">预览</Button>
+          <div class="check_font" v-show="importCheckRules.imgNameCheck">上传缩略图不能为空</div>
+        </div>
+      </Form> -->
+      <div slot="footer">
+        <Button type="primary" @click="sureUpload">确认</Button>
+        <Button @click="cancel()">取消</Button>
+      </div>
+      </Form>
+    </Modal>
     <div class="edit-content"
          @click.ctrl="bindCtrl">
       <div class="edit-header">
@@ -1795,11 +1830,23 @@
                   </select>
                 </div>
               </div>
+              <div v-show="selectedItem.chartType == 'TDModel'">
+                <div class="form-group cols2">
+                  <label>选择模型</label>
+                  <select v-model="selectedItem.gltfName">
+                    <option value="qiuji.gltf">客户端</option>
+                    <option value="system">服务端</option>
+                  </select>
+                </div>
+                <div class="form-group cols2">
+                  <Button class="ivu-primary" @click="openUpload">导入模型</Button>
+                </div>
+              </div>
               <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
                 <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
                 <button class="DataChangeBtn" @click="dataChange">更新视图</button>
               </div>
-              <div style="height: 100%;" v-show="!['image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;" v-show="!['TDModel','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2243,9 +2290,9 @@ export default EditJs
   border-bottom: solid 1px #383f54;
   color: #898da8;
   font-size: 12px;
-      overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
 <style lang="scss">
@@ -2254,62 +2301,66 @@ export default EditJs
     // padding-left: 8px;
     line-height: 25px;
     // color: red;
-    cursor:move;
-        display: inline-block;
+    cursor: move;
+    display: inline-block;
     width: calc(100% - 37px);
   }
   .upload {
-        width: 145px !important;
+    width: 145px !important;
   }
   .delete_text {
     cursor: pointer;
     // color: #0088cc;
-    &:hover{
+    &:hover {
       color: red;
     }
   }
 }
 .src_item {
-  z-index:100;
+  z-index: 100;
 }
 html[data-theme="blackWhite"],
 html[data-theme="blueWhite"] {
-  .select2-container--default .select2-selection--single .select2-selection__rendered{
+  .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
     color: #444 !important;
   }
 }
-.m-tabMain{
-  .el-collapse-item__header{
+.m-tabMain {
+  .el-collapse-item__header {
     background-color: transparent;
     border-bottom: 1px solid transparent;
     font-weight: bold;
-    color: inherit
+    color: inherit;
   }
-  .el-collapse-item__wrap{
+  .el-collapse-item__wrap {
     background-color: transparent;
     border-bottom: 1px solid transparent;
   }
-  .el-collapse-item__content{
+  .el-collapse-item__content {
     padding-top: 25px;
     padding-bottom: 0px;
-    color: inherit
+    color: inherit;
   }
-  .el-collapse{
-        border-top: 1px solid transparent;
-      border-bottom: 1px solid transparent;
+  .el-collapse {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
   }
 }
 #chooseWrap .vue-ruler-wrapper {
   z-index: 50;
 }
-.m-tabMain::-webkit-scrollbar { width: 0 !important }
-.m-tabMain .desc{
-  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC3SURBVChTtY49DoJAEIXfILKN8Sc2UFpY21B5HuMZ4ATScyQbC6i9AaWJoQA2Zsf9g3AA/YrNzHtvXwa/pai2fgKZR9yqZiAkVplhzIAI533Y3i+ndWDEa7M5aIPNPKIzNrhSEiZoNBsuy+MQMT3NPKG/ClLoEXnBn+FgCou6/8C5C93KzFBZOmVss4OYQA+/QOlgvMTbr5ZZsyMq6pcE73R9K7PU3joya3bknYhDkMy7JPbS3wG+t2IugdRfUNsAAAAASUVORK5CYII=') !important
+.m-tabMain::-webkit-scrollbar {
+  width: 0 !important;
 }
-.m-tabMain .asc{
-  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACaSURBVChTY6AfqK9/ysXcceZXff0VNqgQHDBBaTho43zx8i8DA2s7589XUCE4QFHM1nHm1G+G/zwg9i+G//xsneeOgCWgAEnxf8Y/DAxGUA4Y/P3/zwwkDuUiFLN3nLv1j4GBGcoFA5BzgOLXoVyI4rKyG7w/Gf6rgEXQAFBcPTf3NjuIDVbcJ/D5PojGBWZIfXwIZdIEMDAAAIACLdN1yz7JAAAAAElFTkSuQmCC') !important
+.m-tabMain .desc {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC3SURBVChTtY49DoJAEIXfILKN8Sc2UFpY21B5HuMZ4ATScyQbC6i9AaWJoQA2Zsf9g3AA/YrNzHtvXwa/pai2fgKZR9yqZiAkVplhzIAI533Y3i+ndWDEa7M5aIPNPKIzNrhSEiZoNBsuy+MQMT3NPKG/ClLoEXnBn+FgCou6/8C5C93KzFBZOmVss4OYQA+/QOlgvMTbr5ZZsyMq6pcE73R9K7PU3joya3bknYhDkMy7JPbS3wG+t2IugdRfUNsAAAAASUVORK5CYII=") !important;
 }
-.m-tabMain .advancedset{
+.m-tabMain .asc {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACaSURBVChTY6AfqK9/ysXcceZXff0VNqgQHDBBaTho43zx8i8DA2s7589XUCE4QFHM1nHm1G+G/zwg9i+G//xsneeOgCWgAEnxf8Y/DAxGUA4Y/P3/zwwkDuUiFLN3nLv1j4GBGcoFA5BzgOLXoVyI4rKyG7w/Gf6rgEXQAFBcPTf3NjuIDVbcJ/D5PojGBWZIfXwIZdIEMDAAAIACLdN1yz7JAAAAAElFTkSuQmCC") !important;
+}
+.m-tabMain .advancedset {
   color: #0088cc;
   background-position: right;
   background-repeat: no-repeat;
@@ -2321,7 +2372,7 @@ html[data-theme="blueWhite"] {
   white-space: nowrap;
   display: inline-block;
 }
-.edit-body .btm-tools{
+.edit-body .btm-tools {
   margin-bottom: -3px;
   position: fixed;
   bottom: 26px;
@@ -2330,7 +2381,7 @@ html[data-theme="blueWhite"] {
   padding-left: 380px;
   z-index: 999;
   text-align: right;
-  .ring-icon{
+  .ring-icon {
     display: inline-block;
     width: 30px;
     height: 30px;
@@ -2338,25 +2389,25 @@ html[data-theme="blueWhite"] {
     border-radius: 50%;
     text-align: center;
     line-height: 30px;
-    opacity: .3;
+    opacity: 0.3;
     margin: 0 4px;
     cursor: pointer;
   }
-  .ring-icon:hover{
+  .ring-icon:hover {
     // background: #0f1321;
     opacity: 1;
   }
 }
-.heightImgName{
+.heightImgName {
   color: #0088cc;
 }
 .edui-default {
-  ::deep .edui-editor-bottomContainer{
+  ::deep .edui-editor-bottomContainer {
     display: none;
   }
 }
 .edui-default {
-  ::deep .edui1677_message_holder{
+  ::deep .edui1677_message_holder {
     display: none;
   }
 }

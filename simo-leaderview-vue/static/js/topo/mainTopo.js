@@ -1,7 +1,7 @@
 import { gbs } from '@/config/settings'
 import Topology from './topology'
 import Region from './regionText'
-import { newAjax} from '@/config/thirdLoginMix'
+import { newAjax } from '@/config/thirdLoginMix'
 function MainTp (opt) {
   this.opt = opt
   $(opt.el)

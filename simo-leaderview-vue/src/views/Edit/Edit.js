@@ -179,6 +179,12 @@ export default {
       // copyCompIndexs: [], // ctrl选中的单个元件在chartNum中的序号
       onCtrl: false, // 是否按住ctrl
       showBackModal: false, // 离开页面弹窗
+      importModelForm: {
+        name: '',
+        fileName: '',
+        fileNameCheck: ''
+      },
+      showUpload: false, // 离开页面弹窗
       showNextType: -1, // 页面切换类型
       colorType: 'defalut',
       fontWeights: ['lighter', 'normal', 'bold', 'bolder'],
@@ -2548,6 +2554,29 @@ export default {
     },
     closeHawkEye () {
       this.ShowHawkEye = false
+    },
+    upload () {
+      document.getElementById('uploadZip').click()
+    },
+    cancel () {
+      this.showUpload = false
+    },
+    openUpload () {
+      this.showUpload = true
+    },
+    getZip (e) {
+      if (!e.target.files[0]) {
+        return
+      }
+      const file = e.target.files[0]
+      console.log(file)
+      // this.formData.append('file', file)
+      // this.importModelForm.fileName = file.name
+      // const reader = new FileReader();
+      // reader.readAsDataURL(file);
+      // reader.onloadend = () => {
+      //   this.zipFile = reader.result;
+      // };
     },
     sentReq (d, postData, selectedP) {
       let _this = this

@@ -720,6 +720,15 @@ margin-left: -19px;
   display: none;
   pointer-events: none
 }
+.BackButton{
+  fill: #c2c6d7;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  left: 20px;
+  top: 20px;
+  position: absolute;
+}
 .containerData{
   transform: translate(1px, -2px);
 }
