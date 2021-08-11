@@ -100,7 +100,7 @@
                     v-if="access !== 'w'"
                     >删除</a
                   >
-                  <a class="opera-item" v-else @click.prevent="del(item)">删除</a>
+                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">删除</a>
                 </div>
                 <div v-if="editIndex === index" class="page-title titleShow">
                   <form autocomplete="off">
@@ -295,6 +295,7 @@ export default {
       roleList: [],
       showDelModal: false, // 确认删除
       delId: -1,
+      ifBelongCurrentUser: 'false', // 删除操作时判断是否属于分享页面
       addPage: false, // 新增页面
       pageSetting: false, // 设置
       showExport: false,
@@ -613,8 +614,9 @@ export default {
       //   }
       // })
     },
-    del (item) {
+    del (item, belongCurrentUser) {
       this.showDelModal = true
+      this.ifBelongCurrentUser = belongCurrentUser
       this.delId = item.id
       // $.api.view.confirm({
       //   showCancel: false,
@@ -636,23 +638,45 @@ export default {
     sureDel (data) {
       this.showDelModal = false
       if (data && data.sure === '1') {
-        this.axios
-          .delete('/leaderview/home/homePage/deleteById/' + this.delId)
-          .then((res) => {
-            if (res.success) {
-              this.search()
-            } else {
-              if (gbs.inDev) {
-                Notification({
-                  message: res.msg,
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
+        if (this.ifBelongCurrentUser === 'true') {
+          console.log('delate')
+          this.axios
+            .delete('/leaderview/home/homePage/deleteById/' + this.delId)
+            .then((res) => {
+              if (res.success) {
+                this.search()
               } else {
-                tooltip('', res.msg, 'error')
+                if (gbs.inDev) {
+                  Notification({
+                    message: res.msg,
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', res.msg, 'error')
+                }
               }
-            }
-          })
+            })
+        } else {
+          console.log('cancel')
+          this.axios
+            .delete('/leaderview/home/homePage/cancelShareById/' + this.delId)
+            .then((res) => {
+              if (res.success) {
+                this.search()
+              } else {
+                if (gbs.inDev) {
+                  Notification({
+                    message: res.msg,
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                } else {
+                  tooltip('', res.msg, 'error')
+                }
+              }
+            })
+        }
       }
     },
     changeEdit (index) {
