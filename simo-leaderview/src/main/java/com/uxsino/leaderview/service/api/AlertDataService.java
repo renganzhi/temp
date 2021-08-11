@@ -72,7 +72,7 @@ public class AlertDataService {
 //        queryObject.setNotifyUserIds(alertInit.getFilterList().contains(alertType1.toString())
 //                ? SessionUtils.getCurrentUserIdBySession(session) : null);
         queryObject.setNotifyUserIds(SessionUtils.getCurrentUserIdBySession(session));
-        if (Objects.equals("video", alertType)) {
+        if (Objects.equals("video", alertType) ||Objects.equals("cloud", alertType)||Objects.equals("virtualization", alertType)) {
             queryObject.setSourceManage(false);
         } else {
             queryObject.setSourceManage(true);
