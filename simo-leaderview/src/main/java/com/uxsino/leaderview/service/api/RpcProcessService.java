@@ -814,6 +814,7 @@ public class RpcProcessService {
         // 由于IndicatorValue的类型为JSON ，通过toJavaObject创建实例的过程中：
         // 对JSONObject类型的IndicatorValue字段会造成数据丢失， 所以手动赋值
         for (LinkedHashMap map: list) {
+            map.remove("id");
             IndValue t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),IndValue.class);
             if (ObjectUtils.isEmpty(t.getIndicatorValue())){
                 if (ObjectUtils.isEmpty(map.get("indicatorValue"))) continue;
