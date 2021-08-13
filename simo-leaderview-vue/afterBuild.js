@@ -2,12 +2,12 @@ var fs = require('fs')
 var path = require('path')
 
 var fileName = 'index.html'
-var targetName = 'main.html'
+var targetName = 'index.html'
 var sourceFile = path.join(__dirname, 'dist', fileName)
-var destPath = path.join(__dirname, 'dist/leaderview-static', targetName)
+var destPath = path.join(__dirname, 'dist/leaderview', targetName)
 var data = ''
 var argument = process.argv.splice(2)
-var replaceText = argument[0] || '/leaderview-static/' // 目标目录
+var replaceText = argument[0] || '/leaderview/' // 目标目录
 
 // var ignoreJs = ['jquery', 'jquery-ui', 'select2', 'bootstrap']
 // var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'select2']
@@ -44,7 +44,7 @@ readStream.on('data', function (chunk) {
 })
 // readStream.pipe(writeStream); 仅流式复制，不修改
 writeStream.on('finish', function () {
-  console.log('\x1B[32m leaderview：main.html生成成功 \x1B[0m')
+  console.log('\x1B[32m leaderview：index.html生成成功 \x1B[0m')
 })
 writeStream.on('error', function (err) {
   console.log(err.stack)

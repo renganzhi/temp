@@ -320,7 +320,7 @@ export default {
         知识库: '/index.html#/knowledgebase',
         报表: '/index.html#/report',
         ITSM: '/itsm/index.html#/overview',
-        数据可视化: '/leaderview-static/main.html',
+        数据可视化: '/leaderview/index.html',
         '3D机房': '/3dsroom/index.html',
         资产: '/vue_asset/index.html'
       }

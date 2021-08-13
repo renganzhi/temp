@@ -612,7 +612,7 @@ export default {
       }
     },
     getMapData (chinaId) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
+      var mapPth = gbs.inDev ? 'static' : 'leaderview'
       if (chinaId) {
         return new Promise((resolve, reject) => {
           this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
@@ -691,7 +691,7 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     changeMapData (chinaId, target) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview-static'
+      var mapPth = gbs.inDev ? 'static' : 'leaderview'
       this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
         this[target] = this.initMapData(response)
         if (target === 'provinceArr' && !this.selectedItem.provinceCode) {

@@ -48,7 +48,7 @@
         </div>
       </Form> -->
       <div slot="footer">
-        <Button type="primary" @click="sureUpload">确认</Button>
+        <!-- <Button type="primary" @click="sureUpload">确认</Button> -->
         <Button @click="cancel()">取消</Button>
       </div>
       </Form>
