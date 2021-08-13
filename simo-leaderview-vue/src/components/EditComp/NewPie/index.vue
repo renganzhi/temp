@@ -140,14 +140,16 @@ export default {
         series: [
           {
             type: 'pie',
-            roseType: this.item.roseType || false,
+            roseType: this.item.pieType === '南丁格尔图' ? this.item.roseType : false,
+            // roseType: this.item.roseType || false,
             labelLine: {
               normal: {
                 show: this.item.showline
               }
             },
             // radius:,
-            radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            radius: this.item.pieType === '环形图' ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            // radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
             data: SericeData,
             emphasis: {
               itemStyle: {

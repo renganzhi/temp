@@ -10,6 +10,7 @@ import NewHistogram from '@/components/EditComp/NewHistogram/config.js'
 import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram/config.js'
 import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram/config.js'
 import NewBar from '@/components/EditComp/NewBar/config.js'
+import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram/config.js'
 
 const coordinate = {
   name: '坐标图',
@@ -53,10 +54,11 @@ const coordinate = {
     //   rotate: 0,
     //   chartData: morenData.pie
     // },
-    NewHistogram.item,
-    NewGroupHistogram.item,
-    NewGroupLeftHistogram.item,
-    NewBar.item,
+    // NewHistogram.item,
+    // NewGroupHistogram.item,
+    // NewGroupLeftHistogram.item,
+    IntegratedHistogram.item,
+    // NewBar.item,
     ELine.item,
     DoubleLinde.item,
     GradientPie.item,

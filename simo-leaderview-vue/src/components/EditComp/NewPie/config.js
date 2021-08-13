@@ -17,6 +17,8 @@ export default {
     'tooltipBackColor': '#57625d',
     'tooltipTextColor': '#fff',
     'tooltipfontSize': 14,
+    'pieType': '饼图',
+    'roseType': 'area',
     'LineColorArray': [
       '#2d98f1',
       '#32c5e9',
@@ -70,6 +72,30 @@ export default {
   },
   'styles': {
     'base': [
+      {
+        'name': '图元样式',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'key': 'pieType',
+            'tag': 'typeSelect',
+            'options': [
+              {
+                'icon': 'icon-n-pie',
+                'value': '饼图'
+              },
+              {
+                'icon': 'icon-n-ndge',
+                'value': '南丁格尔图'
+              },
+              {
+                'icon': 'icon-n-ring',
+                'value': '环形图'
+              }
+            ]
+          }
+        ]
+      },
       {
         'name': '图例配置',
         'tag': 'Hint',
@@ -205,7 +231,7 @@ export default {
             'name': '环宽',
             'key': 'detailwidth',
             'parentKey': {
-              'isRing': true
+              'pieType': '环形图'
             },
             'tag': 'input'
           }

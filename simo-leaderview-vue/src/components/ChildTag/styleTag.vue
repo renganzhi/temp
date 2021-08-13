@@ -11,6 +11,15 @@
                     </option>
             </select>
         </template>
+        <template v-if="item.tag === 'typeSelect'">
+          <div class="typeSelect">
+              <div v-for="(option,index) in item.options"
+              :key='index'
+              @click="changeType(option)"
+              :style="{'border':selectedItem[item.key] === option.value?'1px solid #409EFF':'1px solid rgba(255,255,255,0.2)'}"
+              ><span :class="option.icon" :style="{'color':selectedItem[item.key] === option.value?'#409EFF':'#fff'}"></span></div>
+          </div>
+        </template>
         <template v-if="item.tag === 'input'">
             <input  :type="item.type || 'number'"
                     :max="item.max*1 || 100000"
@@ -291,6 +300,12 @@ export default {
     }
   },
   methods: {
+    changeType (option) {
+      if (this.selectedItem.chartType === 'IntegratedHistogram') {
+        this.selectedItem.ifGradual = 'false'
+      }
+      this.selectedItem[this.item.key] = option.value
+    },
     setFontFamily: function (val) {
       this.selectedItem.fontFamily = val
     },
@@ -594,6 +609,26 @@ export default {
 }
 </script>
 <style>
+.typeSelect{
+  height:70px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position:relative;
+  top:-40px;
+}
+.typeSelect div{
+  width:20%;
+  height:40px;
+  border:1px solid  rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.typeSelect div span{
+  font-size: 30px;
+}
 .hoverShow{
   font-size: 20px;
 }

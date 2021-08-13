@@ -12,8 +12,8 @@ const percentage = {
   name: '百分比图',
   child: [
     NewPie.item,
-    NewPie2.item,
-    NewPie3.item,
+    // NewPie2.item,
+    // NewPie3.item,
     NewGauge.item,
     // {
     //   text: '饼图',
