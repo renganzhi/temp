@@ -28,7 +28,7 @@ export default {
       code = this.item.cityCode
     }
     // var code = 510000
-    var _static = gbs.inDev ? 'static' : 'leaderview-static'
+    var _static = gbs.inDev ? 'static' : 'leaderview'
     this.settings = {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
@@ -43,7 +43,7 @@ export default {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
       initOption: { renderer: 'svg' },
-      mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
+      mapStatic: gbs.inDev ? 'static' : 'leaderview',
       extend: {
         silent: true, // 不响应和触发鼠标事件
         title: {
@@ -413,7 +413,7 @@ export default {
     }
     // setTimeout(() => {
     //   var code = 100000
-    //   var _static = gbs.inDev ? 'static' : 'leaderview-static'
+    //   var _static = gbs.inDev ? 'static' : 'leaderview'
     //   this.settings = {
     //     positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
     //     position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛

@@ -33,7 +33,7 @@ export default {
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
     }
-    var _static = gbs.inDev ? 'static' : 'leaderview-static'
+    var _static = gbs.inDev ? 'static' : 'leaderview'
     this.settings = {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
@@ -42,7 +42,7 @@ export default {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
       initOption: { renderer: 'svg' },
-      mapStatic: gbs.inDev ? 'static' : 'leaderview-static',
+      mapStatic: gbs.inDev ? 'static' : 'leaderview',
       // settings: {
       //   // yAxisType: [0],
       //   // positionJsonLink: 'https://unpkg.com/v-charts-custom-maps@0.2.1/hk-geo.json',

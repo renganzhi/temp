@@ -34,13 +34,13 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
 
     // 打包之后自动生成simo项目中的大屏入口main.html文件
     var fileName = 'index.html'
-    var targetName = 'main.html'
+    var targetName = 'index.html'
     // path.resolve(__dirname, '..')
-    var sourceFile = path.resolve(__dirname, '../dist/leaderview-static', fileName)
-    var destPath = path.resolve(__dirname, '../dist/leaderview-static', targetName)
+    var sourceFile = path.resolve(__dirname, '../dist/leaderview', fileName)
+    var destPath = path.resolve(__dirname, '../dist/leaderview', targetName)
     var data = ''
     // var arguments = process.argv.splice(2)
-    var replaceText = '/leaderview-static/' // 目标目录
+    var replaceText = '/leaderview/' // 目标目录
 
     // var ignoreJs = ['jquery', 'jquery-ui', 'bootstrap', 'topo', 'echarts']
     // var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'spectrum', 'flexStyle', 'echarts']
