@@ -425,7 +425,7 @@ export default {
     setPaint: function () {
       if (this.paintConf) {
         if (this.paintConf.bgImg) {
-          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf.bgImg + ')')
+          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderviewWeb' + this.paintConf.bgImg + ')')
         } else {
           $('#mainbox').css('background', '')
         }
@@ -455,7 +455,7 @@ export default {
       // add
       if (this.paintConf2) {
         if (this.paintConf2.bgImg) {
-          $('#mainbox2').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf2.bgImg + ')')
+          $('#mainbox2').css('background', 'url(' + gbs.host + '/leaderviewWeb' + this.paintConf2.bgImg + ')')
         } else {
           $('#mainbox2').css('background', '')
         }

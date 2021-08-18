@@ -223,7 +223,7 @@ export default {
                 width: '357px',
                 height: '230px'
               },
-              closeIconUrl: '/leaderview/home/getImg/false/52', // apiUrl.getImg +
+              closeIconUrl: '/leaderviewWeb/home/getImg/false/52', // apiUrl.getImg +
               closeIconMargin: '10px 10px 10px 0',
               enableAutoPan: false
             })

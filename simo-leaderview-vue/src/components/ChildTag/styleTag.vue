@@ -213,42 +213,42 @@ export default {
       picSrc: '',
       cardCase: [
         {
-          mini: '/leaderview/border/cardMini1.png',
-          imgSrc: '/leaderview/border/cardBg1.png'
+          mini: '/leaderviewWeb/border/cardMini1.png',
+          imgSrc: '/leaderviewWeb/border/cardBg1.png'
         },
         {
-          mini: '/leaderview/border/cardMini2.png',
-          imgSrc: '/leaderview/border/cardBg2.png'
+          mini: '/leaderviewWeb/border/cardMini2.png',
+          imgSrc: '/leaderviewWeb/border/cardBg2.png'
         },
         {
-          mini: '/leaderview/border/cardMini3.png',
-          imgSrc: '/leaderview/border/cardBg3.png'
+          mini: '/leaderviewWeb/border/cardMini3.png',
+          imgSrc: '/leaderviewWeb/border/cardBg3.png'
         },
         {
-          mini: '/leaderview/border/cardBg4.png',
-          imgSrc: '/leaderview/border/cardBg4.png'
+          mini: '/leaderviewWeb/border/cardBg4.png',
+          imgSrc: '/leaderviewWeb/border/cardBg4.png'
         }
       ],
       titleCase: [
         {
-          mini: '/leaderview/border/titleMini1.png',
-          imgSrc: '/leaderview/border/titleBg1.png'
+          mini: '/leaderviewWeb/border/titleMini1.png',
+          imgSrc: '/leaderviewWeb/border/titleBg1.png'
         },
         {
-          mini: '/leaderview/border/titleMini2.png',
-          imgSrc: '/leaderview/border/titleBg2.png'
+          mini: '/leaderviewWeb/border/titleMini2.png',
+          imgSrc: '/leaderviewWeb/border/titleBg2.png'
         },
         {
-          mini: '/leaderview/border/titleBg3.png',
-          imgSrc: '/leaderview/border/titleBg3.png'
+          mini: '/leaderviewWeb/border/titleBg3.png',
+          imgSrc: '/leaderviewWeb/border/titleBg3.png'
         },
         {
-          mini: '/leaderview/border/titleBg4.png',
-          imgSrc: '/leaderview/border/titleBg4.png'
+          mini: '/leaderviewWeb/border/titleBg4.png',
+          imgSrc: '/leaderviewWeb/border/titleBg4.png'
         },
         {
-          mini: '/leaderview/border/titleBg5.png',
-          imgSrc: '/leaderview/border/titleBg5.png'
+          mini: '/leaderviewWeb/border/titleBg5.png',
+          imgSrc: '/leaderviewWeb/border/titleBg5.png'
         }
       ]
     }
@@ -262,7 +262,7 @@ export default {
   mounted: function () {
     for (let i = 0; i < 11; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
+      const src = `/leaderviewWeb/border/titleBg${6 + Number(i)}.png`
       this.titleCase.push({
         mini: src,
         imgSrc: src
@@ -270,7 +270,7 @@ export default {
     }
     for (let i = 0; i < 14; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
+      const src = `/leaderviewWeb/border/cardBg${5 + Number(i)}.png`
       this.cardCase.push({
         mini: src,
         imgSrc: src
@@ -374,7 +374,7 @@ export default {
       formData.append('uploaded_file', e.target.files[0])
       this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
