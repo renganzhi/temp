@@ -23,7 +23,6 @@ import ensureModal from '../src/navBar/ensureModal' // 确认提示框
 import './plugins/axios-init'
 import './plugins/element'
 // import VCharts from 'v-charts'
-import '#/icon/iconfont.css'
 import '#/font/asn/icon.css'
 import { gbs } from '@/config/settings'
 import { VTooltip } from 'v-tooltip'
