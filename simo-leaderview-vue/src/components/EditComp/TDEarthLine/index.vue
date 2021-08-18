@@ -191,9 +191,9 @@ export default {
       var myoption = {
         backgroundColor: 'transparent', // 背景颜色  不填为透明
         globe: {
-          baseTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`, // 'http://localhost:8080/api/leaderview/map/Mapcolor.jpg', // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          baseTexture: `${baseUrl}/leaderviewWeb/map/${this.item.backPicName}.jpg`, // 'http://localhost:8080/api/leaderview/map/Mapcolor.jpg', // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
           // environment: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`,
-          heightTexture: `${baseUrl}/leaderview/map/${this.item.backPicName}.jpg`, // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
+          heightTexture: `${baseUrl}/leaderviewWeb/map/${this.item.backPicName}.jpg`, // require('../../../../static/img/earthPic/' + _this.item.backPicName + '.jpg'),
           displacementScale: _this.item.displacementScale, // 凹凸度
           shading: _this.item.shadingtype, // color   realistic
           baseColor: '#fff',

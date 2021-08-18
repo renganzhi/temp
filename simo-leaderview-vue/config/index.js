@@ -56,12 +56,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/leaderview/index.html'),
+    index: path.resolve(__dirname, '../dist/leaderviewWeb/mobile.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'leaderview',
-    assetsPublicPath: '/',
+    assetsSubDirectory: 'leaderviewWeb',
+    assetsPublicPath: '../',
 
     /**
      * Source Maps

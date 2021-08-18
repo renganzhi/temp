@@ -7,7 +7,7 @@ export default {
     'chartType': 'BulletFrame',
     'showType': '2',
     'stationPlace': '1',
-    'imgSrc': '/leaderview/border/back.jpg',
+    'imgSrc': '/leaderviewWeb/border/back.jpg',
     'imgName': '',
     'videoSrc': '',
     'videoName': '',

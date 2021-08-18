@@ -96,7 +96,7 @@ for (let i = 0; i < 21; i++) {
   } else if (curIndex == 21) {
     type = 'gif'
   }
-  const src = `/leaderview/decorator/decoratorBg${curIndex}.${type}`
+  const src = `/leaderviewWeb/decorator/decoratorBg${curIndex}.${type}`
   decoratorCase.push({
     mini: src,
     imgSrc: src

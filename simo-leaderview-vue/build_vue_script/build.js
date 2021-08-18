@@ -33,20 +33,14 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     }
 
     // 打包之后自动生成simo项目中的大屏入口main.html文件
-    var fileName = 'index.html'
+    var fileName = 'mobile.html'
     var targetName = 'index.html'
     // path.resolve(__dirname, '..')
-    var sourceFile = path.resolve(__dirname, '../dist/leaderview', fileName)
-    var destPath = path.resolve(__dirname, '../dist/leaderview', targetName)
+    var sourceFile = path.resolve(__dirname, '../dist/leaderviewWeb', fileName)
+    var destPath = path.resolve(__dirname, '../dist/leaderviewWeb', targetName)
     var data = ''
     // var arguments = process.argv.splice(2)
-    var replaceText = '/leaderview/' // 目标目录
-
-    // var ignoreJs = ['jquery', 'jquery-ui', 'bootstrap', 'topo', 'echarts']
-    // var ignoreCss = ['bootstrap', 'mainStyle', 'layout', 'spectrum', 'flexStyle', 'echarts']
-    var ignoreJs = ['bootstrap', 'jquery', 'popper']
-    var ignoreCss = ['bootstrap']
-
+    var replaceText = './' // 目标目录
     var readStream = fs.createReadStream(sourceFile)
     var writeStream = fs.createWriteStream(destPath)
     readStream.setEncoding('UTF8')
@@ -62,22 +56,12 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       data = data.replace(/<body>/, '')
       data = data.replace(/<\/body>/, '')
 
-      ignoreJs.forEach(function (item) {
-        // var jsReg = new RegExp('(<script){1} (src=https){1}(.+?)' + item + '(.+?)(script>){1}', 'm')
-        var jsReg = new RegExp('<script[^>]*' + item + '[^>]*>(.*?)<\/script>', 'ig')
-        data = data.replace(jsReg, '')
-      })
-      ignoreCss.forEach(function (item) {
-        // var cssReg = new RegExp('<link[^>]*' + item + '[^>]*>(.*?)>', 'ig')
-        var cssReg = new RegExp('<link [^>]*' + item + '[^>]*>', 'igm')
-        data = data.replace(cssReg, '')
-      })
       writeStream.write(data, 'UTF8')
       writeStream.end()
     })
     // readStream.pipe(writeStream); 仅流式复制，不修改
     writeStream.on('finish', function () {
-      console.log('\x1B[32m leaderview：main.html生成成功 \x1B[0m')
+      console.log('\x1B[32m leaderviewWeb.html生成成功 \x1B[0m')
     })
     writeStream.on('error', function (err) {
       console.log(err.stack)

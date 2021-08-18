@@ -400,7 +400,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -3170,7 +3170,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/tpstander.png')
-          .attr('src', gbs.host + '/leaderview/border/topoBg.png')
+          .attr('src', gbs.host + '/leaderviewWeb/border/topoBg.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3186,7 +3186,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .attr('src', gbs.host + '/leaderviewWeb/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3202,7 +3202,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
+          .attr('src', gbs.host + '/leaderviewWeb/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3258,7 +3258,7 @@ export default {
             viewConf: JSON.stringify(cThis.chartNum),
             paintObj: JSON.stringify(cThis.paintObj),
             composeObj: JSON.stringify(cThis.combinList),
-            viewImage: '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            viewImage: '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({
@@ -3854,7 +3854,7 @@ export default {
           return
         }
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
         if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'Newimage' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
