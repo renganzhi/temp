@@ -41,14 +41,7 @@ task copyDist(dependsOn: npmBuild){
     doFirst {
         copy {
             from "dist/leaderview"
-            into "build/resources/main/templates/leaderview"
-        }
-    }
-    doFirst {
-        copy {
-            from "dist"
-            include "main.html"
-            into "build/resources/main/templates/pages"
+            into "build/resources/main/templates/leaderviewWeb"
         }
     }
     //--------------------------
