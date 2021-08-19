@@ -948,6 +948,9 @@
                          :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
                       <img :src="baseUrl + item.mini" />
                     </div>
+                    <div @click="chgImgSrc('GreenEarth')" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='GreenEarth'}"><img src="../../../static/img/地球3.png" alt=""></div>
+                    <div @click="chgImgSrc('VioletEarth')" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='VioletEarth'}"><img src="../../../static/img/地球2.png" alt=""></div>
+                    <div @click="chgImgSrc('BlueEarth')" :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='BlueEarth'}"><img src="../../../static/img/地球1.png" alt=""></div>
                   </div>
               <!--进度条-->
               <div v-if="selectedItem.chartType=='progress'">
