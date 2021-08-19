@@ -11,6 +11,8 @@ export default {
     'legendY': 85,
     'radius': 50,
     'detailwidth': 12,
+    'borderRadius': 0,
+    'ringWidth': 50,
     'isRing': false,
     'showline': true,
     'tooltipShow': true,
@@ -232,6 +234,30 @@ export default {
             'key': 'detailwidth',
             'parentKey': {
               'pieType': '环形图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '环宽',
+            'key': 'ringWidth',
+            'parentKey': {
+              'pieType': '南丁格尔图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '圆角大小',
+            'key': 'borderRadius',
+            'parentKey': {
+              'pieType': '饼图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '圆角大小',
+            'key': 'borderRadius',
+            'parentKey': {
+              'pieType': '南丁格尔图'
             },
             'tag': 'input'
           }

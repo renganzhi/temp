@@ -16,7 +16,7 @@
               <div v-for="(option,index) in item.options"
               :key='index'
               @click="changeType(option)"
-              :style="{'border':selectedItem[item.key] === option.value?'1px solid #409EFF':'1px solid rgba(255,255,255,0.2)'}"
+              :style="{'cursor': 'pointer','border':selectedItem[item.key] === option.value?'1px solid #409EFF':'1px solid rgba(255,255,255,0.2)'}"
               ><span :class="option.icon" :style="{'color':selectedItem[item.key] === option.value?'#409EFF':'#fff'}"></span></div>
           </div>
         </template>
