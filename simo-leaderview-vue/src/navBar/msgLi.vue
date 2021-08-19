@@ -46,7 +46,12 @@ export default {
     pram: {
       type: Object,
       default: () => {}
+    },
+    urlArry: {
+      type: Object,
+      default: () => {}
     }
+
   },
   data () {
     return {
@@ -73,7 +78,11 @@ export default {
   methods: {
     // 消息-查看详情
     lookDetail () {
-      window.location = `${window.location.origin}/index.html?msgId=${this.pram.data.id}#/msg/unread`
+      // window.location = `${window.location.origin}/index.html?msgId=${this.pram.data.id}#/msg/unread`
+      if (this.urlArry.msg) {
+        const msgurl = this.urlArry.msg.split('#')
+        window.location = `${window.location.origin + msgurl[0]}?msgId=${this.pram.data.id}#${msgurl[1]}`
+      }
       // this.$api.msgTagRead({ ids: this.pram.data.id })
       // this.$emit('close-pop')
       // this.$store.commit('base/setCurrentMenu', { id: 'MSG05', parentId: 'MSG02', typeId: 'MSG01' })

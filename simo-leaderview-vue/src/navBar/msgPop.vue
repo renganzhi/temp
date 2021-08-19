@@ -32,6 +32,7 @@
           v-else
           :key="item.id"
           :pram="{data:item,levelMap,originArr}"
+          :urlArry="urlArry"
           v-on="$listeners"
         />
       </template>
@@ -44,6 +45,12 @@ import { mapState } from 'vuex'
 export default {
   components: {
     MsgLi: () => import('./msgLi')
+  },
+  props: {
+    urlArry: {
+      type: Object,
+      default: () => {}
+    }
   },
   data () {
     return {
@@ -81,7 +88,10 @@ export default {
   methods: {
     checkAll () {
       // this.$emit('show-all-msg')
-      window.location = `${window.location.origin}/index.html#/msg/unread`
+      // window.location = `${window.location.origin}/index.html#/msg/unread`
+      if (this.urlArry.msg) {
+        window.location = `${window.location.origin + this.urlArry.msg}`
+      }
     },
     clickOpenVoice () {
       // $store.commit('base/setVoice', !openVoice)
