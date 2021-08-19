@@ -11,6 +11,13 @@
                     </option>
             </select>
         </template>
+        <template v-if="item.tag === 'MarkLocation'">
+          <div style="position:relative;left:50px;top:20px;">
+            <div style="margin-bottom:15px"><span style="margin-right:10px">经度</span><input type="number" name="" ref="lng"></div>
+            <div><span style="margin-right:10px">纬度</span><input type="number" name="" ref="lat"></div>
+            <button style="margin-left:35px;margin-top:20px;outline:none" @click="selectMarker">查询</button>
+          </div>
+        </template>
         <template v-if="item.tag === 'typeSelect'">
           <div class="typeSelect">
               <div v-for="(option,index) in item.options"
@@ -208,6 +215,7 @@ export default {
   props: ['item', 'selectedItem', 'selectChange', 'chooseSameFlag'],
   data () {
     return {
+      markExit: false, // 在线地图查询添加时，判断添加的点是否存在
       baseUrl: '',
       settingData: baseData,
       picSrc: '',
@@ -300,6 +308,26 @@ export default {
     }
   },
   methods: {
+    selectMarker () {
+      this.markExit = false
+      this.selectedItem.pointArray.forEach(element => {
+        if (Number(this.$refs.lng.value) === element.lng && Number(this.$refs.lat.value) === element.lat) {
+          this.markExit = true
+        } else {
+        }
+      })
+      if (!this.markExit) {
+        this.selectedItem.selectMark.lng = Number(this.$refs.lng.value)
+        this.selectedItem.selectMark.lat = Number(this.$refs.lat.value)
+        this.selectedItem.selectMark.icon = this.selectedItem.markerType
+        this.selectedItem.pointArray.push({
+          lng: Number(this.$refs.lng.value),
+          lat: Number(this.$refs.lat.value),
+          icon: this.selectedItem.markerType
+        })
+        this.selectedItem.selectChange = !this.selectedItem.selectChange // 每次点查一直询就修改，保证地图能一直更新
+      }
+    },
     changeType (option) {
       if (this.selectedItem.chartType === 'IntegratedHistogram') {
         this.selectedItem.ifGradual = 'false'
