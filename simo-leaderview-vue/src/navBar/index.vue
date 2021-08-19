@@ -35,6 +35,7 @@
           v-if="openName === 'msg' && isOpen"
           @close-pop="closePop"
           @show-all-msg="showAllMsg"
+          :urlArry="MenuUrlArry"
           @open-content="openContent"
         />
       </li>
@@ -215,7 +216,7 @@ export default {
       msgRow: {},
       menuMoveMd: { isShow: false },
       rightMenu: [],
-
+      MenuUrlArry: {},
       theme: 'default',
       typeId: '',
       typeTitle: '',
@@ -223,9 +224,19 @@ export default {
     }
   },
   created () {
-    this.axios.get('/mc/getCustomMenu?1627953454159').then((res) => {
+    this.axios.get('/mc/getCustomMenu?' + new Date().getTime()).then((res) => {
       if (res.success) {
         this.menu = res.obj
+        this.menu.forEach(element => {
+          if (element.modelName) {
+            this.MenuUrlArry[element.modelName] = element.url
+          }
+          element.items.forEach(data => {
+            if (data.modelName) {
+              this.MenuUrlArry[data.modelName] = data.url
+            }
+          })
+        })
       }
     })
   },
