@@ -13,6 +13,8 @@ export default {
     'showline': true,
     'isRing': true,
     'detailwidth': 12,
+    'borderRadius': 0,
+    'ringWidth': 50,
     'tooltipShow': true,
     'tooltipBackColor': '#57625d',
     'tooltipTextColor': '#fff',
