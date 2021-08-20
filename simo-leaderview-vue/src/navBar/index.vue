@@ -303,15 +303,16 @@ export default {
 
     logout () {
       this.$ensureModal.confirm('确认要退出系统？', () => {
-        this.axios.get('/logout', { pagination: false }).then((res) => {
-          if (res.success) {
-          }
-        })
-        if (gbs.inDev) {
-          window.location.href = window.location.origin + '/#/login'
-        } else {
-          this.$router.push('/login')
-        }
+        window.location.href = window.location.origin + '/mc/logout'
+        // this.axios.get('/logout', { pagination: false }).then((res) => {
+        //   if (res.success) {
+        //   }
+        // })
+        // if (gbs.inDev) {
+        //   window.location.href = window.location.origin + '/#/login'
+        // } else {
+        //   this.$router.push('/login')
+        // }
       })
     },
 
