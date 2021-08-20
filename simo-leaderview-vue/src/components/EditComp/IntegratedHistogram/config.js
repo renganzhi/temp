@@ -402,12 +402,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -845,6 +861,10 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
                 'name': '10',
                 'value': 10
               },
@@ -859,6 +879,10 @@ export default {
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -1248,12 +1272,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -1640,12 +1680,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
