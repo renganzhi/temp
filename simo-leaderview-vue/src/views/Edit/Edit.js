@@ -122,6 +122,7 @@ export default {
       provinceArr: [], // 34个省的数据
       cityArr: [], // 选中省的所有市数据
       areaArr: [], // 选中市的所有区域数据
+	  countyArr:[],//选中区县所有的乡镇数据
       editPieces: [], // 区域分布图量级
       editPiecesCopy: [],
       selectMapData: {}, // 匹配区域分布图输入框的数据
@@ -894,19 +895,19 @@ export default {
     },
     // 切换地图的省
     chgProvince (id) {
-      if (this.selectedItem.mapLevel === 'city') {
+      if (this.selectedItem.mapLevel === 'city' || this.selectedItem.mapLevel === 'county') {
         // 北京， ... ， 香港， 澳门
         var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
           if (gbs.inDev) {
             Notification({
-              message: '该地区不支持第三级地图',
+              message: '该地区不支持该级别地图',
               position: 'bottom-right',
               customClass: 'toast toast-info'
             })
           } else {
-            tooltip('', '该地区不支持第三级地图', 'info')
+            tooltip('', '该地区不支持该级别地图', 'info')
           }
         }
       }
@@ -927,6 +928,17 @@ export default {
               this.clearAlertMap()
             }
           }
+		  else if (this.selectedItem.mapLevel === 'county') {
+			  this.selectedItem.cityCode = data[0].value
+			  this.getMapData(this.selectedItem.cityCode).then((datacounty) => {
+				this.countyArr=datacounty
+				this.areaArr = []
+				this.selectedItem.countyCode = datacounty[0].value
+				if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+				  this.clearAlertMap()
+				}
+			})   
+		  }
         })
       }
     },
@@ -935,7 +947,8 @@ export default {
       id = id || this.selectedItem.cityCode
       if (id && this.selfMapLevel) {
         this.getMapData(id).then((data) => {
-          this.areaArr = data
+		  this.countyArr=data
+          this.areaArr = []
           this.selectedItem.cityCode = id
           if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.initLevelData()
@@ -948,6 +961,24 @@ export default {
         })
       }
     },
+	chgCounty (id) {
+	  // console.log('+++++++chgCity+++++++-' + this.selfMapLevel)
+	  id = id || this.selectedItem.countyCode
+	  if (id && this.selfMapLevel) {
+	    this.getMapData(id).then((data) => {
+	      this.areaArr = data
+	      this.selectedItem.countyCode = id
+	      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+	        this.initLevelData()
+	      }
+	      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+	        if (this.selfMapLevel && id) {
+	          this.clearAlertMap()
+	        }
+	      }
+	    })
+	  }
+	},
     chgAreaName (name, index) {
       if (name) {
         this.$set(this.selectedPositn, index, name)
@@ -4597,14 +4628,63 @@ export default {
           }
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
-            console.log(data)
             _this.cityArr = data
             // if (!_this.selectedItem.cityCode) {
             _this.selectedItem.cityCode = data[0].value
             // }
           })
         }
-      } else {
+      } else if (newValue === 'county') {
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000'] // 直辖市自治区没有三级地图
+        if (oldV === 'country') {
+          if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
+            this.selectedItem.provinceCode = 510000 // 默认选中一个位置
+			this.getMapData(this.selectedItem.provinceCode).then((data) => {
+			  _this.cityArr = data
+			  // if (!_this.selectedItem.cityCode) {
+			  _this.selectedItem.cityCode = data[0].value
+			  // }
+			})
+          }
+        }
+        if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
+          this.selectedItem.mapLevel = oldV
+          if (gbs.inDev) {
+            Notification({
+              message: '该地区不支持该级别地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '该地区不支持该级别地图', 'info')
+          }
+        } else {
+			if (!this.selectedItem.cityCode)
+			{
+				this.getMapData(this.selectedItem.provinceCode).then((data) => {
+				    _this.cityArr = data
+				  // if (!_this.selectedItem.cityCode) {
+				    _this.selectedItem.cityCode = data[0].value
+					this.getMapData(this.selectedItem.cityCode).then((data) => {
+					  _this.countyArr = data
+					  // if (!_this.selectedItem.cityCode) {
+					  _this.selectedItem.countyCode = data[0].value
+					  // }
+					})
+				  // }
+				})
+			}
+			else {
+				this.getMapData(this.selectedItem.cityCode).then((data) => {
+				  _this.countyArr = data
+				  // if (!_this.selectedItem.cityCode) {
+				  _this.selectedItem.countyCode = data[0].value
+				  // }
+				})
+			}
+         
+        }
+      }else {
         if (newValue === 'province') {
           if (!this.selectedItem.provinceCode) {
             this.selectedItem.provinceCode = this.provinceArr[0].value

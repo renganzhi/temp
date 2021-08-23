@@ -2004,6 +2004,7 @@
                       <option value="country">全国地图</option>
                       <option value="province">省级地图</option>
                       <option value="city">地市级地图</option>
+											<option value="county">区县级地图</option>
                     </select>
                   </div>
                   <div v-show="selectedItem.mapLevel!=='country'"
@@ -2015,7 +2016,7 @@
                              :obj="provinceArr"
                              @input="chgProvince(selectedItem.provinceCode)"></Select2>
                   </div>
-                  <div v-if="selectedItem.mapLevel==='city'"
+                  <div v-if="selectedItem.mapLevel==='city' || selectedItem.mapLevel==='county'"
                        @click="chgMapLevel"
                        class="form-group cols2">
                     <label>市</label>
@@ -2024,6 +2025,15 @@
                              :obj="cityArr"
                              @input="chgCity(selectedItem.cityCode)"></Select2>
                   </div>
+				  <div v-if="selectedItem.mapLevel==='county'"
+				       @click="chgMapLevel"
+				       class="form-group cols2">
+				    <label>区/县</label>
+				    <Select2 v-model="selectedItem.countyCode"
+				             :mapSelect="true"
+				             :obj="countyArr"
+				             @input="chgCounty(selectedItem.countyCode)"></Select2>
+				  </div>
                   <div class="form-group cols2"
                        v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip hoverTips"
