@@ -3,8 +3,8 @@ package com.uxsino.leaderview.controller.alert;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.AlertType;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
@@ -22,7 +22,6 @@ import java.util.Map;
 @RequestMapping("/alert/params")
 @Business(name = BusinessConstants.ALERT)
 public class AlertParamsController {
-
     /**
      * 获取所有的告警类型下拉框
      * @return

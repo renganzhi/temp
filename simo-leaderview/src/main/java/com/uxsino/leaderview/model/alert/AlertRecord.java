@@ -1,12 +1,10 @@
 package com.uxsino.leaderview.model.alert;
 
 import com.alibaba.fastjson.JSONObject;
-import com.uxsino.commons.enums.AlertOrigin;
-import com.uxsino.commons.enums.ThirdParties;
-import com.uxsino.commons.model.AlertType;
-import com.uxsino.commons.model.IpAlertRuleType;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.utils.DateUtils;
+import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.rule.model.IpAlertRuleType;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +14,7 @@ import java.util.Date;
 
 /**
  * @description 组装的告警信息
- * 
+ *
  * @date 2017年4月13日
  */
 @Data
@@ -278,7 +276,7 @@ public class AlertRecord {
     /**
      * 第三方来源
      */
-    private ThirdParties accessSource;
+    private String accessSource;
 
     /**
      * 分享人
@@ -298,7 +296,7 @@ public class AlertRecord {
     /**
      * 告警来源
      */
-    private AlertOrigin alertOrigin;
+    private String alertOrigin;
 
     public AlertRecord() {
 
@@ -310,7 +308,7 @@ public class AlertRecord {
     public AlertRecord(Long alertId, String alertCode, String objectId, Integer level, String recentAlertBrief,
                        AlertHandleStatus handleStatus, Integer number, Integer times, Date firstAlertDate, Date recentAlertDate,
                        String processInstanceId, Date handleDate, Boolean isDeleted, Long ruleId, String indicatorId,
-                       String componentId, String fieldId, Long fieldConfId, AlertOrigin alertOrigin) {
+                       String componentId, String fieldId, Long fieldConfId, String alertOrigin) {
         this.alertId = alertId;
         this.alertCode = alertCode;
         this.objectId = objectId;
@@ -400,7 +398,7 @@ public class AlertRecord {
      */
     public AlertRecord(Long alertId, String alertCode, String objectId, Integer level, String recentAlertBrief,
                        AlertHandleStatus handleStatus, Integer number, Integer times, Date firstAlertDate, Date recentAlertDate,
-                       String processInstanceId, Date handleDate, Boolean isDeleted, String objectName, ThirdParties accessSource) {
+                       String processInstanceId, Date handleDate, Boolean isDeleted, String objectName, String accessSource) {
         this.alertId = alertId;
         this.alertCode = alertCode;
         this.objectId = objectId;

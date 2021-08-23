@@ -2,8 +2,7 @@ package com.uxsino.leaderview.model.alert;
 
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.criteria.Criteria;
-import com.uxsino.commons.enums.AlertOrigin;
-import com.uxsino.commons.model.AlertType;
+import com.uxsino.leaderview.model.AlertType;
 import com.uxsino.commons.model.DataSourceType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +20,7 @@ import java.util.Map.Entry;
 
 /**
  * @description 告警查询的参数对象
- * 
+ *
  * @date 2017年4月13日
  */
 @Data
@@ -267,7 +266,7 @@ public class AlertQuery {
      * 告警来源
      */
     @ApiModelProperty(value = "告警来源")
-    private AlertOrigin alertOrigin;
+    private String alertOrigin;
 
     /**
      * 部件标识
