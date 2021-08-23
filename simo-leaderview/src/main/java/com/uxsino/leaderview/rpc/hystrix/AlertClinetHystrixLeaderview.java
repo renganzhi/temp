@@ -1,14 +1,10 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
-import com.alibaba.fastjson.JSONArray;
-import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.leaderview.model.alert.AlertLevelQuery;
 import com.uxsino.leaderview.model.alert.AlertQuery;
 import com.uxsino.leaderview.rpc.AlertService;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 @Component("leaderview-AlertClient-hystrix-leaderview")

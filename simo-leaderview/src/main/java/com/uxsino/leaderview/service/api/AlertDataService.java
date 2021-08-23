@@ -9,11 +9,11 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
-import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.Dates;
 import com.uxsino.commons.utils.SessionUtils;
+import com.uxsino.leaderview.model.AlertType;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
@@ -642,7 +642,7 @@ public class AlertDataService {
             try {
                 Map<String, String> row = new LinkedHashMap<>();
                 row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
-                row.put("告警来源", alert.getAlertOrigin().toString());
+                row.put("告警来源", alert.getAlertOrigin());
                 NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
                 if (ObjectUtils.isEmpty(ne)){
                     return;

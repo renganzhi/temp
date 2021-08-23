@@ -1,6 +1,5 @@
 package com.uxsino.leaderview.model.alert;
 
-import com.uxsino.commons.enums.AlertOrigin;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @description 资源告警信息实体类
- * 
+ *
  * @date 2017年4月13日
  */
 @Data
@@ -37,9 +36,9 @@ public class Alert extends CurrencyAlert {
      * 告警来源
      */
     @Column(length = 30)
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @ApiModelProperty(value = "告警来源")
-    private AlertOrigin alertOrigin;
+    private String alertOrigin;
 
     /**
      * 部件标识（数量检测、组合策略可能有多个部件）
