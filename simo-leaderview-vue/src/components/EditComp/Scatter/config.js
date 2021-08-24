@@ -297,12 +297,88 @@ export default {
         {
           'name': 'X轴刻度倾斜度',
           'key': 'XaxisLabelrotate',
-          'tag': 'input'
+          'tag': 'select',
+          'options': [
+            {
+              'name': '0',
+              'value': 0
+            },
+            {
+              'name': '10',
+              'value': 10
+            },
+            {
+              'name': '20',
+              'value': 20
+            },
+            {
+              'name': '30',
+              'value': 30
+            },
+            {
+              'name': '40',
+              'value': 40
+            },
+            {
+              'name': '-10',
+              'value': -10
+            },
+            {
+              'name': '-20',
+              'value': -20
+            },
+            {
+              'name': '-30',
+              'value': -30
+            },
+            {
+              'name': '-40',
+              'value': -40
+            }
+          ]
         },
         {
           'name': 'Y轴刻度倾斜度',
           'key': 'YaxisLabelrotate',
-          'tag': 'input'
+          'tag': 'select',
+          'options': [
+            {
+              'name': '0',
+              'value': 0
+            },
+            {
+              'name': '10',
+              'value': 10
+            },
+            {
+              'name': '20',
+              'value': 20
+            },
+            {
+              'name': '30',
+              'value': 30
+            },
+            {
+              'name': '40',
+              'value': 40
+            },
+            {
+              'name': '-10',
+              'value': -10
+            },
+            {
+              'name': '-20',
+              'value': -20
+            },
+            {
+              'name': '-30',
+              'value': -30
+            },
+            {
+              'name': '-40',
+              'value': -40
+            }
+          ]
         }, {
           'name': '颜色类型',
           'key': 'ifGradual',
