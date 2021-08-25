@@ -1218,7 +1218,7 @@ public class HomePageController {
         File filePath = new File(jsonPath + "/mapJson");
         File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
         fileDir.mkdirs();
-        name = Strings.isNullOrEmpty(name) ? fileName : name+extension;
+        name = Strings.isNullOrEmpty(name) ? fileName : name+"."+extension;
         File saveFile = new File(fileDir, name);
 
         File pathName = new File("leaderview/mapJson/"+name);
