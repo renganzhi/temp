@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import com.uxsino.leaderview.model.AlertType;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
