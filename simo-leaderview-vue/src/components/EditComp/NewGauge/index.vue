@@ -87,7 +87,8 @@ export default {
           text: myData.value + myData.unit,
           x: 'center',
           show: this.item.legendY,
-          top: this.item.NamelegendY + '%',
+          // top: this.item.NamelegendY + '%',
+          top: 'middle',
           textStyle: {
             fontSize: this.item.NameSize,
             color: this.item.NameColor,
