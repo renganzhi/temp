@@ -783,12 +783,24 @@ export default {
                   type: 'bar',
                   itemStyle: {
                     normal: {
-                      color: this.item.ifGradual === 'true' ? {
+                      color: this.item.ifGradual === 'true' ? this.item.gradientDirection4 === '1' ? {
                         type: 'linear',
                         x: 0,
                         y: 0,
                         x2: 0,
                         y2: 1,
+                        colorStops: [{
+                          offset: 0, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][0] // 0% 处的颜色
+                        }, {
+                          offset: 1, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][1] // 100% 处的颜色
+                        }],
+                        global: false // 缺省为 false
+                      } : {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 1,
+                        y2: 0,
                         colorStops: [{
                           offset: 0, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][0] // 0% 处的颜色
                         }, {
@@ -808,12 +820,24 @@ export default {
                 barWidth: '60%',
                 itemStyle: {
                   normal: {
-                    color: this.item.ifGradual === 'true' ? {
+                    color: this.item.ifGradual === 'true' ? this.item.gradientDirection4 === '1' ? {
                       type: 'linear',
                       x: 0,
                       y: 0,
                       x2: 0,
                       y2: 1,
+                      colorStops: [{
+                        offset: 0, color: this.item.DScatterColor4[index - 1][0] // 0% 处的颜色
+                      }, {
+                        offset: 1, color: this.item.DScatterColor4[index - 1][1] // 100% 处的颜色
+                      }],
+                      global: false // 缺省为 false
+                    } : {
+                      type: 'linear',
+                      x: 0,
+                      y: 0,
+                      x2: 1,
+                      y2: 0,
                       colorStops: [{
                         offset: 0, color: this.item.DScatterColor4[index - 1][0] // 0% 处的颜色
                       }, {

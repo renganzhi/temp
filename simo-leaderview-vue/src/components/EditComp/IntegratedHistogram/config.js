@@ -259,6 +259,7 @@ var NewBar = {
   'imgClass4': 'icon-n-bar',
   'chartType4': 'NewBar',
   'ctLegendShow4': true,
+  'gradientDirection4': '1', // 条形图渐变方向
   'ifGradual4': 'false',
   'colorful4': false,
   'splitShow4': false,
@@ -2041,6 +2042,23 @@ export default {
               'value': 'false'
             }
           ]
+        }, {
+          'name': '渐变方向',
+          'key': 'gradientDirection4',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '上下渐变',
+              'value': '1'
+            },
+            {
+              'name': '左右渐变',
+              'value': '2'
+            }
+          ],
+          'parentKey': {
+            'ifGradual': 'true'
+          }
         }, {
           'name': '柱体类型',
           'key': 'colorful4',
