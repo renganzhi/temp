@@ -8,6 +8,10 @@ export default {
     'ifGradual': 'false',
     'FontColor': 'white',
     'LineColor': '#11ecec',
+    'tooltipShow': false, // tips是否显示
+    'tooltipBackColor': '#57625d', // tips背景颜色
+    'tooltipTextColor': '#ffffff', // tips文字颜色
+    'tooltipfontSize': '14', // tips字体大小
     'FontSize': 12,
     'LineWidth': 2,
     'isHollow': 0,
@@ -116,6 +120,50 @@ export default {
           'key': 'FontSize',
           'tag': 'input'
         } ]
+      }, {
+        'name': 'tips配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': 'tips可见性',
+            'key': 'tooltipShow',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': 'tips背景色',
+            'parentKey': {
+              'tooltipShow': true
+            },
+            'key': 'tooltipBackColor',
+            'tag': 'Color'
+          },
+          {
+            'name': 'tips字体色',
+            'key': 'tooltipTextColor',
+            'parentKey': {
+              'tooltipShow': true
+            },
+            'tag': 'Color'
+          },
+          {
+            'name': 'tips字体大小',
+            'key': 'tooltipfontSize',
+            'parentKey': {
+              'tooltipShow': true
+            },
+            'tag': 'input'
+          }
+        ]
       }, {
         'name': '分界线配置',
         'tag': 'Hint',
