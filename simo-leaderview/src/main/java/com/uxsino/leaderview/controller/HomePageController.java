@@ -74,6 +74,7 @@ public class HomePageController {
 			put("png", "image/png");
 		}
 	};
+    private String jsonPath = this.getClass().getClassLoader().getResource("static").getFile();
 
     @Autowired
     private HomePageService homePageService;
@@ -1205,4 +1206,43 @@ public class HomePageController {
         return new JsonModel(true, "删除成功");
     }
 
+    @ResponseBody
+    @PostMapping("/uploadJson")
+    @ApiOperation("geoJson文件上传")
+    public JsonModel uploadJson(MultipartFile file,
+                                @RequestParam(required = false) String name
+                                ) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.indexOf(".") + 1);
+        //存放文件的目录
+        File filePath = new File(jsonPath + "/mapJson");
+        File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
+        fileDir.mkdirs();
+        name = Strings.isNullOrEmpty(name) ? fileName : name+extension;
+        File saveFile = new File(fileDir, name);
+
+        File pathName = new File("leaderview/mapJson/"+name);
+        String path = pathName.toString();
+        String jsonPath = path.replaceAll("\\\\", "/");
+        JSONObject result = new JSONObject();
+        result.put("url",jsonPath);
+        try {
+            file.transferTo(saveFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, "上传失败");
+        }
+        return new JsonModel(true, "上传成功",result);
+    }
+
+    @RequestMapping("/getJson")
+    public JsonModel getJson(String name){
+        JSONObject result = new JSONObject();
+        File filePath = new File("leaderview/mapJson/"+name+".json");
+        //String absolutePath = filePath.getAbsolutePath();
+        String path = filePath.toString();
+        String jsonPath = path.replaceAll("\\\\", "/");
+        result.put("文件路径",jsonPath);
+        return new JsonModel(true,result);
+    }
 }

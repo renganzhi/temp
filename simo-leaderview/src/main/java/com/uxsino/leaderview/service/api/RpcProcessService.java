@@ -13,10 +13,13 @@ import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.model.*;
 import com.uxsino.leaderview.model.alert.*;
+import com.uxsino.leaderview.model.asset.AssetCriteria;
+import com.uxsino.leaderview.model.asset.AssetTreeVo;
 import com.uxsino.leaderview.model.business.ManageStatus;
 import com.uxsino.leaderview.model.business.*;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.AlertService;
+import com.uxsino.leaderview.rpc.AssetService;
 import com.uxsino.leaderview.rpc.BusinessService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +51,9 @@ public class RpcProcessService {
 
     @Autowired
     private BusinessService businessService;
+
+    @Autowired
+    private AssetService assetService;
 
     @Autowired
     private DomainUtils domainUtils;
@@ -892,6 +898,52 @@ public class RpcProcessService {
         if(!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
+        return jsonModel;
+    }
+
+    public JsonModel statisticsResourceNodes(String topoId,List<BaseNeClass> baseNeClass) throws Exception {
+        JsonModel jsonModel = monitorService.statisticsResourceNodes(topoId,null,baseNeClass);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
+    public List<StatisticsResult> statisticsEachLevelAlarms(String topoId) throws Exception {
+        JsonModel jsonModel = monitorService.statisticsEachLevelAlarms(topoId);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return toJavaBeanList(jsonModel, StatisticsResult.class);
+    }
+
+    public JsonModel statisticsLinkAlarms(String topoId) throws Exception {
+        JsonModel jsonModel = monitorService.statisticsLinkAlarms(topoId);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        //Object obj = jsonModel.getObj();
+        return jsonModel;
+    }
+
+    public JsonModel alert_report() {
+        JsonModel jsonModel = assetService.alert_report();
+        return jsonModel;
+    }
+
+    public JsonModel alarmMsgByPage(Integer lastNum) {
+        JsonModel jsonModel= assetService.alarmMsgByPage(lastNum);
+        return jsonModel;
+    }
+
+    public JsonModel searchTest(AssetTreeVo criteria) {
+        String params = JSON.toJSONString(criteria);
+        JsonModel jsonModel = assetService.search(params);
+        return jsonModel;
+    }
+    public JsonModel search(AssetCriteria criteria) {
+        String params = JSON.toJSONString(criteria);
+        JsonModel jsonModel = assetService.search(params);
         return jsonModel;
     }
 }

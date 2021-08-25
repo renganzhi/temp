@@ -1616,7 +1616,7 @@
                 "notNull": false,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getNeStatus?abnormal=false"
+                "dataUrl": "/leaderview/monitor/params/getNeStatus?abnormal=true"
             }
         ]
     },
@@ -2457,6 +2457,190 @@
                 "method": "get",
                 "dataUrl": "/leaderview/monitor/params/getChannelList",
                 "params": ["neId"]
+            }
+        ]
+    },
+    {
+        "key": "Topo_Resources_Count",
+        "name": "拓扑统计-资源",
+        "componet": "monitor",
+        "type": "NewNumber,NewDoubler",
+        "url": "/leaderview/monitor/getTopoResourcesCount",
+        "method": "post",
+        "params": [
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
+        "key": "Topo_Link_Count",
+        "name": "拓扑统计-链路",
+        "component": "monitor",
+        "type": "NewDoubler,NewNumber",
+        "url": "/leaderview/monitor/countTopoLink",
+        "method" : "post",
+        "params": [
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
+                "key": "abnormal",
+                "name": "统计维度",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "全部",
+                        "value": "false"
+                    },
+                    {
+                        "name": "异常",
+                        "value": "true"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "count_Topo_Alert",
+        "name": "拓扑统计-告警",
+        "component": "alert",
+        "type": "NewDoubler,NewNumber",
+        "url": "/leaderview/alert/countTopoAlert",
+        "method" : "post",
+        "params": [
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
+                "key": "alertLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "alert/currencyAlertmanager/findActivatedLevels"
+            }
+        ]
+    },
+    {
+        "key": "get_Alert_Count",
+        "name": "资产告警类别数量统计",
+        "component": "asset",
+        "type": "NewGroupHistogram,NewGroupLeftHistogram",
+        "url": "/leaderview/asset/getAlertCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "remindType",
+                "name": "告警类别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/asset/params/remindType"
+            },
+            {
+                "key": "remindLevel",
+                "name": "告警级别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/asset/params/remindLevel"
+            }
+        ]
+    },
+    {
+        "key": "get_Alert_By_Page",
+        "name": "资产告警信息",
+        "component": "asset",
+        "type": "NewTable,NewMoveTable",
+        "url": "/leaderview/asset/getAlertByPage",
+        "method" : "get",
+        "params": [
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    },
+                    {
+                        "name": "15",
+                        "value": 15
+                    },
+                    {
+                        "name": "20",
+                        "value": 20
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "asset_Status_Total_Count",
+        "name": "资产状态总量统计",
+        "component": "asset",
+        "type": "NewGroupHistogram,NewGroupLeftHistogram",
+        "url": "/leaderview/asset/assetStatusTotalCount",
+        "method" : "post",
+        "params": [
+            {
+                "key": "status",
+                "name": "资产状态",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "leaderview/asset/params/assetStatus"
+            }
+        ]
+    },
+    {
+        "key": "count_Asset",
+        "name": "资产数量统计",
+        "component": "asset",
+        "type": "NewDoubler,NewNumber",
+        "url": "/leaderview/asset/countAsset",
+        "method" : "post",
+        "params": [
+            {
+                "key": "status",
+                "name": "资产状态",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "leaderview/asset/params/assetStatus"
             }
         ]
     }
