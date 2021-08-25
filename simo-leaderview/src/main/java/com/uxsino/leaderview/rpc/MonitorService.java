@@ -5,6 +5,7 @@ import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
@@ -44,6 +45,11 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/findNeLinks", consumes = "application/json")
     JsonModel findNeLinks(@RequestParam("pagination") boolean pagination, @RequestBody NetworkLinkModel networkLinkModel);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsResourceNodes", consumes = "application/json")
+    JsonModel statisticsResourceNodes(@RequestParam("topoId") String topoId,
+                                      @RequestParam(value = "neClasses",required = false) List<NeClass> neClasses,
+                                      @RequestParam(value = "baseNeClasses",required = false) List<BaseNeClass> baseNeClasses);
+
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
     JsonModel findNeHealth(@RequestParam("neIds")List<String> neIds,
                            @RequestParam("isHistory") boolean isHistory,
@@ -69,4 +75,10 @@ public interface MonitorService {
 
     @RequestMapping(method = RequestMethod.GET, value = "/hcnet/channelList/{neId}", consumes = "application/json")
     JsonModel getChannelList(@PathVariable("neId") String neId);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsLinkAlarms", consumes = "application/json")
+    JsonModel statisticsLinkAlarms(@RequestParam("topoId") String topoId);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsEachLevelAlarms", consumes = "application/json")
+    JsonModel statisticsEachLevelAlarms(@RequestParam("topoId") String topoId);
 }

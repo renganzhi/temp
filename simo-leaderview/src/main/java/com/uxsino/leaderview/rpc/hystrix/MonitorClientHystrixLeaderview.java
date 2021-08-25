@@ -5,6 +5,7 @@ import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
@@ -54,6 +55,11 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
+    public JsonModel statisticsResourceNodes(String topologyId, List<NeClass> neClasses, List<BaseNeClass> baseNeClasses) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
     public JsonModel findNeHealth(List<String> neIds, boolean isHistory, String order) {
         return null;
     }
@@ -90,6 +96,16 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
 
     @Override
     public JsonModel getChannelList(String neId){
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel statisticsLinkAlarms(String topoId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel statisticsEachLevelAlarms(String topoId) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

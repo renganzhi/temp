@@ -21,6 +21,7 @@ import com.uxsino.commons.utils.JSONUtils;
 import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.model.MigrationLink;
 import com.uxsino.leaderview.model.MigrationStation;
+import com.uxsino.leaderview.model.alert.StatisticsResult;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MCService;
@@ -32,12 +33,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -1084,10 +1087,13 @@ public class MonitorDataService {
             String fetchDate = obj.getString("fetchDate");
             if (!cacheTime.contains(fetchDate)){
                 JSONArray arr = values;
-                JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
+                JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate)&&!"Infinity".equals(o.getString(finalField)));
                 row.put("采集时间", fetchDate);
                 MonitorUtils.action(filter, o -> row.put( neIpMap.get(o.getString("neId")), o.getString(finalField)));
                 cacheTime.add(fetchDate);
+                //192.168.1.9Switch -> Infinity
+                //if(row.get())
+                if(row.size()==1)continue;
                 rows.add(row);
             }
         }
@@ -2397,11 +2403,11 @@ public class MonitorDataService {
         neList = rpcProcessService.getAllNeList(criteria);
         JSONObject result = new JSONObject();
         if (ObjectUtils.isEmpty(neList)) {
-            result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : "资源个数");
+            result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : status);
             result.put("value", 0);
             result.put("unit", "");
         }
-        result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : "资源个数");
+        result.put("name", Strings.isNullOrEmpty(status) ? "总设备数" : "abnormal".equals(status) ? "故障设备数" : status);
         result.put("value", neList.size());
         result.put("unit", "");
         return new JsonModel(true, result);
@@ -3429,5 +3435,62 @@ public class MonitorDataService {
         }
 
         return coordinates;
+    }
+
+    public JsonModel getTopostatisticsResources(String topoId,String baseNeClass) throws Exception {
+        List<BaseNeClass> baseNeClassList = new ArrayList<>();
+        if (!Strings.isNullOrEmpty(baseNeClass)) {
+            String[] split = baseNeClass.split(",");
+            baseNeClassList.addAll(Arrays.asList(split).stream().map(x -> BaseNeClass.valueOf(x)).collect(Collectors.toList()));
+        }
+        LinkedHashMap<String,Integer> countValue = new LinkedHashMap<>();
+        JSONObject result = new JSONObject();
+        JsonModel jsonModel = rpcProcessService.statisticsResourceNodes(topoId,baseNeClassList);
+        countValue = (LinkedHashMap<String, Integer>) jsonModel.getObj();
+        int count = countValue.get(topoId);
+        if(Strings.isNullOrEmpty(baseNeClass)){
+            result.put("name","总设备数");
+            result.put("value",count);
+            result.put("unit","");
+        }else {
+            result.put("name","总终端数");
+            result.put("value",count);
+            result.put("unit","");
+        }
+        return new JsonModel(true,result);
+    }
+
+    public JsonModel CountTopoLink(String topoId, Boolean abnormal) throws Exception{
+        //1、首先判断abnormal是否为空，是的话就将其设为false
+        if (ObjectUtils.isEmpty(abnormal)) {
+            abnormal = false;
+        }
+        //2、调用rpc接口获取拓扑链路条数结果
+        LinkedHashMap<String,Integer> countTopoLink = (LinkedHashMap<String, Integer>) rpcProcessService.statisticsLinkAlarms(topoId).getObj();
+        int count = 0;
+        JSONObject result = new JSONObject();
+        result.put("unit", "");
+        if(ObjectUtils.isEmpty(countTopoLink)){
+            result.put("name", "链路条数");
+            result.put("value", count);
+            return new JsonModel(true, "返回结果为空");
+        }
+        int unknown,enable,alert,unConnection;
+        unknown = ObjectUtils.isEmpty(countTopoLink.get("unknown"))?0:countTopoLink.get("unknown");
+        enable = ObjectUtils.isEmpty(countTopoLink.get("enable"))?0:countTopoLink.get("enable");
+        alert = ObjectUtils.isEmpty(countTopoLink.get("alert"))?0:countTopoLink.get("alert");
+        unConnection = ObjectUtils.isEmpty(countTopoLink.get("unConnection"))?0:countTopoLink.get("unConnection");
+
+        //3、根据是否异常来统计链路条数
+        if (abnormal) {
+            count = unknown+alert+unConnection;
+            result.put("name", "异常链路数");
+            result.put("value", count);
+        } else {
+            count = unknown+alert+unConnection+enable;
+            result.put("name", "链路条数");
+            result.put("value", count);
+        }
+        return new JsonModel(true, result);
     }
 }
