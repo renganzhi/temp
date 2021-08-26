@@ -5,8 +5,10 @@ export default {
     'height': 400,
     'width': 700,
     'chartType': 'ELine',
-    'ifEidetColor': false,
-    'ifGradual': 'false',
+    'ifEidetColor': false, // 曲线是否配色
+    'ifEidetColor2': false,
+    'ifGradual': 'false', // 曲线是否渐变
+    'ifAreaGradual': 'false', // 区域是否渐变
     'splitShow': false,
     'ctLegendShow': true,
     'ctLegendColor': '#828bac',
@@ -44,6 +46,7 @@ export default {
     'showPoint': true, // 是否标点
     'PointSize': '14',
     'rotate': 0,
+    'colorMatchType': 'line', // 配色类型
     'ScatterColor': [
       '#2d98f1',
       '#32c5e9',
@@ -60,6 +63,23 @@ export default {
       ['#5c84e7', '#144fe5'],
       ['#85f8c0', '#62dc26']
     ],
+    'AreaScatterColor': [
+      '#2d98f1',
+      '#32c5e9',
+      '#67e0e3',
+      '#9fe6b8',
+      '#ffdb5c'
+    ], // 区域单色
+    'AreaDScatterColor': [
+      ['rgba(213, 153, 17, 0.52)', '#be4d24'],
+      ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
+      ['#fa8d76', '#db4222'],
+      ['#af8af3', '#874edc'],
+      ['#f5739c', '#f31d53'],
+      ['#ffdf91', '#eeb01b'],
+      ['#5c84e7', '#144fe5'],
+      ['#85f8c0', '#62dc26']
+    ], // 区域渐变
     'chartData': {
       'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
       'unit': '%',
@@ -654,72 +674,6 @@ export default {
                 'value': 30
               }
             ]
-          },
-          {
-            'name': '配色',
-            'key': 'ifEidetColor',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '默认',
-                'value': false
-              },
-              {
-                'name': '自定义',
-                'value': true
-              }
-            ]
-          }, {
-            'name': '颜色类型',
-            'key': 'ifGradual',
-            'parentKey': {
-              'ifEidetColor': true
-            },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '渐变',
-                'value': 'true'
-              },
-              {
-                'name': '单色',
-                'value': 'false'
-              }
-            ]
-          }, {
-            'name': '描边线条',
-            'key': 'areaLineType',
-            'parentKey': {
-              'ifGradual': 'true',
-              'lineArea': true
-            },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '渐变',
-                'value': true
-              },
-              {
-                'name': '单色',
-                'value': false
-              }
-            ]
-          }, {
-            'name': '折线颜色',
-            'key': 'ScatterColor',
-            'parentKey': {
-              'ifGradual': 'false',
-              'ifEidetColor': true
-            },
-            'tag': 'ColorArray'
-          }, {
-            'name': '折线颜色',
-            'key': 'DScatterColor',
-            'parentKey': {
-              'ifGradual': 'true',
-              'ifEidetColor': true
-            },
-            'tag': 'ColorArray'
           }
         ]
       },
@@ -784,6 +738,141 @@ export default {
             }
           ]
         }
+        ]
+      },
+      {
+        'name': '颜色配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '配色类型',
+            'key': 'colorMatchType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '线条',
+                'value': 'line'
+              },
+              {
+                'name': '区域',
+                'value': 'area'
+              }
+            ]
+          },
+          {
+            'name': '配色',
+            'key': 'ifEidetColor',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '默认',
+                'value': false
+              },
+              {
+                'name': '自定义',
+                'value': true
+              }
+            ],
+            'parentKey': {
+              'colorMatchType': 'line'
+            }
+          },
+          {
+            'name': '配色',
+            'key': 'ifEidetColor2',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '默认',
+                'value': false
+              },
+              {
+                'name': '自定义',
+                'value': true
+              }
+            ],
+            'parentKey': {
+              'colorMatchType': 'area'
+            }
+          },
+          {
+            'name': '颜色类型',
+            'key': 'ifAreaGradual',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '渐变',
+                'value': 'true'
+              },
+              {
+                'name': '单色',
+                'value': 'false'
+              }
+            ],
+            'parentKey': {
+              'colorMatchType': 'area',
+              'ifEidetColor2': true
+            }
+          },
+          {
+            'name': '颜色类型',
+            'key': 'ifGradual',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '渐变',
+                'value': 'true'
+              },
+              {
+                'name': '单色',
+                'value': 'false'
+              }
+            ],
+            'parentKey': {
+              'colorMatchType': 'line',
+              'ifEidetColor': true
+            }
+          },
+          {
+            'name': '颜色配置',
+            'key': 'ScatterColor',
+            'parentKey': {
+              'ifGradual': 'false',
+              'colorMatchType': 'line',
+              'ifEidetColor': true
+            },
+            'tag': 'ColorArray'
+          },
+          {
+            'name': '颜色配置',
+            'key': 'DScatterColor',
+            'parentKey': {
+              'ifGradual': 'true',
+              'colorMatchType': 'line',
+              'ifEidetColor': true
+            },
+            'tag': 'ColorArray'
+          },
+          {
+            'name': '颜色配置',
+            'key': 'AreaScatterColor',
+            'parentKey': {
+              'ifAreaGradual': 'false',
+              'colorMatchType': 'area',
+              'ifEidetColor2': true
+            },
+            'tag': 'monochromeArray'
+          },
+          {
+            'name': '颜色配置',
+            'key': 'AreaDScatterColor',
+            'parentKey': {
+              'ifAreaGradual': 'true',
+              'colorMatchType': 'area',
+              'ifEidetColor2': true
+            },
+            'tag': 'GradientArray'
+          }
         ]
       }
 
