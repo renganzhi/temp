@@ -130,3 +130,4 @@ service-knowledgebase: knowledgebase
 service-msg: msg
 service-leaderview: leaderview
 service-datacenter: datacenter
+service-asset: asset
