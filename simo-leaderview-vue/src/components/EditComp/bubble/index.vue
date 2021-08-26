@@ -1,7 +1,6 @@
 <template>
   <div class="bubble_box">
     <div
-      id="circleWrap"
       v-show="showBubbleChart"
       ref="circleWrap"
       class="circle_wrap"
@@ -9,8 +8,8 @@
       :style="{ top: `${top}px` }"
     >
     <div class="AllBox" ref="AllBox" style="position:relative">
-      <div id="box1" style="position:absolute"></div>
-      <div id="box2" style="position: absolute;"></div>
+      <div ref="box1" style="position:absolute"></div>
+      <div  ref="box2" style="position: absolute;"></div>
     </div>
     </div>
     <div class="v-charts-data-empty"
@@ -80,6 +79,12 @@ export default {
         this.oldchartData = JSON.stringify(newV)
         this.initCanvas()
       }
+    },
+    'item.speed': function (newV, oldV) {
+      console.log('speed', 40 / newV, 40 / oldV)
+      clearInterval(this.Interval)
+      this.Interval = null
+      this.Interval = setInterval(this.socall, 40 / this.item.speed)
     }
   },
   mounted () {
@@ -87,10 +92,11 @@ export default {
   },
   methods: {
     initCanvas () {
+      let _this = this
       createBubble(this.item.width, this.item.height, this.chartData).then(
         canvas => {
-          var _box1 = document.getElementById('box1')
-          var _box2 = document.getElementById('box2')
+          var _box1 = _this.$refs.box1
+          var _box2 = _this.$refs.box2
           const imgUrl = canvas.toDataURL('image/png')
           let Img = document.createElement('img')
           Img.style.width = '100%'
@@ -104,14 +110,14 @@ export default {
             clearInterval(this.Interval)
             this.Interval = null
           }
-          this.Interval = setInterval(this.socall, 20)
+          this.Interval = setInterval(this.socall, 40 / this.item.speed)
         }
       )
     },
     socall () {
-      var _box1 = document.getElementById('box1')
-      var _box2 = document.getElementById('box2')
-      var height = document.querySelector('#box1 img').clientHeight
+      var _box1 = this.$refs.box1
+      var _box2 = this.$refs.box2
+      var height = _box1.querySelector('img').clientHeight
       _box1.style.top = this.topX + 'px'
       _box2.style.top = (this.topX + height) + 'px'
       this.topX--
