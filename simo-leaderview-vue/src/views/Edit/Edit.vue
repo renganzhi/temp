@@ -17,7 +17,7 @@
              ref="PreView"></PreView>
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
-             @hideModal="back"></Confirm>
+             @hideModal="back" aria-hidden="false" data-backdrop="static"></Confirm>
 
     <Modal v-model="showUpload"
            title="导入模型">
