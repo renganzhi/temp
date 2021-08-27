@@ -236,7 +236,7 @@ public class HomePageService {
      */
     public List<HomePage> findVisible(Long userId, HttpSession session) {
         String sql = "SELECT b.id,b.compose_obj,b.last_update_time,b.name,a.page_index,b.paint_obj,b.view_conf,a.visible,b.create_user_id,b.handover_id,b.share_conf" +
-                " FROM simo_mc_home_page_user_conf a LEFT JOIN simo_mc_home_page b" +
+                " FROM simo_mc_home_page_user_conf a JOIN simo_mc_home_page b" +
                 " ON(b.id = a.page_id)" +
                 " where a.visible = TRUE" +
                 " AND a.user_id =?1" +
