@@ -4,7 +4,7 @@
          style="z-index: 20100"
          class="modal in"
          role="dialog"
-         aria-hidden="true">
+         aria-hidden="false" data-backdrop="static">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
