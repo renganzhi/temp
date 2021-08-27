@@ -62,12 +62,13 @@ function createItem (options) {
 }
 
 async function createBubble (width, height, chartData) {
-  let bubbleBox = document.getElementById('bubbleBox')
+  var id = Math.random() // 一个随机数
+  let bubbleBox = document.querySelector('[data-id="' + id + '"]') // 使用随机数值的自定义属性来代替id属性
   if (bubbleBox) {
     bubbleBox.remove()
   }
   let container = document.createElement('div')
-  container.setAttribute('id', 'bubbleBox')
+  container.setAttribute('data-id', id) // 使用随机数值的自定义属性来代替id属性
   container.classList.toggle('clear_float', true)
   // .setAttribute('id', 'bubbleDom')
   container.style.width = `${width}px`
@@ -113,7 +114,7 @@ async function createBubble (width, height, chartData) {
     backgroundColor: null
   }
   return html2canvas(container, canvasOptions).then(resolve => {
-    document.getElementById('bubbleBox').style.display = 'none'
+    document.querySelector('[data-id="' + id + '"]').style.display = 'none' // 使用随机数值的自定义属性来代替id属性
     return resolve
   })
   //   .then(canvas => {

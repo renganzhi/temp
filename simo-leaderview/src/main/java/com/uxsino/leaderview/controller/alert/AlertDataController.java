@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Api(tags = { "告警-大屏展示数据接口" })
 @RestController
@@ -504,6 +505,32 @@ public class AlertDataController {
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("按拓扑统计资源告警数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑ID", required = true),
+            @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔")
+    })
+    @RequestMapping(value = "/countTopoAlert", method = RequestMethod.POST)
+    @ResponseBody
+    public  JsonModel CountTopoAlert(
+            @RequestParam(required = true) String topoId,
+            @RequestParam(required = false) String alertLevel
+    ){
+        try {
+            JSONObject result = new JSONObject();
+            JSONObject countTopoAlert = (JSONObject) alertDataService.CountTopoAlert(topoId, alertLevel);
+            AtomicLong alertCount = (AtomicLong) countTopoAlert.get("count");
+            result.put("name","异常告警数");
+            result.put("unit","");
+            result.put("value",alertCount);
+
+            return new JsonModel(true,result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(true, e.getMessage());
         }
     }
 

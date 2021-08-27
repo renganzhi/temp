@@ -184,6 +184,74 @@
                 @click="delColor(index)"></i>
             </div>
         </template>
+        <template v-if="item.tag === 'monochromeArray'">
+          <div class="form-group colorsConf">
+              <span>序号</span>
+              <span class="color-w70 text">颜色</span>
+              <span @click="colorToAll"
+                    v-if="selectedItem.chartType!=='TDHistogram' && selectedItem.chartType!=='KLine'"
+                    style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
+            </div>
+            <div class="form-group colorsConf"
+                v-for="(v,index) in selectedItem[item.key]"
+                :key="index">
+            <span class="colorOrder">{{index+1}}</span>
+            <div>
+                <div class="color-w200"
+                    style="float: left; width: 140px;">
+                <Vcolor :data="selectedItem[item.key][index]"
+                        :type="item.key"
+                        :index="index"
+                        @getdata="mygetSingleColor"></Vcolor>
+                </div>
+            </div>
+            <i class="icon-n-add"
+                @click="addColor3(index + 1)"></i>
+            <i class="icon-n-toUp"
+                @click="moveUp(index)"></i>
+            <i class="icon-n-putin"
+                @click="moveDown(index)"></i>
+            <i class="icon-n-deleteNew"
+                @click="delColor(index)"></i>
+            </div>
+        </template>
+        <template v-if="item.tag === 'GradientArray'">
+          <div class="form-group colorsConf">
+              <span>序号</span>
+              <span class="color-w70 text">颜色</span>
+              <span @click="colorToAll"
+                    v-if="selectedItem.chartType!=='TDHistogram' && selectedItem.chartType!=='KLine'"
+                    style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
+            </div>
+            <div class="form-group colorsConf"
+                v-for="(v,index) in selectedItem[item.key]"
+                :key="index">
+            <span class="colorOrder">{{index+1}}</span>
+            <div class="gradient"
+                    @click="myreverseColor(index)"
+                    :style="{'background': 'linear-gradient(45deg, ' + selectedItem[item.key][index][0]  +',' + selectedItem[item.key][index][1] + ')'}">
+                <div class="color-w15">
+                <Vcolor :data="selectedItem[item.key][index][0]"
+                        :index="index"
+                        @getdata="mygetColorStart"></Vcolor>
+                </div>
+                <div class="color-w15"
+                    style="float: right">
+                <Vcolor :data="selectedItem[item.key][index][1]"
+                        :index="index"
+                        @getdata="mygetGradColor"></Vcolor>
+                </div>
+            </div>
+            <i class="icon-n-add"
+                @click="addColor2(index + 1)"></i>
+            <i class="icon-n-toUp"
+                @click="moveUp(index)"></i>
+            <i class="icon-n-putin"
+                @click="moveDown(index)"></i>
+            <i class="icon-n-deleteNew"
+                @click="delColor(index)"></i>
+            </div>
+        </template>
         <template v-if="item.tag === 'NewBorder'">
           <br><br>
           <div class="form-group">
@@ -329,9 +397,9 @@ export default {
       }
     },
     changeType (option) {
-      if (this.selectedItem.chartType === 'IntegratedHistogram') {
-        this.selectedItem.ifGradual = 'false'
-      }
+      // if (this.selectedItem.chartType === 'IntegratedHistogram') {
+      //   this.selectedItem.ifGradual = 'false'
+      // }
       this.selectedItem[this.item.key] = option.value
     },
     setFontFamily: function (val) {
@@ -573,6 +641,24 @@ export default {
         } else {
           this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
         }
+      }
+    },
+    addColor3 (index) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(index, 0, '#c23531')
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(index, 0, '#c23531')
+      }
+    },
+    addColor2 (index) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(index, 0, ['#c23531', '#c23531'])
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
       }
     },
     colorchange () {

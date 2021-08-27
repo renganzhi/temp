@@ -25,6 +25,13 @@ export default {
   data () {
     return {
       mychart: null,
+      defaultColor: [
+        '#2d98f1',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c'
+      ],
       showLine: true,
       oldOption: '',
       subsectionType: '',
@@ -122,25 +129,25 @@ export default {
             showAllSymbol: false,
             symbolSize: this.item.symbolSize,
             areaStyle: {
-              color: this.item.ifGradual === 'true' ? this.item.DScatterColor[index - 1] ? {
+              color: this.item.ifEidetColor2 ? this.item.ifAreaGradual === 'true' ? this.item.AreaDScatterColor[index - 1] ? {
                 type: 'linear',
                 x: 0,
                 y: 0,
                 x2: 0,
                 y2: 1,
                 colorStops: [{
-                  offset: 0, color: this.item.DScatterColor[index - 1][1] || '' // 0% 处的颜色
+                  offset: 0, color: this.item.AreaDScatterColor[index - 1][1] || '' // 0% 处的颜色
                 }, {
-                  offset: 1, color: this.item.DScatterColor[index - 1][0] || '' // 100% 处的颜色
+                  offset: 1, color: this.item.AreaDScatterColor[index - 1][0] || '' // 100% 处的颜色
                 }],
                 global: false // 缺省为 false
-              } : '' : this.item.ScatterColor[index - 1] || '',
+              } : '' : this.item.AreaScatterColor[index - 1] || '' : this.defaultColor[index - 1] || '',
               opacity: this.item.lineArea ? 1 : 0
             },
             itemStyle: {
               normal: {
                 lineStyle: {
-                  color: this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index - 1] ? {
+                  color: this.item.ifEidetColor ? this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index - 1] ? {
                     type: 'linear',
                     x: 0,
                     y: 0,
@@ -152,7 +159,7 @@ export default {
                       offset: 1, color: this.item.DScatterColor[index - 1][0] || '' // 100% 处的颜色
                     }],
                     global: false // 缺省为 false
-                  } : '' : this.item.DScatterColor[index - 1] ? this.item.DScatterColor[index - 1][1] : '' || '' : this.item.ScatterColor[index - 1] || '',
+                  } : '' : this.item.DScatterColor[index - 1] ? this.item.DScatterColor[index - 1][1] : '' || '' : this.item.ScatterColor[index - 1] || '' : this.defaultColor[index - 1] || '',
                   width: this.item.lineWidth, // 设置线条粗细
                   type: this.item.LineType || 'solid'
                 }
@@ -166,12 +173,16 @@ export default {
         newseries.push(element)
       })
       let optioncolor = []
-      if (this.item.ifGradual === 'true') {
-        this.item.DScatterColor.forEach(element => {
-          optioncolor.push(element[1])
-        })
+      if (this.item.ifEidetColor) {
+        if (this.item.ifGradual === 'true') {
+          this.item.DScatterColor.forEach(element => {
+            optioncolor.push(element[1])
+          })
+        } else {
+          optioncolor = this.item.ScatterColor
+        }
       } else {
-        optioncolor = this.item.ScatterColor
+        optioncolor = this.defaultColor
       }
       let myoption = {
         xAxis: {

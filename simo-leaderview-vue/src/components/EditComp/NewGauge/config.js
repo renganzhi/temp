@@ -152,27 +152,27 @@ export default{
         'name': '文字配置',
         'tag': 'Hint',
         'childoption': [
-          {
-            'name': '文字可见性',
-            'key': 'NameShow',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '显示',
-                'value': true
-              },
-              {
-                'name': '隐藏',
-                'value': false
-              }
-            ]
-          },
+          // {
+          //   'name': '文字可见性',
+          //   'key': 'NameShow',
+          //   'tag': 'select',
+          //   'options': [
+          //     {
+          //       'name': '显示',
+          //       'value': true
+          //     },
+          //     {
+          //       'name': '隐藏',
+          //       'value': false
+          //     }
+          //   ]
+          // },
           {
             'name': '文字字体大小',
             'key': 'NameSize',
-            'parentKey': {
-              'NameShow': true
-            },
+            // 'parentKey': {
+            //   'NameShow': true
+            // },
             'tag': 'select',
             'options': [
               {
@@ -249,14 +249,14 @@ export default{
               }
             ]
           },
-          {
-            'name': '文字高度',
-            'parentKey': {
-              'NameShow': true
-            },
-            'key': 'NamelegendY',
-            'tag': 'input'
-          },
+          // {
+          //   'name': '文字高度',
+          //   'parentKey': {
+          //     'NameShow': true
+          //   },
+          //   'key': 'NamelegendY',
+          //   'tag': 'input'
+          // },
           {
             'name': '文字字颜色',
             'key': 'NameColor',
