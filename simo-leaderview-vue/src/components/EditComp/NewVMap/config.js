@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '区域分布图',
     'imgClass': 'icon-n-areaMap',
@@ -9,6 +9,7 @@ export default{
     'countryCode': 100000,
     'provinceCode': '',
     'cityCode': '',
+    'countyCode': '',
     'visualPosition': 'left',
     'fontSize': 10,
     'cityShow': false,
@@ -33,7 +34,8 @@ export default{
       'rows': [
         { '位置': '山西', '告警': 125 },
         { '位置': '湖北', '告警': 25 }
-      ]}
+      ]
+    }
   },
   'styles': {
     'base': [
@@ -142,10 +144,10 @@ export default{
               'value': 14
             }
           ]
-        // }, {
-        //   'name': '地图颜色',
-        //   'key': 'areaColor',
-        //   'tag': 'Color'
+          // }, {
+          //   'name': '地图颜色',
+          //   'key': 'areaColor',
+          //   'tag': 'Color'
         },
         {
           'name': '地图颜色',

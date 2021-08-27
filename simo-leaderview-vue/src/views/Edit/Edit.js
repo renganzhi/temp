@@ -122,7 +122,7 @@ export default {
       provinceArr: [], // 34个省的数据
       cityArr: [], // 选中省的所有市数据
       areaArr: [], // 选中市的所有区域数据
-	  countyArr:[],//选中区县所有的乡镇数据
+      countyArr: [], // 选中区县所有的乡镇数据
       editPieces: [], // 区域分布图量级
       editPiecesCopy: [],
       selectMapData: {}, // 匹配区域分布图输入框的数据
@@ -317,7 +317,7 @@ export default {
       'thirdUser',
       'editId'
     ]),
-    itemShow () { // 右侧折叠面板根据条件显示隐藏
+    itemShow() { // 右侧折叠面板根据条件显示隐藏
       return function (val) {
         var show = true
         if (val.parentKey) {
@@ -330,7 +330,7 @@ export default {
         return show
       }
     },
-    staticData () {
+    staticData() {
       if (this.selectedItem.chartType === 'IntegratedHistogram') {
         if (this.selectedItem.barType === 'NewHistogram') {
           return this.selectedItem.chartData1
@@ -348,8 +348,8 @@ export default {
         return this.selectedItem.chartData
       }
     },
-    curChartType () { return this.selectedItem.chartType },
-    curChartName () {
+    curChartType() { return this.selectedItem.chartType },
+    curChartName() {
       if (['text', 'NEWtextArea'].includes(this.curChartType)) {
         return '文本框'
       } else if (this.curChartType === 'NewMarquee' || this.curChartType === 'marquee') {
@@ -429,7 +429,7 @@ export default {
       }
       return true
     },
-    fontFaces () {
+    fontFaces() {
       if (this.selectedItem.chartType === 'number') {
         return this.settingData.fontFaces
       }
@@ -444,10 +444,10 @@ export default {
       $('.typeSelect').parents('div')[0].style.height = '50px'
     }
   },
-  created () {
+  created() {
     $('.getPicSpan').hide()
     this.axios.get('/leaderview/home/getDatasource').then(res => {
-      this.dataSource = {'静态数据': '', '系统数据': '', ...(res.obj || {})}
+      this.dataSource = { '静态数据': '', '系统数据': '', ...(res.obj || {}) }
     })
     if (window.CrossScreenCope) {
       this.tempItemArry = window.CrossScreenCope.ItemArry || []
@@ -475,7 +475,7 @@ export default {
       'changeLimitItem',
       'changeThirdConf'
     ]),
-    upOnePage () {
+    upOnePage() {
       let id = this.pageId
       if (this.pageIdIndex * 1 === 0) {
         id = this.canChangeId[this.canChangeId.length - 1]
@@ -491,7 +491,7 @@ export default {
         }
       })
     },
-    downOnePage () {
+    downOnePage() {
       let id = this.pageId
       if (this.pageIdIndex * 1 === this.canChangeId.length - 1) {
         id = this.canChangeId[0]
@@ -507,18 +507,18 @@ export default {
         }
       })
     },
-    fatherhorizontalDragRuler () {
+    fatherhorizontalDragRuler() {
       this.$refs.rulertool.horizontalDragRuler()
     },
-    fatherverticalDragRuler () {
+    fatherverticalDragRuler() {
       this.$refs.rulertool.verticalDragRuler()
     },
-    changeChartStyle (key, val) {
+    changeChartStyle(key, val) {
       this.selectedItem[key] = val
       console.info('change-config', key, val)
       // this.$set('selectedItem', key, val )
     },
-    getAllPage () {
+    getAllPage() {
       this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
         this.allPageList = res.obj
         res.obj.forEach(d => {
@@ -528,7 +528,7 @@ export default {
         })
       })
     },
-    ifSameItems () {
+    ifSameItems() {
       if (this.chooseCompIndexs.length > 0 || this.chooseIndexs.length < 2) {
         this.chooseSameFlag = false
         return false
@@ -544,7 +544,7 @@ export default {
       this.chooseSameFlag = true
       return true
     },
-    saveHistory (type) {
+    saveHistory(type) {
       /** 全部保存 */
       if (this.historyArr && this.historyArr.length >= this.revokeStep) {
         this.historyArr.shift()
@@ -563,7 +563,7 @@ export default {
         })
       }
     },
-    bodyDown () {
+    bodyDown() {
       // 选中元件
       // console.log('这里暂存一次选中元件')
       this.tempHisObj = {
@@ -573,7 +573,7 @@ export default {
       }
     },
     // 撤销
-    Revoke () {
+    Revoke() {
       // this.itemHistoryObj.pop() // 最后一条是当前的
       // var tempObj = this.itemHistoryObj.pop() // 倒数第二条才是历史记录
       // if (!tempObj) {
@@ -613,7 +613,7 @@ export default {
       }
     },
     // 单元件change
-    changeStop (index) {
+    changeStop(index) {
       // this.itemHistoryObj.push({
       //   type: 'item',
       //   index: index, // 改成id
@@ -626,7 +626,7 @@ export default {
       this.historyArr.push(this.tempHisObj)
       this.bodyDown()
     },
-    scrollLeft (x) {
+    scrollLeft(x) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
         this.saveHistory()
         this.minXItem.x += x
@@ -643,7 +643,7 @@ export default {
       }
       $('.m-main').scrollLeft(_scrollLeft) */
     },
-    scrollTop (y) {
+    scrollTop(y) {
       if (this.chooseIndexs.length + this.chooseCompIndexs.length > 1) {
         this.saveHistory()
         this.minXItem.y += y
@@ -661,12 +661,13 @@ export default {
       }
       $('.m-main').scrollTop(_scrollTop) */
     },
-    changeBdType () {
+    changeBdType() {
       if (this.selectedItem.borderType === 'stable') {
         this.$set(this.selectedItem, 'imgSrc', this.settingData.cardCase[0].imgSrc)
       }
     },
-    getMapData (chinaId) {
+    getMapData(chinaId) {
+      // 区县地图通过单独的接口去查询
       var mapPth = gbs.inDev ? 'static' : 'leaderview'
       if (chinaId) {
         return new Promise((resolve, reject) => {
@@ -690,7 +691,7 @@ export default {
         return null
       }
     },
-    mapDataToChart () {
+    mapDataToChart() {
       // 用户输入的数据转化为区域分布图所需数据
       var tempData = []
       for (var k in this.selectMapData) {
@@ -699,7 +700,7 @@ export default {
       }
       this.selectedItem.chartData.rows = tempData
     },
-    chartDataToMap () {
+    chartDataToMap() {
       if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
         // chartData转化为input输入数据
         this.selectMapData = {}
@@ -709,14 +710,14 @@ export default {
         })
       }
     },
-    selectToPoint () {
+    selectToPoint() {
       // 数据点转化为散点数据
       this.geoCoordMap = {}
       this.areaArr.forEach((item) => {
         this.geoCoordMap[item.name] = item.geoCoord
       })
     },
-    clearAlertMap () {
+    clearAlertMap() {
       // console.log('清空初始化数据点')
       this.alertMapData = []
       this.selectedItem.chartData = [{ name: this.areaArr[0].name, value: 2 }]
@@ -726,7 +727,7 @@ export default {
       })
       // this.$set('selectedItem', 'chartData', [])
     },
-    initLevelData (areaData) {
+    initLevelData(areaData) {
       // 区域分布图给前三项赋默认值
       var arr = []
       if (areaData) {
@@ -745,7 +746,7 @@ export default {
       }
       this.selectedItem.chartData.rows = tempData
     },
-    changeMapData (chinaId, target) {
+    changeMapData(chinaId, target) {
       var mapPth = gbs.inDev ? 'static' : 'leaderview'
       this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
         this[target] = this.initMapData(response)
@@ -760,11 +761,11 @@ export default {
       })
     },
     // 改变展示范围
-    chgMapLevel () {
+    chgMapLevel() {
       // 这里会先于watch mapLevel触发
       this.selfMapLevel = true
     },
-    chgMapGrad (index) {
+    chgMapGrad(index) {
       if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
         if (gbs.inDev) {
           Notification({
@@ -813,7 +814,7 @@ export default {
       }
       // this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
     },
-    sureLevelTips () {
+    sureLevelTips() {
       var index = this.levelChangeIndex
       var newValue = this.editPieces[index]['max']
       var delLevel = 0
@@ -827,11 +828,11 @@ export default {
       this.levelTipsShow = false
       this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
     },
-    cancelLevelTips () {
+    cancelLevelTips() {
       this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
       this.levelTipsShow = false
     },
-    addMapLevel () {
+    addMapLevel() {
       if (this.editPieces.length >= 8) {
         return
       }
@@ -841,7 +842,7 @@ export default {
       this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
       this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
     },
-    delMapLevel () {
+    delMapLevel() {
       if (this.editPieces.length <= 3) {
         return
       }
@@ -850,7 +851,7 @@ export default {
       this.editPiecesCopy = JSON.parse(JSON.stringify(this.editPieces))
       this.selectedItem.piecesData = JSON.parse(JSON.stringify(this.editPieces))
     },
-    initMapData (mapJson) {
+    initMapData(mapJson) {
       var mapData = []
       for (var i = 0; i < mapJson.features.length; i++) {
         mapData.push({
@@ -863,7 +864,7 @@ export default {
       return mapData
     },
     // 计算地市级地图的中心点
-    getCenterPoint (data) {
+    getCenterPoint(data) {
       let index = data.length - 1
       var tempObj = data[index][0]
       if (tempObj) {
@@ -879,12 +880,12 @@ export default {
       }
     },
     // 删除实时图数据点
-    delAlertLevel (index) {
+    delAlertLevel(index) {
       this.alertMapData.splice(index, 1)
       this.selectedPositn.splice(index, 1)
     },
     // 地图实时图添加数据点
-    addAlertLevel () {
+    addAlertLevel() {
       for (let i = 0, len = this.areaArr.length; i < len; i++) {
         if (this.selectedPositn.indexOf(this.areaArr[i].name) === -1) {
           this.selectedPositn.push(this.areaArr[i].name)
@@ -894,7 +895,7 @@ export default {
       }
     },
     // 切换地图的省
-    chgProvince (id) {
+    chgProvince(id) {
       if (this.selectedItem.mapLevel === 'city' || this.selectedItem.mapLevel === 'county') {
         // 北京， ... ， 香港， 澳门
         var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
@@ -927,29 +928,27 @@ export default {
             if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.selectedItem.cityCode = data[0].value
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+              this.clearAlertMap()
+            }
           }
-		  else if (this.selectedItem.mapLevel === 'county') {
-			  this.selectedItem.cityCode = data[0].value
-			  this.getMapData(this.selectedItem.cityCode).then((datacounty) => {
-				this.countyArr=datacounty
-				this.areaArr = []
-				this.selectedItem.countyCode = datacounty[0].value
-				if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-				  this.clearAlertMap()
-				}
-			})   
-		  }
         })
       }
     },
-    chgCity (id) {
+    chgCity(id) {
       // console.log('+++++++chgCity+++++++-' + this.selfMapLevel)
       id = id || this.selectedItem.cityCode
       if (id && this.selfMapLevel) {
         this.getMapData(id).then((data) => {
-		  this.countyArr=data
-          this.areaArr = []
           this.selectedItem.cityCode = id
+          if (this.selectedItem.mapLevel === 'city') {
+            this.areaArr = data
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.countyArr = data
+            this.selectedItem.countyCode = this.countyArr[0].name
+          }
           if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.initLevelData()
           }
@@ -961,25 +960,69 @@ export default {
         })
       }
     },
-	chgCounty (id) {
-	  // console.log('+++++++chgCity+++++++-' + this.selfMapLevel)
-	  id = id || this.selectedItem.countyCode
-	  if (id && this.selfMapLevel) {
-	    this.getMapData(id).then((data) => {
-	      this.areaArr = data
-	      this.selectedItem.countyCode = id
-	      if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
-	        this.initLevelData()
-	      }
-	      if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-	        if (this.selfMapLevel && id) {
-	          this.clearAlertMap()
-	        }
-	      }
-	    })
-	  }
-	},
-    chgAreaName (name, index) {
+    // 上传json
+    uploadJson() {
+      var filesList = document.querySelector('#uploadJson').files
+      var file = filesList[0]
+      var formdata = new FormData()
+      formdata.append('file', file)
+      formdata.append('name', this.selectedItem.countyCode)
+      var name = this.selectedItem.countyCode
+      this.selectedItem.countyCode = 'test'
+      this.axios.post('/leaderview/home/uploadJson', formdata).then((data) => {
+        var url = data.obj.url
+        this.axios.get('/' + url).then((data) => {
+          this.areaArr = this.initMapData(data)
+          this.selectedItem.countyCode = name
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+            this.initLevelData()
+          }
+          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+            if (this.selfMapLevel && this.selectedItem.countyCode) {
+              this.clearAlertMap()
+            }
+          }
+        }).catch((err) => {
+          if (err) {
+            this.areaArr = []
+          }
+        })
+        document.getElementById('uploadJson').value = ''
+      })
+    },
+    openJsonClick() {
+      var upload = document.getElementById('uploadJson')
+      upload.click()
+    },
+    chgCounty(id) {
+      id = id || this.selectedItem.countyCode
+      if (id && this.selfMapLevel) {
+        this.axios.get('/leaderview/home/getJson', {
+          params: {
+            name: id
+          }
+        }).then((data) => {
+          let url = data.obj['文件路径']
+          this.axios.get('/' + url).then((data) => {
+            this.selectedItem.countyCode = id
+            this.areaArr = this.initMapData(data)
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+              this.initLevelData()
+            }
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+              if (this.selfMapLevel && id) {
+                this.clearAlertMap()
+              }
+            }
+          }).catch((err) => {
+            if (err) {
+              this.areaArr = []
+            }
+          })
+        })
+      }
+    },
+    chgAreaName(name, index) {
       if (name) {
         this.$set(this.selectedPositn, index, name)
         let temp = this.alertMapData.pop()
@@ -988,7 +1031,7 @@ export default {
       // 数组需要更换
     },
     // 边框圆角
-    radiusChange () {
+    radiusChange() {
       var radius = Math.floor(this.borderRadius)
       if (radius === 0) {
         this.borderRadius = 0 // -e
@@ -1003,7 +1046,7 @@ export default {
         this.borderRadius = this.selectedItem.radius
       }
     },
-    changeProHeight () {
+    changeProHeight() {
       // 改变进度条元件的高度
       var proHeight = Math.floor(this.progressObj.height)
       if (isNaN(proHeight) || proHeight < 0) {
@@ -1026,7 +1069,7 @@ export default {
       }
     },
     // 改变进度条元件的圆角
-    changeRadius () {
+    changeRadius() {
       var radius = Math.floor(this.progressObj.radius)
       if (radius === 0) {
         this.progressObj.radius = 0
@@ -1041,7 +1084,7 @@ export default {
         this.selectedItem.radius = this.progressObj.radius
       }
     },
-    colorToAll (ScatterColor, DScatterColor, ifGradual) {
+    colorToAll(ScatterColor, DScatterColor, ifGradual) {
       var _colors = this.selectedItem.ctColors
       if (this.chartNum.length) {
         this.saveHistory()
@@ -1078,9 +1121,10 @@ export default {
       })
     },
     // 获取当前页的配置
-    getPageConf (id) {
+    getPageConf(id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
+        console.log(res)
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
@@ -1115,7 +1159,7 @@ export default {
         // this.saveHistory()
       })
     },
-    formatVersion () {
+    formatVersion() {
       // 新增字段的监听需要对以前版本进行兼容
       this.chartNum.forEach((item) => {
         if (!item.legendColor) {
@@ -1267,10 +1311,10 @@ export default {
         })
       })
     },
-    initChart (value) {
+    initChart(value) {
       // 画布中心位置
       const editCanvas = this.$refs.editCanvas
-      const {scrollTop, scrollLeft, clientHeight, clientWidth} = editCanvas
+      const { scrollTop, scrollLeft, clientHeight, clientWidth } = editCanvas
       // console.log('width: ', clientHeight, clientWidth);
       const scale = this.paintObj.scale / 100
       const transformX = (clientWidth / 2 + scrollLeft - (value.width || 350) / 2) / scale
@@ -1281,25 +1325,25 @@ export default {
       this.saveHistory()
       var obj = $.extend(
         true, {}, {
-          id: new Date().getTime(),
-          ctName: value.text,
-          ctLegendShow: 'true',
-          legendColor: '#828bac',
-          x: Math.floor(transformX),
-          y: Math.floor(transformY),
-          width: 350,
-          height: 350,
-          refreshTm: 5, // 刷新周期
-          zIndex: ++this.maxIndex,
-          colorType: 'defalut',
-          ctColors: value.chartType === 'v-map' || value.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
-          ctDataSource: 'static', // 数据来源system\static，默认static
-          url: '', // 请求接口
-          params: {}, // 请求接口参数
-          bdpx: 1, // 边框线宽
-          fontSize: 12, // 字号
-          lineArea: false // 折线是否为区域
-        },
+        id: new Date().getTime(),
+        ctName: value.text,
+        ctLegendShow: 'true',
+        legendColor: '#828bac',
+        x: Math.floor(transformX),
+        y: Math.floor(transformY),
+        width: 350,
+        height: 350,
+        refreshTm: 5, // 刷新周期
+        zIndex: ++this.maxIndex,
+        colorType: 'defalut',
+        ctColors: value.chartType === 'v-map' || value.chartType === 'NewVMap' ? this.defMapColors.concat() : this.defalutColors.concat(),
+        ctDataSource: 'static', // 数据来源system\static，默认static
+        url: '', // 请求接口
+        params: {}, // 请求接口参数
+        bdpx: 1, // 边框线宽
+        fontSize: 12, // 字号
+        lineArea: false // 折线是否为区域
+      },
         value
       )
 
@@ -1382,7 +1426,7 @@ export default {
       }
       return colorArr
     },
-    clickPaint (event) {
+    clickPaint(event) {
       if (!window.event.ctrlKey) {
         // console.log(this.selectArea.choose)
         this.cancelSelected(event)
@@ -1396,7 +1440,7 @@ export default {
         }
       }
     },
-    cancelSelected (event) {
+    cancelSelected(event) {
       // 取消其他selected
       $.each(this.chartNum, function (i, d) {
         d.slted = false
@@ -1606,13 +1650,44 @@ export default {
               this.areaArr = data
               this.chartDataToMap()
             })
-          } else {
+          } else if (this.selectedItem.mapLevel === 'city') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
               this.cityArr = data
             })
             this.getMapData(this.selectedItem.cityCode).then((data) => {
               this.areaArr = data
               this.chartDataToMap()
+            })
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.cityArr = data
+            })
+            this.getMapData(this.selectedItem.cityCode).then((data) => {
+              this.countyArr = data
+            })
+            this.axios.get('/leaderview/home/getJson', {
+              params: {
+                name: this.selectedItem.countyCode
+              }
+            }).then((data) => {
+              let url = data.obj['文件路径']
+              this.axios.get('/' + url).then((data) => {
+                this.areaArr = this.initMapData(data)
+                if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+                  this.initLevelData()
+                }
+                if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+                  if (this.selfMapLevel && id) {
+                    this.clearAlertMap()
+                  }
+                }
+                this.chartDataToMap()
+              }).catch((err) => {
+                if (err) {
+                  this.areaArr = []
+                  this.chartDataToMap()
+                }
+              })
             })
           }
         } else {
@@ -1645,7 +1720,7 @@ export default {
       }
     },
     // 组合内的元件选中
-    childSelect (item, childId, index) {
+    childSelect(item, childId, index) {
       console.log('双击选中内部元件: ' + index)
       this.selectedItem = item
       if (item.chartType === 'progress') {
@@ -1716,7 +1791,7 @@ export default {
       //   }
       // })
     },
-    setMaxItemInfo () {
+    setMaxItemInfo() {
       if (this.chooseIndexs.concat(this.chooseCompIndexs).length <= 1) {
         return
       }
@@ -1913,20 +1988,20 @@ export default {
       }
       var newObj = $.extend(
         true, {}, {
-          id: new Date().getTime() + parseInt(Math.random() * 10000),
-          ctLegendShow: 'true',
-          x: _left,
-          y: _top,
-          width: _right - _left,
-          oldWidth: _right - _left,
-          height: _bottom - _top,
-          oldHeight: _bottom - _top,
-          zIndex: _index,
-          sacleX: 1,
-          sacleY: 1,
-          // slted: false,
-          child: []
-        }, {}
+        id: new Date().getTime() + parseInt(Math.random() * 10000),
+        ctLegendShow: 'true',
+        x: _left,
+        y: _top,
+        width: _right - _left,
+        oldWidth: _right - _left,
+        height: _bottom - _top,
+        oldHeight: _bottom - _top,
+        zIndex: _index,
+        sacleX: 1,
+        sacleY: 1,
+        // slted: false,
+        child: []
+      }, {}
       )
       newObj.slted = true
       this.combinList.push(newObj)
@@ -2261,7 +2336,7 @@ export default {
         itemArr[i].y = parseInt(Number(itemArr[i - 1].y) + Number(itemArr[i - 1].height) + Number(gap))
       }
     },
-    draged (chgX, chgY, attr) {
+    draged(chgX, chgY, attr) {
       chgX = Number(chgX)
       chgY = Number(chgY)
       // if (this.selectedItem.id === this.minXItem.id) return
@@ -2294,10 +2369,10 @@ export default {
       }
       // 组合内部的元件的移动传递一个flag，区别在设置时位移量不能为-20
     },
-    resetLine () {
+    resetLine() {
       this.presetLine = []
     },
-    resetPaint () {
+    resetPaint() {
       this.paintInput.width = 1920
       this.paintInput.height = 1080
       this.paintObj.width = 1920
@@ -2313,7 +2388,7 @@ export default {
       this.paintObj.showGrid = false
       this.helpLineColor = '#348cea'
     },
-    addColor (index) {
+    addColor(index) {
       // 添加颜色
       if (this.selectedItem.ifGradual === 'false') {
         if (!this.selectChange && this.chooseSameFlag) {
@@ -2333,7 +2408,7 @@ export default {
         }
       }
     },
-    delColor (index) {
+    delColor(index) {
       // 删除自定义颜色
       if (this.selectedItem.ctColors.length === 1) {
         if (gbs.inDev) {
@@ -2355,7 +2430,7 @@ export default {
         this.selectedItem.ctColors.splice(index, 1)
       }
     },
-    moveUp (index) {
+    moveUp(index) {
       if (index !== 0) {
         if (!this.selectChange && this.chooseSameFlag) {
           this.chooseIndexs.forEach((i) => {
@@ -2368,7 +2443,7 @@ export default {
         }
       }
     },
-    moveDown (index) {
+    moveDown(index) {
       if (index !== this.selectedItem.ctColors.length - 1) {
         if (!this.selectChange && this.chooseSameFlag) {
           this.chooseIndexs.forEach((i) => {
@@ -2381,7 +2456,7 @@ export default {
         }
       }
     },
-    reverseClr () {
+    reverseClr() {
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
           this.chartNum[i]['barClrs'].reverse()
@@ -2390,7 +2465,7 @@ export default {
         this.selectedItem.barClrs.reverse()
       }
     },
-    reverseColor (index) {
+    reverseColor(index) {
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
           this.chartNum[i]['ctColors'][index].reverse()
@@ -2410,7 +2485,7 @@ export default {
         this.getUrlByType()
       }
     },
-    handleHost () {
+    handleHost() {
       let curKey = this.selectedItem.ctDataSource
       if (['static', 'system'].indexOf(curKey) !== -1) {
         this.curDataHost = gbs.host
@@ -2420,7 +2495,7 @@ export default {
         this.thirdIpPort = this.dataSource[curKey] || ''
         this.curDataHost = 'http://' + this.thirdIpPort
       }
-      this.changeThirdConf({isThird: this.isThird, curDataHost: this.curDataHost, thirdIpPort: this.thirdIpPort})
+      this.changeThirdConf({ isThird: this.isThird, curDataHost: this.curDataHost, thirdIpPort: this.thirdIpPort })
     },
     dealTypeStr: function () {
       // 根据需求传值给后端对应的接口
@@ -2483,12 +2558,12 @@ export default {
     //   })
     // },
     // 根据选中图标类型获取可以配置的接口
-    getUrlByType (flag) {
+    getUrlByType(flag) {
       var _this = this
       newAjax({
         url: gbs.host + '/leaderview/home/getUrl',
         // url: _this.curDataHost + '/leaderview/home/getUrl',
-        data: {typeStr: this.dealTypeStr()},
+        data: { typeStr: this.dealTypeStr() },
         async: false,
         success: function (data) {
           let arr = data.obj || []
@@ -2521,7 +2596,7 @@ export default {
       })
     },
     // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
-    chgUrl (flag) {
+    chgUrl(flag) {
       var _this = this
       var chainP = (this.syst.chainParams = {}) // 将需要联动的字段缓存
       var index = -1
@@ -2625,7 +2700,7 @@ export default {
       })
     },
     // 发送接口下拉框改变时请求
-    openMapChange () {
+    openMapChange() {
       this.MapChange = !this.MapChange
       if (!this.MapChange) {
         this.tapsStation = 'center'
@@ -2634,25 +2709,25 @@ export default {
       }
     },
     // 发送接口下拉框改变时请求
-    openHawkEye () {
+    openHawkEye() {
       if (!this.ShowHawkEye) {
         this.paintObj.scale = 100
       }
       this.ShowHawkEye = !this.ShowHawkEye
     },
-    closeHawkEye () {
+    closeHawkEye() {
       this.ShowHawkEye = false
     },
-    upload () {
+    upload() {
       document.getElementById('uploadZip').click()
     },
-    cancel () {
+    cancel() {
       this.showUpload = false
     },
-    openUpload () {
+    openUpload() {
       this.showUpload = true
     },
-    getZip (e) {
+    getZip(e) {
       if (!e.target.files[0]) {
         return
       }
@@ -2666,7 +2741,7 @@ export default {
       //   this.zipFile = reader.result;
       // };
     },
-    sentReq (d, postData, selectedP) {
+    sentReq(d, postData, selectedP) {
       let _this = this
       $.ajax({
         url: /^\//.test(d.dataUrl) ? _this.curDataHost + d.dataUrl : _this.curDataHost + '/' + d.dataUrl,
@@ -2711,7 +2786,7 @@ export default {
         ? null
         : (d.data.length && d.data[0].value) || null
     },
-    chgSelects (v) {
+    chgSelects(v) {
       // 需要判断是否有改变联动下拉框的值，需要重新请求
       var _this = this
       var cur = this.syst.curConf.params
@@ -2762,7 +2837,7 @@ export default {
       })
     },
     // 发送下拉选择改变时请求
-    sentSelectsReq (d, postData) {
+    sentSelectsReq(d, postData) {
       let _this = this
       $.ajax({
         // url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
@@ -2788,7 +2863,7 @@ export default {
         }
       })
     },
-    getWindowObj (data) {
+    getWindowObj(data) {
       this.showWindowBtn = false
       if (this.isArray(data.obj) && data.obj.length > 0) {
         // data.obj[0].hasOwnProperty('ne') && data.obj[0].hasOwnProperty('fields')
@@ -2801,7 +2876,7 @@ export default {
         // }
       }
     },
-    initWindowData (data) {
+    initWindowData(data) {
       var obj = []
       data.forEach((item, index) => {
         obj.push({
@@ -2819,10 +2894,10 @@ export default {
       })
       return obj
     },
-    getWindowData () {
+    getWindowData() {
       $('#partsEdit-modal').modal('show')
     },
-    getUrlData () {
+    getUrlData() {
       // 根据接口获取数据更新图表
       var _this = this
       var curConf = this.syst.curConf
@@ -2924,7 +2999,7 @@ export default {
       */
     },
     // 发送更新视图的请求
-    sentViewReq (curConf, datas, param) {
+    sentViewReq(curConf, datas, param) {
       let _this = this
       if (_this.selectedItem.chartType === 'JSMpeg') {
         _this.selectedItem.chartData = JSON.stringify(param)
@@ -3026,7 +3101,7 @@ export default {
       }
     },
     // 以下为静态数据的输入校验
-    formatJson (a) {
+    formatJson(a) {
       if (a === null) return null
       if (typeof a === 'string' && (a = eval('(' + a + ')'))) {
         return this._format(a, a, null, null, null)
@@ -3074,7 +3149,7 @@ export default {
     // isObject: function(a) {
     //   return 'object' === typeof a && '[object object]' === Object.prototype.toString.call(a).toLowerCase()
     // },
-    saveDataChange () {
+    saveDataChange() {
       if (this.historyArr.length === 0) {
         console.log('data change 了0')
         this.saveHistory()
@@ -3090,7 +3165,7 @@ export default {
         }
       }
     },
-    dataChange () {
+    dataChange() {
       this.saveDataChange() // 系统数据存历史
       if (this.selectedItem.ctDataSource !== 'static') {
         this.getUrlData()
@@ -3703,15 +3778,15 @@ export default {
       }
     },
     /* delOne: function () {
-      if (this.selectedItem.hasOwnProperty('chartType')) {
-        // 非组合元件
-        this.chartNum.splice(this.selectedIndex, 1)
-      } else {
-        this.combinList.splice(this.selectedIndex, 1)
-      }
-      this.selectedItem = {}
-      this.selectedIndex = null
-    }, */
+  if (this.selectedItem.hasOwnProperty('chartType')) {
+    // 非组合元件
+    this.chartNum.splice(this.selectedIndex, 1)
+  } else {
+    this.combinList.splice(this.selectedIndex, 1)
+  }
+  this.selectedItem = {}
+  this.selectedIndex = null
+}, */
     copy: function () {
       this.saveHistory()
       if (this.chooseIndexs.length > 0) {
@@ -3847,12 +3922,12 @@ export default {
       this.saveHistory('paint')
       this.paintObj.bgImg = ''
     },
-    activeSrcList (index) {
+    activeSrcList(index) {
       // console.log('index: ', index);
       this.$EventBus.$emit('activeSrcList', index)
       this.imgHeightLight = index
     },
-    deleteSrcList (index) {
+    deleteSrcList(index) {
       this.selectedItem.srcList.splice(index, 1)
     },
     /* 图片 */
@@ -3909,8 +3984,8 @@ export default {
       })
       e.target.value = ''
     },
-    removeImg (e) {
-      let {chartType} = this.selectedItem
+    removeImg(e) {
+      let { chartType } = this.selectedItem
       if (chartType === 'image' || chartType === 'Newimage') {
         this.selectedItem.imgSrc = ''
         this.selectedItem.imgName = ''
@@ -3923,7 +3998,7 @@ export default {
       }
     },
     // 视频
-    uploadVideo (e) {
+    uploadVideo(e) {
       // field, that
       if (e.value === '') {
         return
@@ -3944,10 +4019,10 @@ export default {
       var file = e.target.files[0]
       // 视频截图
       /**
-      var windowURL = window.URL || window.webkitURL
-      var videoURL = windowURL.createObjectURL(file)
-      this.selectedItem.videoSrc = videoURL
-      */
+  var windowURL = window.URL || window.webkitURL
+  var videoURL = windowURL.createObjectURL(file)
+  this.selectedItem.videoSrc = videoURL
+  */
       var formdata = new FormData()
       formdata.append('uploaded_file', file)
       var _this = this
@@ -3962,20 +4037,20 @@ export default {
       })
       e.target.value = ''
     },
-    palyErr () {
+    palyErr() {
       this.showPlayErr = true
     },
-    getPaintCl (data) {
+    getPaintCl(data) {
       this.saveHistory('paint')
       this.paintObj.bgColor = data.color
     },
-    getLineCl (data) {
+    getLineCl(data) {
       this.helpLineColor = data.color
     },
-    changeStation () {
+    changeStation() {
       document.querySelector('.vue-ruler-wrapper').style.position = this.guideStation
     },
-    getColor (data) {
+    getColor(data) {
       this.saveHistory()
       if (data.type !== undefined) {
         if (data.ColorNum) {
@@ -3993,11 +4068,11 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 0, data.color)
       }
     },
-    getGaugeCl (data) {
+    getGaugeCl(data) {
       this.saveHistory()
       this.$set(this.selectedItem, 'bgClr', data.color)
     },
-    getMapColor (data) {
+    getMapColor(data) {
       this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
@@ -4011,7 +4086,7 @@ export default {
         }
       }
     },
-    getColorStart (data) {
+    getColorStart(data) {
       this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
@@ -4030,7 +4105,7 @@ export default {
       }
     },
     // 渐变色颜色改变
-    getGradColor (data) {
+    getGradColor(data) {
       this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         var oldColor = this.selectedItem.ctColors[data.index]
@@ -4048,7 +4123,7 @@ export default {
         }
       }
     },
-    getSingleColor (data) {
+    getSingleColor(data) {
       this.saveHistory()
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((i) => {
@@ -4058,7 +4133,7 @@ export default {
         this.selectedItem.ctColors.splice(data.index, 1, data.color)
       }
     },
-    getBarClr (data) {
+    getBarClr(data) {
       this.saveHistory()
       this.selectedItem.barClrs.splice(data.index, 1, data.color)
       if (!this.selectChange && this.chooseSameFlag) {
@@ -4067,7 +4142,7 @@ export default {
         })
       }
     },
-    testObjChange (direct, newValue) {
+    testObjChange(direct, newValue) {
       var defData = 0
       var isWidth = direct === 'width'
       var valiType = direct + 'Vali'
@@ -4111,7 +4186,7 @@ export default {
         }
       }
     },
-    testObjPosChange (position, newValue) {
+    testObjPosChange(position, newValue) {
       var allowOverflow = this.childResize ? 0 : baseData.allowOverflow
       var defData = 0
       var selectData = 0
@@ -4163,7 +4238,7 @@ export default {
       }
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
-    changePaintStyle (scale, top, left) {
+    changePaintStyle(scale, top, left) {
       this.paintObj.scale = Math.floor(100 / scale)
       let height = document.querySelector('.paint-bg').clientHeight
       let width = document.querySelector('.paint-bg').clientWidth
@@ -4173,7 +4248,7 @@ export default {
       document.querySelector('#centerMapBox').scrollLeft = width * (left - 10) / canvaswidth * this.paintObj.scale / 100
     },
     // 改变画布大小
-    changePaintSize (type) {
+    changePaintSize(type) {
       this.$refs.rulertool.box()
       var key = 'width'
       if (type === 'h') {
@@ -4188,16 +4263,16 @@ export default {
       this.changeHomeData(this.paintObj)
     },
     // 这里来处理快捷键
-    handleKeyDown (e) {
+    handleKeyDown(e) {
       var key = window.event.keyCode ? window.event.keyCode : window.event.which
       /***
-        delete：46
-        上键：38
-        下键：40
-        左键：37
-        右键：39
-        crtl: 17
-      */
+    delete：46
+    上键：38
+    下键：40
+    左键：37
+    右键：39
+    crtl: 17
+  */
       if (key === 46) {
         this.del()
         e.preventDefault() // 取消浏览器原有的操作
@@ -4245,14 +4320,14 @@ export default {
         this.Revoke()
       }
     },
-    handleKeyUp (e) {
+    handleKeyUp(e) {
       var key = window.event.keyCode ? window.event.keyCode : window.event.which
       if (key === 13) {
         // flag = true
         e.preventDefault()
       }
     },
-    onMouseScroll (e) {
+    onMouseScroll(e) {
       if (window.event.ctrlKey) {
         e.preventDefault()
         var wheel = e.originalEvent.wheelDelta || -e.originalEvent.detail
@@ -4264,7 +4339,7 @@ export default {
         }
       }
     },
-    scrollFunc (e) {
+    scrollFunc(e) {
       e = e || window.event
       e.preventDefault()
       if (e.wheelDelta && event.ctrlKey) { // IE/Opera/Chrome
@@ -4273,14 +4348,14 @@ export default {
         event.returnValue = false
       }
     },
-    changeTogether (key, newV) {
+    changeTogether(key, newV) {
       if (!this.selectChange && this.chooseSameFlag) {
         this.chooseIndexs.forEach((item) => {
           this.chartNum[item][key] = newV
         })
       }
     },
-    saveOldData (tempId, key, oldV) {
+    saveOldData(tempId, key, oldV) {
       // let tempId = this.selectedItem.id
       let chgIndex = _.findIndex(this.chartNum, function (i) { return i.id === tempId })
       if (chgIndex !== -1) {
@@ -4320,7 +4395,7 @@ export default {
         }
       }
     },
-    chgImgSrc (imgSrc) {
+    chgImgSrc(imgSrc) {
       this.saveHistory()
       this.selectedItem.imgSrc = imgSrc
       this.changeTogether('imgSrc', imgSrc)
@@ -4629,9 +4704,7 @@ export default {
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data
-            // if (!_this.selectedItem.cityCode) {
             _this.selectedItem.cityCode = data[0].value
-            // }
           })
         }
       } else if (newValue === 'county') {
@@ -4639,12 +4712,6 @@ export default {
         if (oldV === 'country') {
           if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
             this.selectedItem.provinceCode = 510000 // 默认选中一个位置
-			this.getMapData(this.selectedItem.provinceCode).then((data) => {
-			  _this.cityArr = data
-			  // if (!_this.selectedItem.cityCode) {
-			  _this.selectedItem.cityCode = data[0].value
-			  // }
-			})
           }
         }
         if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
@@ -4659,32 +4726,14 @@ export default {
             tooltip('', '该地区不支持该级别地图', 'info')
           }
         } else {
-			if (!this.selectedItem.cityCode)
-			{
-				this.getMapData(this.selectedItem.provinceCode).then((data) => {
-				    _this.cityArr = data
-				  // if (!_this.selectedItem.cityCode) {
-				    _this.selectedItem.cityCode = data[0].value
-					this.getMapData(this.selectedItem.cityCode).then((data) => {
-					  _this.countyArr = data
-					  // if (!_this.selectedItem.cityCode) {
-					  _this.selectedItem.countyCode = data[0].value
-					  // }
-					})
-				  // }
-				})
-			}
-			else {
-				this.getMapData(this.selectedItem.cityCode).then((data) => {
-				  _this.countyArr = data
-				  // if (!_this.selectedItem.cityCode) {
-				  _this.selectedItem.countyCode = data[0].value
-				  // }
-				})
-			}
-         
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.getMapData(data[0].value).then((dataCounty) => {
+              _this.countyArr = dataCounty
+              this.selectedItem.countyCode = dataCounty[0].name
+            })
+          })
         }
-      }else {
+      } else {
         if (newValue === 'province') {
           if (!this.selectedItem.provinceCode) {
             this.selectedItem.provinceCode = this.provinceArr[0].value
