@@ -3364,7 +3364,7 @@ export default {
             viewConf: JSON.stringify(cThis.chartNum),
             paintObj: JSON.stringify(cThis.paintObj),
             composeObj: JSON.stringify(cThis.combinList),
-            viewImage: '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            viewImage: '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({
@@ -3960,7 +3960,7 @@ export default {
           return
         }
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
         if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'Newimage' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
