@@ -36,8 +36,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     var fileName = 'mobile.html'
     var targetName = 'index.html'
     // path.resolve(__dirname, '..')
-    var sourceFile = path.resolve(__dirname, '../dist/leaderviewWeb', fileName)
-    var destPath = path.resolve(__dirname, '../dist/leaderviewWeb', targetName)
+    var sourceFile = path.resolve(__dirname, '../dist/leaderview', fileName)
+    var destPath = path.resolve(__dirname, '../dist/leaderview', targetName)
     var data = ''
     // var arguments = process.argv.splice(2)
     var replaceText = './' // 目标目录
@@ -61,7 +61,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     })
     // readStream.pipe(writeStream); 仅流式复制，不修改
     writeStream.on('finish', function () {
-      console.log('\x1B[32m leaderviewWeb.html生成成功 \x1B[0m')
+      console.log('\x1B[32m leaderview.html生成成功 \x1B[0m')
     })
     writeStream.on('error', function (err) {
       console.log(err.stack)
