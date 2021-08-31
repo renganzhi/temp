@@ -31,6 +31,7 @@ import UE from '@/components/Common/ue'
 let config = {
   // ...oldConfig,
   video: require('@/components/EditComp/player/config.js'),
+  BiaxialBarChart: require('@/components/EditComp/BiaxialBarChart/config.js'),
   // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.js'),
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),

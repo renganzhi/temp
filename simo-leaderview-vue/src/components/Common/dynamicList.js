@@ -9,6 +9,7 @@ export default [
   'TDEarthLine',
   'BaiDuMap',
   'IntegratedHistogram',
+  'BiaxialBarChart',
   'TDEarthBar',
   'DataFlow',
   'GradientPie',
