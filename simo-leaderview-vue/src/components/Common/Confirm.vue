@@ -13,7 +13,7 @@
               <h4 class="modal-title font-white-lemon">请选择</h4>
             </div>
             <div class="modal-body">
-              <h5 style="text-align: center; line-height: 24px; word-wrap: break-word;">{{message}}
+              <h5 style="text-align: center; line-height: 24px; word-wrap: break-word;font-size:14px">{{message}}
               </h5>
             </div>
             <div class="modal-footer"

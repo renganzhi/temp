@@ -124,6 +124,7 @@ export default {
           trigger: 'item',
           show: this.item.tooltipShow,
           backgroundColor: this.item.tooltipBackColor,
+          borderWidth: 0,
           textStyle: {
             color: this.item.tooltipTextColor,
             fontSize: this.item.tooltipfontSize
