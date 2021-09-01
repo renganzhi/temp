@@ -395,6 +395,7 @@ export default {
           tooltip: {
           // trigger: 'axis',
             show: this.item.tooltipShow1,
+            borderWidth: 0,
             backgroundColor: this.item.tooltipBackColor1,
             textStyle: {
               color: this.item.tooltipTextColor1,
@@ -604,6 +605,7 @@ export default {
           tooltip: {
             trigger: 'axis',
             show: this.item.tooltipShow2,
+            borderWidth: 0,
             backgroundColor: this.item.tooltipBackColor2,
             textStyle: {
               color: this.item.tooltipTextColor2,
@@ -804,6 +806,7 @@ export default {
           tooltip: {
             trigger: 'axis',
             show: this.item.tooltipShow3,
+            borderWidth: 0,
             backgroundColor: this.item.tooltipBackColor3,
             textStyle: {
               color: this.item.tooltipTextColor3,
@@ -1057,6 +1060,7 @@ export default {
           tooltip: {
             trigger: 'axis',
             show: this.item.tooltipShow4,
+            borderWidth: 0,
             backgroundColor: this.item.tooltipBackColor4,
             textStyle: {
               color: this.item.tooltipTextColor4,
