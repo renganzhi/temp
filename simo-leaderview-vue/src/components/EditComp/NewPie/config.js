@@ -163,55 +163,16 @@ export default {
             'name': '图例字颜色',
             'key': 'ctLegendColor',
             'tag': 'Color'
-          },
-          {
-            'name': '图元半径',
-            'key': 'radius',
-            'tag': 'input'
           }
         ]
       },
       {
-        'name': 'tips配置',
+        'name': '图元配置',
         'tag': 'Hint',
         'childoption': [
           {
-            'name': 'tips可见性',
-            'key': 'tooltipShow',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '显示',
-                'value': true
-              },
-              {
-                'name': '隐藏',
-                'value': false
-              }
-            ]
-          },
-          {
-            'name': 'tips背景色',
-            'parentKey': {
-              'tooltipShow': true
-            },
-            'key': 'tooltipBackColor',
-            'tag': 'Color'
-          },
-          {
-            'name': 'tips字体色',
-            'key': 'tooltipTextColor',
-            'parentKey': {
-              'tooltipShow': true
-            },
-            'tag': 'Color'
-          },
-          {
-            'name': 'tips字体大小',
-            'key': 'tooltipfontSize',
-            'parentKey': {
-              'tooltipShow': true
-            },
+            'name': '图元半径',
+            'key': 'radius',
             'tag': 'input'
           },
           {
@@ -258,6 +219,51 @@ export default {
             'key': 'borderRadius',
             'parentKey': {
               'pieType': '南丁格尔图'
+            },
+            'tag': 'input'
+          }
+        ]
+      },
+      {
+        'name': 'tips配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': 'tips可见性',
+            'key': 'tooltipShow',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': 'tips背景色',
+            'parentKey': {
+              'tooltipShow': true
+            },
+            'key': 'tooltipBackColor',
+            'tag': 'Color'
+          },
+          {
+            'name': 'tips字体色',
+            'key': 'tooltipTextColor',
+            'parentKey': {
+              'tooltipShow': true
+            },
+            'tag': 'Color'
+          },
+          {
+            'name': 'tips字体大小',
+            'key': 'tooltipfontSize',
+            'parentKey': {
+              'tooltipShow': true
             },
             'tag': 'input'
           }
