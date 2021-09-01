@@ -101,15 +101,15 @@ export default {
         uniforms: {
           coeficient: {
             type: 'f',
-            value: 0.5
+            value: 1
           },
           power: {
             type: 'f',
-            value: 0.9
+            value: 1
           },
           glowColor: {
             type: 'c',
-            value: new THREE.Color('#34e6ff')
+            value: new THREE.Color('#3b7dfe')
           }
         },
         vertexShader: vertexShader,
@@ -405,7 +405,7 @@ export default {
             vec.setFromSpherical(spherical) // 夹角转换为世界坐标
             positions111.push(vec.x, vec.y, vec.z)
 
-            color.set('#34e6ff') // 设置地图中点的颜色
+            color.set('#4996ff') // 设置地图中点的颜色
 
             colors.push(color.r, color.g, color.b)
           }
@@ -456,7 +456,7 @@ export default {
             spherical.phi = f2 * Math.PI // 横纵百分比转换为theta和phi夹角
             vec.setFromSpherical(spherical) // 夹角转换为世界坐标
             positions22.push(vec.x, vec.y, vec.z)
-            color.set('#34e6ff') // 设置地图边缘点线的颜色
+            color.set('#49f3ff') // 设置地图边缘点线的颜色
             colors22.push(color.r, color.g, color.b)
           } else if (this.isLandByUV(c3, f3)) {
             spherical.theta = c3 * Math.PI * 2 - Math.PI / 2 // 横纵百分比转换为theta和phi夹角
@@ -464,7 +464,7 @@ export default {
             vec.setFromSpherical(spherical) // 夹角转换为世界坐标
             positions22.push(vec.x, vec.y, vec.z)
 
-            color.set('#34e6ff') // 设置地图边缘点线的颜色
+            color.set('#49f3ff') // 设置地图边缘点线的颜色
 
             colors22.push(color.r, color.g, color.b)
           }
