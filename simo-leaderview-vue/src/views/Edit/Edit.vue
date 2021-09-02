@@ -21,6 +21,7 @@
 
     <Modal
       v-model="showUpload"
+      footer-hide
       title="导入模型">
       <Form ref="importModelForm" :label-width="80">
         <div class="input-item" style="margin-bottom: 20px;">
@@ -33,23 +34,13 @@
           <input type="file" id="uploadZip"
             accept=".zip,.rar,application/zip,application/x-zip-compressed"
             @change="getZip" style="opacity: 0; position: absolute; z-index: -1;"/>
-          <Input style="width: 236px; margin: 0px 5px;"
+          <Input style="width: 270px; margin: 0px 5px;"
            disabled v-model="importModelForm.fileName"/>
           <Button class="ivu-primary" @click="upload">预览</Button>
-          <!-- <div class="check_font" v-show="importCheckRules.fileNameCheck">上传模型不能为空</div> -->
         </div>
-        <!-- <div class="input-item" style="margin-bottom: 20px;">
-          <span>上传缩略图：</span>
-          <input type="file" id="uploadImg" accept="image/*"
-            @change="getImg" style="opacity: 0; position: absolute; z-index: -1;"/>
-          <Input style="width: 236px; margin: 0px 5px;" disabled v-model="importModelForm.imgName"/>
-          <Button class="ivu-primary" @click="uploadImg">预览</Button>
-          <div class="check_font" v-show="importCheckRules.imgNameCheck">上传缩略图不能为空</div>
-        </div>
-      </Form> -->
-      <div slot="footer">
-        <!-- <Button type="primary" @click="sureUpload">确认</Button> -->
-        <Button @click="cancel()">取消</Button>
+      <div style="text-align: right" class="modal-footer">
+        <button type="button" @click="sureUpload">确认</button>
+        <button type="button" data-dismiss="modal" @click="cancel()">取消</button>
       </div>
       </Form>
     </Modal>
@@ -557,6 +548,16 @@
                             :key="11"
                             type="helpLineColor"
                             @getdata="getLineCl"></Vcolor>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label style="width:60px">资源调整</label>
+                  <div>
+                    <Select v-model="resourcesIds" filterable style="width:180px">
+                        <div slot="empty">not Found data</div>
+                        <Option v-for="(item,index) in resourcesValueIds" :value="item.value" :key="index">{{ item.name }}</Option>
+                    </Select>
                   </div>
                 </div>
 
