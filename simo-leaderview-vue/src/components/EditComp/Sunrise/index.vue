@@ -49,6 +49,15 @@ export default {
     drawFlow () {
       this.mychart1 = echarts.init(this.$refs.Sunrise)
       let myoption1 = {
+        tooltip: {
+          // trigger: 'axis',
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipTextColor,
+            fontSize: this.item.tooltipfontSize
+          }
+        },
         backgroundColor: 'transparent',
         color: this.item.PieColorArray,
         series: {

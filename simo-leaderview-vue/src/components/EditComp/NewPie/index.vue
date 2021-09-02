@@ -17,7 +17,6 @@
 
 </template>
 <script>
-import echarts from 'echarts'
 export default {
   name: 'NewPie',
   props: ['item'],
@@ -114,6 +113,9 @@ export default {
             let i=index%this.item.LineColorArray.length;
             SericeData[index].label.color=this.item.LineColorArray[i]
           }
+        } else {
+          let i=index%this.item.LineColorArray.length;
+            SericeData[index].label.color=this.defaultcolor[i]
         }
        
       })
@@ -122,6 +124,7 @@ export default {
           trigger: 'item',
           show: this.item.tooltipShow,
           backgroundColor: this.item.tooltipBackColor,
+          borderWidth: 0,
           textStyle: {
             color: this.item.tooltipTextColor,
             fontSize: this.item.tooltipfontSize
@@ -148,13 +151,11 @@ export default {
               }
             },
             // radius:,
-            radius: this.item.pieType === '环形图' ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            radius: this.item.pieType === '环形图' ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : this.item.pieType === '南丁格尔图' ? [(this.item.radius - this.item.ringWidth) > 0 ? (this.item.radius - this.item.ringWidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
             // radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
             data: SericeData,
-            emphasis: {
-              itemStyle: {
-
-              }
+            itemStyle: {
+              borderRadius: this.item.pieType === '饼图' || this.item.pieType === '南丁格尔图' ? this.item.borderRadius : 0
             }
           }
         ]

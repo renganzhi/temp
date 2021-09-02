@@ -155,7 +155,7 @@
         </div>
       </div>
 
-      <div id="homeShareModal" class="modal" style="z-index: 10086">
+      <div id="homeShareModal" class="modal" style="z-index: 10086" aria-hidden="false" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
           <div class="modal-content">
             <div class="modal-header">

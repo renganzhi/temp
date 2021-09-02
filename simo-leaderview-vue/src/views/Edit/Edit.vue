@@ -17,7 +17,7 @@
              ref="PreView"></PreView>
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
-             @hideModal="back"></Confirm>
+             @hideModal="back" aria-hidden="false" data-backdrop="static"></Confirm>
 
     <Modal
       v-model="showUpload"
@@ -26,10 +26,12 @@
       <Form ref="importModelForm" :label-width="80">
         <div class="input-item" style="margin-bottom: 20px;">
           <span>模型名称：</span>
-          <Input style="width: 300px; margin: 0px 5px;" v-model="importModelForm.name"/>
+          <Input style="width: 300px; margin: 0px 5px;"
+                 v-model="importModelForm.name" />
           <!-- <div class="check_font" v-show="importCheckRules.nameCheck">模型名称不能为空</div> -->
         </div>
-        <div class="input-item" style="position: relative; margin-bottom: 20px;">
+        <div class="input-item"
+             style="position: relative; margin-bottom: 20px;">
           <span>上传模型：</span>
           <input type="file" id="uploadZip"
             accept=".zip,.rar,application/zip,application/x-zip-compressed"
@@ -47,35 +49,38 @@
     <div class="edit-content"
          @click.ctrl="bindCtrl">
       <div class="edit-header">
-        <h4 class='edit-title' style="margin: 0 18px;"
+        <h4 class='edit-title'
+            style="margin: 0 18px;"
             v-if="tapsStation==='center'"
             @click.self="clickPaint($event)">{{pageName}}</h4>
         <div :class="tapsStation==='left'?'fl':'fr'">
-          <h4 class='edit-title' style="margin: 0 18px;"
+          <h4 class='edit-title'
+              style="margin: 0 18px;"
               v-if="tapsStation!=='center'"
               @click.self="clickPaint($event)">{{pageName}}</h4>
-          <span v-if="tapsStation!=='center'" class="fl">|</span>
+          <span v-if="tapsStation!=='center'"
+                class="fl">|</span>
           <a class=" simoLink icon-n-revoke edit-opt"
-            v-if="historyArr.length > 0"
-            @click="Revoke">撤销</a>
+             v-if="historyArr.length > 0"
+             @click="Revoke">撤销</a>
           <a class=" simoLink icon-n-revoke edit-opt"
-            style="color:#666F8B;"
-            v-else>撤销</a>
+             style="color:#666F8B;"
+             v-else>撤销</a>
           <a class=" simoLink icon-n-keyboard edit-opt"
-            @mouseover="showKeybd = true"
-            @mouseout="showKeybd = false">快捷键</a>
+             @mouseover="showKeybd = true"
+             @mouseout="showKeybd = false">快捷键</a>
           <!-- <button type="button" class="close fr edit-opt" @click="back"></button> -->
           <span>|</span>
           <a class=" icon-n-save simoLink edit-opt"
-            @click="saveConf">保存</a>
+             @click="saveConf">保存</a>
           <a class=" simoLink icon-n-preview edit-opt"
-            @click="preview">预览</a>
+             @click="preview">预览</a>
           <a class=" simoLink icon-n-withdraw edit-opt"
-            @click="preBack">返回</a>
+             @click="preBack">返回</a>
         </div>
       </div>
       <div class="edit-keyboard"
-          :id="tapsStation==='left'?'fledit':'fredit'"
+           :id="tapsStation==='left'?'fledit':'fredit'"
            v-show="showKeybd"
            @mouseover="showKeybd = true"
            @mouseout="showKeybd = false">
@@ -119,7 +124,8 @@
            @click="hideContext">
         <!--  <div class="m-contain full-height">-->
         <div class='btm-tools'>
-          <div   :class="tapsStation==='left'?'btn-box fl':'btn-box fr'" class="">
+          <div :class="tapsStation==='left'?'btn-box fl':'btn-box fr'"
+               class="">
             <span @click="preOther(0)"
                   class="ring-icon hoverTips"
                   style="line-height: 34px;margin: 0 8px;"
@@ -136,43 +142,48 @@
         <ul class="menu-list"
             style="width: 156px;"
             ref="copyMenu">
-          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
-              <span>鹰眼</span>
-              <div class="fr">
-                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
-                  <div></div>
-                </div>
+          <li class="context-menu-item context-menu-visible"
+              @click="openHawkEye">
+            <span>鹰眼</span>
+            <div class="fr">
+              <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                <div></div>
               </div>
-          </li>
-          <li class="context-menu-item context-menu-visible" @click="openMapChange">
-              <span>自动窗口</span>
-              <div class="fr">
-                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
-                  <div></div>
-                </div>
-              </div>
+            </div>
           </li>
           <li class="context-menu-item context-menu-visible"
-              @click="paste" v-if="this.tempItemArry.length > 0"><span>粘贴</span></li>
+              @click="openMapChange">
+            <span>自动窗口</span>
+            <div class="fr">
+              <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                <div></div>
+              </div>
+            </div>
+          </li>
+          <li class="context-menu-item context-menu-visible"
+              @click="paste"
+              v-if="this.tempItemArry.length > 0"><span>粘贴</span></li>
         </ul>
         <ul class="menu-list"
             style="width: 156px;"
             ref="contextMenu">
-          <li class="context-menu-item context-menu-visible" @click="openHawkEye">
-              <span>鹰眼</span>
-              <div class="fr">
-                <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
-                  <div></div>
-                </div>
+          <li class="context-menu-item context-menu-visible"
+              @click="openHawkEye">
+            <span>鹰眼</span>
+            <div class="fr">
+              <div :class="{'u-switch': true, 'u-switch-on': ShowHawkEye, 'u-switch-off': !ShowHawkEye}">
+                <div></div>
               </div>
+            </div>
           </li>
-          <li class="context-menu-item context-menu-visible" @click="openMapChange" >
-              <span>自动窗口</span>
-              <div class="fr">
-                <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
-                  <div></div>
-                </div>
+          <li class="context-menu-item context-menu-visible"
+              @click="openMapChange">
+            <span>自动窗口</span>
+            <div class="fr">
+              <div :class="{'u-switch': true, 'u-switch-on': MapChange, 'u-switch-off': !MapChange}">
+                <div></div>
               </div>
+            </div>
           </li>
           <li class="context-menu-item context-menu-visible"
               v-show="!childResize"
@@ -213,30 +224,31 @@
                @click="initChart(value)">
             {{value.text}}</div>
         </div> -->
-        <Archive @click="initChart" :tapsStation = 'tapsStation'></Archive>
+        <Archive @click="initChart"
+                 :tapsStation='tapsStation'></Archive>
 
-        <div class="m-main flex-1 auto" id="centerMapBox" ref="editCanvas"
+        <div class="m-main flex-1 auto"
+             id="centerMapBox"
+             ref="editCanvas"
              @click.self="clickPaint($event)">
           <div class="paint-bg"
-              @contextmenu.prevent="mycontextmenu($event)"
+               @contextmenu.prevent="mycontextmenu($event)"
                :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px', 'transform' : 'scale(' + paintObj.scale/100 + ')',  'background-color': paintObj.bgColor, 'z-index':500}">
             <div class="paint"
                  :style="paintStyle"></div>
             <div id="chooseWrap">
-              <vue-ruler-tool
-                ref="rulertool"
-                v-model="presetLine"
-                :step-length="20"
-                :parent="true"
-                :tapsStation = 'tapsStation'
-                :parentW="paintObj.width"
-                :parentH="paintObj.height"
-                :is-scale-revise="true"
-                :visible.sync="paintObj.showGrid"
-                :scale="paintObj.scale"
-                :helpLineColor='helpLineColor'
-                style="height:100%;width100%"
-              >
+              <vue-ruler-tool ref="rulertool"
+                              v-model="presetLine"
+                              :step-length="20"
+                              :parent="true"
+                              :tapsStation='tapsStation'
+                              :parentW="paintObj.width"
+                              :parentH="paintObj.height"
+                              :is-scale-revise="true"
+                              :visible.sync="paintObj.showGrid"
+                              :scale="paintObj.scale"
+                              :helpLineColor='helpLineColor'
+                              style="height:100%;width100%">
               </vue-ruler-tool>
               <DragBox v-for="(item,index) in chartNum"
                        :index="index"
@@ -272,27 +284,28 @@
             <div id="inWrap"></div>
             <!-- :style="{'width': paintObj.width + 'px', 'height': paintObj.height + 'px'}" -->
           </div>
-          <vue-ruler
-            ref="ruler"
-            v-model="presetLine"
-            :tapsStation = 'tapsStation'
-            v-if="paintObj.showGrid"
-            :scale="paintObj.scale"
-            :parentW="paintObj.width"
-            :parentH="paintObj.height"
-          >
+          <vue-ruler ref="ruler"
+                     v-model="presetLine"
+                     :tapsStation='tapsStation'
+                     v-if="paintObj.showGrid"
+                     :scale="paintObj.scale"
+                     :parentW="paintObj.width"
+                     :parentH="paintObj.height">
           </vue-ruler>
         </div>
         <div class="m-right full-height flex flex-vertical"
              :class="{noSlected:!selectedItem.chartType}">
-          <div class="handle_label" v-show="selectedItem.ctName">当前元件: {{curChartName}}</div>
-          <div class="handle_label" v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前元件: 组合</div>
+          <div class="handle_label"
+               v-show="selectedItem.ctName">当前元件: {{curChartName}}</div>
+          <div class="handle_label"
+               v-show="chooseIndexs.length + chooseCompIndexs.length > 1">当前元件: 组合</div>
           <div class="base-item"
                v-show="chooseIndexs.length === 1 && chooseCompIndexs.length === 0">
             <div class="m-tab"
                  :class="{active:showStyleTab}"
                  @click="showStyleTab=true">样式</div>
-            <div class="m-tab" v-show="!['decorator'].includes(curChartType)"
+            <div class="m-tab"
+                 v-show="!['decorator'].includes(curChartType)"
                  :class="{active:!showStyleTab}"
                  @click="showStyleTab=false">数据</div>
           </div>
@@ -659,8 +672,7 @@
 
               <!-- 地图拓扑背景色 -->
               <div v-if="selectedItem.chartType=='topo' && selectedItem.tptype === 'maptp'">
-                <div class="m-gap form-group"
-                     >图表样式</div>
+                <div class="m-gap form-group">图表样式</div>
                 <div class="form-group cols2">
                   <label>地图背景色</label>
                   <div class="color-w200">
@@ -714,11 +726,15 @@
                      v-if="selectedItem.chartType=='table'">
                   <label>表格背景图</label>
                   <input type="file"
-                    style="width: 147px!important;margin-right: 8px;"
-                    accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
-                    @change='changeImg' />
-                  <label class="hoverTips" data-toggle="tooltip" :title='selectedItem.tableBackName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
-                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
+                         style="width: 147px!important;margin-right: 8px;"
+                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         @change='changeImg' />
+                  <label class="hoverTips"
+                         data-toggle="tooltip"
+                         :title='selectedItem.tableBackName'
+                         style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.tableBackName}}</label>
+                  <i class="icon-n-deleteNew delete_text"
+                     @click="removeImg"></i>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
@@ -751,9 +767,9 @@
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='table'">
                   <label>行高</label>
-                    <input type="number"
-                            min="36"
-                           v-model="selectedItem.heightLinght">
+                  <input type="number"
+                         min="36"
+                         v-model="selectedItem.heightLinght">
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='border'">
@@ -840,12 +856,14 @@
                     </div>
                   </div>
                 </div>
-                <div div class="form-group cols2" v-show="selectedItem.chartType==='border' && selectedItem.colorful">
+                <div div
+                     class="form-group cols2"
+                     v-show="selectedItem.chartType==='border' && selectedItem.colorful">
                   <label>渐变方向</label>
-                    <select v-model="selectedItem.directionLinear">
-                      <option :value="180">上下</option>
-                      <option :value="90">左右</option>
-                    </select>
+                  <select v-model="selectedItem.directionLinear">
+                    <option :value="180">上下</option>
+                    <option :value="90">左右</option>
+                  </select>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType!=='time' && selectedItem.borderType!='stable'">
@@ -942,14 +960,24 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group" v-if="selectedItem.chartType=='decorator'">
-                    <div v-for="(item, index) in settingData.decoratorCase"
-                         :key="index"
-                         @click="chgImgSrc(item.imgSrc)"
-                         :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
-                      <img :src="baseUrl + item.mini" />
-                    </div>
-                  </div>
+              <div class="form-group"
+                   v-if="selectedItem.chartType=='decorator'">
+                <div v-for="(item, index) in settingData.decoratorCase"
+                     :key="index"
+                     @click="chgImgSrc(item.imgSrc)"
+                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc===item.imgSrc}">
+                  <img :src="baseUrl + item.mini" />
+                </div>
+                <div @click="chgImgSrc('GreenEarth')"
+                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='GreenEarth'}"><img src="../../../static/img/地球3.png"
+                       alt=""></div>
+                <div @click="chgImgSrc('VioletEarth')"
+                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='VioletEarth'}"><img src="../../../static/img/地球2.png"
+                       alt=""></div>
+                <div @click="chgImgSrc('BlueEarth')"
+                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.imgSrc==='BlueEarth'}"><img src="../../../static/img/地球1.png"
+                       alt=""></div>
+              </div>
               <!--进度条-->
               <div v-if="selectedItem.chartType=='progress'">
                 <div class="m-gap form-group">图例配置</div>
@@ -1071,7 +1099,8 @@
                     <option value="false">隐藏</option>
                   </select>
                 </div>
-                <div class="form-group cols2" v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">
                   <label>图例文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.legendColor"
@@ -1143,7 +1172,8 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例字颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.ctLegendColor"
@@ -1191,7 +1221,8 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例位置</label>
                     <select v-model="selectedItem.visualPosition">
                       <option value="left">底部靠左</option>
@@ -1206,7 +1237,8 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.cityShow === 'true'">
                     <label>地名颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.cityColor"
@@ -1215,7 +1247,8 @@
                               @getdata="getColor"></Vcolor>
                     </div>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.cityShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.cityShow === 'true'">
                     <label>字号</label>
                     <select v-model="selectedItem.fontSize">
                       <option value="8">8</option>
@@ -1297,7 +1330,8 @@
                       <option value="false">隐藏</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例字体大小</label>
                     <select v-model="selectedItem.ctLegendSize">
                       <option value="8">8</option>
@@ -1310,44 +1344,50 @@
                       <option value="30">30</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例字颜色</label>
-                      <div class="color-w200">
-                        <Vcolor :data="selectedItem.ctLegendColor"
-                            :key="18"
-                            type="ctLegendColor"
-                            @getdata="getColor"></Vcolor>
-                      </div>
+                    <div class="color-w200">
+                      <Vcolor :data="selectedItem.ctLegendColor"
+                              :key="18"
+                              type="ctLegendColor"
+                              @getdata="getColor"></Vcolor>
+                    </div>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.ctLegendShow === 'true'">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.ctLegendShow === 'true'">
                     <label>图例高度</label>
                     <input type="number"
                            max="100"
                            min="0"
                            v-model="selectedItem.legendY">
                   </div>
-                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                  <div class="form-group cols2"
+                       v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
                     <label>图元上边距</label>
                     <input type="number"
                            max="50"
                            min="0"
                            v-model="selectedItem.gridTop">
                   </div>
-                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                  <div class="form-group cols2"
+                       v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
                     <label>图元下边距</label>
                     <input type="number"
                            max="50"
                            min="0"
                            v-model="selectedItem.gridBotton">
                   </div>
-                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                  <div class="form-group cols2"
+                       v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
                     <label>图元左边距</label>
                     <input type="number"
                            max="50"
                            min="0"
                            v-model="selectedItem.gridLeft">
                   </div>
-                  <div class="form-group cols2" v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
+                  <div class="form-group cols2"
+                       v-if=" ['v-line','ve-line', 've-histogram'].includes(selectedItem.chartType) ">
                     <label>图元右边距</label>
                     <input type="number"
                            max="50"
@@ -1367,24 +1407,24 @@
                       <label>tips背景色</label>
                       <div class="color-w200">
                         <Vcolor :data="selectedItem.tooltipBackColor"
-                            :key="18"
-                            type="tooltipBackColor"
-                            @getdata="getColor"></Vcolor>
+                                :key="18"
+                                type="tooltipBackColor"
+                                @getdata="getColor"></Vcolor>
                       </div>
                     </div>
                     <div class="form-group cols2">
                       <label>tips字体色</label>
                       <div class="color-w200">
                         <Vcolor :data="selectedItem.tooltipTextColor"
-                              :key="18"
-                              type="tooltipTextColor"
-                              @getdata="getColor"></Vcolor>
+                                :key="18"
+                                type="tooltipTextColor"
+                                @getdata="getColor"></Vcolor>
                       </div>
                     </div>
                     <div class="form-group cols2">
                       <label>tips字体大小</label>
-                      <input  type="number"
-                          v-model="selectedItem.tooltipfontSize">
+                      <input type="number"
+                             v-model="selectedItem.tooltipfontSize">
                     </div>
                   </div>
                   <div v-if="selectedItem.chartType === 've-radar' || selectedItem.chartType === 've-line' || selectedItem.chartType === 've-bar' || selectedItem.chartType === 've-histogram'">
@@ -1456,8 +1496,9 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
-                <div class="form-group cols2" v-if="selectedItem.chartType === 've-gauge'">
-                  <label >文字颜色</label>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType === 've-gauge'">
+                  <label>文字颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.detailColor"
                             :key="24"
@@ -1465,8 +1506,9 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
-                <div class="form-group cols2" v-if="selectedItem.chartType === 've-gauge'||selectedItem.chartType === 've-ring'">
-                  <label >环宽</label>
+                <div class="form-group cols2"
+                     v-if="selectedItem.chartType === 've-gauge'||selectedItem.chartType === 've-ring'">
+                  <label>环宽</label>
                   <div class="color-w200">
                     <input type="number"
                            max="50"
@@ -1476,18 +1518,20 @@
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType !== 've-radar' && selectedItem.chartType !== 've-pie'  && selectedItem.chartType !== 've-ring'">
                   <label v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'">坐标文字大小</label>
-                    <select v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'" v-model="selectedItem.axisLabelSize">
-                      <option value="8">8</option>
-                      <option value="10">10</option>
-                      <option value="14">14</option>
-                      <option value="16">16</option>
-                      <option value="20">20</option>
-                      <option value="24">24</option>
-                      <option value="28">28</option>
-                      <option value="30">30</option>
-                    </select>
+                  <select v-if="selectedItem.chartType==='ve-line' || selectedItem.chartType==='ve-histogram' || selectedItem.chartType==='ve-bar'"
+                          v-model="selectedItem.axisLabelSize">
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
+                  </select>
                 </div>
-                <div class="form-group cols2" v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                <div class="form-group cols2"
+                     v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
                   <label>坐标单位颜色</label>
                   <div class="color-w200">
                     <Vcolor :data="selectedItem.DanweiColor"
@@ -1496,18 +1540,19 @@
                             @getdata="getColor"></Vcolor>
                   </div>
                 </div>
-                <div class="form-group cols2" v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
+                <div class="form-group cols2"
+                     v-if=" ['ve-line','ve-bar', 've-histogram'].includes(selectedItem.chartType) ">
                   <label>坐标单位大小</label>
                   <select v-model="selectedItem.DanweiSize">
-                      <option value="8">8</option>
-                      <option value="10">10</option>
-                      <option value="14">14</option>
-                      <option value="16">16</option>
-                      <option value="20">20</option>
-                      <option value="24">24</option>
-                      <option value="28">28</option>
-                      <option value="30">30</option>
-                    </select>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
+                  </select>
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
@@ -1574,27 +1619,27 @@
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line' && selectedItem.symbolType === 'pic'">
-                    <label>数据点图片</label>
-                    <input type="file"
-                           accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
-                           @change='changeImg' />
+                  <label>数据点图片</label>
+                  <input type="file"
+                         accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
+                         @change='changeImg' />
                 </div>
                 <div class="form-group cols2"
                      v-if="selectedItem.chartType=='ve-line'">
-                    <label>数据点大小</label>
-                    <select v-model="selectedItem.symbolSize">
-                      <option value="4">4</option>
-                      <option value="6">6</option>
-                      <option value="8">8</option>
-                      <option value="10">10</option>
-                      <option value="12">12</option>
-                      <option value="14">14</option>
-                      <option value="16">16</option>
-                      <option value="20">20</option>
-                      <option value="24">24</option>
-                      <option value="28">28</option>
-                      <option value="30">30</option>
-                    </select>
+                  <label>数据点大小</label>
+                  <select v-model="selectedItem.symbolSize">
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="12">12</option>
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
+                  </select>
                 </div>
 
                 <div class="form-group cols2"
@@ -1650,8 +1695,8 @@
                   <label>图表文字连线</label>
                   <div class="color-w200">
                     <select v-model="selectedItem.showline">
-                    <option value="false">隐藏</option>
-                    <option value="true">显示</option>
+                      <option value="false">隐藏</option>
+                      <option value="true">显示</option>
                     </select>
                   </div>
                 </div>
@@ -1745,11 +1790,13 @@
                 </div>
               </div>
 
-              <ChartStyle v-if="selectedItem.chartType && selectedItem.chartType.indexOf('ve-') > -1" :configItems="selectedItem" @change="changeChartStyle"></ChartStyle>
+              <ChartStyle v-if="selectedItem.chartType && selectedItem.chartType.indexOf('ve-') > -1"
+                          :configItems="selectedItem"
+                          @change="changeChartStyle"></ChartStyle>
 
               <!-- <template v-if="['video'].includes(selectedItem.chartType)"> -->
-                <!-- <div class="m-gap form-group">基础样式</div> -->
-                <!-- <div class="form-group cols2"
+              <!-- <div class="m-gap form-group">基础样式</div> -->
+              <!-- <div class="form-group cols2"
                     v-for="(item, index) in config[selectedItem.chartType].styles.base" :key="`base_${index}`"
                   >
                     <label :style="item.tag === 'Hint'? 'font-weight: bold; color: #fff;':''">{{item.name}}</label>
@@ -1766,11 +1813,21 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram'].includes(selectedItem.chartType)">
-                <el-collapse v-model="activeNames" class="form-group m-gap cols2">
-                  <el-collapse-item :title="item.name" :name="index" v-show="itemShow(item)"  v-for="(item, index) in config[selectedItem.chartType].default.styles.base" :key="`base_${index}`">
-                    <div class="form-group Child" v-for="(data, myindex) in item.childoption" :key="`base_${myindex}`">
-                      <ChildTag :item="data" :selectedItem="selectedItem" :selectChange="selectChange" :chooseSameFlag='chooseSameFlag'></ChildTag>
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
+                <el-collapse v-model="activeNames"
+                             class="form-group m-gap cols2">
+                  <el-collapse-item :title="item.name"
+                                    :name="index"
+                                    v-show="itemShow(item)"
+                                    v-for="(item, index) in config[selectedItem.chartType].default.styles.base"
+                                    :key="`base_${index}`">
+                    <div class="form-group Child"
+                         v-for="(data, myindex) in item.childoption"
+                         :key="`base_${myindex}`">
+                      <ChildTag :item="data"
+                                :selectedItem="selectedItem"
+                                :selectChange="selectChange"
+                                :chooseSameFlag='chooseSameFlag'></ChildTag>
                     </div>
                   </el-collapse-item>
                 </el-collapse>
@@ -1780,24 +1837,30 @@
             <!--数据-->
             <div v-show="!showStyleTab"
                  class="full-height">
-              <div class="form-group cols2" v-show="['image', 'Newimage', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
-                  <label>跳转大屏</label>
-                  <select v-model="selectedItem.linkId">
-                    <option value="">无跳转</option>
-                    <option v-for="item in allPageList"
-                            :key="item.id"
-                            :value="item.id">{{item.name}}</option>
-                  </select>
+              <div class="form-group cols2"
+                   v-show="['image', 'Newimage', 'text','NEWtextArea', 'hotspot'].includes(selectedItem.chartType)">
+                <label>跳转大屏</label>
+                <select v-model="selectedItem.linkId">
+                  <option value="">无跳转</option>
+                  <option v-for="item in allPageList"
+                          :key="item.id"
+                          :value="item.id">{{item.name}}</option>
+                </select>
               </div>
               <div v-show="['image','Newimage'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
                      style="position: relative;">
                   <label>选择文件</label>
-                  <input type="file" style="width: 147px!important;margin-right: 8px;"
+                  <input type="file"
+                         style="width: 147px!important;margin-right: 8px;"
                          accept="image/png, image/webp, image/jpeg, image/gif, image/jpg,image/svg+xml"
                          @change='changeImg' />
-                  <label  class="hoverTips" data-toggle="tooltip"  :title='selectedItem.imgName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
-                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
+                  <label class="hoverTips"
+                         data-toggle="tooltip"
+                         :title='selectedItem.imgName'
+                         style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.imgName}}</label>
+                  <i class="icon-n-deleteNew delete_text"
+                     @click="removeImg"></i>
                 </div>
               </div>
               <div v-show="['ppt', 'BulletFrame'].includes(selectedItem.chartType)">
@@ -1840,21 +1903,28 @@
                   </select>
                 </div>
                 <div class="form-group cols2">
-                  <Button class="ivu-primary" @click="openUpload">导入模型</Button>
+                  <Button class="ivu-primary"
+                          @click="openUpload">导入模型</Button>
                 </div>
               </div>
-              <div class="form-group" v-if="selectedItem.chartType === 'Ueditor'">
-                <UE :defaultMsg=selectedItem.chartData ref="ue"></UE>
-                <button class="DataChangeBtn" @click="dataChange">更新视图</button>
+              <div class="form-group"
+                   v-if="selectedItem.chartType === 'Ueditor'">
+                <UE :defaultMsg=selectedItem.chartData
+                    ref="ue"></UE>
+                <button class="DataChangeBtn"
+                        @click="dataChange">更新视图</button>
               </div>
-              <div style="height: 100%;" v-show="!['TDModel','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)" >
+              <div style="height: 100%;"
+                   v-show="!['TDModel','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
                           v-model="selectedItem.ctDataSource">
                     <!-- <option value="static">静态数据</option> -->
                     <!-- <option value="system">系统数据</option> -->
-                    <option v-for="(val,key) in dataSource" :key="key" :value="key === '静态数据' ? 'static' : (key === '系统数据' ? 'system' : key)">{{key}}</option>
+                    <option v-for="(val,key) in dataSource"
+                            :key="key"
+                            :value="key === '静态数据' ? 'static' : (key === '系统数据' ? 'system' : key)">{{key}}</option>
                     <!-- v-show="selectedItem.chartType!=='v-map' && selectedItem.chartType!=='v-scatter'"  -->
                   </select>
                 </div>
@@ -1874,7 +1944,8 @@
                   </div>
                 </div>
                 <div v-show="selectedItem.ctDataSource !== 'static'">
-                  <div class="form-group cols2" contenteditable="false">
+                  <div class="form-group cols2"
+                       contenteditable="false">
                     <label>选择接口</label>
                     <select ref="urlSel"
                             v-model="syst.curConf.url"
@@ -1884,7 +1955,8 @@
                               :key="v.key">{{v.name}}</option>
                     </select>
                   </div>
-                  <div id="mainSystemConf" v-if="syst.urlSel.length>0">
+                  <div id="mainSystemConf"
+                       v-if="syst.urlSel.length>0">
                     <div class="form-group cols2"
                          v-for="(v,idx) in syst.curUrl"
                          :key="idx">
@@ -1892,7 +1964,7 @@
                              class="e-legend">{{v.name}}<i class="icon-n-tip hoverTips"
                            v-if="v.title"
                            style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                            data-toggle="tooltip"
+                           data-toggle="tooltip"
                            :title="v.title"></i></label>
                       <Select2 v-if="v.type=='drop-down' || v.type=='multi-select'"
                                :name="v.key"
@@ -1922,8 +1994,11 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
-                <div class="form-group cols2" style="text-align: center;" v-if="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable'">
-                    <label :class="advanced? 'advancedset desc':'advancedset asc'" @click="advanced = !advanced">高级设置</label>
+                <div class="form-group cols2"
+                     style="text-align: center;"
+                     v-if="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable'">
+                  <label :class="advanced? 'advancedset desc':'advancedset asc'"
+                         @click="advanced = !advanced">高级设置</label>
                 </div>
                 <div v-if="advanced && (selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable')">
                   <div class="form-group cols2">
@@ -1934,35 +2009,38 @@
                               :value="i">{{i}}</option>
                     </select>
                   </div>
-                <div class="m-gap form-group"
-                     >列宽配置</div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
+                  <div class="m-gap form-group">列宽配置</div>
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmField">
                     <label>列宽类型</label>
                     <select v-model="selectedItem.OneLineType">
                       <option value="default">默认列宽</option>
                       <option value="custom">自定义列宽</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.OneLineType === 'custom' && selectedItem.AlarmField">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.OneLineType === 'custom' && selectedItem.AlarmField">
                     <label>字段列宽</label>
                     <input type="number"
                            v-model="selectedItem.OneLineSize">
                   </div>
-                <div class="m-gap form-group"
-                     >告警配置</div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
+                  <div class="m-gap form-group">告警配置</div>
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmField">
                     <label>告警条件</label>
                     <select v-model="selectedItem.AlarmType">
                       <option value="num">数字</option>
                       <option value="chart">字符</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'chart'&&selectedItem.AlarmField">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmType === 'chart'&&selectedItem.AlarmField">
                     <label>告警字符</label>
                     <input type="chart"
                            v-model="selectedItem.AlarmChart">
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
                     <label>条件</label>
                     <select v-model="selectedItem.AlarmNumType">
                       <option value="greater">大于</option>
@@ -1970,12 +2048,14 @@
                       <option value="less">小于</option>
                     </select>
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmType === 'num'&&selectedItem.AlarmField">
                     <label>阈值</label>
                     <input type="number"
                            v-model="selectedItem.AlarmNum">
                   </div>
-                  <div class="form-group cols2" v-if="selectedItem.AlarmField">
+                  <div class="form-group cols2"
+                       v-if="selectedItem.AlarmField">
                     <label>告警颜色</label>
                     <div class="color-w200">
                       <Vcolor :data="selectedItem.AlarmColor"
@@ -2002,6 +2082,7 @@
                       <option value="country">全国地图</option>
                       <option value="province">省级地图</option>
                       <option value="city">地市级地图</option>
+                      <option value="county">区县级地图</option>
                     </select>
                   </div>
                   <div v-show="selectedItem.mapLevel!=='country'"
@@ -2013,7 +2094,7 @@
                              :obj="provinceArr"
                              @input="chgProvince(selectedItem.provinceCode)"></Select2>
                   </div>
-                  <div v-if="selectedItem.mapLevel==='city'"
+                  <div v-if="selectedItem.mapLevel==='city' || selectedItem.mapLevel==='county'"
                        @click="chgMapLevel"
                        class="form-group cols2">
                     <label>市</label>
@@ -2022,13 +2103,33 @@
                              :obj="cityArr"
                              @input="chgCity(selectedItem.cityCode)"></Select2>
                   </div>
+                  <div v-if="selectedItem.mapLevel==='county'"
+                       @click="chgMapLevel"
+                       class="form-group cols2">
+                    <label>区/县</label>
+                    <Select2 v-model="selectedItem.countyCode"
+                             :mapSelect="true"
+                             :sameName="true"
+                             :disData="'nodata'"
+                             :obj="countyArr"
+                             @input="chgCounty(selectedItem.countyCode)"></Select2>
+                  </div>
                   <div class="form-group cols2"
                        v-if="(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip hoverTips"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
                          data-toggle="tooltip"
                          title="对每一个数据点所在的地区设置告警级别"></i></label><button class="addData"
-                            @click="addAlertLevel">添加数据点</button>
+                            @click="addAlertLevel">添加数据点</button><input type="file"
+                           accept="Json/*"
+                           class="jsonUpload"
+                           v-show="false"
+                           @change="uploadJson"
+                           id="uploadJson">
+                    <button class="addData county"
+                            @click="openJsonClick"
+                            v-show="areaArr.length==0 && selectedItem.mapLevel=='county'">上传区县数据</button>
+
                     <!-- <button type="button" class="colorToall" @click="addAlertLevel">添加数据点</button> -->
                   </div>
 
@@ -2036,8 +2137,16 @@
                        v-show="!(selectedItem.chartType==='v-scatter' || selectedItem.chartType==='NewScatter') && selectedItem.ctDataSource == 'static'">
                     <label class="e-legend">数据设置<i class="icon-n-tip hoverTips"
                          style="font-size: 16px; position: relative; top: 1px; left: 3px;"
-                        data-toggle="tooltip"
-                        title="设置每个地区的分布数量"></i></label>
+                         data-toggle="tooltip"
+                         title="设置每个地区的分布数量"></i></label><input type="file"
+                           accept="Json/*"
+                           class="jsonUpload"
+                           v-show="false"
+                           @change="uploadJson"
+                           id="uploadJson">
+                    <button class="addData county"
+                            @click="openJsonClick"
+                            v-show="areaArr.length==0 && selectedItem.mapLevel=='county'">上传区县数据</button>
                     <div class="setMapData"
                          style="height: 180px;">
                       <div class="area-item"
@@ -2067,7 +2176,8 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                     v-if="selectedItem.ctDataSource !== 'static'&&selectedItem.chartType !== 'JSMpeg'" style="display: none;">
+                     v-if="selectedItem.ctDataSource !== 'static'&&selectedItem.chartType !== 'JSMpeg'"
+                     style="display: none;">
                   <div class="form-group"
                        contenteditable="false"
                        style="position: relative">
@@ -2075,44 +2185,44 @@
                   </div>
                 </div>
                 <div class="form-group cols2"
-                      v-show="selectedItem.chartType==='v-map' || selectedItem.chartType==='NewVMap'"
-                      style="position: relative;">
+                     v-show="selectedItem.chartType==='v-map' || selectedItem.chartType==='NewVMap'"
+                     style="position: relative;">
                   <!-- editPieces -->
                   <div class="levelTips"
-                        v-show="levelTipsShow"
-                        :style="{'top': (60 + 40*this.levelChangeIndex) + 'px'}">
+                       v-show="levelTipsShow"
+                       :style="{'top': (60 + 40*this.levelChangeIndex) + 'px'}">
                     <i class="icon-n-arrowUp"
-                        style="font-size: 30px;"></i>
+                       style="font-size: 30px;"></i>
                     <div>与其余量级区间重合，是否合并为一个量级?</div>
                     <span class="tipbtn"
                           @click="sureLevelTips">是</span><span class="tipbtn"
                           @click="cancelLevelTips">否</span>
                   </div>
                   <label class="e-legend">数据量级<i class="icon-n-tip"
-                        data-toggle="tooltip"
-                        title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"
-                        style="font-size: 16px; position: relative; top: 1px; left: 3px;"></i></label>
+                       data-toggle="tooltip"
+                       title="设置数据的区间。分布数量处于不同区间的地区，展示颜色会有差别"
+                       style="font-size: 16px; position: relative; top: 1px; left: 3px;"></i></label>
                   <!-- <div class="setMapGrad" v-for="(item, index) in selectedItem.piecesData" :key="index">
                                     <span>量级一</span>
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].min"> -
                                     <input class="w-90" type="number" @change="changeTarget('x')" v-model="selectedItem.piecesData[index].max">
                                   </div> -->
                   <div class="setMapGrad"
-                        v-for="(item, index) in editPieces"
-                        :key="index">
+                       v-for="(item, index) in editPieces"
+                       :key="index">
                     <span>量级{{index + 1}}</span>
                     <input class="w-90"
-                            type="number"
-                            disabled
-                            v-model="editPieces[index].min"> -
+                           type="number"
+                           disabled
+                           v-model="editPieces[index].min"> -
                     <input class="w-90"
-                            type="number"
-                            :disabled="index===(editPieces.length-1)"
-                            @change="chgMapGrad(index)"
-                            v-model="editPieces[index].max">
+                           type="number"
+                           :disabled="index===(editPieces.length-1)"
+                           @change="chgMapGrad(index)"
+                           v-model="editPieces[index].max">
                     <i v-if="index===(editPieces.length-1) && index > 2"
-                        class="icon-n-deleteNew"
-                        @click="delMapLevel"></i>
+                       class="icon-n-deleteNew"
+                       @click="delMapLevel"></i>
                   </div>
                   <button type="button"
                           class="colorToall"
@@ -2139,7 +2249,8 @@
                        @click="delAlertLevel(index)"></i>
                   </div>
                 </div>
-                <button class="DataChangeBtn" @click="dataChange">更新视图</button>
+                <button class="DataChangeBtn"
+                        @click="dataChange">更新视图</button>
 
               </div>
               <div style="height: 100%;"
@@ -2166,24 +2277,35 @@
                        style="position: relative;"
                        v-show="selectedItem.videoType === 'local'">
                     <label>选择文件</label>
-                    <input type="file" style="width: 147px!important;margin-right: 8px;"
+                    <input type="file"
+                           style="width: 147px!important;margin-right: 8px;"
                            name="myfiles"
                            id="myfiles"
                            accept="video/*"
                            @change="uploadVideo">
-                  <label class="hoverTips" data-toggle='tooltip' :title='selectedItem.VideoName' style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
-                  <i class="icon-n-deleteNew delete_text" @click="removeImg"></i>
+                    <label class="hoverTips"
+                           data-toggle='tooltip'
+                           :title='selectedItem.VideoName'
+                           style="position: absolute;float: left;height: 28px;left: 160px;width: 70px;overflow: hidden;">{{selectedItem.VideoName}}</label>
+                    <i class="icon-n-deleteNew delete_text"
+                       @click="removeImg"></i>
                   </div>
                 </div>
                 <button @click="videoChange"
                         style="margin-top: 30px">更新视图</button>
               </div>
               <template v-if="selectedItem.chartType == 'ppt' || selectedItem.chartType == 'BulletFrame'">
-                <draggable class="img_src_list" v-model="selectedItem.srcList" handle=".handle">
-                  <div v-for="(item, index) in selectedItem.srcList" :key="index" :class="imgHeightLight==index?'heightImgName':''">
-                    <span class="src_item handle" @click="activeSrcList(index)">{{item.name}}</span>
-                    <span class="delete_text" @click="deleteSrcList(index)">删除</span>
-                    </div>
+                <draggable class="img_src_list"
+                           v-model="selectedItem.srcList"
+                           handle=".handle">
+                  <div v-for="(item, index) in selectedItem.srcList"
+                       :key="index"
+                       :class="imgHeightLight==index?'heightImgName':''">
+                    <span class="src_item handle"
+                          @click="activeSrcList(index)">{{item.name}}</span>
+                    <span class="delete_text"
+                          @click="deleteSrcList(index)">删除</span>
+                  </div>
                 </draggable>
               </template>
             </div>
@@ -2195,7 +2317,12 @@
                   :max="200"
                   v-model="paintObj.scale"></Slider>
         </div>
-        <HawkEye v-if="ShowHawkEye" :scale = "paintObj.scale" :boxTop = "HawkEyeStyle.top" :boxLeft = "HawkEyeStyle.left"  :bgTop = "paintObj.top" :bgLeft = "paintObj.left"></HawkEye>
+        <HawkEye v-if="ShowHawkEye"
+                 :scale="paintObj.scale"
+                 :boxTop="HawkEyeStyle.top"
+                 :boxLeft="HawkEyeStyle.left"
+                 :bgTop="paintObj.top"
+                 :bgLeft="paintObj.left"></HawkEye>
 
         <!-- </div> -->
       </div>
@@ -2297,6 +2424,10 @@ export default EditJs
 }
 </style>
 <style lang="scss">
+.county {
+  position: absolute;
+  right: 130px;
+}
 .img_src_list {
   .src_item {
     // padding-left: 8px;

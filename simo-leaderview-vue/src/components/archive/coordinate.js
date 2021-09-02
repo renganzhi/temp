@@ -11,6 +11,7 @@ import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram/config.js
 import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram/config.js'
 import NewBar from '@/components/EditComp/NewBar/config.js'
 import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram/config.js'
+import BiaxialBarChart from '@/components/EditComp/BiaxialBarChart/config.js'
 
 const coordinate = {
   name: '坐标图',
@@ -58,6 +59,7 @@ const coordinate = {
     // NewGroupHistogram.item,
     // NewGroupLeftHistogram.item,
     IntegratedHistogram.item,
+    BiaxialBarChart.item,
     // NewBar.item,
     ELine.item,
     DoubleLinde.item,

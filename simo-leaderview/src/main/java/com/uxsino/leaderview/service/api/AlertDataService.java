@@ -9,11 +9,11 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
-import com.uxsino.commons.model.AlertType;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.Dates;
 import com.uxsino.commons.utils.SessionUtils;
+import com.uxsino.leaderview.model.AlertType;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.monitor.NetworkEntity;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -642,7 +643,7 @@ public class AlertDataService {
             try {
                 Map<String, String> row = new LinkedHashMap<>();
                 row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
-                row.put("告警来源", alert.getAlertOrigin().toString());
+                row.put("告警来源", alert.getAlertOrigin());
                 NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
                 if (ObjectUtils.isEmpty(ne)){
                     return;
@@ -733,6 +734,7 @@ public class AlertDataService {
         if (org.apache.commons.collections4.CollectionUtils.isEmpty(allLevel)) {
             return empObj();
         }
+
         // 用户选定的告警等级列表
         List<Integer> chosenLevels = new ArrayList<>();
         if (Strings.isNullOrEmpty(levels)) {
@@ -943,4 +945,56 @@ public class AlertDataService {
         return list;
     }
 
+    public Object CountTopoAlert(String topoId, String alertLevel) throws Exception {
+
+        List<Integer> levelList = new ArrayList<>();
+        AlertLevelQuery query = new AlertLevelQuery();
+        query.setStatus(AlertLevelStatus.ACTIVATED);
+        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(query);
+        if (Strings.isNullOrEmpty(alertLevel)) {
+            for (AlertLevel level : activeLevel) {
+                levelList.add(level.getLevel());
+            }
+        } else {
+            levelList = Arrays.stream(alertLevel.split(",")).map(e -> {
+                Long level = Longs.tryParse(e);
+                return level != null ? level.intValue() : null;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+
+        AtomicLong count = new AtomicLong();
+
+        List<StatisticsResult> statisticsResults = rpcProcessService.statisticsEachLevelAlarms(topoId);
+
+        Map<Object, String> levelMap = new LinkedHashMap<>();
+        Map<Object, String> colorMap = new LinkedHashMap<>();
+        activeLevel.forEach(e -> {
+            levelMap.put(e.getLevel(), e.getName());
+            colorMap.put(e.getLevel(), e.getColor());
+        });
+
+        JSONArray rows = new JSONArray();
+        // 告警颜色数组，顺序跟rows一致
+        JSONArray colors = new JSONArray();
+        for (Integer level: levelList) {
+            JSONObject row = new JSONObject();
+            row.put("告警类型", levelMap.get(level));
+            //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
+            row.put("数量", 0L);
+            statisticsResults.forEach(e -> {
+                if(e.getScopeValue().equals(String.valueOf(level))) {
+                    count.addAndGet(e.getAlertCount());
+                    row.put("数量", e.getAlertCount());
+                }
+            });
+            rows.add(row);
+            colors.add(colorMap.get(level));
+        }
+        JSONObject result = new JSONObject();
+        result.put("rows", rows);
+        result.put("colors", colors);
+        result.put("count",count);
+
+        return result;
+    }
 }

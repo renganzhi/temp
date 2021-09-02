@@ -1,7 +1,7 @@
 <template>
   <div id="homeSetting-modal"
        style="z-index: 20100"
-       class="modal">
+       class="modal" aria-hidden="false" data-backdrop="static">
     <div class="modal-lg modal-dialog modal-dialog-centered"
          role="document">
       <div class="modal-content">

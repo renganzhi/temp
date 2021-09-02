@@ -11,12 +11,19 @@
                     </option>
             </select>
         </template>
+        <template v-if="item.tag === 'MarkLocation'">
+          <div style="position:relative;left:50px;top:20px;">
+            <div style="margin-bottom:15px"><span style="margin-right:10px">经度</span><input type="number" name="" ref="lng"></div>
+            <div><span style="margin-right:10px">纬度</span><input type="number" name="" ref="lat"></div>
+            <button style="margin-left:35px;margin-top:20px;outline:none" @click="selectMarker">查询</button>
+          </div>
+        </template>
         <template v-if="item.tag === 'typeSelect'">
           <div class="typeSelect">
               <div v-for="(option,index) in item.options"
               :key='index'
               @click="changeType(option)"
-              :style="{'border':selectedItem[item.key] === option.value?'1px solid #409EFF':'1px solid rgba(255,255,255,0.2)'}"
+              :style="{'cursor': 'pointer','border':selectedItem[item.key] === option.value?'1px solid #409EFF':'1px solid rgba(255,255,255,0.2)'}"
               ><span :class="option.icon" :style="{'color':selectedItem[item.key] === option.value?'#409EFF':'#fff'}"></span></div>
           </div>
         </template>
@@ -177,6 +184,74 @@
                 @click="delColor(index)"></i>
             </div>
         </template>
+        <template v-if="item.tag === 'monochromeArray'">
+          <div class="form-group colorsConf">
+              <span>序号</span>
+              <span class="color-w70 text">颜色</span>
+              <span @click="colorToAll"
+                    v-if="selectedItem.chartType!=='TDHistogram' && selectedItem.chartType!=='KLine'"
+                    style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
+            </div>
+            <div class="form-group colorsConf"
+                v-for="(v,index) in selectedItem[item.key]"
+                :key="index">
+            <span class="colorOrder">{{index+1}}</span>
+            <div>
+                <div class="color-w200"
+                    style="float: left; width: 140px;">
+                <Vcolor :data="selectedItem[item.key][index]"
+                        :type="item.key"
+                        :index="index"
+                        @getdata="mygetSingleColor"></Vcolor>
+                </div>
+            </div>
+            <i class="icon-n-add"
+                @click="addColor3(index + 1)"></i>
+            <i class="icon-n-toUp"
+                @click="moveUp(index)"></i>
+            <i class="icon-n-putin"
+                @click="moveDown(index)"></i>
+            <i class="icon-n-deleteNew"
+                @click="delColor(index)"></i>
+            </div>
+        </template>
+        <template v-if="item.tag === 'GradientArray'">
+          <div class="form-group colorsConf">
+              <span>序号</span>
+              <span class="color-w70 text">颜色</span>
+              <span @click="colorToAll"
+                    v-if="selectedItem.chartType!=='TDHistogram' && selectedItem.chartType!=='KLine'"
+                    style="color: #0088cc; cursor: pointer;">应用到已添加元件</span>
+            </div>
+            <div class="form-group colorsConf"
+                v-for="(v,index) in selectedItem[item.key]"
+                :key="index">
+            <span class="colorOrder">{{index+1}}</span>
+            <div class="gradient"
+                    @click="myreverseColor(index)"
+                    :style="{'background': 'linear-gradient(45deg, ' + selectedItem[item.key][index][0]  +',' + selectedItem[item.key][index][1] + ')'}">
+                <div class="color-w15">
+                <Vcolor :data="selectedItem[item.key][index][0]"
+                        :index="index"
+                        @getdata="mygetColorStart"></Vcolor>
+                </div>
+                <div class="color-w15"
+                    style="float: right">
+                <Vcolor :data="selectedItem[item.key][index][1]"
+                        :index="index"
+                        @getdata="mygetGradColor"></Vcolor>
+                </div>
+            </div>
+            <i class="icon-n-add"
+                @click="addColor2(index + 1)"></i>
+            <i class="icon-n-toUp"
+                @click="moveUp(index)"></i>
+            <i class="icon-n-putin"
+                @click="moveDown(index)"></i>
+            <i class="icon-n-deleteNew"
+                @click="delColor(index)"></i>
+            </div>
+        </template>
         <template v-if="item.tag === 'NewBorder'">
           <br><br>
           <div class="form-group">
@@ -208,47 +283,48 @@ export default {
   props: ['item', 'selectedItem', 'selectChange', 'chooseSameFlag'],
   data () {
     return {
+      markExit: false, // 在线地图查询添加时，判断添加的点是否存在
       baseUrl: '',
       settingData: baseData,
       picSrc: '',
       cardCase: [
         {
-          mini: '/leaderviewWeb/border/cardMini1.png',
-          imgSrc: '/leaderviewWeb/border/cardBg1.png'
+          mini: '/leaderview/border/cardMini1.png',
+          imgSrc: '/leaderview/border/cardBg1.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardMini2.png',
-          imgSrc: '/leaderviewWeb/border/cardBg2.png'
+          mini: '/leaderview/border/cardMini2.png',
+          imgSrc: '/leaderview/border/cardBg2.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardMini3.png',
-          imgSrc: '/leaderviewWeb/border/cardBg3.png'
+          mini: '/leaderview/border/cardMini3.png',
+          imgSrc: '/leaderview/border/cardBg3.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardBg4.png',
-          imgSrc: '/leaderviewWeb/border/cardBg4.png'
+          mini: '/leaderview/border/cardBg4.png',
+          imgSrc: '/leaderview/border/cardBg4.png'
         }
       ],
       titleCase: [
         {
-          mini: '/leaderviewWeb/border/titleMini1.png',
-          imgSrc: '/leaderviewWeb/border/titleBg1.png'
+          mini: '/leaderview/border/titleMini1.png',
+          imgSrc: '/leaderview/border/titleBg1.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleMini2.png',
-          imgSrc: '/leaderviewWeb/border/titleBg2.png'
+          mini: '/leaderview/border/titleMini2.png',
+          imgSrc: '/leaderview/border/titleBg2.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg3.png',
-          imgSrc: '/leaderviewWeb/border/titleBg3.png'
+          mini: '/leaderview/border/titleBg3.png',
+          imgSrc: '/leaderview/border/titleBg3.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg4.png',
-          imgSrc: '/leaderviewWeb/border/titleBg4.png'
+          mini: '/leaderview/border/titleBg4.png',
+          imgSrc: '/leaderview/border/titleBg4.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg5.png',
-          imgSrc: '/leaderviewWeb/border/titleBg5.png'
+          mini: '/leaderview/border/titleBg5.png',
+          imgSrc: '/leaderview/border/titleBg5.png'
         }
       ]
     }
@@ -262,7 +338,7 @@ export default {
   mounted: function () {
     for (let i = 0; i < 11; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderviewWeb/border/titleBg${6 + Number(i)}.png`
+      const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
       this.titleCase.push({
         mini: src,
         imgSrc: src
@@ -270,7 +346,7 @@ export default {
     }
     for (let i = 0; i < 14; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderviewWeb/border/cardBg${5 + Number(i)}.png`
+      const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
       this.cardCase.push({
         mini: src,
         imgSrc: src
@@ -300,10 +376,30 @@ export default {
     }
   },
   methods: {
-    changeType (option) {
-      if (this.selectedItem.chartType === 'IntegratedHistogram') {
-        this.selectedItem.ifGradual = 'false'
+    selectMarker () {
+      this.markExit = false
+      this.selectedItem.pointArray.forEach(element => {
+        if (Number(this.$refs.lng.value) === element.lng && Number(this.$refs.lat.value) === element.lat) {
+          this.markExit = true
+        } else {
+        }
+      })
+      if (!this.markExit) {
+        this.selectedItem.selectMark.lng = Number(this.$refs.lng.value)
+        this.selectedItem.selectMark.lat = Number(this.$refs.lat.value)
+        this.selectedItem.selectMark.icon = this.selectedItem.markerType
+        this.selectedItem.pointArray.push({
+          lng: Number(this.$refs.lng.value),
+          lat: Number(this.$refs.lat.value),
+          icon: this.selectedItem.markerType
+        })
+        this.selectedItem.selectChange = !this.selectedItem.selectChange // 每次点查一直询就修改，保证地图能一直更新
       }
+    },
+    changeType (option) {
+      // if (this.selectedItem.chartType === 'IntegratedHistogram') {
+      //   this.selectedItem.ifGradual = 'false'
+      // }
       this.selectedItem[this.item.key] = option.value
     },
     setFontFamily: function (val) {
@@ -374,7 +470,7 @@ export default {
       formData.append('uploaded_file', e.target.files[0])
       this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
@@ -545,6 +641,24 @@ export default {
         } else {
           this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
         }
+      }
+    },
+    addColor3 (index) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(index, 0, '#c23531')
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(index, 0, '#c23531')
+      }
+    },
+    addColor2 (index) {
+      if (!this.selectChange && this.chooseSameFlag) {
+        this.chooseIndexs.forEach((i) => {
+          this.chartNum[i][this.item.key].splice(index, 0, ['#c23531', '#c23531'])
+        })
+      } else {
+        this.selectedItem[this.item.key].splice(index, 0, ['#c23531', '#c23531'])
       }
     },
     colorchange () {

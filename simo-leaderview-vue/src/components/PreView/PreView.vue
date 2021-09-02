@@ -64,7 +64,7 @@ export default {
       }
       return {
         backgroundImage: paintData.bgImg
-          ? 'url(' + gbs.host + '/leaderviewWeb' + paintData.bgImg + ')'
+          ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
         backgroundSize: backgroundSize,
         opacity: paintData.opacity / 100

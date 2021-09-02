@@ -1,6 +1,5 @@
 <template>
-  <ve-map
-          :width="comWidth"
+  <ve-map :width="comWidth"
           :height="comHeight"
           :settings="settings"
           :extend="extend"
@@ -25,16 +24,23 @@ export default {
   name: 'vmap',
   components: { VeMap },
   props: ['item'],
-  data () {
+  data() {
     var code = 100000 // 中国
     if (this.item.mapLevel === 'province') {
       code = this.item.provinceCode
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
+    } else if (this.item.mapLevel === 'county') {
+      code = this.item.countyCode
     }
+    var _jsonUrl = gbs.inDev ? '/api' : 'http://' + window.location.host
     var _static = gbs.inDev ? 'static' : 'leaderview'
+    var linkUrl = './../../../../' + _static + '/libs/map/' + code + '.json'
+    if (this.item.mapLevel === 'county') {
+      linkUrl = _jsonUrl + '/leaderview/mapjson/' + code + '.json'
+    }
     this.settings = {
-      positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
+      positionJsonLink: linkUrl, // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
     }
     var colordirectionArry = [
@@ -54,6 +60,7 @@ export default {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
       mapStatic: gbs.inDev ? 'static' : 'leaderview',
+      jsonUrl: gbs.inDev ? '/api' : 'http://' + window.location.host,
       // settings: {
       //   // yAxisType: [0],
       //   // positionJsonLink: 'https://unpkg.com/v-charts-custom-maps@0.2.1/hk-geo.json',
@@ -172,6 +179,8 @@ export default {
         code = this.item.provinceCode
       } else if (this.item.mapLevel === 'city') {
         code = this.item.cityCode
+      } else if (this.item.mapLevel === 'county') {
+        code = this.item.countyCode
       }
       return code
     },
@@ -233,7 +242,7 @@ export default {
       // this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len)
     },
     'item.mapLevel': function (newV, oldV) {
-      this.$nextTick(() => {
+      setTimeout(() => {
         if (newV === 'city') {
           if (this.item.cityCode) {
             this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
@@ -246,13 +255,29 @@ export default {
             this.settings.position = 'map_' + this.item.provinceCode
             this.extend.geo.map = 'map_' + this.item.provinceCode
           }
+        } else if (newV === 'county') {
+          if (this.item.countyCode) {
+            this.axios.get('/leaderview/mapjson/' + this.item.countyCode + '.json').then((data) => {
+              this.settings.mapOrigin = data
+              this.settings.positionJsonLink = null
+              this.settings.position = 'map_' + this.item.countyCode
+              this.extend.geo.map = 'map_' + this.item.countyCode
+            }).catch((err) => {
+              if (err) {
+                this.settings.mapOrigin = null
+                this.settings.positionJsonLink = null
+                this.settings.position = 'map_' + this.item.countyCode
+                this.extend.geo.map = 'map_' + this.item.countyCode
+              }
+            })
+          }
         } else {
           this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
           this.extend.geo.map = 'china'
         }
         this.keyId = new Date().getTime() + Math.random() * 10000
-      })
+      }, 100)
     },
     'item.provinceCode': function (newV) {
       if (this.item.mapLevel === 'province') {
@@ -268,6 +293,25 @@ export default {
         this.settings.position = 'map_' + newV
         this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
+      }
+    },
+    'item.countyCode': function (newV, oldV) {
+      if (this.item.mapLevel === 'county') {
+        this.axios.get('/leaderview/mapjson/' + this.item.countyCode + '.json').then((data) => {
+          this.settings.mapOrigin = data
+          this.settings.positionJsonLink = null
+          this.settings.position = 'map_' + newV
+          this.extend.geo.map = 'map_' + newV
+          this.keyId = new Date().getTime() + Math.random() * 10000
+        }).catch((err) => {
+          if (err) {
+            this.settings.mapOrigin = null
+            this.settings.positionJsonLink = null
+            this.settings.position = 'map_' + newV
+            this.extend.geo.map = 'map_' + newV
+            this.keyId = new Date().getTime() + Math.random() * 10000
+          }
+        })
       }
     },
     'item.roam': function (newV, oldValue) {
@@ -327,7 +371,7 @@ export default {
     },
 
     'item.chartData': {
-      handler (newVal, oldVal) {
+      handler(newVal, oldVal) {
         let dataArry = []
         this.item.chartData.rows.forEach(d => {
           dataArry.push({
@@ -360,7 +404,7 @@ export default {
     }
   },
   methods: {
-    formatPieces (piecesData) {
+    formatPieces(piecesData) {
       for (let i = 0, len = piecesData.length; i < len - 1; i++) {
         piecesData[i].max = Number(piecesData[i].max)
         if (piecesData[i].gte) {

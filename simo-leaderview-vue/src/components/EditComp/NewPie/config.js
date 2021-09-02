@@ -11,6 +11,8 @@ export default {
     'legendY': 85,
     'radius': 50,
     'detailwidth': 12,
+    'borderRadius': 0,
+    'ringWidth': 50,
     'isRing': false,
     'showline': true,
     'tooltipShow': true,
@@ -161,10 +163,63 @@ export default {
             'name': '图例字颜色',
             'key': 'ctLegendColor',
             'tag': 'Color'
-          },
+          }
+        ]
+      },
+      {
+        'name': '图元配置',
+        'tag': 'Hint',
+        'childoption': [
           {
             'name': '图元半径',
             'key': 'radius',
+            'tag': 'input'
+          },
+          {
+            'name': '图表文字连线',
+            'key': 'showline',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '环宽',
+            'key': 'detailwidth',
+            'parentKey': {
+              'pieType': '环形图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '环宽',
+            'key': 'ringWidth',
+            'parentKey': {
+              'pieType': '南丁格尔图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '圆角大小',
+            'key': 'borderRadius',
+            'parentKey': {
+              'pieType': '饼图'
+            },
+            'tag': 'input'
+          },
+          {
+            'name': '圆角大小',
+            'key': 'borderRadius',
+            'parentKey': {
+              'pieType': '南丁格尔图'
+            },
             'tag': 'input'
           }
         ]
@@ -209,29 +264,6 @@ export default {
             'key': 'tooltipfontSize',
             'parentKey': {
               'tooltipShow': true
-            },
-            'tag': 'input'
-          },
-          {
-            'name': '图表文字连线',
-            'key': 'showline',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '显示',
-                'value': true
-              },
-              {
-                'name': '隐藏',
-                'value': false
-              }
-            ]
-          },
-          {
-            'name': '环宽',
-            'key': 'detailwidth',
-            'parentKey': {
-              'pieType': '环形图'
             },
             'tag': 'input'
           }

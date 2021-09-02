@@ -17,7 +17,7 @@
 
 </template>
 <script>
-import echarts from 'echarts'
+// import echarts from 'echarts'
 export default {
   name: 'NewHistogram',
   props: ['item'],
@@ -99,6 +99,12 @@ export default {
     'item.barType': function () {
       this.drawFlow()
     },
+    'item.upColor': function () {
+      this.drawFlow()
+    },
+    'item.downColor': function () {
+      this.drawFlow()
+    },
     'item': {
       handler (newVal, oldVal) {
         // if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
@@ -146,8 +152,19 @@ export default {
                   name: myData.columns[index],
                   data: newArry,
                   stack: 'total',
-                  barWidth: '60%',
+                  barWidth: this.item.barWidth1,
+                  showBackground: this.item.showBackground1,
+                  backgroundStyle: {
+                    color: this.item.backgroundColor1
+                  },
                   type: 'bar',
+                  label: {
+                    show: this.item.HistogramType === 2,
+                    position: 'top',
+                    distance: 10,
+                    fontSize: 16,
+                    color: '#01fff4'
+                  },
                   itemStyle: {
                     normal: {
                       color: this.item.ifGradual === 'true' ? {
@@ -162,7 +179,8 @@ export default {
                           offset: 1, color: this.item.DScatterColor1[i % this.item.DScatterColor1.length][1] // 100% 处的颜色
                         }],
                         global: false // 缺省为 false
-                      } : this.item.ScatterColor1[i % this.item.DScatterColor1.length]
+                      } : this.item.ScatterColor1[i % this.item.DScatterColor1.length],
+                      borderRadius: Number(this.item.barRadius1)
                     }
                   }
                 })
@@ -172,7 +190,18 @@ export default {
                 name: myData.columns[index],
                 data: data,
                 type: 'bar',
-                barWidth: '60%',
+                barWidth: this.item.barWidth1,
+                showBackground: this.item.showBackground1,
+                backgroundStyle: {
+                  color: this.item.backgroundColor1
+                },
+                label: {
+                  show: this.item.HistogramType === 2 || this.item.HistogramType === 3,
+                  position: 'top',
+                  distance: 10,
+                  fontSize: 16,
+                  color: this.item.topTextColor
+                },
                 itemStyle: {
                   normal: {
                     color: this.item.ifGradual === 'true' ? {
@@ -187,8 +216,68 @@ export default {
                         offset: 1, color: this.item.DScatterColor1[index - 1][1] // 100% 处的颜色
                       }],
                       global: false // 缺省为 false
-                    } : this.item.ScatterColor1[index - 1]
+                    } : this.item.ScatterColor1[index - 1],
+                    borderRadius: Number(this.item.barRadius1)
                   }
+                }
+              })
+            }
+            if (this.item.HistogramType === 2) {
+              myseries.push({
+                name: myData.columns[index],
+                data: data,
+                type: 'pictorialBar',
+                itemStyle: {
+                  normal: {
+                    color: this.item.lineColor
+                  }
+                },
+                symbolRepeat: 'fixed',
+                symbolMargin: 6,
+                symbol: 'rect',
+                symbolClip: true,
+                symbolSize: [this.item.barWidth1, 2],
+                // barWidth: '60%',
+                symbolPosition: 'start',
+                symbolOffset: [0, -1],
+                tooltip: {
+                  show: false
+                },
+                z: 0,
+                zlevel: 1
+              })
+            }
+            if (this.item.HistogramType === 3) {
+              myseries.push({
+                name: myData.columns[index],
+                data: [1, 1, 1, 1, 1, 1],
+                type: 'pictorialBar',
+                barMaxWidth: '20',
+                symbol: 'diamond',
+                symbolOffset: [0, '50%'],
+                symbolSize: [this.item.barWidth1, 10],
+                itemStyle: {
+                  color: this.item.downColor
+                },
+                tooltip: {
+                  show: false
+                }
+              },
+              {
+                name: myData.columns[index],
+                data: data,
+                type: 'pictorialBar',
+                barMaxWidth: '20',
+                symbolPosition: 'end',
+                symbol: 'diamond',
+                symbolOffset: [0, '-50%'],
+                symbolSize: [this.item.barWidth1, 12],
+                zlevel: 2,
+                itemStyle: {
+                  color: this.item.upColor
+                },
+                tooltip: {
+                  show: false
                 }
               })
             }
@@ -577,7 +666,11 @@ export default {
               data: data,
               type: 'bar',
               stack: 'total',
-              barWidth: '60%',
+              barWidth: this.item.barWidth3,
+              showBackground: this.item.showBackground3,
+              backgroundStyle: {
+                color: this.item.backgroundColor3
+              },
               itemStyle: {
                 normal: {
                   color: this.item.ifGradual === 'true' ? {
@@ -592,7 +685,8 @@ export default {
                       offset: 1, color: this.item.DScatterColor3[index - 1][1] // 100% 处的颜色
                     }],
                     global: false // 缺省为 false
-                  } : this.item.ScatterColor3[index - 1]
+                  } : this.item.ScatterColor3[index - 1],
+                  borderRadius: Number(this.item.barRadius3)
                 }
               }
             })
@@ -779,16 +873,28 @@ export default {
                   name: myData.columns[index],
                   data: newArry,
                   stack: 'total',
-                  barWidth: '60%',
+                  barWidth: this.item.barWidth4,
                   type: 'bar',
                   itemStyle: {
                     normal: {
-                      color: this.item.ifGradual === 'true' ? {
+                      color: this.item.ifGradual === 'true' ? this.item.gradientDirection4 === '1' ? {
                         type: 'linear',
                         x: 0,
                         y: 0,
                         x2: 0,
                         y2: 1,
+                        colorStops: [{
+                          offset: 0, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][0] // 0% 处的颜色
+                        }, {
+                          offset: 1, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][1] // 100% 处的颜色
+                        }],
+                        global: false // 缺省为 false
+                      } : {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 1,
+                        y2: 0,
                         colorStops: [{
                           offset: 0, color: this.item.DScatterColor4[i % this.item.DScatterColor4.length][0] // 0% 处的颜色
                         }, {
@@ -805,15 +911,27 @@ export default {
                 name: myData.columns[index],
                 data: data,
                 type: 'bar',
-                barWidth: '60%',
+                barWidth: this.item.barWidth4,
                 itemStyle: {
                   normal: {
-                    color: this.item.ifGradual === 'true' ? {
+                    color: this.item.ifGradual === 'true' ? this.item.gradientDirection4 === '1' ? {
                       type: 'linear',
                       x: 0,
                       y: 0,
                       x2: 0,
                       y2: 1,
+                      colorStops: [{
+                        offset: 0, color: this.item.DScatterColor4[index - 1][0] // 0% 处的颜色
+                      }, {
+                        offset: 1, color: this.item.DScatterColor4[index - 1][1] // 100% 处的颜色
+                      }],
+                      global: false // 缺省为 false
+                    } : {
+                      type: 'linear',
+                      x: 0,
+                      y: 0,
+                      x2: 1,
+                      y2: 0,
                       colorStops: [{
                         offset: 0, color: this.item.DScatterColor4[index - 1][0] // 0% 处的颜色
                       }, {

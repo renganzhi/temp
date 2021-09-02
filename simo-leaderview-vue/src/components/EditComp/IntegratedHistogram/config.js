@@ -1,5 +1,14 @@
 var NewHistogram = {
   'text1': '柱状图',
+  'showBackground1': false, // 是否显示背景柱图
+  'backgroundColor1': 'rgba(180, 180, 180, 0.2)', // 背景柱图的颜色
+  'barRadius1': 0, // 柱体圆角
+  'barWidth1': 30, // 柱体大小
+  'HistogramType': 1, // 柱状图类型
+  'lineColor': '#fff', // 类型2中的分割线颜色
+  'downColor': '#6d9eeb', // 类型3中下方颜色
+  'upColor': '#4a86e8', // 类型3中上方颜色
+  'topTextColor': '#fff', // 柱状图类型2、3顶部文字的颜色
   'imgClass1': 'icon-n-histogram',
   'chartType1': 'NewHistogram',
   'ctLegendShow1': true,
@@ -74,7 +83,7 @@ var NewHistogram = {
     }
     ]
   }
-}
+} // 1
 var NewGroupHistogram = {
   'text2': '分组柱图',
   'imgClass2': 'icon-n-grouphistogram',
@@ -164,9 +173,13 @@ var NewGroupHistogram = {
     }
     ]
   }
-}
+} // 2
 var NewGroupLeftHistogram = {
   'text3': '堆叠柱图',
+  'showBackground3': false, // 是否显示背景柱图
+  'backgroundColor3': 'rgba(180, 180, 180, 0.2)', // 背景柱图的颜色
+  'barRadius3': 0, // 柱体圆角
+  'barWidth3': 30, // 柱体大小
   'imgClass3': 'icon-n-duidiezhutu',
   'chartType3': 'NewGroupLeftHistogram',
   'subType3': 'groupHistogram',
@@ -253,12 +266,14 @@ var NewGroupLeftHistogram = {
     }
     ]
   }
-}
+} // 3
 var NewBar = {
   'text4': '条形图',
+  'barWidth4': 30,
   'imgClass4': 'icon-n-bar',
   'chartType4': 'NewBar',
   'ctLegendShow4': true,
+  'gradientDirection4': '1', // 条形图渐变方向
   'ifGradual4': 'false',
   'colorful4': false,
   'splitShow4': false,
@@ -329,7 +344,7 @@ var NewBar = {
     }
     ]
   }
-}
+} // 4
 
 export default {
   'item': {
@@ -375,6 +390,74 @@ export default {
         ]
       },
       {
+        'name': '类型选择',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '柱状图类型',
+            'key': 'HistogramType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '类型一',
+                'value': 1
+              },
+              {
+                'name': '类型二',
+                'value': 2
+              },
+              {
+                'name': '类型三',
+                'value': 3
+              }
+            ]
+          },
+          {
+            'name': '分割线颜色',
+            'tag': 'Color',
+            'key': 'lineColor',
+            'parentKey': {
+              'HistogramType': 2
+            }
+          },
+          {
+            'name': '顶部文字颜色',
+            'tag': 'Color',
+            'key': 'topTextColor',
+            'parentKey': {
+              'HistogramType': 2
+            }
+          },
+          {
+            'name': '顶部文字颜色',
+            'tag': 'Color',
+            'key': 'topTextColor',
+            'parentKey': {
+              'HistogramType': 3
+            }
+          },
+          {
+            'name': '上方颜色',
+            'tag': 'Color',
+            'key': 'upColor',
+            'parentKey': {
+              'HistogramType': 3
+            }
+          },
+          {
+            'name': '下方颜色',
+            'tag': 'Color',
+            'key': 'downColor',
+            'parentKey': {
+              'HistogramType': 3
+            }
+          }
+        ],
+        'parentKey': {
+          'barType': 'NewHistogram'
+        }
+      },
+      {
         'name': '图例配置',
         'tag': 'Hint',
         'childoption': [
@@ -402,12 +485,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -506,6 +605,48 @@ export default {
             'parentKey': {
               'tooltipShow1': true
             },
+            'tag': 'input'
+          }
+        ],
+        'parentKey': {
+          'barType': 'NewHistogram'
+        }
+      },
+      {
+        'name': '图元配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '背景色',
+            'key': 'showBackground1',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '背景色颜色',
+            'key': 'backgroundColor1',
+            'tag': 'Color',
+            'parentKey': {
+              'showBackground1': true
+            }
+          },
+          {
+            'name': '圆角大小',
+            'key': 'barRadius1',
+            'tag': 'input'
+          },
+          {
+            'name': '柱体大小',
+            'key': 'barWidth1',
             'tag': 'input'
           }
         ],
@@ -845,6 +986,10 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
                 'name': '10',
                 'value': 10
               },
@@ -859,6 +1004,10 @@ export default {
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -1248,12 +1397,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -1352,6 +1517,48 @@ export default {
             'parentKey': {
               'tooltipShow3': true
             },
+            'tag': 'input'
+          }
+        ],
+        'parentKey': {
+          'barType': 'NewGroupLeftHistogram'
+        }
+      },
+      {
+        'name': '图元配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '背景色',
+            'key': 'showBackground3',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '背景色颜色',
+            'key': 'backgroundColor3',
+            'tag': 'Color',
+            'parentKey': {
+              'showBackground3': true
+            }
+          },
+          {
+            'name': '圆角大小',
+            'key': 'barRadius3',
+            'tag': 'input'
+          },
+          {
+            'name': '柱体大小',
+            'key': 'barWidth3',
             'tag': 'input'
           }
         ],
@@ -1640,12 +1847,28 @@ export default {
             'tag': 'select',
             'options': [
               {
+                'name': '8',
+                'value': 8
+              },
+              {
+                'name': '10',
+                'value': 10
+              },
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
                 'name': '14',
                 'value': 14
               },
               {
                 'name': '16',
                 'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
               },
               {
                 'name': '20',
@@ -1744,6 +1967,20 @@ export default {
             'parentKey': {
               'tooltipShow4': true
             },
+            'tag': 'input'
+          }
+        ],
+        'parentKey': {
+          'barType': 'NewBar'
+        }
+      },
+      {
+        'name': '图元配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '柱体大小',
+            'key': 'barWidth4',
             'tag': 'input'
           }
         ],
@@ -1985,6 +2222,23 @@ export default {
               'value': 'false'
             }
           ]
+        }, {
+          'name': '渐变方向',
+          'key': 'gradientDirection4',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '上下渐变',
+              'value': '1'
+            },
+            {
+              'name': '左右渐变',
+              'value': '2'
+            }
+          ],
+          'parentKey': {
+            'ifGradual': 'true'
+          }
         }, {
           'name': '柱体类型',
           'key': 'colorful4',

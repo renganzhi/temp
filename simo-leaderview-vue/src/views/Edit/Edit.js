@@ -31,6 +31,7 @@ import UE from '@/components/Common/ue'
 let config = {
   // ...oldConfig,
   video: require('@/components/EditComp/player/config.js'),
+  BiaxialBarChart: require('@/components/EditComp/BiaxialBarChart/config.js'),
   // ppt: require('@/components/EditComp/ppt/config.json'),
   GradientPie: require('@/components/EditComp/GradientPie/config.js'),
   Sunrise: require('@/components/EditComp/Sunrise/config.js'),
@@ -123,6 +124,7 @@ export default {
       provinceArr: [], // 34个省的数据
       cityArr: [], // 选中省的所有市数据
       areaArr: [], // 选中市的所有区域数据
+      countyArr: [], // 选中区县所有的乡镇数据
       editPieces: [], // 区域分布图量级
       editPiecesCopy: [],
       selectMapData: {}, // 匹配区域分布图输入框的数据
@@ -402,7 +404,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -899,19 +901,19 @@ export default {
     },
     // 切换地图的省
     chgProvince(id) {
-      if (this.selectedItem.mapLevel === 'city') {
+      if (this.selectedItem.mapLevel === 'city' || this.selectedItem.mapLevel === 'county') {
         // 北京， ... ， 香港， 澳门
         var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
           if (gbs.inDev) {
             Notification({
-              message: '该地区不支持第三级地图',
+              message: '该地区不支持该级别地图',
               position: 'bottom-right',
               customClass: 'toast toast-info'
             })
           } else {
-            tooltip('', '该地区不支持第三级地图', 'info')
+            tooltip('', '该地区不支持该级别地图', 'info')
           }
         }
       }
@@ -931,6 +933,11 @@ export default {
             if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
               this.clearAlertMap()
             }
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.selectedItem.cityCode = data[0].value
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+              this.clearAlertMap()
+            }
           }
         })
       }
@@ -940,8 +947,13 @@ export default {
       id = id || this.selectedItem.cityCode
       if (id && this.selfMapLevel) {
         this.getMapData(id).then((data) => {
-          this.areaArr = data
           this.selectedItem.cityCode = id
+          if (this.selectedItem.mapLevel === 'city') {
+            this.areaArr = data
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.countyArr = data
+            this.selectedItem.countyCode = this.countyArr[0].name
+          }
           if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
             this.initLevelData()
           }
@@ -950,6 +962,68 @@ export default {
               this.clearAlertMap()
             }
           }
+        })
+      }
+    },
+    // 上传json
+    uploadJson() {
+      var filesList = document.querySelector('#uploadJson').files
+      var file = filesList[0]
+      var formdata = new FormData()
+      formdata.append('file', file)
+      formdata.append('name', this.selectedItem.countyCode)
+      var name = this.selectedItem.countyCode
+      this.selectedItem.countyCode = 'test'
+      this.axios.post('/leaderview/home/uploadJson', formdata).then((data) => {
+        var url = data.obj.url
+        this.axios.get('/' + url).then((data) => {
+          this.areaArr = this.initMapData(data)
+          this.selectedItem.countyCode = name
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+            this.initLevelData()
+          }
+          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+            if (this.selfMapLevel && this.selectedItem.countyCode) {
+              this.clearAlertMap()
+            }
+          }
+        }).catch((err) => {
+          if (err) {
+            this.areaArr = []
+          }
+        })
+        document.getElementById('uploadJson').value = ''
+      })
+    },
+    openJsonClick() {
+      var upload = document.getElementById('uploadJson')
+      upload.click()
+    },
+    chgCounty(id) {
+      id = id || this.selectedItem.countyCode
+      if (id && this.selfMapLevel) {
+        this.axios.get('/leaderview/home/getJson', {
+          params: {
+            name: id
+          }
+        }).then((data) => {
+          let url = data.obj['文件路径']
+          this.axios.get('/' + url).then((data) => {
+            this.selectedItem.countyCode = id
+            this.areaArr = this.initMapData(data)
+            if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+              this.initLevelData()
+            }
+            if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+              if (this.selfMapLevel && id) {
+                this.clearAlertMap()
+              }
+            }
+          }).catch((err) => {
+            if (err) {
+              this.areaArr = []
+            }
+          })
         })
       }
     },
@@ -1055,6 +1129,7 @@ export default {
     getPageConf(id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
+        console.log(res)
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
@@ -1580,13 +1655,44 @@ export default {
               this.areaArr = data
               this.chartDataToMap()
             })
-          } else {
+          } else if (this.selectedItem.mapLevel === 'city') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
               this.cityArr = data
             })
             this.getMapData(this.selectedItem.cityCode).then((data) => {
               this.areaArr = data
               this.chartDataToMap()
+            })
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.cityArr = data
+            })
+            this.getMapData(this.selectedItem.cityCode).then((data) => {
+              this.countyArr = data
+            })
+            this.axios.get('/leaderview/home/getJson', {
+              params: {
+                name: this.selectedItem.countyCode
+              }
+            }).then((data) => {
+              let url = data.obj['文件路径']
+              this.axios.get('/' + url).then((data) => {
+                this.areaArr = this.initMapData(data)
+                if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+                  this.initLevelData()
+                }
+                if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+                  if (this.selfMapLevel && id) {
+                    this.clearAlertMap()
+                  }
+                }
+                this.chartDataToMap()
+              }).catch((err) => {
+                if (err) {
+                  this.areaArr = []
+                  this.chartDataToMap()
+                }
+              })
             })
           }
         } else {
@@ -3182,7 +3288,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/tpstander.png')
-          .attr('src', gbs.host + '/leaderviewWeb/border/topoBg.png')
+          .attr('src', gbs.host + '/leaderview/border/topoBg.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3198,7 +3304,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderviewWeb/border/videoBg2.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3214,7 +3320,7 @@ export default {
         $('<img>')
           .addClass('monitp')
           // .attr('src', gbs.host + '/leaderview/border/videoBg.png')
-          .attr('src', gbs.host + '/leaderviewWeb/border/videoBg2.png')
+          .attr('src', gbs.host + '/leaderview/border/videoBg2.png')
           .css({
             width: '100%',
             height: '100%',
@@ -3270,7 +3376,7 @@ export default {
             viewConf: JSON.stringify(cThis.chartNum),
             paintObj: JSON.stringify(cThis.paintObj),
             composeObj: JSON.stringify(cThis.combinList),
-            viewImage: '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+            viewImage: '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
           }
           cThis
             .axios({
@@ -3684,15 +3790,15 @@ export default {
       }
     },
     /* delOne: function () {
-      if (this.selectedItem.hasOwnProperty('chartType')) {
-        // 非组合元件
-        this.chartNum.splice(this.selectedIndex, 1)
-      } else {
-        this.combinList.splice(this.selectedIndex, 1)
-      }
-      this.selectedItem = {}
-      this.selectedIndex = null
-    }, */
+  if (this.selectedItem.hasOwnProperty('chartType')) {
+    // 非组合元件
+    this.chartNum.splice(this.selectedIndex, 1)
+  } else {
+    this.combinList.splice(this.selectedIndex, 1)
+  }
+  this.selectedItem = {}
+  this.selectedIndex = null
+}, */
     copy: function () {
       this.saveHistory()
       if (this.chooseIndexs.length > 0) {
@@ -3866,7 +3972,7 @@ export default {
           return
         }
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.saveHistory()
         if (_this.selectedItem.chartType === 'image' || _this.selectedItem.chartType === 'Newimage' || chartType === 'DataFlow') {
           _this.selectedItem.imgSrc = curSrc
@@ -3925,10 +4031,10 @@ export default {
       var file = e.target.files[0]
       // 视频截图
       /**
-      var windowURL = window.URL || window.webkitURL
-      var videoURL = windowURL.createObjectURL(file)
-      this.selectedItem.videoSrc = videoURL
-      */
+  var windowURL = window.URL || window.webkitURL
+  var videoURL = windowURL.createObjectURL(file)
+  this.selectedItem.videoSrc = videoURL
+  */
       var formdata = new FormData()
       formdata.append('uploaded_file', file)
       var _this = this
@@ -4172,13 +4278,13 @@ export default {
     handleKeyDown(e) {
       var key = window.event.keyCode ? window.event.keyCode : window.event.which
       /***
-        delete：46
-        上键：38
-        下键：40
-        左键：37
-        右键：39
-        crtl: 17
-      */
+    delete：46
+    上键：38
+    下键：40
+    左键：37
+    右键：39
+    crtl: 17
+  */
       if (key === 46) {
         this.del()
         e.preventDefault() // 取消浏览器原有的操作
@@ -4612,11 +4718,34 @@ export default {
           }
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
-            console.log(data)
             _this.cityArr = data
-            // if (!_this.selectedItem.cityCode) {
             _this.selectedItem.cityCode = data[0].value
-            // }
+          })
+        }
+      } else if (newValue === 'county') {
+        var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000'] // 直辖市自治区没有三级地图
+        if (oldV === 'country') {
+          if (!this.selectedItem.provinceCode || noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
+            this.selectedItem.provinceCode = 510000 // 默认选中一个位置
+          }
+        }
+        if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
+          this.selectedItem.mapLevel = oldV
+          if (gbs.inDev) {
+            Notification({
+              message: '该地区不支持该级别地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          } else {
+            tooltip('', '该地区不支持该级别地图', 'info')
+          }
+        } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.getMapData(data[0].value).then((dataCounty) => {
+              _this.countyArr = dataCounty
+              this.selectedItem.countyCode = dataCounty[0].name
+            })
           })
         }
       } else {

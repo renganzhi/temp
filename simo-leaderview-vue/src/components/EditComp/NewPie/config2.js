@@ -11,6 +11,8 @@ export default {
     'legendY': 85,
     'radius': 50,
     'detailwidth': 12,
+    'borderRadius': 0,
+    'ringWidth': 50,
     'isRing': false,
     'showline': true,
     'roseType': 'area', // 与饼图的区别
