@@ -59,16 +59,16 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/leaderviewWeb/mobile.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist/leaderviewWeb'),
-    assetsSubDirectory: '',
-    assetsPublicPath: './',
+    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsSubDirectory: 'leaderviewWeb',
+    assetsPublicPath: '../',
 
     /**
      * Source Maps
      */
 
-    // productionSourceMap: true, // 打包时不生成.map文件
-    productionSourceMap: false, // 打包时不生成.map文件
+    productionSourceMap: true, // 打包时不生成.map文件
+    // productionSourceMap: false, // 打包时不生成.map文件
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 
