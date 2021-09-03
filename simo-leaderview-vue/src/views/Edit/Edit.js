@@ -2956,27 +2956,19 @@ export default {
               }
             }
           } else {
-            if (gbs.inDev) {
               Notification({
                 message: data.msg,
                 position: 'bottom-right',
                 customClass: 'toast toast-info'
               })
-            } else {
-              tooltip('', data.msg, 'info')
-            }
           }
         },
         error: function () {
-          if (gbs.inDev) {
             Notification({
               message: '连接错误！',
               position: 'bottom-right',
               customClass: 'toast toast-error'
             })
-          } else {
-            tooltip('', '连接错误！', 'error')
-          }
         }
       })
       */
