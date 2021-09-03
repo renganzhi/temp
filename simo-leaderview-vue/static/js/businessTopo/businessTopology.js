@@ -7,7 +7,7 @@
 import { gbs } from '@/config/settings'
 import { newAjax, getTopoIcon } from '@/config/thirdLoginMix'
 // import levelMapName from './../topo/enum'
-function businessTopology (opt, businessId) {
+function businessTopology(opt, businessId) {
   this.defaultConfig = {
     width: 64,
     height: 64,
@@ -95,7 +95,7 @@ businessTopology.prototype = {
   createMainSvg: function () {
     var _this = this
     this.inp = d3.select(this.ele).append('div').classed('rg-inp input-sm confData hide', true)
-      .attr({'contenteditable': 'true'})
+      .attr({ 'contenteditable': 'true' })
     // this.tip = d3.select(this.ele).append('div').classed('tp-tip',true).classed('hide',true);   // 提示信息
     if ($('#home-html').length > 0) {
       this.tip = d3.select('#home-html').append('div').classed('tp-tip', true).classed('hide', true) // 提示信息
@@ -204,7 +204,7 @@ businessTopology.prototype = {
       } else if (e.type == 'wheel' || typeof e.wheelDelta === 'number') { // 缩放计算,调整wh
         var xy = d3.mouse(this)
         var _viewBoxPoint = [_this.scaleCoor(viewBoxPoint[0], xy, dscale),
-          _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
+        _this.scaleCoor(viewBoxPoint[1], xy, dscale)]
         var _x = _viewBoxPoint[0][0]
         var _y = _viewBoxPoint[0][1]
         var _width = _viewBoxPoint[1][0] - _viewBoxPoint[0][0]
@@ -223,10 +223,10 @@ businessTopology.prototype = {
     return this
   },
   createLiquid: function () {
-    	var defs = this.container.append('defs')
-    	defs.append('marker').attr({'id': 'markerArrow', 'viewBox': '0 0 12 12', 'markerWidth': '12', 'markerHeight': '12', 'refX': '6', 'refY': '6', 'orient': 'auto'})
-    		.append('path').attr({'d': 'M2,2 L10,6 L2,10 L6,6 L2,2', 'fill': '#1b85c3'})
-    	defs.append('g').attr('id', 'liquid').attr(
+    var defs = this.container.append('defs')
+    defs.append('marker').attr({ 'id': 'markerArrow', 'viewBox': '0 0 12 12', 'markerWidth': '12', 'markerHeight': '12', 'refX': '6', 'refY': '6', 'orient': 'auto' })
+      .append('path').attr({ 'd': 'M2,2 L10,6 L2,10 L6,6 L2,2', 'fill': '#1b85c3' })
+    defs.append('g').attr('id', 'liquid').attr(
       'transform', 'translate(0,10)').html('<path d="M-1,0 Q2,2 4,2 Q6,2 6,0 T4,-2 Q2,-2 -1,0" fill="#fff" ></path>')
   },
   setMaxCavWH: function (minx, maxx, miny, maxy) {
@@ -275,7 +275,7 @@ businessTopology.prototype = {
   },
   addNodes: function (nodes) { // 增加多个节点
     var _this = this
-    	var length = nodes.length
+    var length = nodes.length
     var gap = 150
     var minh = 6
     var minw = 20
@@ -465,7 +465,7 @@ businessTopology.prototype = {
 
         if (_this.canAddLinks(source, target)) {
           typeof callback === 'function' && callback([{
-                    	businessId: _this.businessId,
+            businessId: _this.businessId,
             sourceNodeId: source.id,
             targetNodeId: target.id
           }])
@@ -483,12 +483,20 @@ businessTopology.prototype = {
         return false
       }
       if (tar.id == topoBaseData) {
-            	tooltip('', '根节点只能作为父节点', 'info')
-            	return false
+        Notification({
+          message: '根节点只能作为父节点',
+          position: 'bottom-right',
+          customClass: 'toast toast-error'
+        })
+        return false
       }
       if (sor.nodeType == 'Cluster' && tar.nodeType != 'NE') {
-            	tooltip('', '集群下只能包含资源节点', 'info')
-            	return false
+        Notification({
+          message: '集群下只能包含资源节点',
+          position: 'bottom-right',
+          customClass: 'toast toast-error'
+        })
+        return false
       }
       return true
     }
@@ -498,10 +506,10 @@ businessTopology.prototype = {
     var _this = this
     var linktree = this.links
     var link = this.nodeLine.selectAll('path.link').data(linktree,
-        		function (d) {
-		        	if (d != undefined) {
-		        		 return d.id
-		        	}
+      function (d) {
+        if (d != undefined) {
+          return d.id
+        }
       })
     link.attr('status', function (d) {
       var oldStatus = d3.select(this).attr('status')
@@ -514,7 +522,7 @@ businessTopology.prototype = {
     link.enter().insert('svg:path', 'g.node').attr('class', 'link').attr('marker-end', 'url(#markerArrow)').attr('id', function (d) {
       return d.id
     }).on('mouseenter', function (d) {
-                	 if (_this.showTip && d.networkLinkId) {
+      if (_this.showTip && d.networkLinkId) {
         _this.tip.html(_this.linkTip(d)).classed('hide', false)
         _this.tipRange(d3.event.pageX, d3.event.pageY)
       }
@@ -581,7 +589,7 @@ businessTopology.prototype = {
     var text = this.nodeLine.selectAll('text').data(this.links,
       function (d) {
         if (d != undefined) {
-                    	  return d.id
+          return d.id
         }
       })
     text.enter().insert('svg:text', 'g.node').classed('pathText', true).attr('dy', function (d) {
@@ -598,19 +606,19 @@ businessTopology.prototype = {
     var labelText = ''
     selection = selection || this.nodeLine.selectAll('textPath')
     selection.text(function (d) {
-        	if (d != undefined) {
-        		var label = d.nodeRelation || _this.config.nodeRelation
-            	if (_this.config.default == false && _this.config.label == 'NodeRelation') {
-            		switch (label) {
-    			    case 'Cluster': labelText = '集群关系'; break
-    			    case 'RunningOn': labelText = '运行在关系'; break
-    			    case 'Call': labelText = '调用访问关系'; break
-    			    case 'Contain': labelText = '包含关系'; break
-    			    default: return ''
-            		}
-            	}
+      if (d != undefined) {
+        var label = d.nodeRelation || _this.config.nodeRelation
+        if (_this.config.default == false && _this.config.label == 'NodeRelation') {
+          switch (label) {
+            case 'Cluster': labelText = '集群关系'; break
+            case 'RunningOn': labelText = '运行在关系'; break
+            case 'Call': labelText = '调用访问关系'; break
+            case 'Contain': labelText = '包含关系'; break
+            default: return ''
+          }
+        }
         return labelText
-        	}
+      }
     }).attr('startOffset', '55%')
     _this = null
     return this
@@ -649,10 +657,10 @@ businessTopology.prototype = {
     return this
   },
   nodeTip: function (d) { // TODO 添加异步请求数据显示
-    	var str = ''
+    var str = ''
     if (d.nodeType == 'NE') {
-        	var label = [{name: '名称', key: 'name'}, {name: 'IP地址', key: 'ip'}, {name: '资源状态', key: 'runStatusText'}, /* {name:'设备类型',key:'neClass'},{name:'厂商',key:'vendor'},
-                         {name:'设备状态',key:'runStatusText'},{name:'CPU利用率',key:'cpuAvg',unit:'%'},{name:'内存利用率',key:'memoryAvg',unit:'%'}, */{name: '告警等级', key: 'alertLevelText'}]
+      var label = [{ name: '名称', key: 'name' }, { name: 'IP地址', key: 'ip' }, { name: '资源状态', key: 'runStatusText' }, /* {name:'设备类型',key:'neClass'},{name:'厂商',key:'vendor'},
+                         {name:'设备状态',key:'runStatusText'},{name:'CPU利用率',key:'cpuAvg',unit:'%'},{name:'内存利用率',key:'memoryAvg',unit:'%'}, */{ name: '告警等级', key: 'alertLevelText' }]
       var indicatorNames = []
       if (d.baseNeClass == 'host') {
         indicatorNames = ['cpu_usage_avg', 'physical_memory']
@@ -662,7 +670,7 @@ businessTopology.prototype = {
       newAjax({
         url: gbs.host + '/monitor/ne/view/' + d.neId,
         dataType: 'json',
-        data: {indicatorNames: indicatorNames.length > 0 ? indicatorNames.join(',') : ''},
+        data: { indicatorNames: indicatorNames.length > 0 ? indicatorNames.join(',') : '' },
         type: 'post',
         async: false,
         success: function (res) {
@@ -718,11 +726,11 @@ businessTopology.prototype = {
         str += (o.name + '：' + v + '\n')
       })
     } else if (d.nodeType == 'Business') {
-        	var label = [{name: '健康度', key: 'health'}, {name: '可用率', key: 'availableRate', unit: '%'}, {name: '不可用次数', key: 'downTimes'}, /* {name:'不可用时长',key:'unavailableTime'}, */
-        {name: '繁忙度', key: 'busy_rate', unit: '%'}, {name: 'MTTR', key: 'MTTR'}, {name: 'MTBF', key: 'MTBF'}, {name: '告警等级', key: 'alertLevelText'}, {name: '责任人', key: 'liableUser'}]
+      var label = [{ name: '健康度', key: 'health' }, { name: '可用率', key: 'availableRate', unit: '%' }, { name: '不可用次数', key: 'downTimes' }, /* {name:'不可用时长',key:'unavailableTime'}, */
+      { name: '繁忙度', key: 'busy_rate', unit: '%' }, { name: 'MTTR', key: 'MTTR' }, { name: 'MTBF', key: 'MTBF' }, { name: '告警等级', key: 'alertLevelText' }, { name: '责任人', key: 'liableUser' }]
       busTopoApi.bnsTipInfo(d.neId, function (datas) {
-        		$.each(label, function (i, o) {
-        			var v = datas[o.key]
+        $.each(label, function (i, o) {
+          var v = datas[o.key]
           // if (o.key == 'alertLevel') {
           //   // v = v && v.maxLevel && v.maxLevel != 0 ? levelMapName[v.maxLevel] : '--'
           //   v = v && v.maxLevelText || '--'
@@ -783,17 +791,17 @@ businessTopology.prototype = {
   lineTick: function () {
     var _this = this
     _this.nodeLine.selectAll('.link').each(function (d) {
-        	if (d != undefined) {
-        		 var s = _.filter(_this.nodes, {id: d.sourceNodeId})[0]
-        var t = _.filter(_this.nodes, {id: d.targetNodeId})[0]
+      if (d != undefined) {
+        var s = _.filter(_this.nodes, { id: d.sourceNodeId })[0]
+        var t = _.filter(_this.nodes, { id: d.targetNodeId })[0]
         if (s && t && ((!_this.dragNodeId && !_this.dragLinkId) || _this.dragNodeId.indexOf(s.id) !== -1 || _this.dragNodeId.indexOf(t.id) !== -1 || _this.dragLinkId == d.id)) {
-                	  d = $.extend(d, _this.changeLinkData(s, t, d))
+          d = $.extend(d, _this.changeLinkData(s, t, d))
           this.__data__ = d
-                	 var path = _this.polygonalLine(s, t, d)
+          var path = _this.polygonalLine(s, t, d)
           _this.enterLinePoint()
           d3.select(this).attr('d', path)
         }
-        	}
+      }
     })
 
     _this.nodeLine.selectAll('use').each(function (d) {
@@ -805,99 +813,99 @@ businessTopology.prototype = {
     })
 
     _this.nodeLine.selectAll('.lineWrap').each(function (d) {
-        	if (d != undefined && _this.dragNodeId != undefined) {
-        		if ((!_this.dragNodeId && !_this.dragLinkId) || _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId.indexOf(d.targetNodeId) !== -1 || _this.dragLinkId == d.id) {
+      if (d != undefined && _this.dragNodeId != undefined) {
+        if ((!_this.dragNodeId && !_this.dragLinkId) || _this.dragNodeId.indexOf(d.sourceNodeId) !== -1 || _this.dragNodeId.indexOf(d.targetNodeId) !== -1 || _this.dragLinkId == d.id) {
           d3.select(this).attr('class', 'lineWrap ' + d.linkClass.lineType)
           _this.updatePoint(this)
         }
-        	}
+      }
     })
     _this.nodeLine.selectAll('textPath').each(function (d) {
       $("#businessMainTopo .setLink[name='" + d.id + "']").attr('x', (d.source.x + d.target.x) / 2 + 16)
       $("#businessMainTopo .setLink[name='" + d.id + "']").attr('y', (d.source.y + d.target.y) / 2 + 10)
       if (d != undefined && d.linkClass && d.linkClass.lineType && d.linkClass.point) {
-            	var pointArr = $('#businessMainTopo #' + d.id).attr('d').split('L')
+        var pointArr = $('#businessMainTopo #' + d.id).attr('d').split('L')
         if (d.linkClass.lineType == 'ployN') {
-                	d3.select(this).attr('href', '#' + d.id)
-                	 if (d.source.y > d.target.y && d.source.x > d.target.x) {
-                 		d3.select(this.parentNode).attr('dy', '0')
-                 	} else if (d.source.y > d.target.y && d.source.x < d.target.x) {
-                 		d3.select(this.parentNode).attr('dy', '1em')
-                 	} else if (d.source.y < d.target.y && d.source.x < d.target.x) {
-                 		d3.select(this.parentNode).attr('dy', '0')
-                 	} else {
-                 		d3.select(this.parentNode).attr('dy', '1em')
-                 	}
+          d3.select(this).attr('href', '#' + d.id)
+          if (d.source.y > d.target.y && d.source.x > d.target.x) {
+            d3.select(this.parentNode).attr('dy', '0')
+          } else if (d.source.y > d.target.y && d.source.x < d.target.x) {
+            d3.select(this.parentNode).attr('dy', '1em')
+          } else if (d.source.y < d.target.y && d.source.x < d.target.x) {
+            d3.select(this.parentNode).attr('dy', '0')
+          } else {
+            d3.select(this.parentNode).attr('dy', '1em')
+          }
 
-                	 if ((d.source.x - d.target.x) < 0) {
-                		 if ((d.target.x - d.source.x) <= 60) {
-                    		 d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
-                    	} else {
-                    		 d3.select(this.parentNode).style('text-anchor', 'middle')
-                    	}
-                	}
-                	 if ((d.source.x - d.target.x) > 0) {
-                		 if ((d.source.x - d.target.x) <= 10) {
-                    		 d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
-                    	} else if ((d.source.x - d.target.x) <= 70) {
-                    		d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '25')
-                    	} else if (Math.abs(d.source.x - d.target.x) <= 130) {
-                    		d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '55')
-                    	} else {
-                    		 d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '0')
-                      	}
-                	}
+          if ((d.source.x - d.target.x) < 0) {
+            if ((d.target.x - d.source.x) <= 60) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
+            } else {
+              d3.select(this.parentNode).style('text-anchor', 'middle')
+            }
+          }
+          if ((d.source.x - d.target.x) > 0) {
+            if ((d.source.x - d.target.x) <= 10) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
+            } else if ((d.source.x - d.target.x) <= 70) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '25')
+            } else if (Math.abs(d.source.x - d.target.x) <= 130) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '55')
+            } else {
+              d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '0')
+            }
+          }
           $("#businessMainTopo .setLink[name='" + d.id + "']").attr('x', pointArr[2].split(',')[0] - 15)
           $("#businessMainTopo .setLink[name='" + d.id + "']").attr('y', pointArr[2].split(',')[1] - 15)
           //                    return;
         } else if (d.linkClass.lineType == 'ployZ') {
-                	d3.select(this).attr('href', '#' + d.id)
+          d3.select(this).attr('href', '#' + d.id)
           if (d.source.y > d.target.y && d.source.x > d.target.x) {
-               		d3.select(this.parentNode).attr('dy', '1em')
-               	} else if (d.source.y > d.target.y && d.source.x < d.target.x) {
-               		d3.select(this.parentNode).attr('dy', '0')
-               	} else if (d.source.y < d.target.y && d.source.x < d.target.x) {
-               		d3.select(this.parentNode).attr('dy', '1em')
-               	} else {
-               		d3.select(this.parentNode).attr('dy', '0')
-               	}
+            d3.select(this.parentNode).attr('dy', '1em')
+          } else if (d.source.y > d.target.y && d.source.x < d.target.x) {
+            d3.select(this.parentNode).attr('dy', '0')
+          } else if (d.source.y < d.target.y && d.source.x < d.target.x) {
+            d3.select(this.parentNode).attr('dy', '1em')
+          } else {
+            d3.select(this.parentNode).attr('dy', '0')
+          }
           if ((d.source.x - d.target.x) < 0) {
-                   	    if (Math.abs(d.source.y - d.target.y) <= 40) {
-                  		   d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
-                    	} else if (Math.abs(d.source.y - d.target.y) <= 103) {
-                    	   d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '20')
-                    	}
+            if (Math.abs(d.source.y - d.target.y) <= 40) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
+            } else if (Math.abs(d.source.y - d.target.y) <= 103) {
+              d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '20')
+            }
           }
           if ((d.source.x - d.target.x) > 0) {
-                     	if (Math.abs(d.source.y - d.target.y) <= 40) {
-                  		   d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
-                    	} else if (Math.abs(d.source.y - d.target.y) > 40 && Math.abs(d.source.y - d.target.y) <= 90) {
-                    		d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '22')
-                    	} else if (Math.abs(d.source.y - d.target.y) > 90 && Math.abs(d.source.y - d.target.y) <= 120) {
-                    		d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '-20')
-                    	} else if (Math.abs(d.source.y - d.target.y) > 120 && Math.abs(d.source.y - d.target.y) <= 140) {
-                    		d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '-35')
-                    	} else {
-                    		d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '0')
-                    	}
+            if (Math.abs(d.source.y - d.target.y) <= 40) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '0')
+            } else if (Math.abs(d.source.y - d.target.y) > 40 && Math.abs(d.source.y - d.target.y) <= 90) {
+              d3.select(this.parentNode).style('text-anchor', 'start').attr('dx', '22')
+            } else if (Math.abs(d.source.y - d.target.y) > 90 && Math.abs(d.source.y - d.target.y) <= 120) {
+              d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '-20')
+            } else if (Math.abs(d.source.y - d.target.y) > 120 && Math.abs(d.source.y - d.target.y) <= 140) {
+              d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '-35')
+            } else {
+              d3.select(this.parentNode).style('text-anchor', 'middle').attr('dx', '0')
+            }
           }
-                	/* if(d.source.y>d.target.y){
-                        d3.select(this).attr('href','#'+d.id);
-                    }else{
-                        var link = _this.nodeLine.select('.link[id="'+d.id+'"]');
-                        var point = link.data()[0].linkClass.point;
-                        var d_link = _this.nodeLine.select('[id="d_link_'+d.id+'"]');
-                        if(d_link.size()==0){
-                            _this.nodeLine.append('path').attr('id','d_link_'+d.id).attr('d',function(){
-                                return _this.lineC(point.reverse());
-                            }).style('fill','none');
-                        }else{
-                            d_link.attr('d',function(){
-                                return _this.lineC(point.reverse());
-                            });
-                        }
-                        d3.select(this).attr('href','#d_link_'+d.id);
-                    } */
+          /* if(d.source.y>d.target.y){
+                d3.select(this).attr('href','#'+d.id);
+            }else{
+                var link = _this.nodeLine.select('.link[id="'+d.id+'"]');
+                var point = link.data()[0].linkClass.point;
+                var d_link = _this.nodeLine.select('[id="d_link_'+d.id+'"]');
+                if(d_link.size()==0){
+                    _this.nodeLine.append('path').attr('id','d_link_'+d.id).attr('d',function(){
+                        return _this.lineC(point.reverse());
+                    }).style('fill','none');
+                }else{
+                    d_link.attr('d',function(){
+                        return _this.lineC(point.reverse());
+                    });
+                }
+                d3.select(this).attr('href','#d_link_'+d.id);
+            } */
           $("#businessMainTopo .setLink[name='" + d.id + "']").attr('x', pointArr[2].split(',')[0] - 15)
           $("#businessMainTopo .setLink[name='" + d.id + "']").attr('y', pointArr[2].split(',')[1] - 15)
           //           return;
@@ -921,12 +929,12 @@ businessTopology.prototype = {
   enterLinePoint: function () {
     var polyLine = this.links.filter(function (d) {
       if (d.linkClass && (d.linkClass.lineType == 'ployZ' || d.linkClass.lineType == 'ployN') && d.linkClass.point) {
-            	if (d != undefined) return d.id
+        if (d != undefined) return d.id
       }
     })
 
     var lineW = this.nodeLine.selectAll('.lineWrap').data(polyLine, function (d) {
-        	if (d != undefined) return d.id
+      if (d != undefined) return d.id
     })
     var enterline = lineW.enter().append('g').each(function (d) {
       d3.select(this).attr('class', 'lineWrap ' + d.linkClass.lineType)
@@ -1145,11 +1153,11 @@ businessTopology.prototype = {
   },
   setNodeImg: function (d) {
     // 将monitor的RunStatus与business的统一
-    	var tmpStatus = d.runStatus
+    var tmpStatus = d.runStatus
     if (d.runStatus === 'Unconnection') {
-        	tmpStatus = 'Unavailable'
+      tmpStatus = 'Unavailable'
     } else if (d.runStatus === 'Loading') {
-        	tmpStatus = 'Unknow'
+      tmpStatus = 'Unknow'
     }
     if (d.iconId) {
       return gbs.host + '/business/topology/getIcon/' + d.iconId + '/' + (tmpStatus || 'Good')
@@ -1170,7 +1178,7 @@ businessTopology.prototype = {
     return this
   },
   getNodeTextContent: function (d) {
-    	if (d.nodeType == 'NE') { // 资源
+    if (d.nodeType == 'NE') { // 资源
       var text = {
         IPAddr: d.ip,
         NodeName: d.customName,
@@ -1179,7 +1187,7 @@ businessTopology.prototype = {
       }
       return text[this.config.textType]
     } else if ((d.nodeType == 'Business' || d.nodeType == 'Cluster') && this.config.textType != 'Omit') { // 子网
-        	 return d.customName
+      return d.customName
     }
   },
   updateLink: function (isSelected) {
@@ -1194,7 +1202,7 @@ businessTopology.prototype = {
         d.linkClass = $.extend(d.linkClass, obj)
         d3.select(this).attr(d.linkClass).attr('class', 'link ' + d.linkStatus)
         return !d.show
-        	}
+      }
     })
     _this = links = null
     return this
@@ -1256,54 +1264,54 @@ businessTopology.prototype = {
     this.tip.classed('hide', true)
   },
   delLink: function (type) {
-	   var linkDate = []
-	   linkDate.push(JSON.parse($(type).attr('linkDate')))
-	   var data = {
+    var linkDate = []
+    linkDate.push(JSON.parse($(type).attr('linkDate')))
+    var data = {
       linkStr: linkDate,
-      params: {'status': 'DELETED'}
+      params: { 'status': 'DELETED' }
     }
-	   viewTools.saveLinks(data, true)
+    viewTools.saveLinks(data, true)
   },
   setLink: function (type) {
-	   var linkDate = $(type).attr('linkDate')
-	   $.comps.nodeRelation.open(JSON.parse(linkDate))
+    var linkDate = $(type).attr('linkDate')
+    $.comps.nodeRelation.open(JSON.parse(linkDate))
   },
   countPngXY: function (d) { // 设置和删除图标的位置
-	   var pointArr = []
-	   var px = 0, py = 0
-	   if (d.linkClass && d.linkClass.lineType && (d.linkClass.lineType == 'ployN' || d.linkClass.lineType == 'ployZ')) {
-		   pointArr = $('#' + d.id).attr('d').split('L')
-		   px = pointArr[2].split(',')[0] - 30
-		   py = pointArr[2].split(',')[1] - 15
-	   } else {
-		   px = (d.source.x + d.target.x) / 2 - 25
-		   py = (d.source.y + d.target.y) / 2 + 10
-	   }
-	  return {
-		  x: px,
-		  y: py
-	  }
+    var pointArr = []
+    var px = 0, py = 0
+    if (d.linkClass && d.linkClass.lineType && (d.linkClass.lineType == 'ployN' || d.linkClass.lineType == 'ployZ')) {
+      pointArr = $('#' + d.id).attr('d').split('L')
+      px = pointArr[2].split(',')[0] - 30
+      py = pointArr[2].split(',')[1] - 15
+    } else {
+      px = (d.source.x + d.target.x) / 2 - 25
+      py = (d.source.y + d.target.y) / 2 + 10
+    }
+    return {
+      x: px,
+      y: py
+    }
   },
   appendLinkImg: function () { // svg拼接连线的设置和删除图标
-	   var _this = this
-	   $('#businessMainTopo svg.setLink').remove()
-	   _this.vis.selectAll('.link').each(function (d) {
-		   if (d != undefined) {
-			   var xy = _this.countPngXY(d)
-			   var svgSet = $('<svg>').attr({'name': d.id, 'class': 'setLink cursorPoniter', 'x': xy.x, 'y': xy.y})
-          .append($('<image>').attr({'class': 'nodeImg', 'linkDate': JSON.stringify(d), 'link-click': 'delLink', 'x': '24', 'y': '0', 'width': '24', 'height': '24', 'href': '../resources/img/business/linkDel.svg'}))
-          .append($('<image>').attr({'class': 'nodeImg', 'linkDate': JSON.stringify(d), 'link-click': 'setLink', 'x': '0', 'y': '0', 'width': '24', 'height': '24', 'href': '../resources/img/business/setLink.svg'}))
-			   $('#businessMainTopo #linkPng').append(svgSet)
-		   }
+    var _this = this
+    $('#businessMainTopo svg.setLink').remove()
+    _this.vis.selectAll('.link').each(function (d) {
+      if (d != undefined) {
+        var xy = _this.countPngXY(d)
+        var svgSet = $('<svg>').attr({ 'name': d.id, 'class': 'setLink cursorPoniter', 'x': xy.x, 'y': xy.y })
+          .append($('<image>').attr({ 'class': 'nodeImg', 'linkDate': JSON.stringify(d), 'link-click': 'delLink', 'x': '24', 'y': '0', 'width': '24', 'height': '24', 'href': '../resources/img/business/linkDel.svg' }))
+          .append($('<image>').attr({ 'class': 'nodeImg', 'linkDate': JSON.stringify(d), 'link-click': 'setLink', 'x': '0', 'y': '0', 'width': '24', 'height': '24', 'href': '../resources/img/business/setLink.svg' }))
+        $('#businessMainTopo #linkPng').append(svgSet)
+      }
     })
-	   $('#businessMainTopo svg.setLink').css('display', 'none')
-	   // 解决svg拼接元素后，页面不渲染问题
-	   $('#businessMainTopo #linkPng').html($('#businessMainTopo #linkPng').html())
+    $('#businessMainTopo svg.setLink').css('display', 'none')
+    // 解决svg拼接元素后，页面不渲染问题
+    $('#businessMainTopo #linkPng').html($('#businessMainTopo #linkPng').html())
   },
   bind: function () {
-	   var _this = this
+    var _this = this
     $('#businessMainTopo').off('click', '[link-click]').on('click', '[link-click]', function () {
-       		var type = $(this).attr('link-click')
+      var type = $(this).attr('link-click')
       typeof _this[type] === 'function' && _this[type](this)
     })
     $('#businessMainTopo').off('mouseover').on('mouseover', 'path.link,.setLink', function (e) {
@@ -1341,7 +1349,7 @@ var busTopoApi = {
   }
 }
 // 给对应的数据加单位
-function addUnit (value, unit, index) {
+function addUnit(value, unit, index) {
   if (typeof value === 'undefined' || value === 'undefined' || value === 'NaN' || value === 'null') {
     return '--'
   }
@@ -1371,14 +1379,14 @@ function addUnit (value, unit, index) {
   }
 }
 
-function timestampformat (timestamp) {
+function timestampformat(timestamp) {
   if (timestamp) {
     return (new Date(timestamp)).format('yyyy-MM-dd hh:mm:ss')
   }
 }
 
 // 保留两位小数，byte 转换 成其他
-function bytesToSize (bytes, index) {
+function bytesToSize(bytes, index) {
   if (bytes === 'undefined' || bytes === 'NaN' || bytes === 'null' || bytes === false) {
     return '--'
   }
@@ -1402,7 +1410,7 @@ function bytesToSize (bytes, index) {
   }
 }
 
-function duringTime (t, unit) {
+function duringTime(t, unit) {
   var arr = ['天', '时', '分', '秒', '厘秒', '毫秒']
   var gap = [24, 60, 60, 100, 1000]
   var time = [null, null, null, null, null]

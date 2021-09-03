@@ -601,15 +601,11 @@ export default {
       /** 全部保存 */
       var oldObj = this.historyArr.pop()
       if (!oldObj) {
-        if (gbs.inDev) {
-          Notification({
-            message: '已撤销至最大限制！',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '已撤销至最大限制！', 'info')
-        }
+        Notification({
+          message: '已撤销至最大限制！',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       console.log('撤销一步')
@@ -687,15 +683,11 @@ export default {
             var data = this.initMapData(response)
             resolve(data)
           }).catch((error) => {
-            if (gbs.inDev) {
-              Notification({
-                message: '该地区暂无详细地图',
-                position: 'bottom-right',
-                customClass: 'toast toast-info'
-              })
-            } else {
-              tooltip('', '该地区暂无详细地图', 'info')
-            }
+            Notification({
+              message: '该地区暂无详细地图',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
             reject(error)
           })
         })
@@ -779,15 +771,11 @@ export default {
     },
     chgMapGrad(index) {
       if (this.editPieces[index]['max'] < this.editPieces[index]['min']) {
-        if (gbs.inDev) {
-          Notification({
-            message: '量级的最大值不可小于最小值',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '量级的最大值不可小于最小值', 'info')
-        }
+        Notification({
+          message: '量级的最大值不可小于最小值',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
       } else if (!this.editPieces[index + 1]['max'] || (this.editPieces[index]['max'] < this.editPieces[index + 1]['max'] - 1)) {
         this.editPieces[index + 1]['min'] = Number(this.editPieces[index]['max']) + 1
@@ -796,15 +784,11 @@ export default {
         var newValue = this.editPieces[index]['max']
         if (index === 0 && newValue + 2 > this.editPieces[this.editPieces.length - 2]['max']) {
           // 合并之后梯度不足3个
-          if (gbs.inDev) {
-            Notification({
-              message: '区间跨度太大，请至少保证三个量级',
-              position: 'bottom-right',
-              customClass: 'toast toast-info'
-            })
-          } else {
-            tooltip('', '区间跨度太大，请至少保证三个量级', 'info')
-          }
+          Notification({
+            message: '区间跨度太大，请至少保证三个量级',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
           this.editPieces = JSON.parse(JSON.stringify(this.editPiecesCopy))
           return
         }
@@ -913,15 +897,11 @@ export default {
         var noMapArr = ['110000', '310000', '500000', '120000', '710000', '810000', '820000']
         if (noMapArr.indexOf(id) !== -1) {
           this.selectedItem.mapLevel = 'province'
-          if (gbs.inDev) {
-            Notification({
-              message: '该地区不支持该级别地图',
-              position: 'bottom-right',
-              customClass: 'toast toast-info'
-            })
-          } else {
-            tooltip('', '该地区不支持该级别地图', 'info')
-          }
+          Notification({
+            message: '该地区不支持该级别地图',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
         }
       }
       if (id) {
@@ -2423,15 +2403,11 @@ export default {
     delColor(index) {
       // 删除自定义颜色
       if (this.selectedItem.ctColors.length === 1) {
-        if (gbs.inDev) {
-          Notification({
-            message: '至少配置一种颜色',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '至少配置一种颜色', 'info')
-        }
+        Notification({
+          message: '至少配置一种颜色',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       if (!this.selectChange && this.chooseSameFlag) {
@@ -2595,15 +2571,11 @@ export default {
           //   await checkLogin(_this.thirdIpPort) && _this.getUrlByType (flag)
           //   return false
           // }
-          if (gbs.inDev) {
-            Notification({
-              message: '连接错误！',
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', '连接错误！', 'error')
-          }
+          Notification({
+            message: '连接错误！',
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -2689,15 +2661,11 @@ export default {
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               errorCallback: function (xhr) {
-                if (gbs.inDev) {
-                  Notification({
-                    message: '连接错误！',
-                    position: 'bottom-right',
-                    customClass: 'toast toast-error'
-                  })
-                } else {
-                  tooltip('', '连接错误！', 'error')
-                }
+                Notification({
+                  message: '连接错误！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
               }
             })
           }
@@ -2788,15 +2756,11 @@ export default {
             await checkLogin(_this.thirdIpPort) && _this.sentReq(d, postData, selectedP)
             return false
           }
-          if (gbs.inDev) {
-            Notification({
-              message: '连接错误！',
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', '连接错误！', 'error')
-          }
+          Notification({
+            message: '连接错误！',
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -3069,15 +3033,11 @@ export default {
                 }
               }
             } else {
-              if (gbs.inDev) {
-                Notification({
-                  message: data.msg,
-                  position: 'bottom-right',
-                  customClass: 'toast toast-info'
-                })
-              } else {
-                tooltip('', data.msg, 'info')
-              }
+              Notification({
+                message: data.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-info'
+              })
             }
           },
           error: async function (xhr) {
@@ -3085,15 +3045,11 @@ export default {
               await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
               return false
             }
-            if (gbs.inDev) {
-              Notification({
-                message: '连接错误！',
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
-            } else {
-              tooltip('', '连接错误！', 'error')
-            }
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         })
       }
@@ -3224,26 +3180,18 @@ export default {
               this.selectedItem.chartData = this.formatJson(textData)
             }
           } catch (err) {
-            if (gbs.inDev) {
-              Notification({
-                message: '请输入正确的JSON格式的数据',
-                position: 'bottom-right',
-                customClass: 'toast toast-info'
-              })
-            } else {
-              tooltip('', '请输入正确的JSON格式的数据', 'info')
-            }
-          }
-        } else {
-          if (gbs.inDev) {
             Notification({
               message: '请输入正确的JSON格式的数据',
               position: 'bottom-right',
               customClass: 'toast toast-info'
             })
-          } else {
-            tooltip('', '请输入正确的JSON格式的数据', 'info')
           }
+        } else {
+          Notification({
+            message: '请输入正确的JSON格式的数据',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
         }
       }
     },
@@ -3259,15 +3207,11 @@ export default {
         !this.yVali.isShowError && !this.proHeightErr && !this.radiusErr &&
         !this.freshVali
       )) {
-        if (gbs.inDev) {
-          Notification({
-            message: '请填写正确的配置信息',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '请填写正确的配置信息', 'info')
-        }
+        Notification({
+          message: '请填写正确的配置信息',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       $('#lead-screen').show()
@@ -3398,15 +3342,11 @@ export default {
               $('#lead-screen').hide()
               typeof cb === 'function' && cb()
               if (res.success) {
-                if (gbs.inDev) {
-                  Notification({
-                    message: '操作成功！',
-                    position: 'bottom-right',
-                    customClass: 'toast toast-success'
-                  })
-                } else {
-                  tooltip('', '操作成功！', 'success')
-                }
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
               }
             })
         })
@@ -3431,15 +3371,11 @@ export default {
             typeof cb === 'function' && cb(data)
           } else {
             // $("#lead-screen").hide()
-            if (gbs.inDev) {
-              Notification({
-                message: data.msg,
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
-            } else {
-              tooltip('', data.msg, 'error')
-            }
+            Notification({
+              message: data.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         }
       })
@@ -3451,15 +3387,11 @@ export default {
         !this.xVali.isShowError &&
         !this.yVali.isShowError
       )) {
-        if (gbs.inDev) {
-          Notification({
-            message: '请填写正确的配置信息',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '请填写正确的配置信息', 'info')
-        }
+        Notification({
+          message: '请填写正确的配置信息',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       this.pageData = JSON.stringify(this.chartNum)
@@ -3955,15 +3887,11 @@ export default {
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
-        if (gbs.inDev) {
-          Notification({
-            message: '上传的文件不能大于15MB',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '上传的文件不能大于15MB', 'info')
-        }
+        Notification({
+          message: '上传的文件不能大于15MB',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         e.target.value = ''
         return
       }
@@ -4024,15 +3952,11 @@ export default {
       }
       if (e.target.files[0].size > 100 * 1024 * 1024) {
         e.target.value = ''
-        if (gbs.inDev) {
-          Notification({
-            message: '上传的视频不能大于100MB',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
-        } else {
-          tooltip('', '上传的视频不能大于100MB', 'info')
-        }
+        Notification({
+          message: '上传的视频不能大于100MB',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
         return
       }
       var file = e.target.files[0]
@@ -4754,15 +4678,11 @@ export default {
         }
         if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
           this.selectedItem.mapLevel = oldV
-          if (gbs.inDev) {
-            Notification({
-              message: '该地区不支持第三级地图',
-              position: 'bottom-right',
-              customClass: 'toast toast-info'
-            })
-          } else {
-            tooltip('', '该地区不支持第三级地图', 'info')
-          }
+          Notification({
+            message: '该地区不支持第三级地图',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             _this.cityArr = data
@@ -4778,15 +4698,11 @@ export default {
         }
         if (noMapArr.indexOf(this.selectedItem.provinceCode) !== -1) {
           this.selectedItem.mapLevel = oldV
-          if (gbs.inDev) {
-            Notification({
-              message: '该地区不支持该级别地图',
-              position: 'bottom-right',
-              customClass: 'toast toast-info'
-            })
-          } else {
-            tooltip('', '该地区不支持该级别地图', 'info')
-          }
+          Notification({
+            message: '该地区不支持该级别地图',
+            position: 'bottom-right',
+            customClass: 'toast toast-info'
+          })
         } else {
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             this.getMapData(data[0].value).then((dataCounty) => {

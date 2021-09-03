@@ -47,7 +47,11 @@ axios.interceptors.response.use(
       if (error.toString().includes('776') || error.toString().includes('779')) {
         window.location.href = window.location.origin + '/loginPage'
       }
-      tooltip('', '连接错误！', 'error')
+      Notification({
+        message: '连接错误！',
+        position: 'bottom-right',
+        customClass: 'toast toast-error'
+      })
     }
     return Promise.reject(error)
   }
@@ -61,12 +65,12 @@ Plugin.install = function (Vue) {
   window.axios = axios
   Object.defineProperties(Vue.prototype, {
     axios: {
-      get () {
+      get() {
         return axios
       }
     },
     $axios: {
-      get () {
+      get() {
         return axios
       }
     }

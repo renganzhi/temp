@@ -112,15 +112,11 @@ export default {
               this.setScale()
             })
           } else {
-            if (gbs.inDev) {
               Notification({
                 message: res.msg,
                 position: 'bottom-right',
                 customClass: 'toast toast-error'
               })
-            } else {
-              tooltip('', res.msg, 'error')
-            }
           }
         })
       } else {
