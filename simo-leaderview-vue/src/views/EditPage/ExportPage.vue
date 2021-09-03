@@ -197,26 +197,18 @@ export default {
           // if (res.success) {
           //   this.addOne = true
           //   this.addId = res.obj.id
-          //   if (gbs.inDev) {
           //     Notification({
           //       message: '操作成功！',
           //       position: 'bottom-right',
           //       customClass: 'toast toast-success'
           //     })
-          //   } else {
-          //     tooltip('', '操作成功！', 'success')
-          //   }
           //   $('#exportPage-modal').modal('hide')
           // } else {
-          //   if (gbs.inDev) {
           //     Notification({
           //       message: res.msg,
           //       position: 'bottom-right',
           //       customClass: 'toast toast-error'
           //     })
-          //   } else {
-          //     tooltip('', res.msg, 'error')
-          //   }
           // }
         })
       })
