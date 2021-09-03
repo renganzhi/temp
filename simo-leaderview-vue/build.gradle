@@ -40,7 +40,7 @@ task npmDev(type: YarnTask, dependsOn: domesticNpmInstall) {
 task copyDist(dependsOn: npmBuild){
     doFirst {
         copy {
-            from "dist/leaderviewWeb"
+            from "dist/leaderview"
             into "build/resources/main/templates/leaderviewWeb"
         }
     }
