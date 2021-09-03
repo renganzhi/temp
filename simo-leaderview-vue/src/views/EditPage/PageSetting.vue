@@ -209,7 +209,11 @@ export default {
               customClass: 'toast toast-error'
             })
           } else {
-            tooltip('', res.msg, 'error')
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         }
         this.$nextTick(() => {
