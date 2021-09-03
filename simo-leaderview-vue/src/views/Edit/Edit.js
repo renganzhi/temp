@@ -96,6 +96,7 @@ export default {
       allPageList: [],
       canChangeId: [],
       activeNames: [0],
+      TDmodelFormData: new FormData(),
       config,
       chooseSameFlag: false, // 是否选中同样的元件
       selectChange: false, // 是否改变的选中的元件
@@ -105,6 +106,7 @@ export default {
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
+      CanChangeServes: false,
       guideStation: 'static',
       AllPageId: [],
       pageIdIndex: '',
@@ -184,13 +186,14 @@ export default {
       showBackModal: false, // 离开页面弹窗
       importModelForm: {
         name: '',
-        fileName: '',
-        fileNameCheck: ''
+        fileName: ''
       },
       showUpload: false, // 离开页面弹窗
       showNextType: -1, // 页面切换类型
       colorType: 'defalut',
       fontWeights: ['lighter', 'normal', 'bold', 'bolder'],
+      resourcesValueIds: [],
+      resourcesIds: [],
       defaultFontSize: [12, 13, 14, 16, 18, 20, 24, 26, 28, 30, 36, 40, 48, 54, 60, 72, 84, 88],
       proFontSize: [12, 13, 14, 16, 18, 20, 24, 26, 28, 30, 36, 40, 48, 54, 60, 72, 84, 88],
       defMapColors: ['#bb2a52', '#bd3d50', '#bf4e4e', '#c2634b', '#c47346', '#c7833f', '#ca9137', '#cd9d2c'],
@@ -455,6 +458,15 @@ export default {
       this.copyType = window.CrossScreenCope.copyType || ''
       this.copyonlyOne = window.CrossScreenCope.copyonlyOne || false
     }
+    if (this.paintObj.templateType === 'single') {
+      this.CanChangeServes = true
+      // this.paintObj.templateConf.baseneclss  neclass
+      this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${this.paintObj.templateConf.baseneclss}&neClass=${this.paintObj.templateConf.neclass}`).then(res => {
+        this.resourcesValueIds = res.obj || []
+      })
+    } else {
+      this.CanChangeServes = false
+    }
     this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
       // var res = data.obj
       this.AllPageId = []
@@ -668,7 +680,6 @@ export default {
       }
     },
     getMapData(chinaId) {
-      // 区县地图通过单独的接口去查询
       var mapPth = gbs.inDev ? 'static' : 'leaderview'
       if (chinaId) {
         return new Promise((resolve, reject) => {
@@ -2733,14 +2744,21 @@ export default {
         return
       }
       const file = e.target.files[0]
+      this.importModelForm.fileName = file.name
       console.log(file)
-      // this.formData.append('file', file)
-      // this.importModelForm.fileName = file.name
-      // const reader = new FileReader();
-      // reader.readAsDataURL(file);
-      // reader.onloadend = () => {
-      //   this.zipFile = reader.result;
-      // };
+      this.TDmodelFormData.append('file', file)
+    },
+    sureUpload: function () {
+      this.formData.append('name', this.importModelForm.name)
+      // this.showUpload = true
+      console.log(11111111)
+      this.axios.post('/3dmodels/update', this.formData).then((res) => {
+        if (res.success) {
+          this.showUpload = false
+        } else {
+          this.showError(res.msg)
+        }
+      })
     },
     sentReq(d, postData, selectedP) {
       let _this = this
@@ -4420,6 +4438,49 @@ export default {
         this.changeItemChoose(false)
       } else {
         this.changeItemChoose(true)
+      }
+    },
+    resourcesIds: function (newV) {
+      if (newV !== '' && newV) {
+        this.chartNum.forEach(data => {
+          console.log(data)
+          if (data.params.neIds && data.url) {
+            data.params.neIds = newV
+            data.params.baseneclss = this.paintObj.templateConf.baseneclss || ''
+            data.params.neclass = this.paintObj.templateConf.neclass || ''
+            // this.paintObj.templateConf.baseneclss  neclass
+            if (data.params.windows) {
+              let newData = JSON.parse(data.params.windows)[0]
+              let mydata = newData.ne[0]
+              mydata.id = newV
+              newData.ne = [mydata]
+              data.params.windows = JSON.stringify([newData])
+            }
+            $.ajax({
+              url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+              data: data.params,
+              type: data.method || 'get',
+              cache: false,
+              ascyn: false,
+              success: function (res) {
+                if (data.barType === 'NewHistogram') {
+                  data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupHistogram') {
+                  data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupLeftHistogram') {
+                  data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewBar') {
+                  data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                } else {
+                  data.chartData = res.success ? res.obj : []
+                }
+              },
+            })
+          }
+        });
       }
     },
     chooseIndexs: function (newV) {
