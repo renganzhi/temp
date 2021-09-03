@@ -415,15 +415,11 @@ export default {
       }
       if (e.target.files[0].size > 100 * 1024 * 1024) {
         e.target.value = ''
-        if (gbs.inDev) {
           Notification({
             message: '上传的视频不能大于100MB',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '上传的视频不能大于100MB', 'info')
-        }
         return
       }
       var file = e.target.files[0]
@@ -452,15 +448,11 @@ export default {
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
-        if (gbs.inDev) {
           Notification({
             message: '上传的文件不能大于15MB',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '上传的文件不能大于15MB', 'info')
-        }
         e.target.value = ''
         return
       }
@@ -552,15 +544,11 @@ export default {
             typeof cb === 'function' && cb(data)
           } else {
             // $("#lead-screen").hide()
-            if (gbs.inDev) {
               Notification({
                 message: data.msg,
                 position: 'bottom-right',
                 customClass: 'toast toast-error'
               })
-            } else {
-              tooltip('', data.msg, 'error')
-            }
           }
         }
       })
@@ -669,15 +657,11 @@ export default {
     delColor (index) {
       // 删除自定义颜色
       if (this.selectedItem[this.item.key].length === 1) {
-        if (gbs.inDev) {
           Notification({
             message: '至少配置一种颜色',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '至少配置一种颜色', 'info')
-        }
         return
       }
       if (!this.selectChange && this.chooseSameFlag) {

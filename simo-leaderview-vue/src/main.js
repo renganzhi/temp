@@ -38,22 +38,15 @@ Vue.prototype.$rules = usRules
 Vue.prototype.$ensureModal = ensureModal
 
 Vue.config.performance = true
-if (gbs.inDev) {
-  Vue.prototype.$notify = Notification
-} else {
-  Vue.prototype.$notify = function (obj) {
-    // @ts-ignore
-    tooltip(' ', obj.message, (/error/g).test(obj.customClass) ? 'error' : 'success')
-  }
-}
+Vue.prototype.$notify = Notification
 
 Vue.prototype.$EventBus = new Vue()
 Vue.prototype.$MyEventBus = new Vue()
-/* eslint-disable no-new */
-;(window).vm = new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>'
-})
+  /* eslint-disable no-new */
+  ; (window).vm = new Vue({
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>'
+  })

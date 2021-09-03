@@ -319,15 +319,11 @@ export default {
             this.userIds = res.obj
             return resolve()
           }
-          if (gbs.inDev) {
             Notification({
               message: res.msg,
               position: 'bottom-right',
               customClass: 'toast toast-error'
             })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
         })
       })
     },
@@ -388,25 +384,17 @@ export default {
               if (res.success) {
                 this.search()
                 $('#homeShareModal').modal('hide')
-                if (gbs.inDev) {
                   Notification({
                     message: '操作成功！',
                     position: 'bottom-right',
                     customClass: 'toast toast-success'
                   })
-                } else {
-                  tooltip('', '操作成功！', 'success')
-                }
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
           }
@@ -515,15 +503,11 @@ export default {
             })
           }
         } else {
-          if (gbs.inDev) {
             Notification({
               message: res.msg,
               position: 'bottom-right',
               customClass: 'toast toast-error'
             })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
         }
       })
     },
@@ -585,15 +569,11 @@ export default {
             if (res.success) {
               this.search()
             } else {
-              if (gbs.inDev) {
                 Notification({
                   message: res.msg,
                   position: 'bottom-right',
                   customClass: 'toast toast-error'
                 })
-              } else {
-                tooltip('', res.msg, 'error')
-              }
             }
           })
       })
@@ -646,15 +626,11 @@ export default {
               if (res.success) {
                 this.search()
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
         } else {
@@ -665,15 +641,11 @@ export default {
               if (res.success) {
                 this.search()
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
         }
@@ -709,25 +681,17 @@ export default {
           .then((res) => {
             if (res.success) {
               item.name = this.editName
-              if (gbs.inDev) {
                 Notification({
                   message: '操作成功！',
                   position: 'bottom-right',
                   customClass: 'toast toast-success'
                 })
-              } else {
-                tooltip('', '操作成功！', 'success')
-              }
             } else {
-              if (gbs.inDev) {
                 Notification({
                   message: res.msg,
                   position: 'bottom-right',
                   customClass: 'toast toast-error'
                 })
-              } else {
-                tooltip('', res.msg, 'error')
-              }
             }
           })
       }

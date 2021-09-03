@@ -321,27 +321,19 @@ export default {
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         if (res.success) {
-          this.changeSort = true
-          if (gbs.inDev) {
-            Notification({
-              message: '操作成功！',
-              position: 'bottom-right',
-              customClass: 'toast toast-success'
-            })
-          } else {
-            tooltip('', '操作成功！', 'success')
-          }
+        this.changeSort = true
+          Notification({
+            message: '操作成功！',
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
           $('#homeSetting-modal').modal('hide')
         } else {
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     }
