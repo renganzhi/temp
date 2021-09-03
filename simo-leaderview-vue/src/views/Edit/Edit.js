@@ -106,6 +106,7 @@ export default {
       refreshData: true,
       viewKey: new Date().getTime() + parseInt(Math.random() * 10),
       showKeybd: false,
+      CanChangeServes: false,
       guideStation: 'static',
       AllPageId: [],
       pageIdIndex: '',
@@ -457,9 +458,15 @@ export default {
       this.copyType = window.CrossScreenCope.copyType || ''
       this.copyonlyOne = window.CrossScreenCope.copyonlyOne || false
     }
-    this.axios.get('/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=&neClass=').then(res => {
-      this.resourcesValueIds = res.obj || []
-    })
+    if (this.paintObj.templateType === 'single') {
+      this.CanChangeServes = true
+      // this.paintObj.templateConf.baseneclss  neclass
+      this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${this.paintObj.templateConf.baseneclss}&neClass=${this.paintObj.templateConf.neclass}`).then(res => {
+        this.resourcesValueIds = res.obj || []
+      })
+    } else {
+      this.CanChangeServes = false
+    }
     this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
       // var res = data.obj
       this.AllPageId = []
@@ -4434,7 +4441,47 @@ export default {
       }
     },
     resourcesIds: function (newV) {
-      console.log(newV)
+      if (newV !== '' && newV) {
+        this.chartNum.forEach(data => {
+          console.log(data)
+          if (data.params.neIds && data.url) {
+            data.params.neIds = newV
+            data.params.baseneclss = this.paintObj.templateConf.baseneclss || ''
+            data.params.neclass = this.paintObj.templateConf.neclass || ''
+            // this.paintObj.templateConf.baseneclss  neclass
+            if (data.params.windows) {
+              let newData = JSON.parse(data.params.windows)[0]
+              let mydata = newData.ne[0]
+              mydata.id = newV
+              newData.ne = [mydata]
+              data.params.windows = JSON.stringify([newData])
+            }
+            $.ajax({
+              url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+              data: data.params,
+              type: data.method || 'get',
+              cache: false,
+              ascyn: false,
+              success: function (res) {
+                if (data.barType === 'NewHistogram') {
+                  data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupHistogram') {
+                  data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupLeftHistogram') {
+                  data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewBar') {
+                  data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                } else {
+                  data.chartData = res.success ? res.obj : []
+                }
+              },
+            })
+          }
+        });
+      }
     },
     chooseIndexs: function (newV) {
       if (newV.length + this.chooseCompIndexs.length > 1) {

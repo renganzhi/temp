@@ -564,10 +564,11 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="m-gap form-group set-map" v-if="CanChangeServes">全局变量配置</div>
+                <div class="form-group" id="resourcesIds" v-if="CanChangeServes">
                   <label style="width:60px">资源调整</label>
                   <div>
-                    <Select v-model="resourcesIds" filterable style="width:180px">
+                    <Select v-model="resourcesIds" filterable style="width:180px" clearable >
                         <div slot="empty">not Found data</div>
                         <Option v-for="(item,index) in resourcesValueIds" :value="item.value" :key="index">{{ item.name }}</Option>
                     </Select>
@@ -2532,6 +2533,9 @@ html[data-theme="blueWhite"] {
 }
 .heightImgName {
   color: #0088cc;
+}
+#resourcesIds input{
+  width: 100%;
 }
 .edui-default {
   ::deep .edui-editor-bottomContainer {
