@@ -36,8 +36,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     var fileName = 'mobile.html'
     var targetName = 'index.html'
     // path.resolve(__dirname, '..')
-    var sourceFile = path.resolve(__dirname, '../dist/leaderview', fileName)
-    var destPath = path.resolve(__dirname, '../dist/leaderview', targetName)
+    var sourceFile = path.resolve(__dirname, '../dist/leaderviewWeb', fileName)
+    var destPath = path.resolve(__dirname, '../dist/leaderviewWeb', targetName)
     var data = ''
     // var arguments = process.argv.splice(2)
     var replaceText = './' // 目标目录
