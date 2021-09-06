@@ -9,7 +9,6 @@
       "
     />
 </template>
-
 <script>
 // import { apiUrl } from '@/config/settings'
 export default {
@@ -18,7 +17,8 @@ export default {
   data () {
     return {
       id: 'Boxmap', // 地图绑定dom的id
-      inputId: 'Boxinput'
+      inputId: 'Boxinput',
+      delLabel: ''
     }
   },
   watch: {
@@ -38,19 +38,46 @@ export default {
     'item.selectChange': function () {
       let point = new window.BMap.Point(this.item.selectMark.lng, this.item.selectMark.lat)
       let marker = new window.BMap.Marker(point, {
-        enableDragging: true,
+        enableDragging: !(this.$route.name === 'edit' && !this.$parent.$parent.previewStatus),
         icon: this.item.selectMark.icon.indexOf('类型3') !== -1 || this.item.selectMark.icon.indexOf('类型4') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(80, 80)) : this.item.selectMark.icon.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(39, 25)) : this.item.selectMark.icon.indexOf('类型1') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(30, 30)) : new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(40, 40))
       })
       this.map.addOverlay(marker)
       let _this = this
-      marker.addEventListener('rightclick', function (e) { // 点标记右键事件删除
-        _this.map.removeOverlay(e.currentTarget)
-        _this.item.pointArray.forEach((element, index) => {
-          if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
-            _this.item.pointArray.splice(index, 1)
+      if (_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus) {
+        marker.addEventListener('rightclick', function (e) { // 点标记右键事件删除
+          let html = `<p id="del" style="z-index:1000;cursor:pointer;text-align:center;line-height:30px">删除</p>`
+          let opt = {
+            position: point
+          }
+          let label = new window.BMap.Label(html, opt)
+          label.setStyle({
+            color: '#cad6dd',
+            width: '60px',
+            background: '#2d3c4c',
+            borderColor: 'transparent',
+            height: '30px',
+            // fontSize: '16px',
+            padding: '0 0 5px 0',
+            lineHeight: '30px',
+            fontFamily: '微软雅黑'
+          })
+          if (_this.delLabel) {
+            _this.map.removeOverlay(_this.delLabel)
+          }
+          _this.delLabel = label
+          _this.map.addOverlay(label)
+          document.getElementById('del').onclick = function () {
+            _this.map.removeOverlay(e.currentTarget)
+            _this.item.pointArray.forEach((element, index) => {
+              if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                _this.item.pointArray.splice(index, 1)
+              }
+            })
+            _this.map.removeOverlay(label)
+            _this.delLabel = ''
           }
         })
-      })
+      }
     },
     // 'item.pointArray': {
     //   handler (newV) {
@@ -139,6 +166,13 @@ export default {
       this.setMapEvent()
       // this.addMapControl(this.item.chartData)
       this.addPoint()
+      let _this = this
+      window.onclick = function (e) {
+        if (_this.delLabel && e.target !== document.getElementById('del')) {
+          _this.map.removeOverlay(_this.delLabel)
+          _this.delLabel = ''
+        }
+      }
     },
     createMap () {
       let _this = this
@@ -149,18 +183,45 @@ export default {
         for (let i = 0; i < this.item.pointArray.length; i++) {
           let p = new window.BMap.Point(this.item.pointArray[i].lng, this.item.pointArray[i].lat)
           let m = new window.BMap.Marker(p, {
-            enableDragging: true,
+            enableDragging: !(_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus),
             icon: this.item.pointArray[i].icon.indexOf('类型3') !== -1 || this.item.pointArray[i].icon.indexOf('类型4') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(80, 80)) : this.item.pointArray[i].icon.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(39, 25)) : this.item.pointArray[i].icon.indexOf('类型1') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(30, 30)) : new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(40, 40))
           })
           this.map.addOverlay(m)
-          m.addEventListener('rightclick', function (e) { // 点标记右键事件删除
-            _this.map.removeOverlay(e.currentTarget)
-            _this.item.pointArray.forEach((element, index) => {
-              if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
-                _this.item.pointArray.splice(index, 1)
+          if (_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus) {
+            m.addEventListener('rightclick', function (e) { // 点标记右键事件删除
+              let html = `<p id="del" style="z-index:1000;cursor:pointer;text-align:center;line-height:30px">删除</p>`
+              let opt = {
+                position: p
+              }
+              let label = new window.BMap.Label(html, opt)
+              label.setStyle({
+                color: '#cad6dd',
+                width: '60px',
+                background: '#2d3c4c',
+                borderColor: 'transparent',
+                height: '30px',
+                // fontSize: '16px',
+                padding: '0 0 5px 0',
+                lineHeight: '30px',
+                fontFamily: '微软雅黑'
+              })
+              if (_this.delLabel) {
+                _this.map.removeOverlay(_this.delLabel)
+              }
+              _this.delLabel = label
+              _this.map.addOverlay(label)
+              document.getElementById('del').onclick = function () {
+                _this.map.removeOverlay(e.currentTarget)
+                _this.item.pointArray.forEach((element, index) => {
+                  if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                    _this.item.pointArray.splice(index, 1)
+                  }
+                })
+                _this.map.removeOverlay(label)
+                _this.delLabel = ''
               }
             })
-          })
+          }
         }
       }
       if (this.item.textArray.length > 0) {
@@ -180,16 +241,97 @@ export default {
             fontFamily: '微软雅黑'
           })
           this.map.addOverlay(label)
-          label.addEventListener('rightclick', function (e) { // 文本标注右键事件删除
-            _this.map.removeOverlay(e.currentTarget)
-            _this.item.textArray.forEach((element, index) => {
-              if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
-                _this.item.textArray.splice(index, 1)
+          if (_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus) {
+            label.addEventListener('rightclick', function (e) { // 文本标注右键事件删除
+              let html = `<p id="del" style="z-index:1000;cursor:pointer;text-align:center;line-height:30px">删除</p>`
+              let opt = {
+                position: new window.BMap.Point(this.item.textArray[i].lng, this.item.textArray[i].lat),
+                offset: new window.BMap.Size(30, 30)
+              }
+              let delLabel = new window.BMap.Label(html, opt)
+              delLabel.setStyle({
+                color: '#cad6dd',
+                width: '60px',
+                background: '#2d3c4c',
+                borderColor: 'transparent',
+                height: '30px',
+                // fontSize: '16px',
+                padding: '0 0 5px 0',
+                lineHeight: '30px',
+                fontFamily: '微软雅黑'
+              })
+              if (_this.delLabel) {
+                _this.map.removeOverlay(_this.delLabel)
+              }
+              _this.delLabel = delLabel
+              _this.map.addOverlay(delLabel)
+              document.getElementById('del').onclick = function () {
+                _this.map.removeOverlay(e.currentTarget)
+                _this.item.textArray.forEach((element, index) => {
+                  if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                    _this.item.textArray.splice(index, 1)
+                  }
+                })
+                _this.map.removeOverlay(delLabel)
+                _this.delLabel = ''
               }
             })
-          })
+          }
         }
       }
+
+      function MessageControl () {
+      // 默认停靠位置和偏移量
+        this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT
+        this.defaultOffset = new window.BMap.Size(10, 10)
+      }
+
+      // 通过JavaScript的prototype属性继承于BMap.Control
+      MessageControl.prototype = new window.BMap.Control()
+
+      // 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+      // 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+      MessageControl.prototype.initialize = function (map) {
+      // 创建一个DOM元素
+        let div = document.createElement('div')
+        if (_this.item.mapType === '卫星') {
+          div.innerHTML = `<div class="twoD" style="border-radius:2px 0 0 2px;width:50%;text-align:center;line-height:30px">2D</div><div class="satellite buttonActive" style="border-radius:0 2px 2px 0;width:50%;text-align:center;line-height:30px">卫星</div>`
+        } else {
+          div.innerHTML = `<div class="twoD buttonActive" style="border-radius:2px 0 0 2px;width:50%;text-align:center;line-height:30px">2D</div><div class="satellite" style="border-radius:0 2px 2px 0;width:50%;text-align:center;line-height:30px">卫星</div>`
+        }
+        // 设置样式
+        div.style.height = '30px'
+        div.style.width = '80px'
+        div.style.background = 'rgba(23, 44, 102, 0.9)'
+        div.style.color = '#fff'
+        div.style.display = 'flex'
+        div.style.cursor = 'pointer'
+        // 绑定事件,点击一次放大两级
+        div.onclick = function (e) {
+          document.querySelector('#' + _this.id + ' .twoD').classList.remove('buttonActive')
+          document.querySelector('#' + _this.id + ' .satellite').classList.remove('buttonActive')
+          console.log('e', e)
+          e.target.classList.add('buttonActive')
+          if (e.target.innerText === '2D') {
+            _this.item.mapType = '2D'
+            _this.map.setMapType(BMAP_NORMAL_MAP)
+          } else {
+            _this.item.mapType = '卫星'
+            _this.map.setMapType(BMAP_HYBRID_MAP)
+          }
+        }
+        // 添加DOM元素到地图中
+        map.getContainer().appendChild(div)
+        // 将DOM元素返回
+        return div
+      }
+
+      // 创建控件
+      let messageCtrl = new MessageControl()
+
+      // 添加到地图当中
+      this.map.addControl(messageCtrl)
+
       // bmap.addControl(new BMap.MapTypeControl());  默认创建地图的方式是三种都选
     },
     setMapEvent () {
@@ -201,25 +343,25 @@ export default {
         styleJson: this.item.styleJson
       })
 
-      if (this.item.mapType === '地图') {
+      if (this.item.mapType === '2D') {
         this.map.setMapType(BMAP_NORMAL_MAP)
-      } else if (this.item.mapType === '混合') {
+      } else if (this.item.mapType === '卫星') {
         this.map.setMapType(BMAP_HYBRID_MAP)
       }
-      var controler = new window.BMap.MapTypeControl({
-        mapTypes: [
-          BMAP_NORMAL_MAP,
-          BMAP_HYBRID_MAP
-        ]
-      })
-      this.map.addControl(controler)
-      this.map.addEventListener('maptypechange', () => {
-        if (this.item.mapType === '地图') {
-          this.item.mapType = '混合'
-        } else {
-          this.item.mapType = '地图'
-        }
-      })
+      // var controler = new window.BMap.MapTypeControl({
+      //   mapTypes: [
+      //     BMAP_NORMAL_MAP,
+      //     BMAP_HYBRID_MAP
+      //   ]
+      // })
+      // this.map.addControl(controler)
+      // this.map.addEventListener('maptypechange', () => {
+      //   if (this.item.mapType === '2D') {
+      //     this.item.mapType = '卫星'
+      //   } else {
+      //     this.item.mapType = '2D'
+      //   }
+      // })
     },
     addMapControl (list) {
       // this.map.setMapStyleV2({
@@ -424,7 +566,7 @@ export default {
             //   var myIcon = new window.BMap.Icon("../../../../static/img/图标.gif", new window.BMap.Size(52, 26));
             let point1 = new window.BMap.Point(val.lng, val.lat)
             let marker1 = new window.BMap.Marker(point1, {
-              enableDragging: true,
+              enableDragging: !(_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus), // 只有在预览和播放时可拖拽
               icon: _this.item.markerType.indexOf('类型3') !== -1 || _this.item.markerType.indexOf('类型4') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(80, 80)) : _this.item.markerType.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(39, 25)) : _this.item.markerType.indexOf('类型1') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(30, 30)) : new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(40, 40))
             })
             _this.item.pointArray.push({
@@ -433,14 +575,82 @@ export default {
               icon: _this.item.markerType
             })
             _this.map.addOverlay(marker1)
-            marker1.addEventListener('rightclick', function (e) { // 点标记右键事件删除
-              _this.map.removeOverlay(e.currentTarget)
-              _this.item.pointArray.forEach((element, index) => {
-                if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
-                  _this.item.pointArray.splice(index, 1)
+            if (_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus) {
+              marker1.addEventListener('rightclick', function (e) { // 点标记右键事件删除
+                let html = `<p id="del" style="z-index:1000;cursor:pointer;text-align:center;line-height:30px">删除</p>`
+                let opt = {
+                  position: point1
                 }
+                let label = new window.BMap.Label(html, opt)
+                label.setStyle({
+                  color: '#cad6dd',
+                  width: '60px',
+                  background: '#2d3c4c',
+                  borderColor: 'transparent',
+                  height: '30px',
+                  // fontSize: '16px',
+                  padding: '0 0 5px 0',
+                  lineHeight: '30px',
+                  fontFamily: '微软雅黑'
+                })
+                if (_this.delLabel) {
+                  _this.map.removeOverlay(_this.delLabel)
+                }
+                _this.delLabel = label
+                _this.map.addOverlay(label)
+                document.getElementById('del').onclick = function () {
+                  _this.map.removeOverlay(e.currentTarget)
+                  _this.item.pointArray.forEach((element, index) => {
+                    if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                      _this.item.pointArray.splice(index, 1)
+                    }
+                  })
+                  _this.map.removeOverlay(label)
+                  _this.delLabel = label
+                }
+                // let pointWindow = new window.BMap.InfoBox(sContent, {
+                //   width: 0,
+                //   height: 0
+                // }) // 创建信息窗口对象
+                // let poi = new window.BMap.Point(e.currentTarget.point.lng, e.currentTarget.point.lat)
+                // _this.map.openInfoWindow(pointWindow, poi)
+                // if (!pointWindow.isOpen()) {
+                //   pointWindow.addEventListener('open', () => {
+                //     document.getElementById('delete').onclick = function () {
+                //       _this.map.removeOverlay(e.currentTarget)
+                //       _this.item.pointArray.forEach((element, index) => {
+                //         if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                //           _this.item.pointArray.splice(index, 1)
+                //         }
+                //       })
+                //       _this.map.closeInfoWindow(pointWindow)
+                //     }
+                //     document.getElementById('cancel').onclick = function () {
+                //       _this.map.closeInfoWindow(pointWindow)
+                //     }
+                //   })
+                // } else {
+                //   document.getElementById('delete').onclick = function () {
+                //     _this.map.removeOverlay(e.currentTarget)
+                //     _this.item.pointArray.forEach((element, index) => {
+                //       if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                //         _this.item.pointArray.splice(index, 1)
+                //       }
+                //     })
+                //     _this.map.closeInfoWindow(pointWindow)
+                //   }
+                //   document.getElementById('cancel').onclick = function () {
+                //     _this.map.closeInfoWindow(pointWindow)
+                //   }
+                // }
+                // _this.map.removeOverlay(e.currentTarget)
+                // _this.item.pointArray.forEach((element, index) => {
+                //   if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                //     _this.item.pointArray.splice(index, 1)
+                //   }
+                // })
               })
-            })
+            }
           }
         }, {
           text: '自定义文本标注',
@@ -450,7 +660,7 @@ export default {
               // offset: new window.BMap.Size(30, -30) // 设置文本偏移量
             }
             let po = new window.BMap.Point(val.lng, val.lat)
-            var sContent = `<input id="${_this.inputId}" type="text" autocomplete="off" style="margin-top:15px"/><p style="color:#cccccc;text-align:right">回车保存,右键删除</p>`
+            var sContent = `<input id="${_this.inputId}" type="text" autocomplete="off" style="margin-top:15px"/><p style="color:#666666;text-align:right">回车保存,右键删除</p>`
             var infoWindow = new window.BMap.InfoWindow(sContent) // 创建信息窗口对象
             _this.map.openInfoWindow(infoWindow, po)
             var enterEvent = function (event) {
@@ -475,14 +685,42 @@ export default {
                   lng: val.lng,
                   lat: val.lat
                 })
-                label.addEventListener('rightclick', function (e) { // 文本标注右键事件删除
-                  _this.map.removeOverlay(e.currentTarget)
-                  _this.item.textArray.forEach((element, index) => {
-                    if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
-                      _this.item.textArray.splice(index, 1)
+                if (_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus) {
+                  label.addEventListener('rightclick', function (e) { // 文本标注右键事件删除
+                    let html = `<p id="del" style="z-index:1000;cursor:pointer;text-align:center;line-height:30px">删除</p>`
+                    let opt = {
+                      position: new window.BMap.Point(val.lng, val.lat),
+                      offset: new window.BMap.Size(30, 30)
+                    }
+                    let delLabel = new window.BMap.Label(html, opt)
+                    delLabel.setStyle({
+                      color: '#cad6dd',
+                      width: '60px',
+                      background: '#2d3c4c',
+                      borderColor: 'transparent',
+                      height: '30px',
+                      // fontSize: '16px',
+                      padding: '0 0 5px 0',
+                      lineHeight: '30px',
+                      fontFamily: '微软雅黑'
+                    })
+                    if (_this.delLabel) {
+                      _this.map.removeOverlay(_this.delLabel)
+                    }
+                    _this.delLabel = delLabel
+                    _this.map.addOverlay(delLabel)
+                    document.getElementById('del').onclick = function () {
+                      _this.map.removeOverlay(e.currentTarget)
+                      _this.item.textArray.forEach((element, index) => {
+                        if (e.currentTarget.point.lng === element.lng && e.currentTarget.point.lat === element.lat) {
+                          _this.item.textArray.splice(index, 1)
+                        }
+                      })
+                      _this.map.removeOverlay(delLabel)
+                      _this.delLabel = ''
                     }
                   })
-                })
+                }
               }
             }
             if (!document.getElementById(_this.inputId)) { // 当是第一个信息窗口时获取不到这个dom,需要把监听事件加载父级上
@@ -497,13 +735,15 @@ export default {
       for (var i = 0; i < txtMenuItem.length; i++) {
         menu.addItem(new window.BMap.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback, 100))
       }
-      this.map.addContextMenu(menu)
+      if (this.$route.name === 'edit' && !this.$parent.$parent.previewStatus) {
+        this.map.addContextMenu(menu)
+      }
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 /*这两段是去掉百度地图水印的css*/
     .BMap_cpyCtrl {
         display: none !important;
@@ -512,13 +752,35 @@ export default {
         display: none !important;
     }
     .BMap_contextMenu{
-      width: 120px !important;
+      width: 150px !important;
+      height: 60px !important;
+      padding: 5px 5px 0 5px !important;
+      border: 1px solid transparent !important;
+      background: #2d3c4c !important;
+      color:#fff !important;
     }
     .BMap_contextMenu div{
       width: 100% !important;
+      height: 50%;
+       color:#fff !important;
     }
+    // .BMap_contextMenu div:first-child{
+    //   margin-bottom: 10px;
+    // }
     .BMap_Marker div img {
       width: 100%;
-      height: 100%
+      height: 100%;
+       color:#fff !important;
     }
+    #del:hover {
+      color: #15aaf5
+    }
+    .buttonActive {
+      background-color: rgba(45, 131, 249, 0.9);
+    }
+    // .BMap_noprint .anchorTR{
+    //   >div:first-child{
+    //     width: 50px !important
+    //   }
+    // }
 </style>

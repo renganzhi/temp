@@ -8,7 +8,7 @@ export default {
     'showPOI': 'on',
     'pointArray': [], // 点标记数组
     'textArray': [], // 文本标注数组
-    'mapType': '混合',
+    'mapType': '卫星',
     'markerType': 'http://api.map.baidu.com/images/marker_red_sprite.png', // 点标记图标类型
     'selectMark': {
       'lng': 0,
