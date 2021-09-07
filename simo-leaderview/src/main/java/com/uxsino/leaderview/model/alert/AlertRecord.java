@@ -1,10 +1,10 @@
 package com.uxsino.leaderview.model.alert;
 
 import com.alibaba.fastjson.JSONObject;
-import com.uxsino.commons.model.IpAlertRuleType;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.rule.model.IpAlertRuleType;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
