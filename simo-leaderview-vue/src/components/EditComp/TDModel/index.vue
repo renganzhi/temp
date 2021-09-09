@@ -11,6 +11,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import elementResizeDetectorMaker from 'element-resize-detector'
+import { gbs } from '@/config/settings'
 let camera
 let scene
 let controls
@@ -21,6 +22,7 @@ let helper
 export default {
   data () {
     return {
+      baseUrl:''
     }
   },
   props: ['item'],
@@ -54,6 +56,11 @@ export default {
     'item.ZoomLimitMin': function (val) {
       controls.minDistance = val
     },
+    'item.gltfName': function (val) {
+      let Cameragltf = scene.getObjectByName('GltfName')
+      scene.remove(Cameragltf)
+      this.creatSixBall()
+    },
     'item.ShowHelpLine': function (val) {
       if (val) {
         helper.scale.x = 1
@@ -67,6 +74,12 @@ export default {
     },
     'item.ZoomLimitMax': function (val) {
       controls.maxDistance = val
+    }
+  },
+  beforeMount () {
+    var reg = /^\/api/
+    if (!reg.test(this.item.imgSrc)) {
+      this.baseUrl = gbs.host
     }
   },
   mounted () {
@@ -124,14 +137,15 @@ export default {
         helper.scale.z = 0
       }
       scene.add(helper)
-
       this.creatSixBall()
     },
     creatSixBall () {
       var loader = new GLTFLoader()
       var _this = this
+      // ${this.baseUrl}
+      if(this.baseUrl){
       loader.load(
-        `/static/Glft/${_this.item.gltfName}`,
+        `${this.baseUrl}/leaderview/${_this.item.gltfName}`,
         function (gltf) {
           gltf.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
           gltf.scene.position.set(0, 0, 0)
@@ -140,6 +154,7 @@ export default {
           scene.add(gltf.scene)
         }
       )
+      }
     },
     initDragControls () {
       controls = new OrbitControls(camera, renderer.domElement)

@@ -60,6 +60,7 @@ import Hotspot from '@/components/EditComp/hotspot'
 import Decorator from '@/components/EditComp/decorator'
 import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
 import TDModel from '@/components/EditComp/TDModel' // drag拖拽组件
+import VmVareTopo from '@/components/EditComp/VmVareTopo' // drag拖拽组件
 
 export default {
   DragResize,
@@ -122,6 +123,7 @@ export default {
   TDHistogram,
   Bubble,
   TDModel,
+  VmVareTopo,
   Hotspot,
   Decorator
 }
