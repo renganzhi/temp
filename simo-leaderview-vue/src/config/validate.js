@@ -12,7 +12,7 @@ const formvalidation = {
     required: true,
     message: '必填项',
     // 这里存在去掉首尾的空格 会导致首尾存在空格时，长度校验异常 解决方案为将必填校验放在所有校验的最后 可解决这个问题 如 缺陷# 93450
-    transform (value) {
+    transform(value) {
       return typeof value !== 'undefined' && value !== null && String(value).trim()
     },
     ...trigger
@@ -94,7 +94,7 @@ const formvalidation = {
     }
   },
   // 最长大长度
-  maxlength (mydata) {
+  maxlength(mydata) {
     return {
       type: 'string',
       message: '最大长度为' + mydata + '个字符',
@@ -103,7 +103,7 @@ const formvalidation = {
     }
   },
   // 最小长度
-  minlength (mydata) {
+  minlength(mydata) {
     return {
       type: 'string',
       message: '最小长度为' + mydata + '个字符',
@@ -209,15 +209,15 @@ const formvalidation = {
   url: {
     // pattern: /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i,
     pattern: '^((https|http|ftp|rtsp|mms){1}://){1}' +
-    "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" + // ftp的user@
-    '(([0-9]{1,3}\\.){3}[0-9]{1,3}' + // IP形式的URL- 199.194.52.184
-    '|' + // 允许IP和DOMAIN（域名）
-    "([0-9a-z_!~*'()-]+\\.)*?" + // 域名- www.
-    '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\.' + // 二级域名
-    '[a-z]{2,6})' + // first level domain- .com or .museum
-    '(:([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5]))?' + // 端口- :80
-    '((/?)|' + // a slash isn't required if there is no file name
-    "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$",
+      "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" + // ftp的user@
+      '(([0-9]{1,3}\\.){3}[0-9]{1,3}' + // IP形式的URL- 199.194.52.184
+      '|' + // 允许IP和DOMAIN（域名）
+      "([0-9a-z_!~*'()-]+\\.)*?" + // 域名- www.
+      '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\.' + // 二级域名
+      '[a-z]{2,6})' + // first level domain- .com or .museum
+      '(:([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5]))?' + // 端口- :80
+      '((/?)|' + // a slash isn't required if there is no file name
+      "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$",
     message: '请输入正确的的URL',
     ...trigger
   },
@@ -256,7 +256,7 @@ const formvalidation = {
     }
   },
   // 多选框最大选择长度校验
-  checkLength (length, msg) {
+  checkLength(length, msg) {
     msg = msg || '最多可以选择' + length + '项数据'
     return {
       trigger: 'change',
@@ -273,97 +273,6 @@ const formvalidation = {
       }
     }
   },
-  // 名字重复校验
-  // checkExist (url, id, tip) {
-  //   tip = '该' + (tip || '名称') + '已存在'
-  //   return {
-  //     trigger: 'blur',
-  //     asyncValidator: (rule, value, callback) => {
-  //       if (value) {
-  //         store.commit('base/setLoading', false)
-  //         api[url]({ name: value, id: id }).then(res => {
-  //           store.commit('base/setLoading', true)
-  //           if (typeof res.success === 'undefined') {
-  //             res ? callback(new Error(tip)) : callback()
-  //           }
-  //           if (res.success) {
-  //             if (res.obj === false) {
-  //               callback(new Error(tip))
-  //             } else {
-  //               callback()
-  //             }
-  //           } else {
-  //             callback(new Error(tip))
-  //           }
-  //         }, errRes => {
-  //           callback(new Error('名称校验请求失败'))
-  //         })
-  //       } else {
-  //         callback()
-  //       }
-  //     }
-  //   }
-  // },
-  // checkExistTwo (url, id, tip) {
-  //   tip = '该' + (tip || '名称') + '已存在'
-  //   return {
-  //     trigger: 'blur',
-  //     asyncValidator: (rule, value, callback) => {
-  //       if (value) {
-  //         store.commit('base/setLoading', false)
-  //         api[url]({ name: value, id: id }).then(res => {
-  //           store.commit('base/setLoading', true)
-  //           if (res.success) {
-  //             if (res.obj === true) {
-  //               callback(new Error(tip))
-  //             } else {
-  //               callback()
-  //             }
-  //           }
-  //         }, errRes => {
-  //           callback(new Error('名称校验请求失败'))
-  //         })
-  //       } else {
-  //         callback()
-  //       }
-  //     }
-  //   }
-  // },
-  // 重名校验
-  // pram为接口需要的参数{}
-  // pram中的其他请求参数在使用时需要使用watch触发验证,验证的参数名需要传nameKey
-  // example
-  // watch: {
-  //   'addForm.type': function (v) {
-  //     this.rules.name = [this.$rules.chkEsxist('ptTemChkName', { id: this.$route.params.id,nameKey: 'name', type: v })]
-  //   }
-  // },
-  // rules = {
-  //   name: [this.$rules.chkEsxist('ptTemChkName', { id: this.$route.params.id,nameKey: 'name', type: this.addForm.name })],
-  // }
-  // chkExist (url, pram, tip) {
-  //   tip = '该' + (tip || '名称') + '已存在'
-  //   return {
-  //     trigger: 'blur',
-  //     asyncValidator: (rule, value, callback) => {
-  //       if (value) {
-  //         store.commit('base/setLoading', false)
-  //         api[url]({ ...pram, [pram.nameKey || 'name']: value, nameKey: undefined }).then(res => {
-  //           store.commit('base/setLoading', true)
-  //           if (res.obj === true) {
-  //             callback(new Error(tip))
-  //           } else {
-  //             callback()
-  //           }
-  //         }, errRes => {
-  //           callback(new Error('名称校验请求失败'))
-  //         })
-  //       } else {
-  //         callback()
-  //       }
-  //     }
-  //   }
-  // },
 
   //   密码验证
   passwordCheck: {
@@ -372,7 +281,7 @@ const formvalidation = {
   },
 
   // 根据用户密码配置验证密码
-  passwordCheckByConf (pram) {
+  passwordCheckByConf(pram) {
     let tip = '密码必须包含'
     let reg = ''
     let regObj = {
@@ -445,7 +354,7 @@ const formvalidation = {
   },
 
   // 阈值校验
-  rangeValid (list, fn, index, infinite, max) {
+  rangeValid(list, fn, index, infinite, max) {
     return {
       trigger: 'blur',
       asyncValidator: (rule, value, callback) => {
@@ -498,7 +407,7 @@ const formvalidation = {
       }
     }
   },
-  checkRangeAgain (ruleForm, ruleForms, result) {
+  checkRangeAgain(ruleForm, ruleForms, result) {
     if (result === 'fail' || ruleForm.checkRangeResult.result === 'fail') {
       ruleForms.forEach(item => {
         item.checkRangeResult.result = result
@@ -514,7 +423,7 @@ const formvalidation = {
       })
     }
   },
-  checkRange (d, ruleForms) {
+  checkRange(d, ruleForms) {
     // begin和end存在错误时不进行阈值校验
     for (let item of ruleForms) {
       if (item.rangeObj.begin !== 'pass' || item.rangeObj.end !== 'pass') return 'noCheck'
@@ -542,7 +451,7 @@ const formvalidation = {
     }
     return 'pass'
   },
-  checkSearch (arg) {
+  checkSearch(arg) {
     if (!arg) return true
     if (Object.prototype.toString.call(arg) === '[object Object]') arg = Object.values(arg) || []
     if (!Array.isArray(arg)) arg = [arg]
@@ -557,7 +466,7 @@ const formvalidation = {
     })
     return val
   },
-  treeLevelValid (chkedLevel, id, pId, level, tip) {
+  treeLevelValid(chkedLevel, id, pId, level, tip) {
     return {
       trigger: 'change',
       asyncValidator: (rule, value, callback) => {

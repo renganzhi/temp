@@ -34,16 +34,16 @@
              style="position: relative; margin-bottom: 20px;">
           <span>上传模型：</span>
           <input type="file" id="uploadZip"
-            accept=".zip,.rar,application/zip,application/x-zip-compressed"
+            accept=".zip,application/zip,application/x-zip-compressed"
             @change="getZip" style="opacity: 0; position: absolute; z-index: -1;"/>
           <Input style="width: 270px; margin: 0px 5px;"
            disabled v-model="importModelForm.fileName"/>
           <Button class="ivu-primary" @click="upload">预览</Button>
         </div>
-      <div style="text-align: right" class="modal-footer">
-        <button type="button" @click="sureUpload">确认</button>
-        <button type="button" data-dismiss="modal" @click="cancel()">取消</button>
-      </div>
+        <div style="text-align: right" class="modal-footer">
+          <button type="button" @click="sureUpload">确认</button>
+          <button type="button" data-dismiss="modal" @click="cancel()">取消</button>
+        </div>
       </Form>
     </Modal>
     <div class="edit-content"
@@ -1814,7 +1814,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"
@@ -1895,12 +1895,20 @@
                   </select>
                 </div>
               </div>
+              <div v-show="selectedItem.chartType == 'VmVareTopo'">
+                <div class="form-group cols2">
+                  <label>虚拟视图选择</label>
+                  <select v-model="selectedItem.iputneId">
+                    <option :value="item.id" v-for="(item,index) in iputneIdArry" :key="index">{{item.name}}</option>
+                  </select>
+                </div>
+              </div>
               <div v-show="selectedItem.chartType == 'TDModel'">
                 <div class="form-group cols2">
                   <label>选择模型</label>
                   <select v-model="selectedItem.gltfName">
-                    <option value="qiuji.gltf">客户端</option>
-                    <option value="system">服务端</option>
+                    <!-- gltfNameArry -->
+                    <option :value="item.gltf" v-for="(item,index) in gltfNameArry" :key="index">{{item.name}}</option>
                   </select>
                 </div>
                 <div class="form-group cols2">
@@ -1916,7 +1924,7 @@
                         @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;"
-                   v-show="!['TDModel','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
+                   v-show="!['TDModel','VmVareTopo','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"

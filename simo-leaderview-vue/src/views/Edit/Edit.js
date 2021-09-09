@@ -46,6 +46,7 @@ let config = {
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),
   TDHistogram: require('@/components/EditComp/TDHistogram/config.js'),
   TDModel: require('@/components/EditComp/TDModel/config.js'),
+  VmVareTopo: require('@/components/EditComp/VmVareTopo/config.js'),
   TDEarthLine: require('@/components/EditComp/TDEarthLine/config.js'),
   BaiDuMap: require('@/components/EditComp/BaiDuMap/config.js'),
   IntegratedHistogram: require('@/components/EditComp/IntegratedHistogram/config.js'),
@@ -95,6 +96,8 @@ export default {
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
       canChangeId: [],
+      gltfNameArry: [],
+      iputneIdArry: [],
       activeNames: [0],
       TDmodelFormData: new FormData(),
       config,
@@ -479,6 +482,18 @@ export default {
         }
       })
     })
+    this.getModelFun()
+    this.TDmodelFormData.append('file', '')
+    this.TDmodelFormData.append('name', '')
+
+    this.axios.get('/monitor/virtualization/vmware/topo/menu').then((res) => {
+      res.obj.forEach(element => {
+        if (element.neId && element.neId !== '') {
+          this.iputneIdArry.push(element)
+        }
+      });
+    })
+
   },
   methods: {
     ...mapActions([
@@ -2713,18 +2728,32 @@ export default {
       }
       const file = e.target.files[0]
       this.importModelForm.fileName = file.name
-      console.log(file)
-      this.TDmodelFormData.append('file', file)
+
+      this.TDmodelFormData.set("file", file);
+    },
+    getModelFun() {
+      this.axios.get('/leaderview/home/findAllModles').then((data) => {
+        this.gltfNameArry = data.obj || []
+      })
     },
     sureUpload: function () {
-      this.formData.append('name', this.importModelForm.name)
-      // this.showUpload = true
-      console.log(11111111)
-      this.axios.post('/3dmodels/update', this.formData).then((res) => {
+      var _this = this
+      this.TDmodelFormData.set("name", this.importModelForm.name);
+      this.axios.post('/leaderview/home/importTemplate', this.TDmodelFormData).then((res) => {
         if (res.success) {
-          this.showUpload = false
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
+          _this.showUpload = false
+          _this.getModelFun()
         } else {
-          this.showError(res.msg)
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
@@ -3179,11 +3208,15 @@ export default {
             })
           }
         } else {
-          Notification({
-            message: '请输入正确的JSON格式的数据',
-            position: 'bottom-right',
-            customClass: 'toast toast-info'
-          })
+          if (this.selectedItem.chartType === 'NewTable') {
+            this.selectedItem.chartData = this.formatJson(textData)
+          } else {
+            Notification({
+              message: '请输入正确的JSON格式的数据',
+              position: 'bottom-right',
+              customClass: 'toast toast-info'
+            })
+          }
         }
       }
     },

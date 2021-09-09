@@ -44,6 +44,7 @@ export default [
   'Newimage',
   'TDHistogram',
   'TDModel',
+  'VmVareTopo',
   'bubble',
   'hotspot',
   'decorator'
