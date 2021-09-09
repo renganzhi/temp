@@ -38,7 +38,6 @@ export default {
     'item.selectChange': function () {
       let point = new window.BMap.Point(this.item.selectMark.lng, this.item.selectMark.lat)
       let marker = new window.BMap.Marker(point, {
-        enableDragging: !(this.$route.name === 'edit' && !this.$parent.$parent.previewStatus),
         icon: this.item.selectMark.icon.indexOf('类型3') !== -1 || this.item.selectMark.icon.indexOf('类型4') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(80, 80)) : this.item.selectMark.icon.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(39, 25)) : this.item.selectMark.icon.indexOf('类型1') !== -1 ? new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(30, 30)) : new window.BMap.Icon(this.item.selectMark.icon, new window.BMap.Size(40, 40))
       })
       this.map.addOverlay(marker)
@@ -183,7 +182,6 @@ export default {
         for (let i = 0; i < this.item.pointArray.length; i++) {
           let p = new window.BMap.Point(this.item.pointArray[i].lng, this.item.pointArray[i].lat)
           let m = new window.BMap.Marker(p, {
-            enableDragging: !(_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus),
             icon: this.item.pointArray[i].icon.indexOf('类型3') !== -1 || this.item.pointArray[i].icon.indexOf('类型4') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(80, 80)) : this.item.pointArray[i].icon.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(39, 25)) : this.item.pointArray[i].icon.indexOf('类型1') !== -1 ? new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(30, 30)) : new window.BMap.Icon(this.item.pointArray[i].icon, new window.BMap.Size(40, 40))
           })
           this.map.addOverlay(m)
@@ -566,7 +564,6 @@ export default {
             //   var myIcon = new window.BMap.Icon("../../../../static/img/图标.gif", new window.BMap.Size(52, 26));
             let point1 = new window.BMap.Point(val.lng, val.lat)
             let marker1 = new window.BMap.Marker(point1, {
-              enableDragging: !(_this.$route.name === 'edit' && !_this.$parent.$parent.previewStatus), // 只有在预览和播放时可拖拽
               icon: _this.item.markerType.indexOf('类型3') !== -1 || _this.item.markerType.indexOf('类型4') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(80, 80)) : _this.item.markerType.indexOf('marker_red_sprite') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(39, 25)) : _this.item.markerType.indexOf('类型1') !== -1 ? new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(30, 30)) : new window.BMap.Icon(_this.item.markerType, new window.BMap.Size(40, 40))
             })
             _this.item.pointArray.push({
