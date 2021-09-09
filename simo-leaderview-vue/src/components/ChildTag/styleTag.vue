@@ -132,7 +132,7 @@
                     :key="index"
                     @click="setFontFamily(fontitem.fontFace)"
                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===fontitem.fontFace}"
-                    :style="{'font-family': fontitem.fontFace}">
+                    :style="{'font-family': fontitem.fontFace,'font-weight':'normal','color': 'rgba(255,255,255,0.8)'}">
                 {{fontitem.fontName}}
               </div>
             </div>

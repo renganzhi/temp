@@ -139,8 +139,8 @@ export const baseData = {
   ],
   textFontFaces: [
     {
-      fontFace: 'baidu',
-      fontName: '百度综艺简体'
+      fontFace: 'PangmenMainRoadTitleBody',
+      fontName: '庞门正道标题体'
     },
     {
       fontFace: 'SourceHanSansCN-ExtraLight',
