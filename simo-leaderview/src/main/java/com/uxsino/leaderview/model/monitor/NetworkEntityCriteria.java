@@ -2,6 +2,7 @@ package com.uxsino.leaderview.model.monitor;
 
 import com.google.common.collect.Lists;
 import com.uxsino.commons.db.model.PageModel;
+import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
 import io.swagger.annotations.ApiModel;
@@ -26,6 +27,12 @@ public class NetworkEntityCriteria extends PageModel {
 
     @ApiModelProperty(value = "查询条件-资源名称")
     private String name; // 模糊查询
+
+    @ApiModelProperty(value = "查询条件-父类型")
+    private BaseNeClass baseNeClass;   // 对象自身的父类型：主机\网络\数据库...
+
+    @ApiModelProperty(value = "查询条件-父类型包含")
+    private List<BaseNeClass> baseNeclasses;
 
     @ApiModelProperty(value = "查询条件-资源类型")
     private NeClass neClass;// 资源类型
@@ -102,9 +109,18 @@ public class NetworkEntityCriteria extends PageModel {
     @ApiModelProperty(value = "查询条件-资源分组ID")
     private Long groupId;
 
+    @ApiModelProperty(value = "查询条件-资源分组ID")
+    private List<Long> groupIds;
+
     @ApiModelProperty(value = "查询条件-是否限定为登录用户的权限，默认为true")
     private boolean limit = true;
 
     @ApiModelProperty(value = "查询条件-是否查询资源健康度，默认为false")
     private boolean healthReturn;
+
+    @ApiModelProperty(value = "查询条件-排序的字段")
+    private String sortField;
+
+    @ApiModelProperty(value = "查询条件-是否升序排列，默认为false")
+    private Boolean asc = Boolean.FALSE;
 }
