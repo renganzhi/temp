@@ -1,7 +1,8 @@
 package com.uxsino;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.uxsino.commons.base.BaseApplication;
+import com.uxsino.commons.db.repository.impl.CustomRepositoryImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
@@ -13,9 +14,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-
-import com.uxsino.commons.db.repository.impl.CustomRepositoryImpl;
-
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class})
@@ -26,11 +24,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 @EnableOAuth2Sso
 @EnableSwagger2
-public class LeaderViewApplication {
+@Slf4j
+public class LeaderViewApplication extends BaseApplication {
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(LeaderViewApplication.class);
-        SpringApplication.run(LeaderViewApplication.class, args);
-        logger.info("LeaderView启动完成");
+        init(LeaderViewApplication.class);
+        try{
+            SpringApplication.run(LeaderViewApplication.class, args);
+        }catch (Exception e){
+            log.error("boot error: {}", e);
+            throw e;
+        }
+        log.info("LeaderView启动完成");
     }
 
     @Bean
