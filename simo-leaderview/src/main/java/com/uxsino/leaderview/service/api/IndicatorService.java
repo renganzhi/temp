@@ -40,6 +40,7 @@ public class IndicatorService {
             return null;
         }
         JSONObject obj = new JSONObject();
+        indValue.setIndicatorName("healthy");
         obj.put("healthy", neHealth.getHealth());
         indValue.setIndicatorValue(obj);
         return indValue;

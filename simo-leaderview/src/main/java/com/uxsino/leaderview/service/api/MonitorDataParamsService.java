@@ -14,10 +14,7 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
-import com.uxsino.leaderview.model.monitor.IndicatorTable;
-import com.uxsino.leaderview.model.monitor.NetworkEntity;
-import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
-import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
+import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.reactorq.model.INDICATOR_TYPE;
 import com.uxsino.reactorq.model.FieldType;
@@ -567,7 +564,7 @@ public class MonitorDataParamsService {
      * @param neIds 资源ID
      * @param neClass 资源子类型
      */
-    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass) {
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass, Boolean healthy) {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
         if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
@@ -629,6 +626,9 @@ public class MonitorDataParamsService {
                                 arr.add(newResultObj(ind.getLabel(), indName));
                             }
                         });
+                        if (Boolean.TRUE.equals(healthy)) {
+                            arr.add(newResultObj("健康度", "healthy"));
+                        }
                         arrs.add(arr);
                     }
                 }
@@ -1230,6 +1230,49 @@ public class MonitorDataParamsService {
 
     public Boolean existJudgment(Boolean value ,Boolean defaultValue){
         return MonitorUtils.existJudgment(value, defaultValue);
+    }
+
+    public JsonModel getPerormance(String neId) {
+        if (StringUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        NetworkEntity networkEntity = null;
+        try {
+            networkEntity = this.rpcProcessService.findNetworkEntityById(neId);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(networkEntity) || ManageStatus.Delected.equals(networkEntity.getManageStatus())) {
+            return new JsonModel(false, "资源不存在");
+        }
+        List<PerormanceView> views = PerormanceView.getPerormanceViewByNeclass(networkEntity.getNeClass());
+        JSONArray array = new JSONArray();
+        views.forEach((view) -> {
+            array.add(newResultObj(view, view.getValue()));
+        });
+        return new JsonModel(true, array);
+    }
+
+    public JsonModel getPerformanceColumn(String neId, PerormanceView view) {
+        if (StringUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        NetworkEntity networkEntity = null;
+        try {
+            networkEntity = rpcProcessService.findNetworkEntityById(neId);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(networkEntity) || ManageStatus.Delected.equals(networkEntity.getManageStatus())) {
+            return new JsonModel(false, "资源不存在");
+        }
+        Map keyValues = view.getKeyToValues();
+        JSONArray res = new JSONArray();
+        keyValues.forEach((key, value) -> {
+            res.add(newResultObj(key, value));
+        });
+        return new JsonModel(true, res);
+
     }
 
 }
