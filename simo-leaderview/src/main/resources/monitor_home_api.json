@@ -182,6 +182,32 @@
         ]
     },
     {
+        "key": "enable_ne_health_statistics",
+        "name": "资源健康度统计",
+        "component": "monitor",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "url": "/leaderview/monitor/neStatisticsByHealth",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            }
+        ]
+    },
+    {
         "key": "enable_ne_status_statistics_for_sunburst",
         "name": "资源状态统计",
         "component": "monitor",
@@ -248,6 +274,10 @@
                 "dataType": "static",
                 "data": [
                     {
+                        "name": "资源名称",
+                        "value": "资源名称"
+                    },
+                    {
                         "name": "IP地址",
                         "value": "IP地址"
                     },
@@ -263,6 +293,10 @@
                     {
                         "name": "更新时间",
                         "value": "更新时间"
+                    },
+                    {
+                        "name": "健康度",
+                        "value": "健康度"
                     }
                 ]
             }
@@ -319,7 +353,7 @@
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getIndicatorTopN",
-                "params": ["neIds","neClass"]
+                "params": ["neIds","neClass","baseNeClass"]
             },
             {
                 "key": "field",
@@ -433,7 +467,7 @@
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getIndicatorTopN",
-                "params": ["neIds","neClass"]
+                "params": ["neIds","neClass","baseNeClass"]
             },
             {
                 "key": "field",
@@ -493,6 +527,50 @@
                         "value": "desc"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "key": "enable_alert_status_statistics",
+        "name": "资源告警状态统计",
+        "component": "alert",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "url": "/leaderview/alert/getStatByStatus",
+        "method" : "post",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes",
+                "params": ["domainId","baseNeClass","neClass"]
             }
         ]
     },
@@ -972,6 +1050,82 @@
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndFieldByType?type=PERCENT",
                 "params":["neIds","indicators"]
+            }
+        ]
+    },
+    {
+        "key": "enable_multiple_ne_indicator_statistics",
+        "name": "单资源单指标多部件统计",
+        "component": "monitor",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
+        "url": "/leaderview/monitor/indicator/multipleComp",
+        "method" : "post",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNotKnown"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
+                "params": ["domainId","baseNeClass","neClass"]
+            },
+            {
+                "key": "indicators",
+                "name": "指标分类",
+                "//": "原指标",
+                "notNull": true,
+                "type": "drop-down",
+                "method" : "get",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getIndicator?type=LIST",
+                "params": ["neIds"]
+            },
+            {
+                "key": "componentName",
+                "name": "部件",
+                "notNull": false,
+                "type": "multi-select",
+                "method" : "get",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getComponentName",
+                "params": ["neIds","indicators"]
+            },
+            {
+                "key": "field",
+                "name": "指标",
+                "//": "原属性",
+                "notNull": true,
+                "type": "multi-select",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
+                "params": ["indicators"]
             }
         ]
     },
@@ -1724,7 +1878,7 @@
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getIndicatorStr",
-                "params": ["neIds"]
+                "params": ["neIds","neClass","baseNeClass"]
             },
             {
                 "key": "componentName",
@@ -1800,7 +1954,7 @@
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getIndicatorStr",
-                "params": ["neIds"]
+                "params": ["neIds","neClass","baseNeClass"]
             },
             {
                 "key": "componentName",
@@ -2025,6 +2179,174 @@
                     {
                         "name": "目的接口",
                         "value": "targetIfName"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_monitor_network_statistics_bar",
+        "name": "链路展示TopN",
+        "component": "monitor",
+        "type": "ve-bar,NewBar",
+        "url": "/leaderview/monitor/networkTopNforBar",
+        "method" : "get",
+        "params": [
+            {
+                "key": "network",
+                "name": "选择链路",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId"
+            },
+            {
+                "key": "field",
+                "name": "展示列",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "链路带宽",
+                        "value": "speed"
+                    },
+                    {
+                        "name": "带宽利用率",
+                        "value": "speedUsage"
+                    },
+                    {
+                        "name": "上行流量",
+                        "value": "upBps"
+                    },
+                    {
+                        "name": "下行流量",
+                        "value": "downBps"
+                    }
+                ]
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+
+                    {
+                        "name": "3",
+                        "value": 3
+                    },
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    }
+                ]
+            },
+            {
+                "key": "order",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": "asc"
+                    },
+                    {
+                        "name": "降序",
+                        "value": "desc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_monitor_network_statistics_table",
+        "name": "链路展示TopN",
+        "component": "monitor",
+        "type": "table,NewMoveTable,NewTable",
+        "url": "/leaderview/monitor/networkTopNforTable",
+        "method" : "get",
+        "params": [
+            {
+                "key": "network",
+                "name": "选择链路",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId"
+            },
+            {
+                "key": "field",
+                "name": "展示列",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "链路带宽",
+                        "value": "speed"
+                    },
+                    {
+                        "name": "带宽利用率",
+                        "value": "speedUsage"
+                    },
+                    {
+                        "name": "上行流量",
+                        "value": "upBps"
+                    },
+                    {
+                        "name": "下行流量",
+                        "value": "downBps"
+                    }
+                ]
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    },
+                    {
+                        "name": "15",
+                        "value": 15
+                    },
+                    {
+                        "name": "20",
+                        "value": 20
+                    }
+                ]
+            },
+            {
+                "key": "order",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": "asc"
+                    },
+                    {
+                        "name": "降序",
+                        "value": "desc"
                     }
                 ]
             }

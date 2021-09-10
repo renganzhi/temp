@@ -135,6 +135,26 @@ public class AlertDataController {
         }
     }
 
+    @ApiOperation("按告警状态统计资源的告警条数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "status", paramType = "query", dataType = "String", value = "多个告警状态 用,分隔"),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "多个资源ID用,分隔")
+    })
+    @RequestMapping(value = "/getStatByStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getStatByStatus(HttpSession session,@RequestParam(required = false) String status, Long domainId,
+                                    String baseNeClass, String neClass, String neIds) {
+        try {
+            return alertDataService.getStatByStatus(session, status, domainId, baseNeClass, neClass, neIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
     @ApiOperation("按告警级别统计资源的未处理告警条数")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "alertLevel", paramType = "query", dataType = "String", value = "多个告警级别用,分隔"),

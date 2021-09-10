@@ -278,6 +278,19 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("按健康度统计资源数量")
+    @ApiImplicitParams({@ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")})
+    @RequestMapping(value = "/neStatisticsByHealth", method = RequestMethod.GET)
+    public JsonModel statisticsResourceHealth(HttpSession session, @RequestParam(required = false) Long domainId,
+                                              @RequestParam(required = false) String baseNeClass) {
+        try {
+            return monitorDataService.statisticsResourceHealth(session, domainId, baseNeClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
 
     @ApiOperation("资源状态列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
@@ -345,10 +358,10 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true)})
     @RequestMapping(value = "/indicator/valueStr", method = RequestMethod.GET)
     @ResponseBody
-    public JsonModel getIndicatorValueStr(@RequestParam String neIds, @RequestParam String indicators,
+    public JsonModel getIndicatorValueStr(@RequestParam String neIds,@RequestParam BaseNeClass baseNeClass, @RequestParam String indicators,
                                           @RequestParam(required = false) String componentName, @RequestParam String field) {
         try {
-            return monitorDataService.getIndicatorValueStr(neIds, indicators, componentName, field);
+            return monitorDataService.getIndicatorValueStr(neIds, baseNeClass, indicators, componentName, field);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -511,6 +524,24 @@ public class MonitorDataController {
 
     }
 
+    @ApiOperation("获取单资源单指标多部件统计的展示数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs"),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "展示的指标类型"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值")})
+    @RequestMapping(value = "/indicator/multipleComp", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getMultipleCompObject(@RequestParam String neIds, @RequestParam String indicators,
+                                                @RequestParam String[] componentName,@RequestParam String[] field, HttpSession session) {
+        try {
+            return monitorDataService.getMultipleCompObject(neIds, indicators, componentName,field, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+
+    }
+
 
     @ApiOperation("根据所选域、拓扑图id统计链路数量")
     @ApiImplicitParams({
@@ -576,6 +607,38 @@ public class MonitorDataController {
                                   @RequestParam String[] field) {
         try {
             return monitorDataService.networkTable(session, network, number, field);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("链路展示TopNforBar")
+    @ApiImplicitParams({@ApiImplicitParam(name = "network", paramType = "query", dataType = "String", value = "链路"),
+            @ApiImplicitParam(name = "number", paramType = "query", dataType = "Long", value = "展示条数"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性"),
+            @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式")})
+    @RequestMapping(value = "/networkTopNforBar", method = RequestMethod.GET)
+    public JsonModel networkTopNforBar(HttpSession session, @RequestParam String network, @RequestParam Long number,
+                                  @RequestParam String field,@RequestParam String order) {
+        try {
+            return monitorDataService.networkTopNforBar(session, network, number, field,order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("链路展示TopNforTable")
+    @ApiImplicitParams({@ApiImplicitParam(name = "network", paramType = "query", dataType = "String", value = "链路"),
+            @ApiImplicitParam(name = "number", paramType = "query", dataType = "Long", value = "展示条数"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性"),
+            @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式")})
+    @RequestMapping(value = "/networkTopNforTable", method = RequestMethod.GET)
+    public JsonModel networkTopNforTable(HttpSession session, @RequestParam String network, @RequestParam Long number,
+                                       @RequestParam String field,@RequestParam String order) {
+        try {
+            return monitorDataService.networkTopNforTable(session, network, number, field, order);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

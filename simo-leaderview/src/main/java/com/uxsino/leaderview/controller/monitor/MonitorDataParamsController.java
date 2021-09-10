@@ -116,8 +116,9 @@ public class MonitorDataParamsController {
 
     @RequestMapping(value = "/getIndicatorTopN", method = RequestMethod.GET)
     public JsonModel getIndicatorTopN(@RequestParam(required = false) String[] neIds,
-                                  @RequestParam(required = false) NeClass neClass) {
-        return monitorDataParamsService.getIndicatorTopn(neIds, neClass);
+                                  @RequestParam(required = false) NeClass neClass,
+                                      @RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicatorTopn(neIds, neClass,baseNeClass);
 
     }
 
@@ -130,8 +131,9 @@ public class MonitorDataParamsController {
             @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
     @RequestMapping(value = "/getIndicatorStr", method = RequestMethod.GET)
     public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
-                                     @RequestParam(required = false) NeClass neClass) {
-        return monitorDataParamsService.getIndicatorStr(neIds,neClass);
+                                     @RequestParam(required = false) NeClass neClass,
+                                     @RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass);
     }
 
 

@@ -456,13 +456,13 @@ public class AlertDataService {
                 return new JsonModel(true, "无资源数据", result);
             }
         }
-        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,1);
-        list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).collect(Collectors.toList());
+        List<AlertRecord> list = rpcProcessService.findByChooseForLeaderview(neIds,1);
+        list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).collect(Collectors.toList());
         if (ObjectUtils.isEmpty(list)){
             result.put("info", "抱歉，没有数据可供展示...");
             return new JsonModel(true, "无资源数据", result);
         }
-        Alert alert = list.get(0);
+        AlertRecord alert = list.get(0);
         NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
         if (ObjectUtils.isEmpty(ne)){
             return new JsonModel(true, "资源选择错误");
@@ -568,6 +568,72 @@ public class AlertDataService {
     }
 
     /**
+     * 按状态统计资源的告警条数
+     * @param domainId 域ID
+     * @param baseNeClass 资源父类型
+     * @param neClass 资源子类型
+     * @param neIds 多个资源ID用,分隔
+     * @return
+     */
+    public JsonModel getStatByStatus(HttpSession session, String status, Long domainId,
+                                    String baseNeClass, String neClass, String neIds) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        if(neIds!=null && !neIds.isEmpty())
+            criteria.setIds(Lists.newArrayList(neIds.split(",")));
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
+        return new JsonModel(true, getStatByStatus(arr, status, AlertType.Alert));
+    }
+
+    private JSONObject getStatByStatus(ArrayList arr, String status, AlertType alertType) throws Exception{
+        if (ObjectUtils.isEmpty(arr)) {
+            return empObj();
+        }
+        Set<String> neIds = new LinkedHashSet<>();
+        for (int i = 0; i < arr.size(); i++) {
+            neIds.add(arr.get(i).toString());
+        }
+
+        List<String> statusList = new ArrayList<>();
+        Map<Object,String> statusMap = new HashMap<>();
+        for (AlertHandleStatus handleStatus:AlertHandleStatus.values()){
+            statusList.add(String.valueOf(handleStatus));
+            statusMap.put(String.valueOf(handleStatus),handleStatus.getText());
+        }
+
+        StatisticsQuery statisticsQuery = new StatisticsQuery();
+        statisticsQuery.setGroupField("handleStatus");
+        statisticsQuery.setObjIds(org.apache.commons.lang3.StringUtils.join(arr, ","));
+        statisticsQuery.setAlertType(alertType);
+        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
+        JSONObject result = new JSONObject();
+        JSONArray columns = new JSONArray();
+        columns.add("告警状态");
+        columns.add("数量");
+        result.put("columns", columns);
+        JSONArray rows = new JSONArray();
+        // 告警颜色数组，顺序跟rows一致
+        JSONArray colors = new JSONArray();
+        for (String s: statusList) {
+            JSONObject row = new JSONObject();
+            row.put("告警状态", statusMap.get(s));
+            //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
+            row.put("数量", 0L);
+            statisticsResults.forEach(e -> {
+                if(e.getScopeValue().equals(s)) {
+                    row.put("数量", e.getAlertCount());
+                }
+            });
+            rows.add(row);
+            colors.add(null);
+        }
+        result.put("rows", rows);
+        result.put("colors", colors);
+        return result;
+    }
+
+    /**
      * 【3.0主页】，按资源类型统计资源的未处理告警条数
      * @param alertLevel 多个告警级别用,分隔
      * @param domainId 域ID
@@ -629,7 +695,7 @@ public class AlertDataService {
             List<String > neIdList = rpcProcessService.getNeIds(criteria);
             neIds = neIdList.toArray(new String[neIdList.size()]);
         }
-        List<Alert> list = rpcProcessService.findByChooseForLeaderview(neIds,number);
+        List<AlertRecord> list = rpcProcessService.findByChooseForLeaderview(neIds,number);
         if (CollectionUtils.isEmpty(list)){
             JSONObject obj = new JSONObject();
             JSONArray emp = new JSONArray();
@@ -638,7 +704,7 @@ public class AlertDataService {
             return new JsonModel(true, obj);
         }
         JSONArray rows = new JSONArray();
-        list = list.stream().sorted(Comparator.comparing(Alert::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
+        list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {
                 Map<String, String> row = new LinkedHashMap<>();
