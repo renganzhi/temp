@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.RunStatus;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
+import com.uxsino.leaderview.model.monitor.PerormanceView;
 import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.service.VideoMonitoringService;
@@ -182,6 +184,38 @@ public class MonitorDataController {
             return new JsonModel(false, e.getMessage());
         }
     }
+
+    @ApiOperation("按类型统计资源数量")
+    @ApiImplicitParams({@ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")})
+    @RequestMapping(value = "/statisticsResourceStatusByRunstatus", method = RequestMethod.GET)
+    public JsonModel statisticsResourceStatusByRunstatus(@RequestParam(required = false) Long domainId,@RequestParam(required = false) RunStatus runStatus,
+                                                     @RequestParam(required = false) String baseNeClass, HttpSession session){
+        try {
+            return monitorDataService.statisticsResourceStatusByRunstatus(domainId,runStatus,baseNeClass, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("资源性能视图")
+    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源Id", required = false),
+            @ApiImplicitParam(name = "view", paramType = "query", dataType = "PerormanceView", value = "资源视图", required = false),
+            @ApiImplicitParam(name = "columns", paramType = "query", dataType = "Arrays", value = "需要的列", required = false)})
+    @RequestMapping(
+            value = {"/getNetMoveTablePerformance"},
+            method = {RequestMethod.GET}
+    )
+    public JsonModel getnNetMoveTablePerformance(@RequestParam(required = false) String neId, @RequestParam(required = false) PerormanceView view, @RequestParam(required = false) String[] columns) {
+        try {
+            return this.monitorDataService.getnNetMoveTablePerformance(neId, view, columns);
+        } catch (Exception var5) {
+            var5.printStackTrace();
+            return new JsonModel(false, var5.getMessage());
+        }
+    }
+
 
 
     @ApiOperation("按状态统计资源数量，用于列固定的组件")

@@ -184,6 +184,30 @@ public class MonitorDataService {
         return new JsonModel(true, json);
     }
 
+
+    public JsonModel statisticsResourceStatusByRunstatus(Long domainId, RunStatus runStatus,String baseNeClass,HttpSession session) throws Exception {
+        BaseNeClass baseClass = null;
+        if (StringUtils.isNoneBlank(baseNeClass)) {
+            try {
+                baseClass = BaseNeClass.valueOf(baseNeClass);
+            } catch (Exception e) {
+                return new JsonModel(false, "资源父类型无法识别！");
+            }
+        }
+        List<Long> domainList = getDomainList(domainId, session);
+        List<ArrayList> list = rpcProcessService.neStatusStatistics(domainList, baseClass);
+        Long num = 0L;
+        for (int i = 0; i < list.size(); i++) {
+            ArrayList arrayList = list.get(i);
+            if(runStatus == null || runStatus.getName().equals(arrayList.get(0))){
+                num += (Long) arrayList.get(1);
+            }
+        }
+        JSONObject res = newResultObj(runStatus == null ? "总数" : runStatus.getName(), num);
+        res.put("info",num);
+        return new JsonModel(true, res);
+    }
+
     /**
      * 按状态统计资源数量
      * @param domainId 域ID
@@ -3870,5 +3894,57 @@ public class MonitorDataService {
             result.put("value", count);
         }
         return new JsonModel(true, result);
+    }
+
+    public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view, String[] needColumns) {
+        if (StringUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源");
+        }
+
+        NetworkEntity networkEntity = null;
+        try {
+            networkEntity = this.rpcProcessService.findNetworkEntityById(neId);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+
+        if (ObjectUtils.isEmpty(networkEntity) || ManageStatus.Delected.equals(networkEntity.getManageStatus())) {
+            return new JsonModel(false, "资源不存在");
+        }
+
+        JsonModel model = rpcProcessService.getnNetMoveTablePerformance(neId, view);
+        if (!model.isSuccess()) {
+            return new JsonModel(false, "monitor发生异常,请检查服务上线情况");
+        }
+
+        if (ObjectUtils.isEmpty(model.getObj())) {
+            return new JsonModel(true, "返回结果为空");
+        }
+
+        JSONArray array = JSONArray.parseArray(JSON.toJSONString(model.getObj()));
+        JSONArray columns = new JSONArray();
+        Map translator = view.getTranslator();
+
+        for(int i = 0; i < needColumns.length; ++i) {
+            columns.add(translator.get(needColumns[i]));
+        }
+
+        List<String> list = Arrays.asList(needColumns);
+        JSONArray rows = new JSONArray();
+
+        for(int i = 0; i < array.size(); ++i) {
+            JSONObject oldRow = array.getJSONObject(i);
+            JSONObject newRow = new JSONObject();
+            oldRow.forEach((key, value) -> {
+                if (list.contains(key)) {
+                    newRow.put((String)translator.get(key), value);
+                }
+            });
+            rows.add(newRow);
+        }
+        JSONObject res = new JSONObject();
+        res.put("columns", columns);
+        res.put("rows", rows);
+        return new JsonModel(true, res);
     }
 }

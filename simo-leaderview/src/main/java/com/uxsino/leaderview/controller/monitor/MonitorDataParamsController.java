@@ -7,6 +7,7 @@ import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
+import com.uxsino.leaderview.model.monitor.PerormanceView;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -132,8 +133,9 @@ public class MonitorDataParamsController {
     @RequestMapping(value = "/getIndicatorStr", method = RequestMethod.GET)
     public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
                                      @RequestParam(required = false) NeClass neClass,
-                                     @RequestParam(required = false) BaseNeClass baseNeClass) {
-        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass);
+                                     @RequestParam(required = false) BaseNeClass baseNeClass,
+                                     @RequestParam(required = false) Boolean healthy) {
+        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass, healthy);
     }
 
 
@@ -389,6 +391,21 @@ public class MonitorDataParamsController {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
         }
+    }
+
+    @ApiOperation("查询资源可获取的性能视图")
+    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID")})
+    @GetMapping({"/getPerformance"})
+    public JsonModel getPerformance(@RequestParam(required = false) String neId) {
+        return this.monitorDataParamsService.getPerormance(neId);
+    }
+
+    @ApiOperation("查询性能视图的可展示列")
+    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID"),
+            @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "性能视图类型")})
+    @GetMapping({"/getPerformanceColumn"})
+    public JsonModel getPerformanceColumn(@RequestParam(required = false) String neId, @RequestParam PerormanceView view) {
+        return this.monitorDataParamsService.getPerformanceColumn(neId, view);
     }
 
 }

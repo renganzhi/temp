@@ -1877,7 +1877,7 @@
                 "type": "drop-down",
                 "method" : "get",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicatorStr",
+                "dataUrl": "/leaderview/monitor/params/getIndicatorStr?healthy=true",
                 "params": ["neIds","neClass","baseNeClass"]
             },
             {
@@ -1900,6 +1900,106 @@
                 "method" : "get",
                 "dataUrl": "/leaderview/monitor/params/getIndFieldByType/STRING",
                 "params": ["indicators"]
+            }
+        ]
+    },
+    {
+        "key": "database_performance_MoveTable",
+        "name": "资源性能视图",
+        "component": "monitor",
+        "type": "NewMoveTable",
+        "url": "/leaderview/monitor/getNetMoveTablePerformance",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "neId",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true&baseNeClass=database&neClass=oracle",
+                "params": ["domainId"]
+            },
+            {
+                "key": "view",
+                "name": "数据视图",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getPerformance",
+                "params": ["neId"]
+            },
+            {
+                "key": "columns",
+                "name": "展示列",
+                "notNull": true,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getPerformanceColumn",
+                "params": ["neId","view"]
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_num_statistics_TextArea",
+        "name": "资源类型统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/monitor/statisticsResourceStatusByRunstatus",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
+            },
+            {
+                "key": "runStatus",
+                "name": "状态",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "未监控",
+                        "value": "Unknown"
+                    },
+                    {
+                        "name": "检测中",
+                        "value": "Loading"
+                    },
+                    {
+                        "name": "正常",
+                        "value": "Good"
+                    },
+                    {
+                        "name": "告警",
+                        "value": "Warning"
+                    },
+                    {
+                        "name": "失联",
+                        "value": "Unconnection"
+                    }
+                ]
             }
         ]
     },
