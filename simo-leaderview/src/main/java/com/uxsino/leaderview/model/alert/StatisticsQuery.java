@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -104,6 +105,11 @@ public class StatisticsQuery {
      * IP告警类型
      */
     private IpAlertRuleType ipAlertRuleType;
+
+    /**
+     * 分组统计字段
+     */
+    private String groupField;
 
     /**
      * 参数设置
@@ -334,20 +340,34 @@ public class StatisticsQuery {
     }
 
     /**
-     * 统计各级别的告警信息
+     * 根据指定group字段统计告警信息
      * @return
      */
     public String getLevelStatisticsResultSQL() {
-        StringBuilder sql = new StringBuilder(
-            "select new com.uxsino.alert.model.StatisticsResult (a.level as scopeValue, count(a.id) as alertCount,"
-                    + " round(sum(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertTotalTime,"
-                    + " round(max(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertMaxTime,"
-                    + " round(avg(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertAvgTime)"
-                    + " from " + alertType + " a where 1=1 ");
+        StringBuilder sql = new StringBuilder("select new com.uxsino.alert.model.StatisticsResult (''||a.");
+        sql.append(getGroupField());
+        sql.append(" as scopeValue, count(a.id) as alertCount,"
+                + " round(sum(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertTotalTime,"
+                + " round(max(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertMaxTime,"
+                + " round(avg(extract(epoch from (coalesce(a.handleDate, now()) - a.firstAlertDate))/60)) as alertAvgTime)"
+                + " from " + alertType + " a where 1=1 ");
         addAlertDateFilter(sql);
         addAlertFilter(sql);
-        sql.append(" group by a.level");
+        sql.append(" group by a.");
+        sql.append(getGroupField());
         return sql.toString();
+    }
+
+    public String getGroupField() {
+        if (!StringUtils.isNotBlank(this.groupField)) {
+            return "level";
+        }
+        try {
+            Field group = CurrencyAlert.class.getDeclaredField(this.groupField);
+            return group.getName();
+        } catch (NoSuchFieldException | SecurityException e) {
+            return "level";
+        }
     }
 
     /**

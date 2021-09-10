@@ -418,24 +418,32 @@ public class MonitorDataParamsService {
         return getIntersection(arrs);
     }
 
-    public JsonModel getIndicatorTopn(String[] neIds,NeClass neClass) {
+    public JsonModel getIndicatorTopn(String[] neIds,NeClass neClass,BaseNeClass baseNeClass) {
 
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
 
-        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
+        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass) && ObjectUtils.isEmpty(baseNeClass)) {
             return new JsonModel(false, "未选择资源");
         }
 
         // 如果未选择资源，但是是topn的类型，要将已选子类型的指标展示出来
-        if ((neIds == null || neIds.length == 0) && !ObjectUtils.isEmpty(neClass)) {
+        if ((neIds == null || neIds.length == 0) && ((!ObjectUtils.isEmpty(neClass))||!ObjectUtils.isEmpty(baseNeClass))) {
             List<IndicatorTable> indicatorTables = Lists.newArrayList();
             try {
                 NetworkEntityCriteria criteria = new NetworkEntityCriteria();
                 List<NeClass> neClasses = Lists.newArrayList();
-                neClasses.addAll(neClass.getBaseNeClass().getNeClass());
-                neClasses.add(neClass);
+                //neClasses.addAll(neClass.getBaseNeClass().getNeClass());
+                if(ObjectUtils.isEmpty(neClass)){
+                    neClasses.addAll(baseNeClass.getNeClass());
+                }else neClasses.add(neClass);
                 criteria.setNeClasses(neClasses);
+
+                //对虚拟化资源是非统一监管资源
+                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                    criteria.setSourceManage(false);
+                }
+
                 indicatorTables.addAll(rpcProcessService.getUsableInd(null,criteria));
             }catch (Exception e){
                 return new JsonModel(false, e.getMessage());
@@ -444,7 +452,7 @@ public class MonitorDataParamsService {
             if (CollectionUtils.isNotEmpty(indicatorTables)) {
                 List<String> indTypes = Lists.newArrayList(INDICATOR_TYPE.NUMBER.toString(),
                         INDICATOR_TYPE.PERCENT.toString(), INDICATOR_TYPE.COMPOUND.toString());
-                // 过滤掉指标类型非NUMBER、PERCENT、COMPOUND的指标
+                // 过滤掉指标类型非NUMBER、PERCENT、COMPOUND的指标,只有这些类型的指标才能排序
                 indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
                 indicatorTables.forEach(ind -> {
                     String indName = ind.getName();
@@ -469,7 +477,14 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = Lists.newArrayList();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
+                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                    criteria0.setSourceManage(false);
+                }
+                criteria0.setIds(Lists.newArrayList(neIds));
+                criteria0.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria0);
+                //neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
             } catch (Exception e) {
                 return new JsonModel(false, e.getMessage());
             }
@@ -563,7 +578,7 @@ public class MonitorDataParamsService {
      * @param neIds 资源ID
      * @param neClass 资源子类型
      */
-    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass, Boolean healthy) {
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy) {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
         if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
@@ -573,7 +588,13 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
+                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                    criteria0.setSourceManage(false);
+                }
+                criteria0.setIds(Lists.newArrayList(neIds));
+                criteria0.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria0);
 
                 // 指标类型集合设置
                 List<String> indTypes = Lists.newArrayList(INDICATOR_TYPE.STRING.toString(),
