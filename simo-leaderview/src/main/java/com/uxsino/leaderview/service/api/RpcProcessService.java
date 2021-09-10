@@ -7,11 +7,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.criteria.IndicatorValueCriteria;
-import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.db.model.PageModel;
-import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.model.*;
+import com.uxsino.leaderview.model.AlertType;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.asset.AssetCriteria;
 import com.uxsino.leaderview.model.asset.AssetTreeVo;
@@ -22,6 +21,7 @@ import com.uxsino.leaderview.rpc.AlertService;
 import com.uxsino.leaderview.rpc.AssetService;
 import com.uxsino.leaderview.rpc.BusinessService;
 import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.leaderview.service.query.NeComponentQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -29,11 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import com.uxsino.leaderview.model.AlertType;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -946,26 +944,6 @@ public class RpcProcessService {
     public JsonModel search(AssetCriteria criteria) {
         String params = JSON.toJSONString(criteria);
         JsonModel jsonModel = assetService.search(params);
-        return jsonModel;
-    }
-
-    public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view) {
-        Calendar ca = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM hh-mm-ss");
-        ca.setTime(new Date());
-        Date endTime = ca.getTime();
-        ca.add(Calendar.DATE, -1);
-        Date startTime = ca.getTime();
-
-        JsonModel jsonModel = null;
-        if (PerormanceView.TopSql.equals(view)) {
-            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime));
-        } else if (PerormanceView.TopEvent.equals(view)) {
-            jsonModel = this.monitorService.topEvent(neId, format.format(startTime), format.format(endTime));
-        } else if (PerormanceView.TopSession.equals(view)) {
-            jsonModel = this.monitorService.topSession(neId, format.format(startTime), format.format(endTime));
-        }
-
         return jsonModel;
     }
 }
