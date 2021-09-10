@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '表格',
     'imgClass': 'icon-n-table',
@@ -15,6 +15,7 @@ export default{
     'Zebra': 'false',
     'Alignment': 'left',
     'ZebraColor': '#343c58',
+    'intervieData': 5000,
     'tableBack': '',
     'tableBackName': '',
     'AlarmField': '',

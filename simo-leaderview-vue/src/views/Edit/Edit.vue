@@ -2258,6 +2258,13 @@
                        @click="delAlertLevel(index)"></i>
                   </div>
                 </div>
+                <div v-show="selectedItem.barType === 'NewHistogram' || selectedItem.chartType === 'NewTable'">
+                  <div class="form-group cols2">
+                    <label>轮播间隔</label>
+                    <input type="number"
+                            v-model="selectedItem.intervieData">
+                  </div>
+                </div>
                 <button class="DataChangeBtn"
                         @click="dataChange">更新视图</button>
 

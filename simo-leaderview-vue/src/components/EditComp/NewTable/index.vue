@@ -180,6 +180,14 @@ export default {
       // }
       // 这里不用注释
     },
+    'item.intervieData':function() {
+      if (this.myInterVale){
+        clearInterval(this.myInterVale)
+      }
+      this.myInterVale = setInterval(() => {
+        this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
+      }, this.item.intervieData);
+    },
     'item.OneLineSize': function (newV, oldV) {
       this.item.LineSizeArry[this.nowShowDataObj.columns.indexOf(this.item.AlarmField)] = newV
       document.querySelector('.DataChangeBtn').click()
