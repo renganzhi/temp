@@ -32,6 +32,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1007,4 +1008,25 @@ public class RpcProcessService {
         JsonModel jsonModel = assetService.search(params);
         return jsonModel;
     }
+
+    public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view) {
+        Calendar ca = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM hh-mm-ss");
+        ca.setTime(new Date());
+        Date endTime = ca.getTime();
+        ca.add(Calendar.DATE, -1);
+        Date startTime = ca.getTime();
+
+        JsonModel jsonModel = null;
+        if (PerormanceView.TopSql.equals(view)) {
+            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime));
+        } else if (PerormanceView.TopEvent.equals(view)) {
+            jsonModel = this.monitorService.topEvent(neId, format.format(startTime), format.format(endTime));
+        } else if (PerormanceView.TopSession.equals(view)) {
+            jsonModel = this.monitorService.topSession(neId, format.format(startTime), format.format(endTime));
+        }
+
+        return jsonModel;
+    }
+
 }
