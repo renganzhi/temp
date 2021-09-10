@@ -100,7 +100,7 @@
                     v-if="access !== 'w'"
                     >删除</a
                   >
-                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">删除</a>
+                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">{{item.belongCurrentUser === 'true'?'删除':'移除'}}</a>
                 </div>
                 <div v-if="editIndex === index" class="page-title titleShow">
                   <form autocomplete="off">
@@ -619,7 +619,6 @@ export default {
       this.showDelModal = false
       if (data && data.sure === '1') {
         if (this.ifBelongCurrentUser === 'true') {
-          console.log('delate')
           this.axios
             .delete('/leaderview/home/homePage/deleteById/' + this.delId)
             .then((res) => {
@@ -634,7 +633,6 @@ export default {
               }
             })
         } else {
-          console.log('cancel')
           this.axios
             .delete('/leaderview/home/homePage/cancelShareById/' + this.delId)
             .then((res) => {
