@@ -43,6 +43,8 @@ export default {
       oldOption4: '',
       oldmyData4: '',
       Oldcolorful4: '',
+      myInterVale: '',
+      nowShowIndex: 0,
       //   Linesubsection: '',
       oldformatterType4: ''
     //   oldchartData: ''
@@ -51,7 +53,7 @@ export default {
   computed: {
     showLine: function () {
       if (this.item.barType === 'NewHistogram') {
-        if (this.item.chartData1.rows.length === 0 || this.item.chartData1.columns.length === 0) {
+        if (this.nowShowDataObj.rows.length === 0 || this.nowShowDataObj.columns.length === 0) {
           return false
         }
       }
@@ -71,6 +73,27 @@ export default {
         }
       }
       return true
+    },
+    nowShowDataObj:function(){
+      var reg = /^\{[\s\S]*\}$/
+        // 先判断是{}类型的对象，而不是new Object
+      if(this.item.chartData1 && this.item.barType === 'NewHistogram'){
+        var textData = JSON.stringify(this.item.chartData1)
+        if (reg.test(textData.trim())) {
+          return this.item.chartData1
+        }else{
+          if(this.item.chartData1.length > 1){
+          if (this.myInterVale){
+            clearInterval(this.myInterVale)
+          }
+          this.myInterVale = setInterval(() => {
+            this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData1.length
+            this.drawFlow()
+          }, this.item.intervieData);
+          }
+          return this.item.chartData1[this.nowShowIndex]
+        }
+      }
     },
     boxStyle: function () {
       return {
@@ -95,6 +118,15 @@ export default {
       this.$nextTick(() => {
         this.mychart.resize()
       })
+    },
+    'item.intervieData':function() {
+      if (this.myInterVale){
+        clearInterval(this.myInterVale)
+      }
+      this.myInterVale = setInterval(() => {
+        this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
+        this.drawFlow()
+      }, this.item.intervieData);
     },
     'item.barType': function () {
       this.drawFlow()
@@ -124,7 +156,7 @@ export default {
         let myseries = []
         let myXAxisData = []
         let mySeriesData = []
-        let myData = this.item.chartData1
+        let myData = this.nowShowDataObj
         myData.rows.forEach(element => {
           myData.columns.forEach((e, d) => {
             if (d === 0) {
@@ -286,7 +318,7 @@ export default {
         let myoption = {
           xAxis: {
             type: 'category',
-            name: this.item.chartData1.unitX,
+            name: this.nowShowDataObj.unitX,
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
@@ -320,7 +352,7 @@ export default {
                 fontSize: this.item.axisLabelSize1 || '14'
               },
               formatter: (params, index) => {
-                var rows = this.item.chartData1.rows
+                var rows = this.nowShowDataObj.rows
                 let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
                 let strLen = Math.round(barW / (this.item.axisLabelSize1 * 2))
                 if (this.item.formatterType1 === '0') {
@@ -334,7 +366,7 @@ export default {
           },
           yAxis: {
             type: 'value',
-            name: this.item.chartData1.unit,
+            name: this.nowShowDataObj.unit,
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
@@ -413,7 +445,7 @@ export default {
           },
           series: myseries
         }
-        var rows = this.item.chartData1.rows
+        var rows = this.nowShowDataObj.rows
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / (this.item.axisLabelSize1 * 2))
         if (this.item.formatterType1 === '0' && this.oldformatterType !== this.item.formatterType1) {
@@ -1117,6 +1149,9 @@ export default {
   beforeDestroy () {
     this.mychart.dispose()
     this.mychart = null
+    if (this.myInterVale){
+      clearInterval(this.myInterVale)
+    }
   }
 
 }

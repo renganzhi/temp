@@ -3208,7 +3208,9 @@ export default {
             })
           }
         } else {
-          if (this.selectedItem.chartType === 'NewTable') {
+          if (this.selectedItem.barType === 'NewHistogram' && Array.isArray(JSON.parse(textData))) {
+            this.selectedItem.chartData1 = this.formatJson(textData)
+          } else if (this.selectedItem.chartType === 'NewTable' && Array.isArray(JSON.parse(textData))) {
             this.selectedItem.chartData = this.formatJson(textData)
           } else {
             Notification({
