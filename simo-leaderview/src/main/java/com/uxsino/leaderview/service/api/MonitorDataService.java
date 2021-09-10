@@ -228,6 +228,33 @@ public class MonitorDataService {
         return new JsonModel(true, rpcProcessService.neStatusStatisticsForSunburst(domainList, BaseNeClass.valueOf(baseNeClass)));
     }
 
+    public JsonModel statisticsResourceHealth(HttpSession session, Long domainId, String baseNeClass) throws Exception {
+        BaseNeClass baseClass = null;
+        if (StringUtils.isNoneBlank(baseNeClass)) {
+            try {
+                baseClass = BaseNeClass.valueOf(baseNeClass);
+            } catch (Exception e) {
+                return new JsonModel(false, "资源父类型无法识别！");
+            }
+        }
+        List<Long> domainList = getDomainList(domainId, session);
+
+        List<ArrayList> list = rpcProcessService.neHealthStatistics(domainList, baseClass);
+        JSONObject result = new JSONObject();
+        result.put("columns", newColumns("健康度","数量"));
+        JSONArray rows = new JSONArray();
+        Map<String, Object> map = Maps.newHashMap();
+
+        list = list.stream().filter(v -> v.size() == 2).collect(Collectors.toList());
+        list.forEach(v -> map.put((String)v.get(0), v.get(1)));
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            rows.add(newResultObj("健康度", entry.getKey(), "数量", entry.getValue()));
+        }
+        result.put("rows", rows);
+        return new JsonModel(true, null, result);
+    }
+
     /**
      * 资源状态列表
      * @param domainId 域ID
@@ -237,7 +264,8 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session, String[] column) throws Exception{
-        List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
+        //List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
+        List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间","健康度");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = new JSONArray();
         columns = addColumns(columns, column);
@@ -260,6 +288,7 @@ public class MonitorDataService {
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         }
         criteria.setMonitoring(true);
+        criteria.setHealthReturn(true);
         List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
         if (CollectionUtils.isEmpty(list)) {
             return new JsonModel(true, newResultObj("columns",columns,"rows",new JSONArray()));
@@ -276,6 +305,7 @@ public class MonitorDataService {
             row.put("资源类型", ne.getNeClass());
             row.put("运行状态", Optional.ofNullable(ne.getRunStatus()).map(RunStatus::getName).orElse(""));
             row.put("更新时间",ne.getPatrolTime());
+            row.put("健康度",ne.getHealth());
             diffColumns.forEach(diff -> row.remove(diff));
             rows.add(row);
         }
@@ -486,7 +516,7 @@ public class MonitorDataService {
      * @param field 属性
      * @return
      */
-    public JsonModel getIndicatorValueStr(String neIds, String indicators, String componentName, String field) throws Exception{
+    public JsonModel getIndicatorValueStr(String neIds, BaseNeClass baseNeClass, String indicators, String componentName, String field) throws Exception{
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         // 用于转换枚举数据
         JSONObject desc = new JSONObject();
@@ -496,7 +526,13 @@ public class MonitorDataService {
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj);
         }
-        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if (baseNeClass.equals(BaseNeClass.virtualization)) {
+            criteria.setSourceManage(false);
+        }
+        criteria.setId(neIds);
+        criteria.setMonitoring(true);
+        NetworkEntity ne = rpcProcessService.getNeList(criteria).get(0);
         // 判断资源是否存在或者是否已被销毁或者未监控
         if (ObjectUtils.isEmpty(ne) || ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
             return new JsonModel(true, empObj);
@@ -1631,8 +1667,10 @@ public class MonitorDataService {
             // 如果子类型为空，查询父类型，如果父类型也为空，则直接判断资源
             if (!Strings.isNullOrEmpty(neClass)) {
                 criteria.setNeClass(NeClass.valueOf(neClass));
+            } else if(!Strings.isNullOrEmpty(baseNeClass)){
+                criteria.setBaseNeClass(BaseNeClass.valueOf(baseNeClass));
             } else {
-                return new JsonModel(true, "子类型与资源均未选择！", empObj());
+                return new JsonModel(true, "父类型、子类型与资源均未选择！", empObj());
             }
             criteria.setMonitoring(true);
             nes = rpcProcessService.getNeList(criteria);
@@ -1753,6 +1791,8 @@ public class MonitorDataService {
         qo.setIndicatorName(Lists.newArrayList(ind.getName()));
         List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
         qo.setNeIds(neIds);
+        //取消分页，否则只能拿到10条指标
+        //qo.setPagination(false);
         List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
         if (ObjectUtils.isEmpty(indValues)) {
             return null;
@@ -1960,11 +2000,13 @@ public class MonitorDataService {
         JSONObject result = new JSONObject();
         JSONArray columns = new JSONArray();
         JSONArray rows = new JSONArray();
+        //这里改成部件
         columns.add("资源");
         // 用于存放最终的结果数据，并且指标最大选择25个
         JSONArray[] resultArray = new JSONArray[26];
         // 对paramsArray遍历拆解
         for (int i = 0; i < window.size(); i++) {
+            //resultArray[0]后面要用来装资源
             resultArray[i + 1] = new JSONArray();
             // 指标已经被确定，接下来就是确定资源名
             JSONObject params = (JSONObject) window.get(i);
@@ -1991,6 +2033,7 @@ public class MonitorDataService {
             }
             JSONArray neArray = (JSONArray) params.get("ne");
             List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
+            //单资源多部件则改为遍历部件
             for (int j = 0; j < neArray.size(); j++) {
                 // 资源名已经被确定
                 JSONObject neObj = (JSONObject) neArray.get(j);
@@ -2040,6 +2083,212 @@ public class MonitorDataService {
                     //对cpu_usage_core指标进行特殊处理
                     valueJSON = getValueJSON(indValue.getIndicatorValue());
                 }else {
+                    //存放各指标的部件及其对应的属性数据
+                    valueJSON = getValueJSON(indValue.getIndicatorValue(), componentName);
+                }
+                // 进行属性有无的判断
+                if (!validHasFields(ind)) {
+                    // 该指标若本身就无部件无属性就直接取值
+                    String value = null;
+                    // 健康度比较特殊，因为在返回的IndValue中，健康度的indicatorName是null
+                    if("healthy".equals(ind.getName()))
+                        value = MonitorUtils.getValueStr(valueJSON.getString("healthy"));
+                    else
+                        value = MonitorUtils.getValueStr(valueJSON.getString(indValue.getIndicatorName()));
+                    String unit = "PERCENT".equals(ind.getIndicatorType())? "%" : "";
+                    resultObj.put("name", ind.getLabel() + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
+                    resultObj.put("value", value);
+                    resultObj.put("unit", unit);
+                    resultArray[i + 1].add(resultObj);
+                } else {
+                    //看不懂
+                    String unit = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("unit"))).orElse(null);
+                    String label = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("label"))).orElse(null);
+                    String value = MonitorUtils.getValueStr(valueJSON.getString(fieldsName));
+                    if (!Strings.isNullOrEmpty(unit) && !StringUtils.isEmpty(value)) {
+                        int index = value.lastIndexOf(" ");
+                        String subValue = value;
+                        value = index > 0 ? subValue.substring(0, index) : value;
+                        unit = index > 0 ? subValue.substring(index + 1) : unit;
+                    }
+                    resultObj.put("name", ind.getLabel() + " : " + label + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
+                    resultObj.put("value", value);
+                    resultObj.put("unit", unit);
+                    resultArray[i + 1].add(resultObj);
+                }
+            }
+        }
+        for (int i = 0; i < resultArray.length; i++) {
+            if (resultArray[i] != null){
+                JSONObject obj = MonitorUtils.unitTransfer(resultArray[i], resultArray[i].getJSONObject(0).getString("unit"), "value");
+                String unit = obj.getString("unit");
+                String name = new String();
+                for (int j = 0; j < resultArray[i].size(); j++) {
+                    JSONObject o = resultArray[i].getJSONObject(j);
+                    name = o.getString("name");
+                    if (name.contains("(")){
+                        name = name.substring(0, name.indexOf("(") + 1) + unit + ")";
+                        o.put("name", name);
+                    }
+                }
+                columns.add(name);
+            }
+        }
+        resultArray[0] = new JSONArray();
+        JSONObject params = (JSONObject) window.get(0);
+        JSONArray neArray = (JSONArray) params.get("ne");
+        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        //这里修改成遍历部件array，封装部件数据。
+        for (int j = 0; j < neArray.size(); j++) {
+            JSONObject neObj = (JSONObject) neArray.get(j);
+            //改成获取component
+            String neId = neObj.get("id").toString();
+            if (invalidId.contains(neId)) {
+                continue;
+            }
+            NetworkEntity ne = nes.stream().filter(n -> n.getId().equals(neId)).findFirst().orElse(null);
+            if (ObjectUtils.isEmpty(ne)){
+                continue;
+            }
+            JSONObject obj = new JSONObject();
+            obj.put("name", "资源");
+            //这里value添加从componentNameMap中get(compId)
+            obj.put("value", ne.getIp());
+            resultArray[0].add(obj);
+        }
+        for (int i = 0; i < resultArray[0].size(); i++) {
+            JSONObject row = new JSONObject();
+            for (int j = 0; j < resultArray.length; j++) {
+                if (ObjectUtils.isEmpty(resultArray[j])) {
+                    break;
+                }
+                String name = resultArray[j].getJSONObject(i).getString("name");
+                String value = ObjectUtils.isEmpty(resultArray[j].getJSONObject(i).getString("value")) ? ""
+                        : resultArray[j].getJSONObject(i).getString("value");
+                row.put(name, value);
+            }
+            rows.add(row);
+        }
+        result.put("columns", columns);
+        result.put("rows", rows);
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 获取单资源单指标多部件统计的展示数据
+     * @param neIds 资源IDs
+     * @param indicators 展示的指标类型
+     * @param session
+     * @return
+     */
+    public JsonModel getMultipleCompObject(String neIds, String indicators, String[] component, String[] field, HttpSession session) throws Exception{
+
+        //如果部件为空，设置一个值，避免后面报错
+        if (component.length == 0) component = new String[]{"值"};
+        // 如果多个资源无公共指标，即指标选择为空时，应该展示无数据
+        if (ObjectUtils.isEmpty(indicators)) {
+            return new JsonModel(true, empObj());
+        }
+        // 如果没有选择资源时，也展示无数据
+        if (ObjectUtils.isEmpty(neIds)) {
+            return new JsonModel(true, empObj());
+        }
+        Map<String, String> componentNameMap = Maps.newHashMap();
+        NeComponentQuery compQuery = new NeComponentQuery();
+        compQuery.setNeIds(Lists.newArrayList(neIds));
+        compQuery.setIndicatorName(indicators);
+        // 查询该资源、该指标的所有部件;如果要展示部件名，可以做一个部件id和部件name的Map
+        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
+        for (Map<String, Object> map : idAndComponent) {
+            if (map.get("identifier") == null || map.get("componentName") == null) {
+                continue;
+            }
+            componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
+        }
+        // 存放失效资源Id
+        List<String> invalidId = Lists.newArrayList();
+        //window = windowBreakUp(window);
+        // 返回的结果
+        JSONObject result = new JSONObject();
+        JSONArray columns = new JSONArray();
+        JSONArray rows = new JSONArray();
+        //这里改成部件
+        columns.add("部件");
+        // 用于存放最终的结果数据，并且指标最大选择25个
+        JSONArray[] resultArray = new JSONArray[26];
+        // 对paramsArray遍历拆解
+        for (int i = 0; i < field.length; i++) {
+            //resultArray[0]后面要用来装资源
+            resultArray[i + 1] = new JSONArray();
+            // 指标已经被确定，接下来就是确定资源名
+            String fieldsName = field[i];
+            // 得到指标
+            IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+            if (Objects.isNull(ind)) {
+                return new JsonModel(true, empObj());
+            }
+            // 属性字段的JSON
+            JSONObject fieldLabel = null;
+            // 属性值的JSON
+            JSONObject valueJSON = null;
+            // 如果是NUMBER类型或者PERCENT类型的指标没有属性，直接取值
+            if (validHasFields(ind)) {
+                FieldModel model = new FieldModel();
+                model.setIndicator(ind);
+                model.setField(fieldsName);
+                fieldLabel = Optional.ofNullable(model.getFieldLabel()).orElse(null);
+                if (Objects.isNull(fieldLabel)) {
+                    return new JsonModel(true, empObj());
+                }
+            }
+            //JSONArray neArray = (JSONArray) params.get("ne");
+            NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neIds);
+            //单资源多部件则改为遍历部件
+            for(int j = 0;j < component.length;j++){
+                String neId = ne.getId();
+                String componentName = component[j];
+
+                // 如果资源已被删除或者取消监控，将此资源的数据展示取消
+                if (ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
+                    invalidId.add(neId);
+                    continue;
+                }
+                if (ObjectUtils.isEmpty(ne)) {
+                    return new JsonModel(true, "该资源不存在", empObj());
+                }
+                // 获取指标监控策略
+                Boolean strategyField = getStrategy(neId, indicators, fieldsName);
+                IndValue indValue = null;
+                // 若指标被监控
+                if (strategyField) {
+                    // 获取指标的值
+                    indValue = indicatorService.findIndValue(neId, indicators, null);
+                }
+                // 如果该资源的该指标无值，将其赋空值，继续统计
+                if (Objects.isNull(indValue) || ObjectUtils.isEmpty(indValue.getIndicatorValue())) {
+                    JSONObject resultObj = new JSONObject();
+                    if (!ObjectUtils.isEmpty(fieldLabel)) {
+                        resultObj.put("name",
+                                ind.getLabel() + " : " + fieldLabel.getString("label")
+                                        + (ObjectUtils.isEmpty(fieldLabel.get("unit")) ? ""
+                                        : "(" + fieldLabel.get("unit") + ")"));
+                    } else {
+                        if ("PERCENT".equals(ind.getIndicatorType())) {
+                            resultObj.put("name", ind.getLabel() + "(%)");
+                        } else {
+                            resultObj.put("name", ind.getLabel());
+                        }
+                    }
+                    resultObj.put("value", null);
+                    resultArray[i + 1].add(resultObj);
+                    continue;
+                }
+                JSONObject resultObj = new JSONObject();
+                if ("cpu_usage_core".equals(ind.getName())){
+                    //对cpu_usage_core指标进行特殊处理
+                    valueJSON = getValueJSON(indValue.getIndicatorValue());
+                }else {
+                    //存放各指标的部件及其对应的属性数据
                     valueJSON = getValueJSON(indValue.getIndicatorValue(), componentName);
                 }
                 // 进行属性有无的判断
@@ -2090,22 +2339,12 @@ public class MonitorDataService {
             }
         }
         resultArray[0] = new JSONArray();
-        JSONObject params = (JSONObject) window.get(0);
-        JSONArray neArray = (JSONArray) params.get("ne");
-        List<NetworkEntity> nes = rpcProcessService.findNetworkEntityByIdIn(neIds);
-        for (int j = 0; j < neArray.size(); j++) {
-            JSONObject neObj = (JSONObject) neArray.get(j);
-            String neId = neObj.get("id").toString();
-            if (invalidId.contains(neId)) {
-                continue;
-            }
-            NetworkEntity ne = nes.stream().filter(n -> n.getId().equals(neId)).findFirst().orElse(null);
-            if (ObjectUtils.isEmpty(ne)){
-                continue;
-            }
+        //遍历部件array，封装部件数据。
+        for (int i = 0; i < component.length; i++) {
+            String compId = component[i];
             JSONObject obj = new JSONObject();
-            obj.put("name", "资源");
-            obj.put("value", ne.getIp());
+            obj.put("name", "部件");
+            obj.put("value",componentNameMap.get(compId));
             resultArray[0].add(obj);
         }
         for (int i = 0; i < resultArray[0].size(); i++) {
@@ -2312,6 +2551,143 @@ public class MonitorDataService {
                 }
                 rows.add(row);
             }
+            result.put("columns", columns);
+            result.put("rows", rows);
+            return new JsonModel(true, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage(), empObj());
+        }
+    }
+
+    public JsonModel networkTopNforBar(HttpSession session, String network, Long number, String field, String order) {
+        try {
+            if (ObjectUtils.isEmpty(field)) {
+                field = "upBps";
+            }
+            List<Long> domainList = getDomainList(null, session);
+            Long[] domains = domainList.toArray(new Long[domainList.size()]);
+            NetworkLinkModel networkLinkModel = new NetworkLinkModel();
+            networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domains, session));
+            networkLinkModel.setSortField(field);
+            networkLinkModel.setDesc(order);
+            PageModel temPage = new PageModel();
+            temPage.setCurrentNo(1);
+            temPage.setPageSize(10000);
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
+            if (!Strings.isNullOrEmpty(network)){
+                List<String> sourceIds = Lists.newArrayList(network.split(","));
+                list = list.stream().filter(net -> sourceIds.contains(net.getSourceId())).collect(Collectors.toList());
+            }
+            Map<String, String> nameMap = Maps.newLinkedHashMap();
+            nameMap.put("speed", "链路带宽(Mbps)");
+            nameMap.put("speedUsage", "带宽利用率(%)");
+            nameMap.put("upBps", "上行流量");
+            nameMap.put("downBps", "下行流量");
+            JSONObject result = new JSONObject();
+            List<String> fields = Lists.newArrayList(field);
+            //JSONArray rows = new JSONArray();
+            List<Object> rows = new ArrayList<>();
+            JSONArray columns = new JSONArray();
+            columns.add("源IP:目的IP");
+            //columns.add("目的IP");
+            int num = 0;
+            String unit = null;
+            for (NetworkLinkModel ne : list) {
+                JSONObject row = new JSONObject(true);
+                row.put("源IP:目的IP", ne.getSourceIp()+":"+ne.getTargetIp());
+
+                if (fields.contains("speed")) {
+                    row.put(nameMap.get("speed"), ne.getSpeed() );
+                }
+                if (fields.contains("speedUsage")) {
+                    row.put(nameMap.get("speedUsage"), String.format("%.2f", ne.getSpeedUsage()) );
+                }
+                if (fields.contains("upBps")) {
+                    Map<String, Object> map = UnitTransfer(ne.getUpBps(), "bps");
+                    row.put(nameMap.get("upBps")+"("+map.get("unit")+")", String.format("%.2f", (Double) map.get("value")) );
+                    unit = "("+map.get("unit")+")";
+                }
+                if (fields.contains("downBps")) {
+                    Map<String, Object> map = UnitTransfer(ne.getDownBps(), "bps");
+                    row.put(nameMap.get("downBps")+"("+map.get("unit")+")", String.format("%.2f", (Double) map.get("value")) );
+                    unit = "("+ map.get("unit")+")";
+                }
+                if (++num > number) {
+                    break;
+                }
+                rows.add(row);
+            }
+
+            if(field.equals("upBps")||field.equals("downBps")){
+                columns.add(nameMap.get(field)+unit);
+            }else columns.add(nameMap.get(field));
+
+            result.put("columns", columns);
+            result.put("rows", rows);
+            return new JsonModel(true, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage(), empObj());
+        }
+    }
+
+    public JsonModel networkTopNforTable(HttpSession session, String network, Long number, String field, String order) {
+        try {
+            if (ObjectUtils.isEmpty(field)) {
+                field = "upBps";
+            }
+            List<Long> domainList = getDomainList(null, session);
+            Long[] domains = domainList.toArray(new Long[domainList.size()]);
+            NetworkLinkModel networkLinkModel = new NetworkLinkModel();
+            networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domains, session));
+            networkLinkModel.setSortField(field);
+            networkLinkModel.setDesc(order);
+            PageModel temPage = new PageModel();
+            temPage.setCurrentNo(1);
+            temPage.setPageSize(10000);
+            List<NetworkLinkModel> list = rpcProcessService.findNeLinks(temPage, networkLinkModel);
+            if (!Strings.isNullOrEmpty(network)){
+                List<String> sourceIds = Lists.newArrayList(network.split(","));
+                list = list.stream().filter(net -> sourceIds.contains(net.getSourceId())).collect(Collectors.toList());
+            }
+            Map<String, String> nameMap = Maps.newLinkedHashMap();
+            nameMap.put("speed", "链路带宽");
+            nameMap.put("speedUsage", "带宽利用率");
+            nameMap.put("upBps", "上行流量");
+            nameMap.put("downBps", "下行流量");
+            JSONObject result = new JSONObject();
+            List<String> fields = Lists.newArrayList(field);
+            List<Object> rows = new ArrayList<>();
+            JSONArray columns = new JSONArray();
+            columns.add("源IP");
+            columns.add("目的IP");
+            columns.add(nameMap.get(field));
+            int num = 0;
+            for (NetworkLinkModel ne : list) {
+                JSONObject row = new JSONObject(true);
+                row.put("源IP", ne.getSourceIp());
+                row.put("目的IP", ne.getTargetIp());
+                if (fields.contains("speed")) {
+                    row.put(nameMap.get("speed"), ne.getSpeed() + "Mbps");
+                }
+                if (fields.contains("speedUsage")) {
+                    row.put(nameMap.get("speedUsage"), String.format("%.2f", ne.getSpeedUsage()) + "%");
+                }
+                if (fields.contains("upBps")) {
+                    Map<String, Object> map = UnitTransfer(ne.getUpBps(), "bps");
+                    row.put(nameMap.get("upBps"), String.format("%.2f", (Double) map.get("value")) + map.get("unit"));
+                }
+                if (fields.contains("downBps")) {
+                    Map<String, Object> map = UnitTransfer(ne.getDownBps(), "bps");
+                    row.put(nameMap.get("downBps"), String.format("%.2f", (Double) map.get("value")) + map.get("unit"));
+                }
+                if (++num > number) {
+                    break;
+                }
+                rows.add(row);
+            }
+
             result.put("columns", columns);
             result.put("rows", rows);
             return new JsonModel(true, result);
@@ -3075,6 +3451,7 @@ public class MonitorDataService {
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         // 属性字段的JSON
+        //多属性的话，应该用JSONArray来装属性
         JSONObject fieldLabel = null;
         // 属性值的JSON
         // JSONObject valueJSON = new JSONObject();
@@ -3087,6 +3464,7 @@ public class MonitorDataService {
             for (int i = 0; i < fields.size(); i++) {
                 JSONObject fieldJson = fields.getJSONObject(i);
                 if (field.equalsIgnoreCase(fieldJson.getString("name"))) {
+                    //多属性的话这里应该匹配多次
                     fieldLabel = fieldJson;
                     break;
                 }
@@ -3095,7 +3473,7 @@ public class MonitorDataService {
                 return new JsonModel(true, empObj());
             }
         }
-        // 获取指标的值
+        // 获取指标的值,包含该指标的所有部件的所有属性的值
         com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
         qo.setNeId(neIds);
         qo.setIndicatorName(Lists.newArrayList(indicators));
@@ -3108,14 +3486,15 @@ public class MonitorDataService {
         if (Objects.isNull(indValue) || ObjectUtils.isEmpty((JSON) indValue.getIndicatorValue())) {
             return new JsonModel(true, empObj());
         }
-        // indicatorValues的类型可能是JSONArray,也可能是JSONObject
+        // 取出所有部件和对应属性的值，indicatorValues的类型可能是JSONArray,也可能是JSONObject
         JSON indicatorValues = (JSON) indValue.getIndicatorValue();
-        // 根据指标ID取对应参数
+        // 根据指标ID取对应参数:取出所有部件的所有属性的数据,按部件来分组数据
         JSONArray fieldArray = JSON.parseArray(indicatorValues.toJSONString());
         Map<String, String> componentNameMap = Maps.newHashMap();
         NeComponentQuery compQuery = new NeComponentQuery();
         compQuery.setNeIds(Lists.newArrayList(neIds));
         compQuery.setIndicatorName(indicators);
+        // 查询该资源、该指标的所有部件;如果要展示部件名，可以做一个部件id和部件name的Map
         List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
         for (Map<String, Object> map : idAndComponent) {
             if (map.get("identifier") == null || map.get("componentName") == null) {
@@ -3123,11 +3502,13 @@ public class MonitorDataService {
             }
             componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
         }
+        //下面开始组装数据
         String unit = fieldLabel.getString("unit");
         JSONObject row = new JSONObject();
         columns.add("资源名");
         row.put("资源名",
                 ne.getName() + " : " + fieldLabel.getString("label") + (ObjectUtils.isEmpty(unit) ? "" : "(" + unit + ")"));
+        //双重遍历部件和属性数组，用部件id来匹配出对应部件的数据
         for (String component : componentName) {
             for (int i = 0; i < fieldArray.size(); i++) {
                 JSONObject fieldObj = fieldArray.getJSONObject(i);

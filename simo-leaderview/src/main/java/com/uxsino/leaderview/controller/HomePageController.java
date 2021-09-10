@@ -16,6 +16,7 @@ import com.uxsino.commons.utils.SessionUtils;
 import com.uxsino.leaderview.cache.DataViewCache;
 import com.uxsino.leaderview.entity.*;
 import com.uxsino.leaderview.model.ShareState;
+import com.uxsino.leaderview.model.ThreeDModelBaseInfoModel;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.*;
 import com.uxsino.leaderview.service.api.ImageService;
@@ -45,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.reflections.Reflections.log;
 
 @Api(tags = "大屏展示数据接口-HomePageController")
 @RestController
@@ -1159,7 +1162,7 @@ public class HomePageController {
 
 
     @ResponseBody
-    @PostMapping("/importTemplate")
+    @PostMapping("/importTemplate1")
     @ApiOperation("zip模板导入")
     public JsonModel importTemplate(HttpServletRequest request,
                                     MultipartFile file,
@@ -1244,5 +1247,30 @@ public class HomePageController {
         String jsonPath = path.replaceAll("\\\\", "/");
         result.put("文件路径",jsonPath);
         return new JsonModel(true,result);
+    }
+
+    @ApiOperation("3d模型上传/更新")
+    @RequestMapping(value = "/importTemplate",method = RequestMethod.POST)
+    public JsonModel update(ThreeDModelBaseInfoModel model){
+
+        ThreeDModelBaseInfo modelBaseInfo = null;
+        try {
+            modelBaseInfo = homePageService.updateModel(model);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+
+        return new JsonModel(true, "操作成功", modelBaseInfo);
+    }
+
+    @RequestMapping(value = "/findAllModles", method = RequestMethod.GET)
+    public JsonModel findAllModles(){
+        try {
+            JSONArray ret = homePageService.findAllModles();
+            return new JsonModel(true, "操作成功",ret);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return new JsonModel(false, e.getMessage());
+        }
     }
 }

@@ -250,8 +250,69 @@ public class RpcProcessService {
         return nCs;
     }
 
+    public List<ArrayList> neHealthStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if(domainIds != null && !domainIds.isEmpty()){
+            criteria.setDomainIds(domainIds);
+        }
+        criteria.setPagination(false);
+        if(baseNeClass != null){
+            List<NeClass> neClassList = baseNeClass.getNeClass();
+            criteria.setNeClasses(neClassList);
+        }
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        criteria.setHealthReturn(true);
+        List<NetworkEntity> networkEntityList = getNeList(criteria);
+        // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
+        List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
+                networkEntity.getParentId() == null
+                        || networkEntity.getParentId().equals(networkEntity.getId())
+        ).collect(Collectors.toList());
+        List<ArrayList> realResult = new ArrayList<>();
+        Map<String,Integer> map = new HashMap<>();
 
-    public List<Alert> findByChooseForLeaderview(String[] neIds, int number) throws Exception{
+        Integer count100 = 0;
+        Integer count90 = 0;
+        Integer count80 = 0;
+        Integer count60 = 0;
+        Integer count0 = 0;
+
+        for(NetworkEntity entity:rawResult){
+            int health = entity.getHealth();
+            switch (health/10){
+                case 10:
+                    count100++;break;
+                case 9:
+                    count90++;break;
+                case 8:
+                    count80++;break;
+                case 7:
+                    count60++;break;
+                case 6:
+                    count60++;break;
+                default:
+                    count0++;
+            }
+        }
+        map.put("100",count100);
+        map.put("90-99",count90);
+        map.put("80-89",count80);
+        map.put("60-79",count60);
+        map.put("0-59",count0);
+
+        ArrayList<Object> temp;
+        for (Map.Entry<String,Integer> entry: map.entrySet()) {
+            temp = new ArrayList<>();
+            temp.add(entry.getKey());
+            temp.add(entry.getValue());
+            realResult.add(temp);
+        }
+
+        return realResult;
+    }
+
+
+    public List<AlertRecord> findByChooseForLeaderview(String[] neIds, int number) throws Exception{
         AlertQuery query = new AlertQuery();
         List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
                 AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
@@ -263,7 +324,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return toJavaBeanList(jsonModel, Alert.class);
+        return toJavaBeanList(jsonModel, AlertRecord.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -342,7 +403,7 @@ public class RpcProcessService {
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
-//        map.remove("params");
+        map.remove("params");
 //        map.remove("endAlertDate");
 //        map.remove("startAlertDate");
         JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
@@ -473,7 +534,7 @@ public class RpcProcessService {
             List<Long> domainIds = domainUtils.getUserDomainIds(session);
             if (domainIds.isEmpty()) {
                 //TODO 该用户权限下无资源
-                return null;
+                return criteria;
             }
             criteria.setDomainIds(domainIds);
         }

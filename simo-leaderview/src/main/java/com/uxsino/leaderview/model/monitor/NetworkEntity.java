@@ -138,6 +138,9 @@ public class NetworkEntity {
     @Size(max = 255, message = "parentId最大长度255")
     private String parentId; // 上级ID（虚拟主机的上级虚拟化平台资源的ID）
 
+    @ApiModelProperty(value = "健康度")
+    private Integer health;
+
     public NetworkEntity(String id, String name, String ip, String runstatus, String neClass, Date patrolTime) {
         this.id = id;
         this.name = name;

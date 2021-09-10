@@ -137,4 +137,22 @@ public class NetworkLinkModel extends PageModel {
 
     private List<String> neIds;
 
+    @ApiModelProperty(value = "丢包数")
+    private Double packetLoss;
+
+    @ApiModelProperty(value = "丢包率")
+    private Double packetLossRate;
+
+    @ApiModelProperty("错包数")
+    private Double packetWrong;
+
+    @ApiModelProperty(value = "广播包数")
+    private Double packetBroadcast;
+
+    @ApiModelProperty(value = "排序")
+    private String sortField;
+
+    @ApiModelProperty(value = "排序方式")
+    private String desc;
+
 }
