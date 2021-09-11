@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.model.monitor;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.NeClass;
@@ -11,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 网元检索
@@ -123,4 +125,15 @@ public class NetworkEntityCriteria extends PageModel {
 
     @ApiModelProperty(value = "查询条件-是否升序排列，默认为false")
     private Boolean asc = Boolean.FALSE;
+
+    @ApiModelProperty(value = "查询条件-软硬件区分")
+    private Boolean hardOrSoft;// 只查询软件资源或者物理资源
+
+    @ApiModelProperty(value = "分组字段")
+    private String groupField;
+
+    @ApiModelProperty(value = "不分页查询时查询结果条数限制")
+    private Integer limitNum;
+
+    Map<String, Object> param = Maps.newHashMap();
 }

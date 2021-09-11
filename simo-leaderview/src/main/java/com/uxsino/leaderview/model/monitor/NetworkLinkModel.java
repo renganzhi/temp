@@ -155,4 +155,12 @@ public class NetworkLinkModel extends PageModel {
     @ApiModelProperty(value = "排序方式")
     private String desc;
 
+    @ApiModelProperty(value = "分组字段")
+    private String groupField;
+
+    @ApiModelProperty(value = "不分页查询时查询结果条数限制")
+    private Integer limit;
+
+    Map<String, Object> params = new HashMap<String, Object>();
+
 }

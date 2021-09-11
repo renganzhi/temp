@@ -26,9 +26,11 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
 import com.uxsino.leaderview.utils.MonitorUtils;
+import javafx.beans.binding.ObjectExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bytedeco.javacpp.freenect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -644,7 +646,7 @@ public class MonitorDataService {
      * @param field 属性
      * @return
      */
-    public JsonModel getIndicatorValueStrTable(String neIds, String indicators, String[] componentName, String[] field) throws Exception{
+    public JsonModel getIndicatorValueStrTable(String neIds, BaseNeClass baseNeClass, String indicators, String[] componentName, String[] field) throws Exception{
         JSONObject empObj = new JSONObject();
         empObj.put("info", "数据获取发生错误");
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
@@ -661,7 +663,13 @@ public class MonitorDataService {
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empObj);
         }
-        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if (baseNeClass.equals(BaseNeClass.virtualization)) {
+            criteria.setSourceManage(false);
+        }
+        criteria.setId(neIds);
+        criteria.setMonitoring(true);
+        NetworkEntity ne = rpcProcessService.getNeList(criteria).get(0);
         // 判断资源是否存在或者是否已被销毁或者未监控
         if (ObjectUtils.isEmpty(ne) || ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
             return new JsonModel(true, empObj);
@@ -2327,6 +2335,7 @@ public class MonitorDataService {
                     resultObj.put("unit", unit);
                     resultArray[i + 1].add(resultObj);
                 } else {
+                    //看不懂
                     String unit = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("unit"))).orElse(null);
                     String label = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("label"))).orElse(null);
                     String value = MonitorUtils.getValueStr(valueJSON.getString(fieldsName));
@@ -3841,43 +3850,68 @@ public class MonitorDataService {
 
     public JsonModel getTopostatisticsResources(String topoId,String baseNeClass) throws Exception {
         List<BaseNeClass> baseNeClassList = new ArrayList<>();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if (!Strings.isNullOrEmpty(baseNeClass)) {
             String[] split = baseNeClass.split(",");
             baseNeClassList.addAll(Arrays.asList(split).stream().map(x -> BaseNeClass.valueOf(x)).collect(Collectors.toList()));
+            criteria.setBaseNeclasses(baseNeClassList);
         }
         LinkedHashMap<String,Integer> countValue = new LinkedHashMap<>();
+        List<Map<String, Object>> statisMapList = new ArrayList<>();
+
         JSONObject result = new JSONObject();
-        JsonModel jsonModel = rpcProcessService.statisticsResourceNodes(topoId,baseNeClassList);
-        countValue = (LinkedHashMap<String, Integer>) jsonModel.getObj();
-        int count = countValue.get(topoId);
+        //criteria.setg("");
+
+        criteria.setGroupField("manageStatus");
+        JsonModel jsonModel = rpcProcessService.statisticsNe(topoId,criteria);
+        statisMapList = (List<Map<String, Object>>) jsonModel.getObj();
+        //countValue = (LinkedHashMap<String, Integer>) jsonModel.getObj();
+        int count = 0;
+        for (Map<String, Object> map : statisMapList){
+            count += (int)map.get("count");
+        }
         if(Strings.isNullOrEmpty(baseNeClass)){
             result.put("name","总设备数");
             result.put("value",count);
-            result.put("unit","");
+            result.put("info",count);
         }else {
             result.put("name","总终端数");
             result.put("value",count);
-            result.put("unit","");
+            result.put("info",count);
         }
         return new JsonModel(true,result);
     }
 
     public JsonModel CountTopoLink(String topoId, Boolean abnormal) throws Exception{
+        JSONObject result = new JSONObject();
         //1、首先判断abnormal是否为空，是的话就将其设为false
         if (ObjectUtils.isEmpty(abnormal)) {
             abnormal = false;
         }
         //2、调用rpc接口获取拓扑链路条数结果
-        LinkedHashMap<String,Integer> countTopoLink = (LinkedHashMap<String, Integer>) rpcProcessService.statisticsLinkAlarms(topoId).getObj();
+        NetworkLinkModel networkLinkModel = new NetworkLinkModel();
+        networkLinkModel.setGroupField("linkStatus");
+        List<Map<String, Object>> statisMapList = new ArrayList<>();
+        //LinkedHashMap<String,Integer> countTopoLink = (LinkedHashMap<String, Integer>) rpcProcessService.statisticsLinkAlarms(topoId,networkLinkModel).getObj();
+        statisMapList = (List<Map<String, Object>>) rpcProcessService.statisticsLinkAlarms(topoId,networkLinkModel).getObj();
         int count = 0;
-        JSONObject result = new JSONObject();
-        result.put("unit", "");
-        if(ObjectUtils.isEmpty(countTopoLink)){
-            result.put("name", "链路条数");
-            result.put("value", count);
-            return new JsonModel(true, "返回结果为空");
+
+        //如果是总数，取unknown+alert+unConnection+enable，否则取unknown+alert+unConnection
+        //result.put("unit", "");
+
+        for(Map<String, Object> map: statisMapList){
+            if(!abnormal && String.valueOf(NetworkLinkStatus.Enable).equals(map.get("linkStatus"))){
+                count += (int) (map.get("count"));
+            }else if(String.valueOf(NetworkLinkStatus.Unknown).equals(map.get("linkStatus"))){
+                count += (int) (map.get("count"));
+            }else if(String.valueOf(NetworkLinkStatus.Unconnection).equals(map.get("linkStatus"))){
+                count += (int) (map.get("count"));
+            }else if(String.valueOf(NetworkLinkStatus.Alert).equals(map.get("linkStatus"))){
+                count += (int) (map.get("count"));
+            }
         }
-        int unknown,enable,alert,unConnection;
+
+/*
         unknown = ObjectUtils.isEmpty(countTopoLink.get("unknown"))?0:countTopoLink.get("unknown");
         enable = ObjectUtils.isEmpty(countTopoLink.get("enable"))?0:countTopoLink.get("enable");
         alert = ObjectUtils.isEmpty(countTopoLink.get("alert"))?0:countTopoLink.get("alert");
@@ -3892,7 +3926,10 @@ public class MonitorDataService {
             count = unknown+alert+unConnection+enable;
             result.put("name", "链路条数");
             result.put("value", count);
-        }
+        }*/
+        result.put("name", "链路条数");
+        result.put("value", count);
+        result.put("info", count);
         return new JsonModel(true, result);
     }
 

@@ -2886,7 +2886,7 @@
         "key": "Topo_Resources_Count",
         "name": "拓扑统计-资源",
         "componet": "monitor",
-        "type": "NewNumber,NewDoubler",
+        "type": "NEWtextArea,NewNumber,NewDoubler",
         "url": "/leaderview/monitor/getTopoResourcesCount",
         "method": "post",
         "params": [
@@ -2912,7 +2912,7 @@
         "key": "Topo_Link_Count",
         "name": "拓扑统计-链路",
         "component": "monitor",
-        "type": "NewDoubler,NewNumber",
+        "type": "NEWtextArea,NewDoubler,NewNumber",
         "url": "/leaderview/monitor/countTopoLink",
         "method" : "post",
         "params": [

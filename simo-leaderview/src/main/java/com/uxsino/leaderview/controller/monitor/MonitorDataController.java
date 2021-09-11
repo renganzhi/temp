@@ -410,10 +410,10 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true)})
     @RequestMapping(value = "/indicator/valueStrTable", method = RequestMethod.GET)
     @ResponseBody
-    public JsonModel getIndicatorValueStrTable(@RequestParam String neIds, @RequestParam String indicators,
+    public JsonModel getIndicatorValueStrTable(@RequestParam String neIds, @RequestParam BaseNeClass baseNeClass, @RequestParam String indicators,
                                                @RequestParam(required = false) String[] componentName, @RequestParam String[] field) {
         try {
-            return monitorDataService.getIndicatorValueStrTable(neIds, indicators, componentName, field);
+            return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
