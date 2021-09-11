@@ -268,7 +268,7 @@
             },
             {
                 "key": "column",
-                "name": "按列筛选",
+                "name": "列筛选",
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "static",
@@ -289,7 +289,7 @@
                         "name": "运行状态",
                         "value": "运行状态"
                     }
-                    ,
+                ,
                     {
                         "name": "更新时间",
                         "value": "更新时间"
@@ -297,6 +297,66 @@
                     {
                         "name": "健康度",
                         "value": "健康度"
+                    }
+                ]
+            },
+            {
+                "key": "hostColumn",
+                "name": "宿主机列筛选",
+                "notNull": true,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getNeStatusColumn",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "sortColumn",
+                "name": "资源排序列",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "资源名称",
+                        "value": "name"
+                    },
+                    {
+                        "name": "IP地址",
+                        "value": "ip"
+                    },
+                    {
+                        "name": "资源类型",
+                        "value": "neClass"
+                    },
+                    {
+                        "name": "运行状态",
+                        "value": "runStatus"
+                    }
+                ,
+                    {
+                        "name": "更新时间",
+                        "value": "patrolTime"
+                    },
+                    {
+                        "name": "健康度",
+                        "value": "health"
+                    }
+                ]
+            },
+            {
+                "key": "sortType",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": true
+                    },
+                    {
+                        "name": "降序",
+                        "value": false
                     }
                 ]
             }
@@ -342,6 +402,120 @@
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
+                "params": ["domainId","baseNeClass","neClass"]
+            },
+            {
+                "key": "indicators",
+                "name": "指标分类",
+                "//": "原指标",
+                "notNull": true,
+                "type": "drop-down",
+                "method" : "get",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getIndicatorTopN",
+                "params": ["neIds","neClass","baseNeClass"]
+            },
+            {
+                "key": "field",
+                "name": "指标",
+                "//": "原属性",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
+                "params": ["indicators"]
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "3",
+                        "value": 3
+                    },
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
+                    }
+                ]
+            },
+            {
+                "key": "windows",
+                "name": "",
+                "notNull": false,
+                "type": "windows",
+                "method": "get",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndField?multipleComp=true&multipleField=false",
+                "params":["neIds","indicators"]
+            },
+            {
+                "key": "order",
+                "name": "排序方式",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "升序",
+                        "value": "asc"
+                    },
+                    {
+                        "name": "降序",
+                        "value": "desc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "enable_host_indicator_topn",
+        "name": "宿主机资源指标TOPN",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/monitor/indicator/topN",
+        "method" : "post",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClassByIsHardware?isHardware=false"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getHostNes?notUnknown=true",
                 "params": ["domainId","baseNeClass","neClass"]
             },
             {
@@ -1550,6 +1724,114 @@
             {
                 "key": "indicators",
                 "name": "指标分类",
+                "//": "原指标",
+                "notNull": true,
+                "type": "multi-select",
+                "maxLength": 5,
+                "method" : "get",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getIndicator?healthy=true",
+                "params": ["neIds","unit"]
+            },
+            {
+                "key": "windows",
+                "name": "",
+                "notNull": false,
+                "type": "windows",
+                "method": "get",
+                "title": "指标可多选，展示效果为多条曲线，建议选择指标不超过5个",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndFieldByType",
+                "params":["neIds","indicators","unit"]
+            },
+            {
+                "key": "period",
+                "name": "统计时段",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "最近1天",
+                        "value": "_1day"
+                    },
+                    {
+                        "name": "最近1周",
+                        "value": "_1week"
+                    },
+                    {
+                        "name": "最近1月",
+                        "value": "_1month"
+                    }
+                ]
+            },
+            {
+                "key": "interval",
+                "name": "时间间隔",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getInterval",
+                "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
+                "params": ["period"]
+            }
+        ]
+    },
+    {
+        "key": "single_host_indicator_statistics",
+        "name": "宿主机指标趋势监控",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/monitor/multiple_indicator/record",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClassByIsHardware?isHardware=false"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getHostNes?notUnknown=true",
+                "params": ["domainId","baseNeClass","neClass"]
+            },
+            {
+                "key": "unit",
+                "name": "宿主指标单位",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getUnit",
+                "params": ["neIds"]
+            },
+            {
+                "key": "indicators",
+                "name": "宿主指标分类",
                 "//": "原指标",
                 "notNull": true,
                 "type": "multi-select",

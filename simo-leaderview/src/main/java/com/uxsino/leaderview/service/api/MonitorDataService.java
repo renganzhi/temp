@@ -286,12 +286,18 @@ public class MonitorDataService {
      * @param session
      * @return
      */
-    public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session, String[] column) throws Exception{
+    public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session,
+                            String[] column,String[] hostColumn,String sortColumn ,Boolean sortType) throws Exception{
         //List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
         List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间","健康度");
+        List<String> hostColums = Lists.newArrayList("宿主机资源名称","宿主机IP地址","宿主机资源类型","宿主机运行状态","宿主机更新时间","宿主机健康度");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = new JSONArray();
         columns = addColumns(columns, column);
+        if(!ObjectUtils.isEmpty(hostColumn)){
+            diffColumns.addAll(hostColums);
+            columns = addColumns(columns,hostColumn);
+        }
         diffColumns.removeAll(getAllColumns(columns));
         // 检查指定的资源是否是符合用户权限的资源
         if (StringUtils.isNoneBlank(neIds) && !SessionUtils.isSuperAdmin(session)) {
@@ -310,6 +316,8 @@ public class MonitorDataService {
         if (!ObjectUtils.isEmpty(neIds)){
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         }
+        criteria.setSortField(sortColumn);
+        criteria.setAsc(sortType);
         criteria.setMonitoring(true);
         criteria.setHealthReturn(true);
         List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
@@ -317,6 +325,20 @@ public class MonitorDataService {
             return new JsonModel(true, newResultObj("columns",columns,"rows",new JSONArray()));
         }
         json.put("columns", columns);
+
+        //查询所有硬件资源的信息，自己做数据的连接筛选,避免去循环里面掉查询语句
+        Map<String,NetworkEntity> map =new HashMap<>();
+        if(!ObjectUtils.isEmpty(hostColumn)){
+            NetworkEntityCriteria hardWareCriteria = new NetworkEntityCriteria();
+            rpcProcessService.setCriteriaDomainIds(hardWareCriteria ,session ,domainId);
+            hardWareCriteria.setMonitoring(true);
+            hardWareCriteria.setHealthReturn(true);
+            hardWareCriteria.setBaseNeclasses(Arrays.stream(BaseNeClass.values()).filter(BaseNeClass::isHardware).collect(Collectors.toList()));
+            List<NetworkEntity> hardWareList = rpcProcessService.getNeList(hardWareCriteria);
+            hardWareList.forEach(networkEntity -> {
+                map.put(networkEntity.getId(),networkEntity);
+            });
+        }
         JSONArray rows = new JSONArray();
         for (NetworkEntity ne : list) {
             if (!ne.isMonitoring()) {
@@ -329,6 +351,17 @@ public class MonitorDataService {
             row.put("运行状态", Optional.ofNullable(ne.getRunStatus()).map(RunStatus::getName).orElse(""));
             row.put("更新时间",ne.getPatrolTime());
             row.put("健康度",ne.getHealth());
+            if(!ObjectUtils.isEmpty(hostColumn)){
+                NetworkEntity hardWare = map.get(ne.getHostId());
+                boolean flag = hardWare == null;
+                row.put("宿主机资源名称", flag ? "--" : hardWare.getName());
+                row.put("宿主机IP地址", flag ? "--" : hardWare.getIp());
+                row.put("宿主机资源类型", flag ? "--" : hardWare.getNeClass());
+                row.put("宿主机运行状态", flag ? "--" : Optional.ofNullable(hardWare.getRunStatus()).map(RunStatus::getName).orElse(""));
+                row.put("宿主机更新时间",flag ? "--" : hardWare.getPatrolTime());
+                row.put("宿主机健康度", flag ? "--" : hardWare.getHealth());
+
+            }
             diffColumns.forEach(diff -> row.remove(diff));
             rows.add(row);
         }

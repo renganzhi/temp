@@ -331,13 +331,17 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源IDs"),
             @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
             @ApiImplicitParam(name = "column", paramType = "query", dataType = "String", value = "筛选列"),
+            @ApiImplicitParam(name = "hostColumn", paramType = "query", dataType = "String", value = "筛选宿主机列"),
+            @ApiImplicitParam(name = "sortColumn", paramType = "query", dataType = "String", value = "排序字段"),
+            @ApiImplicitParam(name = "sortType", paramType = "query", dataType = "Boolean", value = "排序类型"),
     })
     @RequestMapping(value = "/neList", method = RequestMethod.POST)
     public JsonModel neList(@RequestParam(required = false) Long domainId, @RequestParam(required = false) String neIds,
                             @RequestParam(required = false) BaseNeClass baseNeClass, HttpSession session,
-                            @RequestParam(required = false) String[] column) {
+                            @RequestParam(required = false) String[] column,@RequestParam(required = false)String[] hostColumn,
+                            @RequestParam(required = false)String sortColumn, @RequestParam(required = false)Boolean sortType) {
         try {
-            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column);
+            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
