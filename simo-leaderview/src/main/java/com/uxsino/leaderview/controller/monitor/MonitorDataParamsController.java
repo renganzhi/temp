@@ -2,6 +2,7 @@ package com.uxsino.leaderview.controller.monitor;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.google.common.collect.Lists;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Api(tags = { "资源-大屏展示数据项接口" })
 @RestController
@@ -42,11 +44,18 @@ public class MonitorDataParamsController {
         return monitorDataParamsService.getManageObjectEnum();
     }
 
+
+    @ApiOperation("获取硬件BaseNeClass -- 用于下拉列表")
+    @GetMapping("/baseNeClassByIsHardware")
+    public JsonModel baseNeClassByIsHardware(@ApiParam("资源父类型") @RequestParam(required = false) Boolean isHardware) {
+        return monitorDataParamsService.baseNeClassByIsHardware(isHardware);
+    }
+
     @ApiOperation("获取除了未知类型的其他BaseNeClass-用于下拉列表")
     @GetMapping("/baseNotKnown")
     @ResponseBody
     public JsonModel baseNotKnown() {
-        return monitorDataParamsService.getManageObjectEnum(BaseNeClass.unknow);
+        return monitorDataParamsService.getManageObjectEnum(null, Arrays.asList(BaseNeClass.unknow));
     }
 
     @ApiOperation("根据BaseNeClass获取所有子类型-用于下拉列表")
@@ -83,6 +92,20 @@ public class MonitorDataParamsController {
         criteria = rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
         return monitorDataParamsService.findNes(criteria,notUnknown);
     }
+
+    @ApiOperation("获取指标类型的资源宿主机的Id")
+    @RequestMapping(value = "/getHostNes", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getHostNes(HttpSession session, @ApiParam("域ID") @RequestParam(required = false) Long domainId,
+                             @ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
+                             @ApiParam("资源子类型") @RequestParam(required = false) NeClass neClass,
+                             @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown) {
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        criteria = rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        return monitorDataParamsService.findHostNes(criteria,notUnknown);
+    }
+
 
     @ApiOperation("查询资源可选的指标单位类型，用于下拉框")
     @ApiImplicitParams({
@@ -406,6 +429,15 @@ public class MonitorDataParamsController {
     @GetMapping({"/getPerformanceColumn"})
     public JsonModel getPerformanceColumn(@RequestParam(required = false) String neId, @RequestParam PerormanceView view) {
         return this.monitorDataParamsService.getPerformanceColumn(neId, view);
+    }
+
+    @ApiOperation("查询性能视图的可展示列")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")
+    })
+    @GetMapping({"/getNeStatusColumn"})
+    public JsonModel getNeStatusColumn(@RequestParam(required = false)BaseNeClass baseNeClass) {
+        return this.monitorDataParamsService.getNeStatusColumn(baseNeClass);
     }
 
 }

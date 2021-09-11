@@ -42,6 +42,12 @@ public class MonitorDataParamsService {
     @Autowired
     private RpcProcessService rpcProcessService;
 
+    /*指标白名单*/
+    private static final List<String> INDICATOR_VPN = Arrays.asList("uxdb_transaction_statistic","uxdb_read_hit_statistics");
+
+    /*属性白名单*/
+    private static final List<String> FIELD_VPN = Arrays.asList("commits","rollbacks","transactions","read_blks","hit_blks");
+
     /**
      * 根据当前用户获取所拥有权限的下拉框
      */
@@ -65,13 +71,16 @@ public class MonitorDataParamsService {
 
     /**
      * 获取所有BaseNeClass-用于下拉列表
+     * @param isHardware 是否是硬件指标
      * @param except 排除的父类型
      */
-    public JsonModel getManageObjectEnum(BaseNeClass except){
+    public JsonModel getManageObjectEnum(Boolean isHardware , List<BaseNeClass> except){
+        BaseNeClass[] values = BaseNeClass.values();
         List<Map<String, String>> list = new ArrayList<>();
         try {
             for (BaseNeClass baseClass : BaseNeClass.values()) {
-                if (baseClass.equals(except)) {
+                if((except != null && except.contains(baseClass))
+                        || (isHardware != null && !isHardware.equals(baseClass.isHardware()))){
                     continue;
                 }
                 Map<String, String> map = new HashMap<>(2);
@@ -79,14 +88,14 @@ public class MonitorDataParamsService {
                 map.put("value", baseClass.toString());
                 list.add(map);
             }
+            return new JsonModel(true, list);
         } catch (Exception e) {
             return new JsonModel(false, "网元类型配置错误，请检查配置文件！");
         }
-        return new JsonModel(true, list);
     }
 
     public JsonModel getManageObjectEnum(){
-        return getManageObjectEnum(null);
+        return getManageObjectEnum(null ,null);
     }
 
     /**
@@ -196,7 +205,40 @@ public class MonitorDataParamsService {
         return new JsonModel(true, list);
     }
 
-
+    /**
+     * 获取指标类型的资源的主机
+     */
+    @SuppressWarnings("unchecked")
+    public JsonModel findHostNes(NetworkEntityCriteria criteria,Boolean notUnknown){
+        List<Map<String, String>> list = new ArrayList<>();
+        List<NetworkEntity> nes;
+        try {
+            criteria.setMonitoring(true);
+            nes = rpcProcessService.getNeList(criteria);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+        if (!CollectionUtils.isEmpty(nes)) {
+            for (NetworkEntity ne : nes) {
+                if ((this.existJudgment(notUnknown, false) && BaseNeClass.unknow.equals(ne.getBaseNeClass()))) {
+                    continue;
+                }
+                if (!Strings.isNullOrEmpty(ne.getParentId()) && !ne.getParentId().equals(ne.getId())) {
+                    continue;
+                }
+//                //过滤掉没有宿主机的部分主机信息
+//                if (StringUtils.isEmpty(ne.getHostId())){
+//                    continue;
+//                }
+                Map<String, String> map = new HashMap<>(2);
+                map.put("name", ne.getName() + "-" + ne.getIp());
+                map.put("value", ne.getHostId());
+                list.add(map);
+            }
+        }
+        return new JsonModel(true, list);
+    }
 //    /**
 //     * 设置资源查询类QO
 //     */
@@ -372,22 +414,22 @@ public class MonitorDataParamsService {
                     List<String> indList = neInds == null ? null : neInds.toJavaList(String.class);
                     indicatorTables = filterToList(indicatorTables, ind -> !(indList != null && !indList.contains(ind.getName())));
                     indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
-                    indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()));
+                    indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()) || INDICATOR_VPN.contains(ind.getName()));
                     indicatorTables.forEach(ind -> {
                         // 类型为NUMBER和PERCENT的指标是无属性的
                         if (validHasFields(ind)) {
                             JSONArray fields = ind.getFields();
                             boolean hasNumberType = false;
-                            fields = filter(fields, o -> "performance".equals(o.getString("tag")));
+                            fields = filter(fields, o -> "performance".equals(o.getString("tag")) || FIELD_VPN.contains(o.getString("name")) );
                             if (typeExist && "PERCENT".equals(typeString)) {
-                                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
+                                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%")  );
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             } else {
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                 fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                                 if (unitExist) {
-                                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), unitString));
+                                    fields = filter(fields, o -> Objects.equals(o.getString("unit") , unitString));
                                 }
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             }
@@ -1295,4 +1337,19 @@ public class MonitorDataParamsService {
 
     }
 
+    public JsonModel baseNeClassByIsHardware(Boolean isHardware) {
+        return getManageObjectEnum(isHardware,null);
+    }
+
+    public JsonModel getNeStatusColumn(BaseNeClass baseNeClass) {
+        JSONArray res =new JSONArray();
+        if(baseNeClass != null && !baseNeClass.isHardware()){
+            res.add(newResultObj("宿主机资源名称","宿主机资源名称"));
+            res.add(newResultObj("宿主机IP地址","宿主机IP地址"));
+            res.add(newResultObj("宿主机运行状态","宿主机运行状态"));
+            res.add(newResultObj("宿主机更新时间","宿主机更新时间"));
+            res.add(newResultObj("宿主机健康度","宿主机健康度"));
+        }
+        return new JsonModel(true,res);
+    }
 }
