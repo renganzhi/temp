@@ -374,7 +374,14 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = Lists.newArrayList();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                //对虚拟化资源特殊处理
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                if (neClass.getBaseNeClass().equals(BaseNeClass.virtualization)) {
+                    criteria.setSourceManage(false);
+                }
+                criteria.setIds(Lists.newArrayList(neIds));
+                criteria.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria);
             } catch (Exception e) {
                 return new JsonModel(false, e.getMessage());
             }

@@ -1717,14 +1717,18 @@ public class MonitorDataService {
     public JsonModel getTopNByItObjects(String indicators, Long domainId, String neIds,
                                         String baseNeClass, String neClass, String field,
                                         String number, String windows, String order,
-                                        HttpSession session, Boolean bar) throws Exception{
+                                        HttpSession session, Boolean bar,String topoId) throws Exception{
         bar = existJudgment(bar);
-        if (Strings.isNullOrEmpty(indicators)) {
+        /*if (Strings.isNullOrEmpty(indicators)) {
             return new JsonModel(true, "未选择指标！", empObj());
-        }
+        }*/
         List<NetworkEntity> nes = Lists.newArrayList();
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         if (Strings.isNullOrEmpty(neIds)) {
             // 如果子类型为空，查询父类型，如果父类型也为空，则直接判断资源
             if (!Strings.isNullOrEmpty(neClass)) {
@@ -3924,9 +3928,9 @@ public class MonitorDataService {
         //2、调用rpc接口获取拓扑链路条数结果
         NetworkLinkModel networkLinkModel = new NetworkLinkModel();
         networkLinkModel.setGroupField("linkStatus");
+        networkLinkModel.setTopoId(topoId);
         List<Map<String, Object>> statisMapList = new ArrayList<>();
-        //LinkedHashMap<String,Integer> countTopoLink = (LinkedHashMap<String, Integer>) rpcProcessService.statisticsLinkAlarms(topoId,networkLinkModel).getObj();
-        statisMapList = (List<Map<String, Object>>) rpcProcessService.statisticsLinkAlarms(topoId,networkLinkModel).getObj();
+        statisMapList = (List<Map<String, Object>>) rpcProcessService.statisticsNetworkLink(networkLinkModel).getObj();
         int count = 0;
 
         //如果是总数，取unknown+alert+unConnection+enable，否则取unknown+alert+unConnection

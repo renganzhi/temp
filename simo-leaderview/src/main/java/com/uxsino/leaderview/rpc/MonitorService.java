@@ -27,8 +27,8 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getNeList", consumes = "application/json")
     JsonModel getNeList(@RequestBody String param);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
-    JsonModel getUsableInd(@RequestParam Map<String,Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getUsableInd", consumes = "application/json")
+    JsonModel getUsableInd(@RequestParam("indicatorName") String indicatorName,@RequestBody NetworkEntityCriteria criteria );
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/current/getIndValues", consumes = "application/json")
     JsonModel getCurIndValues(@RequestBody String param);
@@ -43,8 +43,7 @@ public interface MonitorService {
     JsonModel findNeLinks(@RequestParam("pagination") boolean pagination, @RequestBody NetworkLinkModel networkLinkModel);
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsNe", consumes = "application/json")
-    JsonModel statisticsNe(@RequestParam(value = "topoId", required = false) String topoId,
-                           @RequestBody NetworkEntityCriteria criteria);
+    JsonModel statisticsNe(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
     JsonModel findNeHealth(@RequestParam("neIds")List<String> neIds,
@@ -73,8 +72,7 @@ public interface MonitorService {
     JsonModel getChannelList(@PathVariable("neId") String neId);
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsNetworkLink", consumes = "application/json")
-    JsonModel statisticsNetworkLink(@RequestParam(value = "topoId", required = false) String topoId,
-                                    @RequestBody NetworkLinkModel networkLinkModel);
+    JsonModel statisticsNetworkLink(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsEachLevelAlarms", consumes = "application/json")
     JsonModel statisticsEachLevelAlarms(@RequestParam("topoId") String topoId);

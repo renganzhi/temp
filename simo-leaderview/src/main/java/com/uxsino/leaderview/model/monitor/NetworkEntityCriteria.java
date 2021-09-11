@@ -135,5 +135,8 @@ public class NetworkEntityCriteria extends PageModel {
     @ApiModelProperty(value = "不分页查询时查询结果条数限制")
     private Integer limitNum;
 
+    @ApiModelProperty(value = "拓扑ID")
+    private String topoId;
+
     Map<String, Object> param = Maps.newHashMap();
 }

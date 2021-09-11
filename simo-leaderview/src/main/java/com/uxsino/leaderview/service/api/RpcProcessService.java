@@ -594,18 +594,13 @@ public class RpcProcessService {
     }
 
     public List<IndicatorTable> getUsableInd(String indicatorName, NetworkEntityCriteria criteria) throws Exception{
-        if (ObjectUtils.isEmpty(criteria.getIds())){
+        if (!ObjectUtils.isEmpty(criteria.getId()) && ObjectUtils.isEmpty(criteria.getIds())){
             criteria.setIds(Lists.newArrayList(criteria.getId()));
         }
-        if (ObjectUtils.isEmpty(criteria.getNeClasses())){
+        if (!ObjectUtils.isEmpty(criteria.getNeClass()) && ObjectUtils.isEmpty(criteria.getNeClasses())){
             criteria.setNeClasses(Lists.newArrayList(criteria.getNeClass()));
         }
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("indicatorName", indicatorName);
-        Map<String, Object> beanMap = getBeanMap(criteria, map);
-        beanMap.put("cls", null);
-        JsonModel jsonModel = monitorService.getUsableInd(beanMap);
-        criteria.setIds(Lists.newArrayList(criteria.getId()));
+        JsonModel jsonModel = monitorService.getUsableInd(indicatorName,criteria);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -964,7 +959,10 @@ public class RpcProcessService {
     }
 
     public JsonModel statisticsNe(String topoId,NetworkEntityCriteria criteria) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsNe(topoId,criteria);
+        criteria.setPagination(false);
+        criteria.setTopoId(topoId);
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.statisticsNe(param);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -979,8 +977,9 @@ public class RpcProcessService {
         return toJavaBeanList(jsonModel, StatisticsResult.class);
     }
 
-    public JsonModel statisticsLinkAlarms(String topoId,NetworkLinkModel networkLinkModel) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsNetworkLink(topoId,networkLinkModel);
+    public JsonModel statisticsNetworkLink(NetworkLinkModel networkLinkModel) throws Exception {
+        String param = JSON.toJSONString(networkLinkModel);
+        JsonModel jsonModel = monitorService.statisticsNetworkLink(param);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
