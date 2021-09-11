@@ -963,8 +963,8 @@ public class RpcProcessService {
         return jsonModel;
     }
 
-    public JsonModel statisticsResourceNodes(String topoId,List<BaseNeClass> baseNeClass) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsResourceNodes(topoId,null,baseNeClass);
+    public JsonModel statisticsNe(String topoId,NetworkEntityCriteria criteria) throws Exception {
+        JsonModel jsonModel = monitorService.statisticsNe(topoId,criteria);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -979,8 +979,8 @@ public class RpcProcessService {
         return toJavaBeanList(jsonModel, StatisticsResult.class);
     }
 
-    public JsonModel statisticsLinkAlarms(String topoId) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsLinkAlarms(topoId);
+    public JsonModel statisticsLinkAlarms(String topoId,NetworkLinkModel networkLinkModel) throws Exception {
+        JsonModel jsonModel = monitorService.statisticsNetworkLink(topoId,networkLinkModel);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }

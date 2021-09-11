@@ -5,6 +5,7 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
+import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsResourceNodes(String topologyId, List<NeClass> neClasses, List<BaseNeClass> baseNeClasses) {
+    public JsonModel statisticsNe(String topoId, NetworkEntityCriteria criteria) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
@@ -94,7 +95,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsLinkAlarms(String topoId) {
+    public JsonModel statisticsNetworkLink(String topoId, NetworkLinkModel networkLinkModel) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 

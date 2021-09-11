@@ -49,6 +49,16 @@ public class HomeTemplate {
     @Column(columnDefinition = "TEXT")
     private String composeObj;
 
+    /*模板类型,分为自定义模板和单资源模板
+     * custom为空或者null：自定义模板
+     * single:单资源模板*/
+    private String templateType;
+
+    /*当模板为单资源模板时的资源类型，包含baseneclass、neclass,自定义模板时为空
+     * {"baseneclss":"xx","neclass":"xx"}*/
+    @Column(columnDefinition = "TEXT")
+    private String templateConf;
+
     public HomeTemplate(Long id, String name, String viewImage, Date lastUpdateTime) {
         this.id = id;
         this.name = name;
