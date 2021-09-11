@@ -1,12 +1,10 @@
 package com.uxsino.leaderview.rpc;
 
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.datacenter.IndValueQuery;
 import com.uxsino.leaderview.rpc.hystrix.DatacenterClientHystrixMonitor;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "${service-datacenter}", fallback = DatacenterClientHystrixMonitor.class)
 public interface DatacenterService {
@@ -38,4 +36,9 @@ public interface DatacenterService {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/indicator/index/by-search", consumes = "application/json")
     JsonModel delIndValueByParam(@RequestBody String params);
+
+    @RequestMapping(method = RequestMethod.POST,value = "/api/indicator/{type}/{isHistory}", consumes = "application/json")
+    JsonModel searchByFieldQuery(@PathVariable(value = "type") String type,
+                                 @PathVariable(value = "isHistory") boolean isHistory,
+                                 @RequestBody IndValueQuery indValueQuery);
 }

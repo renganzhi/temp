@@ -9,6 +9,7 @@ import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel getUsableInd(Map<String, Object> map) {
+    public JsonModel getUsableInd(String indicatorName, NetworkEntityCriteria criteria) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
@@ -50,7 +51,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsNe(String topoId, NetworkEntityCriteria criteria) {
+    public JsonModel statisticsNe(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
@@ -95,7 +96,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsNetworkLink(String topoId, NetworkLinkModel networkLinkModel) {
+    public JsonModel statisticsNetworkLink(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 

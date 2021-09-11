@@ -518,7 +518,7 @@ public class MonitorDataController {
     }
 
 
-    @ApiOperation("获取topN的展示数据(定位到资源)")
+    @ApiOperation("资源指标topN——获取topN的展示数据(定位到资源)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "topN展示的指标类型", required = true),
             @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
@@ -534,10 +534,10 @@ public class MonitorDataController {
     public JsonModel getTopNByItObjects(@RequestParam String indicators, @RequestParam(required = false) Long domainId,
                                         @RequestParam(required = false) String neIds, @RequestParam(required = false) String baseNeClass,
                                         @RequestParam(required = false) String neClass, @RequestParam(required = false) String field,
-                                        @RequestParam String number, @RequestParam String windows, @RequestParam String order, HttpSession session,
-                                        Boolean bar) {
+                                        @RequestParam String number, @RequestParam String windows, @RequestParam String order, HttpSession session, Boolean bar,
+                                        @RequestParam(required = false) String topoId) {
         try {
-            return monitorDataService.getTopNByItObjects(indicators, domainId, neIds, baseNeClass, neClass, field, number, windows, order, session, bar);
+            return monitorDataService.getTopNByItObjects(indicators, domainId, neIds, baseNeClass, neClass, field, number, windows, order, session, bar,topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -577,9 +577,7 @@ public class MonitorDataController {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
         }
-
     }
-
 
     @ApiOperation("根据所选域、拓扑图id统计链路数量")
     @ApiImplicitParams({
