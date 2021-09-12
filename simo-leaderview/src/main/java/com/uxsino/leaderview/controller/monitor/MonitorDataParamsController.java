@@ -186,8 +186,8 @@ public class MonitorDataParamsController {
     public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
                                      @RequestParam(required = false) NeClass neClass,
                                      @RequestParam(required = false) BaseNeClass baseNeClass,
-                                     @RequestParam(required = false) Boolean healthy) {
-        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass, healthy);
+                                     @RequestParam(required = false) Boolean healthy,@RequestParam(required = false)Boolean runStatus) {
+        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass, healthy,runStatus);
     }
 
 

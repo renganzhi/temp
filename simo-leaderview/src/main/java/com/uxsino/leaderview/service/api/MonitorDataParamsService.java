@@ -43,12 +43,6 @@ public class MonitorDataParamsService {
     @Autowired
     private RpcProcessService rpcProcessService;
 
-    /*指标白名单*/
-    private static final List<String> INDICATOR_VPN = Arrays.asList("uxdb_transaction_statistic","uxdb_read_hit_statistics");
-
-    /*属性白名单*/
-    private static final List<String> FIELD_VPN = Arrays.asList("commits","rollbacks","transactions","read_blks","hit_blks","tps","qps");
-
     /**
      * 根据当前用户获取所拥有权限的下拉框
      */
@@ -449,20 +443,20 @@ public class MonitorDataParamsService {
                     List<String> indList = neInds == null ? null : neInds.toJavaList(String.class);
                     indicatorTables = filterToList(indicatorTables, ind -> !(indList != null && !indList.contains(ind.getName())));
                     indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
-                    indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()) || INDICATOR_VPN.contains(ind.getName()));
+                    indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()));
                     indicatorTables.forEach(ind -> {
                         // 类型为NUMBER和PERCENT的指标是无属性的
                         if (validHasFields(ind)) {
                             JSONArray fields = ind.getFields();
                             boolean hasNumberType = false;
-                            fields = filter(fields, o -> "performance".equals(o.getString("tag")) || FIELD_VPN.contains(o.getString("name")) );
+                            fields = filter(fields, o -> "performance".equals(o.getString("tag")) );
                             if (typeExist && "PERCENT".equals(typeString)) {
                                 fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%")  );
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             } else {
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
-                                fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString())||FIELD_VPN.contains(o.getString("name")));
+                                fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                                 if (unitExist) {
                                     fields = filter(fields, o -> Objects.equals(o.getString("unit") , unitString));
                                 }
@@ -750,7 +744,7 @@ public class MonitorDataParamsService {
      * @param neIds 资源ID
      * @param neClass 资源子类型
      */
-    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy) {
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy,Boolean runStatus) {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
         if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
@@ -761,7 +755,7 @@ public class MonitorDataParamsService {
             List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
             try {
                 NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
-                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                if (BaseNeClass.virtualization.equals(baseNeClass)) {
                     criteria0.setSourceManage(false);
                 }
                 criteria0.setIds(Lists.newArrayList(neIds));
@@ -821,6 +815,9 @@ public class MonitorDataParamsService {
                         if (Boolean.TRUE.equals(healthy)) {
                             arr.add(newResultObj("健康度", "healthy"));
                         }
+                        if (Boolean.TRUE.equals(runStatus)) {
+                            arr.add(newResultObj("运行状态", "runStatus"));
+                        }
                         arrs.add(arr);
                     }
                 }
@@ -844,6 +841,9 @@ public class MonitorDataParamsService {
         }
         if (Strings.isNullOrEmpty(neIds[0]) || Strings.isNullOrEmpty(indicators)) {
             return new JsonModel(false, "参数错误");
+        }
+        if("runStatus".equals(indicators)){
+            return new JsonModel(true,new JSONArray());
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (ObjectUtils.isEmpty(ind)) {
@@ -915,7 +915,7 @@ public class MonitorDataParamsService {
         }
         JSONArray result = new JSONArray();
         // 对健康度指标进行特殊化处理
-        if ("healthy".equals(indicators)) {
+        if ("healthy".equals(indicators) || "runStatus".equals(indicators)) {
             result.add(newResultObj("值", null));
             return new JsonModel(true, result);
         }
@@ -1034,7 +1034,7 @@ public class MonitorDataParamsService {
                 fieldsResult.add(newResultObj("值",null));
             } else {
                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
-                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")) || FIELD_VPN.contains(o.getString("name")));
+                fields = filter(fields, o -> FieldType.NUMBER.toString().equals(o.getString("type")));
                 if ("PERCENT".equals(type)) {
                     fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
                 }

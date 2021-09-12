@@ -2111,7 +2111,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getUnitHost",
+                "dataUrl": "/leaderview/monitor/params/getUnit",
                 "params": ["neIds"]
             },
             {
@@ -2123,7 +2123,7 @@
                 "maxLength": 5,
                 "method" : "get",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getHostIndicator?healthy=true",
+                "dataUrl": "/leaderview/monitor/params/getIndicator?healthy=true",
                 "params": ["neIds","unit"]
             },
             {
@@ -2134,7 +2134,7 @@
                 "method": "get",
                 "title": "指标可多选，展示效果为多条曲线，建议选择指标不超过5个",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getHostComponentNameAndIndFieldByType",
+                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndFieldByType",
                 "params":["neIds","indicators","unit"]
             },
             {
@@ -2556,7 +2556,7 @@
                 "type": "drop-down",
                 "method" : "get",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicatorStr?healthy=true",
+                "dataUrl": "/leaderview/monitor/params/getIndicatorStr?healthy=true&&runStatus=true",
                 "params": ["neIds","neClass","baseNeClass"]
             },
             {
