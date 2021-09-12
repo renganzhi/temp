@@ -44,6 +44,13 @@ public class MonitorDataParamsController {
         return monitorDataParamsService.getManageObjectEnum();
     }
 
+    @ApiOperation("获取所有BaseNeClass-用于下拉列表")
+    @GetMapping("/getRunStatus")
+    @ResponseBody
+    public JsonModel getRunStatus() {
+        return monitorDataParamsService.getRunStatus();
+    }
+
 
     @ApiOperation("获取硬件BaseNeClass -- 用于下拉列表")
     @GetMapping("/baseNeClassByIsHardware")

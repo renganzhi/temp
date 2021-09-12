@@ -197,7 +197,7 @@ public class MonitorDataService {
             }
         }
         List<Long> domainList = getDomainList(domainId, session);
-        List<ArrayList> list = rpcProcessService.neStatusStatistics(domainList, baseClass);
+        List<ArrayList> list = rpcProcessService.neStatusStatistics(domainList, baseClass,null);
         Long num = 0L;
         for (int i = 0; i < list.size(); i++) {
             ArrayList arrayList = list.get(i);
@@ -216,7 +216,7 @@ public class MonitorDataService {
      * @param baseNeClass 资源父类型
      * @return
      */
-    public JsonModel statisticsResourceStatus(HttpSession session, Long domainId, String baseNeClass) throws Exception {
+    public JsonModel statisticsResourceStatus(HttpSession session, Long domainId, String baseNeClass,String topoId) throws Exception {
         BaseNeClass baseClass = null;
         if (StringUtils.isNoneBlank(baseNeClass)) {
             try {
@@ -227,7 +227,7 @@ public class MonitorDataService {
         }
         List<Long> domainList = getDomainList(domainId, session);
 
-        List<ArrayList> list = rpcProcessService.neStatusStatistics(domainList, baseClass);
+        List<ArrayList> list = rpcProcessService.neStatusStatistics(domainList, baseClass,topoId);
         JSONObject json = new JSONObject();
         json.put("columns", newColumns("状态","数量"));
         JSONArray rows = new JSONArray();
@@ -287,7 +287,7 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session,
-                            String[] column,String[] hostColumn,String sortColumn ,Boolean sortType) throws Exception{
+                            String[] column,String[] hostColumn,String sortColumn ,Boolean sortType,String runStatus) throws Exception{
         //List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
         List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间","健康度");
         List<String> hostColums = Lists.newArrayList("宿主机资源名称","宿主机IP地址","宿主机资源类型","宿主机运行状态","宿主机更新时间","宿主机健康度");
@@ -310,6 +310,12 @@ public class MonitorDataService {
         }
         JSONObject json = new JSONObject(true);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+
+        if(!StringUtils.isEmpty(runStatus)){
+            String[] list = runStatus.split(",");
+            List<RunStatus> runStatuses = Arrays.stream(list).map(x -> RunStatus.valueOf(x)).collect(Collectors.toList());
+            criteria.setRunStatusIn(runStatuses);
+        }
         rpcProcessService.setCriteriaDomainIds(criteria ,session ,domainId);
         if(baseNeClass!=null)
             rpcProcessService.setCriteriaNeClass(criteria, baseNeClass.toString());
@@ -3987,9 +3993,14 @@ public class MonitorDataService {
         return coordinates;
     }
 
-    public JsonModel getTopostatisticsResources(String topoId,String baseNeClass) throws Exception {
+    public JsonModel getTopostatisticsResources(String topoId,String baseNeClass,String runStatus) throws Exception {
         List<BaseNeClass> baseNeClassList = new ArrayList<>();
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if(!StringUtils.isEmpty(runStatus)){
+            String[]  split = runStatus.split(",");
+            List<RunStatus> list = Arrays.stream(split).map(x -> RunStatus.valueOf(x)).collect(Collectors.toList());
+            criteria.setRunStatusIn(list);
+        }
         if (!Strings.isNullOrEmpty(baseNeClass)) {
             String[] split = baseNeClass.split(",");
             baseNeClassList.addAll(Arrays.asList(split).stream().map(x -> BaseNeClass.valueOf(x)).collect(Collectors.toList()));

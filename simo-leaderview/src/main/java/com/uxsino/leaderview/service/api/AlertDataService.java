@@ -684,7 +684,7 @@ public class AlertDataService {
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
                                   Integer number, HttpSession session, String[] column) throws Exception{
         JSONObject result = new JSONObject();
-        List<String > diffColumns = Lists.newArrayList("状态","告警来源","IP地址","告警内容","告警时间");
+        List<String > diffColumns = Lists.newArrayList("告警级别","告警来源","IP地址","告警内容","告警时间","状态");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
         diffColumns.removeAll(columns);
@@ -708,7 +708,7 @@ public class AlertDataService {
         list.forEach(alert -> {
             try {
                 Map<String, String> row = new LinkedHashMap<>();
-                row.put("状态", rpcProcessService.getLevel(alert.getLevel()));
+                row.put("告警级别", rpcProcessService.getLevel(alert.getLevel()));
                 row.put("告警来源", alert.getAlertOrigin());
                 NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
                 if (ObjectUtils.isEmpty(ne)){
@@ -717,7 +717,8 @@ public class AlertDataService {
                 row.put("IP地址", ne.getIp());
                 row.put("告警内容", alert.getRecentAlertBrief());
                 row.put("告警时间", alert.getRecentAlertDateStr());
-                diffColumns.forEach(diff -> row.remove(diff));
+                row.put("状态", alert.getHandleStatusName());
+                diffColumns.forEach(row::remove);
                 rows.add(row);
             }catch (Exception e){
                 e.printStackTrace();
