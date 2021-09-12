@@ -750,7 +750,7 @@ public class MonitorDataParamsService {
      * @param neIds 资源ID
      * @param neClass 资源子类型
      */
-    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy) {
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy,Boolean runStatus) {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
         if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
@@ -761,7 +761,7 @@ public class MonitorDataParamsService {
             List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
             try {
                 NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
-                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                if (BaseNeClass.virtualization.equals(baseNeClass)) {
                     criteria0.setSourceManage(false);
                 }
                 criteria0.setIds(Lists.newArrayList(neIds));
@@ -821,6 +821,9 @@ public class MonitorDataParamsService {
                         if (Boolean.TRUE.equals(healthy)) {
                             arr.add(newResultObj("健康度", "healthy"));
                         }
+                        if (Boolean.TRUE.equals(runStatus)) {
+                            arr.add(newResultObj("运行状态", "runStatus"));
+                        }
                         arrs.add(arr);
                     }
                 }
@@ -844,6 +847,9 @@ public class MonitorDataParamsService {
         }
         if (Strings.isNullOrEmpty(neIds[0]) || Strings.isNullOrEmpty(indicators)) {
             return new JsonModel(false, "参数错误");
+        }
+        if("runStatus".equals(indicators)){
+            return new JsonModel(true,new JSONArray());
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (ObjectUtils.isEmpty(ind)) {
@@ -915,7 +921,7 @@ public class MonitorDataParamsService {
         }
         JSONArray result = new JSONArray();
         // 对健康度指标进行特殊化处理
-        if ("healthy".equals(indicators)) {
+        if ("healthy".equals(indicators) || "runStatus".equals(indicators)) {
             result.add(newResultObj("值", null));
             return new JsonModel(true, result);
         }

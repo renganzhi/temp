@@ -579,6 +579,17 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel getIndicatorValueStr(String neIds, BaseNeClass baseNeClass, String indicators, String componentName, String field) throws Exception{
+        if("runStatus".equals(indicators)){
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            criteria.setId(neIds);
+            NetworkEntity entity = rpcProcessService.getNeList(criteria).get(0);
+            JSONObject res = new JSONObject();
+            String status = entity.getRunStatus() != null ? entity.getRunStatus().getName() : "--";
+            res.put("name",entity.getName());
+            res.put("value",status);
+            res.put("info",status);
+            return new JsonModel(true,res);
+        }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         // 用于转换枚举数据
         JSONObject desc = new JSONObject();
@@ -589,7 +600,7 @@ public class MonitorDataService {
             return new JsonModel(true, empObj);
         }
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-        if (baseNeClass.equals(BaseNeClass.virtualization)) {
+        if (BaseNeClass.virtualization.equals(baseNeClass)) {
             criteria.setSourceManage(false);
         }
         criteria.setId(neIds);
@@ -1582,7 +1593,26 @@ public class MonitorDataService {
         result = ObjectUtils.isEmpty(result) ? tmpResult : result;
         return result;
     }
-
+    public JsonModel getMultipleIndHistoryValueRecordHost(String[] neIds, String[] indicators, String windows,
+                                                IntervalType intervalType, Integer interval, IndPeriod period) throws Exception{
+        if ((neIds == null || neIds.length == 0)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        List<NetworkEntity> neList = Lists.newArrayList();
+        try {
+            neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        }catch (Exception e){
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(neList)) {
+            return new JsonModel(false, "资源不存在");
+        }
+        String hostIds = neList.stream().map(NetworkEntity::getHostId).distinct().filter(s -> !org.springframework.util.StringUtils.isEmpty(s)).collect(Collectors.joining(","));
+        if(org.springframework.util.StringUtils.isEmpty(hostIds)){
+            return new JsonModel(false, "宿主资源不存在");
+        }
+        return getMultipleIndHistoryValue(hostIds.split(","), indicators, windows, intervalType, interval, period);
+    }
     public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows,
                                                 IntervalType intervalType, Integer interval, IndPeriod period) throws Exception{
         // 从弹窗数据中取得各资源选择的指标名和资源名

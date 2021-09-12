@@ -488,33 +488,22 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
             @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
             @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true)})
-    @RequestMapping(value = "/indicator/history/recordHost", method = RequestMethod.GET)
+    @RequestMapping(value = "/multiple_indicator/recordHost", method = RequestMethod.GET)
     @ResponseBody
-    public JsonModel getIndHistoryValueRecordHost(@RequestParam String[] neIds, String indicators,
-                                        @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
-                                        @RequestParam IndPeriod period, @RequestParam Integer interval) {
+    public JsonModel getMultipleIndHistoryValueRecordHost(@RequestParam String[] neIds, String[] indicators,
+                                                  @RequestParam(required = false) String windows,
+                                                  @RequestParam IndPeriod period,
+                                                  @RequestParam Integer interval) {
         try {
-            if (Objects.equals("healthy", indicators)) {
-                if (IndPeriod._1day == period) {
-                    interval = 5;
-                }
-                return monitorDataService.getHistoryHealth(neIds, period, interval);
-            } else {
-                IntervalType intervalType = IntervalType.minute;
-                //interval = 5;
-                if(ObjectUtils.isEmpty(interval)) interval=5;
-                if (IndPeriod._1day == period) {
-                    intervalType = IntervalType.minute;
-                    //interval = 5;
-                } else if (IndPeriod._1week == period) {
-                    intervalType = IntervalType.hour;
-                    //interval = 8;
-                } else if (IndPeriod._1month == period) {
-                    intervalType = IntervalType.hour;
-                    //interval = 24;
-                }
-                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval);
+            IntervalType intervalType = IntervalType.minute;
+            if (IndPeriod._1day == period) {
+                intervalType = IntervalType.minute;
+            } else if (IndPeriod._1week == period) {
+                intervalType = IntervalType.hour;
+            } else if (IndPeriod._1month == period) {
+                intervalType = IntervalType.hour;
             }
+            return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
