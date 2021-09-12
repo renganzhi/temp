@@ -13,7 +13,8 @@ import org.apache.commons.collections4.map.LinkedMap;
 
 public enum PerormanceView {
     TopSql("TopSql", NeClass.oracle,
-            new String[]{"Sql_Id:sqlid", "DB Time(%):a", "执行耗时(ms):b", "平均执行耗时(ms):c", "执行次数:d", "平均返回行:e", "用户I/O平均等待时间(ms):f", "平均逻辑读/次:g", "平均物理读/次:h"}),
+            new String[]{"Sql_Id:sql_id", "DB Time(%):db_time_rate", "执行耗时(ms):elapsed_time", "平均执行耗时(ms):elapsed_time_avg", "执行次数:executions",
+                    "平均返回行:return_rows_avg", "用户I/O平均等待时间(ms):wait_time_avg", "平均逻辑读/次:read_avg", "平均物理读/次:physical_read_avg"}),
     TopEvent("TopEvent", NeClass.oracle,
             new String[]{"Event:event", "Wait_Class:wait_class", "等待时间(ms):time", "DB Time(%):db_time_rate"}),
     TopSession("TopSession", NeClass.oracle,
