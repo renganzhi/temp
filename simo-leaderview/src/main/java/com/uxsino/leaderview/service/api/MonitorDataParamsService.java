@@ -99,6 +99,16 @@ public class MonitorDataParamsService {
         return getManageObjectEnum(null ,null);
     }
 
+    public JsonModel getRunStatus(){
+        JSONArray res = new JSONArray();
+        RunStatus[] values = RunStatus.values();
+        for (RunStatus value : values) {
+            res.add(newResultObj(value.getName(),value.toString()));
+        }
+        return new JsonModel(true,res);
+    }
+
+
     /**
      * 根据BaseNeClass获取所有子类型-用于下拉列表
      * @param baseNeClass 资源父类型
@@ -1441,7 +1451,7 @@ public class MonitorDataParamsService {
         }
         NetworkEntity networkEntity = null;
         try {
-            networkEntity = this.rpcProcessService.findNetworkEntityById(neId);
+            networkEntity = rpcProcessService.findNetworkEntityById(neId);
         } catch (Exception e) {
             return new JsonModel(false, e.getMessage());
         }

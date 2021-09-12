@@ -157,7 +157,7 @@ public class RpcProcessService {
     }
 
 
-    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
+    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass,String topoId) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domainIds != null && !domainIds.isEmpty()){
             criteria.setDomainIds(domainIds);
@@ -167,6 +167,7 @@ public class RpcProcessService {
             List<NeClass> neClassList = baseNeClass.getNeClass();
             criteria.setNeClasses(neClassList);
         }
+        criteria.setTopoId(topoId);
         criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
         List<NetworkEntity> networkEntityList = getNeList(criteria);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
