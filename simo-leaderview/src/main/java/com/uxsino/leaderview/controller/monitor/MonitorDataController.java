@@ -478,6 +478,49 @@ public class MonitorDataController {
         }
     }
 
+
+    @ApiOperation("指标历史统计-资源 (可以选择多个资源)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
+            @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
+            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true)})
+    @RequestMapping(value = "/indicator/history/recordHost", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getIndHistoryValueRecordHost(@RequestParam String[] neIds, String indicators,
+                                        @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
+                                        @RequestParam IndPeriod period, @RequestParam Integer interval) {
+        try {
+            if (Objects.equals("healthy", indicators)) {
+                if (IndPeriod._1day == period) {
+                    interval = 5;
+                }
+                return monitorDataService.getHistoryHealth(neIds, period, interval);
+            } else {
+                IntervalType intervalType = IntervalType.minute;
+                //interval = 5;
+                if(ObjectUtils.isEmpty(interval)) interval=5;
+                if (IndPeriod._1day == period) {
+                    intervalType = IntervalType.minute;
+                    //interval = 5;
+                } else if (IndPeriod._1week == period) {
+                    intervalType = IntervalType.hour;
+                    //interval = 8;
+                } else if (IndPeriod._1month == period) {
+                    intervalType = IntervalType.hour;
+                    //interval = 24;
+                }
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
     /**
      * 指标历史统计-指标 (可以选择多个指标)(资源唯一)
      *
@@ -543,6 +586,34 @@ public class MonitorDataController {
             return new JsonModel(false, e.getMessage());
         }
     }
+
+    @ApiOperation("获取topN的展示数据(定位到资源)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "topN展示的指标类型", required = true),
+            @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源IDs"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性"),
+            @ApiImplicitParam(name = "number", paramType = "query", dataType = "String", value = "topN展示的记录条数"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值"),
+            @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式")})
+    @RequestMapping(value = "/indicator/topNHost", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getTopNByItObjectsTopNHost(@RequestParam String indicators, @RequestParam(required = false) Long domainId,
+                                        @RequestParam(required = false) String neIds, @RequestParam(required = false) String baseNeClass,
+                                        @RequestParam(required = false) String neClass, @RequestParam(required = false) String field,
+                                        @RequestParam String number, @RequestParam String windows, @RequestParam String order, HttpSession session,
+                                        Boolean bar) {
+        try {
+            return monitorDataService.getTopNByItObjectsTopNHost(indicators, domainId, neIds, baseNeClass, neClass, field, number, windows, order, session, bar,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+
 
     @ApiOperation("获取多资源多指标统计的展示数据")
     @ApiImplicitParams({

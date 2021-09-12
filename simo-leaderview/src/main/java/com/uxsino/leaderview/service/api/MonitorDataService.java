@@ -1810,6 +1810,108 @@ public class MonitorDataService {
         }
         return new JsonModel(true, json);
     }
+    public JsonModel getTopNByItObjectsTopNHost(String indicators, Long domainId, String neIds,
+                                        String baseNeClass, String neClass, String field,
+                                        String number, String windows, String order,
+                                        HttpSession session, Boolean bar,String topoId) throws Exception{
+        bar = existJudgment(bar);
+        /*if (Strings.isNullOrEmpty(indicators)) {
+            return new JsonModel(true, "未选择指标！", empObj());
+        }*/
+        List<NetworkEntity> hostNes = Lists.newArrayList();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
+        if(!ObjectUtils.isEmpty(neIds)){
+            criteria.setIds(Arrays.asList(neIds.split(",")));
+        }else if (!Strings.isNullOrEmpty(neClass)) {
+            criteria.setNeClass(NeClass.valueOf(neClass));
+        } else if(!Strings.isNullOrEmpty(baseNeClass)){
+            criteria.setBaseNeClass(BaseNeClass.valueOf(baseNeClass));
+        } else {
+            return new JsonModel(true, "父类型、子类型与资源均未选择！", empObj());
+        }
+        criteria.setMonitoring(true);
+        List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
+        String hostIds = list.stream().filter(ne -> !StringUtils.isEmpty(ne.getHostId()))
+                .map(NetworkEntity::getHostId).distinct().collect(Collectors.joining(","));
+
+        //单独拿出主机资源和id
+        NetworkEntityCriteria hostCriteria = new NetworkEntityCriteria();
+        hostCriteria = rpcProcessService.setCriteriaDomainIds(hostCriteria,session,domainId);
+        if(!ObjectUtils.isEmpty(hostIds)){
+            hostCriteria.setIds(Lists.newArrayList(hostIds.split(",")));
+            hostCriteria.setMonitoring(true);
+            hostNes  = rpcProcessService.getNeList(hostCriteria);
+            hostIds = hostNes.stream().map(NetworkEntity::getId).distinct().collect(Collectors.joining(","));
+        }
+        if (CollectionUtils.isEmpty(hostNes)) {
+            return new JsonModel(true, empObj());
+        }
+        JSONObject json = new JSONObject();
+        // 健康度特殊化处理
+        if ("healthy".equals(indicators)) {
+            List<NeHealth> healthList = rpcProcessService.findNeHealthOrderByHealthy(Lists.newArrayList(hostIds.split(",")), order);
+            JSONArray columns = new JSONArray();
+            columns.add("资源名称");
+            columns.add("健康度");
+            JSONArray rows = new JSONArray();
+            int i = 0;
+            int num = Integer.parseInt(number);
+            for (NeHealth health : healthList) {
+                if (i < num) {
+                    JSONObject row = new JSONObject();
+                    NetworkEntity ne = rpcProcessService.findNetworkEntityById(health.getId());
+                    if (ObjectUtils.isEmpty(ne)) {
+                        continue;
+                    }
+                    row.put("资源名称", ne.getName() + "(" + ne.getIp() + ")");
+                    row.put("健康度", health.getHealth());
+                    rows.add(row);
+                    i++;
+                }
+            }
+            json.put("columns", columns);
+            json.put("rows", rows);
+            return new JsonModel(true, json);
+        } else {
+            JSONArray window = JSONArray.parseArray(windows);
+            if (!ObjectUtils.isEmpty(windows)) {
+                window = windowBreakUp(window);
+            }
+            IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+            if (Objects.equals("LIST", ind.getIndicatorType())) {
+                for (int i = 0; i < window.size(); i++) {
+                    JSONObject itm = window.getJSONObject(i);
+                    if (StringUtils.isBlank(itm.getJSONObject("ne").getString("component"))) {
+                        return new JsonModel(false, "未选择部件，请在配置资源指标详细弹窗中重新配置!");
+                    }
+                }
+            }
+            if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
+                return new JsonModel(true, empObj());
+            }
+            json = getTopNByItObjects(ind, hostNes, number, field, window, order);
+        }
+        if (Objects.isNull(json)) {
+            return new JsonModel(true, empObj());
+        }
+        if (bar) {
+            JSONArray rows = json.getJSONArray("rows");
+            if (!ObjectUtils.isEmpty(rows)) {
+                JSONArray tmpRows = new JSONArray();
+                for (int i = rows.size() - 1; i >= 0; i--) {
+                    JSONObject obj = rows.getJSONObject(i);
+                    tmpRows.add(obj);
+                }
+                json.put("rows", tmpRows);
+            }
+        }
+        return new JsonModel(true, json);
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public JSONObject getTopNByItObjects(IndicatorTable ind, List<NetworkEntity> neList, String topStr, String field,

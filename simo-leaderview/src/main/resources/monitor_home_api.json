@@ -481,7 +481,7 @@
         "name": "宿主机资源指标TOPN",
         "component": "monitor",
         "type": "NewHistogram",
-        "url": "/leaderview/monitor/indicator/topN",
+        "url": "/leaderview/monitor/indicator/topNHost",
         "method" : "post",
         "params": [
             {
@@ -506,32 +506,32 @@
                 "notNull": false,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/neClass",
+                "dataUrl": "/leaderview/monitor/params/neClass?isHardware=false",
                 "params": ["baseNeClass"]
             },
             {
                 "key": "neIds",
                 "name": "资源",
-                "notNull": true,
-                "type": "drop-down",
+                "notNull": false,
+                "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getHostNes?notUnknown=true",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
                 "params": ["domainId","baseNeClass","neClass"]
             },
             {
                 "key": "indicators",
-                "name": "指标分类",
+                "name": "宿主指标分类",
                 "//": "原指标",
                 "notNull": true,
                 "type": "drop-down",
                 "method" : "get",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicatorTopN",
+                "dataUrl": "/leaderview/monitor/params/getIndicatorHostTopN",
                 "params": ["neIds","neClass","baseNeClass"]
             },
             {
                 "key": "field",
-                "name": "指标",
+                "name": "宿主指标",
                 "//": "原属性",
                 "notNull": true,
                 "type": "drop-down",
@@ -2027,7 +2027,7 @@
         "name": "宿主机指标趋势监控",
         "component": "monitor",
         "type": "ELine",
-        "url": "/leaderview/monitor/multiple_indicator/record",
+        "url": "/leaderview/monitor/multiple_indicator/recordHost",
         "method" : "get",
         "params": [
             {
@@ -2052,7 +2052,7 @@
                 "notNull": false,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/neClass",
+                "dataUrl": "/leaderview/monitor/params/neClass?isHardware=false",
                 "params": ["baseNeClass"]
             },
             {
@@ -2061,7 +2061,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getHostNes?notUnknown=true",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true&&isHardware=false",
                 "params": ["domainId","baseNeClass","neClass"]
             },
             {
@@ -2070,7 +2070,7 @@
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getUnit",
+                "dataUrl": "/leaderview/monitor/params/getUnitHost",
                 "params": ["neIds"]
             },
             {
@@ -2082,7 +2082,7 @@
                 "maxLength": 5,
                 "method" : "get",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicator?healthy=true",
+                "dataUrl": "/leaderview/monitor/params/getHostIndicator?healthy=true",
                 "params": ["neIds","unit"]
             },
             {
@@ -2093,7 +2093,7 @@
                 "method": "get",
                 "title": "指标可多选，展示效果为多条曲线，建议选择指标不超过5个",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndFieldByType",
+                "dataUrl": "/leaderview/monitor/params/getHostComponentNameAndIndFieldByType",
                 "params":["neIds","indicators","unit"]
             },
             {

@@ -77,12 +77,12 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsEachLevelAlarms", consumes = "application/json")
     JsonModel statisticsEachLevelAlarms(@RequestParam("topoId") String topoId);
 
-    @RequestMapping(method = {RequestMethod.GET}, value = {"/realTime/perf/topEvent"}, consumes = {"application/json"})
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topEvent"}, consumes = {"application/json"})
     JsonModel topEvent(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 
-    @RequestMapping(method = {RequestMethod.GET}, value = {"/realTime/perf/topSql"}, consumes = {"application/json"})
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topSql"}, consumes = {"application/json"})
     JsonModel topSQL(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 
-    @RequestMapping(method = {RequestMethod.GET}, value = {"/realTime/perf/topSession"}, consumes = {"application/json"})
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topSession"}, consumes = {"application/json"})
     JsonModel topSession(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 }
