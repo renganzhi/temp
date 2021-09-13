@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import UsModal from './main.vue'
-let ensureConstructor = Vue.extend(UsModal)
+
+const ensureConstructor = Vue.extend(UsModal)
 
 UsModal.confirm = function (obj, fn, cancelFn, noFn) {
   // eslint-disable-next-line new-cap
