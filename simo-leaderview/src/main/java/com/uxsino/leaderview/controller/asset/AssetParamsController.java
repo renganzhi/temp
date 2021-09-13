@@ -33,7 +33,7 @@ public class AssetParamsController {
     }
 
     @ApiOperation("返回所有的资产告警类型")
-    @GetMapping("remindType")
+    @GetMapping("/remindType")
     @ResponseBody
     public JsonModel getRemindTypeEnum(){
         try {
@@ -45,7 +45,7 @@ public class AssetParamsController {
     }
 
     @ApiOperation("返回所有的资产告警级别")
-    @GetMapping("remindLevel")
+    @GetMapping("/remindLevel")
     @ResponseBody
     public JsonModel getAlertLevelEnum(){
         try {

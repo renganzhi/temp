@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MCClientHystrixLeaderview implements MCService {
     @Override
+    public JsonModel getOrganList(String params) {
+        return new JsonModel(false, "MC服务调用失败");
+    }
+
+    @Override
     public JsonModel getMenu(String cookie) {
         return new JsonModel(false, "MC服务调用失败");
     }

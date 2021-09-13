@@ -6,7 +6,7 @@ import com.uxsino.leaderview.rpc.hystrix.DatacenterClientHystrixMonitor;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "${service-datacenter}", fallback = DatacenterClientHystrixMonitor.class)
+@FeignClient(value = "${service-dmc}", fallback = DatacenterClientHystrixMonitor.class)
 public interface DatacenterService {
 
     @RequestMapping(method = RequestMethod.POST, value = "/indicator/current/values", consumes = "application/json")

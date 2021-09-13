@@ -5,15 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
-import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.PerormanceView;
-import com.uxsino.leaderview.rpc.AlertService;
-import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.service.VideoMonitoringService;
 import com.uxsino.leaderview.service.api.MonitorDataService;
-import com.uxsino.leaderview.service.api.RpcProcessService;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,8 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Objects;
 
 
 @Api(tags = {"资源-大屏展示数据接口"})
@@ -639,6 +635,24 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("获取单资源单指标多部件统计的展示数据TopN")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs"),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "展示的指标类型"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值")})
+    @RequestMapping(value = "/indicator/multipleCompTopN", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getMultipleCompObjectTopN(@RequestParam String neIds, @RequestParam String indicators,
+                                               @RequestParam(required = false) String[] componentName,@RequestParam String field,
+                                               @RequestParam Integer number,@RequestParam String order, HttpSession session) {
+        try {
+            return monitorDataService.getMultipleCompObjectTopN(neIds, indicators, componentName,field, number,order,session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
     @ApiOperation("根据所选域、拓扑图id统计链路数量")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "abnormal", paramType = "query", dataType = "Boolean", value = "统计异常数据")})
@@ -854,7 +868,7 @@ public class MonitorDataController {
     })
     @RequestMapping(value = "/countTopoLink", method = RequestMethod.POST)
     @ResponseBody
-    public  JsonModel CountTopoLink(
+    public  JsonModel countTopoLink(
             @RequestParam(required = true) String topoId,
             @RequestParam(required = false) Boolean abnormal
     ){
@@ -866,11 +880,33 @@ public class MonitorDataController {
         }
     }
 
-    @Autowired
-    RpcProcessService rpcProcessService;
+    @ApiOperation("datastore列表")
+    @RequestMapping(value = "/datastoreList", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel datastoreList(@RequestParam(required = false) Long domainId,
+                                   @RequestParam(required = false) String neIds,
+                                   @RequestParam Integer number){
+        try {
+            return monitorDataService.DatastoreList(neIds,number);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
 
-    @Autowired
-    private VideoMonitoringService videoMonitoringService;
+    @ApiOperation("vmware统计信息")
+    @RequestMapping(value = "/vmwareStatistics", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel vmwareStatistics(@RequestParam String neIds,@RequestParam String indicatorId,
+                                      @RequestParam Integer type){
+        try {
+            return monitorDataService.VmwareStatistics(neIds,indicatorId,type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
+
 
     /*@Autowired
     private MonitorService monitorService;

@@ -23,4 +23,9 @@ public class AssetClientHystrixLeaderview implements AssetService {
     public JsonModel search(String param) {
         return new JsonModel(false,"Asset服务调用失败");
     }
+
+    @Override
+    public JsonModel searchStandingbook(String param) {
+        return new JsonModel(false,"Asset服务调用失败");
+    }
 }
