@@ -256,7 +256,8 @@ html[data-theme="default"] {
   }
 
   .select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: #222938;
+    background-color: #5897fb;
+    color: white;
   }
 
   .select2-container--default
@@ -425,7 +426,7 @@ html[data-theme="blueWhite"] {
   }
 
   .select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: #adb9ca;
+    background-color: #5897fb;
     color: #ffffff;
   }
 

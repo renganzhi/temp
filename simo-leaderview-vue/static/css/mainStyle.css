@@ -893,7 +893,7 @@ tab切换页
 
 .select2-container--default
     .select2-results__option--highlighted[aria-selected] {
-    background-color: transparent !important;
+    background-color: #5897fb !important;
 }
 .select2-dropdown {
     z-index: 1051;
@@ -1872,6 +1872,23 @@ body.page-header-fixed .healthy {
     color: inherit !important;
 }
 
+#shareFm1 ul.select2-selection__rendered { 
+    padding-right: 30px; 
+} 
+#shareFm1 .select2-container--open ul.select2-selection__rendered:after{
+    transform: translateY(-50%) rotate(90deg); 
+}
+#shareFm1 ul.select2-selection__rendered:after { 
+    content: "ㄑ"; 
+    font-size: 10px;
+    position: absolute; 
+    right: 10px; 
+    top: 50%; 
+    transform: translateY(-50%) rotate(-90deg); 
+    /* border-top: 5px solid #333; 
+    border-left: 5px solid transparent; 
+    border-right: 5px solid transparent;  */
+} 
 /*高级检索*/
 .highSearch {
     background: #141929;
