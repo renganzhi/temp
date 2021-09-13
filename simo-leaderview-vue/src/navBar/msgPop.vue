@@ -1,37 +1,26 @@
 <template>
   <div class="msgPop">
     <div class="title us-border-bottom">
-      <a
-        class="us-link"
-        @click="checkAll"
-      >
-        查看全部
-      </a>
+      <span class="us-link" @click="checkAll"> 查看全部 </span>
       <i
         class="us-link"
-        :class="openVoice ? 'icon-n-laba' :'icon-n-mute'"
-        @click="clickOpenVoice"
+        :class="open ? 'iconn-laba' : 'iconn-mute'"
+        @click.stop="clickOpenVoice"
       />
     </div>
     <ul class="msgInfo">
-      <div
-        v-if="!hasMsg"
-        class="noMsg"
-      >
-        暂时没有新的消息
+      <div v-if="!hasMsg" class="noMsg">
+        <img src="./images/no_data.png" alt="" />
+        <p style="color: rgb(191, 191, 191);margin-top: 16px;">暂无数据</p>
       </div>
       <template v-else>
-        <div
-          v-if="!latestMsg.length"
-          class="noMsg"
-        >
-          正在加载中...
-        </div>
+        <div v-if="!latestMsg.length" class="noMsg">正在加载中...</div>
         <MsgLi
           v-for="item in latestMsg"
           v-else
           :key="item.id"
-          :pram="{data:item,levelMap,originArr}"
+          @openDetalBox="openDetalBox"
+          :pram="{ data: item, levelMap, originArr }"
           :urlArry="urlArry"
           v-on="$listeners"
         />
@@ -41,10 +30,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
+
 export default {
   components: {
-    MsgLi: () => import('./msgLi')
+    MsgLi: () => import("./msgLi")
   },
   props: {
     urlArry: {
@@ -52,21 +42,22 @@ export default {
       default: () => {}
     }
   },
-  data () {
+  data() {
     return {
       levelMap: {},
       latestMsg: [],
+      open: this.openVoice,
       hasMsg: true,
       originArr: []
-    }
+    };
   },
   computed: {
-    ...mapState('base', {
+    ...mapState("base", {
       openVoice: state => state.notice.openVoice
     })
   },
 
-  created () {
+  created() {
     // 获取告警等级
     // this.$api.atEnum().then(res => {
     //   let levels = res.obj.level || []
@@ -76,48 +67,65 @@ export default {
     //   this.originArr = res.obj.origin || []
     // })
     // 获取最新5条消息
-    this.axios.get('/msg/mailbox/list?currentNo=1&pageSize=5&isRead=false').then((res) => {
-      this.latestMsg = res.obj.object || []
-      if (!this.latestMsg.length) this.hasMsg = false
-    })
+    this.axios
+      .get("/msg/mailbox/list?currentNo=1&pageSize=5&isRead=false")
+      .then(res => {
+        this.latestMsg = res.obj.object || [];
+        if (!this.latestMsg.length) this.hasMsg = false;
+      });
     // this.$api.msgList({ currentNo: 1, pageSize: 5, isRead: false }).then(res => {
     //   this.latestMsg = res.obj.object || []
     //   if (!this.latestMsg.length) this.hasMsg = false
     // })
   },
   methods: {
-    checkAll () {
-      // this.$emit('show-all-msg')
-      // window.location = `${window.location.origin}/index.html#/msg/unread`
+    openDetalBox(data) {
+      this.$emit("opencontent", data);
+    },
+    checkAll() {
+      // this.$emit("show-all-msg");
       if (this.urlArry.msg) {
-        window.location = `${window.location.origin + this.urlArry.msg}`
+        window.location = `${window.location.origin + this.urlArry.msg}`;
       }
     },
-    clickOpenVoice () {
-      // $store.commit('base/setVoice', !openVoice)
+    clickOpenVoice() {
+      console.log(22222);
+      this.open = !this.open;
+      // $store.commit('base/setVoice', !open)
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.msgPop{
-  position: absolute;
-  width: 325px;
+.msgPop {
+  // position: absolute;
+  // width: 325px;
+  // right: 0;
+  position: fixed;
+  top: 50px;
   right: 0;
-  .title{
+  width: 400px;
+  padding: 0 14px;
+  border: 1px solid;
+  z-index: 5;
+  min-height: 260px;
+  border-radius: 3px;
+  .title {
     padding: 15px 5px;
     line-height: 22px;
     margin: 0 10px;
-    i{
+    width: calc(100% - 20px);
+    text-align: left;
+    i {
       float: right;
       font-size: 20px;
     }
   }
-  .msgInfo{
-    .noMsg{
-      height: 120px;
-      line-height: 120px;
+  .msgInfo {
+    height: 206px;
+    .noMsg {
+      height: 206px;
       text-align: center;
     }
   }

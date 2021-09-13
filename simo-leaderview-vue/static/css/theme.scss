@@ -3,6 +3,9 @@ html[data-theme="default"] {
         background-color: #222739;
         color: #cad6dd;
     }
+    .navTittle{
+        color: #cad6dd;
+    }
     .navbarWrap {
         background-color: #1c2132;
         .dropdownMenuWrap {
@@ -11,14 +14,14 @@ html[data-theme="default"] {
                 color: #36a0f3;
             }
         }
-        .navLeft {
-            .headIcon {
-                color: #828bac;
-            }
-            .headIcon:hover {
-                background-color: #30364a;
-            }
-        }
+        // .navLeft {
+        //     .headIcon {
+        //         color: #828bac;
+        //     }
+        //     .headIcon:hover {
+        //         background-color: #30364a;
+        //     }
+        // }
         .navRight {
             ul {
                 background-color: #0d111f;
@@ -40,9 +43,14 @@ html[data-theme="default"] {
             }
         }
     }
+    .ivu-card-body div{
+        color: #393b3b;
+    }
+    .ivu-modal-content .ivu-modal-header .modal-title{
+        color: #c5c5c5;
+    }
     .ivu-select .ivu-select-selection {
         color: #cad6dd;
-        background-color: transparent;
     }
     .ivu-tabs .ivu-tabs-bar {
         border-bottom: solid 1px #383f54;
@@ -50,10 +58,10 @@ html[data-theme="default"] {
     .us-border-bottom {
         border-bottom: 1px solid #3d445a;
     }
-    .ivu-modal-header-inner {
+    .ivu-modal-header-inner{
         color: #cad6dd;
     }
-    .ivu-btn.ivu-btn-default {
+    .ivu-modal .ivu-btn.ivu-btn-default {
         background-color: #08c;
         color: #cad6dd;
         border: none;
@@ -65,9 +73,16 @@ html[data-theme="default"] {
         box-shadow: none;
         border-radius: 0;
     }
-    .ivu-select-dropdown {
-        .ivu-select-item {
+    .ivu-select-dropdown{
+        .ivu-select-item{
             color: #cad6dd;
+        }
+        .ivu-dropdown-item{
+            color: #c1c3c7;
+        }
+        .ivu-dropdown-item:hover{
+            background-color: #08c;
+            color: white;
         }
         color: #cad6dd;
         list-style: none;
@@ -77,8 +92,8 @@ html[data-theme="default"] {
     .ivu-select-item:hover {
         background-color: #08c;
         color: #fff;
-    }
-    .ivu-btn.ivu-btn-default:hover {
+    }    
+    .ivu-modal .ivu-btn.ivu-btn-default:hover {
         background-color: #02699c;
         color: #cad6dd;
         border: none;
@@ -93,18 +108,17 @@ html[data-theme="default"] {
     .ivu-btn + .ivu-btn {
         margin-left: 10px;
     }
-    .showImg .uploadCover i {
+    .showImg .uploadCover i{
         color: #cad6dd !important;
     }
-    .ivu-form-item {
+    .ivu-form-item{
         color: #cad6dd;
     }
-    .ivu-modal-body {
-        font-size: 12px;
+    .ivu-modal-body{
         color: #cad6dd;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #cad6dd;
+        color: #cad6dd
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #222739;
@@ -114,11 +128,11 @@ html[data-theme="default"] {
         }
     }
     .ivu-btn-text {
-        color: #cad6dd;
+        color: #cad6dd ;
     }
     .ivu-btn-text:hover {
         background-color: #5e667e;
-        border: none;
+        border: 1px solid transparent;
         color: #cad6dd !important;
     }
     .ivu-btn-primary {
@@ -127,6 +141,162 @@ html[data-theme="default"] {
     .ivu-btn-primary:hover {
         background-color: #02699c !important;
         border: none !important;
+    }
+    .content{
+        .room-list{
+            background-color: #1c2132;
+            border: 1px solid #ebedf100;
+            color: #f9f9f9;
+            .ivu-btn-default{
+                background-color: #08c;
+                color: #f9f9f9;
+                border: none;
+            }
+            .ivu-tooltip-rel{
+                color: white;
+            }
+            .choose{
+                span{
+                    color: #f9f9f9;
+                }
+            }
+        }
+    }
+    .treeTable{
+        border: 1px solid #ffffff7a;
+    }
+    .ivu-table {
+        color: #cad6dd;
+        background-color: transparent;
+        tr{
+            border-bottom: 1px solid #ffffff7a;
+        }
+        th{
+            background-color: transparent;
+            border-bottom: 1px solid #ffffff7a;
+        }
+        td{
+            background-color: transparent;
+            border-bottom: 1px solid #ffffff7a;
+        }
+        tr:last-child td{
+            border-bottom: 1px solid transparent;
+        }
+    }
+    .toolbar{
+        background-color: #1c2132;
+        color: #cad6dd;
+        box-shadow: 0px 0px 8px 1px #4b4a4a;
+    }
+    .main-content .right-content{
+        background-color: #33394b;
+    }
+    .model-content{
+        box-shadow: -1px 0px 5px #656363;
+    }
+    #model-info .model-content .title{
+        background-color: #222739;
+    }
+    .toolbar .right .shortcuts{
+        background-color: #33394b;
+        border: 1px solid #222739;
+    }
+    .ivu-collapse{
+        background-color: transparent;
+    }
+    .model-library{
+        border-top: 1px solid #6f6b6b;
+    }
+    .ivu-collapse > .ivu-collapse-item{
+        border-top: 1px solid #6f6b6b;
+    }
+    .model-content .list-type{
+        background-color: #222739;
+    }
+    .ivu-collapse-content{
+        background-color: #33394b;
+        color: #cad6dd;
+    }
+    .refer-switch{
+        color: #131212;
+    }
+    .ivu-collapse>.ivu-collapse-item>.ivu-collapse-header{
+        color: #cad6dd;
+    }
+    .ivu-input{
+        color: #cad6dd;
+    }
+    .input-item{
+        color: #cad6dd;
+    }
+    .position-card{
+        background-color: #222739;
+    }
+    .model-library .model-type .model-item{
+        background-color: #222739;
+    }
+    .tool-list{
+        background-color: #222739;
+    }
+    .handel{
+        background-color: #919196;
+    }
+    .tool-list div.active{
+        background-color: #33394b;
+    }
+    .left-tools{
+        background-color: #33394b;
+        .screen-box{
+            background-color: #33394b;
+        }
+    }
+    .switchBtn .visibility-switch{
+        background-color: #33394b;
+    }
+    .switchBtn .foucs-btn{
+        background-color: #33394b;
+    }
+    .backBtn .roomName{
+        background-color: #33394b;
+    }
+    .backBtn .back-btn{
+        background-color: #33394b;
+    }
+    .left-tools .show-monitoring{
+        background-color: #33394b;
+    }
+    .left-tools .show-search{
+        background-color: #33394b;
+    }
+    .left-tools .show-changefloor{
+        background-color: #33394b;
+    }
+    .left-tools .show-equipment{
+        background-color: #33394b;
+    }
+    .left-tools .show-changefloor .active{
+        background-color: #222739;
+    }
+    .left-tools .show-monitoring .active{
+        background-color: #222739;
+    }
+    .toolbar .icons .environments{
+        background-color: #222739;
+    }
+    .toolbar .icons .environments .bgItem:hover{
+        background-color: #33394b;
+    }
+    .input-item .imgBg{
+        background-color: #33394b;
+    }
+    
+    .ivu-input[disabled], fieldset[disabled] .ivu-input,
+    .ivu-select-disabled .ivu-select-selection,
+    .ivu-select-input[disabled] {
+        background-color: transparent;
+    }
+    .ivu-select-selection{
+        border: 1px solid #3d445a !important;
     }
 }
 
@@ -140,23 +310,14 @@ html[data-theme="blackWhite"] {
         .dropdownMenuWrap {
             background-color: #fff;
             .head-nav-name p {
-                color: #298dff;
-            }
-        }
-        .navLeft {
-            background-color: #02112d;
-            .headIcon {
-                color: #dae0e7;
-            }
-            .headIcon:hover {
-                background-color: #30364a;
+                color: #436bf6;
             }
         }
         .navRight {
+            color: #85a7f9;
             ul {
                 background-color: #fff;
                 font-size: 12px;
-                color: #50607c;
                 li:hover {
                     background-color: rgba(130, 139, 171, 0.2);
                 }
@@ -164,14 +325,25 @@ html[data-theme="blackWhite"] {
             li > a,
             i:hover {
                 cursor: pointer;
-                background-color: rgba(130, 139, 171, 0.2);
-                color: #026bf4;
+                background-color: #f5f9fe;
             }
             .msgPop {
                 background-color: #fff;
                 border: 1px solid #ebedf1;
+                .title { 
+                    .us-link{
+                        color: #436bf6;
+                        cursor: pointer;
+                    }
+                    .us-link:hover{
+                        color: #5b8bff;   
+                    }
+                }
             }
         }
+    }
+    .ivu-modal-content .ivu-modal-header .modal-title{
+        color: #515154;
     }
     .theme-blackWhite .ivu-tabs .ivu-tabs-bar {
         border-bottom: solid 1px #ebedf1;
@@ -180,16 +352,16 @@ html[data-theme="blackWhite"] {
         color: #50607c;
         background-color: #fff;
     }
-    .ivu-modal-header-inner {
+    .ivu-modal-header-inner{
         color: #50607c;
     }
-    .showImg .uploadCover i {
+    .showImg .uploadCover i{
         color: #fff !important;
     }
-    .ivu-form-item {
+    .ivu-form-item{
         color: #50607c;
     }
-    .ivu-btn.ivu-btn-default {
+    .ivu-modal .ivu-btn.ivu-btn-default {
         background-color: #fff;
         color: #026bf4;
         border: solid 1px #026bf4;
@@ -201,9 +373,16 @@ html[data-theme="blackWhite"] {
         box-shadow: none;
         border-radius: 0;
     }
-    .ivu-select-dropdown {
-        .ivu-select-item {
+    .ivu-select-dropdown{
+        .ivu-select-item{
             color: #50607c;
+        }
+        .ivu-dropdown-item{
+            color: #4d4f54;
+        }
+        .ivu-dropdown-item:hover{
+            background-color: #08c;
+            color: #fff;
         }
         color: #50607c;
         background-color: #fff;
@@ -214,7 +393,7 @@ html[data-theme="blackWhite"] {
         background-color: #08c;
         color: #fff;
     }
-    .ivu-btn.ivu-btn-default:hover {
+    .ivu-modal .ivu-btn.ivu-btn-default:hover {
         background-color: #ebedf17c;
         color: #026bf4;
         border: solid 1px #026bf4;
@@ -229,15 +408,14 @@ html[data-theme="blackWhite"] {
     .ivu-btn + .ivu-btn {
         margin-left: 10px;
     }
-    .ivu-modal-body {
-        font-size: 12px;
+    .ivu-modal-body{
         color: #50607c;
     }
     .us-border-bottom {
         border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #3e4554;
+        color: #3e4554
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #fff;
@@ -263,6 +441,122 @@ html[data-theme="blackWhite"] {
         color: #fff;
         background-color: #0253f5 !important;
         border: none !important;
+    }
+    .content{
+        .room-list{
+            background: #fff;
+            border: 1px solid #ebedf1;
+            color: #444242;
+            .ivu-btn-default{
+                background-color: #fff;
+                color: #026bf4;
+                border: 1px solid #026bf4;
+            }
+            .ivu-tooltip-rel{
+                color: #3e4554;
+            }
+            .choose{
+                span{
+                    color: #026bf4
+                }
+            }
+
+        }
+        .treeView{
+            .treeTable{
+                border: 1px solid #6967677a;
+            }
+        }
+    }
+    .ivu-table {
+        color: #50607c;
+        background-color: transparent;
+        tr{
+            border-bottom: 1px solid #6967677a;
+        }
+        th{
+            background-color: transparent;
+            border-bottom: 1px solid #6967677a;
+        }
+        td{
+            background-color: transparent;
+            border-bottom: 1px solid #6967677a;
+        }
+        tr:last-child td{
+            border-bottom: 1px solid transparent;
+        }
+    }
+    .form-title {
+        color: #262626;
+        width: 100%;
+        font-size: 14px;
+        line-height: 14px;
+        margin-bottom: 20px;
+    }
+    .form-title:before{
+        background-color: #426bf5;
+        font-size: 10px;
+        vertical-align: middle;
+        display: inline-block;
+        width: 2px;
+        height: 14px;
+        line-height: 14px;
+        content: ""!important;
+        margin-right: 4px;
+        box-sizing: border-box;
+    }
+    .user-info>div{
+        flex: 2;
+    }
+    .user-info> .ivu-form-item {
+        flex: 1;
+    }
+    .form-percent2 .ivu-form-item{
+        width: 49%;
+        display: inline-block;
+        margin-bottom: 20px;
+        vertical-align: top;
+        zoom: 1;
+    }
+    .form-percent3 .ivu-form-item{
+        width: 32%;
+        display: inline-block;
+        margin-bottom: 20px;
+        vertical-align: top;
+        zoom: 1;
+    }
+    .userInfoBox .ivu-input-wrapper .ivu-input[disabled]{
+        background-color: #f1f1f1 !important;
+    }
+    .userInfoBox .ivu-input-wrapper .ivu-input{
+        border-color: #c9ccd6 !important;
+        border-radius: 4px;
+        width: 150px;
+    }
+    .percent1{
+        width: 100% !important;
+    }
+    .ivu-form .ivu-form-item-label{
+        font-size: 12px;
+        height: 28px;
+        line-height: 28px;
+        padding: 0;
+    }
+    .ivu-form .ivu-form-item-content{
+        padding-left: 8px;
+        font-size: 12px;
+        line-height: 28px;
+    }
+    .md-sm .ivu-modal {
+      width: 580px !important;
+      min-height: 200px;
+      max-height: 400px;
+      .ivu-form-item-label{
+        width: 120px;
+      }
+      .ivu-form-item-content{
+        margin-left: 120px;
+      }
     }
 }
 
@@ -309,10 +603,13 @@ html[data-theme="blueWhite"] {
             }
         }
     }
+    .ivu-modal-content .ivu-modal-header .modal-title{
+        color: #515154;
+    }
     .theme-blackWhite .ivu-tabs .ivu-tabs-bar {
         border-bottom: solid 1px #ebedf1;
     }
-    .ivu-modal-header-inner {
+    .ivu-modal-header-inner{
         color: #50607c;
     }
     .ivu-select .ivu-select-selection {
@@ -320,12 +617,19 @@ html[data-theme="blueWhite"] {
         border: solid 1px #adb9ca;
         background-color: #fff;
     }
-    .showImg .uploadCover i {
+    .showImg .uploadCover i{
         color: #fff !important;
     }
-    .ivu-select-dropdown {
-        .ivu-select-item {
+    .ivu-select-dropdown{
+        .ivu-select-item{
             color: #50607c;
+        }
+        .ivu-dropdown-item{
+            color: #4d4f54;
+        }
+        .ivu-dropdown-item:hover{
+            background-color: #08c;
+            color: white;
         }
         color: #50607c;
         background-color: #fff;
@@ -336,14 +640,13 @@ html[data-theme="blueWhite"] {
         background-color: #08c;
         color: #fff;
     }
-    .ivu-form-item {
+    .ivu-form-item{
         color: #50607c;
     }
-    .ivu-modal-body {
-        font-size: 12px;
+    .ivu-modal-body{
         color: #50607c;
     }
-    .ivu-btn.ivu-btn-default {
+    .ivu-modal .ivu-btn.ivu-btn-default {
         background-color: #fff;
         color: #026bf4;
         border: solid 1px #026bf4;
@@ -355,7 +658,7 @@ html[data-theme="blueWhite"] {
         box-shadow: none;
         border-radius: 0;
     }
-    .ivu-btn.ivu-btn-default:hover {
+    .ivu-modal .ivu-btn.ivu-btn-default:hover {
         background-color: #ebedf17c;
         color: #026bf4;
         border: solid 1px #026bf4;
@@ -371,7 +674,7 @@ html[data-theme="blueWhite"] {
         border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #3e4554;
+        color: #3e4554
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #fff;
@@ -397,5 +700,62 @@ html[data-theme="blueWhite"] {
         color: #fff;
         background-color: #0253f5 !important;
         border: none !important;
+    }
+    .left-menu{
+        background-color: #0d111f;
+        .ivu-menu-dark{
+            background-color: #407cc0;
+            color: #ffffff;
+            .ivu-menu-item-active{
+                background-color: #f6f7fb !important;
+                color: #60abff ;
+            } 
+        }
+        .ivu-menu-dark a:not(.ivu-menu-item-active):hover{
+            background: #64abde !important;
+        }
+    }
+    .content{
+        .room-list{
+            background: #fff;
+            border: 1px solid #eaeaea;
+            color: #444242;
+            .ivu-btn-default{
+                background-color: #fff;
+                color: #026bf4;
+                border: 1px solid #026bf4;
+            }
+            .ivu-tooltip-rel{
+                color: #3e4554;
+            }
+            .choose{
+                span{
+                    color: #026bf4
+                }
+            }
+        }
+        .treeView{
+            .treeTable{
+                border: 1px solid #6967677a;
+            }
+        }
+    }
+    .ivu-table {
+        color: #50607c;
+        background-color: transparent;
+        tr{
+            border-bottom: 1px solid #6967677a;
+        }
+        th{
+            background-color: transparent;
+            border-bottom: 1px solid #6967677a;
+        }
+        td{
+            background-color: transparent;
+            border-bottom: 1px solid #6967677a;
+        }
+        tr:last-child td{
+            border-bottom: 1px solid transparent;
+        }
     }
 }

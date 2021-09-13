@@ -27,7 +27,7 @@ export default {
     }
   },
   created: function () {
-    $('html').attr('data-theme', 'default')
+    $('html').attr('data-theme', 'blackWhite')
     var _hash = window.location.hash
     if (_hash.split('/')[1]) {
       var _url =

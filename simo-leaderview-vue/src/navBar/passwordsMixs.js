@@ -1,4 +1,3 @@
-
 import { defaultPsw } from './sysConf'
 // import { JSEncrypt } from 'jsencrypt/bin/jsencrypt.min.js'
 // export const jsencrypt = {
@@ -22,7 +21,7 @@ import { defaultPsw } from './sysConf'
 // }
 
 export const sysUserPswConf = {
-  data () {
+  data() {
     return {
       form: {
         newPassword: '',
@@ -33,7 +32,7 @@ export const sysUserPswConf = {
     }
   },
   methods: {
-    addRules () {
+    addRules() {
       const validatePass = (rule, value, callback) => {
         if (this.form.enPassword !== '') {
           this.$refs.form.validateField('enPassword')
@@ -64,26 +63,26 @@ export const sysUserPswConf = {
       }
       this.getPswConf()
     },
-    getPswConf () { // 获取用户密码设置
+    getPswConf() { // 获取用户密码设置
       // /system/getSystemPwdConf
       this.axios.get('/system/getSystemPwdConf').then((res) => {
-      // this.$api.sysConfPsw().then(res => {
+        // this.$api.sysConfPsw().then(res => {
         res.obj = res.obj || defaultPsw
-        let pswConf = res.obj.formation
-        let len = res.obj.length
+        const pswConf = res.obj.formation
+        const len = res.obj.length
         this.dealPswHolder(pswConf)
         this.rules.newPassword.push({ ...this.$rules.range, min: len.minLength, max: len.maxLength, type: 'string' })
         this.rules.newPassword.push({ ...this.$rules.passwordCheckByConf(pswConf) })
       })
     },
-    dealPswHolder (pswConf) {
+    dealPswHolder(pswConf) {
       let placeholder = '必须包含'
-      let regObj = {
+      const regObj = {
         upperCase: '大写字母',
         lowerCase: '小写字母',
         pwdNumber: '数字'
       }
-      for (let key in pswConf) {
+      for (const key in pswConf) {
         if (pswConf[key]) {
           placeholder += regObj[key] + '、'
         }

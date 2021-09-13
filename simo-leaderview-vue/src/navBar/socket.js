@@ -1,5 +1,5 @@
 import SockJS from 'sockjs-client'
-export default function socket (options) {
+export default function socket(options) {
   let opt = {
     path: '/socket',
     ...options

@@ -1,6 +1,6 @@
 export const defaultPsw = {
-  'formation': { 'upperCase': true, 'lowerCase': true, 'pwdNumber': true },
-  'length': { 'minLength': 8, 'maxLength': 20 }
+  formation: { upperCase: true, lowerCase: true, pwdNumber: true },
+  length: { minLength: 8, maxLength: 20 }
 }
 
 export const defaultLogo = {
@@ -18,12 +18,12 @@ export const notifyWays = { // 消息推送方式
 }
 
 export const interfaceText = {
-  'up': '正常',
-  'down': '故障',
-  'testing': '测试',
-  'unknown': '未知',
-  'dormant': '休眠',
-  'notPresent': '硬件缺失',
-  'lowerLayerDown': '底层不可用',
-  'notUsed': '未使用'
+  up: '正常',
+  down: '故障',
+  testing: '测试',
+  unknown: '未知',
+  dormant: '休眠',
+  notPresent: '硬件缺失',
+  lowerLayerDown: '底层不可用',
+  notUsed: '未使用'
 }
