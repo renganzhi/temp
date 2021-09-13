@@ -11,16 +11,15 @@ import com.uxsino.commons.db.model.PageModel;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.model.*;
 import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.leaderview.model.SiteOrganizationCriteria;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.asset.AssetCriteria;
 import com.uxsino.leaderview.model.asset.AssetTreeVo;
 import com.uxsino.leaderview.model.business.ManageStatus;
 import com.uxsino.leaderview.model.business.*;
+import com.uxsino.leaderview.model.datacenter.IndValueQuery;
 import com.uxsino.leaderview.model.monitor.*;
-import com.uxsino.leaderview.rpc.AlertService;
-import com.uxsino.leaderview.rpc.AssetService;
-import com.uxsino.leaderview.rpc.BusinessService;
-import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.leaderview.rpc.*;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -55,6 +54,12 @@ public class RpcProcessService {
 
     @Autowired
     private AssetService assetService;
+
+    @Autowired
+    DatacenterService datacenterService;
+
+    @Autowired
+    MCService mcService;
 
     @Autowired
     private DomainUtils domainUtils;
@@ -724,13 +729,15 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
-        JSONArray array = (JSONArray) pageModel.getObject();
-        List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
-        for (int i = 0; i < array.size(); i++) {
-            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
-            nesLinkList.add(model);
-        }
+        //ArrayList<NetworkLinkModel> list = (ArrayList<NetworkLinkModel>) jsonModel.getObj();
+        //PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
+        //JSONArray array = (JSONArray) pageModel.getObject();
+        //List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
+        List<NetworkLinkModel> nesLinkList = this.toJavaBeanList(jsonModel,NetworkLinkModel.class);
+//        for (int i = 0; i < array.size(); i++) {
+//            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
+//            nesLinkList.add(model);
+//        }
         return nesLinkList;
     }
 
@@ -1029,4 +1036,16 @@ public class RpcProcessService {
         return jsonModel;
     }
 
+    public JsonModel searchByFieldQuery(String type, Boolean isHistory, IndValueQuery indValueQuery) {
+        return datacenterService.searchByFieldQuery(type,isHistory,indValueQuery);
+    }
+
+    public JsonModel getOrganList(SiteOrganizationCriteria criteria) {
+        String params = JSON.toJSONString(criteria);
+        return mcService.getOrganList(params);
+    }
+
+    public JsonModel searchStandingbook(AssetCriteria criteria) {
+        return assetService.searchStandingbook(JSON.toJSONString(criteria));
+    }
 }

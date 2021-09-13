@@ -13,6 +13,7 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
+import com.uxsino.leaderview.model.SiteOrganizationCriteria;
 import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
@@ -357,7 +358,7 @@ public class MonitorDataParamsService {
         if(StringUtils.isEmpty(hostIds)){
             return new JsonModel(false, "宿主资源不存在");
         }
-        return getIndicator(hostIds.split(","),type,unit,neClass,healthy);
+        return getIndicator(hostIds.split(","),type,unit,neClass,healthy,null);
     }
 
 
@@ -368,7 +369,7 @@ public class MonitorDataParamsService {
      * @param neClass 资源子类型
      * @param healthy 是否展示健康度
      */
-    public JsonModel getIndicator(String[] neIds, String type, String unit, NeClass neClass, Boolean healthy) {
+    public JsonModel getIndicator(String[] neIds, String type, String unit, NeClass neClass, Boolean healthy, BaseNeClass baseNeClass) {
 
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
@@ -398,7 +399,8 @@ public class MonitorDataParamsService {
             try {
                 //对虚拟化资源特殊处理
                 NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-                if (neClass != null && neClass.getBaseNeClass().equals(BaseNeClass.virtualization)) {
+                if ((neClass != null && neClass.getBaseNeClass().equals(BaseNeClass.virtualization))
+                        || (BaseNeClass.virtualization.equals(baseNeClass))) {
                     criteria.setSourceManage(false);
                 }
                 criteria.setIds(Lists.newArrayList(neIds));
@@ -1511,5 +1513,22 @@ public class MonitorDataParamsService {
             res.add(newResultObj("宿主机健康度","宿主机健康度"));
         }
         return new JsonModel(true,res);
+    }
+
+    public JsonModel getorgas() {
+        SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
+        JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        List<Map<String,String>> list = new ArrayList<>();
+        List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
+        for (LinkedHashMap<Object,Object> map : orgaList){
+
+            Map<String, String> row = new HashMap<>(2);
+            row.put("name", (String) map.get("name"));
+            row.put("value", (String) map.get("id"));
+            list.add(row);
+        }
+
+        return new JsonModel(true,list);
     }
 }

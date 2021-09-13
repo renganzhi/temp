@@ -4,10 +4,7 @@ package com.uxsino.leaderview.rpc;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.rpc.hystrix.MCClientHystrixLeaderview;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @description 调用SIMO-MC的服务类
@@ -16,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(value = "${service-mc}", fallback = MCClientHystrixLeaderview.class)
 public interface MCService {
+
+    @RequestMapping(method = RequestMethod.POST,value = "mcApi/organization/list",consumes = "application/json")
+    JsonModel getOrganList(@RequestBody String params);
+
     @RequestMapping(method = RequestMethod.GET, value = "mc/getMenu", consumes = "application/json")
     JsonModel getMenu(@RequestHeader("Cookie") String cookie);
 

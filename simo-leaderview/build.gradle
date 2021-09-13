@@ -16,7 +16,6 @@ dependencies {
     compile project(":simo-commons-authority")
     compile project(":simo-commons-reactorq")
     compile project(":simo-component-watcher")
-    compile project(":simo-collector-data")
     compile project(":simo-commons-web-support")
     compile project(":simo-commons-validator")
 

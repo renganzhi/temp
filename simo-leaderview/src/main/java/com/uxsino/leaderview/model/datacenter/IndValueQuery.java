@@ -24,7 +24,7 @@ public class IndValueQuery {
 
     private static final String fieldPrefix = "v.";
 
-    public JSONObject getFieldFilters() {
+    public JSONObject generalFieldFilters() {
         JSONObject newFieldFilters = new JSONObject();
         if (null != fieldFilters && !fieldFilters.isEmpty()) {
             for (String key : fieldFilters.keySet()) {
@@ -34,7 +34,7 @@ public class IndValueQuery {
         return newFieldFilters;
     }
 
-    public List<String> getFieldResFilter() {
+    public List<String> generalFieldResFilter() {
         List<String> newFieldResFilters = new ArrayList<>();
         if (!CollectionUtils.isEmpty(fieldResFilter)) {
             for (String key : fieldResFilter) {
@@ -44,7 +44,7 @@ public class IndValueQuery {
         return newFieldResFilters;
     }
 
-    public JSONObject getFieldSort() {
+    public JSONObject generalFieldSort() {
         JSONObject newFieldSort = new JSONObject();
         if (null != fieldSort && !fieldSort.isEmpty()) {
             for (String key : fieldSort.keySet()) {

@@ -123,16 +123,16 @@ public class MonitorDataParamsController {
     @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源ID"),
             @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "指标类型"),
             @ApiImplicitParam(name = "unit", paramType = "query", dataType = "String", value = "单位类型"),
             @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
             @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
     @RequestMapping(value = "/getIndicator", method = RequestMethod.GET)
-    public JsonModel getIndicator(@RequestParam(required = false) String[] neIds,
-                                  @RequestParam(required = false) String type, @RequestParam(required = false) String unit,
-                                  @RequestParam(required = false) NeClass neClass, @RequestParam(required = false) Boolean healthy) {
-        return monitorDataParamsService.getIndicator(neIds, type, unit, neClass, healthy);
-
+    public JsonModel getIndicator(@RequestParam(required = false) String[] neIds,@RequestParam(required = false) String type,
+                                  @RequestParam(required = false) String unit, @RequestParam(required = false) NeClass neClass,
+                                  @RequestParam(required = false) Boolean healthy,@RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicator(neIds,type, unit, neClass, healthy,baseNeClass);
     }
 
     @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
@@ -151,10 +151,10 @@ public class MonitorDataParamsController {
     }
 
     @RequestMapping(value = "/indicatorsRight", method = RequestMethod.GET)
-    public JsonModel indicatorsRight(@RequestParam(required = false) String[] neIds,
-                                     @RequestParam(required = false) String type, @RequestParam(required = false) String unit,
-                                     @RequestParam(required = false) NeClass neClass, @RequestParam(required = false) Boolean healthy) {
-        return getIndicator(neIds, type, unit, neClass, healthy);
+    public JsonModel indicatorsRight(@RequestParam(required = false) String[] neIds, @RequestParam(required = false) String type,
+                                     @RequestParam(required = false) String unit, @RequestParam(required = false) NeClass neClass,
+                                     @RequestParam(required = false) Boolean healthy,@RequestParam(required = false) BaseNeClass baseNeClass) {
+        return getIndicator(neIds,type, unit, neClass, healthy, baseNeClass);
     }
 
     @RequestMapping(value = "/getIndicatorTopN", method = RequestMethod.GET)
@@ -484,6 +484,14 @@ public class MonitorDataParamsController {
     @GetMapping({"/getNeStatusColumn"})
     public JsonModel getNeStatusColumn(@RequestParam(required = false)BaseNeClass baseNeClass) {
         return this.monitorDataParamsService.getNeStatusColumn(baseNeClass);
+    }
+
+    @ApiOperation("获取各部门的id")
+    @ApiImplicitParams({
+    })
+    @GetMapping({"/getorgas"})
+    public JsonModel getNeStatusColumn() {
+        return this.monitorDataParamsService.getorgas();
     }
 
 }
