@@ -579,16 +579,8 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel getIndicatorValueStr(String neIds, BaseNeClass baseNeClass, String indicators, String componentName, String field) throws Exception{
-        if("runStatus".equals(indicators)){
-            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-            criteria.setId(neIds);
-            NetworkEntity entity = rpcProcessService.getNeList(criteria).get(0);
-            JSONObject res = new JSONObject();
-            String status = entity.getRunStatus() != null ? entity.getRunStatus().getName() : "--";
-            res.put("name",entity.getName());
-            res.put("value",status);
-            res.put("info",status);
-            return new JsonModel(true,res);
+        if("runStatus".equals(indicators) || "oracle_table_space_sum".equals(indicators)){
+            return handleSpecialIndicator(neIds,baseNeClass,indicators,componentName,field);
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         // 用于转换枚举数据
@@ -685,6 +677,60 @@ public class MonitorDataService {
         result.put("name", ObjectUtils.isEmpty(fieldLabel) ? null : fieldLabel.getString("label"));
         result.put("info", ObjectUtils.isEmpty(desc) ? value : desc.getString(value));
         return new JsonModel(true, result);
+    }
+
+
+    public JsonModel handleSpecialIndicator(String neIds, BaseNeClass baseNeClass, String indicators, String componentName, String field) throws Exception {
+        if ("runStatus".equals(indicators)) {
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            criteria.setId(neIds);
+            NetworkEntity entity = rpcProcessService.getNeList(criteria).get(0);
+            JSONObject res = new JSONObject();
+            String status = entity.getRunStatus() != null ? entity.getRunStatus().getName() : "--";
+            res.put("name", entity.getName());
+            res.put("value", status);
+            res.put("info", status);
+            return new JsonModel(true, res);
+        } else if ("oracle_table_space_sum".equals(indicators)) {
+            indicators = "oracle_table_space_info";
+            JsonModel componentNames = monitorDataParamsService.getComponentName(new String[]{neIds}, indicators);
+            if(!componentNames.isSuccess() || ObjectUtils.isEmpty(componentNames.getObj())){
+                return componentNames;
+            }
+            JSONArray array = JSONArray.parseArray(JSON.toJSONString(componentNames.getObj()));
+            String values = array.stream().map(x -> ((JSONObject) x).getString("value")).collect(Collectors.joining(","));
+            JsonModel valueStrTable = getIndicatorValueStrTable(neIds, baseNeClass, indicators, values.split(","), new String[]{"total_size", "used_size"});
+            if(!valueStrTable.isSuccess() || ObjectUtils.isEmpty(valueStrTable.getObj())){
+                return valueStrTable;
+            }
+            JSONObject valueStrTableObj = (JSONObject)valueStrTable.getObj();
+            JSONArray rows = valueStrTableObj.getJSONArray("rows");
+            Double sumSpace = 0.0,usedSpace = 0.0;
+            for (int i = 0; i < rows.size(); i++) {
+                JSONObject row = rows.getJSONObject(i);
+                sumSpace += row.getDouble("表空间总大小") == null ? 0L : row.getDouble("表空间总大小");
+                usedSpace += row.getDouble("已使用表空间大小") == null ? 0L : row.getDouble("已使用表空间大小");
+            }
+            JSONArray res = new JSONArray();
+
+            if("space_usae_avg".equals(field)){
+                JSONObject object = new JSONObject();
+                Double value = Math.round(usedSpace / sumSpace) / 10000.0;
+                object.put("info", value);
+                object.put("value",value);
+                object.put("name","空间利用率");
+                res.add(object);
+            }else if("used_rate_sum".equals(field)){
+                JSONObject object = new JSONObject();
+                Double value = sumSpace - usedSpace;
+                object.put("info", value);
+                object.put("value",value);
+                object.put("name","剩余容量大小");
+                res.add(object);
+            }
+            return new JsonModel(true,res);
+        }
+        return new JsonModel(false);
     }
 
 

@@ -809,6 +809,10 @@ public class MonitorDataParamsService {
                                 if (!hasStringType) {
                                     return;
                                 }
+                                //对于特殊值处理  如果指标有oracle_table_space_info的信息,就可以有总的空间信息
+                                if(NeClass.oracle.equals(ne.getNeClass()) && "oracle_table_space_info".equals(indName)){
+                                    arr.add(newResultObj("空间信息","oracle_table_space_sum"));
+                                }
                                 arr.add(newResultObj(ind.getLabel(), indName));
                             }
                         });
@@ -842,7 +846,7 @@ public class MonitorDataParamsService {
         if (Strings.isNullOrEmpty(neIds[0]) || Strings.isNullOrEmpty(indicators)) {
             return new JsonModel(false, "参数错误");
         }
-        if("runStatus".equals(indicators)){
+        if("runStatus".equals(indicators) || "oracle_table_space_sum".equals(indicators)){
             return new JsonModel(true,new JSONArray());
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
@@ -917,6 +921,11 @@ public class MonitorDataParamsService {
         // 对健康度指标进行特殊化处理
         if ("healthy".equals(indicators) || "runStatus".equals(indicators)) {
             result.add(newResultObj("值", null));
+            return new JsonModel(true, result);
+        }
+        if("oracle_table_space_sum".equals(indicators)){
+            result.add(newResultObj("空间利用率", "space_usae_avg"));
+            result.add(newResultObj("剩余容量大小", "used_rate_sum"));
             return new JsonModel(true, result);
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
