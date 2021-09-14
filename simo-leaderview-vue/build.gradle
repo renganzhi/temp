@@ -45,6 +45,27 @@ task copyDist(dependsOn: npmBuild){
         }
     }
     //--------------------------
+    doLast {
+        copy {
+            from "dist/leaderviewWeb/fonts"
+            into "build/resources/main/templates/leaderviewWeb/leaderviewWeb/fonts"
+        }
+    }
+
+    doLast {
+        copy {
+            from "dist/leaderviewWeb/font"
+            into "build/resources/main/templates/leaderviewWeb/leaderviewWeb/font"
+        }
+    }
+
+    doLast {
+        copy {
+            from "dist/leaderviewWeb/img"
+            into "build/resources/main/templates/leaderviewWeb/leaderviewWeb/img"
+        }
+    }
+
     doLast {//simo-leaderview 开发目录
         copy {
             from "build/resources/main/templates"

@@ -797,7 +797,7 @@ public class MonitorDataService {
             return new JsonModel(true, empObj);
         }
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-        if (baseNeClass.equals(BaseNeClass.virtualization)) {
+        if(!ObjectUtils.isEmpty(baseNeClass) && BaseNeClass.virtualization.equals(baseNeClass)){
             criteria.setSourceManage(false);
         }
         criteria.setId(neIds);
@@ -2693,7 +2693,7 @@ public class MonitorDataService {
         indValueQuery.setIndicatorId(indicators);
         JSONObject fieldFilters = new JSONObject();
         //fieldFilters.put("if_status","up");
-        indValueQuery.setFieldFilters(fieldFilters);
+        indValueQuery.setFieldShouldFilters(fieldFilters);
         List<String> fields = new ArrayList<>();
         fields.add(field);
         fields.add("identifier");
@@ -4286,7 +4286,7 @@ public class MonitorDataService {
 
         NetworkEntity networkEntity = null;
         try {
-            networkEntity = this.rpcProcessService.findNetworkEntityById(neId);
+            networkEntity = rpcProcessService.findNetworkEntityById(neId);
         } catch (Exception e) {
             return new JsonModel(false, e.getMessage());
         }
@@ -4337,7 +4337,7 @@ public class MonitorDataService {
         indValueQuery.setNeId(neid);
         indValueQuery.setIndicatorId("vm_datastore_info");
         JSONObject fieldFilters = new JSONObject();
-        indValueQuery.setFieldFilters(fieldFilters);
+        indValueQuery.setFieldShouldFilters(fieldFilters);
         List<String> fields = new ArrayList<>();
         fields.add("name");
         fields.add("volumn");
@@ -4345,11 +4345,9 @@ public class MonitorDataService {
         fields.add("freeSpace");
         indValueQuery.setFieldResFilter(fields);
         JSONObject fieldSort = new JSONObject();
+        fieldSort.put("volumn","desc");
         indValueQuery.setFieldSort(fieldSort);
         indValueQuery.setFieldSize(number);
-        JSONObject isort = new JSONObject();
-        isort.put("volumn","desc");
-        indValueQuery.setFieldSort(isort);
         String type = "list";
         Boolean IsHistory = false;
         JsonModel jsonModel = null;
@@ -4401,7 +4399,7 @@ public class MonitorDataService {
             //fieldFilters.put("vm_Status","Unconnection");
             //fieldFilters.put("vm_Status","Unknown");
         }
-        indValueQuery.setFieldFilters(fieldFilters);
+        indValueQuery.setFieldShouldFilters(fieldFilters);
         String type2 = "count";
         Boolean IsHistory = false;
         JsonModel jsonModel = null;

@@ -14,7 +14,7 @@
 			"iclass": "icon-n-visualize",
 			"parentId": "SIMO",
 			"access": {"R": "只读", "RW": "读写"},
-			"url": "/leaderviewWeb/index.html"
+			"url": "/leaderview/leaderviewWeb/index.html"
 		}
 	]
 }

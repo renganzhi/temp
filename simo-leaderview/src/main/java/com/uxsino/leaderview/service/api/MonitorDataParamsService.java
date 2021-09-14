@@ -399,8 +399,8 @@ public class MonitorDataParamsService {
             try {
                 //对虚拟化资源特殊处理
                 NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-                if ((neClass != null && neClass.getBaseNeClass().equals(BaseNeClass.virtualization))
-                        || (BaseNeClass.virtualization.equals(baseNeClass))) {
+                if ((!ObjectUtils.isEmpty(neClass) && neClass.getBaseNeClass().equals(BaseNeClass.virtualization))
+                        || ((!ObjectUtils.isEmpty(baseNeClass) && BaseNeClass.virtualization.equals(baseNeClass)))) {
                     criteria.setSourceManage(false);
                 }
                 criteria.setIds(Lists.newArrayList(neIds));
@@ -506,16 +506,20 @@ public class MonitorDataParamsService {
             try {
                 NetworkEntityCriteria criteria = new NetworkEntityCriteria();
                 List<NeClass> neClasses = Lists.newArrayList();
-                //neClasses.addAll(neClass.getBaseNeClass().getNeClass());
+
                 if(ObjectUtils.isEmpty(neClass)){
                     neClasses.addAll(baseNeClass.getNeClass());
-                }else neClasses.add(neClass);
-                criteria.setNeClasses(neClasses);
-
-                //对虚拟化资源是非统一监管资源
-                if (baseNeClass.equals(BaseNeClass.virtualization)) {
-                    criteria.setSourceManage(false);
+                    //对虚拟化资源是非统一监管资源
+                    if (BaseNeClass.virtualization.equals(baseNeClass)) {
+                        criteria.setSourceManage(false);
+                    }
+                }else {
+                    neClasses.add(neClass);
+                    if (BaseNeClass.virtualization.equals(neClass.getBaseNeClass())) {
+                        criteria.setSourceManage(false);
+                    }
                 }
+                criteria.setNeClasses(neClasses);
 
                 indicatorTables.addAll(rpcProcessService.getUsableInd(null,criteria));
             }catch (Exception e){
@@ -551,7 +555,9 @@ public class MonitorDataParamsService {
             List<NetworkEntity> neList = Lists.newArrayList();
             try {
                 NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
-                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                //对虚拟化资源作特殊判断
+                if((!ObjectUtils.isEmpty(baseNeClass) && BaseNeClass.virtualization.equals(baseNeClass))
+                ||(!ObjectUtils.isEmpty(neClass) && BaseNeClass.virtualization.equals(neClass.getBaseNeClass()))){
                     criteria0.setSourceManage(false);
                 }
                 criteria0.setIds(Lists.newArrayList(neIds));
@@ -636,7 +642,8 @@ public class MonitorDataParamsService {
         List<NetworkEntity> neList = Lists.newArrayList();
         try {
             NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-            if (BaseNeClass.virtualization.equals(baseNeClass)) {
+            if((!ObjectUtils.isEmpty(baseNeClass) && BaseNeClass.virtualization.equals(baseNeClass))
+                    ||(!ObjectUtils.isEmpty(neClass) && BaseNeClass.virtualization.equals(neClass.getBaseNeClass()))){
                 criteria.setSourceManage(false);
             }
             if(!ObjectUtils.isEmpty(neIds)){
