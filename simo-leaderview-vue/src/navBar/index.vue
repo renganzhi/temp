@@ -101,7 +101,7 @@
           <li
             v-for="item in dropPramCompsMenu"
             :key="item.id"
-            @click="clickItem(item)"
+            @click="toggleMenu(item)"
           >
             <div>
               <i :class="item.iclass" />
@@ -350,7 +350,9 @@ export default {
       });
     },
     toggleMenu(item) {
-      window.location = window.location.origin + item.url;
+      if(item.url){
+        window.location = window.location.origin + item.url;
+      }
     },
     closePop() {
       this.openName = "";

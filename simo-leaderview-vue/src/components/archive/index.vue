@@ -380,6 +380,7 @@ html[data-theme="default"] {
     height: auto;
     line-height: 50px;
     padding: 0;
+    border-radius: 4px;
     min-width: auto;
 }
   .el-menu {
@@ -459,6 +460,7 @@ html[data-theme="default"] {
   .el-menu--popup {
     margin: 0;
     padding: 0;
+    overflow: hidden;
     box-shadow: #000000e6 0px 0px 15px;
   }
 }

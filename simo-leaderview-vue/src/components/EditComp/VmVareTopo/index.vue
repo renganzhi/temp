@@ -241,8 +241,6 @@ export default {
           if (nameFields.includes(k)) {
             res.name = v
           }
-
-          this.convert(v, nameFields, childrenFields)
         }
       } else {
 
