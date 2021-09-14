@@ -4801,8 +4801,8 @@ export default {
     sessionStorage.setItem('pageId', id)
   },
   mounted: function () {
-    var _url = window.location.protocol + '//' + window.location.host + '/index'
-    window.history.pushState({}, '', _url)
+    // var _url = window.location.protocol + '//' + window.location.host + '/index'
+    // window.history.pushState({}, '', _url)
     // $('#header').hide()
     $('.navbar-fixed-top').css('display', 'none')
     $('.page-container').css('top', '0px')

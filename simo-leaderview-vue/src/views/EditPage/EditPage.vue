@@ -729,9 +729,9 @@ export default {
   },
   mounted: function () {
     this.search()
-    var _url =
-      window.location.protocol + '//' + window.location.host + '/index'
-    window.history.pushState({}, '', _url)
+    // var _url =
+    //   window.location.protocol + '//' + window.location.host + '/index'
+    // window.history.pushState({}, '', _url)
     this.getAccess()
     this.saerchShareUser()
     $('.hoverTips').on('mouseenter', function () { // 绑定鼠标进入事件
