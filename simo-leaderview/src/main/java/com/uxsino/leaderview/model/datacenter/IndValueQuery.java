@@ -14,7 +14,9 @@ public class IndValueQuery {
 
     private String indicatorId;//指标
 
-    private JSONObject fieldFilters;//属性筛选条件，格式：{"power_state":"poweredOn"}
+    private JSONObject fieldMustFilters;//属性筛选条件，格式：{"power_state":"poweredOn"}
+
+    private JSONObject fieldShouldFilters;//属性筛选条件，格式：{"power_state":"poweredOn"}
 
     private List<String> fieldResFilter;//属性返回结果筛选，格式：["name","power_state","cpu_usage"]
 
@@ -24,11 +26,21 @@ public class IndValueQuery {
 
     private static final String fieldPrefix = "v.";
 
-    public JSONObject generalFieldFilters() {
+    public JSONObject generalFieldMustFilters() {
         JSONObject newFieldFilters = new JSONObject();
-        if (null != fieldFilters && !fieldFilters.isEmpty()) {
-            for (String key : fieldFilters.keySet()) {
-                newFieldFilters.put(fieldPrefix + key, fieldFilters.get(key));
+        if (null != fieldMustFilters && !fieldMustFilters.isEmpty()) {
+            for (String key : fieldMustFilters.keySet()) {
+                newFieldFilters.put(fieldPrefix + key, fieldMustFilters.get(key));
+            }
+        }
+        return newFieldFilters;
+    }
+
+    public JSONObject generalFieldShouldFilters() {
+        JSONObject newFieldFilters = new JSONObject();
+        if (null != fieldShouldFilters && !fieldShouldFilters.isEmpty()) {
+            for (String key : fieldShouldFilters.keySet()) {
+                newFieldFilters.put(fieldPrefix + key, fieldShouldFilters.get(key));
             }
         }
         return newFieldFilters;

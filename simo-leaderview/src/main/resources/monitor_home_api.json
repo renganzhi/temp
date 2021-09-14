@@ -4059,24 +4059,5 @@
                 ]
             }
         ]
-    },
-    {
-        "key": "vmware_topo_base",
-        "name": "虚拟化拓扑",
-        "component": "monitor",
-        "type": "topo",
-        "url": "/monitor/virtualization/vmware/topo/base/{neId}",
-        "method" : "get",
-        "params": [
-            {
-                "key": "neId",
-                "name": "资源",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true&baseNeClass=virtualization&neClass=vmware&domainId=",
-                "params": []
-            }
-        ]
     }
 ]
