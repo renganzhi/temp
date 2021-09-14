@@ -40,7 +40,6 @@ export default {
     var vm = this
     this.init()
     $(this.$el).on('change', function () {
-      // console.log('change select')
       vm.$emit('input', $(this).val())
     }).on('select2:selecting', function (e) {
       if (vm.mapSelect && vm.sameName && e.params && e.params.args && e.params.args.data) {
