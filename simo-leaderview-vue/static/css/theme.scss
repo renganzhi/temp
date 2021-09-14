@@ -7,9 +7,9 @@ html[data-theme="default"] {
         color: #cad6dd;
     }
     .navbarWrap {
-        background-color: #1c2132;
+        background-color: #ffffff;
         .dropdownMenuWrap {
-            background-color: #0d111f;
+            background-color: #ffffff;
             .head-nav-name p {
                 color: #36a0f3;
             }
@@ -23,23 +23,31 @@ html[data-theme="default"] {
         //     }
         // }
         .navRight {
+            color: #85a7f9;
             ul {
-                background-color: #0d111f;
+                background-color: #fff;
                 font-size: 12px;
-                color: #cad6dd;
                 li:hover {
-                    background-color: #30364a;
+                    background-color: rgba(130, 139, 171, 0.2);
                 }
             }
             li > a,
             i:hover {
                 cursor: pointer;
-                background-color: #30364a;
-                color: #828bac;
+                background-color: #f5f9fe;
             }
             .msgPop {
-                background-color: #0d111f;
-                border: 1px solid #3d445a;
+                background-color: #fff;
+                border: 1px solid #ebedf1;
+                .title { 
+                    .us-link{
+                        color: #436bf6;
+                        cursor: pointer;
+                    }
+                    .us-link:hover{
+                        color: #5b8bff;   
+                    }
+                }
             }
         }
     }
@@ -53,10 +61,10 @@ html[data-theme="default"] {
         color: #cad6dd;
     }
     .ivu-tabs .ivu-tabs-bar {
-        border-bottom: solid 1px #383f54;
+        border-bottom: solid 1px #ebedf1;
     }
     .us-border-bottom {
-        border-bottom: 1px solid #3d445a;
+        border-bottom: 1px solid #ebedf1;
     }
     .ivu-modal-header-inner{
         color: #cad6dd;
@@ -71,7 +79,7 @@ html[data-theme="default"] {
         line-height: 18px;
         font-size: 12px;
         box-shadow: none;
-        border-radius: 0;
+        border-radius: 3px;
     }
     .ivu-select-dropdown{
         .ivu-select-item{
@@ -371,7 +379,7 @@ html[data-theme="blackWhite"] {
         line-height: 18px;
         font-size: 12px;
         box-shadow: none;
-        border-radius: 0;
+        border-radius: 3px;
     }
     .ivu-select-dropdown{
         .ivu-select-item{
@@ -656,7 +664,7 @@ html[data-theme="blueWhite"] {
         line-height: 18px;
         font-size: 12px;
         box-shadow: none;
-        border-radius: 0;
+        border-radius: 3px;
     }
     .ivu-modal .ivu-btn.ivu-btn-default:hover {
         background-color: #ebedf17c;

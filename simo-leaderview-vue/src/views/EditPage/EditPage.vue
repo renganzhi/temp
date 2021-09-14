@@ -771,6 +771,8 @@ export default {
   margin: 12px;
   width: 310px;
   box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  overflow: hidden;
   .canSee {
     position: absolute;
     top: 0px;

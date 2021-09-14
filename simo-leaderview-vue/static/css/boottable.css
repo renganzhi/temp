@@ -247,7 +247,7 @@
 }
 
 .fixed-table-toolbar .btn-group > .btn-group > .btn {
-    border-radius: 0;
+    border-radius: 3px;
 }
 
 .fixed-table-toolbar .btn-group > .btn-group:first-child > .btn {
@@ -281,7 +281,7 @@
 
 .bootstrap-table .fixed-table-footer .table {
     border-bottom: none;
-    border-radius: 0;
+    border-radius: 3px;
     padding: 0 !important;
 }
 

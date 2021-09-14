@@ -141,7 +141,7 @@ select {
     border-radius: 3px !important;
     background-color: transparent !important;
     color: #cad6dd !important;
-    border-radius: 0px !important;
+    /* border-radius: 0px !important; */
     padding: 0 10px !important;
     font-size: 12px !important;
     display: inline-block;
@@ -324,7 +324,7 @@ button,
     outline: none;
     background: #0088cc;
     min-width: 60px;
-    border-radius: 0;
+    border-radius: 3px;
     vertical-align: middle;
     font-size: 12px !important;
     height: 28px;
@@ -351,7 +351,7 @@ button + button {
     background-color: #242c4a;
     color: #cad6dd;
     border: none;
-    border-radius: 0;
+    border-radius: 3px;
     margin-right: 2px;
     padding: 6px 10px;
 }
@@ -511,9 +511,9 @@ button + button {
 .fixed-table-container,
 .bootstrap-table .table {
     border: none;
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 }
 
 .bootstrap-table .pagination,
@@ -669,7 +669,7 @@ table-toolbar
 dropdown-menu
 *****/
 .dropdown-menu {
-    border-radius: 0;
+    border-radius: 3px;
     box-shadow: none;
     font-size: 12px;
     background-color: #141929;
@@ -707,9 +707,9 @@ datetimepicker
 .datetimepicker th {
     width: 28px;
     height: 22px;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
     border: none;
     font-weight: normal;
 }
@@ -854,7 +854,7 @@ tab切换页
     border: solid 1px #3d445a !important;
     background-color: transparent !important;
     color: #cad6dd !important;
-    border-radius: 0px !important;
+    /* border-radius: 0px !important; */
     padding: 0 10px !important;
     margin-left: 0px;
     font-size: 12px !important;
@@ -899,7 +899,7 @@ tab切换页
     z-index: 1051;
     border: 1px solid #3d445a;
     z-index: 16000;
-    border-radius: 0;
+    border-radius: 3px;
     background-color: #0a0e1a;
     opacity: 0.95;
     font-size: 12px;
@@ -913,7 +913,7 @@ tab切换页
 /*popover*/
 .popover {
     box-shadow: none;
-    border-radius: 0;
+    border-radius: 3px;
     border: none;
     background-color: #222938;
     width: 100%;
@@ -1830,7 +1830,7 @@ body.page-header-fixed .healthy {
 .ms-container .ms-selection .ms-list {
     border-radius: none !important;
     border: 1px solid #666f8b;
-    border-radius: 0px !important;
+    /* border-radius: 0px !important; */
 }
 
 .ms-container .ms-selectable li.ms-elem-selectable,
