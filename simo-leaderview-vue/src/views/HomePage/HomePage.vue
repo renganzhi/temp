@@ -2,19 +2,19 @@
   <div style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;">
     <navBar></navBar>
     <div id="home-html"
-        class="flex flex-vertical full-height full-width">
+         class="flex flex-vertical full-height full-width">
       <div style="width: 100%; height: 100%;"
-          v-if="loadAll && pageList.length < 1">
+           v-if="loadAll && pageList.length < 1">
         <div class="homeEmpty">
           <img v-if="defTheme"
-              src="../../assets/image/homeEmpty1.png" />
+               src="../../assets/image/homeEmpty1.png" />
           <img v-else
-              src="../../assets/image/homeEmpty.png" />
+               src="../../assets/image/homeEmpty.png" />
           <div>
             <p v-show="isNewUser"
-              style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
+               style="margin: 30px 0px;">还没有设置可展示的大屏页面！</p>
             <p v-show="!isNewUser"
-              style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
+               style="margin: 30px 0px;">请配置可展示的大屏页面！</p>
             <button type="button"
                     v-if="access==='w' && isNewUser"
                     @click="addPage = true">新增</button>
@@ -24,18 +24,19 @@
           </div>
         </div>
         <AddPage :showModal="addPage"
-                @hideModal="hideModal"></AddPage>
+                 @hideModal="hideModal"></AddPage>
 
         <ImportPage :showModal="showImport"
                     @hideModal="hideImportModal"
                     :tems="pageList"></ImportPage>
       </div>
-      <transition v-else :name="moveBox1">
+      <transition v-else
+                  :name="moveBox1">
         <div class="portlet light bordered flex-1"
-            v-show="moveFlag"
-            id="paintWrap">
+             v-show="moveFlag"
+             id="paintWrap">
           <div id="mainbox"
-              v-show="pageList.length >= 1"></div>
+               v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
             <div class="full-height pagebox">
               <LookItem v-for="(item,index) in nowPage"
@@ -43,9 +44,9 @@
                         :item="item"
                         :key="item.id"></LookItem>
               <LookCompose v-for="(list, index1) in combinList"
-                          :index="index1"
-                          :key="list.id"
-                          :list="list"></LookCompose>
+                           :index="index1"
+                           :key="list.id"
+                           :list="list"></LookCompose>
             </div>
           </div>
         </div>
@@ -53,10 +54,10 @@
       <!-- 下一页 -->
       <transition :name="moveBox2">
         <div class="portlet light bordered flex-1"
-            v-show="!moveFlag"
-            id="paintWrap2">
+             v-show="!moveFlag"
+             id="paintWrap2">
           <div id="mainbox2"
-              v-show="pageList.length >= 1"></div>
+               v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
             <div class="full-height pagebox">
               <LookItem v-for="(item,index) in nowPage2"
@@ -64,19 +65,20 @@
                         :item="item"
                         :key="item.id"></LookItem>
               <LookCompose v-for="(list, index1) in combinList2"
-                          :index="index1"
-                          :key="list.id"
-                          :list="list"></LookCompose>
+                           :index="index1"
+                           :key="list.id"
+                           :list="list"></LookCompose>
             </div>
           </div>
         </div>
       </transition>
       <!-- 下一页 -->
-      <div v-show="loadAll" id="homeTips">
+      <div v-show="loadAll"
+           id="homeTips">
         <div class="btm-tools"
-            :class="isFullScreen?'full':''">
+             :class="isFullScreen?'full':''">
           <div class="fl"
-              v-show="!isNewUser">
+               v-show="!isNewUser">
             <span @click="editPage"
                   class="ring-icon"
                   title
@@ -123,9 +125,9 @@
         </div>
 
         <div role="alert"
-            v-if="showTip"
-            class="el-notification toast toast-info right"
-            style="bottom: 16px; z-index: 2001;">
+             v-if="showTip"
+             class="el-notification toast toast-info right"
+             style="bottom: 16px; z-index: 2001;">
           <div class="el-notification__group">
             <h2 class="el-notification__title"></h2>
             <div class="el-notification__content">
@@ -149,12 +151,12 @@ import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import {checkLogin} from '@/config/thirdLoginMix'
+import { checkLogin } from '@/config/thirdLoginMix'
 export default {
   name: 'HomePage',
   components: { Notification, LookItem, LookCompose, AddPage, ImportPage, navBar },
   // mixins:[thirdLoginMix],
-  data () {
+  data() {
     return {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
@@ -219,7 +221,7 @@ export default {
       'editId',
       'nowPageId'
     ]),
-    showPagination () { return this.pageSize > 1 }
+    showPagination() { return this.pageSize > 1 }
   },
   methods: {
     ...mapActions([
@@ -231,18 +233,18 @@ export default {
       'changeEditId',
       'changeNowPage'
     ]),
-    toEditPage () {
+    toEditPage() {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
-    hideModal (data) {
+    hideModal(data) {
       this.addPage = false
       if (data.ifAdd) {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    hideImportModal () {
+    hideImportModal() {
       this.showImport = false
       this.getPageData()
     },
@@ -601,7 +603,7 @@ export default {
       if (this.pageSize <= 1) {
         return
       }
-      this.timer = setTimeout(function test () {
+      this.timer = setTimeout(function test() {
         clearTimeout(ct.timer) // 这里清除一下定时器
         ct.timeFn()
         ct.timer = setTimeout(test, ct.intervalTime * 1000)
@@ -611,7 +613,7 @@ export default {
       var ct = this
       this.stopRefreshTimer()
       this.nowTime = 0
-      this.freshInterval = setTimeout(function fresh () {
+      this.freshInterval = setTimeout(function fresh() {
         if (!$('#home-html').length) {
           ct.clearPage()
           return
@@ -648,7 +650,7 @@ export default {
           return;
       } */
       // 定时器
-      this.refreshTimer = setTimeout(function freshFn () {
+      this.refreshTimer = setTimeout(function freshFn() {
         clearTimeout(ct.refreshTimer)
         if (!$('#home-html').length) {
           ct.clearPage()
@@ -660,7 +662,7 @@ export default {
         // ct.refreshTimer = setTimeout(arguments.callee, ct.refreshTime * 1000)
       }, this.refreshTime * 1000)
     },
-    mapDataToChart (datas, oldData) {
+    mapDataToChart(datas, oldData) {
       for (let k in datas) {
         for (let i in oldData) {
           if (oldData[i]['位置'] === k) {
@@ -746,7 +748,7 @@ export default {
       // })
     },
     // 发送请求
-    sentReq (d) {
+    sentReq(d) {
       let ct = this
       let xhrobj = ''
       if (d.url === '/monitor/topo/domainTopo') {
@@ -997,7 +999,7 @@ export default {
       this.stopRefreshTimer()
       this.$destroy()
     },
-    getAccess () {
+    getAccess() {
       let permission = 'r'
       // 先获取simo存在本地的
       this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
@@ -1033,32 +1035,32 @@ export default {
         })
       }
     },
-    browerKernel () {
+    browerKernel() {
       let result;
       ['webkit', 'moz', 'o', 'ms'].forEach(function (prefix) {
-        if (typeof document[ prefix + 'Hidden' ] !== 'undefined') {
+        if (typeof document[prefix + 'Hidden'] !== 'undefined') {
           result = prefix
         }
       })
       return result
     },
-    onVisibilityChange (e) {
+    onVisibilityChange(e) {
       let prefix = this.browerKernel()
-      if (document[ prefix + 'VisibilityState' ] === 'hidden') {
+      if (document[prefix + 'VisibilityState'] === 'hidden') {
         this.changePageVisiable(false)
-      } else if (document[ prefix + 'VisibilityState' ] === 'visible') {
+      } else if (document[prefix + 'VisibilityState'] === 'visible') {
         this.changePageVisiable(true)
       }
     },
-    pageVisibInit () {
+    pageVisibInit() {
       let prefix = this.browerKernel()
       document.addEventListener(prefix + 'visibilitychange', this.onVisibilityChange)
     },
-    getPageConf (id) {
+    getPageConf(id) {
       return this.axios.get(`/leaderview/home/homePage/getById/${id}`)
     },
     // 跳转大屏之后，修改pageIndex
-    updatePageIndex (id) {
+    updatePageIndex(id) {
       for (let i = 0; i < this.pageSize; i++) {
         if (this.pageList[i].id === id) {
           this.pageIndex = i + 1
@@ -1161,7 +1163,7 @@ export default {
     titleShowFn('top', $('#homeTips'), '#homeTips')
     $('#lead-screen').addClass('disShow')
   },
-  updated () {
+  updated() {
     if (this.pageList[(this.pageIndex - 1) % this.pageSize] && this.pageList[(this.pageIndex - 1) % this.pageSize].belongCurrentUser !== 'true') {
       this.$refs.editbutton.style.display = 'none'
     }
@@ -1306,7 +1308,7 @@ html[data-theme="blueWhite"] {
 // add 轮播相关
 .portlet {
   position: absolute !important;
-  top:0px;
+  top: 0px;
   left: 0px;
   width: 100%;
   height: 100%;
@@ -1411,7 +1413,7 @@ html[data-theme="blueWhite"] {
   animation: box-scale-in 1s;
 }
 @keyframes box-scale-leave {
-   from {
+  from {
     transform: scale(1);
   }
   to {

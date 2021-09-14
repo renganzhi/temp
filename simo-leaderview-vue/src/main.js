@@ -49,11 +49,11 @@ if (gbs.inDev) {
 
 Vue.prototype.$EventBus = new Vue()
 Vue.prototype.$MyEventBus = new Vue()
-/* eslint-disable no-new */
-;(window).vm = new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>'
-})
+  /* eslint-disable no-new */
+  ; (window).vm = new Vue({
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>'
+  })
