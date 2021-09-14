@@ -97,7 +97,7 @@
         </template>
       </div>
       <div class="drop-menu-comps">
-        <ul>
+        <ul v-if="dropPramCompsMenu.length > 0">
           <li
             v-for="item in dropPramCompsMenu"
             :key="item.id"
@@ -499,8 +499,9 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     background: url(./images/head/bg.png);
+    background-size: 100% 100%;
     flex-direction: column;
-    // box-shadow: 0 1px 4px 0 rgb(0 21 41 / 12%);
+    box-shadow: 0 1px 4px 0 #0015291f;
 
     .drop-Menu-wrap {
       width: 100%;

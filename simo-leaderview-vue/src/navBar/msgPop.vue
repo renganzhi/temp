@@ -4,7 +4,7 @@
       <span class="us-link" @click="checkAll"> 查看全部 </span>
       <i
         class="us-link"
-        :class="open ? 'iconn-laba' : 'iconn-mute'"
+        :class="open ? 'icon-n-laba' : 'icon-n-mute'"
         @click.stop="clickOpenVoice"
       />
     </div>
@@ -124,6 +124,7 @@ export default {
   }
   .msgInfo {
     height: 206px;
+    overflow: auto;
     .noMsg {
       height: 206px;
       text-align: center;
