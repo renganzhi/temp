@@ -145,9 +145,9 @@ div.edui-box {
   background-color: transparent;
   position: relative;
   overflow: visible;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 
 .edui-editor div {

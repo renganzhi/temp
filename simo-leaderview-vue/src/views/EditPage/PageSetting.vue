@@ -1,7 +1,7 @@
 <template>
   <div id="homeSetting-modal"
        style="z-index: 20100"
-       class="modal">
+       class="modal" aria-hidden="false" data-backdrop="static">
     <div class="modal-lg modal-dialog modal-dialog-centered"
          role="document">
       <div class="modal-content">
@@ -209,7 +209,11 @@ export default {
               customClass: 'toast toast-error'
             })
           } else {
-            tooltip('', res.msg, 'error')
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         }
         this.$nextTick(() => {
@@ -321,27 +325,19 @@ export default {
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         if (res.success) {
-          this.changeSort = true
-          if (gbs.inDev) {
-            Notification({
-              message: '操作成功！',
-              position: 'bottom-right',
-              customClass: 'toast toast-success'
-            })
-          } else {
-            tooltip('', '操作成功！', 'success')
-          }
+        this.changeSort = true
+          Notification({
+            message: '操作成功！',
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
           $('#homeSetting-modal').modal('hide')
         } else {
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     }

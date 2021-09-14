@@ -1,19 +1,15 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
 import com.alibaba.fastjson.JSONObject;
-import com.uxsino.commons.db.model.PageModel;
-import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
-import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.MonitorService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +28,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel getUsableInd(Map<String, Object> map) {
+    public JsonModel getUsableInd(String indicatorName, NetworkEntityCriteria criteria) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
@@ -55,7 +51,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsResourceNodes(String topologyId, List<NeClass> neClasses, List<BaseNeClass> baseNeClasses) {
+    public JsonModel statisticsNe(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
@@ -100,12 +96,27 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsLinkAlarms(String topoId) {
+    public JsonModel statisticsNetworkLink(String param) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
     @Override
     public JsonModel statisticsEachLevelAlarms(String topoId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel topEvent(String neId, String startTime, String endTime) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel topSQL(String neId, String startTime, String endTime) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
+    public JsonModel topSession(String neId, String startTime, String endTime) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 }

@@ -9,20 +9,17 @@ import com.google.common.collect.Sets;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.model.PageModel;
-import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
-import com.uxsino.leaderview.model.monitor.IndicatorTable;
-import com.uxsino.leaderview.model.monitor.NetworkEntity;
-import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
-import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
+import com.uxsino.leaderview.model.SiteOrganizationCriteria;
+import com.uxsino.leaderview.model.monitor.*;
 import com.uxsino.leaderview.rpc.MonitorService;
-import com.uxsino.reactorq.model.INDICATOR_TYPE;
-import com.uxsino.reactorq.model.FieldType;
+import com.uxsino.leaderview.service.query.NeComponentQuery;
 import com.uxsino.leaderview.utils.MonitorUtils;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
+import com.uxsino.reactorq.model.FieldType;
+import com.uxsino.reactorq.model.INDICATOR_TYPE;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class MonitorDataParamsService {
@@ -69,13 +67,16 @@ public class MonitorDataParamsService {
 
     /**
      * 获取所有BaseNeClass-用于下拉列表
+     * @param isHardware 是否是硬件指标
      * @param except 排除的父类型
      */
-    public JsonModel getManageObjectEnum(BaseNeClass except){
+    public JsonModel getManageObjectEnum(Boolean isHardware , List<BaseNeClass> except){
+        BaseNeClass[] values = BaseNeClass.values();
         List<Map<String, String>> list = new ArrayList<>();
         try {
             for (BaseNeClass baseClass : BaseNeClass.values()) {
-                if (baseClass.equals(except)) {
+                if((except != null && except.contains(baseClass))
+                        || (isHardware != null && !isHardware.equals(baseClass.isHardware()))){
                     continue;
                 }
                 Map<String, String> map = new HashMap<>(2);
@@ -83,28 +84,38 @@ public class MonitorDataParamsService {
                 map.put("value", baseClass.toString());
                 list.add(map);
             }
+            return new JsonModel(true, list);
         } catch (Exception e) {
             return new JsonModel(false, "网元类型配置错误，请检查配置文件！");
         }
-        return new JsonModel(true, list);
     }
 
     public JsonModel getManageObjectEnum(){
-        return getManageObjectEnum(null);
+        return getManageObjectEnum(null ,null);
     }
+
+    public JsonModel getRunStatus(){
+        JSONArray res = new JSONArray();
+        RunStatus[] values = RunStatus.values();
+        for (RunStatus value : values) {
+            res.add(newResultObj(value.getName(),value.toString()));
+        }
+        return new JsonModel(true,res);
+    }
+
 
     /**
      * 根据BaseNeClass获取所有子类型-用于下拉列表
      * @param baseNeClass 资源父类型
      */
-    public JsonModel getNeClassByBase(BaseNeClass baseNeClass) {
-        return new JsonModel(true, neClassByBase(baseNeClass));
+    public JsonModel getNeClassByBase(BaseNeClass baseNeClass,Boolean isHardware) {
+        return new JsonModel(true, neClassByBase(baseNeClass,isHardware));
     }
 
     private JsonModel getMultiNeClassByBase(Set<BaseNeClass> baseNeClasses){
         List<Map<String, String>> ls = new ArrayList<>();
         for (BaseNeClass baseNeClass:baseNeClasses) {
-            ls.addAll(neClassByBase(baseNeClass));
+            ls.addAll(neClassByBase(baseNeClass,null));
         }
         return new JsonModel(true, ls);
     }
@@ -121,11 +132,19 @@ public class MonitorDataParamsService {
         return getMultiNeClassByBase(set);
     }
 
-    private List<Map<String, String>> neClassByBase(BaseNeClass baseNeClass){
+    private List<Map<String, String>> neClassByBase(BaseNeClass baseNeClass,Boolean isHardware){
         List<Map<String, String>> ls = new ArrayList<>();
-        List<NeClass> classes;
+        List<NeClass> classes = new ArrayList<>();
         if (ObjectUtils.isEmpty(baseNeClass)) {
-            classes = Arrays.asList(NeClass.values());
+            if(isHardware == null){
+                classes = Arrays.asList(NeClass.values());
+            }else{
+                BaseNeClass[] values = BaseNeClass.values();
+                List<BaseNeClass> list = Arrays.stream(values).filter(base -> base.isHardware().equals(isHardware)).collect(Collectors.toList());
+                for (BaseNeClass neClass : list) {
+                    classes.addAll(neClass.getNeClass());
+                }
+            }
         } else {
             classes = baseNeClass.getNeClass();
         }
@@ -173,7 +192,7 @@ public class MonitorDataParamsService {
      * 获取指标类型的资源
      */
     @SuppressWarnings("unchecked")
-    public JsonModel findNes(NetworkEntityCriteria criteria,Boolean notUnknown){
+    public JsonModel findNes(NetworkEntityCriteria criteria,Boolean notUnknown,Boolean isHardware){
         List<Map<String, String>> list = new ArrayList<>();
         List<NetworkEntity> nes;
         try {
@@ -182,6 +201,12 @@ public class MonitorDataParamsService {
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
+        }
+        //根据是否是硬件进行筛选
+        if(isHardware != null){
+            BaseNeClass[] values = BaseNeClass.values();
+            List<BaseNeClass> baseNeClassList = Arrays.stream(values).filter(base -> base.isHardware().equals(isHardware)).collect(Collectors.toList());
+            nes = nes.stream().filter(ne -> baseNeClassList.contains(ne.getBaseNeClass())).collect(Collectors.toList());
         }
         if (!CollectionUtils.isEmpty(nes)) {
             for (NetworkEntity ne : nes) {
@@ -199,8 +224,6 @@ public class MonitorDataParamsService {
         }
         return new JsonModel(true, list);
     }
-
-
 //    /**
 //     * 设置资源查询类QO
 //     */
@@ -208,6 +231,25 @@ public class MonitorDataParamsService {
 //        NetworkEntityQOModel entityQO = new NetworkEntityQOModel();
 //        return entityQO.setNeQO(session, domainId).setNeQO(baseNeClass, neClass);
 //    }
+    public JsonModel getUnitHost(String[] neIds) {
+        if ((neIds == null || neIds.length == 0)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        List<NetworkEntity> neList = Lists.newArrayList();
+        try {
+            neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        }catch (Exception e){
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(neList)) {
+            return new JsonModel(false, "资源不存在");
+        }
+        String hostIds = neList.stream().map(NetworkEntity::getHostId).distinct().filter(s -> !StringUtils.isEmpty(s)).collect(Collectors.joining(","));
+        if(StringUtils.isEmpty(hostIds)){
+            return new JsonModel(false, "宿主资源不存在");
+        }
+        return getUnit(hostIds.split(","));
+    }
 
     public JsonModel getUnit(String[] neIds) {
         List<String> unitList = Lists.newArrayList();
@@ -299,6 +341,25 @@ public class MonitorDataParamsService {
         return new JsonModel(true, result);
     }
 
+    public JsonModel getHostIndicator(String[] neIds, String type, String unit, NeClass neClass, Boolean healthy) {
+        if ((neIds == null || neIds.length == 0)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        List<NetworkEntity> neList = Lists.newArrayList();
+        try {
+            neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        }catch (Exception e){
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(neList)) {
+            return new JsonModel(false, "资源不存在");
+        }
+        String hostIds = neList.stream().map(NetworkEntity::getHostId).distinct().filter(s -> !StringUtils.isEmpty(s)).collect(Collectors.joining(","));
+        if(StringUtils.isEmpty(hostIds)){
+            return new JsonModel(false, "宿主资源不存在");
+        }
+        return getIndicator(hostIds.split(","),type,unit,neClass,healthy,null);
+    }
 
 
     /**
@@ -308,7 +369,7 @@ public class MonitorDataParamsService {
      * @param neClass 资源子类型
      * @param healthy 是否展示健康度
      */
-    public JsonModel getIndicator(String[] neIds, String type, String unit, NeClass neClass, Boolean healthy) {
+    public JsonModel getIndicator(String[] neIds, String type, String unit, NeClass neClass, Boolean healthy, BaseNeClass baseNeClass) {
 
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
@@ -336,7 +397,15 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = Lists.newArrayList();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                //对虚拟化资源特殊处理
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                if ((neClass != null && neClass.getBaseNeClass().equals(BaseNeClass.virtualization))
+                        || (BaseNeClass.virtualization.equals(baseNeClass))) {
+                    criteria.setSourceManage(false);
+                }
+                criteria.setIds(Lists.newArrayList(neIds));
+                criteria.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria);
             } catch (Exception e) {
                 return new JsonModel(false, e.getMessage());
             }
@@ -382,16 +451,16 @@ public class MonitorDataParamsService {
                         if (validHasFields(ind)) {
                             JSONArray fields = ind.getFields();
                             boolean hasNumberType = false;
-                            fields = filter(fields, o -> "performance".equals(o.getString("tag")));
+                            fields = filter(fields, o -> "performance".equals(o.getString("tag")) );
                             if (typeExist && "PERCENT".equals(typeString)) {
-                                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%"));
+                                fields = filter(fields, o -> Objects.equals(o.getString("unit"), "%")  );
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             } else {
                                 fields = filter(fields, o -> !o.containsKey("withoutrule"));
                                 fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
                                 if (unitExist) {
-                                    fields = filter(fields, o -> Objects.equals(o.getString("unit"), unitString));
+                                    fields = filter(fields, o -> Objects.equals(o.getString("unit") , unitString));
                                 }
                                 hasNumberType = !CollectionUtils.isEmpty(fields);
                             }
@@ -422,24 +491,32 @@ public class MonitorDataParamsService {
         return getIntersection(arrs);
     }
 
-    public JsonModel getIndicatorTopn(String[] neIds,NeClass neClass) {
+    public JsonModel getIndicatorTopn(String[] neIds,NeClass neClass,BaseNeClass baseNeClass) {
 
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
 
-        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
+        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass) && ObjectUtils.isEmpty(baseNeClass)) {
             return new JsonModel(false, "未选择资源");
         }
 
         // 如果未选择资源，但是是topn的类型，要将已选子类型的指标展示出来
-        if ((neIds == null || neIds.length == 0) && !ObjectUtils.isEmpty(neClass)) {
+        if ((neIds == null || neIds.length == 0) && ((!ObjectUtils.isEmpty(neClass))||!ObjectUtils.isEmpty(baseNeClass))) {
             List<IndicatorTable> indicatorTables = Lists.newArrayList();
             try {
                 NetworkEntityCriteria criteria = new NetworkEntityCriteria();
                 List<NeClass> neClasses = Lists.newArrayList();
-                neClasses.addAll(neClass.getBaseNeClass().getNeClass());
-                neClasses.add(neClass);
+                //neClasses.addAll(neClass.getBaseNeClass().getNeClass());
+                if(ObjectUtils.isEmpty(neClass)){
+                    neClasses.addAll(baseNeClass.getNeClass());
+                }else neClasses.add(neClass);
                 criteria.setNeClasses(neClasses);
+
+                //对虚拟化资源是非统一监管资源
+                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                    criteria.setSourceManage(false);
+                }
+
                 indicatorTables.addAll(rpcProcessService.getUsableInd(null,criteria));
             }catch (Exception e){
                 return new JsonModel(false, e.getMessage());
@@ -448,7 +525,7 @@ public class MonitorDataParamsService {
             if (CollectionUtils.isNotEmpty(indicatorTables)) {
                 List<String> indTypes = Lists.newArrayList(INDICATOR_TYPE.NUMBER.toString(),
                         INDICATOR_TYPE.PERCENT.toString(), INDICATOR_TYPE.COMPOUND.toString());
-                // 过滤掉指标类型非NUMBER、PERCENT、COMPOUND的指标
+                // 过滤掉指标类型非NUMBER、PERCENT、COMPOUND的指标,只有这些类型的指标才能排序
                 indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
                 indicatorTables.forEach(ind -> {
                     String indName = ind.getName();
@@ -473,7 +550,14 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = Lists.newArrayList();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
+                if (baseNeClass.equals(BaseNeClass.virtualization)) {
+                    criteria0.setSourceManage(false);
+                }
+                criteria0.setIds(Lists.newArrayList(neIds));
+                criteria0.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria0);
+                //neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
             } catch (Exception e) {
                 return new JsonModel(false, e.getMessage());
             }
@@ -539,6 +623,101 @@ public class MonitorDataParamsService {
         return getIntersection(arrs);
     }
 
+
+    public JsonModel getIndicatorHostTopN(String[] neIds,NeClass neClass,BaseNeClass baseNeClass) {
+
+        // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
+        List<JSONArray> arrs = new ArrayList<JSONArray>();
+
+        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass) && ObjectUtils.isEmpty(baseNeClass)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
+        List<NetworkEntity> neList = Lists.newArrayList();
+        try {
+            NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            if (BaseNeClass.virtualization.equals(baseNeClass)) {
+                criteria.setSourceManage(false);
+            }
+            if(!ObjectUtils.isEmpty(neIds)){
+                criteria.setIds(Lists.newArrayList(neIds));
+            }else if(neClass != null){
+                criteria.setNeClass(neClass);
+            }else if(baseNeClass != null){
+                criteria.setNeClasses(baseNeClass.getNeClass());
+            } else {
+                List<BaseNeClass> list = Arrays.stream(BaseNeClass.values()).filter(base -> !base.isHardware()).collect(Collectors.toList());
+                criteria.setBaseNeclasses(list);
+            }
+            criteria.setMonitoring(true);
+            neList = rpcProcessService.getNeList(criteria);
+            //neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+        // 指标类型集合设置
+        List<String> indTypes;
+        if (ObjectUtils.isEmpty(neIds)) {
+            indTypes = Lists.newArrayList(INDICATOR_TYPE.NUMBER.toString(),
+                    INDICATOR_TYPE.PERCENT.toString(), INDICATOR_TYPE.COMPOUND.toString());
+        } else {
+            indTypes = Lists.newArrayList(INDICATOR_TYPE.COMPOUND.toString(),
+                    INDICATOR_TYPE.LIST.toString(), INDICATOR_TYPE.NUMBER.toString(),
+                    INDICATOR_TYPE.PERCENT.toString(),
+                    INDICATOR_TYPE.COMPOUND.toString() + "_" + INDICATOR_TYPE.LIST.toString());
+        }
+
+        for (NetworkEntity ne : neList) {
+            if (ObjectUtils.isEmpty(ne) || StringUtils.isEmpty(ne.getHostId())) {
+                continue;
+            }
+            List<IndicatorTable> indicatorTables = Lists.newArrayList();
+            try {
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                criteria.setId(ne.getHostId());
+                criteria.setNeClass(ne.getNeClass());
+                indicatorTables = rpcProcessService.getUsableInd(null, criteria);
+            } catch (Exception e) {
+                return new JsonModel(false, e.getMessage());
+            }
+            // 资源所有可配置的指标
+            JSONArray arr = new JSONArray();
+            if (CollectionUtils.isNotEmpty(indicatorTables)) {
+                // 查看资源已经配置的指标
+                JSONArray neInds = ne.getIndicators();
+                List<String> indList = neInds == null ? null : neInds.toJavaList(String.class);
+
+                indicatorTables = filterToList(indicatorTables, ind -> !(indList != null && !indList.contains(ind.getName())));
+                indicatorTables = filterToList(indicatorTables, ind -> indTypes.contains(ind.getIndicatorType()));
+                indicatorTables = filterToList(indicatorTables, ind -> "performance".equals(ind.getTag()));
+                indicatorTables.forEach(ind -> {
+                    String indName = ind.getName();
+                    // 类型为NUMBER和PERCENT的指标是无属性的
+                    if (validHasFields(ind)) {
+                        JSONArray fields = ind.getFields();
+                        fields = filter(fields, o -> Objects.equals(o.getString("type"), FieldType.NUMBER.toString()));
+                        fields = filter(fields, o -> !o.containsKey("withoutrule"));
+                        boolean hasNumberType = !CollectionUtils.isEmpty(fields);
+                        // 过滤掉属性中没有NUMBER类型的指标
+                        if (!hasNumberType) {
+                            return;
+                        }
+                    }
+                    arr.add(newResultObj(ind.getLabel(), indName));
+                });
+                // 如果选择展示健康度指标，这里对健康度指标进行特殊增添
+                arr.add(newResultObj("健康度", "healthy"));
+
+                arrs.add(arr);
+            }
+        }
+
+        // 遍历取指标交集
+        return getIntersection(arrs);
+    }
+
+
+
     /**
      * 多资源指标遍历取交集指标
      * @param arrs
@@ -567,7 +746,7 @@ public class MonitorDataParamsService {
      * @param neIds 资源ID
      * @param neClass 资源子类型
      */
-    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass) {
+    public JsonModel getIndicatorStr(String[] neIds, NeClass neClass ,BaseNeClass baseNeClass,Boolean healthy,Boolean runStatus) {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
         if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass)) {
@@ -577,7 +756,13 @@ public class MonitorDataParamsService {
             // 当取多个neId时，需要将查询出来的ne放在一个List当中，之后查询每一个ne对应的指标，取其并集显示于下拉框
             List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
             try {
-                neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+                NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
+                if (BaseNeClass.virtualization.equals(baseNeClass)) {
+                    criteria0.setSourceManage(false);
+                }
+                criteria0.setIds(Lists.newArrayList(neIds));
+                criteria0.setMonitoring(true);
+                neList = rpcProcessService.getNeList(criteria0);
 
                 // 指标类型集合设置
                 List<String> indTypes = Lists.newArrayList(INDICATOR_TYPE.STRING.toString(),
@@ -626,9 +811,19 @@ public class MonitorDataParamsService {
                                 if (!hasStringType) {
                                     return;
                                 }
+                                //对于特殊值处理  如果指标有oracle_table_space_info的信息,就可以有总的空间信息
+                                if(NeClass.oracle.equals(ne.getNeClass()) && "oracle_table_space_info".equals(indName)){
+                                    arr.add(newResultObj("空间信息","oracle_table_space_sum"));
+                                }
                                 arr.add(newResultObj(ind.getLabel(), indName));
                             }
                         });
+                        if (Boolean.TRUE.equals(healthy)) {
+                            arr.add(newResultObj("健康度", "healthy"));
+                        }
+                        if (Boolean.TRUE.equals(runStatus)) {
+                            arr.add(newResultObj("运行状态", "runStatus"));
+                        }
                         arrs.add(arr);
                     }
                 }
@@ -652,6 +847,9 @@ public class MonitorDataParamsService {
         }
         if (Strings.isNullOrEmpty(neIds[0]) || Strings.isNullOrEmpty(indicators)) {
             return new JsonModel(false, "参数错误");
+        }
+        if("runStatus".equals(indicators) || "oracle_table_space_sum".equals(indicators)){
+            return new JsonModel(true,new JSONArray());
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (ObjectUtils.isEmpty(ind)) {
@@ -723,8 +921,13 @@ public class MonitorDataParamsService {
         }
         JSONArray result = new JSONArray();
         // 对健康度指标进行特殊化处理
-        if ("healthy".equals(indicators)) {
+        if ("healthy".equals(indicators) || "runStatus".equals(indicators)) {
             result.add(newResultObj("值", null));
+            return new JsonModel(true, result);
+        }
+        if("oracle_table_space_sum".equals(indicators)){
+            result.add(newResultObj("空间利用率", "space_usae_avg"));
+            result.add(newResultObj("剩余容量大小", "used_rate_sum"));
             return new JsonModel(true, result);
         }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
@@ -766,6 +969,27 @@ public class MonitorDataParamsService {
         }
         return new JsonModel(true, result);
     }
+
+    public JsonModel getHostComponentNameAndIndFieldByType(String[] indicators, String[] neIds, String type, String unit) throws Exception{
+        if ((neIds == null || neIds.length == 0)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        List<NetworkEntity> neList = Lists.newArrayList();
+        try {
+            neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
+        }catch (Exception e){
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(neList)) {
+            return new JsonModel(false, "资源不存在");
+        }
+        String hostIds = neList.stream().map(NetworkEntity::getHostId).distinct().filter(s -> !StringUtils.isEmpty(s)).collect(Collectors.joining(","));
+        if(StringUtils.isEmpty(hostIds)){
+            return new JsonModel(false, "宿主资源不存在");
+        }
+        return getComponentNameAndIndFieldByType(indicators,hostIds.split(","),type,unit);
+    }
+
 
     /**
      * 根据已选资源和指标查询可选部件与可选属性
@@ -1232,4 +1456,79 @@ public class MonitorDataParamsService {
         return MonitorUtils.existJudgment(value, defaultValue);
     }
 
+    public JsonModel getPerormance(String neId) {
+        if (StringUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        NetworkEntity networkEntity = null;
+        try {
+            networkEntity = rpcProcessService.findNetworkEntityById(neId);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(networkEntity) || ManageStatus.Delected.equals(networkEntity.getManageStatus())) {
+            return new JsonModel(false, "资源不存在");
+        }
+        List<PerormanceView> views = PerormanceView.getPerormanceViewByNeclass(networkEntity.getNeClass());
+        JSONArray array = new JSONArray();
+        views.forEach((view) -> {
+            array.add(newResultObj(view, view.getValue()));
+        });
+        return new JsonModel(true, array);
+    }
+
+    public JsonModel getPerformanceColumn(String neId, PerormanceView view) {
+        if (StringUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源");
+        }
+        NetworkEntity networkEntity = null;
+        try {
+            networkEntity = rpcProcessService.findNetworkEntityById(neId);
+        } catch (Exception e) {
+            return new JsonModel(false, e.getMessage());
+        }
+        if (ObjectUtils.isEmpty(networkEntity) || ManageStatus.Delected.equals(networkEntity.getManageStatus())) {
+            return new JsonModel(false, "资源不存在");
+        }
+        Map keyValues = view.getKeyToValues();
+        JSONArray res = new JSONArray();
+        keyValues.forEach((key, value) -> {
+            res.add(newResultObj(key, value));
+        });
+        return new JsonModel(true, res);
+
+    }
+
+    public JsonModel baseNeClassByIsHardware(Boolean isHardware) {
+        return getManageObjectEnum(isHardware,null);
+    }
+
+    public JsonModel getNeStatusColumn(BaseNeClass baseNeClass) {
+        JSONArray res =new JSONArray();
+        if(baseNeClass != null && !baseNeClass.isHardware()){
+            res.add(newResultObj("宿主机资源名称","宿主机资源名称"));
+            res.add(newResultObj("宿主机IP地址","宿主机IP地址"));
+            res.add(newResultObj("宿主机运行状态","宿主机运行状态"));
+            res.add(newResultObj("宿主机更新时间","宿主机更新时间"));
+            res.add(newResultObj("宿主机健康度","宿主机健康度"));
+        }
+        return new JsonModel(true,res);
+    }
+
+    public JsonModel getorgas() {
+        SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
+        JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        List<Map<String,String>> list = new ArrayList<>();
+        List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
+        for (LinkedHashMap<Object,Object> map : orgaList){
+
+            Map<String, String> row = new HashMap<>(2);
+            row.put("name", (String) map.get("name"));
+            row.put("value", (String) map.get("id"));
+            list.add(row);
+        }
+
+        return new JsonModel(true,list);
+    }
 }

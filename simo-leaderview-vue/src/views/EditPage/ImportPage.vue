@@ -4,7 +4,7 @@
          style="z-index: 20100"
          class="modal in"
          role="dialog"
-         aria-hidden="true">
+         aria-hidden="false" data-backdrop="static">
       <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
@@ -116,15 +116,11 @@ export default {
             this.userIds = res.obj
             return resolve()
           }
-          if (gbs.inDev) {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         })
       })
     },
@@ -169,28 +165,20 @@ export default {
           if (res.success) {
           //   this.addOne = true
           //   this.addId = res.obj.id
-            if (gbs.inDev) {
-              Notification({
-                message: '上传成功！',
-                position: 'bottom-right',
-                customClass: 'toast toast-success'
-              })
-            } else {
-              tooltip('', '上传成功！', 'success')
-            }
+            Notification({
+              message: '上传成功！',
+              position: 'bottom-right',
+              customClass: 'toast toast-success'
+            })
             $('#importPage-modal').modal('hide')
             // reset
             this.$refs.file.value = ''
           } else {
-            if (gbs.inDev) {
-              Notification({
-                message: res.msg,
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
-            } else {
-              tooltip('', res.msg, 'error')
-            }
+            Notification({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           }
         })
       })

@@ -6,25 +6,18 @@
     :loading="true"
     footer-hide
   >
-    <img
-      :src="mdpram.picUrl"
-      style="width: 100%;height:520px;"
-    >
+    <img :src="mdpram.picUrl" style="width: 100%;height:520px;" />
   </Modal>
 </template>
 
 <script>
 export default {
-  name: 'Preview',
+  name: "Preview",
   props: {
     mdpram: {
       type: Object,
       default: () => {}
     }
-  },
-  data () {
-    return {
-    }
   }
-}
+};
 </script>

@@ -58,7 +58,7 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        if (this.item.chartData) {
+        if (this.item.chartData.value) {
           this.showValue = true
           this.drawFlow()
         } else {

@@ -171,20 +171,12 @@ export default{
           'tag': 'select',
           'options': [
             {
-              'name': 'light',
-              'value': 'lighter'
-            },
-            {
               'name': 'normal',
               'value': 'normal'
             },
             {
               'name': 'bold',
               'value': 'bold'
-            },
-            {
-              'name': 'bolder',
-              'value': 'bolder'
             }
 
           ]

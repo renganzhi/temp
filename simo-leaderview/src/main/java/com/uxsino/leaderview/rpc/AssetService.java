@@ -21,5 +21,8 @@ public interface AssetService {
     @RequestMapping( method = RequestMethod.POST,value = "/apis/view",consumes = "application/json")
     JsonModel  search(@RequestBody String param);
 
+    @RequestMapping( method = RequestMethod.POST,value = "/apis/standingbook",consumes = "application/json")
+    JsonModel  searchStandingbook(@RequestBody String param);
+
 
 }

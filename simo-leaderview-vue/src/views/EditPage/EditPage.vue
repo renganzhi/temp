@@ -100,7 +100,7 @@
                     v-if="access !== 'w'"
                     >删除</a
                   >
-                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">删除</a>
+                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">{{item.belongCurrentUser === 'true'?'删除':'移除'}}</a>
                 </div>
                 <div v-if="editIndex === index" class="page-title titleShow">
                   <form autocomplete="off">
@@ -155,7 +155,7 @@
         </div>
       </div>
 
-      <div id="homeShareModal" class="modal" style="z-index: 10086">
+      <div id="homeShareModal" class="modal" style="z-index: 10086" aria-hidden="false" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
           <div class="modal-content">
             <div class="modal-header">
@@ -319,15 +319,11 @@ export default {
             this.userIds = res.obj
             return resolve()
           }
-          if (gbs.inDev) {
             Notification({
               message: res.msg,
               position: 'bottom-right',
               customClass: 'toast toast-error'
             })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
         })
       })
     },
@@ -388,25 +384,17 @@ export default {
               if (res.success) {
                 this.search()
                 $('#homeShareModal').modal('hide')
-                if (gbs.inDev) {
                   Notification({
                     message: '操作成功！',
                     position: 'bottom-right',
                     customClass: 'toast toast-success'
                   })
-                } else {
-                  tooltip('', '操作成功！', 'success')
-                }
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
           }
@@ -515,15 +503,11 @@ export default {
             })
           }
         } else {
-          if (gbs.inDev) {
             Notification({
               message: res.msg,
               position: 'bottom-right',
               customClass: 'toast toast-error'
             })
-          } else {
-            tooltip('', res.msg, 'error')
-          }
         }
       })
     },
@@ -585,15 +569,11 @@ export default {
             if (res.success) {
               this.search()
             } else {
-              if (gbs.inDev) {
                 Notification({
                   message: res.msg,
                   position: 'bottom-right',
                   customClass: 'toast toast-error'
                 })
-              } else {
-                tooltip('', res.msg, 'error')
-              }
             }
           })
       })
@@ -639,41 +619,31 @@ export default {
       this.showDelModal = false
       if (data && data.sure === '1') {
         if (this.ifBelongCurrentUser === 'true') {
-          console.log('delate')
           this.axios
             .delete('/leaderview/home/homePage/deleteById/' + this.delId)
             .then((res) => {
               if (res.success) {
                 this.search()
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
         } else {
-          console.log('cancel')
           this.axios
             .delete('/leaderview/home/homePage/cancelShareById/' + this.delId)
             .then((res) => {
               if (res.success) {
                 this.search()
               } else {
-                if (gbs.inDev) {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-                } else {
-                  tooltip('', res.msg, 'error')
-                }
               }
             })
         }
@@ -709,25 +679,17 @@ export default {
           .then((res) => {
             if (res.success) {
               item.name = this.editName
-              if (gbs.inDev) {
                 Notification({
                   message: '操作成功！',
                   position: 'bottom-right',
                   customClass: 'toast toast-success'
                 })
-              } else {
-                tooltip('', '操作成功！', 'success')
-              }
             } else {
-              if (gbs.inDev) {
                 Notification({
                   message: res.msg,
                   position: 'bottom-right',
                   customClass: 'toast toast-error'
                 })
-              } else {
-                tooltip('', res.msg, 'error')
-              }
             }
           })
       }
@@ -767,9 +729,9 @@ export default {
   },
   mounted: function () {
     this.search()
-    var _url =
-      window.location.protocol + '//' + window.location.host + '/index'
-    window.history.pushState({}, '', _url)
+    // var _url =
+    //   window.location.protocol + '//' + window.location.host + '/index'
+    // window.history.pushState({}, '', _url)
     this.getAccess()
     this.saerchShareUser()
     $('.hoverTips').on('mouseenter', function () { // 绑定鼠标进入事件
@@ -809,6 +771,8 @@ export default {
   margin: 12px;
   width: 310px;
   box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  overflow: hidden;
   .canSee {
     position: absolute;
     top: 0px;

@@ -132,7 +132,7 @@
                     :key="index"
                     @click="setFontFamily(fontitem.fontFace)"
                     :class="{'fl': true, 'font-case': true, 'act': selectedItem.fontFamily===fontitem.fontFace}"
-                    :style="{'font-family': fontitem.fontFace}">
+                    :style="{'font-family': fontitem.fontFace,'font-weight':'normal','color': 'rgba(255,255,255,0.8)'}">
                 {{fontitem.fontName}}
               </div>
             </div>
@@ -289,42 +289,42 @@ export default {
       picSrc: '',
       cardCase: [
         {
-          mini: '/leaderviewWeb/border/cardMini1.png',
-          imgSrc: '/leaderviewWeb/border/cardBg1.png'
+          mini: '/leaderview/border/cardMini1.png',
+          imgSrc: '/leaderview/border/cardBg1.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardMini2.png',
-          imgSrc: '/leaderviewWeb/border/cardBg2.png'
+          mini: '/leaderview/border/cardMini2.png',
+          imgSrc: '/leaderview/border/cardBg2.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardMini3.png',
-          imgSrc: '/leaderviewWeb/border/cardBg3.png'
+          mini: '/leaderview/border/cardMini3.png',
+          imgSrc: '/leaderview/border/cardBg3.png'
         },
         {
-          mini: '/leaderviewWeb/border/cardBg4.png',
-          imgSrc: '/leaderviewWeb/border/cardBg4.png'
+          mini: '/leaderview/border/cardBg4.png',
+          imgSrc: '/leaderview/border/cardBg4.png'
         }
       ],
       titleCase: [
         {
-          mini: '/leaderviewWeb/border/titleMini1.png',
-          imgSrc: '/leaderviewWeb/border/titleBg1.png'
+          mini: '/leaderview/border/titleMini1.png',
+          imgSrc: '/leaderview/border/titleBg1.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleMini2.png',
-          imgSrc: '/leaderviewWeb/border/titleBg2.png'
+          mini: '/leaderview/border/titleMini2.png',
+          imgSrc: '/leaderview/border/titleBg2.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg3.png',
-          imgSrc: '/leaderviewWeb/border/titleBg3.png'
+          mini: '/leaderview/border/titleBg3.png',
+          imgSrc: '/leaderview/border/titleBg3.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg4.png',
-          imgSrc: '/leaderviewWeb/border/titleBg4.png'
+          mini: '/leaderview/border/titleBg4.png',
+          imgSrc: '/leaderview/border/titleBg4.png'
         },
         {
-          mini: '/leaderviewWeb/border/titleBg5.png',
-          imgSrc: '/leaderviewWeb/border/titleBg5.png'
+          mini: '/leaderview/border/titleBg5.png',
+          imgSrc: '/leaderview/border/titleBg5.png'
         }
       ]
     }
@@ -338,7 +338,7 @@ export default {
   mounted: function () {
     for (let i = 0; i < 11; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderviewWeb/border/titleBg${6 + Number(i)}.png`
+      const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
       this.titleCase.push({
         mini: src,
         imgSrc: src
@@ -346,7 +346,7 @@ export default {
     }
     for (let i = 0; i < 14; i++) {
       // console.log('i: ', typeof i);
-      const src = `/leaderviewWeb/border/cardBg${5 + Number(i)}.png`
+      const src = `/leaderview/border/cardBg${5 + Number(i)}.png`
       this.cardCase.push({
         mini: src,
         imgSrc: src
@@ -415,15 +415,11 @@ export default {
       }
       if (e.target.files[0].size > 100 * 1024 * 1024) {
         e.target.value = ''
-        if (gbs.inDev) {
           Notification({
             message: '上传的视频不能大于100MB',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '上传的视频不能大于100MB', 'info')
-        }
         return
       }
       var file = e.target.files[0]
@@ -452,15 +448,11 @@ export default {
         return
       }
       if (e.target.files[0].size > 15 * 1024 * 1024) {
-        if (gbs.inDev) {
           Notification({
             message: '上传的文件不能大于15MB',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '上传的文件不能大于15MB', 'info')
-        }
         e.target.value = ''
         return
       }
@@ -470,7 +462,7 @@ export default {
       formData.append('uploaded_file', e.target.files[0])
       this.uploadFile('img', formData, function (data) {
         const chartType = _this.selectedItem.chartType
-        const curSrc = '/leaderviewWeb/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
+        const curSrc = '/leaderview/home/getImg/' + data.obj.isCustom + '/' + data.obj.id
         _this.picSrc = curSrc
         _this.selectedItem[_this.item.key] = curSrc
         _this.selectedItem[_this.item.keyName] = e.target.files[0].name
@@ -552,15 +544,11 @@ export default {
             typeof cb === 'function' && cb(data)
           } else {
             // $("#lead-screen").hide()
-            if (gbs.inDev) {
               Notification({
                 message: data.msg,
                 position: 'bottom-right',
                 customClass: 'toast toast-error'
               })
-            } else {
-              tooltip('', data.msg, 'error')
-            }
           }
         }
       })
@@ -669,15 +657,11 @@ export default {
     delColor (index) {
       // 删除自定义颜色
       if (this.selectedItem[this.item.key].length === 1) {
-        if (gbs.inDev) {
           Notification({
             message: '至少配置一种颜色',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '至少配置一种颜色', 'info')
-        }
         return
       }
       if (!this.selectChange && this.chooseSameFlag) {

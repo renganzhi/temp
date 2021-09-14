@@ -12,9 +12,9 @@ export default {
     cameraY: 20,
     cameraZ: 10,
     ModelScal: 1,
-    gltfName: 'qiuji.gltf',
+    gltfName: '',
     ModelRotation: 0,
-    ZoomLimitMax: 1000,
+    ZoomLimitMax: 50,
     ZoomLimitMin: 0
   },
   'styles': {
@@ -60,8 +60,8 @@ export default {
           'key': 'ShowHelpLine',
           'tag': 'select',
           'options': [
-            {'name': '显示', 'value': true},
-            {'name': '隐藏', 'value': false}
+            { 'name': '显示', 'value': true },
+            { 'name': '隐藏', 'value': false }
           ]
         },
         {

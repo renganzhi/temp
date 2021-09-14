@@ -2,6 +2,7 @@ import hotspot from '@/components/EditComp/hotspot/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
 import NewBorder from '@/components/EditComp/NewBorder/config.js'
 import TDModel from '@/components/EditComp/TDModel/config.js'
+import VmVareTopo from '@/components/EditComp/VmVareTopo/config.js'
 
 const others = {
   name: '其他',
@@ -26,7 +27,8 @@ const others = {
     NewBorder.item,
     hotspot.item,
     decorator.item,
-    TDModel.item
+    TDModel.item,
+    VmVareTopo.item
   ]
 }
 

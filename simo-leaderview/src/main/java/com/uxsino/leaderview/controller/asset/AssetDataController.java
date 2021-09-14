@@ -62,9 +62,33 @@ public class AssetDataController {
     @ApiOperation("资产状态总量统计")
     @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
     @RequestMapping("/assetStatusTotalCount")
-    public JsonModel assetStatusTotalCount(@RequestParam(required = false) String status) throws Exception{
+    public JsonModel assetStatusTotalCount(@RequestParam(required = false) String status){
         try {
             return assetDataService.assetStatusTotalCount(status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
+
+    @ApiOperation("TOP N部门资产类别统计")
+    @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
+    @RequestMapping("/assetCountByOrga")
+    public JsonModel assetCountByOrga(@RequestParam String orgaIds){
+        try {
+            return assetDataService.assetCountByOrga(orgaIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
+
+    @ApiOperation("仓储物资变动趋势")
+    @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
+    @RequestMapping("/searchStandingBook")
+    public JsonModel searchStandingBook(@RequestParam String operType,@RequestParam Integer interval){
+        try {
+            return assetDataService.searchStandingBook(operType,interval);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());

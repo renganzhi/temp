@@ -7,21 +7,20 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
 import com.uxsino.commons.db.criteria.IndicatorValueCriteria;
-import com.uxsino.commons.db.model.IntervalType;
 import com.uxsino.commons.db.model.PageModel;
-import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.commons.model.*;
+import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.leaderview.model.SiteOrganizationCriteria;
 import com.uxsino.leaderview.model.alert.*;
 import com.uxsino.leaderview.model.asset.AssetCriteria;
 import com.uxsino.leaderview.model.asset.AssetTreeVo;
 import com.uxsino.leaderview.model.business.ManageStatus;
 import com.uxsino.leaderview.model.business.*;
+import com.uxsino.leaderview.model.datacenter.IndValueQuery;
 import com.uxsino.leaderview.model.monitor.*;
-import com.uxsino.leaderview.rpc.AlertService;
-import com.uxsino.leaderview.rpc.AssetService;
-import com.uxsino.leaderview.rpc.BusinessService;
-import com.uxsino.leaderview.rpc.MonitorService;
+import com.uxsino.leaderview.rpc.*;
+import com.uxsino.leaderview.service.query.NeComponentQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -29,10 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import com.uxsino.leaderview.model.AlertType;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +54,12 @@ public class RpcProcessService {
 
     @Autowired
     private AssetService assetService;
+
+    @Autowired
+    DatacenterService datacenterService;
+
+    @Autowired
+    MCService mcService;
 
     @Autowired
     private DomainUtils domainUtils;
@@ -157,7 +162,7 @@ public class RpcProcessService {
     }
 
 
-    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
+    public List<ArrayList> neStatusStatistics(List<Long> domainIds, BaseNeClass baseNeClass,String topoId) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domainIds != null && !domainIds.isEmpty()){
             criteria.setDomainIds(domainIds);
@@ -167,6 +172,7 @@ public class RpcProcessService {
             List<NeClass> neClassList = baseNeClass.getNeClass();
             criteria.setNeClasses(neClassList);
         }
+        criteria.setTopoId(topoId);
         criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
         List<NetworkEntity> networkEntityList = getNeList(criteria);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
@@ -250,8 +256,69 @@ public class RpcProcessService {
         return nCs;
     }
 
+    public List<ArrayList> neHealthStatistics(List<Long> domainIds, BaseNeClass baseNeClass) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if(domainIds != null && !domainIds.isEmpty()){
+            criteria.setDomainIds(domainIds);
+        }
+        criteria.setPagination(false);
+        if(baseNeClass != null){
+            List<NeClass> neClassList = baseNeClass.getNeClass();
+            criteria.setNeClasses(neClassList);
+        }
+        criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
+        criteria.setHealthReturn(true);
+        List<NetworkEntity> networkEntityList = getNeList(criteria);
+        // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
+        List<NetworkEntity> rawResult = networkEntityList.stream().filter(networkEntity ->
+                networkEntity.getParentId() == null
+                        || networkEntity.getParentId().equals(networkEntity.getId())
+        ).collect(Collectors.toList());
+        List<ArrayList> realResult = new ArrayList<>();
+        Map<String,Integer> map = new HashMap<>();
 
-    public List<Alert> findByChooseForLeaderview(String[] neIds, int number) throws Exception{
+        Integer count100 = 0;
+        Integer count90 = 0;
+        Integer count80 = 0;
+        Integer count60 = 0;
+        Integer count0 = 0;
+
+        for(NetworkEntity entity:rawResult){
+            int health = entity.getHealth();
+            switch (health/10){
+                case 10:
+                    count100++;break;
+                case 9:
+                    count90++;break;
+                case 8:
+                    count80++;break;
+                case 7:
+                    count60++;break;
+                case 6:
+                    count60++;break;
+                default:
+                    count0++;
+            }
+        }
+        map.put("100",count100);
+        map.put("90-99",count90);
+        map.put("80-89",count80);
+        map.put("60-79",count60);
+        map.put("0-59",count0);
+
+        ArrayList<Object> temp;
+        for (Map.Entry<String,Integer> entry: map.entrySet()) {
+            temp = new ArrayList<>();
+            temp.add(entry.getKey());
+            temp.add(entry.getValue());
+            realResult.add(temp);
+        }
+
+        return realResult;
+    }
+
+
+    public List<AlertRecord> findByChooseForLeaderview(String[] neIds, int number) throws Exception{
         AlertQuery query = new AlertQuery();
         List<AlertHandleStatus> statuses = Lists.newArrayList(AlertHandleStatus.INVALID,
                 AlertHandleStatus.FINISHED, AlertHandleStatus.RESTORED);
@@ -263,7 +330,7 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        return toJavaBeanList(jsonModel, Alert.class);
+        return toJavaBeanList(jsonModel, AlertRecord.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -342,7 +409,7 @@ public class RpcProcessService {
 
     public List<StatisticsResult> getLevelStatisticsResult(StatisticsQuery query) throws Exception{
         Map<String, Object> map = getBeanMap(query);
-//        map.remove("params");
+        map.remove("params");
 //        map.remove("endAlertDate");
 //        map.remove("startAlertDate");
         JsonModel jsonModel = alertService.getLevelStatisticsResult(map);
@@ -473,7 +540,7 @@ public class RpcProcessService {
             List<Long> domainIds = domainUtils.getUserDomainIds(session);
             if (domainIds.isEmpty()) {
                 //TODO 该用户权限下无资源
-                return null;
+                return criteria;
             }
             criteria.setDomainIds(domainIds);
         }
@@ -533,18 +600,13 @@ public class RpcProcessService {
     }
 
     public List<IndicatorTable> getUsableInd(String indicatorName, NetworkEntityCriteria criteria) throws Exception{
-        if (ObjectUtils.isEmpty(criteria.getIds())){
+        if (!ObjectUtils.isEmpty(criteria.getId()) && ObjectUtils.isEmpty(criteria.getIds())){
             criteria.setIds(Lists.newArrayList(criteria.getId()));
         }
-        if (ObjectUtils.isEmpty(criteria.getNeClasses())){
+        if (!ObjectUtils.isEmpty(criteria.getNeClass()) && ObjectUtils.isEmpty(criteria.getNeClasses())){
             criteria.setNeClasses(Lists.newArrayList(criteria.getNeClass()));
         }
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("indicatorName", indicatorName);
-        Map<String, Object> beanMap = getBeanMap(criteria, map);
-        beanMap.put("cls", null);
-        JsonModel jsonModel = monitorService.getUsableInd(beanMap);
-        criteria.setIds(Lists.newArrayList(criteria.getId()));
+        JsonModel jsonModel = monitorService.getUsableInd(indicatorName,criteria);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -667,13 +729,15 @@ public class RpcProcessService {
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
-        PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
-        JSONArray array = (JSONArray) pageModel.getObject();
-        List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
-        for (int i = 0; i < array.size(); i++) {
-            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
-            nesLinkList.add(model);
-        }
+        //ArrayList<NetworkLinkModel> list = (ArrayList<NetworkLinkModel>) jsonModel.getObj();
+        //PageModel pageModel = this.toJavaBean(jsonModel, PageModel.class);
+        //JSONArray array = (JSONArray) pageModel.getObject();
+        //List<NetworkLinkModel> nesLinkList = Lists.newArrayList();
+        List<NetworkLinkModel> nesLinkList = this.toJavaBeanList(jsonModel,NetworkLinkModel.class);
+//        for (int i = 0; i < array.size(); i++) {
+//            NetworkLinkModel model = JSON.toJavaObject(array.getJSONObject(i), NetworkLinkModel.class);
+//            nesLinkList.add(model);
+//        }
         return nesLinkList;
     }
 
@@ -902,8 +966,11 @@ public class RpcProcessService {
         return jsonModel;
     }
 
-    public JsonModel statisticsResourceNodes(String topoId,List<BaseNeClass> baseNeClass) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsResourceNodes(topoId,null,baseNeClass);
+    public JsonModel statisticsNe(String topoId,NetworkEntityCriteria criteria) throws Exception {
+        criteria.setPagination(false);
+        criteria.setTopoId(topoId);
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.statisticsNe(param);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -918,8 +985,9 @@ public class RpcProcessService {
         return toJavaBeanList(jsonModel, StatisticsResult.class);
     }
 
-    public JsonModel statisticsLinkAlarms(String topoId) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsLinkAlarms(topoId);
+    public JsonModel statisticsNetworkLink(NetworkLinkModel networkLinkModel) throws Exception {
+        String param = JSON.toJSONString(networkLinkModel);
+        JsonModel jsonModel = monitorService.statisticsNetworkLink(param);
         if (!jsonModel.isSuccess()){
             throw new Exception(jsonModel.getMsg());
         }
@@ -946,5 +1014,38 @@ public class RpcProcessService {
         String params = JSON.toJSONString(criteria);
         JsonModel jsonModel = assetService.search(params);
         return jsonModel;
+    }
+
+    public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view) {
+        Calendar ca = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM hh-mm-ss");
+        ca.setTime(new Date());
+        Date endTime = ca.getTime();
+        ca.add(Calendar.DATE, -1);
+        Date startTime = ca.getTime();
+
+        JsonModel jsonModel = null;
+        if (PerormanceView.TopSql.equals(view)) {
+            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime));
+        } else if (PerormanceView.TopEvent.equals(view)) {
+            jsonModel = this.monitorService.topEvent(neId, format.format(startTime), format.format(endTime));
+        } else if (PerormanceView.TopSession.equals(view)) {
+            jsonModel = this.monitorService.topSession(neId, format.format(startTime), format.format(endTime));
+        }
+
+        return jsonModel;
+    }
+
+    public JsonModel searchByFieldQuery(String type, Boolean isHistory, IndValueQuery indValueQuery) {
+        return datacenterService.searchByFieldQuery(type,isHistory,indValueQuery);
+    }
+
+    public JsonModel getOrganList(SiteOrganizationCriteria criteria) {
+        String params = JSON.toJSONString(criteria);
+        return mcService.getOrganList(params);
+    }
+
+    public JsonModel searchStandingbook(AssetCriteria criteria) {
+        return assetService.searchStandingbook(JSON.toJSONString(criteria));
     }
 }

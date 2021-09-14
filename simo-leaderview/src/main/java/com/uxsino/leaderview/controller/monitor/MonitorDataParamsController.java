@@ -2,11 +2,13 @@ package com.uxsino.leaderview.controller.monitor;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.google.common.collect.Lists;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
+import com.uxsino.leaderview.model.monitor.PerormanceView;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
 import com.uxsino.leaderview.service.api.RpcProcessService;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -17,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Api(tags = { "资源-大屏展示数据项接口" })
 @RestController
@@ -41,18 +44,33 @@ public class MonitorDataParamsController {
         return monitorDataParamsService.getManageObjectEnum();
     }
 
+    @ApiOperation("获取所有BaseNeClass-用于下拉列表")
+    @GetMapping("/getRunStatus")
+    @ResponseBody
+    public JsonModel getRunStatus() {
+        return monitorDataParamsService.getRunStatus();
+    }
+
+
+    @ApiOperation("获取硬件BaseNeClass -- 用于下拉列表")
+    @GetMapping("/baseNeClassByIsHardware")
+    public JsonModel baseNeClassByIsHardware(@ApiParam("资源父类型") @RequestParam(required = false) Boolean isHardware) {
+        return monitorDataParamsService.baseNeClassByIsHardware(isHardware);
+    }
+
     @ApiOperation("获取除了未知类型的其他BaseNeClass-用于下拉列表")
     @GetMapping("/baseNotKnown")
     @ResponseBody
     public JsonModel baseNotKnown() {
-        return monitorDataParamsService.getManageObjectEnum(BaseNeClass.unknow);
+        return monitorDataParamsService.getManageObjectEnum(null, Arrays.asList(BaseNeClass.unknow));
     }
 
     @ApiOperation("根据BaseNeClass获取所有子类型-用于下拉列表")
     @GetMapping("/neClass")
     @ResponseBody
-    public JsonModel getNeClassByBase(@ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass) {
-        return monitorDataParamsService.getNeClassByBase(baseNeClass);
+    public JsonModel getNeClassByBase(@ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
+                                      @RequestParam(required = false)Boolean isHardware) {
+        return monitorDataParamsService.getNeClassByBase(baseNeClass,isHardware);
     }
 
     @ApiOperation("根据BaseNeClass获取所有子类型-用于下拉列表")
@@ -76,12 +94,13 @@ public class MonitorDataParamsController {
     public JsonModel findNes(HttpSession session, @ApiParam("域ID") @RequestParam(required = false) Long domainId,
                              @ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
                              @ApiParam("资源子类型") @RequestParam(required = false) NeClass neClass,
-                             @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown) {
+                             @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown,@RequestParam(required = false)Boolean isHardware) {
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         criteria = rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
-        return monitorDataParamsService.findNes(criteria,notUnknown);
+        return monitorDataParamsService.findNes(criteria,notUnknown,isHardware);
     }
+
 
     @ApiOperation("查询资源可选的指标单位类型，用于下拉框")
     @ApiImplicitParams({
@@ -92,6 +111,30 @@ public class MonitorDataParamsController {
     }
 
 
+    @ApiOperation("查询资源可选的指标单位类型，用于下拉框")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"), })
+    @RequestMapping(value = "/getUnitHost", method = RequestMethod.GET)
+    public JsonModel getUnitHost(@RequestParam(required = false) String[] neIds) {
+        return monitorDataParamsService.getUnitHost(neIds);
+    }
+
+
+    @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源ID"),
+            @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "指标类型"),
+            @ApiImplicitParam(name = "unit", paramType = "query", dataType = "String", value = "单位类型"),
+            @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
+            @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
+    @RequestMapping(value = "/getIndicator", method = RequestMethod.GET)
+    public JsonModel getIndicator(@RequestParam(required = false) String[] neIds,@RequestParam(required = false) String type,
+                                  @RequestParam(required = false) String unit, @RequestParam(required = false) NeClass neClass,
+                                  @RequestParam(required = false) Boolean healthy,@RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicator(neIds,type, unit, neClass, healthy,baseNeClass);
+    }
+
     @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源ID"),
@@ -99,27 +142,38 @@ public class MonitorDataParamsController {
             @ApiImplicitParam(name = "unit", paramType = "query", dataType = "String", value = "单位类型"),
             @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
             @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
-    @RequestMapping(value = "/getIndicator", method = RequestMethod.GET)
-    public JsonModel getIndicator(@RequestParam(required = false) String[] neIds,
+    @RequestMapping(value = "/getHostIndicator", method = RequestMethod.GET)
+    public JsonModel getHostIndicator(@RequestParam(required = false) String[] neIds,
                                   @RequestParam(required = false) String type, @RequestParam(required = false) String unit,
                                   @RequestParam(required = false) NeClass neClass, @RequestParam(required = false) Boolean healthy) {
-        return monitorDataParamsService.getIndicator(neIds, type, unit, neClass, healthy);
+        return monitorDataParamsService.getHostIndicator(neIds, type, unit, neClass, healthy);
 
     }
 
     @RequestMapping(value = "/indicatorsRight", method = RequestMethod.GET)
-    public JsonModel indicatorsRight(@RequestParam(required = false) String[] neIds,
-                                     @RequestParam(required = false) String type, @RequestParam(required = false) String unit,
-                                     @RequestParam(required = false) NeClass neClass, @RequestParam(required = false) Boolean healthy) {
-        return getIndicator(neIds, type, unit, neClass, healthy);
+    public JsonModel indicatorsRight(@RequestParam(required = false) String[] neIds, @RequestParam(required = false) String type,
+                                     @RequestParam(required = false) String unit, @RequestParam(required = false) NeClass neClass,
+                                     @RequestParam(required = false) Boolean healthy,@RequestParam(required = false) BaseNeClass baseNeClass) {
+        return getIndicator(neIds,type, unit, neClass, healthy, baseNeClass);
     }
 
     @RequestMapping(value = "/getIndicatorTopN", method = RequestMethod.GET)
     public JsonModel getIndicatorTopN(@RequestParam(required = false) String[] neIds,
-                                  @RequestParam(required = false) NeClass neClass) {
-        return monitorDataParamsService.getIndicatorTopn(neIds, neClass);
+                                  @RequestParam(required = false) NeClass neClass,
+                                      @RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicatorTopn(neIds, neClass,baseNeClass);
 
     }
+
+
+    @RequestMapping(value = "/getIndicatorHostTopN", method = RequestMethod.GET)
+    public JsonModel getIndicatorHostTopN(@RequestParam(required = false) String[] neIds,
+                                      @RequestParam(required = false) NeClass neClass,
+                                      @RequestParam(required = false) BaseNeClass baseNeClass) {
+        return monitorDataParamsService.getIndicatorHostTopN(neIds, neClass,baseNeClass);
+
+    }
+
 
     @ApiOperation("查询资源已配置的指标，或者用于TOPN的指标，用于下拉框")
     @ApiImplicitParams({
@@ -130,8 +184,10 @@ public class MonitorDataParamsController {
             @ApiImplicitParam(name = "healthy", paramType = "query", dataType = "boolean", value = "是否展示健康度"), })
     @RequestMapping(value = "/getIndicatorStr", method = RequestMethod.GET)
     public JsonModel getIndicatorStr(@RequestParam(required = false) String[] neIds,
-                                     @RequestParam(required = false) NeClass neClass) {
-        return monitorDataParamsService.getIndicatorStr(neIds,neClass);
+                                     @RequestParam(required = false) NeClass neClass,
+                                     @RequestParam(required = false) BaseNeClass baseNeClass,
+                                     @RequestParam(required = false) Boolean healthy,@RequestParam(required = false)Boolean runStatus) {
+        return monitorDataParamsService.getIndicatorStr(neIds,neClass,baseNeClass, healthy,runStatus);
     }
 
 
@@ -189,6 +245,23 @@ public class MonitorDataParamsController {
                                                        @RequestParam(required = false) String type, @RequestParam(required = false) String unit) {
         try {
             return monitorDataParamsService.getComponentNameAndIndFieldByType(indicators, neIds, type, unit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation("根据已选资源和指标查询可选部件与可选属性")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "多指标名称"),
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "多资源id"),
+            @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "指标类型"),
+            @ApiImplicitParam(name = "unit", paramType = "query", dataType = "String", value = "指标单位"), })
+    @RequestMapping(value = "/getHostComponentNameAndIndFieldByType", method = RequestMethod.GET)
+    public JsonModel getHostComponentNameAndIndFieldByType(@RequestParam String[] indicators, @RequestParam String[] neIds,
+                                                       @RequestParam(required = false) String type, @RequestParam(required = false) String unit) {
+        try {
+            return monitorDataParamsService.getHostComponentNameAndIndFieldByType(indicators, neIds, type, unit);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -387,6 +460,38 @@ public class MonitorDataParamsController {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
         }
+    }
+
+    @ApiOperation("查询资源可获取的性能视图")
+    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID")})
+    @GetMapping({"/getPerformance"})
+    public JsonModel getPerformance(@RequestParam(required = false) String neId) {
+        return this.monitorDataParamsService.getPerormance(neId);
+    }
+
+    @ApiOperation("查询性能视图的可展示列")
+    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID"),
+            @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "性能视图类型")})
+    @GetMapping({"/getPerformanceColumn"})
+    public JsonModel getPerformanceColumn(@RequestParam(required = false) String neId, @RequestParam PerormanceView view) {
+        return this.monitorDataParamsService.getPerformanceColumn(neId, view);
+    }
+
+    @ApiOperation("查询性能视图的可展示列")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")
+    })
+    @GetMapping({"/getNeStatusColumn"})
+    public JsonModel getNeStatusColumn(@RequestParam(required = false)BaseNeClass baseNeClass) {
+        return this.monitorDataParamsService.getNeStatusColumn(baseNeClass);
+    }
+
+    @ApiOperation("获取各部门的id")
+    @ApiImplicitParams({
+    })
+    @GetMapping({"/getorgas"})
+    public JsonModel getNeStatusColumn() {
+        return this.monitorDataParamsService.getorgas();
     }
 
 }

@@ -1,0 +1,40 @@
+.refresh{
+  position: absolute;
+  right: 25px;
+}
+
+svg{
+  position: relative;
+  path{
+     fill:none;
+     stroke:#5b9bd5;
+  }
+  .node{
+    &:hover{
+      cursor: pointer;
+    }
+    text{
+      text-anchor: start;
+      font-size:10px ;
+    }
+  }
+}
+
+//img状态
+::v-deep {
+  .Warning{
+    .cls-1,.cls-2,.Good,&.datastores{
+      fill:yellow
+    }
+  }
+  .Unknown{
+    .cls-1,.cls-2,.Good,&.datastores{
+      fill:gray
+    }
+  }
+  .Unconnection{
+    .cls-1,.cls-2,.Good,&.datastores{
+      fill:red
+    }
+  }
+}

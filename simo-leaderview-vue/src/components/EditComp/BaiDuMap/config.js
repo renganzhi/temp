@@ -8,29 +8,29 @@ export default {
     'showPOI': 'on',
     'pointArray': [], // 点标记数组
     'textArray': [], // 文本标注数组
-    'mapType': '混合',
+    'mapType': '卫星',
     'markerType': 'http://api.map.baidu.com/images/marker_red_sprite.png', // 点标记图标类型
     'selectMark': {
       'lng': 0,
       'lat': 0
     }, // 查询添加的点
     'selectChange': true, // 用于表示点击查询操作的
-    'landColor': '#073763',
-    'boundaryColor': '#3d85c6',
-    'oceanColor': '#121b4d',
-    'mapTextColor': '#ffffff',
-    'roadColor': '#154b7d',
+    'landColor': '#091220',
+    'boundaryColor': '#cbb77a',
+    'oceanColor': '#113549',
+    'mapTextColor': '#2dc4bb',
+    'roadColor': '#12223d',
     'styleJson': [{
       'featureType': 'boundary', // 设置边界
       'elementType': 'geometry',
       'stylers': {
-        'color': '#3d85c6'
+        'color': '#cbb77a'
       }
     }, {
       'featureType': 'boundary',
       'elementType': 'geometry.fill', // 设置边界
       'stylers': {
-        'color': '#3d85c6'
+        'color': '#cbb77a'
       }
     }, {
       'featureType': 'poilabel', // 设置poi
@@ -48,31 +48,31 @@ export default {
       'featureType': 'land', // 设置陆地
       'elementType': 'all',
       'stylers': {
-        'color': '#073763'
+        'color': '#091220'
       }
     }, {
       'featureType': 'water',
       'elementType': 'all',
       'stylers': {
-        'color': '#121b4d'
+        'color': '#113549'
       }
     }, {
       'featureType': 'label',
       'elementType': 'labels.text.fill',
       'stylers': {
-        'color': '#ffffff'
+        'color': '#2dc4bb'
       }
     }, {
       'featureType': 'label',
       'elementType': 'labels.text.stroke',
       'stylers': {
-        'color': '#ffffff00'
+        'color': '#2dc4bb00'
       }
     }, {
       'featureType': 'road',
       'elementType': 'geometry',
       'stylers': {
-        'color': '#154b7dff',
+        'color': '#12223dff',
         'visibility': 'on'
       }
     }, {

@@ -9,6 +9,7 @@ export default [
   'TDEarthLine',
   'BaiDuMap',
   'IntegratedHistogram',
+  'BiaxialBarChart',
   'TDEarthBar',
   'DataFlow',
   'GradientPie',
@@ -43,6 +44,7 @@ export default [
   'Newimage',
   'TDHistogram',
   'TDModel',
+  'VmVareTopo',
   'bubble',
   'hotspot',
   'decorator'

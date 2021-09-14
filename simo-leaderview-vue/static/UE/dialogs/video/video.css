@@ -250,7 +250,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     overflow: hidden;
     z-index: 50;
     margin: 0;
-    border-radius: 0;
+    border-radius: 3px;
     background: none;
     -webkit-box-shadow: 0 0 0;
 }
@@ -369,7 +369,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     height: 113px;
     background: url(./images/image.png) no-repeat center 12px;
     border: 1px solid #eeeeee;
-    border-radius: 0;
+    border-radius: 3px;
 }
 #upload .filelist li.filePickerBlock div.webuploader-pick  {
     width: 100%;

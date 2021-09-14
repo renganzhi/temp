@@ -17,14 +17,14 @@
              ref="PreView"></PreView>
     <Confirm :showModal="showBackModal"
              :message="'确认离开当前页吗？未保存数据将会丢失！'"
-             @hideModal="back"></Confirm>
+             @hideModal="back" aria-hidden="false" data-backdrop="static"></Confirm>
 
-    <Modal v-model="showUpload"
-           title="导入模型">
-      <Form ref="importModelForm"
-            :label-width="80">
-        <div class="input-item"
-             style="margin-bottom: 20px;">
+    <Modal
+      v-model="showUpload"
+      footer-hide
+      title="导入模型">
+      <Form ref="importModelForm" :label-width="80">
+        <div class="input-item" style="margin-bottom: 20px;">
           <span>模型名称：</span>
           <Input style="width: 300px; margin: 0px 5px;"
                  v-model="importModelForm.name" />
@@ -33,30 +33,16 @@
         <div class="input-item"
              style="position: relative; margin-bottom: 20px;">
           <span>上传模型：</span>
-          <input type="file"
-                 id="uploadZip"
-                 accept=".zip,.rar,application/zip,application/x-zip-compressed"
-                 @change="getZip"
-                 style="opacity: 0; position: absolute; z-index: -1;" />
-          <Input style="width: 236px; margin: 0px 5px;"
-                 disabled
-                 v-model="importModelForm.fileName" />
-          <Button class="ivu-primary"
-                  @click="upload">预览</Button>
-          <!-- <div class="check_font" v-show="importCheckRules.fileNameCheck">上传模型不能为空</div> -->
+          <input type="file" id="uploadZip"
+            accept=".zip,application/zip,application/x-zip-compressed"
+            @change="getZip" style="opacity: 0; position: absolute; z-index: -1;"/>
+          <Input style="width: 270px; margin: 0px 5px;"
+           disabled v-model="importModelForm.fileName"/>
+          <Button class="ivu-primary" @click="upload">预览</Button>
         </div>
-        <!-- <div class="input-item" style="margin-bottom: 20px;">
-          <span>上传缩略图：</span>
-          <input type="file" id="uploadImg" accept="image/*"
-            @change="getImg" style="opacity: 0; position: absolute; z-index: -1;"/>
-          <Input style="width: 236px; margin: 0px 5px;" disabled v-model="importModelForm.imgName"/>
-          <Button class="ivu-primary" @click="uploadImg">预览</Button>
-          <div class="check_font" v-show="importCheckRules.imgNameCheck">上传缩略图不能为空</div>
-        </div>
-      </Form> -->
-        <div slot="footer">
-          <!-- <Button type="primary" @click="sureUpload">确认</Button> -->
-          <Button @click="cancel()">取消</Button>
+        <div style="text-align: right" class="modal-footer">
+          <button type="button" @click="sureUpload">确认</button>
+          <button type="button" data-dismiss="modal" @click="cancel()">取消</button>
         </div>
       </Form>
     </Modal>
@@ -575,6 +561,17 @@
                             :key="11"
                             type="helpLineColor"
                             @getdata="getLineCl"></Vcolor>
+                  </div>
+                </div>
+
+                <div class="m-gap form-group set-map" v-if="CanChangeServes">全局变量配置</div>
+                <div class="form-group" id="resourcesIds" v-if="CanChangeServes">
+                  <label style="width:60px">资源调整</label>
+                  <div>
+                    <Select v-model="resourcesIds" filterable style="width:180px" clearable >
+                        <div slot="empty">not Found data</div>
+                        <Option v-for="(item,index) in resourcesValueIds" :value="item.value" :key="index">{{ item.name }}</Option>
+                    </Select>
                   </div>
                 </div>
 
@@ -1817,7 +1814,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"
@@ -1898,12 +1895,20 @@
                   </select>
                 </div>
               </div>
+              <div v-show="selectedItem.chartType == 'VmVareTopo'">
+                <div class="form-group cols2">
+                  <label>虚拟视图选择</label>
+                  <select v-model="selectedItem.iputneId">
+                    <option :value="item.id" v-for="(item,index) in iputneIdArry" :key="index">{{item.name}}</option>
+                  </select>
+                </div>
+              </div>
               <div v-show="selectedItem.chartType == 'TDModel'">
                 <div class="form-group cols2">
                   <label>选择模型</label>
                   <select v-model="selectedItem.gltfName">
-                    <option value="qiuji.gltf">客户端</option>
-                    <option value="system">服务端</option>
+                    <!-- gltfNameArry -->
+                    <option :value="item.gltf" v-for="(item,index) in gltfNameArry" :key="index">{{item.name}}</option>
                   </select>
                 </div>
                 <div class="form-group cols2">
@@ -1919,7 +1924,7 @@
                         @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;"
-                   v-show="!['TDModel','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
+                   v-show="!['TDModel','VmVareTopo','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"
@@ -2253,6 +2258,13 @@
                        @click="delAlertLevel(index)"></i>
                   </div>
                 </div>
+                <div v-show="selectedItem.barType === 'NewHistogram' || selectedItem.chartType === 'NewTable'">
+                  <div class="form-group cols2">
+                    <label>轮播间隔</label>
+                    <input type="number"
+                            v-model="selectedItem.intervieData">
+                  </div>
+                </div>
                 <button class="DataChangeBtn"
                         @click="dataChange">更新视图</button>
 
@@ -2536,6 +2548,9 @@ html[data-theme="blueWhite"] {
 }
 .heightImgName {
   color: #0088cc;
+}
+#resourcesIds input{
+  width: 100%;
 }
 .edui-default {
   ::deep .edui-editor-bottomContainer {

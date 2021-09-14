@@ -137,4 +137,33 @@ public class NetworkLinkModel extends PageModel {
 
     private List<String> neIds;
 
+    @ApiModelProperty(value = "丢包数")
+    private Double packetLoss;
+
+    @ApiModelProperty(value = "丢包率")
+    private Double packetLossRate;
+
+    @ApiModelProperty("错包数")
+    private Double packetWrong;
+
+    @ApiModelProperty(value = "广播包数")
+    private Double packetBroadcast;
+
+    @ApiModelProperty(value = "排序")
+    private String sortField;
+
+    @ApiModelProperty(value = "排序方式")
+    private String desc;
+
+    @ApiModelProperty(value = "分组字段")
+    private String groupField;
+
+    @ApiModelProperty(value = "拓扑ID")
+    private String topoId;
+
+    @ApiModelProperty(value = "不分页查询时查询结果条数限制")
+    private Integer limit;
+
+    Map<String, Object> params = new HashMap<String, Object>();
+
 }

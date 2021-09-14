@@ -64,7 +64,7 @@ export default {
       }
       return {
         backgroundImage: paintData.bgImg
-          ? 'url(' + gbs.host + '/leaderviewWeb' + paintData.bgImg + ')'
+          ? 'url(' + gbs.host + '/leaderview' + paintData.bgImg + ')'
           : '',
         backgroundSize: backgroundSize,
         opacity: paintData.opacity / 100
@@ -112,15 +112,11 @@ export default {
               this.setScale()
             })
           } else {
-            if (gbs.inDev) {
               Notification({
                 message: res.msg,
                 position: 'bottom-right',
                 customClass: 'toast toast-error'
               })
-            } else {
-              tooltip('', res.msg, 'error')
-            }
           }
         })
       } else {

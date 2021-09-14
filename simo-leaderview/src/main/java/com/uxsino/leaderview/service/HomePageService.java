@@ -19,17 +19,28 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.commons.db.redis.service.SiteUserRedis;
 import com.uxsino.commons.utils.SessionUtils;
+import com.uxsino.leaderview.dao.ThreeDModelBaseInfoDao;
 import com.uxsino.leaderview.entity.*;
+import com.uxsino.leaderview.model.BaseModelType;
+import com.uxsino.leaderview.model.ModelType;
 import com.uxsino.leaderview.model.ShareState;
+import com.uxsino.leaderview.model.ThreeDModelBaseInfoModel;
+import com.uxsino.leaderview.utils.TdsrResourceUtil;
+import com.uxsino.leaderview.utils.ZipUtil;
 import com.uxsino.leaderview.utils.ZipUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.uxsino.leaderview.dao.IHomePageDao;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class HomePageService {
@@ -49,6 +60,17 @@ public class HomePageService {
     private HomePageUserConfService homePageUserConfService;
     @Autowired
     private HomeTemplateImgService homeTemplateImgService;
+
+    @Autowired
+    ThreeDModelBaseInfoDao threeDModelBaseInfoDao;
+
+    @Value("${web.upload.file.path}")
+    private String upload_path;
+
+    //用户上传3d模型子路径
+    private static final String custom_models_sub_path = "models"+ File.separator + "custom" + File.separator;
+
+    private static final String static_resource_root_path = "staticlv" + File.separator;
 
     private static Set<String> videoSet = Sets.newHashSet();
     private static Pattern videoPattern = Pattern.compile("/leaderview/home/file/getVideo/uploaded_file(\\d*)\\.mp4");
@@ -236,7 +258,7 @@ public class HomePageService {
      */
     public List<HomePage> findVisible(Long userId, HttpSession session) {
         String sql = "SELECT b.id,b.compose_obj,b.last_update_time,b.name,a.page_index,b.paint_obj,b.view_conf,a.visible,b.create_user_id,b.handover_id,b.share_conf" +
-                " FROM simo_mc_home_page_user_conf a LEFT JOIN simo_mc_home_page b" +
+                " FROM simo_mc_home_page_user_conf a JOIN simo_mc_home_page b" +
                 " ON(b.id = a.page_id)" +
                 " where a.visible = TRUE" +
                 " AND a.user_id =?1" +
@@ -622,4 +644,105 @@ public class HomePageService {
         return viewConf;
     }
 
+    /**
+     * 更新/上传模型
+     * @param model
+     */
+    @Transactional
+    public ThreeDModelBaseInfo updateModel(ThreeDModelBaseInfoModel model) {
+        ThreeDModelBaseInfo modelBaseInfo = new ThreeDModelBaseInfo(model);
+        boolean isAvailable = nameRepeatCheck(model);
+        Assert.isTrue(isAvailable,"模型名称"+ model.getName() + "已存在");
+        if (model.getFile() != null){//3d模型处理
+            MultipartFile file = model.getFile();
+            //保存模型文件到指定文件夹
+            String fullPath = TdsrResourceUtil.getFilesFullPath(upload_path);
+            saveModelsFile(file,fullPath + custom_models_sub_path,modelBaseInfo);
+        }
+        //modelBaseInfo.setCardImg(model.getCardImgPath());
+        if (modelBaseInfo.getId() == null){
+            if (modelBaseInfo.getUserData() == null){
+                modelBaseInfo.setUserData(new JSONObject());
+            }
+            if (modelBaseInfo.validityCheck()){
+                modelBaseInfo = threeDModelBaseInfoDao.save(modelBaseInfo);
+            }else {
+                Assert.isTrue(false,"数据合法性验证失败");
+            }
+        }else {
+            modelBaseInfo = threeDModelBaseInfoDao.update(modelBaseInfo.getId(),modelBaseInfo);
+        }
+        return modelBaseInfo;
+    }
+
+    /**
+     * 名称重复性检查
+     * @param model
+     * @return 可用-true,不可用-false
+     */
+    private boolean nameRepeatCheck(ThreeDModelBaseInfoModel model) {
+        boolean ret = true;
+        if (model.getId() != null && !StringUtils.isEmpty(model.getName())){
+
+            ret = !threeDModelBaseInfoDao.existsByIdAndName(model.getId(),model.getName());
+        }else if (!StringUtils.isEmpty(model.getName())){
+            ret = !threeDModelBaseInfoDao.existsByName(model.getName());
+        }
+        return ret;
+    }
+
+    /**
+     *  @param file   zip文件，需要解压
+     * @param parentPath
+     * @param modelBaseInfo
+     */
+    public void saveModelsFile(MultipartFile file, String parentPath, ThreeDModelBaseInfo modelBaseInfo){
+
+        Assert.isTrue(file != null && !StringUtils.isEmpty(parentPath),"文件不存在！");
+
+        File parentFile = new File(parentPath);
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        String oriName = file.getOriginalFilename();
+        String path =  parentPath+ oriName;
+        try {
+            //保存文件(把内存中的压缩包保存到磁盘)
+            file.transferTo(new File(path));
+            List<String> fileNames = ZipUtil.unZipFiles(path,parentPath,false);
+            if (fileNames != null && fileNames.size() > 0){
+                for (String fileName : fileNames) {
+                    log.info("********** " + custom_models_sub_path + fileName + " **************");
+                    if (fileName.endsWith(".bin")){
+                        modelBaseInfo.setObjPath( static_resource_root_path + custom_models_sub_path + fileName);
+                    }
+                    if (fileName.endsWith(".gltf")){
+                        modelBaseInfo.setMtlPath( static_resource_root_path + custom_models_sub_path + fileName);
+                    }
+                    if(fileName.endsWith("properties.json")){//属性配置文件
+                        File jsonFile = new File(TdsrResourceUtil.getFilesFullPath(upload_path) + custom_models_sub_path + fileName );
+                        String content = FileUtils.readFileToString(jsonFile,"UTF-8");
+                        modelBaseInfo.setUserData(JSONObject.parseObject(content));
+
+                    }
+                }
+            }
+            ZipUtil.delDir(path);//删除压缩包文件
+
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        }
+    }
+
+    public JSONArray findAllModles() {
+        List<ThreeDModelBaseInfo> models = threeDModelBaseInfoDao.findAll();
+        JSONArray result = new JSONArray();
+        for (int i = 0;i < models.size();i++){
+            JSONObject model = new JSONObject();
+            model.put("name",models.get(i).getName());
+            model.put("gltf",models.get(i).getMtlPath());
+            result.add(model);
+        }
+        return result;
+    }
 }

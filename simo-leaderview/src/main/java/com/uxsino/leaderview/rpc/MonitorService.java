@@ -1,14 +1,11 @@
 package com.uxsino.leaderview.rpc;
 
 import com.alibaba.fastjson.JSONObject;
-import com.uxsino.commons.db.model.PageModel;
-import com.uxsino.commons.db.model.network.NeComponentQuery;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndicatorValueQO;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
-import com.uxsino.leaderview.model.monitor.NetworkEntityQO;
 import com.uxsino.leaderview.model.monitor.NetworkLinkModel;
 import com.uxsino.leaderview.rpc.hystrix.MonitorClientHystrixLeaderview;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -30,8 +27,8 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getNeList", consumes = "application/json")
     JsonModel getNeList(@RequestBody String param);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/getUsableInd", consumes = "application/json")
-    JsonModel getUsableInd(@RequestParam Map<String,Object> map);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getUsableInd", consumes = "application/json")
+    JsonModel getUsableInd(@RequestParam("indicatorName") String indicatorName,@RequestBody NetworkEntityCriteria criteria );
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/current/getIndValues", consumes = "application/json")
     JsonModel getCurIndValues(@RequestBody String param);
@@ -45,10 +42,8 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/findNeLinks", consumes = "application/json")
     JsonModel findNeLinks(@RequestParam("pagination") boolean pagination, @RequestBody NetworkLinkModel networkLinkModel);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsResourceNodes", consumes = "application/json")
-    JsonModel statisticsResourceNodes(@RequestParam("topoId") String topoId,
-                                      @RequestParam(value = "neClasses",required = false) List<NeClass> neClasses,
-                                      @RequestParam(value = "baseNeClasses",required = false) List<BaseNeClass> baseNeClasses);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsNe", consumes = "application/json")
+    JsonModel statisticsNe(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.GET, value = "/monitorApi/findNeHealth", consumes = "application/json")
     JsonModel findNeHealth(@RequestParam("neIds")List<String> neIds,
@@ -76,9 +71,18 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.GET, value = "/hcnet/channelList/{neId}", consumes = "application/json")
     JsonModel getChannelList(@PathVariable("neId") String neId);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsLinkAlarms", consumes = "application/json")
-    JsonModel statisticsLinkAlarms(@RequestParam("topoId") String topoId);
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsNetworkLink", consumes = "application/json")
+    JsonModel statisticsNetworkLink(@RequestBody String param);
 
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsEachLevelAlarms", consumes = "application/json")
     JsonModel statisticsEachLevelAlarms(@RequestParam("topoId") String topoId);
+
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topEvent"}, consumes = {"application/json"})
+    JsonModel topEvent(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
+
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topSql"}, consumes = {"application/json"})
+    JsonModel topSQL(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
+
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/realTime/perf/topSession"}, consumes = {"application/json"})
+    JsonModel topSession(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 }

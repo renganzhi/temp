@@ -85,6 +85,8 @@
           :item="item"></TDHistogram>
     <TDModel v-else-if="item.chartType=='TDModel'"
           :item="item"></TDModel>
+    <VmVareTopo v-else-if="item.chartType=='VmVareTopo'"
+          :item="item"></VmVareTopo>
     <DataFlow v-else-if="item.chartType=='DataFlow'"
           :item="item"></DataFlow>
     <!-- <Liquidfill v-else-if="item.secondType=='liquidfill'"

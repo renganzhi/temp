@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '图片',
     'imgClass': 'icon-n-exportPicture',

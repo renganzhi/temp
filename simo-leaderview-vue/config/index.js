@@ -13,7 +13,8 @@ module.exports = {
       '/api': {
         // target: 'http://localhost:9999',
         // target: 'http://192.100.100.42:9999',
-        target: 'http://192.168.1.188:9999',
+        target: 'http://192.168.2.23:9999',
+        // target: 'http://192.168.1.188:9999',
         // target: 'http://192.168.1.135:9999',
         // target: 'http://192.168.1.160:9999',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
@@ -67,7 +68,8 @@ module.exports = {
      * Source Maps
      */
 
-    productionSourceMap: false, // 打包时不生成.map文件
+    productionSourceMap: true, // 打包时不生成.map文件
+    // productionSourceMap: false, // 打包时不生成.map文件
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

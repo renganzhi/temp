@@ -1,11 +1,11 @@
 export const treeFormatData = { // 数据转换
-  data () {
+  data() {
     return {
       treeIdMap: {}
     }
   },
   methods: {
-    transTreeData (nodes, setings, selectedIds) {
+    transTreeData(nodes, setings, selectedIds) {
       nodes = JSON.parse(JSON.stringify(nodes))
       selectedIds = selectedIds || [] // 默认选中id,暂时仅处理了simple数据
       setings = {
@@ -38,7 +38,7 @@ export const treeFormatData = { // 数据转换
       this.setTreeIdMap(nodes, setings.idKey)
       return nodes
     },
-    setTreeIdMap (nodes, idKey) {
+    setTreeIdMap(nodes, idKey) {
       nodes && nodes.length && nodes.forEach(d => {
         // 接口返回的数组中，父节点在子节点之后时，子节点的level为NaN的情况--重新设置level
         if (Object.prototype.toString.call(d.parentNode) === '[object Object]' && !d.level) d.level = d.parentNode.level + 1
@@ -46,7 +46,7 @@ export const treeFormatData = { // 数据转换
         this.setTreeIdMap(d.children, idKey)
       })
     },
-    transChildData (nodes, setings, tem, selectedIds) {
+    transChildData(nodes, setings, tem, selectedIds) {
       const r = []
       nodes.forEach((d) => {
         this.setSelected(selectedIds, d)
@@ -74,13 +74,13 @@ export const treeFormatData = { // 数据转换
       }
       return node.children
     },
-    setSelected (selectedIds, d) {
+    setSelected(selectedIds, d) {
       if (selectedIds.length && selectedIds.includes(d.id)) {
         d.selected = true
       }
     },
     // 角色start
-    chgChecked (chkedArr, node) { // 点击触发事件，如角色新增；选中子节点即选中父节点，选中父节点选中其子节点
+    chgChecked(chkedArr, node) { // 点击触发事件，如角色新增；选中子节点即选中父节点，选中父节点选中其子节点
       if (node.checked) {
         this.chkedChildren(node)
         this.chkedParent(node)
@@ -89,13 +89,13 @@ export const treeFormatData = { // 数据转换
         this.unchkedChildren(node, node.checked)
       }
     },
-    chkedParent (node) {
+    chkedParent(node) {
       if (node.parentNode) {
         if (typeof node.parentNode !== 'boolean') { node.parentNode.checked = node.checked }
         this.chkedParent(node.parentNode)
       }
     },
-    chkedChildren (node) {
+    chkedChildren(node) {
       if (node.children) {
         node.children.forEach(d => {
           d.checked = node.checked
@@ -103,7 +103,7 @@ export const treeFormatData = { // 数据转换
         })
       }
     },
-    unchkedParent (chkedArr, node) {
+    unchkedParent(chkedArr, node) {
       if (!node.parentNode) {
         return
       }
@@ -126,7 +126,7 @@ export const treeFormatData = { // 数据转换
       }
       this.unchkedParent(chkedArr, node.parentNode)
     },
-    unchkedChildren (node, checked) {
+    unchkedChildren(node, checked) {
       if (node.children) {
         node.children.forEach(d => {
           d.checked = checked
@@ -134,7 +134,7 @@ export const treeFormatData = { // 数据转换
         })
       }
     },
-    chkedLevel (id, pId, level) {
+    chkedLevel(id, pId, level) {
       let pNode = this.treeIdMap[pId]
       if (pNode.level >= level) return false
       if (id) {
@@ -145,13 +145,13 @@ export const treeFormatData = { // 数据转换
       }
       return true
     },
-    findDeepNode (nodes, deep) {
+    findDeepNode(nodes, deep) {
       nodes && nodes.length && nodes.forEach(d => {
         deep.level = Math.max(d.level, deep.level)
         this.findDeepNode(d.children, deep)
       })
     },
-    deleteNode (nodes = [], id, idKey = 'id') {
+    deleteNode(nodes = [], id, idKey = 'id') {
       return nodes.filter(d => {
         if (d[idKey] === id) {
           return false
@@ -169,9 +169,9 @@ export const treeFormatData = { // 数据转换
 
 export const treeGpRender = {
   methods: {
-    addEdit () {},
-    del () {},
-    renderContent (h, { root, node, data }) {
+    addEdit() { },
+    del() { },
+    renderContent(h, { root, node, data }) {
       if (data.name === '默认分组') {
         return h('span', { class: 'ivu-tree-title' }, data.title)
       }

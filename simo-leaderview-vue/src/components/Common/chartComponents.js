@@ -21,6 +21,7 @@ import Pyramid from '@/components/EditComp/pyramid' //
 import TDEarthLine from '@/components/EditComp/TDEarthLine' // 3D地图-飞线图
 import BaiDuMap from '@/components/EditComp/BaiDuMap' // 3D地图-飞线图
 import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram' // 柱图整合
+import BiaxialBarChart from '@/components/EditComp/BiaxialBarChart' // 双向条形图
 import TDEarthBar from '@/components/EditComp/TDEarthBar' // 3D地图-柱状图
 import NewMarquee from '@/components/EditComp/NewMarquee' // 3D地图-柱状图
 import NewDoubler from '@/components/EditComp/NewDoubler' // 3D地图-柱状图
@@ -59,6 +60,7 @@ import Hotspot from '@/components/EditComp/hotspot'
 import Decorator from '@/components/EditComp/decorator'
 import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
 import TDModel from '@/components/EditComp/TDModel' // drag拖拽组件
+import VmVareTopo from '@/components/EditComp/VmVareTopo' // drag拖拽组件
 
 export default {
   DragResize,
@@ -86,6 +88,7 @@ export default {
   TDEarthLine,
   BaiDuMap,
   IntegratedHistogram,
+  BiaxialBarChart,
   TDEarthBar,
   NewMarquee,
   NewDoubler,
@@ -120,6 +123,7 @@ export default {
   TDHistogram,
   Bubble,
   TDModel,
+  VmVareTopo,
   Hotspot,
   Decorator
 }

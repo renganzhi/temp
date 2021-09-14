@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.rpc.hystrix;
 
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.datacenter.IndValueQuery;
 import com.uxsino.leaderview.rpc.DatacenterService;
 import org.springframework.stereotype.Component;
 
@@ -66,6 +67,11 @@ public class DatacenterClientHystrixMonitor implements DatacenterService {
         JsonModel result = new JsonModel();
         result.setMsg("请求删除指定条件历史指标数据接口失败，数据中心发生故障，请确认是否启动！");
         return result;
+    }
+
+    @Override
+    public JsonModel searchByFieldQuery(String type, boolean isHistory, IndValueQuery indValueQuery) {
+        return new JsonModel(false, "DMC服务调用失败");
     }
 
 }

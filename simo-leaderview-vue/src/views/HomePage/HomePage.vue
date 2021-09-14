@@ -310,15 +310,11 @@ export default {
     },
     fullScreen: function () { // 切换全屏
       if (this.pageList.length === 0) {
-        if (gbs.inDev) {
           Notification({
             message: '请配置可展示的大屏页面',
             position: 'bottom-right',
             customClass: 'toast toast-info'
           })
-        } else {
-          tooltip('', '请配置可展示的大屏页面', 'info')
-        }
         return
       }
       var ct = this
@@ -338,16 +334,10 @@ export default {
       $(window).off('resize.home')
     },
     full: function () { // 全屏
-      if (gbs.inDev) {
         this.showTip = true
         setTimeout(() => {
           this.showTip = false
         }, 3500)
-      } else {
-        tooltip('', '鼠标移动到左/右下角对大屏操作', 'info', {
-          target: '#home-html'
-        })
-      }
       $('#home-html').css('background', $('body').css('background'))
       Public.bigScreenfullScreen($('#home-html').get(0))
       // Public.bigScreenfullScreen($('.home_wrapBox').get(0))
@@ -427,7 +417,7 @@ export default {
     setPaint: function () {
       if (this.paintConf) {
         if (this.paintConf.bgImg) {
-          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderviewWeb' + this.paintConf.bgImg + ')')
+          $('#mainbox').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf.bgImg + ')')
         } else {
           $('#mainbox').css('background', '')
         }
@@ -457,7 +447,7 @@ export default {
       // add
       if (this.paintConf2) {
         if (this.paintConf2.bgImg) {
-          $('#mainbox2').css('background', 'url(' + gbs.host + '/leaderviewWeb' + this.paintConf2.bgImg + ')')
+          $('#mainbox2').css('background', 'url(' + gbs.host + '/leaderview' + this.paintConf2.bgImg + ')')
         } else {
           $('#mainbox2').css('background', '')
         }
@@ -787,15 +777,11 @@ export default {
               ct.freshInterval = null
             }
             if (xhr.status !== 776 && xhr.statusText !== 'abort') {
-              if (gbs.inDev) {
-                Notification({
-                  message: '连接错误！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
-              } else {
-                tooltip('', '连接错误！', 'error')
-              }
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
             }
           },
           complete: function (XHR, textStatus) {
@@ -838,15 +824,11 @@ export default {
               ct.freshInterval = null
             }
             if (xhr.status !== 776 && xhr.statusText !== 'abort') {
-              if (gbs.inDev) {
-                Notification({
-                  message: '连接错误！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
-              } else {
-                tooltip('', '连接错误！', 'error')
-              }
+              Notification({
+                message: '连接错误！',
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
             }
           },
           complete: function (XHR, textStatus) {
@@ -1139,8 +1121,8 @@ export default {
   },
   mounted: function () {
     $('#screen').addClass('disShow')
-    var _url = window.location.protocol + '//' + window.location.host + '/index'
-    window.history.pushState({}, '', _url)
+    // var _url = window.location.protocol + '//' + window.location.host + '/index'
+    // window.history.pushState({}, '', _url)
     this.getAccess()
     this.$nextTick(() => {
       this.getPageData()
