@@ -1162,7 +1162,7 @@ public class HomePageController {
 
 
     @ResponseBody
-    @PostMapping("/importTemplate1")
+    @PostMapping("/importTemplate")
     @ApiOperation("zip模板导入")
     public JsonModel importTemplate(HttpServletRequest request,
                                     MultipartFile file,
@@ -1250,7 +1250,7 @@ public class HomePageController {
     }
 
     @ApiOperation("3d模型上传/更新")
-    @RequestMapping(value = "/importTemplate",method = RequestMethod.POST)
+    @RequestMapping(value = "/upload3dModel",method = RequestMethod.POST)
     public JsonModel update(ThreeDModelBaseInfoModel model){
 
         ThreeDModelBaseInfo modelBaseInfo = null;
