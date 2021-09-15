@@ -275,7 +275,7 @@ public class RpcProcessService {
                         || networkEntity.getParentId().equals(networkEntity.getId())
         ).collect(Collectors.toList());
         List<ArrayList> realResult = new ArrayList<>();
-        Map<String,Integer> map = new HashMap<>();
+        LinkedHashMap<String,Integer> map = new LinkedHashMap<>();
 
         Integer count100 = 0;
         Integer count90 = 0;

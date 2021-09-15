@@ -268,8 +268,9 @@ public class MonitorDataService {
         List<ArrayList> list = rpcProcessService.neHealthStatistics(domainList, baseClass);
         JSONObject result = new JSONObject();
         result.put("columns", newColumns("健康度","数量"));
-        JSONArray rows = new JSONArray();
-        Map<String, Object> map = Maps.newHashMap();
+        //JSONArray rows = new JSONArray();
+        List<JSONObject> rows = new ArrayList<>();
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
         list = list.stream().filter(v -> v.size() == 2).collect(Collectors.toList());
         list.forEach(v -> map.put((String)v.get(0), v.get(1)));
@@ -4200,16 +4201,14 @@ public class MonitorDataService {
             baseNeClassList.addAll(Arrays.asList(split).stream().map(x -> BaseNeClass.valueOf(x)).collect(Collectors.toList()));
             criteria.setBaseNeclasses(baseNeClassList);
         }
-        LinkedHashMap<String,Integer> countValue = new LinkedHashMap<>();
         List<Map<String, Object>> statisMapList = new ArrayList<>();
 
         JSONObject result = new JSONObject();
-        //criteria.setg("");
 
-        criteria.setGroupField("manageStatus");
+        //criteria.setGroupField("manageStatus");
+        criteria.setGroupField("baseNeClass");
         JsonModel jsonModel = rpcProcessService.statisticsNe(topoId,criteria);
         statisMapList = (List<Map<String, Object>>) jsonModel.getObj();
-        //countValue = (LinkedHashMap<String, Integer>) jsonModel.getObj();
         int count = 0;
         for (Map<String, Object> map : statisMapList){
             count += (int)map.get("count");
@@ -4225,6 +4224,76 @@ public class MonitorDataService {
         }
         return new JsonModel(true,result);
     }
+
+    public JsonModel getTopoResourcesByBaseNeClassAndStatus(String topoId,String baseNeClass) throws Exception {
+        List<BaseNeClass> baseNeClassList = new ArrayList<>();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+
+        List<RunStatus> normal = new ArrayList<>();
+        List<RunStatus> abnormal = new ArrayList<>();
+        normal.add(RunStatus.Good);
+        normal.add(RunStatus.Loading);
+        abnormal.add(RunStatus.Unknown);
+        abnormal.add(RunStatus.Unconnection);
+        abnormal.add(RunStatus.Warning);
+
+        if (!Strings.isNullOrEmpty(baseNeClass)) {
+            String[] split = baseNeClass.split(",");
+            baseNeClassList.addAll(Arrays.asList(split).stream().map(x -> BaseNeClass.valueOf(x)).collect(Collectors.toList()));
+            criteria.setBaseNeclasses(baseNeClassList);
+        }
+
+        List<LinkedHashMap<String, Object>> normalList = new ArrayList<>();
+        List<LinkedHashMap<String, Object>> abnormalList = new ArrayList<>();
+        JSONObject result = new JSONObject();
+        criteria.setGroupField("baseNeClass");
+        criteria.setSortField("baseNeClass");
+        criteria.setRunStatusIn(normal);
+        normalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(topoId,criteria).getObj();
+        criteria.setRunStatusIn(abnormal);
+        abnormalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(topoId,criteria).getObj();
+
+        LinkedHashMap<String,Integer> normalMap = new LinkedHashMap<>();
+        LinkedHashMap<String,Integer> abnormalMap = new LinkedHashMap<>();
+        LinkedHashMap<String,String> baseNeClassNameMap = new LinkedHashMap<>();
+        for(BaseNeClass baseNeClass0 : BaseNeClass.values()){
+            normalMap.put(String.valueOf(baseNeClass0),0);
+            abnormalMap.put(String.valueOf(baseNeClass0),0);
+            baseNeClassNameMap.put(String.valueOf(baseNeClass0),baseNeClass0.getText());
+        }
+        for (LinkedHashMap<String,Object> map : normalList){
+            normalMap.put((String) map.get("baseNeClass"), (Integer) map.get("count"));
+        }
+        for (LinkedHashMap<String,Object> map : abnormalList){
+            abnormalMap.put((String) map.get("baseNeClass"), (Integer) map.get("count"));
+        }
+
+        List<Map.Entry<String,Integer>> normalSortList = new ArrayList<>(normalMap.entrySet());
+        Collections.sort(normalSortList,new Comparator<Map.Entry<String, Integer>>(){
+            //降序排序
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+
+        List<String> columns = Lists.newArrayList("设备类型","正常","故障");
+        List<LinkedHashMap> rows = new ArrayList<>();
+
+        for ( Map.Entry<String,Integer> map:normalSortList){
+            LinkedHashMap<String,Object> row = new LinkedHashMap<>();
+            row.put("设备类型",baseNeClassNameMap.get(map.getKey()));
+            row.put("正常",map.getValue());
+            row.put("故障",abnormalMap.get(map.getKey()));
+            rows.add(row);
+        }
+
+        result.put("columns",columns);
+        result.put("rows",rows);
+
+        return new JsonModel(true,result);
+    }
+
 
     public JsonModel CountTopoLink(String topoId, Boolean abnormal) throws Exception{
         JSONObject result = new JSONObject();

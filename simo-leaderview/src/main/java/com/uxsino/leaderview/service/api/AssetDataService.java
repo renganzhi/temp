@@ -341,9 +341,6 @@ public class AssetDataService {
                 return o2.getValue().compareTo(o1.getValue());
             }
         });
-        for(Map.Entry<String, Integer> mapping:list) {
-            System.out.println(mapping.getKey());
-        }
 
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
