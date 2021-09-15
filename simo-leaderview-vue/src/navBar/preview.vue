@@ -12,12 +12,12 @@
 
 <script>
 export default {
-  name: "Preview",
+  name: 'Preview',
   props: {
     mdpram: {
       type: Object,
       default: () => {}
     }
   }
-};
+}
 </script>

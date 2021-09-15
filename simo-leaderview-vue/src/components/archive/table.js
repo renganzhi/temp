@@ -1,4 +1,3 @@
-import {morenData} from '@/views/Edit/chartJson'
 
 import NewTable from '@/components/EditComp/NewTable/config.js'
 import NewMoveTable from '@/components/EditComp/NewMoveTable/config.js'

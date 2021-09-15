@@ -42,49 +42,49 @@
 
 <script>
 export default {
-  name: "UsModal",
+  name: 'UsModal',
   props: {
     value: {
       type: Boolean,
       default: false
     }
   },
-  data() {
+  data () {
     return {
       isOpen: this.value,
-      content: "",
-      okText: "确认",
-      noText: "否",
-      cancelText: "取消",
-      radioVal: "",
+      content: '',
+      okText: '确认',
+      noText: '否',
+      cancelText: '取消',
+      radioVal: '',
       radioGroup: [],
       showNo: false,
       showRadio: false,
       hideFooter: false,
       hideOk: false,
       hideCancel: false
-    };
+    }
   },
   watch: {
-    value(val) {
-      this.isOpen = val;
+    value (val) {
+      this.isOpen = val
     }
   },
   methods: {
-    onSure() {
-      this.remove();
-      this.onEnsure(this.showRadio ? this.radioVal : "");
+    onSure () {
+      this.remove()
+      this.onEnsure(this.showRadio ? this.radioVal : '')
     },
-    onCancel(name) {
-      this.remove();
-      this.onClose && this.onClose(name);
+    onCancel (name) {
+      this.remove()
+      this.onClose && this.onClose(name)
     },
-    onNoFn() {
-      this.remove();
-      this.onNo && this.onNo();
+    onNoFn () {
+      this.remove()
+      this.onNo && this.onNo()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

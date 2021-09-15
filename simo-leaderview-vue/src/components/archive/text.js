@@ -1,4 +1,3 @@
-import {morenData} from '@/views/Edit/chartJson'
 
 import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
 import NewMarquee from '@/components/EditComp/NewMarquee/config.js'

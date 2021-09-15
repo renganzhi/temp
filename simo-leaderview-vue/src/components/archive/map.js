@@ -1,4 +1,4 @@
-import {morenData} from '@/views/Edit/chartJson'
+
 import DataFlow from '@/components/EditComp/DataFlow/config.js'
 import TDEarthLine from '@/components/EditComp/TDEarthLine/config.js'
 import BaiDuMap from '@/components/EditComp/BaiDuMap/config.js'

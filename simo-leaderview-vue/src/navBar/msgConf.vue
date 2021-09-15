@@ -7,27 +7,11 @@
     footer-hide
     @on-cancel="onCancel"
   >
-    <Tabs
-      v-model="modelName"
-      :animated="false"
-    >
-      <TabPane
-        label="声音配置"
-        name="voice"
-      >
-        <Form
-          ref="form"
-          :model="form"
-        >
-          <FormItem
-            label="告警铃声"
-            prop="ring"
-            :rules="$rules.required"
-          >
-            <Select
-              v-model="form.ring"
-              filterable
-            >
+    <Tabs v-model="modelName" :animated="false">
+      <TabPane label="声音配置" name="voice">
+        <Form ref="form" :model="form">
+          <FormItem label="告警铃声" prop="ring" :rules="$rules.required">
+            <Select v-model="form.ring" filterable>
               <Option
                 v-for="item in levels"
                 :key="item.music"
@@ -38,21 +22,13 @@
               </Option>
             </Select>
             <Tooltip content="试听">
-              <Button
-                class="margin-left-5"
-                @click="listenRing"
-              >
+              <Button class="margin-left-5" @click="listenRing">
                 <i class="icon-n-zhanneixiaoxi" />
               </Button>
             </Tooltip>
           </FormItem>
-          <FormItem
-            label="响铃开关"
-            prop="opened"
-          >
-            <el-switch
-              v-model="form.opened"
-              active-color="#13ce66">
+          <FormItem label="响铃开关" prop="opened">
+            <el-switch v-model="form.opened" active-color="#13ce66">
             </el-switch>
           </FormItem>
           <FormItem>
@@ -68,7 +44,7 @@
     </Tabs>
     <audio
       id="myaudio"
-      :src="'../../static/audio/'+form.ring"
+      :src="'../../static/audio/' + form.ring"
       preload="preload"
     >
       不支持audio标签
@@ -102,7 +78,7 @@ export default {
     // }
   },
   created () {
-    this.axios.get('/alert/currencyAlertmanager/findRingConfig').then((res) => {
+    this.axios.get('/alert/currencyAlertmanager/findRingConfig').then(res => {
       if (res.success) {
         this.oldData = res.obj
         this.form.id = res.obj.id
@@ -111,11 +87,13 @@ export default {
       }
     })
     //
-    this.axios.get('/alert/currencyAlertmanager/findAlertLevelList').then((res) => {
-      if (res.success) {
-        this.levels = res.obj || []
-      }
-    })
+    this.axios
+      .get('/alert/currencyAlertmanager/findAlertLevelList')
+      .then(res => {
+        if (res.success) {
+          this.levels = res.obj || []
+        }
+      })
   },
   methods: {
     listenRing () {
@@ -124,7 +102,7 @@ export default {
       audio.play()
     },
     onSure () {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           let myurl = '/alert/currencyAlertmanager/saveRingConfig'
           const config = {
@@ -162,17 +140,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.menu-manage{
-  .sub-item{
+.menu-manage {
+  .sub-item {
     width: 25%;
     display: inline-block;
     vertical-align: top;
     margin-bottom: 20px;
-    li{
+    li {
       padding: 0 20px 0 16px;
       height: 30px;
       line-height: 30px;
-      i{
+      i {
         float: right;
         margin: 5px 20px 0 0;
         cursor: pointer;
@@ -181,12 +159,12 @@ export default {
         // }
       }
     }
-    .sub-li{
+    .sub-li {
       padding: 0 20px 0 0;
       font-size: 14px;
       font-weight: bold;
     }
-    .cur-li{
+    .cur-li {
       color: #828bac;
       font-size: 12px;
       // &:hover{

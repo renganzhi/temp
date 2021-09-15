@@ -34,7 +34,7 @@
       <li @click.stop="iconDropDown('msg')">
         <i class="simo icon-n-xiaoxi" />
         <span class="msgNum">
-          {{ msgNum > 99 ? "99+" : msgNum }}
+          {{ msgNum > 99 ? '99+' : msgNum }}
         </span>
         <MsgPop
           v-if="openName === 'msg' && isOpen"
@@ -149,41 +149,41 @@
 
 <script>
 // import { gbs } from "@/config/settings.js";
-import { navImg } from "./menuIcon";
+import { navImg } from './menuIcon'
 
 export default {
   components: {
-    MsgPop: () => import("./msgPop"),
-    NavUserInfo: () => import("./userInfo"),
-    UsPassWord: () => import("./passWord"),
-    UsMsgConf: () => import("./msgConf")
+    MsgPop: () => import('./msgPop'),
+    NavUserInfo: () => import('./userInfo'),
+    UsPassWord: () => import('./passWord'),
+    UsMsgConf: () => import('./msgConf')
     // Authorize: () => import('./authorize'),
     // TransJob: () => import('./transJob'),
     // UsMenuManage: () => import('./menuManage'),
     // UsMenuMove: () => import('./menuMove'),
   },
-  data() {
+  data () {
     return {
       menu: [],
       navImg,
-      curText: "",
-      thirdData: "",
+      curText: '',
+      thirdData: '',
       iconSkin: {
-        default: "深蓝",
-        blackWhite: "黑白",
-        blueWhite: "蓝白"
+        default: '深蓝',
+        blackWhite: '黑白',
+        blueWhite: '蓝白'
       },
       dropPramCompsMenu: [],
       dropPramMenu: [],
-      comps: ["SYS01", "USERAUTH01", "MSG01", "DS_00", "KBMenu"],
+      comps: ['SYS01', 'USERAUTH01', 'MSG01', 'DS_00', 'KBMenu'],
       iconUser: {
-        userInfo: "用户信息",
-        passWord: "修改密码",
+        userInfo: '用户信息',
+        passWord: '修改密码',
         // authorize: '临时授权',
         // transJob: '工作移交',
-        msgConf: "消息配置",
+        msgConf: '消息配置',
         // editMenu: '编辑菜单',
-        logout: "退出系统"
+        logout: '退出系统'
       },
       userInfoMd: {
         isShow: false
@@ -205,46 +205,46 @@ export default {
         MSG01: false,
         SYS01: false
       },
-      curModal: "",
+      curModal: '',
       showModal: false,
-      openName: "",
+      openName: '',
       isOpen: false,
       showContent: false,
       msgRow: {},
       menuMoveMd: { isShow: false },
       rightMenu: [],
       MenuUrlArry: {},
-      theme: "default",
-      typeId: "",
-      typeTitle: "数据可视化",
-      msgNum: ""
-    };
+      theme: 'default',
+      typeId: '',
+      typeTitle: '数据可视化',
+      msgNum: ''
+    }
   },
-  created() {
-    this.axios.get("/mc/getCustomMenu?" + new Date().getTime()).then(res => {
+  created () {
+    this.axios.get('/mc/getCustomMenu?' + new Date().getTime()).then(res => {
       if (res.success) {
-        this.menu = res.obj;
-        this.dropPramCompsMenu = [];
-        this.dropPramMenu = [];
+        this.menu = res.obj
+        this.dropPramCompsMenu = []
+        this.dropPramMenu = []
         this.menu.forEach(element => {
           if (element.modelName) {
-            this.MenuUrlArry[element.modelName] = element.url;
+            this.MenuUrlArry[element.modelName] = element.url
           }
           element.items.forEach(data => {
             if (data.modelName) {
-              this.MenuUrlArry[data.modelName] = data.url;
+              this.MenuUrlArry[data.modelName] = data.url
             }
             if (this.comps.includes(data.menuId)) {
-              this.dropPramCompsMenu.push(data);
+              this.dropPramCompsMenu.push(data)
             } else {
-              this.dropPramMenu.push(data);
+              this.dropPramMenu.push(data)
             }
-          });
-        });
-        console.log(this.dropPramCompsMenu);
-        console.log(this.dropPramMenu);
+          })
+        })
+        console.log(this.dropPramCompsMenu)
+        console.log(this.dropPramMenu)
       }
-    });
+    })
     // this.axios.get("/mc/getMenu?" + new Date().getTime()).then((res) => {
     //   if (res.success) {
     //     this.menu = res.obj;
@@ -252,119 +252,119 @@ export default {
     // });
   },
   computed: {
-    iclassMap() {
-      const map = {};
-      const arr = this.menu[0] ? this.menu[0].items || [] : [];
+    iclassMap () {
+      const map = {}
+      const arr = this.menu[0] ? this.menu[0].items || [] : []
       arr.length &&
         arr.forEach(d => {
           if (Number.isNaN(Number(d.iclass))) {
             // 非图片
             if (navImg.includes(d.iclass)) {
               // 系统图片
-              var imgName = d.iclass.split("icon-n-")[1];
+              var imgName = d.iclass.split('icon-n-')[1]
               map[d.iclass] = require(`./images/head/${imgName +
-                (this.theme === "default" ? ".png" : "_light.png")}`);
+                (this.theme === 'default' ? '.png' : '_light.png')}`)
               // map[d.iclass] = require("./images/head/" + imgName + (this.theme === "default" ? "_dark.png" : "_light.png"));
             }
           }
-        });
-      map["imgBg"] = require("./images/head/nav_bottom_bg" +
-        (this.theme === "default" ? ".png" : "_light.png"));
-      map["nameBg"] = require("./images/head/nav_name_bg" +
-        (this.theme === "default" ? ".png" : "_light.png"));
-      map["system"] = require("./images/head/system" +
-        (this.theme === "default" ? ".png" : "_light.png"));
-      return map;
+        })
+      map['imgBg'] = require('./images/head/nav_bottom_bg' +
+        (this.theme === 'default' ? '.png' : '_light.png'))
+      map['nameBg'] = require('./images/head/nav_name_bg' +
+        (this.theme === 'default' ? '.png' : '_light.png'))
+      map['system'] = require('./images/head/system' +
+        (this.theme === 'default' ? '.png' : '_light.png'))
+      return map
     }
   },
   methods: {
-    eventBus(eveName) {
-      this.isOpen = "";
-      this[eveName]();
+    eventBus (eveName) {
+      this.isOpen = ''
+      this[eveName]()
     },
-    userInfo() {
-      this.userInfoMd.isShow = true;
+    userInfo () {
+      this.userInfoMd.isShow = true
     },
     // 密码重置
-    passWord() {
-      this.passWordMd.isShow = true;
+    passWord () {
+      this.passWordMd.isShow = true
     },
     // 临时授权
-    authorize() {
-      this.authorizeMd.isShow = true;
+    authorize () {
+      this.authorizeMd.isShow = true
     },
     // 工作移交
-    transJob() {
-      this.transJobMd.isShow = true;
+    transJob () {
+      this.transJobMd.isShow = true
     },
-    changeSkin(name) {
-      $("html").attr("data-theme", name);
-      this.theme = name;
+    changeSkin (name) {
+      $('html').attr('data-theme', name)
+      this.theme = name
       // this.$notify({
       //   message: "更新皮肤成功！",
       //   position: "bottom-right",
       //   customClass: "toast toast-info",
       // });
-      this.isOpen = "";
+      this.isOpen = ''
     },
-    msgConf() {
-      this.myUsMsgConf.show = true;
+    msgConf () {
+      this.myUsMsgConf.show = true
       // this.curModal = 'UsMsgConf'
     },
 
-    logout() {
-      this.$ensureModal.confirm("确认要退出系统？", () => {
-        window.location.href = window.location.origin + "/mc/logout";
-      });
+    logout () {
+      this.$ensureModal.confirm('确认要退出系统？', () => {
+        window.location.href = window.location.origin + '/mc/logout'
+      })
     },
 
-    getThirdPlat() {
-      this.axios.post("/mc/bus/search", { pagination: false }).then(res => {
+    getThirdPlat () {
+      this.axios.post('/mc/bus/search', { pagination: false }).then(res => {
         if (res.success) {
-          this.thirdData = res.obj.object || [];
+          this.thirdData = res.obj.object || []
         }
-      });
+      })
     },
-    iconDropDown(str) {
+    iconDropDown (str) {
       if (this.openName === str) {
-        this.isOpen = !this.isOpen;
+        this.isOpen = !this.isOpen
       } else {
-        if (str === "menu") {
-          this.getThirdPlat();
+        if (str === 'menu') {
+          this.getThirdPlat()
         }
-        this.openName = str;
-        this.isOpen = true;
+        this.openName = str
+        this.isOpen = true
       }
     },
     // 消息-查看全部消息
-    showAllMsg() {
-      this.setCurrentMenu({ id: "MSG04", parentId: "MSG02", typeId: "MSG01" });
-      this.$router.push("/msg/allMsg");
+    showAllMsg () {
+      this.setCurrentMenu({ id: 'MSG04', parentId: 'MSG02', typeId: 'MSG01' })
+      this.$router.push('/msg/allMsg')
     },
     // 消息-确定
-    confirm() {
-      const formData = new FormData();
-      formData.append("ids", this.msgRow.id);
-      this.axios.post("/msg/mailbox/tagRead", formData).then(res => {
-        this.showContent = false;
-      });
+    confirm () {
+      const formData = new FormData()
+      formData.append('ids', this.msgRow.id)
+      this.axios.post('/msg/mailbox/tagRead', formData).then(res => {
+        this.showContent = false
+      })
     },
-    toggleMenu(item) {
-      if(item.url){
-        window.location = window.location.origin + item.url;
+    toggleMenu (item) {
+      if (item.url) {
+        window.location = window.location.origin + item.url
       }
     },
-    closePop() {
-      this.openName = "";
-      this.isOpen = false;
+    closePop () {
+      this.openName = ''
+      this.isOpen = false
     },
     // 消息-打开消息内容
-    openContent(msgRow) {
-      this.showContent = true;
-      this.msgRow = msgRow;
+    openContent (msgRow) {
+      this.showContent = true
+      this.msgRow = msgRow
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .navbarWrap {
@@ -606,12 +606,12 @@ export default {
     }
   }
 }
-[class*=" icon-"],
-[class*=" icon-n-"],
-[class*=" icon-ux-"],
-[class^="icon-"],
-[class^="icon-n-"],
-[class^="icon-ux-"] {
+[class*=' icon-'],
+[class*=' icon-n-'],
+[class*=' icon-ux-'],
+[class^='icon-'],
+[class^='icon-n-'],
+[class^='icon-ux-'] {
   line-height: 1;
 }
 </style>

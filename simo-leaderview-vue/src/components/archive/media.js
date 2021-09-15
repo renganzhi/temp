@@ -1,4 +1,4 @@
-import {morenData} from '@/views/Edit/chartJson'
+
 import ppt from '@/components/EditComp/ppt/config.js'
 import player from '@/components/EditComp/player/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'

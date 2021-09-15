@@ -408,7 +408,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderview/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -491,9 +491,8 @@ export default {
         if (element.neId && element.neId !== '') {
           this.iputneIdArry.push(element)
         }
-      });
+      })
     })
-
   },
   methods: {
     ...mapActions([
@@ -691,7 +690,7 @@ export default {
       }
     },
     getMapData(chinaId) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview'
+      var mapPth = gbs.inDev ? 'static' : 'leaderview/leaderviewWeb'
       if (chinaId) {
         return new Promise((resolve, reject) => {
           this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
@@ -766,7 +765,7 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     changeMapData(chinaId, target) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview'
+      var mapPth = gbs.inDev ? 'static' : 'leaderview/leaderviewWeb'
       this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
         this[target] = this.initMapData(response)
         if (target === 'provinceArr' && !this.selectedItem.provinceCode) {
@@ -2729,7 +2728,7 @@ export default {
       const file = e.target.files[0]
       this.importModelForm.fileName = file.name
 
-      this.TDmodelFormData.set("file", file);
+      this.TDmodelFormData.set('file', file)
     },
     getModelFun() {
       this.axios.get('/leaderview/home/findAllModles').then((data) => {
@@ -2738,7 +2737,7 @@ export default {
     },
     sureUpload: function () {
       var _this = this
-      this.TDmodelFormData.set("name", this.importModelForm.name);
+      this.TDmodelFormData.set('name', this.importModelForm.name)
       this.axios.post('/leaderview/home/importTemplate', this.TDmodelFormData).then((res) => {
         if (res.success) {
           Notification({
@@ -4428,10 +4427,10 @@ export default {
                 } else {
                   data.chartData = res.success ? res.obj : []
                 }
-              },
+              }
             })
           }
-        });
+        })
       }
     },
     chooseIndexs: function (newV) {

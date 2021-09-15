@@ -1,4 +1,4 @@
-import {morenData} from '@/views/Edit/chartJson'
+
 import Sunrise from '@/components/EditComp/Sunrise/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
 

@@ -1,10 +1,8 @@
-import {morenData} from '@/views/Edit/chartJson'
+
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import NewProgress from '@/components/EditComp/NewProgress/config.js'
 import NewPie from '@/components/EditComp/NewPie/config.js'
-import NewPie2 from '@/components/EditComp/NewPie/config2.js'
-import NewPie3 from '@/components/EditComp/NewPie/config3.js'
 import NewRadar from '@/components/EditComp/NewRadar/config.js'
 import NewGauge from '@/components/EditComp/NewGauge/config.js'
 
