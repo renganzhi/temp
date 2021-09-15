@@ -1,4 +1,4 @@
-import {morenData} from '@/views/Edit/chartJson'
+
 import GradientPie from '@/components/EditComp/GradientPie/config.js'
 import polarBar from '@/components/EditComp/polarBar/config.js'
 import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
@@ -6,10 +6,6 @@ import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
 import DoubleLinde from '@/components/EditComp/DoubleLinde/config.js'
-import NewHistogram from '@/components/EditComp/NewHistogram/config.js'
-import NewGroupHistogram from '@/components/EditComp/NewGroupHistogram/config.js'
-import NewGroupLeftHistogram from '@/components/EditComp/NewGroupLeftHistogram/config.js'
-import NewBar from '@/components/EditComp/NewBar/config.js'
 import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram/config.js'
 import BiaxialBarChart from '@/components/EditComp/BiaxialBarChart/config.js'
 

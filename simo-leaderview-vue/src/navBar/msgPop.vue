@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
   components: {
-    MsgLi: () => import("./msgLi")
+    MsgLi: () => import('./msgLi')
   },
   props: {
     urlArry: {
@@ -42,22 +42,22 @@ export default {
       default: () => {}
     }
   },
-  data() {
+  data () {
     return {
       levelMap: {},
       latestMsg: [],
       open: this.openVoice,
       hasMsg: true,
       originArr: []
-    };
+    }
   },
   computed: {
-    ...mapState("base", {
+    ...mapState('base', {
       openVoice: state => state.notice.openVoice
     })
   },
 
-  created() {
+  created () {
     // 获取告警等级
     // this.$api.atEnum().then(res => {
     //   let levels = res.obj.level || []
@@ -68,33 +68,33 @@ export default {
     // })
     // 获取最新5条消息
     this.axios
-      .get("/msg/mailbox/list?currentNo=1&pageSize=5&isRead=false")
+      .get('/msg/mailbox/list?currentNo=1&pageSize=5&isRead=false')
       .then(res => {
-        this.latestMsg = res.obj.object || [];
-        if (!this.latestMsg.length) this.hasMsg = false;
-      });
+        this.latestMsg = res.obj.object || []
+        if (!this.latestMsg.length) this.hasMsg = false
+      })
     // this.$api.msgList({ currentNo: 1, pageSize: 5, isRead: false }).then(res => {
     //   this.latestMsg = res.obj.object || []
     //   if (!this.latestMsg.length) this.hasMsg = false
     // })
   },
   methods: {
-    openDetalBox(data) {
-      this.$emit("opencontent", data);
+    openDetalBox (data) {
+      this.$emit('opencontent', data)
     },
-    checkAll() {
+    checkAll () {
       // this.$emit("show-all-msg");
       if (this.urlArry.msg) {
-        window.location = `${window.location.origin + this.urlArry.msg}`;
+        window.location = `${window.location.origin + this.urlArry.msg}`
       }
     },
-    clickOpenVoice() {
-      console.log(22222);
-      this.open = !this.open;
+    clickOpenVoice () {
+      console.log(22222)
+      this.open = !this.open
       // $store.commit('base/setVoice', !open)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

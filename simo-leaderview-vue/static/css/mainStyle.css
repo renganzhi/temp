@@ -1098,7 +1098,7 @@ video {
 .tooltip-inner {
     word-break: break-all;
     word-wrap: break-word;
-    padding-top: 6px;
+    padding-top: 4px;
     max-width: 500px;
 }
 

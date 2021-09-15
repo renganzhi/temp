@@ -36,10 +36,10 @@
 </template>
 
 <script>
-import { sysUserPswConf } from "./passwordsMixs";
+import { sysUserPswConf } from './passwordsMixs'
 
 export default {
-  name: "UserInfo",
+  name: 'UserInfo',
   components: {},
   mixins: [sysUserPswConf],
   props: {
@@ -48,87 +48,87 @@ export default {
       default: () => {}
     }
   },
-  data() {
+  data () {
     return {
       showMessage: false, // 处理一进入弹窗，addPswRules后检验信息就显示
       form: {
-        password: "",
-        newPassword: "",
-        enPassword: ""
+        password: '',
+        newPassword: '',
+        enPassword: ''
       },
-      id: "",
+      id: '',
       compareOld: true,
       rules: {
         password: [this.$rules.required],
         newPassword: [this.$rules.required],
         enPassword: [this.$rules.required]
       }
-    };
+    }
   },
-  created() {
-    this.getLoginUser();
+  created () {
+    this.getLoginUser()
   },
   methods: {
-    getLoginUser() {
+    getLoginUser () {
       // /user/getLoginUserName
       this.axios.get(`/user/getLoginUserName`).then(res => {
-        res = res.obj || {};
-        this.id = res.id;
-        this.addPswRules();
-      });
+        res = res.obj || {}
+        this.id = res.id
+        this.addPswRules()
+      })
     },
-    addPswRules() {
+    addPswRules () {
       this.rules.password.push({
-        ...this.chkExist("sysUserChkOldPsw", {
+        ...this.chkExist('sysUserChkOldPsw', {
           userId: this.id,
-          nameKey: "oldPassword"
+          nameKey: 'oldPassword'
         }),
-        message: "旧密码错误，请重试"
-      });
-      this.addRules();
+        message: '旧密码错误，请重试'
+      })
+      this.addRules()
 
       this.$nextTick(() => {
-        this.reset();
-        this.showMessage = true;
-      });
+        this.reset()
+        this.showMessage = true
+      })
     },
-    chkExist(url, pram, tip) {
-      tip = "该" + (tip || "名称") + "已存在";
+    chkExist (url, pram, tip) {
+      tip = '该' + (tip || '名称') + '已存在'
       return {
-        trigger: "blur",
+        trigger: 'blur',
         asyncValidator: (rule, value, callback) => {
           if (value) {
-            const myurl = "/user/unValidOldPassword";
+            const myurl = '/user/unValidOldPassword'
             const config = {
               headers: {
-                "Content-Type": "multipart/form-data"
+                'Content-Type': 'multipart/form-data'
               }
-            };
-            const formData = new FormData();
-            formData.append("userId", pram.userId);
-            formData.append("oldPassword", value);
+            }
+            const formData = new FormData()
+            formData.append('userId', pram.userId)
+            formData.append('oldPassword', value)
             this.axios.post(myurl, formData, config).then(
               res => {
                 if (res.obj === true) {
-                  callback(new Error(tip));
+                  callback(new Error(tip))
                 } else {
-                  callback();
+                  callback()
                 }
               },
               errRes => {
-                callback(new Error("名称校验请求失败"));
+                callback(new Error('名称校验请求失败'))
               }
-            );
+            )
           } else {
-            callback();
+            callback()
           }
         }
-      };
+      }
     },
-    sure() {
+    sure () {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.mdpram.isShow = false;
+          this.mdpram.isShow = false
           this.$api
             .sysUserUpdatePsw(
               { newPassword: this.form.newPassword },
@@ -137,16 +137,16 @@ export default {
             .then(res => {
               this.$Message.success({
                 background: true,
-                content: res.msg + ",请重新登录！"
-              });
-            });
+                content: res.msg + ',请重新登录！'
+              })
+            })
         }
-      });
+      })
     },
-    reset() {
-      this.$refs.form.resetFields();
+    reset () {
+      this.$refs.form.resetFields()
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped></style>
