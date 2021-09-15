@@ -11,6 +11,7 @@ import com.uxsino.leaderview.model.alert.AlertLevelQuery;
 import com.uxsino.leaderview.model.asset.AssetCriteria;
 import com.uxsino.leaderview.model.asset.AssetStatusEnum;
 import com.uxsino.leaderview.model.asset.QueryCond;
+import org.apache.poi.poifs.filesystem.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Component;
@@ -331,6 +332,18 @@ public class AssetDataService {
             hardwareMap.put(orgaIdsList.get(i),(Integer) obj1.get("count"));
             softwareMap.put(orgaIdsList.get(i),(Integer) obj2.get("count"));
         }
+        //对各部门软件资产数量进行排序
+        List<Map.Entry<String,Integer>> list = new ArrayList<>(softwareMap.entrySet());
+        Collections.sort(list,new Comparator<Map.Entry<String, Integer>>(){
+            //降序排序
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+        for(Map.Entry<String, Integer> mapping:list) {
+            System.out.println(mapping.getKey());
+        }
 
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
@@ -350,12 +363,20 @@ public class AssetDataService {
         for (LinkedHashMap<Object,Object> map : orgaList){
             organNameMap.put((String) map.get("id"), (String) map.get("name"));
         }
-        //组装数据
+        /*//组装数据
         for(int i = 0;i < orgaIdsList.size();i++){
             JSONObject row = new JSONObject();
             row.put("部门",organNameMap.get(orgaIdsList.get(i)));
             row.put("物理资产",hardwareMap.get(orgaIdsList.get(i)));
             row.put("软件资产",softwareMap.get(orgaIdsList.get(i)));
+            rows.add(row);
+        }*/
+
+        for(Map.Entry<String, Integer> map : list){
+            JSONObject row = new JSONObject();
+            row.put("部门",organNameMap.get(map.getKey()));
+            row.put("物理资产",hardwareMap.get(map.getKey()));
+            row.put("软件资产",map.getValue());
             rows.add(row);
         }
 

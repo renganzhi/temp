@@ -1289,8 +1289,6 @@ public class MonitorDataService {
                 row.put("采集时间", fetchDate);
                 MonitorUtils.action(filter, o -> row.put( neIpMap.get(o.getString("neId")), o.getString(finalField)));
                 cacheTime.add(fetchDate);
-                //192.168.1.9Switch -> Infinity
-                //if(row.get())
                 if(row.size()==1)continue;
                 rows.add(row);
             }
@@ -4388,16 +4386,12 @@ public class MonitorDataService {
         indValueQuery.setIndicatorId(indicatorId);
         JSONObject fieldFilters = new JSONObject();
         if(type == 3) {
-            fieldFilters.put("power_State","poweredOn");
-            fieldFilters.put("power_State","poweredOff");
+            fieldFilters.put("power_state","poweredOn");
         }else if (type == 4){
-            fieldFilters.put("power_State","poweredOff");
+            fieldFilters.put("power_state","poweredOff");
         }else if (type == 1){
         }else if (type == 2){
-
             fieldFilters.put("vm_status","Warning");
-            //fieldFilters.put("vm_Status","Unconnection");
-            //fieldFilters.put("vm_Status","Unknown");
         }
         indValueQuery.setFieldShouldFilters(fieldFilters);
         String type2 = "count";
