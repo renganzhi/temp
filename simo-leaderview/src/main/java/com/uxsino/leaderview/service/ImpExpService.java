@@ -620,7 +620,7 @@ public class ImpExpService {
                 String viewImage = obj.getString("viewImage");
                 String composeObj = obj.getString("composeObj");
                 String paintObj = obj.getString("paintObj");
-                long num;
+                long num = 0;
                 //String oldId;
                 int i = 0;
                 //处理viewConf
@@ -691,7 +691,15 @@ public class ImpExpService {
                     Matcher m44 = numPattern.matcher(string);
                     String oldId = m44.replaceAll("").trim()+".png";
                     List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
-                    num = fileList.get(fileList.size()-1).getId();
+                    if(fileList.size()>=1) {
+                        num = fileList.get(fileList.size() - 1).getId();
+                    }else {
+                        String oldId2 = m44.replaceAll("").trim()+".png";
+                        fileList = uploadedFileService.findByName(oldId2);
+                        if(fileList.size()>=1){
+                            num = fileList.get(fileList.size() - 1).getId();
+                        }
+                    }
                     paintObj = paintObj.replace(string, "\"bgImg\":\"/home/getImg/true/" + num +"\"");
                     num = 0;
                 }
