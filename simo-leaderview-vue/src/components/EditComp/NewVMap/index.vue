@@ -34,10 +34,10 @@ export default {
       code = this.item.countyCode
     }
     var _jsonUrl = gbs.inDev ? '/api' : 'http://' + window.location.host
-    var _static = gbs.inDev ? 'static' : 'leaderviewWeb'
+    var _static = gbs.inDev ? 'static' : 'leaderview/leaderviewWeb'
     var linkUrl = './../../../../' + _static + '/libs/map/' + code + '.json'
     if (this.item.mapLevel === 'county') {
-      linkUrl = _jsonUrl + '/leaderviewWeb/mapjson/' + code + '.json'
+      linkUrl = _jsonUrl + '/leaderview/leaderviewWeb/mapjson/' + code + '.json'
     }
     this.settings = {
       positionJsonLink: linkUrl, // 打包部署
@@ -59,7 +59,7 @@ export default {
     return {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
-      mapStatic: gbs.inDev ? 'static' : 'leaderviewWeb',
+      mapStatic: gbs.inDev ? 'static' : 'leaderview/leaderviewWeb',
       jsonUrl: gbs.inDev ? '/api' : 'http://' + window.location.host,
       // settings: {
       //   // yAxisType: [0],
@@ -257,7 +257,7 @@ export default {
           }
         } else if (newV === 'county') {
           if (this.item.countyCode) {
-            this.axios.get('/leaderviewWeb/mapjson/' + this.item.countyCode + '.json').then((data) => {
+            this.axios.get('/leaderview/leaderviewWeb/mapjson/' + this.item.countyCode + '.json').then((data) => {
               this.settings.mapOrigin = data
               this.settings.positionJsonLink = null
               this.settings.position = 'map_' + this.item.countyCode
@@ -297,7 +297,7 @@ export default {
     },
     'item.countyCode': function (newV, oldV) {
       if (this.item.mapLevel === 'county') {
-        this.axios.get('/leaderviewWeb/mapjson/' + this.item.countyCode + '.json').then((data) => {
+        this.axios.get('/leaderview/leaderviewWeb/mapjson/' + this.item.countyCode + '.json').then((data) => {
           this.settings.mapOrigin = data
           this.settings.positionJsonLink = null
           this.settings.position = 'map_' + newV

@@ -94,74 +94,54 @@
         </div>
       </transition>
       <!-- 下一页 -->
-      <div v-show="loadAll" id="homeTips">
-        <div class="btm-tools" :class="isFullScreen ? 'full' : ''">
-          <div class="fl ringparent" v-show="!isNewUser">
-            <span
-              @click="editPage"
-              class="ring-icon"
-              title
-              data-original-title="设置"
-              v-show="!isFullScreen"
-              ><i class="icon-n-set"></i
-            ></span>
-            <span
-              @click="toEditPage()"
-              class="ring-icon"
-              data-toggle="tooltip"
-              ref="editbutton"
-              title
-              data-original-title="编辑当前页"
-              v-show="!isFullScreen"
-              ><i class="icon-n-edit"></i
-            ></span>
-            <span
-              @click="refresh"
-              class="ring-icon"
-              data-toggle="tooltip"
-              title
-              :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"
-              ><i class="icon-n-freshen"></i
-            ></span>
-            <span
-              @click="fullScreen"
-              class="ring-icon"
-              data-toggle="tooltip"
-              title
-              :data-original-title="isFullScreen ? '退出全屏' : '全屏'"
-              ><i
-                :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"
-              ></i
-            ></span>
+      <div v-show="loadAll"
+           id="homeTips">
+        <div class="btm-tools"
+             :class="isFullScreen?'full':''">
+          <div class="fl ringparent"
+               v-show="!isNewUser">
+            <span @click="editPage"
+                  class="ring-icon"
+                  title
+                  data-original-title="设置"
+                  v-show="!isFullScreen"><i class="icon-n-set"></i></span>
+            <span @click="toEditPage()"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  ref='editbutton'
+                  title
+                  data-original-title="编辑当前页"
+                  v-show="!isFullScreen"><i class="icon-n-edit"></i></span>
+            <span @click="refresh"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"><i class="icon-n-freshen"></i></span>
+            <span @click="fullScreen"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
           </div>
           <div class="fr ringparent">
-            <span
-              @click="prev"
-              class="ring-icon"
-              data-toggle="tooltip"
-              title
-              v-show="showPagination"
-              :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"
-              ><i class="icon-n-prev"></i
-            ></span>
-            <span
-              @click="togglePlay"
-              class="ring-icon"
-              data-toggle="tooltip"
-              title
-              :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
-              v-show="showPagination && isFullScreen"
-              ><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i
-            ></span>
-            <span
-              @click="next"
-              class="ring-icon"
-              data-toggle="tooltip"
-              title
-              v-show="showPagination"
-              :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"
-              ><i class="icon-n-next"></i
-            ></span>
+            <span @click="prev"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  v-show="showPagination"
+                  :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"><i class="icon-n-prev"></i></span>
+            <span @click="togglePlay"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
+                  v-show="showPagination && isFullScreen"><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i></span>
+            <span @click="next"
+                  class="ring-icon"
+                  data-toggle='tooltip'
+                  title
+                  v-show="showPagination"
+                  :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"><i class="icon-n-next"></i></span>
           </div>
         </div>
 
@@ -1332,18 +1312,18 @@ export default {
   flex-wrap: nowrap;
 }
 
-#home-html .ring-icon {
-  // display: inline-block;
+#home-html .ringparent{
   display: flex;
-  justify-content: center;
-  align-items: center;
+}
+#home-html .ring-icon {
   width: 30px;
   height: 30px;
   background: #15192a;
   // background: rgba(21, 25, 42, 0.3);
   border-radius: 50%;
-  text-align: center;
-  line-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0.3;
   margin: 0 4px;
   cursor: pointer;

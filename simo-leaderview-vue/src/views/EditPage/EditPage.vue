@@ -842,13 +842,12 @@ export default {
   float: left;
   margin-top: 10px;
   margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   i {
-    width: 20px;
-    height: 20px;
     font-size: 12px;
     font-weight: bold;
-    position: relative;
-    top: -10px;
     color: rgba(13, 17, 31, 1);
   }
 }

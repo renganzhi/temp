@@ -2533,6 +2533,9 @@ html[data-theme="blueWhite"] {
   padding-left: 380px;
   z-index: 999;
   text-align: right;
+  .ringparent{
+    display: flex;
+  }
   .ring-icon {
     // display: inline-block;
     display: flex;
@@ -2542,8 +2545,6 @@ html[data-theme="blueWhite"] {
     height: 30px;
     background: #101425;
     border-radius: 50%;
-    text-align: center;
-    line-height: 30px;
     opacity: 0.3;
     margin: 0 4px;
     cursor: pointer;
