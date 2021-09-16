@@ -496,9 +496,9 @@ public class MonitorDataParamsService {
         // new一个新的arrs用于存放最后便利结果得到的arr，之后再拿arr进行比较
         List<JSONArray> arrs = new ArrayList<JSONArray>();
 
-        if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass) && ObjectUtils.isEmpty(baseNeClass)) {
+        /*if ((neIds == null || neIds.length == 0) && ObjectUtils.isEmpty(neClass) && ObjectUtils.isEmpty(baseNeClass)) {
             return new JsonModel(false, "未选择资源");
-        }
+        }*/
 
         // 如果未选择资源，但是是topn的类型，要将已选子类型的指标展示出来
         if ((neIds == null || neIds.length == 0) && ((!ObjectUtils.isEmpty(neClass))||!ObjectUtils.isEmpty(baseNeClass))) {
@@ -624,6 +624,11 @@ public class MonitorDataParamsService {
                     arrs.add(arr);
                 }
             }
+        }
+        if (ObjectUtils.isEmpty(arrs)){
+            JSONArray arr = new JSONArray();
+            arr.add(newResultObj("健康度", "healthy"));
+            arrs.add(arr);
         }
         // 遍历取指标交集
         return getIntersection(arrs);
