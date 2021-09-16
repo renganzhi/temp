@@ -77,7 +77,7 @@
            id="homeTips">
         <div class="btm-tools"
              :class="isFullScreen?'full':''">
-          <div class="fl"
+          <div class="fl ringparent"
                v-show="!isNewUser">
             <span @click="editPage"
                   class="ring-icon"
@@ -102,7 +102,7 @@
                   title
                   :data-original-title="isFullScreen ? '退出全屏' : '全屏'"><i :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"></i></span>
           </div>
-          <div class="fr">
+          <div class="fr ringparent">
             <span @click="prev"
                   class="ring-icon"
                   data-toggle='tooltip'
@@ -1204,15 +1204,18 @@ export default {
   z-index: -299 !important;
 }
 
+#home-html .ringparent{
+  display: flex;
+}
 #home-html .ring-icon {
-  display: inline-block;
   width: 30px;
   height: 30px;
   background: #15192a;
   // background: rgba(21, 25, 42, 0.3);
   border-radius: 50%;
-  text-align: center;
-  line-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0.3;
   margin: 0 4px;
   cursor: pointer;
