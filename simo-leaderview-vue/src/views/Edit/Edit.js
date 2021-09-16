@@ -308,6 +308,7 @@ export default {
       },
       itemHistoryObj: [],
       historyArr: [],
+      windowtemplateData: {},
       tapsStation: 'center',
       tempHisObj: {},
       tempVideoUrl: '', // 用户输入的视频URL
@@ -408,7 +409,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -460,15 +461,6 @@ export default {
       this.tempItemArry = window.CrossScreenCope.ItemArry || []
       this.copyType = window.CrossScreenCope.copyType || ''
       this.copyonlyOne = window.CrossScreenCope.copyonlyOne || false
-    }
-    if (this.paintObj.templateType === 'single') {
-      this.CanChangeServes = true
-      // this.paintObj.templateConf.baseneclss  neclass
-      this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${this.paintObj.templateConf.baseneclss}&neClass=${this.paintObj.templateConf.neclass}`).then(res => {
-        this.resourcesValueIds = res.obj || []
-      })
-    } else {
-      this.CanChangeServes = false
     }
     this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
       // var res = data.obj
@@ -1131,7 +1123,17 @@ export default {
     getPageConf(id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
-        console.log(res)
+        let pageData = JSON.parse(res.obj.templateConf)
+        this.windowtemplateData = pageData
+        if (res.obj.templateType === 'single') {
+          this.CanChangeServes = true
+          // this.paintObj.templateConf.baseneclss  neclass
+          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
+            this.resourcesValueIds = res.obj || []
+          })
+        } else {
+          this.CanChangeServes = false
+        }
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
@@ -4394,12 +4396,14 @@ export default {
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
         this.chartNum.forEach(data => {
-          console.log(data)
           if (data.params.neIds && data.url) {
             data.params.neIds = newV
-            data.params.baseneclss = this.paintObj.templateConf.baseneclss || ''
-            data.params.neclass = this.paintObj.templateConf.neclass || ''
-            // this.paintObj.templateConf.baseneclss  neclass
+            if (data.params.baseNeClass !== undefined) {
+              data.params.baseNeClass = this.windowtemplateData.baseneclss || ''
+            }
+            if (data.params.neClass !== undefined) {
+              data.params.neClass = this.windowtemplateData.neclass || ''
+            }
             if (data.params.windows) {
               let newData = JSON.parse(data.params.windows)[0]
               let mydata = newData.ne[0]
