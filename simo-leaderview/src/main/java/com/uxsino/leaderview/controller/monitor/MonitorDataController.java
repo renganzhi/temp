@@ -861,6 +861,25 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("按拓扑统计各类型各状态资源数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑ID", required = true),
+            @ApiImplicitParam(name = "baseNeclass", paramType = "query", dataType = "String", value = "父类型", required = false),
+            @ApiImplicitParam(name = "runStatus", paramType = "query", dataType = "String", value = "运行状态", required = false)
+    })
+    @RequestMapping(value = "/getTopoResourcesByBaseNeClassAndStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getTopoResourcesByBaseNeClassAndStatus(
+            @RequestParam(required = true) String topoId,
+            @RequestParam(required = false) String baseNeClass,@RequestParam(required = false)String runStatus) {
+        try {
+            return monitorDataService.getTopoResourcesByBaseNeClassAndStatus(topoId, baseNeClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(true, e.getMessage());
+        }
+    }
+
     @ApiOperation("按拓扑统计链路条数")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑ID", required = true),

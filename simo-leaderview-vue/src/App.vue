@@ -28,7 +28,7 @@ export default {
   },
   created: function () {
     $('html').attr('data-theme', 'default')
-    var _hash = window.location.hash
+    // var _hash = window.location.hash
     // if (_hash.split('/')[1]) {
     //   var _url =
     //     window.location.protocol + '//' + window.location.host + '/index'
@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "main.scss";
+@import 'main.scss';
 
 html,
 body {
@@ -97,14 +97,14 @@ body {
   /* filter:alpha(opacity: 10); */
   opacity: 0.3;
 }
-#toast-container{
+#toast-container {
   color: white;
-  button{
+  button {
     background-color: transparent !important;
   }
 }
-.modal-dialog-centered{
-  .row{
+.modal-dialog-centered {
+  .row {
     width: 100%;
     justify-content: center;
     margin: 0;
@@ -119,7 +119,7 @@ body {
 .clear_float:after {
   display: block;
   clear: both;
-  content: "";
+  content: '';
 }
 .text_overflow {
   white-space: nowrap;
@@ -132,17 +132,17 @@ body {
   top: 50%;
   transform: translateY(-50%);
 }
-#toast-container{
-  .toast-close-button{
+#toast-container {
+  .toast-close-button {
     background-color: transparent;
   }
 }
 .simoLink:hover {
-    color: #0253f5 !important;;
-    text-decoration: underline;
+  color: #0253f5 !important;
+  text-decoration: underline;
 }
 
-html[data-theme="default"] {
+html[data-theme='default'] {
   option,
   optgroup {
     background: #0a0e1a !important;
@@ -231,7 +231,7 @@ html[data-theme="default"] {
     background-color: #242c4a !important;
   }
 
-  input:not([type="checkbox"]):not([type="radio"]),
+  input:not([type='checkbox']):not([type='radio']),
   textarea,
   select {
     border: solid 1px #3d445a;
@@ -255,7 +255,7 @@ html[data-theme="default"] {
     color: #cad6dd;
   }
 
-  .select2-container--default .select2-results__option[aria-selected="true"] {
+  .select2-container--default .select2-results__option[aria-selected='true'] {
     background-color: #5897fb;
     color: white;
   }
@@ -274,15 +274,14 @@ html[data-theme="default"] {
 /*
     select2
 */
-html[data-theme="blackWhite"],
-html[data-theme="blueWhite"] {
-
+html[data-theme='blackWhite'],
+html[data-theme='blueWhite'] {
   option,
   optgroup {
-    background: #ffffff!important;
-    color: #666666 ;
+    background: #ffffff !important;
+    color: #666666;
   }
-  .dropdown-menu{
+  .dropdown-menu {
     background-color: #fff !important;
     color: #50607c !important;
   }
@@ -346,7 +345,7 @@ html[data-theme="blueWhite"] {
     color: #026bf4;
   }
 
-  input:not([type="checkbox"]):not([type="radio"]),
+  input:not([type='checkbox']):not([type='radio']),
   textarea,
   select {
     border: solid 1px #adb9ca !important;
@@ -369,7 +368,7 @@ html[data-theme="blueWhite"] {
   .table th {
     background: #ebedf1;
   }
-  .table tbody tr{
+  .table tbody tr {
     background-color: transparent !important;
   }
   .table tbody tr:hover {
@@ -425,7 +424,7 @@ html[data-theme="blueWhite"] {
     color: #ffffff;
   }
 
-  .select2-container--default .select2-results__option[aria-selected="true"] {
+  .select2-container--default .select2-results__option[aria-selected='true'] {
     background-color: #5897fb;
     color: #ffffff;
   }
@@ -485,12 +484,12 @@ modal
     border: none;
   }
 
-  .modal-footer button[data-dismiss="modal"]:last-child {
+  .modal-footer button[data-dismiss='modal']:last-child {
     color: #026bf4;
     background: #ffffff;
     border: solid 1px;
   }
-  .modal-footer button[data-dismiss="modal"]:last-child:hover {
+  .modal-footer button[data-dismiss='modal']:last-child:hover {
     color: #026bf4;
     background-color: #ebedf1;
   }

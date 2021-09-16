@@ -764,7 +764,7 @@ public class MonitorDataParamsService {
             List<NetworkEntity> neList = new ArrayList<NetworkEntity>();
             try {
                 NetworkEntityCriteria criteria0 = new NetworkEntityCriteria();
-                if (BaseNeClass.virtualization.equals(baseNeClass)) {
+                if (BaseNeClass.virtualization.equals(baseNeClass)||(!ObjectUtils.isEmpty(neClass) && BaseNeClass.virtualization.equals(neClass.getBaseNeClass()) )) {
                     criteria0.setSourceManage(false);
                 }
                 criteria0.setIds(Lists.newArrayList(neIds));

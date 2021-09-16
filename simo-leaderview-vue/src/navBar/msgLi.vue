@@ -44,39 +44,39 @@ export default {
       default: () => {}
     }
   },
-  data() {
+  data () {
     return {
       isOverFlow: false,
       showContent: false
-    };
+    }
   },
   computed: {
     // level () {
     //   return JSON.parse(this.pram.data.extParam).level
     // },
-    extParam() {
-      const extParamData = this.pram.data.extParam;
-      return extParamData ? JSON.parse(extParamData) : {};
+    extParam () {
+      const extParamData = this.pram.data.extParam
+      return extParamData ? JSON.parse(extParamData) : {}
     }
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       if (this.$refs.msgContent.clientHeight > 34) {
-        this.isOverFlow = true;
+        this.isOverFlow = true
       }
-    });
+    })
   },
   methods: {
     // 消息-查看详情
-    OpenDetailBox() {
-      this.$emit("openDetalBox", this.pram.data);
+    OpenDetailBox () {
+      this.$emit('openDetalBox', this.pram.data)
     },
-    lookDetail() {
+    lookDetail () {
       if (this.urlArry.msg) {
-        const msgurl = this.urlArry.msg.split("#");
+        const msgurl = this.urlArry.msg.split('#')
         window.location = `${window.location.origin + msgurl[0]}?msgId=${
           this.pram.data.id
-        }#${msgurl[1]}`;
+        }#${msgurl[1]}`
       }
       // this.$api.msgTagRead({ ids: this.pram.data.id });
       // this.$emit("close-pop");
@@ -106,7 +106,7 @@ export default {
       // });
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
