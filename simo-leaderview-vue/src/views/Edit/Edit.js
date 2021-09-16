@@ -25,6 +25,7 @@ import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
 import HawkEye from '@/components/HawkEye'
+import { titleShowFn } from '../../../static/js/public'
 
 import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
@@ -409,7 +410,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -1123,8 +1124,11 @@ export default {
     getPageConf(id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
-        let pageData = JSON.parse(res.obj.templateConf)
-        this.windowtemplateData = pageData
+        let pageData = {}
+        if (res.obj.templateConf) {
+          pageData = JSON.parse(res.obj.templateConf)
+          this.windowtemplateData = pageData
+        }
         if (res.obj.templateType === 'single') {
           this.CanChangeServes = true
           // this.paintObj.templateConf.baseneclss  neclass
@@ -1381,7 +1385,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.e-legend'))
+          titleShowFn('bottom', $('.e-legend'))
         })
       }
     },
@@ -1717,7 +1721,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.e-legend'))
+          titleShowFn('bottom', $('.e-legend'))
         })
       }
       if (ev !== 'move') {
@@ -2691,7 +2695,7 @@ export default {
         _this.syst.curUrl = api
         if (!gbs.inDev) {
           this.$nextTick(() => {
-            titleShow('bottom', $('.e-legend'))
+            titleShowFn('bottom', $('.e-legend'))
           })
         }
       })
@@ -2723,6 +2727,8 @@ export default {
     },
     openUpload() {
       this.showUpload = true
+      this.importModelForm.fileName = ''
+      this.importModelForm.name = ''
     },
     getZip(e) {
       if (!e.target.files[0]) {
@@ -4811,9 +4817,6 @@ export default {
     $('.navbar-fixed-top').css('display', 'none')
     $('.page-container').css('top', '0px')
     this.chooseMap()
-    if (!gbs.inDev) {
-      titleShow('bottom', $('.e-legend'))
-    }
     // 初始化paintInput
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
@@ -4845,6 +4848,9 @@ export default {
     // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
     this.getAllPage()
+    if (!gbs.inDev) {
+      titleShowFn('bottom', $('.e-legend'))
+    }
   },
   beforeDestroy: function () {
     $('#header').show()
