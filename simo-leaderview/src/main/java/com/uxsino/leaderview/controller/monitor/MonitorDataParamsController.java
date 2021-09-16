@@ -319,36 +319,22 @@ public class MonitorDataParamsController {
     @RequestMapping(value = "/getInterval", method = RequestMethod.GET)
     public JsonModel getInterval(@RequestParam IndPeriod period) {
         JSONArray result = new JSONArray();
-        //TODO 这里的时间值在之后的版本中可调整至灵活输入的。
-        String[] dayArray = { "5分钟","15分钟","30分钟"};
-        Integer[] dayValue = { 5, 15, 30 };
-        String[] weekArray = { "2小时","4小时","8小时"};
-        Integer[] weekValue = { 2, 4, 8 };
-        String[] monthArray = { "8小时","12小时","24小时" };
-        Integer[] monthValue = { 8, 12, 24 };
-        /*for (int i = 0; i < nameArray.length; i++) {
-            result.add(MonitorUtils.newResultObj( nameArray[i], valueArray[i]));
-        }*/
+        String[] dayArray = { "5分钟","15分钟","30分钟", "1小时", "2小时"};
+        Integer[] dayValue = { 5, 15, 30, 60, 120 };
+        String[] weekArray = { "2小时","4小时","8小时", "16小时", "1天"};
+        Integer[] weekValue = { 2, 4, 8 ,16, 24};
+        String[] monthArray = { "8小时","12小时","1天", "2天", "3天"};
+        Integer[] monthValue = { 8, 12, 24, 48, 72};
+
         if ("_1month".equals(period.name())) {
-            // 如果选择的是展示一个月，则展示时间点数为每30分钟展示一个数据
-//            result.remove(0);
-//            result.remove(0);
-            //result.add(MonitorUtils.newResultObj("24小时",8));
             for (int i = 0; i < monthArray.length; i++) {
                 result.add(MonitorUtils.newResultObj( monthArray[i], monthValue[i]));
             }
         } else if ("_1week".equals(period.name())) {
-            // 如果选择的是展示一周，则展示时间点数为每5分钟展示一个数据
-//            result.remove(3);
-//            result.remove(3);
-            //result.add(MonitorUtils.newResultObj("8小时",8));
             for (int i = 0; i < weekArray.length; i++) {
                 result.add(MonitorUtils.newResultObj( weekArray[i], weekValue[i]));
             }
         } else {
-            // 如果选择的是展示一天，则根据存在数据进行展示
-//            result.clear();
-            //result.add(MonitorUtils.newResultObj("5分钟",5));
             for (int i = 0; i < weekArray.length; i++) {
                 result.add(MonitorUtils.newResultObj( dayArray[i], dayValue[i]));
             }
