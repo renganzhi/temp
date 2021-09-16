@@ -1536,16 +1536,6 @@
                 "//": "原指标",
                 "notNull": true,
                 "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
-                "params": ["domainId","baseNeClass","neClass"]
-            },
-            {
-                "key": "indicators",
-                "name": "指标分类",
-                "//": "原指标",
-                "notNull": true,
-                "type": "drop-down",
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getIndicator?type=LIST",
@@ -3933,6 +3923,87 @@
                     {
                         "name": "关闭",
                         "value": "4"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_Ne_Basic_Info",
+        "name": "资源基础信息",
+        "component": "monitor",
+        "type": "NEWtextArea,marquee,NewMarquee",
+        "url": "/leaderview/monitor/getNeBasicInfo",
+        "method" : "get",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNotKnown"
+            },
+            {
+                "key": "neClass",
+                "name": "子类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/neClass",
+                "params": ["baseNeClass"]
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
+                "params": ["domainId","baseNeClass","neClass"]
+            },
+            {
+                "key": "field",
+                "name": "所需信息",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "名称",
+                        "value": "name"
+                    },
+                    {
+                        "name": "资源型号",
+                        "value": "model"
+                    },
+                    {
+                        "name": "IP地址",
+                        "value": "ip"
+                    },
+                    {
+                        "name": "运行状态",
+                        "value": "runStatus"
+                    },
+                    {
+                        "name": "最新检测时间",
+                        "value": "patrolTime"
+                    },
+                    {
+                        "name": "管理状态",
+                        "value": "manageStatus"
+                    },
+                    {
+                        "name": "健康度",
+                        "value": "health"
                     }
                 ]
             }

@@ -159,8 +159,9 @@ public class MonitorDataParamsController {
 
     @RequestMapping(value = "/getIndicatorTopN", method = RequestMethod.GET)
     public JsonModel getIndicatorTopN(@RequestParam(required = false) String[] neIds,
-                                  @RequestParam(required = false) NeClass neClass,
-                                      @RequestParam(required = false) BaseNeClass baseNeClass) {
+                                      @RequestParam(required = false) NeClass neClass,
+                                      @RequestParam(required = false) BaseNeClass baseNeClass,
+                                      @RequestParam(required = false) Boolean healthy) {
         return monitorDataParamsService.getIndicatorTopn(neIds, neClass,baseNeClass);
 
     }

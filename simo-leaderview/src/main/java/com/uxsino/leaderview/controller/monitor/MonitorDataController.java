@@ -926,26 +926,18 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("获取资源某个字段的值")
+    @GetMapping(value = "/getNeBasicInfo")
+    public JsonModel getNeBasicInfo(@RequestParam String neIds,
+                                    @RequestParam (required = false) BaseNeClass baseNeClass,
+                                    @RequestParam String field){
+        try {
+            return monitorDataService.getNeBasicInfo(neIds,baseNeClass,field);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
 
-    /*@Autowired
-    private MonitorService monitorService;
-
-    @GetMapping("/test")
-    public JsonModel test(){
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("neClass", "hcnet");
-        JsonModel monitorResult = monitorService.searchNe(jsonObject);
-        LinkedHashMap monitor = (LinkedHashMap)((ArrayList)((LinkedHashMap)monitorResult.getObj()).get("object")).get(0);
-        String neId = (String)monitor.get("id");
-        JsonModel channelResult = monitorService.getChannelList(neId);
-        String channelNo = (String)((LinkedHashMap)((ArrayList)((LinkedHashMap)((LinkedHashMap)channelResult.getObj()).get("indicatorValue")).get("object")).get(0)).get("channel");
-        videoMonitoringService.register(new VideoMonitoringService.VideoConsumer<byte[]>() {
-            @Override
-            public void accept(byte[] bytes) {
-                System.out.println("接收到帧数据长度：" + bytes.length);
-            }
-        }.set("1", neId, "sub", channelNo));
-        return new JsonModel(true);
-    }*/
+    }
 
 }

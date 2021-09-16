@@ -39,6 +39,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -1871,9 +1872,9 @@ public class MonitorDataService {
                 criteria.setNeClass(NeClass.valueOf(neClass));
             } else if (!Strings.isNullOrEmpty(baseNeClass)) {
                 criteria.setBaseNeClass(BaseNeClass.valueOf(baseNeClass));
-            } else {
+            } /*else {
                 return new JsonModel(true, "父类型、子类型与资源均未选择！", empObj());
-            }
+            }*/
             criteria.setMonitoring(true);
             nes = rpcProcessService.getNeList(criteria);
             neIds = nes.stream().map(NetworkEntity::getId).collect(Collectors.joining(","));
@@ -2489,8 +2490,11 @@ public class MonitorDataService {
      */
     public JsonModel getMultipleCompObject(String neIds, String indicators, String[] component, String[] field, HttpSession session) throws Exception {
 
-        //如果部件为空，设置一个值，避免后面报错
-        if (component.length == 0) component = new String[]{"值"};
+        //如果部件为空，则查询所有部件的指标
+        Boolean ifnull = false;
+        List<String> componentList = new ArrayList<>();
+        for (String v : component) componentList.add(v);
+        if (component.length == 0) ifnull = true;
 
         Map<String, String> componentNameMap = Maps.newHashMap();
         NeComponentQuery compQuery = new NeComponentQuery();
@@ -2503,6 +2507,7 @@ public class MonitorDataService {
                 continue;
             }
             componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
+            if (ifnull) componentList.add(map.get("identifier").toString());
         }
         // 存放失效资源Id
         List<String> invalidId = Lists.newArrayList();
@@ -2541,9 +2546,11 @@ public class MonitorDataService {
             //JSONArray neArray = (JSONArray) params.get("ne");
             NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neIds);
             //单资源多部件则改为遍历部件
-            for (int j = 0; j < component.length; j++) {
+            //for (int j = 0; j < component.length; j++) {
+            for (int j = 0; j < componentList.size(); j++) {
                 String neId = ne.getId();
-                String componentName = component[j];
+                //String componentName = component[j];
+                String componentName = componentList.get(j);
 
                 // 如果资源已被删除或者取消监控，将此资源的数据展示取消
                 if (ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
@@ -2637,8 +2644,10 @@ public class MonitorDataService {
         }
         resultArray[0] = new JSONArray();
         //遍历部件array，封装部件数据。
-        for (int i = 0; i < component.length; i++) {
-            String compId = component[i];
+//        for (int i = 0; i < component.length; i++) {
+        for (int i = 0; i < componentList.size(); i++) {
+            //String compId = component[i];
+            String compId = componentList.get(i);
             JSONObject obj = new JSONObject();
             obj.put("name", "部件");
             obj.put("value", componentNameMap.get(compId));
@@ -4489,7 +4498,52 @@ public class MonitorDataService {
         JSONObject result = new JSONObject();
         result.put("name", "name");
         result.put("value", count);
-        result.put("info", "查询成功");
+        result.put("info", count);
         return new JsonModel(true, result);
+    }
+
+    public JsonModel getNeBasicInfo(String neId, BaseNeClass baseNeClass, String field) throws Exception {
+        if (ObjectUtils.isEmpty(neId)) {
+            return new JsonModel(false, "未选择资源！");
+        }
+        JSONObject result = new JSONObject();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        if (BaseNeClass.virtualization.equals(baseNeClass)) {
+            criteria.setSourceManage(false);
+        }
+        criteria.setBaseNeClass(baseNeClass);
+        criteria.setId(neId);
+        criteria.setMonitoring(true);
+        criteria.setHealthReturn(true);
+        List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
+        if (!ObjectUtils.isEmpty(list)) {
+            NetworkEntity networkEntity = list.get(0);
+            networkEntity.getName();
+
+            Object value = this.getValue(networkEntity, field);
+            value = ObjectUtils.isEmpty(value) ? "未检测到所需信息" : value;
+            result.put("name","");
+            result.put("value",value);
+            result.put("info",value);
+
+        }
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 通过反射调用get方法获取想要的实体的字段
+     * @param dto 需要获取字段的实体
+     * @param name 获取获取的字段
+     * @return 获取字段的值
+     * @throws Exception
+     */
+    public Object getValue(Object dto, String name) throws Exception {
+        Method[] m = dto.getClass().getMethods();
+        for (int i = 0; i < m.length; i++) {
+            if (("get" + name).toLowerCase().equals(m[i].getName().toLowerCase())) {
+                return m[i].invoke(dto);
+            }
+        }
+        return "";
     }
 }
