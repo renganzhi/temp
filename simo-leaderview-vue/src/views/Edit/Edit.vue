@@ -125,7 +125,7 @@
         <!--  <div class="m-contain full-height">-->
         <div class='btm-tools'>
           <div :class="tapsStation==='left'?'btn-box fl':'btn-box fr'"
-               class="">
+               class="ringparent">
             <span @click="preOther(0)"
                   class="ring-icon hoverTips"
                   style="line-height: 34px;margin: 0 8px;"
@@ -2529,14 +2529,18 @@ html[data-theme="blueWhite"] {
   padding-left: 380px;
   z-index: 999;
   text-align: right;
+  .ringparent{
+    display: flex;
+  }
   .ring-icon {
-    display: inline-block;
+    // display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 30px;
     height: 30px;
     background: #101425;
     border-radius: 50%;
-    text-align: center;
-    line-height: 30px;
     opacity: 0.3;
     margin: 0 4px;
     cursor: pointer;

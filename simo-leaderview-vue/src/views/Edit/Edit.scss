@@ -681,7 +681,8 @@ $headHeight: 50px;
   .el-slider__button-wrapper {
     width: 30px !important;
     height: 3px !important;
-    top: -9px !important;
+    top: -5px !important;
+    line-height: 0;
   }
 
   #partsEdit-modal {
