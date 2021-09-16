@@ -408,7 +408,7 @@ export default {
       }
       return {
         backgroundImage: this.paintObj.bgImg
-          ? 'url(' + gbs.host + '/leaderview' + this.paintObj.bgImg + ')' : '',
+          ? 'url(' + gbs.host + '/leaderviewWeb' + this.paintObj.bgImg + ')' : '',
         backgroundSize: backgroundSize,
         opacity: this.paintObj.opacity / 100
       }
@@ -691,7 +691,7 @@ export default {
       }
     },
     getMapData(chinaId) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview'
+      var mapPth = gbs.inDev ? 'static' : 'leaderviewWeb'
       if (chinaId) {
         return new Promise((resolve, reject) => {
           this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
@@ -766,7 +766,7 @@ export default {
       this.selectedItem.chartData.rows = tempData
     },
     changeMapData(chinaId, target) {
-      var mapPth = gbs.inDev ? 'static' : 'leaderview'
+      var mapPth = gbs.inDev ? 'static' : 'leaderviewWeb'
       this.axios.get('./../../../../' + mapPth + '/libs/map/' + chinaId + '.json', {}).then(response => {
         this[target] = this.initMapData(response)
         if (target === 'provinceArr' && !this.selectedItem.provinceCode) {

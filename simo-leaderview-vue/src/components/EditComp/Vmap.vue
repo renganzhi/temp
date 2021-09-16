@@ -33,7 +33,7 @@ export default {
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
     }
-    var _static = gbs.inDev ? 'static' : 'leaderview'
+    var _static = gbs.inDev ? 'static' : 'leaderviewWeb'
     this.settings = {
       positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
