@@ -25,6 +25,7 @@ import VueRulerTool from '@/components/helpLine/vue-ruler-tool'
 import VueRuler from '@/components/helpLine/vue-ruler'
 import Archive from '@/components/archive'
 import HawkEye from '@/components/HawkEye'
+import { titleShowFn } from '../../../static/js/public'
 
 import UE from '@/components/Common/ue'
 // 改造， 过渡， 主要用于编辑页面右侧的样式和数据
@@ -1384,7 +1385,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.e-legend'))
+          titleShowFn('bottom', $('.e-legend'))
         })
       }
     },
@@ -1720,7 +1721,7 @@ export default {
       }
       if (!gbs.inDev) {
         this.$nextTick(function () {
-          titleShow('bottom', $('.e-legend'))
+          titleShowFn('bottom', $('.e-legend'))
         })
       }
       if (ev !== 'move') {
@@ -2694,7 +2695,7 @@ export default {
         _this.syst.curUrl = api
         if (!gbs.inDev) {
           this.$nextTick(() => {
-            titleShow('bottom', $('.e-legend'))
+            titleShowFn('bottom', $('.e-legend'))
           })
         }
       })
@@ -4848,7 +4849,7 @@ export default {
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
     this.getAllPage()
     if (!gbs.inDev) {
-      titleShow('bottom', $('.e-legend'))
+      titleShowFn('bottom', $('.e-legend'))
     }
   },
   beforeDestroy: function () {
