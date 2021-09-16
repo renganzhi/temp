@@ -1123,8 +1123,11 @@ export default {
     getPageConf(id) {
       // home/homePage/getById
       this.axios.get(`/leaderview/home/homePage/getById/${id}`).then(res => {
-        let pageData = JSON.parse(res.obj.templateConf)
-        this.windowtemplateData = pageData
+        let pageData = {}
+        if (res.obj.templateConf) {
+          pageData = JSON.parse(res.obj.templateConf)
+          this.windowtemplateData = pageData
+        }
         if (res.obj.templateType === 'single') {
           this.CanChangeServes = true
           // this.paintObj.templateConf.baseneclss  neclass
