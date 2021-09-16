@@ -241,6 +241,7 @@ export default {
           if (nameFields.includes(k)) {
             res.name = v
           }
+          this.convert(v, nameFields, childrenFields)
         }
       } else {
 
@@ -289,8 +290,8 @@ export default {
         this.tip = d
       }
       if (!this.mouseout) {
-        this.tipLeft = e.offsetX + 20
-        this.tipTop = e.offsetY - 40
+        this.tipLeft = e.x + 10
+        this.tipTop = e.y - 40
       }
     },
     hideTip () {
