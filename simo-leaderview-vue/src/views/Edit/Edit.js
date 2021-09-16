@@ -2726,6 +2726,8 @@ export default {
     },
     openUpload() {
       this.showUpload = true
+      this.importModelForm.fileName = ''
+      this.importModelForm.name = ''
     },
     getZip(e) {
       if (!e.target.files[0]) {
