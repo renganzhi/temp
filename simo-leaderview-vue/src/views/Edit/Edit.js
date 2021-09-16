@@ -4816,9 +4816,6 @@ export default {
     $('.navbar-fixed-top').css('display', 'none')
     $('.page-container').css('top', '0px')
     this.chooseMap()
-    if (!gbs.inDev) {
-      titleShow('bottom', $('.e-legend'))
-    }
     // 初始化paintInput
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
@@ -4850,6 +4847,9 @@ export default {
     // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
     this.getAllPage()
+    if (!gbs.inDev) {
+      titleShow('bottom', $('.e-legend'))
+    }
   },
   beforeDestroy: function () {
     $('#header').show()
