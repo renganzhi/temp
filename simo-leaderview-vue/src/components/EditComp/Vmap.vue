@@ -42,7 +42,7 @@ export default {
       empty: false,
       keyId: new Date().getTime() + Math.random() * 10000,
       initOption: { renderer: 'svg' },
-      mapStatic: gbs.inDev ? 'static' : 'leaderview',
+      mapStatic: gbs.inDev ? 'static' : 'leaderviewWeb',
       // settings: {
       //   // yAxisType: [0],
       //   // positionJsonLink: 'https://unpkg.com/v-charts-custom-maps@0.2.1/hk-geo.json',
