@@ -213,6 +213,8 @@ public class HomePageController {
                 homePage.setViewConf(template.getViewConf());
                 homePage.setComposeObj(template.getComposeObj());
                 homePage.setPaintObj(template.getPaintObj());
+                homePage.setTemplateType(template.getTemplateType());
+                homePage.setTemplateConf(template.getTemplateConf());
                 //从当前session中获取用户id
             }
         }
