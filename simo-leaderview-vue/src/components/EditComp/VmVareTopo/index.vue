@@ -290,8 +290,8 @@ export default {
         this.tip = d
       }
       if (!this.mouseout) {
-        this.tipLeft = e.x + 10
-        this.tipTop = e.y - 40
+        this.tipLeft = e.offsetX + 10
+        this.tipTop = e.offsetY - 40
       }
     },
     hideTip () {
