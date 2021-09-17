@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotBlank;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -478,10 +477,13 @@ public class RpcProcessService {
         return ts;
     }
 
-    public NetworkEntity findNetworkEntityByIdIn(String id) throws Exception{
+    public NetworkEntity findNetworkEntityByIdIn(String id, boolean isVirtualization) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria.setId(id);
         criteria.setMonitoring(true);
+        if(isVirtualization){
+            criteria.setSourceManage(false);
+        }
         List<NetworkEntity> neList = getNeList(criteria);
         if (ObjectUtils.isEmpty(neList)){
             return null;

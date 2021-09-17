@@ -464,7 +464,8 @@ public class AlertDataService {
             return new JsonModel(true, "无资源数据", result);
         }
         AlertRecord alert = list.get(0);
-        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
+        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId(),
+                BaseNeClass.virtualization.toString().equals(baseNeClass));
         if (ObjectUtils.isEmpty(ne)){
             return new JsonModel(true, "资源选择错误");
         }
@@ -716,7 +717,7 @@ public class AlertDataService {
         list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {
-                NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId());
+                NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId(), false);
                 Map<String, String> row = new LinkedHashMap<>();
                 row.put("资源名称", ne.getName());
                 row.put("告警级别", rpcProcessService.getLevel(alert.getLevel()));
