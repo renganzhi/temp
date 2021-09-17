@@ -158,7 +158,7 @@ export default {
       var loader = new GLTFLoader()
       var _this = this
       // ${this.baseUrl}
-      if(this.baseUrl && _this.item.gltfName){
+      if(this.baseUrl && _this.item.gltfName !== ''){
       loader.load(
         `${this.baseUrl}/leaderview/${_this.item.gltfName}`,
         function (gltf) {
