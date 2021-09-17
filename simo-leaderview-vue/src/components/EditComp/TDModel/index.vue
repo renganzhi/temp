@@ -162,11 +162,11 @@ export default {
       loader.load(
         `${this.baseUrl}/leaderview/${_this.item.gltfName}`,
         function (gltf) {
-          gltf.this.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
-          gltf.this.scene.position.set(0, 0, 0)
-          gltf.this.scene.rotation.y = Math.PI * _this.item.ModelRotation / 90
-          gltf.this.scene.name = 'GltfName'
-          this.scene.add(gltf.this.scene)
+          gltf.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
+          gltf.scene.position.set(0, 0, 0)
+          gltf.scene.rotation.y = Math.PI * _this.item.ModelRotation / 90
+          gltf.scene.name = 'GltfName'
+          _this.scene.add(gltf.scene)
         }
       )
       }

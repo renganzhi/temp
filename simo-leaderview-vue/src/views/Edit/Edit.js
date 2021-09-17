@@ -2747,7 +2747,7 @@ export default {
     sureUpload: function () {
       var _this = this
       this.TDmodelFormData.set("name", this.importModelForm.name);
-      this.axios.post('/leaderview/home/importTemplate', this.TDmodelFormData).then((res) => {
+      this.axios.post('/leaderview/home/upload3dModel', this.TDmodelFormData).then((res) => {
         if (res.success) {
           Notification({
             message: res.msg,
