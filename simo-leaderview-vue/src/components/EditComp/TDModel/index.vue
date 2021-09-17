@@ -12,17 +12,18 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import elementResizeDetectorMaker from 'element-resize-detector'
 import { gbs } from '@/config/settings'
-let camera
-let scene
-let controls
-let transformControls
-let renderer
-let light
-let helper
+
 export default {
   data () {
     return {
-      baseUrl:''
+      baseUrl:'',
+      camera:'',
+      scene:'',
+      controls:'',
+      transformControls:'',
+      renderer:'',
+      light:'',
+      helper:'',
     }
   },
   props: ['item'],
@@ -30,50 +31,60 @@ export default {
     'item.width': function () {
     },
     'item.lightColor': function (val) {
-      light.color = new THREE.Color(val)
+      this.light.color = new THREE.Color(val)
     },
     'item.lightStrength': function (val) {
-      light.intensity = val * 1
+      this.light.intensity = val * 1
     },
     'item.cameraX': function (val) {
-      // light.intensity = val * 1
-      camera.position.x = val
+      if(this.item.cameraX !== this.camera.position.x){
+        this.camera.position.x = val
+      }
     },
     'item.cameraY': function (val) {
-      camera.position.y = val
+      this.camera.position.y = val
     },
     'item.cameraZ': function (val) {
-      camera.position.z = val
+      this.camera.position.z = val
+    },
+    'camera.position.x': function (val) {
+      this.item.cameraX = this.camera.position.x.toFixed(2) * 1
+    },
+    'camera.position.y': function (val) {
+      this.item.cameraY = this.camera.position.y.toFixed(2) * 1
+    },
+    'camera.position.z': function (val) {
+      this.item.cameraZ = this.camera.position.z.toFixed(2) * 1
     },
     'item.ModelScal': function (val) {
-      let Cameragltf = scene.getObjectByName('GltfName')
+      let Cameragltf = this.scene.getObjectByName('GltfName')
       Cameragltf.scale.set(val * 1, val * 1, val * 1)
     },
     'item.ModelRotation': function (val) {
-      let Cameragltf = scene.getObjectByName('GltfName')
+      let Cameragltf = this.scene.getObjectByName('GltfName')
       Cameragltf.rotation.y = Math.PI * val / 90
     },
     'item.ZoomLimitMin': function (val) {
-      controls.minDistance = val
+      this.controls.minDistance = val
     },
     'item.gltfName': function (val) {
-      let Cameragltf = scene.getObjectByName('GltfName')
-      scene.remove(Cameragltf)
+      let Cameragltf = this.scene.getObjectByName('GltfName')
+      this.scene.remove(Cameragltf)
       this.creatSixBall()
     },
     'item.ShowHelpLine': function (val) {
       if (val) {
-        helper.scale.x = 1
-        helper.scale.y = 1
-        helper.scale.z = 1
+        this.helper.scale.x = 1
+        this.helper.scale.y = 1
+        this.helper.scale.z = 1
       } else {
-        helper.scale.x = 0
-        helper.scale.y = 0
-        helper.scale.z = 0
+        this.helper.scale.x = 0
+        this.helper.scale.y = 0
+        this.helper.scale.z = 0
       }
     },
     'item.ZoomLimitMax': function (val) {
-      controls.maxDistance = val
+      this.controls.maxDistance = val
     }
   },
   beforeMount () {
@@ -85,135 +96,139 @@ export default {
   mounted () {
     const _this = this
     const erd = elementResizeDetectorMaker()
-    erd.listenTo(document.querySelector('#containerAll'), (element) => {
+    erd.listenTo(this.$refs.mycanvas, (element) => {
       _this.$nextTick(() => {
-        let height = document.querySelector('#containerAll').clientHeight
-        let width = document.querySelector('#containerAll').clientWidth
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
-        renderer.setSize(width, height)
+        let height = this.$refs.mycanvas.clientHeight
+        let width = this.$refs.mycanvas.clientWidth
+        this.camera.aspect = width / height
+        this.camera.updateProjectionMatrix()
+        this.renderer.setSize(width, height)
       })
     })
+    this.$refs.mycanvas.addEventListener('mousemove', this.move)
     this.initSecen()
     this.animate()
   },
   created () {},
   methods: {
+    move(e){
+      e.stopPropagation()
+    },
     initSecen: function () {
-      scene = new THREE.Scene()
-      light = new THREE.SpotLight(this.item.lightColor)
-      light.intensity = this.item.lightStrength * 1
-      light.position.set(-300, 600, -400)
-      light.castShadow = true
-      scene.add(light)
-      scene.add(new THREE.AmbientLight(0xffffff, 20))
-      let containerAll = document.getElementById('containerAll')
-      camera = new THREE.PerspectiveCamera(
+      this.scene = new THREE.Scene()
+      this.light = new THREE.SpotLight(this.item.lightColor)
+      this.light.intensity = this.item.lightStrength * 1
+      this.light.position.set(-300, 600, -400)
+      this.light.castShadow = true
+      this.scene.add(this.light)
+      this.scene.add(new THREE.AmbientLight(0xffffff, 20))
+      let containerAll = this.$refs.mycanvas
+      this.camera = new THREE.PerspectiveCamera(
         45,
         window.innerWidth / window.innerHeight,
         0.1,
         10000
       )
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-      renderer.setClearAlpha(0)
-      renderer.setSize(
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      this.renderer.setClearAlpha(0)
+      this.renderer.setSize(
         containerAll.clientWidth,
         containerAll.clientHeight
       )
-      containerAll.appendChild(renderer.domElement)
-      camera.position.set(this.item.cameraX, this.item.cameraY, this.item.cameraZ)
-      camera.lookAt(new THREE.Vector3(0, 0, 0))
-      this.$refs.mycanvas.addEventListener('click', this.onMouseclick, false)
+      containerAll.appendChild(this.renderer.domElement)
+      this.camera.position.set(this.item.cameraX, this.item.cameraY, this.item.cameraZ)
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0))
+      // this.$refs.mycanvas.addEventListener('click', this.onMouseclick, false)
       this.initDragControls()
 
-      helper = new THREE.GridHelper(1200, 50, 0xcd3700, 0x4a4a4a)
+      this.helper = new THREE.GridHelper(1200, 50, 0xcd3700, 0x4a4a4a)
       if (this.item.ShowHelpLine) {
-        helper.scale.x = 1
-        helper.scale.y = 1
-        helper.scale.z = 1
+        this.helper.scale.x = 1
+        this.helper.scale.y = 1
+        this.helper.scale.z = 1
       } else {
-        helper.scale.x = 0
-        helper.scale.y = 0
-        helper.scale.z = 0
+        this.helper.scale.x = 0
+        this.helper.scale.y = 0
+        this.helper.scale.z = 0
       }
-      scene.add(helper)
+      this.scene.add(this.helper)
       this.creatSixBall()
     },
     creatSixBall () {
       var loader = new GLTFLoader()
       var _this = this
       // ${this.baseUrl}
-      if(this.baseUrl){
+      if(this.baseUrl && _this.item.gltfName){
       loader.load(
         `${this.baseUrl}/leaderview/${_this.item.gltfName}`,
         function (gltf) {
-          gltf.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
-          gltf.scene.position.set(0, 0, 0)
-          gltf.scene.rotation.y = Math.PI * _this.item.ModelRotation / 90
-          gltf.scene.name = 'GltfName'
-          scene.add(gltf.scene)
+          gltf.this.scene.scale.set(_this.item.ModelScal * 1, _this.item.ModelScal * 1, _this.item.ModelScal * 1)
+          gltf.this.scene.position.set(0, 0, 0)
+          gltf.this.scene.rotation.y = Math.PI * _this.item.ModelRotation / 90
+          gltf.this.scene.name = 'GltfName'
+          this.scene.add(gltf.this.scene)
         }
       )
       }
     },
     initDragControls () {
-      controls = new OrbitControls(camera, renderer.domElement)
-      transformControls = new TransformControls(
-        camera,
-        renderer.domElement
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+      this.transformControls = new TransformControls(
+        this.camera,
+        this.renderer.domElement
       )
-      transformControls.addEventListener(
+      this.transformControls.addEventListener(
         'dragging-changed',
         function (event) {
-          controls.enabled = !event.value
+          this.controls.enabled = !event.value
         }
       )
-      scene.add(transformControls)
+      this.scene.add(this.transformControls)
 
-      controls.minDistance = this.item.ZoomLimitMin
-      controls.maxDistance = this.item.ZoomLimitMax
+      this.controls.minDistance = this.item.ZoomLimitMin
+      this.controls.maxDistance = this.item.ZoomLimitMax
     },
-    onMouseclick (event) {
-      var intersects = this.getIntersects(event)
-      intersects.forEach((d) => {
-        if (
-          d.object.name === 'Previous' ||
-          d.object.parent.name === 'Previous'
-        ) {
-        }
-        if (d.object.name === 'Next' || d.object.parent.name === 'Next') {
-        }
-      })
-    },
+    // onMouseclick (event) {
+    //   var intersects = this.getIntersects(event)
+    //   intersects.forEach((d) => {
+    //     if (
+    //       d.object.name === 'Previous' ||
+    //       d.object.parent.name === 'Previous'
+    //     ) {
+    //     }
+    //     if (d.object.name === 'Next' || d.object.parent.name === 'Next') {
+    //     }
+    //   })
+    // },
 
     getIntersects (event) {
       event.preventDefault()
       var vector = new THREE.Vector3() // 三维坐标对象
       vector.set(
-        (event.offsetX / document.querySelector('#containerAll').clientWidth) *
+        (event.offsetX / this.$refs.mycanvas.clientWidth) *
           2 -
           1,
         -(
-          event.offsetY / document.querySelector('#containerAll').clientHeight
+          event.offsetY / this.$refs.mycanvas.clientHeight
         ) *
           2 +
           1,
         0.5
       )
       // 通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
-      vector.unproject(camera)
+      vector.unproject(this.camera)
       var raycaster = new THREE.Raycaster(
-        camera.position,
-        vector.sub(camera.position).normalize()
+        this.camera.position,
+        vector.sub(this.camera.position).normalize()
       )
-      var intersects = raycaster.intersectObjects(scene.children, true)
+      var intersects = raycaster.intersectObjects(this.scene.children, true)
       return intersects
     },
     // 动画
     animate: function () {
       requestAnimationFrame(this.animate)
-      controls.update()
-      renderer.render(scene, camera)
+      this.controls.update()
+      this.renderer.render(this.scene, this.camera)
     }
   }
 }
@@ -222,9 +237,9 @@ export default {
 <style>
 #containerAll {
   position: absolute;
-  width: calc(100% - 20px);
-  padding: 10px;
+  width: calc(100% - 30px);
+  margin: 15px;
   box-sizing: border-box;
-  height: calc(100% - 20px);
+  height: calc(100% - 30px);
 }
 </style>
