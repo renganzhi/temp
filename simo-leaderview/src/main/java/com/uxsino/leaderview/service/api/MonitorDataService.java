@@ -27,12 +27,9 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
 import com.uxsino.leaderview.utils.MonitorUtils;
-import javafx.beans.binding.ObjectExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bytedeco.javacpp.freenect;
-import org.jpedal.parser.shape.J;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -2544,7 +2541,7 @@ public class MonitorDataService {
                 }
             }
             //JSONArray neArray = (JSONArray) params.get("ne");
-            NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neIds);
+            NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neIds, false);
             //单资源多部件则改为遍历部件
             //for (int j = 0; j < component.length; j++) {
             for (int j = 0; j < componentList.size(); j++) {
@@ -3492,7 +3489,7 @@ public class MonitorDataService {
             return result;
         }
 
-        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neId);
+        NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(neId, false);
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indName);
         if (ObjectUtils.isEmpty(ne) || ObjectUtils.isEmpty(ind)) {
             return null;
