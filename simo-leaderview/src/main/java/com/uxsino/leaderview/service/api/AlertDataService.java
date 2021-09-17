@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;
 import com.uxsino.authority.lib.model.DomainInfo;
 import com.uxsino.authority.lib.util.DomainUtils;
+import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.Dates;
@@ -586,7 +587,7 @@ public class AlertDataService {
         return new JsonModel(true, getStatByStatus(arr, status, AlertType.Alert));
     }
 
-    private JSONObject getStatByStatus(ArrayList arr, String status, AlertType alertType) throws Exception{
+    private Object getStatByStatus(ArrayList arr, String status, AlertType alertType) throws Exception{
         if (ObjectUtils.isEmpty(arr)) {
             return empObj();
         }
@@ -596,41 +597,49 @@ public class AlertDataService {
         }
 
         List<String> statusList = new ArrayList<>();
-        Map<Object,String> statusMap = new HashMap<>();
-        for (AlertHandleStatus handleStatus:AlertHandleStatus.values()){
-            statusList.add(String.valueOf(handleStatus));
-            statusMap.put(String.valueOf(handleStatus),handleStatus.getText());
-        }
 
         StatisticsQuery statisticsQuery = new StatisticsQuery();
         statisticsQuery.setGroupField("handleStatus");
         statisticsQuery.setObjIds(org.apache.commons.lang3.StringUtils.join(arr, ","));
         statisticsQuery.setAlertType(alertType);
-        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
-        JSONObject result = new JSONObject();
-        JSONArray columns = new JSONArray();
-        columns.add("告警状态");
-        columns.add("数量");
-        result.put("columns", columns);
-        JSONArray rows = new JSONArray();
-        // 告警颜色数组，顺序跟rows一致
-        JSONArray colors = new JSONArray();
-        for (String s: statusList) {
-            JSONObject row = new JSONObject();
-            row.put("告警状态", statusMap.get(s));
-            //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
-            row.put("数量", 0L);
-            statisticsResults.forEach(e -> {
-                if(e.getScopeValue().equals(s)) {
-                    row.put("数量", e.getAlertCount());
-                }
-            });
-            rows.add(row);
-            colors.add(null);
+        if (!StringUtils.isEmpty(status)) {
+            statisticsQuery.setHandleStatus(AlertHandleStatus.valueOf(status));
         }
-        result.put("rows", rows);
-        result.put("colors", colors);
-        return result;
+        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
+
+        if (!StringUtils.isEmpty(status)) {
+            return statisticsResults.get(0).getAlertCount();
+        }else {
+            JSONObject result = new JSONObject();
+            JSONArray columns = new JSONArray();
+            columns.add("数量");
+            columns.add("告警状态");
+            result.put("columns", columns);
+            JSONArray rows = new JSONArray();
+            Map<Object,String> statusMap = new HashMap<>();
+            for (AlertHandleStatus handleStatus:AlertHandleStatus.values()){
+                statusList.add(String.valueOf(handleStatus));
+                statusMap.put(String.valueOf(handleStatus),handleStatus.getText());
+            }
+            // 告警颜色数组，顺序跟rows一致
+            JSONArray colors = new JSONArray();
+            for (String s: statusList) {
+                JSONObject row = new JSONObject();
+                row.put("告警状态", statusMap.get(s));
+                //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
+                row.put("数量", 0L);
+                statisticsResults.forEach(e -> {
+                    if(e.getScopeValue().equals(s)) {
+                        row.put("数量", e.getAlertCount());
+                    }
+                });
+                rows.add(row);
+                colors.add(null);
+                result.put("rows", rows);
+                result.put("colors", colors);
+            }
+            return result;
+        }
     }
 
     /**

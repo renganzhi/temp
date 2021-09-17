@@ -5,12 +5,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.leaderview.service.api.AlertDataParamsService;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/alert/params")
 @Business(name = BusinessConstants.ALERT)
 public class AlertParamsController {
+    @Autowired
+    private AlertDataParamsService alertDataParamsService;
     /**
      * 获取所有的告警类型下拉框
      * @return
@@ -80,4 +84,14 @@ public class AlertParamsController {
         return new JsonModel(true, result);
     }
 
+    @ApiOperation("获取资源的告警状态")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源id")
+    })
+    @RequestMapping(value = "/getStatus", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel getStatus(@RequestParam(required = false) String neId) {
+        JSONArray result = alertDataParamsService.getStatus(neId);
+        return new JsonModel(true, result);
+    }
 }
