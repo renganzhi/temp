@@ -280,9 +280,13 @@ export default {
               })
             }
             if (this.item.HistogramType === 3) {
+              let arr = []
+              data.forEach(v => {
+                arr.push(1)
+              })
               myseries.push({
                 name: myData.columns[index],
-                data: [1, 1, 1, 1, 1, 1],
+                data: arr,
                 type: 'pictorialBar',
                 barMaxWidth: '20',
                 symbol: 'diamond',
