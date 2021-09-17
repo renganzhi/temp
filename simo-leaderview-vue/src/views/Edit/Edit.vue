@@ -1899,7 +1899,7 @@
                 <div class="form-group cols2">
                   <label>虚拟视图选择</label>
                   <select v-model="selectedItem.iputneId">
-                    <option :value="item.id" v-for="(item,index) in iputneIdArry" :key="index">{{item.name}}</option>
+                    <option :value="item.id +'&'+ item.pId" v-for="(item,index) in iputneIdArry" :key="index">{{item.name}}</option>
                   </select>
                 </div>
               </div>
