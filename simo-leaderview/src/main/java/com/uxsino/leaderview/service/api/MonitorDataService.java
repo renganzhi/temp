@@ -4496,9 +4496,22 @@ public class MonitorDataService {
         LinkedHashMap<Object, Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
         Integer count = (Integer) obj.get("count");
         JSONObject result = new JSONObject();
-        result.put("name", "name");
+        //总数、故障、打开、关闭
+        String name = null;
+        switch (type){
+            case 1:
+                name = "总数";break;
+            case 2:
+                name = "故障";break;
+            case 3:
+                name = "打开";break;
+            case 4:
+                name = "关闭";break;
+        }
+        result.put("name", name);
         result.put("value", count);
         result.put("info", count);
+        result.put("unit", "");
         return new JsonModel(true, result);
     }
 

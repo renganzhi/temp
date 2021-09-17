@@ -382,7 +382,7 @@
         "key": "enable_indicator_topn",
         "name": "资源指标TOPN",
         "component": "monitor",
-        "type": "ve-histogram,NewHistogram",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram",
         "url": "/leaderview/monitor/indicator/topN",
         "method" : "post",
         "params": [
@@ -496,7 +496,7 @@
         "key": "enable_host_indicator_topn",
         "name": "宿主机资源指标TOPN",
         "component": "monitor",
-        "type": "NewHistogram",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/topNHost",
         "method" : "post",
         "params": [
@@ -725,130 +725,8 @@
         "key": "enable_indicator_topn_topo1",
         "name": "资源指标TOPN-按拓扑",
         "component": "monitor",
-        "type": "ve-bar,NewBar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/topN?bar=true",
-        "method" : "post",
-        "params": [
-            {
-                "key": "domainId",
-                "name": "域",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
-            },
-            {
-                "key": "topoId",
-                "name": "拓扑名称",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/monitor/topo/findTopoForDropDown"
-            },
-            {
-                "key": "baseNeClass",
-                "name": "父类型",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/baseNeClass"
-            },
-            {
-                "key": "neClass",
-                "name": "子类型",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/neClass",
-                "params": ["baseNeClass"]
-            },
-            {
-                "key": "neIds",
-                "name": "资源",
-                "notNull": false,
-                "type": "multi-select",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
-                "params": ["domainId","baseNeClass","neClass"]
-            },
-            {
-                "key": "indicators",
-                "name": "指标分类",
-                "//": "原指标",
-                "notNull": true,
-                "type": "drop-down",
-                "method" : "get",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicatorTopN",
-                "params": ["neIds","neClass","baseNeClass"]
-            },
-            {
-                "key": "field",
-                "name": "指标",
-                "//": "原属性",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "remote",
-                "method" : "get",
-                "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
-                "params": ["indicators"]
-            },
-            {
-                "key": "number",
-                "name": "展示条数",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "3",
-                        "value": 3
-                    },
-                    {
-                        "name": "5",
-                        "value": 5
-                    },
-                    {
-                        "name": "10",
-                        "value": 10
-                    }
-                ]
-            },
-            {
-                "key": "windows",
-                "name": "",
-                "notNull": false,
-                "type": "windows",
-                "method": "get",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndField?multipleComp=true&multipleField=false",
-                "params":["neIds","indicators"]
-            },
-            {
-                "key": "order",
-                "name": "排序方式",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "升序",
-                        "value": "asc"
-                    },
-                    {
-                        "name": "降序",
-                        "value": "desc"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "key": "enable_indicator_topn_topo2",
-        "name": "资源指标TOPN-按拓扑",
-        "component": "monitor",
-        "type": "ve-histogram,NewHistogram",
-        "url": "/leaderview/monitor/indicator/topN",
         "method" : "post",
         "params": [
             {
@@ -1568,7 +1446,7 @@
         "key": "enable_multiple_ne_indicator_statistics_topN",
         "name": "单资源单指标多部件TopN",
         "component": "monitor",
-        "type": "ve-histogram,NewHistogram",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/multipleCompTopN",
         "method" : "post",
         "params": [
@@ -2939,7 +2817,7 @@
         "key": "enable_monitor_network_statistics_bar",
         "name": "链路展示TopN",
         "component": "monitor",
-        "type": "ve-bar,NewBar",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/networkTopNforBar",
         "method" : "get",
         "params": [
@@ -3863,7 +3741,7 @@
         "key": "vmware_Statistics",
         "name": "vmware统计信息",
         "component": "monitor",
-        "type": "NEWtextArea,marquee,NewMarquee",
+        "type": "NEWtextArea,marquee,NewMarquee,Dashboard,liquidfill,progress,NewProgress,NewGauge,NewDoubler,NewNumber",
         "url": "/leaderview/monitor/vmwareStatistics",
         "method" : "post",
         "params": [
@@ -3982,8 +3860,12 @@
                         "value": "name"
                     },
                     {
-                        "name": "资源型号",
-                        "value": "model"
+                        "name": "父类型",
+                        "value": "baseNeClass"
+                    },
+                    {
+                        "name": "子类型",
+                        "value": "neClass"
                     },
                     {
                         "name": "IP地址",
