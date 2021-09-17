@@ -446,7 +446,7 @@ export default {
       } else if (this.item.DashboardType === 4) {
         myoption = {
           title: {
-            text: '{a|' + dataArr.toFixed(2).split('.')[0] + '}{a|' + this.item.chartData.unit + '}\n{c|' + this.item.chartData.name + '}',
+            text: '{a|' + (dataArr*1).toFixed(2).split('.')[0] + '}{a|' + this.item.chartData.unit + '}\n{c|' + this.item.chartData.name + '}',
             x: 'center',
             y: 'center',
             textStyle: {
