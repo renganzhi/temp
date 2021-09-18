@@ -7,6 +7,7 @@ import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.leaderview.model.monitor.IndPeriod;
+import com.uxsino.leaderview.model.monitor.IndicatorTable;
 import com.uxsino.leaderview.model.monitor.NetworkEntityCriteria;
 import com.uxsino.leaderview.model.monitor.PerormanceView;
 import com.uxsino.leaderview.service.api.MonitorDataParamsService;
@@ -481,4 +482,19 @@ public class MonitorDataParamsController {
         return this.monitorDataParamsService.getorgas();
     }
 
+    @ApiOperation("是否为单值指标")
+    @GetMapping({ "/valid/singleFieldInd" })
+    @ResponseBody
+    public JsonModel validSingleFieldInd(String indicatorId) {
+        if (StringUtils.isEmpty(indicatorId)) {
+            return new JsonModel(false, "指标id不能为空");
+        }
+        IndicatorTable indicator = null;
+        try {
+            indicator = rpcProcessService.getIndicatorInfoByName(indicatorId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new JsonModel(true, !MonitorUtils.validHasFields(indicator));
+    }
 }

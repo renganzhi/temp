@@ -49,12 +49,19 @@ public class MonitorUtils {
 
 
     /**
-     *  判断某一指标是否应该存在部件
+     *  判断某一指标是否有多个属性值
      */
     public static boolean validHasFields(IndicatorTable ind) {
-        // 只要是NUMBER类型、PERCENT类型或者STRING类型的指标，都没有属性
+        // 只要是NUMBER类型、PERCENT类型或者STRING类型的指标，都没有属性，为单值指标
         return !"NUMBER".equals(ind.getIndicatorType()) && !"PERCENT".equals(ind.getIndicatorType())
                 && !"STRING".equals(ind.getIndicatorType());
+    }
+
+    /**
+     *  判断某一指标是否为部件指标
+     */
+    public static boolean validHasComponent(IndicatorTable ind) {
+        return "List".equals(ind.getIndicatorType()) && StringUtils.isNotBlank(ind.getComponentNameFormula());
     }
 
     /**
