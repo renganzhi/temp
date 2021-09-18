@@ -174,8 +174,7 @@ export default {
   methods: {
     getNewChartData(){
       var _this = this
-      console.log(this.item.moreUrlArry)
-    let myUrl =  this.item.moreUrlArry[this.nowShowIndex].url
+      let myUrl =  this.item.moreUrlArry[this.nowShowIndex].url
       $.ajax({
         url: this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
         data: this.item.moreUrlArry[this.nowShowIndex].params,
