@@ -1030,6 +1030,27 @@ export default {
       }
       // 数组需要更换
     },
+    DeletOneUrl(index) {
+      this.selectedItem.moreUrlArry.splice(index, 1)
+    },
+    AddNewUrl() {
+      if (this.selectedItem.url !== '' && this.selectedItem.params !== {}) {
+        console.log(this.selectedItem.method)
+        this.selectedItem.moreUrlArry.push(
+          {
+            url: this.selectedItem.url,
+            method: this.selectedItem.method,
+            params: JSON.parse(JSON.stringify(this.selectedItem.params)),
+          }
+        )
+      } else {
+        Notification({
+          message: '点击更新视图查看数据后才能新增url！',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+      }
+    },
     // 边框圆角
     radiusChange() {
       var radius = Math.floor(this.borderRadius)
@@ -1089,6 +1110,7 @@ export default {
       if (this.chartNum.length) {
         this.saveHistory()
       }
+      console.log(key, KeyColor, this.chartNum)
       let ScatterColorArry = ['ScatterColor1', 'ScatterColor2', 'ScatterColor3', 'ScatterColor4', 'ScatterColor', 'LineColorArray']
       this.chartNum.forEach((item) => {
         // AreaDScatterColor

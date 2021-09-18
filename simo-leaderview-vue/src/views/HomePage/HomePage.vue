@@ -678,7 +678,11 @@ export default {
           //   let curUrl = d.url.split('://')[1].split('/')[0]
           //   if(!(await checkLogin(curUrl))) return false  //登录失败：跳出循环
           // }
-          ct.sentReq(d)
+          if(d.moreUrlArry && d.moreUrlArry.length>1){
+
+          }else{
+            ct.sentReq(d)
+          }
           /*
           let xhrobj = $.ajax({
             url: gbs.host + d.url,

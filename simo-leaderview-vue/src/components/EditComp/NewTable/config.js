@@ -23,6 +23,7 @@ export default {
     'OneLineType': 'default',
     'OneLineSize': 86,
     'LineSizeArry': [],
+    'moreUrlArry': [],
     'AlarmChart': '',
     'AlarmNumType': 'greater',
     'AlarmNum': '',
