@@ -414,7 +414,7 @@
         "key": "enable_indicator_topn",
         "name": "资源指标TOPN",
         "component": "monitor",
-        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram",
+        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
         "url": "/leaderview/monitor/indicator/topN",
         "method" : "post",
         "params": [
@@ -583,121 +583,6 @@
                 "//": "原属性",
                 "notNull": true,
                 "type": "drop-down",
-                "dataType": "remote",
-                "method" : "get",
-                "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
-                "params": ["indicators"]
-            },
-            {
-                "key": "number",
-                "name": "展示条数",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "3",
-                        "value": 3
-                    },
-                    {
-                        "name": "5",
-                        "value": 5
-                    },
-                    {
-                        "name": "10",
-                        "value": 10
-                    }
-                ]
-            },
-            {
-                "key": "windows",
-                "name": "",
-                "notNull": false,
-                "type": "windows",
-                "method": "get",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getComponentNameAndIndField?multipleComp=true&multipleField=false",
-                "params":["neIds","indicators"]
-            },
-            {
-                "key": "order",
-                "name": "排序方式",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "升序",
-                        "value": "asc"
-                    },
-                    {
-                        "name": "降序",
-                        "value": "desc"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "key": "enable_indicator_topn_bar",
-        "name": "资源指标TOPN",
-        "component": "monitor",
-        "type": "ve-bar,NewBar",
-        "url": "/leaderview/monitor/indicator/topN?bar=true",
-        "method" : "post",
-        "params": [
-            {
-                "key": "domainId",
-                "name": "域",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
-            },
-            {
-                "key": "baseNeClass",
-                "name": "父类型",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/baseNeClass"
-            },
-            {
-                "key": "neClass",
-                "name": "子类型",
-                "notNull": false,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/neClass?isHardware=false",
-                "params": ["baseNeClass"]
-            },
-            {
-                "key": "neIds",
-                "name": "资源",
-                "notNull": false,
-                "type": "multi-select",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true",
-                "params": ["domainId","baseNeClass","neClass"]
-            },
-            {
-                "key": "indicators",
-                "name": "宿主指标分类",
-                "//": "原指标",
-                "notNull": true,
-                "type": "drop-down",
-                "method" : "get",
-                "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getIndicatorHostTopN",
-                "params": ["neIds","neClass","baseNeClass"]
-            },
-            {
-                "key": "field",
-                "name": "宿主指标",
-                "//": "原属性",
-                "notNull": true,
-                "type": "drop-down",
-                "method" : "get",
                 "dataType": "remote",
                 "method" : "get",
                 "dataUrl": "/leaderview/monitor/params/getIndFieldByType/ALL",
@@ -1634,6 +1519,54 @@
                     {
                         "name": "降序",
                         "value": "desc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "sw_Run_Entry_Of_Host",
+        "name": "Oracle宿主机进程状态列表",
+        "component": "monitor",
+        "type": "table,NewMoveTable,NewTable",
+        "url": "/leaderview/monitor/swRunEntryOfHost",
+        "method" : "post",
+        "params": [
+            {
+                "key": "domainId",
+                "name": "域",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "neIds",
+                "name": "资源",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/nes?notUnknown=true&baseNeClass=database&neClass=oracle",
+                "params": ["domainId"]
+            },
+            {
+                "key": "number",
+                "name": "展示条数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "3",
+                        "value": 3
+                    },
+                    {
+                        "name": "5",
+                        "value": 5
+                    },
+                    {
+                        "name": "10",
+                        "value": 10
                     }
                 ]
             }
@@ -2911,7 +2844,7 @@
         ]
     },
     {
-        "key": "enable_monitor_network_statistics_bar",
+        "key": "enable_monitor_network_statistics_top_bar",
         "name": "链路展示TopN",
         "component": "monitor",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
@@ -3002,7 +2935,7 @@
         ]
     },
     {
-        "key": "enable_monitor_network_statistics_table",
+        "key": "enable_monitor_network_statistics_topo_table",
         "name": "链路展示TopN",
         "component": "monitor",
         "type": "table,NewMoveTable,NewTable",
@@ -3922,7 +3855,7 @@
         ]
     },
     {
-        "key": "enable_ne_status_list",
+        "key": "get_Topo_Resources",
         "name": "资源状态统计-按类型",
         "component": "monitor",
         "type": "table,NewMoveTable,NewTable",
