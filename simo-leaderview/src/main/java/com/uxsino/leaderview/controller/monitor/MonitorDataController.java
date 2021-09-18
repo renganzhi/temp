@@ -41,9 +41,10 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型")})
     @RequestMapping(value = "/neStatisticsByClass", method = RequestMethod.GET)
     public JsonModel statisticsResourceData(@RequestParam(required = false) Long domainId,
-                                            @RequestParam(required = false) String baseNeClass, HttpSession session) {
+                                            @RequestParam(required = false) String baseNeClass,
+                                            @RequestParam(required = false) String topoId,HttpSession session) {
         try {
-            return monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+            return monitorDataService.statisticsResourceData(domainId, baseNeClass, session,topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -58,7 +59,7 @@ public class MonitorDataController {
     public JsonModel statisticsResourceDataForRows(@RequestParam(required = false) Long domainId,
                                                    @RequestParam(required = false) String baseNeClass, HttpSession session) {
         try {
-            JsonModel deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+            JsonModel deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session,null);
             JSONArray oldRows = (JSONArray) ((JSONObject) deprecatedWrap.getObj()).get("rows");
             JSONObject json = new JSONObject();
             JSONArray newRows = new JSONArray();
@@ -84,7 +85,7 @@ public class MonitorDataController {
     public JsonModel statisticsResourceDataForRange(@RequestParam(required = false) Long domainId,
                                                     @RequestParam(required = false) String baseNeClass, HttpSession session) {
         try {
-            JsonModel deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+            JsonModel deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session,null);
             JSONArray oldRows = (JSONArray) ((JSONObject) deprecatedWrap.getObj()).get("rows");
             JSONObject json = new JSONObject();
             JSONArray newRows = new JSONArray();
@@ -119,7 +120,7 @@ public class MonitorDataController {
         try {
             JsonModel deprecatedWrap;
             if (baseNeClass != null && !StringUtils.isEmpty(baseNeClass)) {
-                deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session);
+                deprecatedWrap = monitorDataService.statisticsResourceData(domainId, baseNeClass, session,null);
                 JSONArray oldRows = (JSONArray) ((JSONObject) deprecatedWrap.getObj()).get("rows");
                 JSONObject json = new JSONObject();
                 JSONArray newRows = new JSONArray();
@@ -142,7 +143,7 @@ public class MonitorDataController {
                 JSONObject res = new JSONObject();
                 JSONArray realRes = new JSONArray();
                 for (BaseNeClass temp : baseNeClasses) {
-                    deprecatedWrap = monitorDataService.statisticsResourceData(domainId, temp.toString(), session);
+                    deprecatedWrap = monitorDataService.statisticsResourceData(domainId, temp.toString(), session,null);
                     JSONArray oldRows = (JSONArray) ((JSONObject) deprecatedWrap.getObj()).get("rows");
                     JSONObject json = new JSONObject();
                     JSONArray newRows = new JSONArray();
@@ -730,9 +731,9 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式")})
     @RequestMapping(value = "/networkTopNforBar", method = RequestMethod.GET)
     public JsonModel networkTopNforBar(HttpSession session, @RequestParam String network, @RequestParam Long number,
-                                  @RequestParam String field,@RequestParam String order) {
+                                  @RequestParam String field,@RequestParam String order,@RequestParam(required = false) String topoId) {
         try {
-            return monitorDataService.networkTopNforBar(session, network, number, field,order);
+            return monitorDataService.networkTopNforBar(session, network, number, field, order, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -861,7 +862,7 @@ public class MonitorDataController {
         }
     }
 
-    @ApiOperation("按拓扑统计各类型各状态资源数")
+    @ApiOperation("统计各类型各状态资源数——表格")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑ID", required = true),
             @ApiImplicitParam(name = "baseNeclass", paramType = "query", dataType = "String", value = "父类型", required = false),
@@ -870,7 +871,7 @@ public class MonitorDataController {
     @RequestMapping(value = "/getTopoResourcesByBaseNeClassAndStatus", method = RequestMethod.POST)
     @ResponseBody
     public JsonModel getTopoResourcesByBaseNeClassAndStatus(
-            @RequestParam(required = true) String topoId,
+            @RequestParam(required = false) String topoId,
             @RequestParam(required = false) String baseNeClass,@RequestParam(required = false)String runStatus) {
         try {
             return monitorDataService.getTopoResourcesByBaseNeClassAndStatus(topoId, baseNeClass);

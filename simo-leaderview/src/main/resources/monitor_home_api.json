@@ -16,6 +16,14 @@
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
             },
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "baseNeClass",
                 "name": "父类型",
                 "notNull": false,
@@ -40,6 +48,14 @@
                 "type": "drop-down",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
             },
             {
                 "key": "baseNeClass",
@@ -68,6 +84,14 @@
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
             },
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "baseNeClass",
                 "name": "父类型",
                 "notNull": false,
@@ -92,6 +116,14 @@
                 "type": "drop-down",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
             },
             {
                 "key": "baseNeClass",
@@ -120,20 +152,20 @@
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
             },
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "baseNeClass",
                 "name": "父类型",
                 "notNull": false,
                 "type": "drop-down",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/baseNeClass"
-            },
-            {
-                "key": "topoId",
-                "name": "拓扑名称",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "remote",
-                "dataUrl": "/monitor/topo/findTopoForDropDown"
             }
         ]
     },
@@ -963,6 +995,14 @@
                 "type": "drop-down",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
+            },
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
             },
             {
                 "key": "baseNeClass",
@@ -2249,6 +2289,10 @@
                 "dataType": "static",
                 "data": [
                     {
+                        "name": "资源名称",
+                        "value": "资源名称"
+                    },
+                    {
                         "name": "告警级别",
                         "value": "告警级别"
                     },
@@ -2875,12 +2919,21 @@
         "method" : "get",
         "params": [
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "network",
                 "name": "选择链路",
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId"
+                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId",
+                "params": ["topoId"]
             },
             {
                 "key": "field",
@@ -2957,12 +3010,21 @@
         "method" : "get",
         "params": [
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "network",
                 "name": "选择链路",
                 "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
-                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId"
+                "dataUrl": "/leaderview/monitor/params/getNetworkSourceId",
+                "params": ["topoId"]
             },
             {
                 "key": "field",
@@ -3856,6 +3918,32 @@
                         "value": "4"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "key": "enable_ne_status_list",
+        "name": "资源状态统计-按类型",
+        "component": "monitor",
+        "type": "table,NewMoveTable,NewTable",
+        "url": "/leaderview/monitor/getTopoResourcesByBaseNeClassAndStatus",
+        "method" : "post",
+        "params": [
+            {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
+                "key": "baseNeClass",
+                "name": "父类型",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/monitor/params/baseNeClass"
             }
         ]
     },
