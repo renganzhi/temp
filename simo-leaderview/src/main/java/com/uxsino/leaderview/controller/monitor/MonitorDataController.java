@@ -482,7 +482,6 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
             @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
-            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
             @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
             @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true)})
     @RequestMapping(value = "/multiple_indicator/recordHost", method = RequestMethod.GET)
