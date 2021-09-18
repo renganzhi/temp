@@ -1526,10 +1526,10 @@
     },
     {
         "key": "sw_Run_Entry_Of_Host",
-        "name": "Oracle宿主机进程状态列表",
+        "name": "Oracle进程状态列表",
         "component": "monitor",
         "type": "table,NewMoveTable,NewTable",
-        "url": "/leaderview/monitor/swRunEntryOfHost",
+        "url": "/leaderview/monitor/swRunEntryOfOracle",
         "method" : "post",
         "params": [
             {
@@ -1557,16 +1557,20 @@
                 "dataType": "static",
                 "data": [
                     {
-                        "name": "3",
-                        "value": 3
-                    },
-                    {
                         "name": "5",
                         "value": 5
                     },
                     {
                         "name": "10",
                         "value": 10
+                    },
+                    {
+                        "name": "15",
+                        "value": 15
+                    },
+                    {
+                        "name": "20",
+                        "value": 20
                     }
                 ]
             }

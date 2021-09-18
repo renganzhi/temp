@@ -377,9 +377,7 @@ public class MonitorDataService {
             rows.add(row);
         }
         json.put("rows", rows);
-        JSONArray resultArray = new JSONArray();
-        resultArray.add(json);
-        return new JsonModel(true, resultArray);
+        return new JsonModel(true, json);
     }
 
 //    public JsonModel findIndicatorsStatus(String neId) throws Exception {
@@ -2764,53 +2762,17 @@ public class MonitorDataService {
         return new JsonModel(true, result);
     }
 
-    public JsonModel getswRunEntryOfHost(String neIds, Integer number) throws Exception {
-        // 0、取出宿主机id
+    public JsonModel getswRunEntryOfOracle(String neIds, Integer number) throws Exception {
+        // 1、取出宿主机id
         NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
         String hostId = ne.getHostId();
         String neName = ne.getName();
 
-        // 1、查询该资源、该指标的所有部件,做一个部件id和部件name的Map
-        Map<String, String> componentNameMap = Maps.newHashMap();
-        NeComponentQuery compQuery = new NeComponentQuery();
-        compQuery.setNeIds(Lists.newArrayList(hostId));
-        compQuery.setIndicatorName("sw_run_entry");
-        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
-        for (Map<String, Object> map : idAndComponent) {
-            if (map.get("identifier") == null || map.get("componentName") == null) {
-                continue;
-            }
-            componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
-        }
-
-        //2、 得到指标，得到fieldLable
-        IndicatorTable ind = rpcProcessService.getIndicatorInfoByName("sw_run_entry");
-        if (Objects.isNull(ind)) {
-            return new JsonModel(true, empObj());
-        }
-
-        JSONArray fieldLabels = new JSONArray();
-        JSONObject fieldLabel = null;
-        //如果该指标有属性
-        /*if (validHasFields(ind)) {
-            for(int i = 0;i < fieldList.size();i++) {
-                FieldModel model = new FieldModel();
-                model.setIndicator(ind);
-                model.setField(fieldList.get(i));
-                fieldLabel = Optional.ofNullable(model.getFieldLabel()).orElse(null);
-                if (Objects.isNull(fieldLabel)) {
-                    return new JsonModel(true, empObj());
-                }
-                fieldLabels.add(fieldLabel);
-            }
-        }*/
-
-        //3、组装query，查询指标值
+        //2、组装query，查询指标值
         IndValueQuery indValueQuery = new IndValueQuery();
         indValueQuery.setNeId(hostId);
         indValueQuery.setIndicatorId("sw_run_entry");
         JSONObject fieldFilters = new JSONObject();
-        //fieldFilters.put("if_status","up");
         indValueQuery.setFieldShouldFilters(fieldFilters);
         List<String> fields = new ArrayList<>();
 
@@ -2820,10 +2782,7 @@ public class MonitorDataService {
         fields.add("run_perf_mem");
         fields.add("run_perf_cpu_usage");
         indValueQuery.setFieldResFilter(fields);
-        //JSONObject fieldSort = new JSONObject();
-        //fieldSort.put(field, order);
-        //indValueQuery.setFieldSort(fieldSort);
-        //indValueQuery.setFieldSize(number);
+
         String type = "list";
         Boolean IsHistory = false;
         JsonModel jsonModel = null;
@@ -2833,13 +2792,14 @@ public class MonitorDataService {
             e.printStackTrace();
             return new JsonModel(false, jsonModel.getMsg());
         }
-        //4、封装获取的数据
+        //3、封装获取的数据
         List<LinkedHashMap<Object, Object>> list = new ArrayList<>();
         list = (List<LinkedHashMap<Object, Object>>) jsonModel.getObj();
         List<LinkedHashMap<Object,Object>> rows = new ArrayList<>();
         JSONObject result = new JSONObject();
         List<String> columns = Lists.newArrayList("资源名称","用户名","进程名","进程状态","内存消耗量","CPU使用率");
 
+        Integer count = 0;
         if (!ObjectUtils.isEmpty(list)) {
             for (LinkedHashMap<Object, Object> map : list) {
                 String runName = (String) map.get("run_name");
@@ -2855,6 +2815,8 @@ public class MonitorDataService {
                     row.put("内存消耗量", map.get("run_perf_mem"));
                     row.put("CPU使用率", map.get("run_perf_cpu_usage"));
                     rows.add(row);
+                    count++;
+                    if(count >= number) break;
                 }
             }
         }
