@@ -4435,6 +4435,14 @@ export default {
                 }
                 if (data.barType === 'NewBar') {
                   data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                  if (res.obj) {
+                    data.ctName = res.obj.info
+                  }
+                  if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                    data.chartData = res.obj
+                  }
                 } else {
                   data.chartData = res.success ? res.obj : []
                 }
