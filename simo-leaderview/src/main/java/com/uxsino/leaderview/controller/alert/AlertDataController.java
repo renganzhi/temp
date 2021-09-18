@@ -161,14 +161,16 @@ public class AlertDataController {
             @ApiImplicitParam(name = "domainId", paramType = "query", dataType = "Long", value = "域ID"),
             @ApiImplicitParam(name = "baseNeClass", paramType = "query", dataType = "String", value = "资源父类型"),
             @ApiImplicitParam(name = "neClass", paramType = "query", dataType = "String", value = "资源子类型"),
-            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "多个资源ID用,分隔")
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "多个资源ID用,分隔"),
+            @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑Id，用来限制资源的范围")
     })
     @RequestMapping(value = "/getStatByLevel", method = RequestMethod.POST)
     @ResponseBody
     public JsonModel getStatByLevel(HttpSession session, String alertLevel, Long domainId,
-                                    String baseNeClass, String neClass, String neIds) {
+                                    String baseNeClass, String neClass, String neIds,
+                                    @RequestParam(required = false) String topoId) {
         try {
-            return alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds);
+            return alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -189,7 +191,7 @@ public class AlertDataController {
     public JsonModel getStatByLevelForRows(HttpSession session, String alertLevel, Long domainId,
                                     String baseNeClass, String neClass, String neIds) {
         try {
-            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds);
+            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds, null);
             JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
             JSONObject json = new JSONObject();
             JSONArray newRows = new JSONArray();
@@ -221,7 +223,7 @@ public class AlertDataController {
     public JsonModel getStatByLevelForRange(HttpSession session, String alertLevel, Long domainId,
                                     String baseNeClass, String neClass, String neIds) {
         try {
-            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds);
+            JsonModel deprecatedWrap = alertDataService.getStatByLevel(session, alertLevel, domainId, baseNeClass, neClass, neIds, null);
             JSONArray oldRows = (JSONArray)((JSONObject)deprecatedWrap.getObj()).get("rows");
             JSONObject json = new JSONObject();
             JSONArray newRows = new JSONArray();

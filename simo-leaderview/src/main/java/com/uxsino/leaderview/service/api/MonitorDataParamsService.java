@@ -1236,11 +1236,15 @@ public class MonitorDataParamsService {
     }
 
     @SuppressWarnings("unchecked")
-    public JsonModel getNetworkSourceId(HttpSession session) throws Exception{
+    public JsonModel getNetworkSourceId(HttpSession session, String topoId) throws Exception{
         List<Long> domainList = getDomainByUserSession(session);
         NetworkLinkModel networkLinkModel = new NetworkLinkModel();
         networkLinkModel.setNetworkLinkIds(Lists.newArrayList());
         networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domainList.toArray(new Long[domainList.size()]), session));
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            networkLinkModel.setTopoId(topoId);
+        }
         PageModel temPage = new PageModel();
         temPage.setCurrentNo(1);
         temPage.setPageSize(10000);
@@ -1534,7 +1538,6 @@ public class MonitorDataParamsService {
         List<Map<String,String>> list = new ArrayList<>();
         List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
         for (LinkedHashMap<Object,Object> map : orgaList){
-
             Map<String, String> row = new HashMap<>(2);
             row.put("name", (String) map.get("name"));
             row.put("value", (String) map.get("id"));

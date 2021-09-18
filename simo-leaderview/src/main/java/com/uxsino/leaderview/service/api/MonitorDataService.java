@@ -86,7 +86,7 @@ public class MonitorDataService {
      * @param baseNeClass 资源父类型
      * @return
      */
-    public JsonModel statisticsResourceData(Long domainId, String baseNeClass, HttpSession session) throws Exception {
+    public JsonModel statisticsResourceData(Long domainId, String baseNeClass, HttpSession session,String topoId) throws Exception {
         BaseNeClass baseClass = null;
         if (StringUtils.isNoneBlank(baseNeClass)) {
             try {
@@ -100,7 +100,7 @@ public class MonitorDataService {
         List<Long> domainList = getDomainList(domainId, session);
         if (BaseNeClass.virtualization.equals(baseClass)) {
             for (Long domain : domainList) {
-                list.addAll(rpcProcessService.vmStatics(domain));
+                list.addAll(rpcProcessService.vmStatics(domain,topoId));
             }
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = list.get(i);
@@ -117,7 +117,7 @@ public class MonitorDataService {
             }
         } else if (null == baseClass) {
             for (Long domain : domainList) {
-                list.addAll(rpcProcessService.neStatistics(domain, null));
+                list.addAll(rpcProcessService.neStatistics(domain, null, topoId));
             }
             List<String> valueList = Lists.newArrayList();
             list.forEach(map -> valueList.add(map.get("name").toString()));
@@ -142,12 +142,12 @@ public class MonitorDataService {
             for (Map<String, Object> map : mapList) {
                 String baseName = map.get("name").toString();
                 if (BaseNeClass.virtualization.toString().equals(baseName)) {
-                    map.put("value", rpcProcessService.countVr(domainId));
+                    map.put("value", rpcProcessService.countVr(domainId,topoId));
                 }
             }
         } else {
             for (Long domain : domainList) {
-                list.addAll(rpcProcessService.neStatistics(domain, baseClass));
+                list.addAll(rpcProcessService.neStatistics(domain, baseClass,topoId));
             }
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = list.get(i);
@@ -2958,7 +2958,7 @@ public class MonitorDataService {
         }
     }
 
-    public JsonModel networkTopNforBar(HttpSession session, String network, Long number, String field, String order) {
+    public JsonModel networkTopNforBar(HttpSession session, String network, Long number, String field, String order, String topoId) {
         try {
             if (ObjectUtils.isEmpty(field)) {
                 field = "upBps";
@@ -2969,6 +2969,10 @@ public class MonitorDataService {
             networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domains, session));
             networkLinkModel.setSortField(field);
             networkLinkModel.setDesc(order);
+            //当传入topoId时，只查询该拓扑下的资源
+            if (!Strings.isNullOrEmpty(topoId)) {
+                networkLinkModel.setTopoId(topoId);
+            }
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
@@ -4225,6 +4229,7 @@ public class MonitorDataService {
     public JsonModel getTopostatisticsResources(String topoId, String baseNeClass, String runStatus) throws Exception {
         List<BaseNeClass> baseNeClassList = new ArrayList<>();
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        JsonModel jsonModel0 = rpcProcessService.statisticsNe(criteria);
         if (!StringUtils.isEmpty(runStatus)) {
             String[] split = runStatus.split(",");
             List<RunStatus> list = Arrays.stream(split).map(x -> RunStatus.valueOf(x)).collect(Collectors.toList());
@@ -4241,7 +4246,8 @@ public class MonitorDataService {
 
         //criteria.setGroupField("manageStatus");
         criteria.setGroupField("baseNeClass");
-        JsonModel jsonModel = rpcProcessService.statisticsNe(topoId, criteria);
+        if(Strings.isNullOrEmpty(topoId)) criteria.setTopoId(topoId);
+        JsonModel jsonModel = rpcProcessService.statisticsNe(criteria);
         statisMapList = (List<Map<String, Object>>) jsonModel.getObj();
         int count = 0;
         for (Map<String, Object> map : statisMapList) {
@@ -4251,10 +4257,12 @@ public class MonitorDataService {
             result.put("name", "总设备数");
             result.put("value", count);
             result.put("info", count);
+            result.put("unit", "个");
         } else {
             result.put("name", "总终端数");
             result.put("value", count);
             result.put("info", count);
+            result.put("unit", "个");
         }
         return new JsonModel(true, result);
     }
@@ -4280,12 +4288,16 @@ public class MonitorDataService {
         List<LinkedHashMap<String, Object>> normalList = new ArrayList<>();
         List<LinkedHashMap<String, Object>> abnormalList = new ArrayList<>();
         JSONObject result = new JSONObject();
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         criteria.setGroupField("baseNeClass");
         criteria.setSortField("baseNeClass");
         criteria.setRunStatusIn(normal);
-        normalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(topoId, criteria).getObj();
+        normalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(criteria).getObj();
         criteria.setRunStatusIn(abnormal);
-        abnormalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(topoId, criteria).getObj();
+        abnormalList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNe(criteria).getObj();
 
         LinkedHashMap<String, Integer> normalMap = new LinkedHashMap<>();
         LinkedHashMap<String, Integer> abnormalMap = new LinkedHashMap<>();

@@ -3,6 +3,7 @@ package com.uxsino.leaderview.service.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.authority.lib.util.DomainUtils;
@@ -64,7 +65,7 @@ public class RpcProcessService {
     private DomainUtils domainUtils;
 
     @SuppressWarnings("unchecked")
-    public List<Map<String,Object>> vmStatics(Long domain) throws Exception {
+    public List<Map<String,Object>> vmStatics(Long domain, String topoId) throws Exception {
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domain != null){
             criteria.setDomainId(domain);
@@ -72,6 +73,10 @@ public class RpcProcessService {
         List<NeClass> neClasses = BaseNeClass.virtualization.getNeClass();
         criteria.setNeClasses(neClasses);
         criteria.setPagination(false);
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
         List<NetworkEntity> rawResult = getNeList(criteria);
         List<NeHealthHistory> list = new ArrayList<>();
@@ -96,10 +101,14 @@ public class RpcProcessService {
         return realResult;
     }
 
-    public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass) throws Exception{
+    public List<Map<String, Object>> neStatistics(Long domain, BaseNeClass baseClass, String topoId) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if(domain != null){
             criteria.setDomainId(domain);
+        }
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
         }
         criteria.setPagination(false);
         criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
@@ -149,8 +158,8 @@ public class RpcProcessService {
     }
 
 
-    public Long countVr(Long domainId) throws Exception {
-        List<Map<String, Object>> statics = vmStatics(domainId);
+    public Long countVr(Long domainId,String topoId) throws Exception {
+        List<Map<String, Object>> statics = vmStatics(domainId,topoId);
         long value = 0L;
         if (CollectionUtils.isNotEmpty(statics)) {
             for (Map<String, Object> map : statics) {
@@ -171,7 +180,11 @@ public class RpcProcessService {
             List<NeClass> neClassList = baseNeClass.getNeClass();
             criteria.setNeClasses(neClassList);
         }
-        criteria.setTopoId(topoId);
+
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         criteria.setManageStatusNotIn(Lists.newArrayList(com.uxsino.leaderview.model.monitor.ManageStatus.Delected));
         List<NetworkEntity> networkEntityList = getNeList(criteria);
         // 对虚拟化资源进行特殊处理，只统计parentId为空的vmWare,xen，kvm资源和parentId = id 单独发现的esxi资源
@@ -968,9 +981,8 @@ public class RpcProcessService {
         return jsonModel;
     }
 
-    public JsonModel statisticsNe(String topoId,NetworkEntityCriteria criteria) throws Exception {
+    public JsonModel statisticsNe(NetworkEntityCriteria criteria) throws Exception {
         criteria.setPagination(false);
-        criteria.setTopoId(topoId);
         String param = JSON.toJSONString(criteria);
         JsonModel jsonModel = monitorService.statisticsNe(param);
         if (!jsonModel.isSuccess()){

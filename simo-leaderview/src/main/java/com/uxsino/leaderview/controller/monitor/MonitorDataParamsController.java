@@ -347,9 +347,9 @@ public class MonitorDataParamsController {
     @ApiOperation("获取链路的源ip下拉框")
     @ApiImplicitParams({})
     @RequestMapping(value = "/getNetworkSourceId", method = RequestMethod.GET)
-    public JsonModel getNetworkSourceId(HttpSession session) {
+    public JsonModel getNetworkSourceId(HttpSession session, @RequestParam(required = false) String topoId) {
         try {
-            return monitorDataParamsService.getNetworkSourceId(session);
+            return monitorDataParamsService.getNetworkSourceId(session,topoId);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
