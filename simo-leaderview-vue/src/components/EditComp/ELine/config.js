@@ -434,7 +434,7 @@ export default {
             ]
           },
           {
-            'name': '线条距Y轴距离',
+            'name': '线距Y轴距离',
             'key': 'boundaryGap',
             'tag': 'select',
             'options': [
@@ -485,6 +485,9 @@ export default {
           {
             'name': '数据线分段',
             'key': 'Linesubsection',
+            'parentKey': {
+              'lineArea': true
+            },
             'tag': 'select',
             'options': [
               {
