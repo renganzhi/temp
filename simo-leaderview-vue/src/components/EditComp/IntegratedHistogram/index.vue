@@ -699,35 +699,96 @@ export default {
         })
         mySeriesData.forEach((data, index) => {
           if (data) {
-            myseries.push({
-              name: myData.columns[index],
-              data: data,
-              type: 'bar',
-              stack: 'total',
-              barWidth: this.item.barWidth3,
-              showBackground: this.item.showBackground3,
-              backgroundStyle: {
-                color: this.item.backgroundColor3
-              },
-              itemStyle: {
-                normal: {
-                  color: this.item.ifGradual === 'true' ? {
-                    type: 'linear',
-                    x: 0,
-                    y: 0,
-                    x2: 0,
-                    y2: 1,
-                    colorStops: [{
-                      offset: 0, color: this.item.DScatterColor3[index - 1][0] // 0% 处的颜色
-                    }, {
-                      offset: 1, color: this.item.DScatterColor3[index - 1][1] // 100% 处的颜色
-                    }],
-                    global: false // 缺省为 false
-                  } : this.item.ScatterColor3[index - 1],
-                  borderRadius: Number(this.item.barRadius3)
+            if (index === mySeriesData.length - 1) {
+              myseries.push({
+                name: myData.columns[index],
+                data: data,
+                type: 'bar',
+                stack: 'total',
+                barWidth: this.item.barWidth3,
+                showBackground: this.item.showBackground3,
+                backgroundStyle: {
+                  color: this.item.backgroundColor3
+                },
+                itemStyle: {
+                  normal: {
+                    color: this.item.ifGradual === 'true' ? {
+                      type: 'linear',
+                      x: 0,
+                      y: 0,
+                      x2: 0,
+                      y2: 1,
+                      colorStops: [{
+                        offset: 0, color: this.item.DScatterColor3[index - 1][0] // 0% 处的颜色
+                      }, {
+                        offset: 1, color: this.item.DScatterColor3[index - 1][1] // 100% 处的颜色
+                      }],
+                      global: false // 缺省为 false
+                    } : this.item.ScatterColor3[index - 1],
+                    borderRadius: [Number(this.item.barRadius3), Number(this.item.barRadius3), 0, 0]
+                  }
                 }
-              }
-            })
+              })
+            } else if (index === 1) {
+              myseries.push({
+                name: myData.columns[index],
+                data: data,
+                type: 'bar',
+                stack: 'total',
+                barWidth: this.item.barWidth3,
+                showBackground: this.item.showBackground3,
+                backgroundStyle: {
+                  color: this.item.backgroundColor3
+                },
+                itemStyle: {
+                  normal: {
+                    color: this.item.ifGradual === 'true' ? {
+                      type: 'linear',
+                      x: 0,
+                      y: 0,
+                      x2: 0,
+                      y2: 1,
+                      colorStops: [{
+                        offset: 0, color: this.item.DScatterColor3[index - 1][0] // 0% 处的颜色
+                      }, {
+                        offset: 1, color: this.item.DScatterColor3[index - 1][1] // 100% 处的颜色
+                      }],
+                      global: false // 缺省为 false
+                    } : this.item.ScatterColor3[index - 1],
+                    borderRadius: [0, 0, Number(this.item.barRadius3), Number(this.item.barRadius3)]
+                  }
+                }
+              })
+            } else {
+              myseries.push({
+                name: myData.columns[index],
+                data: data,
+                type: 'bar',
+                stack: 'total',
+                barWidth: this.item.barWidth3,
+                showBackground: this.item.showBackground3,
+                backgroundStyle: {
+                  color: this.item.backgroundColor3
+                },
+                itemStyle: {
+                  normal: {
+                    color: this.item.ifGradual === 'true' ? {
+                      type: 'linear',
+                      x: 0,
+                      y: 0,
+                      x2: 0,
+                      y2: 1,
+                      colorStops: [{
+                        offset: 0, color: this.item.DScatterColor3[index - 1][0] // 0% 处的颜色
+                      }, {
+                        offset: 1, color: this.item.DScatterColor3[index - 1][1] // 100% 处的颜色
+                      }],
+                      global: false // 缺省为 false
+                    } : this.item.ScatterColor3[index - 1]
+                  }
+                }
+              })
+            }
           }
         })
         let myoption = {
