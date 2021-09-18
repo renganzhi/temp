@@ -135,7 +135,9 @@ export default {
     },
     deactivated () {
       if (this.item.chartType === 'text' || this.item.chartType === 'NEWtextArea') {
+        if(this.$refs.childtext){
         this.$refs.childtext.getBlur()
+        }
       }
     },
     resizestop (item, attr) {
