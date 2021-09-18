@@ -923,7 +923,7 @@
         "key": "enable_single_alert_status_statistics",
         "name": "单个资源告警状态统计",
         "component": "alert",
-        "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",
+        "type": "NEWtextArea",
         "url": "/leaderview/alert/getStatByStatus",
         "method" : "post",
         "params": [

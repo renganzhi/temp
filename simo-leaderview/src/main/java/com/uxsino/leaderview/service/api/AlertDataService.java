@@ -612,10 +612,14 @@ public class AlertDataService {
         }
         List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
 
+        JSONObject result = new JSONObject();
         if (!StringUtils.isEmpty(status)) {
-            return statisticsResults.get(0).getAlertCount();
+            result.put("unit",null);
+            result.put("总数",statisticsResults.get(0).getAlertCount());
+            result.put("info",statisticsResults.get(0).getAlertCount());
+            return result;
         }else {
-            JSONObject result = new JSONObject();
+
             JSONArray columns = new JSONArray();
             columns.add("数量");
             columns.add("告警状态");
