@@ -8,7 +8,7 @@
              :style="theadTrStyle">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
-            <th v-for="(title, index) in nowShowDataObj.columns"
+            <th v-for="(title, index) in item.chartData.columns"
                 :style="[thStyle,heightLinght,widthLinght(index)]"
                 :key="index"><span data-toggle='tooltip'
                     class="hoverTips"
@@ -68,8 +68,8 @@ export default {
   data () {
     return {
       tableEmpty: false,
-      nowShowIndex:0,
-      myInterVale:'',
+      nowShowIndex: -1,
+      myNewInterVal:'',
       noworder: {}
     }
   },
@@ -90,26 +90,8 @@ export default {
         border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
       }
     },
-    nowShowDataObj:function(){
-      var reg = /^\{[\s\S]*\}$/
-        // 先判断是{}类型的对象，而不是new Object
-      var textData = JSON.stringify(this.item.chartData)
-      if (reg.test(textData.trim())) {
-        return this.item.chartData
-      }else{
-        if(this.item.chartData.length > 1){
-        if (this.myInterVale){
-          clearInterval(this.myInterVale)
-        }
-        this.myInterVale = setInterval(() => {
-          this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
-        }, 3000);
-        }
-        return this.item.chartData[this.nowShowIndex]
-      }
-    },
     tableData: function () {
-      return this.nowShowDataObj.rows
+      return this.item.chartData.rows
     },
     trStyle: function () {
       return {
@@ -129,8 +111,9 @@ export default {
       }
     },
     widthArry: function () {
+      console.log(this.item.LineSizeArry)
       let arr = this.item.LineSizeArry || []
-      this.nowShowDataObj.columns && this.nowShowDataObj.columns.forEach((element, i) => {
+      this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
         if (arr[i]) {
 
         } else {
@@ -161,7 +144,7 @@ export default {
       if (JSON.stringify(newV) === JSON.stringify(oldV)) {
         return
       }
-      if ((this.nowShowDataObj.rows && this.nowShowDataObj.rows.length < 1) || !this.nowShowDataObj.rows) {
+      if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
         this.tableEmpty = true
       } else {
         this.tableEmpty = false
@@ -180,23 +163,29 @@ export default {
       // }
       // 这里不用注释
     },
-    'item.intervieData':function() {
-      if (this.myInterVale){
-        clearInterval(this.myInterVale)
-      }
-      this.myInterVale = setInterval(() => {
-        this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
-      }, this.item.intervieData);
-    },
     'item.OneLineSize': function (newV, oldV) {
-      this.item.LineSizeArry[this.nowShowDataObj.columns.indexOf(this.item.AlarmField)] = newV
+      this.item.LineSizeArry[this.item.chartData.columns.indexOf(this.item.AlarmField)] = newV
       document.querySelector('.DataChangeBtn').click()
     },
     'item.AlarmField': function (newV, oldV) {
-      this.item.OneLineSize = this.item.LineSizeArry[this.nowShowDataObj.columns.indexOf(newV)]
+      this.item.OneLineSize = this.item.LineSizeArry[this.item.chartData.columns.indexOf(newV)]
     }
   },
   methods: {
+    getNewChartData(){
+      var _this = this
+    let myUrl =  this.item.moreUrlArry[this.nowShowIndex].url
+      $.ajax({
+        url: this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
+        data: this.item.moreUrlArry[this.nowShowIndex].params,
+        type: this.item.moreUrlArry[this.nowShowIndex].method || 'post',
+        cache: false,
+        ascyn: false,
+        success: function (res) {
+          _this.item.chartData = res.obj
+        },
+      })
+    },
     sortArry (key) {
       if (this.noworder[key] === 'down') {
         this.tableData.sort(function (a, b) {
@@ -221,7 +210,7 @@ export default {
     warnStyle (index) {
       if (this.item.AlarmField) {
         if (this.item.AlarmType === 'chart') {
-          if (this.item.AlarmChart !== '' && JSON.stringify(this.nowShowDataObj.rows[index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
+          if (this.item.AlarmChart !== '' && JSON.stringify(this.item.chartData.rows[index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
             return {
               'color': this.item.AlarmColor + ' !important'
             }
@@ -230,15 +219,15 @@ export default {
           if (this.item.AlarmNum !== '') {
             let error = false
             if (this.item.AlarmNumType === 'greater') {
-              if (this.nowShowDataObj.rows[index][this.item.AlarmField] * 1 > this.item.AlarmNum * 1) {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 > this.item.AlarmNum * 1) {
                 error = true
               }
             } else if (this.item.AlarmNumType === 'equal') {
-              if (this.nowShowDataObj.rows[index][this.item.AlarmField] * 1 === this.item.AlarmNum * 1) {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 === this.item.AlarmNum * 1) {
                 error = true
               }
             } else {
-              if (this.nowShowDataObj.rows[index][this.item.AlarmField] * 1 < this.item.AlarmNum * 1) {
+              if (this.item.chartData.rows[index][this.item.AlarmField] * 1 < this.item.AlarmNum * 1) {
                 error = true
               }
             }
@@ -298,7 +287,7 @@ export default {
     }
   },
   mounted: function () {
-    this.nowShowDataObj.columns && this.nowShowDataObj.columns.forEach((element, i) => {
+    this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
       if (this.widthArry[i]) {
 
       } else {
@@ -306,8 +295,14 @@ export default {
       }
     })
     this.item.LineSizeArry = this.widthArry
-    if (this.nowShowDataObj.rows && this.nowShowDataObj.rows.length < 1) {
+    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
+    }
+    if(this.item.moreUrlArry.length>0 && this.item.intervieData > 0){
+      this.myNewInterVal = setInterval(() => {
+        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+        this.getNewChartData()
+      }, this.item.intervieData);
     }
     // 这里不用注释
     // if ($('#home-html').length > 0) {
@@ -321,8 +316,8 @@ export default {
     if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
-    if (this.myInterVale){
-      clearInterval(this.myInterVale)
+    if (this.myNewInterVal){
+      clearInterval(this.myNewInterVal)
     }
     // this.$destroy(true)
   }
