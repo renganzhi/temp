@@ -3012,6 +3012,22 @@ export default {
     },
     // 发送更新视图的请求
     sentViewReq(curConf, datas, param) {
+      if (datas.neIds && datas.neIds !== null && JSON.parse(datas.windows)[0].fields === null) {
+        this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(datas.windows)[0].indicator}`).then((res) => {
+          if (res.success) {
+            if (res.obj) {
+              let data = JSON.parse(datas.windows)[0]
+              data.fields = [data.indicator]
+              datas.windows = JSON.stringify([data])
+            }
+            this.sentViewReqSend(curConf, datas, param)
+          }
+        })
+      } else {
+        this.sentViewReqSend(curConf, datas, param)
+      }
+    },
+    sentViewReqSend(curConf, datas, param) {
       let _this = this
       if (_this.selectedItem.chartType === 'JSMpeg') {
         _this.selectedItem.chartData = JSON.stringify(param)
