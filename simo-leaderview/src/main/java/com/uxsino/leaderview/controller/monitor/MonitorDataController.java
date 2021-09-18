@@ -880,6 +880,21 @@ public class MonitorDataController {
         }
     }
 
+    @ApiOperation("Oracle宿主机进程状态列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs"),
+            @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "展示的指标类型"),
+            @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗返回值")})
+    @RequestMapping(value = "/swRunEntryOfHost", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel getswRunEntryOfHost(@RequestParam String neIds, @RequestParam Integer number) {
+        try {
+            return monitorDataService.getswRunEntryOfHost(neIds, number);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false, e.getMessage());
+        }
+    }
     @ApiOperation("按拓扑统计链路条数")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "topoId", paramType = "query", dataType = "String", value = "拓扑ID", required = true),
