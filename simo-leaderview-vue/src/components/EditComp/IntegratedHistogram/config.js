@@ -1892,7 +1892,10 @@ export default {
           {
             'name': '图例字颜色',
             'key': 'ctLegendColor4',
-            'tag': 'Color'
+            'tag': 'Color',
+            'parentKey': {
+              'ctLegendShow4': true
+            }
           },
           {
             'name': '图例高度',
