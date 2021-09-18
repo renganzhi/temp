@@ -174,6 +174,7 @@ export default {
   methods: {
     getNewChartData(){
       var _this = this
+      console.log(this.item.moreUrlArry)
     let myUrl =  this.item.moreUrlArry[this.nowShowIndex].url
       $.ajax({
         url: this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
@@ -298,7 +299,7 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    if(this.item.moreUrlArry.length>0 && this.item.intervieData > 0){
+    if(this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
       this.myNewInterVal = setInterval(() => {
         this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
         this.getNewChartData()
@@ -313,10 +314,8 @@ export default {
     // 这里不用注释
   },
   beforeDestroy: function () {
-    if ($(this.$el).find('[title]').length > 0) {
-      $(this.$el).find('[title]').tooltip('destroy')
-    }
     if (this.myNewInterVal){
+      console.log(1111111)
       clearInterval(this.myNewInterVal)
     }
     // this.$destroy(true)
