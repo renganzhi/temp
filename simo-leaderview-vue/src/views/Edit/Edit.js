@@ -1084,24 +1084,59 @@ export default {
         this.selectedItem.radius = this.progressObj.radius
       }
     },
-    colorToAll(ScatterColor, DScatterColor, ifGradual) {
+    colorToAll(key, KeyColor) {
       var _colors = this.selectedItem.ctColors
       if (this.chartNum.length) {
         this.saveHistory()
       }
+      let ScatterColorArry = ['ScatterColor1', 'ScatterColor2', 'ScatterColor3', 'ScatterColor4', 'ScatterColor', 'LineColorArray']
       this.chartNum.forEach((item) => {
-        if ((['NewHistogram', 'NewGroupHistogram', 'NewGroupLeftHistogram', 'NewBar', 'ELine', 'DoubleLinde', 'GradientPie', 'polarBar', 'TDHistogram', 'TDModel', 'Scatter', 'KLine'].includes(item.chartType))) {
-          if (
-            item.chartData &&
-            item.chartData.colors &&
-            item.ctDataSource !== 'static'
-          ) {
-            // 接口返回的系统默认颜色不做修改
-          } else {
-            if (item.DScatterColor && DScatterColor) {
-              item.DScatterColor = JSON.parse(DScatterColor)
-            }
-            item.ScatterColor = JSON.parse(ScatterColor)
+        // AreaDScatterColor
+        if (key === 'AreaScatterColor') {
+          if (item.AreaScatterColor && KeyColor) {
+            item.AreaScatterColor = JSON.parse(KeyColor)
+          }
+        } else if (key === 'AreaDScatterColor') {
+          if (item.AreaDScatterColor && KeyColor) {
+            item.AreaDScatterColor = JSON.parse(KeyColor)
+          }
+        } else if (ScatterColorArry.indexOf(key) >= 0) {
+          if (item.ScatterColor && KeyColor) {
+            item.ScatterColor = JSON.parse(KeyColor)
+          }
+          if (item.ScatterColor1 && KeyColor) {
+            item.ScatterColor1 = JSON.parse(KeyColor)
+          }
+          if (item.ScatterColor2 && KeyColor) {
+            item.ScatterColor2 = JSON.parse(KeyColor)
+          }
+          if (item.ScatterColor3 && KeyColor) {
+            item.ScatterColor3 = JSON.parse(KeyColor)
+          }
+          if (item.ScatterColor4 && KeyColor) {
+            item.ScatterColor4 = JSON.parse(KeyColor)
+          }
+          if (item.LineColorArray && KeyColor) {
+            item.LineColorArray = JSON.parse(KeyColor)
+          }
+        } else {
+          if (item.DScatterColor && KeyColor) {
+            item.DScatterColor = JSON.parse(KeyColor)
+          }
+          if (item.DScatterColor1 && KeyColor) {
+            item.DScatterColor1 = JSON.parse(KeyColor)
+          }
+          if (item.DScatterColor2 && KeyColor) {
+            item.DScatterColor2 = JSON.parse(KeyColor)
+          }
+          if (item.DScatterColor3 && KeyColor) {
+            item.DScatterColor3 = JSON.parse(KeyColor)
+          }
+          if (item.DScatterColor4 && KeyColor) {
+            item.DScatterColor4 = JSON.parse(KeyColor)
+          }
+          if (item.DLineColorArray && KeyColor) {
+            item.DLineColorArray = JSON.parse(KeyColor)
           }
         }
       })

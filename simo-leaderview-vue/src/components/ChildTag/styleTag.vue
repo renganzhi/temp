@@ -233,7 +233,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll"
+          @click="colorToAll(item.key)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -297,7 +297,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll"
+          @click="colorToAll(item.key)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -333,7 +333,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll"
+          @click="colorToAll(item.key)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -744,11 +744,9 @@ export default {
         }
       }
     },
-    colorToAll () {
-      this.$parent.$parent.$parent.colorToAll(
-        JSON.stringify(this.selectedItem.ScatterColor),
-        JSON.stringify(this.selectedItem.DScatterColor),
-        this.selectedItem.ifGradual
+    colorToAll (key) {
+      this.$parent.$parent.$parent.colorToAll(key,
+        JSON.stringify(this.selectedItem[key])
       )
     },
     myreverseColor (index) {
