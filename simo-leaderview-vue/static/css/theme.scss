@@ -83,7 +83,7 @@ html[data-theme="default"] {
     }
     .ivu-select-dropdown{
         .ivu-select-item{
-            color: #cad6dd;
+            color: #000000;
         }
         .ivu-dropdown-item{
             color: #c1c3c7;
@@ -92,9 +92,10 @@ html[data-theme="default"] {
             background-color: #08c;
             color: white;
         }
-        color: #cad6dd;
+        color: #000000;
         list-style: none;
-        background-color: #0a0e1a;
+        max-height: 100px;
+        background-color: white;
         font-size: 12px !important;
     }
     .ivu-select-item:hover {
