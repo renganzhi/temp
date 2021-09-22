@@ -51,7 +51,7 @@ export default {
       let array = this.item.chartData.rows
       let allData = 0
       array.forEach((element) => {
-        allData = allData + element.value
+        allData = allData + element.value * 1 
       })
       let myseries = []
       let titleText = ''
@@ -88,7 +88,10 @@ export default {
             }
           }
         }
-        let myVale = Math.floor((d.value * 100) / allData)
+        let myVale = 0
+        if(allData !== 0){
+          myVale = Math.floor((d.value * 100) / allData)
+        }
         if (index === array.length - 1) {
           myVale = AllNum
         } else {
