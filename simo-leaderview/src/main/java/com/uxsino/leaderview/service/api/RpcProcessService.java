@@ -1050,7 +1050,7 @@ public class RpcProcessService {
 
         JsonModel jsonModel = null;
         if (PerormanceView.TopSql.equals(view)) {
-            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime));
+            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime), 10);
         } else if (PerormanceView.TopEvent.equals(view)) {
             jsonModel = this.monitorService.topEvent(neId, format.format(startTime), format.format(endTime));
         } else if (PerormanceView.TopSession.equals(view)) {

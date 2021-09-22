@@ -4461,7 +4461,7 @@ public class MonitorDataService {
         }
 
         if (ObjectUtils.isEmpty(model.getObj())) {
-            return new JsonModel(true, "返回结果为空");
+            return new JsonModel(true, model.getMsg());
         }
 
         JSONArray array = JSONArray.parseArray(JSON.toJSONString(model.getObj()));
@@ -4548,9 +4548,9 @@ public class MonitorDataService {
         indValueQuery.setIndicatorId(indicatorId);
         JSONObject fieldFilters = new JSONObject();
         if (type == 3) {
-            fieldFilters.put("power_state", "poweredOn");
+            fieldFilters.put("powerState", "poweredOn");
         } else if (type == 4) {
-            fieldFilters.put("power_state", "poweredOff");
+            fieldFilters.put("powerState", "poweredOff");
         } else if (type == 1) {
         } else if (type == 2) {
             fieldFilters.put("vm_status", "Warning");

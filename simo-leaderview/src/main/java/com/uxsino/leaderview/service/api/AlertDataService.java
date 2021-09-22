@@ -619,10 +619,9 @@ public class AlertDataService {
             result.put("info",statisticsResults.get(0).getAlertCount());
             return result;
         }else {
-
             JSONArray columns = new JSONArray();
-            columns.add("数量");
             columns.add("告警状态");
+            columns.add("数量");
             result.put("columns", columns);
             JSONArray rows = new JSONArray();
             Map<Object,String> statusMap = new HashMap<>();
