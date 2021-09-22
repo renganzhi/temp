@@ -29,7 +29,7 @@
       ></PreView>
       <Confirm
         :showModal="showDelModal"
-        :message="'删除操作不可恢复，是否继续？'"
+        :message="modelText"
         :okText="'是'"
         @hideModal="sureDel"
       ></Confirm>
@@ -294,6 +294,7 @@ export default {
       userList: [],
       roleList: [],
       showDelModal: false, // 确认删除
+      modelText: '',
       delId: -1,
       ifBelongCurrentUser: 'false', // 删除操作时判断是否属于分享页面
       addPage: false, // 新增页面
@@ -596,6 +597,11 @@ export default {
     },
     del (item, belongCurrentUser) {
       this.showDelModal = true
+      if (belongCurrentUser === 'false') {
+        this.modelText = '移除操作不可恢复，是否继续？'
+      } else {
+        this.modelText = '删除操作不可恢复，是否继续？'
+      }
       this.ifBelongCurrentUser = belongCurrentUser
       this.delId = item.id
       // $.api.view.confirm({
