@@ -8,6 +8,7 @@ export default {
     'ctLegendColor': '#666f8b',
     'axisLabelSize': '16',
     'ifEidetColor': false,
+    'ctLegendShow': true,
     'legendY': 85,
     'radius': 50,
     'detailwidth': 12,
@@ -162,7 +163,10 @@ export default {
           {
             'name': '图例字颜色',
             'key': 'ctLegendColor',
-            'tag': 'Color'
+            'tag': 'Color',
+            'parentKey': {
+              'ctLegendShow': true
+            }
           }
         ]
       },
