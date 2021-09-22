@@ -118,7 +118,7 @@ export default {
       }, {
         'name': 'tips配置',
         'tag': 'Hint',
-        'childoption': [ {
+        'childoption': [{
           'name': '是否显示tips',
           'key': 'tipsShow',
           'tag': 'select',
@@ -146,11 +146,11 @@ export default {
             'tipsShow': true
           },
           'tag': 'input'
-        } ]
+        }]
       }, {
         'name': '图例配置',
         'tag': 'Hint',
-        'childoption': [ {
+        'childoption': [{
           'name': '是否显示图例',
           'key': 'tipsNotes',
           'tag': 'select',
@@ -164,27 +164,27 @@ export default {
               'value': false
             }
           ]
-        }, {
-          'name': '图例类型',
-          'key': 'NotesType',
-          'tag': 'select',
-          'parentKey': {
-            'tipsNotes': true
-          },
-          'options': [
-            {
-              'name': '类型1',
-              'value': 1
-            },
-            {
-              'name': '类型2',
-              'value': 2
-            },
-            {
-              'name': '类型3',
-              'value': 3
-            }
-          ]
+          // }, {
+          //   'name': '图例类型',
+          //   'key': 'NotesType',
+          //   'tag': 'select',
+          //   'parentKey': {
+          //     'tipsNotes': true
+          //   },
+          //   'options': [
+          //     {
+          //       'name': '类型1',
+          //       'value': 1
+          //     },
+          //     {
+          //       'name': '类型2',
+          //       'value': 2
+          //     },
+          //     {
+          //       'name': '类型3',
+          //       'value': 3
+          //     }
+          //   ]
         }, {
           'name': '图例字体颜色',
           'key': 'NotesColor',
@@ -220,7 +220,7 @@ export default {
             'tipsNotes': true
           },
           'tag': 'input'
-        } ]
+        }]
       }, {
         'name': '颜色配置',
         'tag': 'Hint',
