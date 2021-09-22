@@ -111,7 +111,7 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel topSQL(String neId, String startTime, String endTime) {
+    public JsonModel topSQL(String neId, String startTime, String endTime, Integer topN) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
 
