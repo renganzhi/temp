@@ -530,7 +530,10 @@ export default {
           {
             'name': '图例字颜色',
             'key': 'ctLegendColor1',
-            'tag': 'Color'
+            'tag': 'Color',
+            'parentKey': {
+              'ctLegendShow1': true
+            }
           },
           {
             'name': '图例高度',
