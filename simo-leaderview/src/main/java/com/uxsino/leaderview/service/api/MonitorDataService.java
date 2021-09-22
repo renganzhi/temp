@@ -23,6 +23,7 @@ import com.uxsino.leaderview.model.MigrationStation;
 import com.uxsino.leaderview.model.datacenter.IndValueQuery;
 import com.uxsino.leaderview.model.datacenter.IndicatorValueCriteria;
 import com.uxsino.leaderview.model.monitor.*;
+import com.uxsino.leaderview.model.monitor.indicator.CompoundIndicator;
 import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
 import com.uxsino.leaderview.utils.IndicatorValueUtils;
@@ -1914,19 +1915,24 @@ public class MonitorDataService {
             if (!ObjectUtils.isEmpty(windows)) {
                 window = windowBreakUp(window);
             }
-            IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
-            if (Objects.equals("LIST", ind.getIndicatorType())) {
-                for (int i = 0; i < window.size(); i++) {
-                    JSONObject itm = window.getJSONObject(i);
-                    if (StringUtils.isBlank(itm.getJSONObject("ne").getString("component"))) {
-                        return new JsonModel(false, "未选择部件，请在配置资源指标详细弹窗中重新配置!");
+
+            if(CompoundIndicator.valueList().contains(indicators)){//大屏特殊化组合指标
+                json = getCompoundIndValueTopN(indicators,nes,number,window,order);
+            }else {
+                IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
+                if (Objects.equals("LIST", ind.getIndicatorType())) {
+                    for (int i = 0; i < window.size(); i++) {
+                        JSONObject itm = window.getJSONObject(i);
+                        if (StringUtils.isBlank(itm.getJSONObject("ne").getString("component"))) {
+                            return new JsonModel(false, "未选择部件，请在配置资源指标详细弹窗中重新配置!");
+                        }
                     }
                 }
+                if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
+                    return new JsonModel(true, empObj());
+                }
+                json = getTopNByItObjects(ind, nes, number, field, window, order);
             }
-            if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
-                return new JsonModel(true, empObj());
-            }
-            json = getTopNByItObjects(ind, nes, number, field, window, order);
         }
         if (Objects.isNull(json)) {
             return new JsonModel(true, empObj());
@@ -1943,6 +1949,61 @@ public class MonitorDataService {
             }
         }
         return new JsonModel(true, json);
+    }
+
+    private JSONObject getCompoundIndValueTopN(String indicators, List<NetworkEntity> nes, String number, JSONArray window,
+            String order) {
+        CompoundIndicator compoundIndicator = CompoundIndicator.valueOf(indicators);
+        List<String> compoundInds = compoundIndicator.getIndicators();
+        String field = compoundIndicator.getField();
+        JSONArray compoundIndValues = new JSONArray();
+        JSONObject json = null;
+        for (String compoundInd : compoundInds) {
+            IndicatorTable ind = null;
+            try {
+                ind = rpcProcessService.getIndicatorInfoByName(compoundInd);
+                if (!validHasFields(ind)) {
+                    field = compoundInd;
+                }
+                if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
+                    return empObj();
+                }
+                json = getTopNByItObjects(ind, nes, number, field, window, order);
+                if (null != json && !json.isEmpty()) {
+                    JSONArray rows = json.getJSONArray("rows");
+                    compoundIndValues.addAll(rows);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (!CollectionUtils.isEmpty(compoundIndValues)) {
+            Comparator<Object> comparator = null;
+            if ("desc".equals(order)) {
+                comparator = Comparator
+                        .comparing(obj -> Double.parseDouble(((JSONObject) obj).getString("num"))).reversed();
+            } else {
+                comparator = Comparator
+                        .comparing(obj -> Double.parseDouble(((JSONObject) obj).getString("num")));
+            }
+            compoundIndValues.sort(comparator);
+            if (compoundIndValues.size() > Integer.valueOf(number)) {
+                List<Object> rows = compoundIndValues.subList(0, Integer.valueOf(number));
+                json.put("rows", rows);
+            }else{
+                json.put("rows", compoundIndValues);
+            }
+            JSONArray columns = json.getJSONArray("columns");
+            String indName = columns.getString(1);
+            columns.remove(indName);
+            String[] split = indName.split("\\(");
+            if (split.length > 1) {//替换成复合指标，（）里存单位
+                indName = compoundIndicator.getText() + "(" + split[1];
+                columns.add(indName);
+            }
+            json.put("columns",columns);
+        }
+        return json;
     }
 
     public JsonModel getTopNByItObjectsTopNHost(String indicators, Long domainId, String neIds,
@@ -2051,7 +2112,6 @@ public class MonitorDataService {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public JSONObject getTopNByItObjects(IndicatorTable ind, List<NetworkEntity> neList, String topStr, String field,
                                          JSONArray window, String order) throws Exception {
-        JSONObject json = new JSONObject();
         List<RunStatus> runStatuses = Lists.newArrayList(RunStatus.Loading, RunStatus.Good, RunStatus.Warning);
         neList = neList.stream().filter(ne -> runStatuses.contains(ne.getRunStatus())).collect(Collectors.toList());
         neList = neList.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected)).collect(Collectors.toList());
@@ -2083,19 +2143,12 @@ public class MonitorDataService {
                 return null;
             }
         }
-//        IndicatorValueCriteria InvCriteria = new IndicatorValueCriteria();
-//        JSONObject should = new JSONObject();
-//        should.put("ne", new ArrayList<>(availableIds));
-//        InvCriteria.setShould(should);
-//        InvCriteria.setIndicatorName(indicators);
-//        InvCriteria.setPagination(false);
-//        InvCriteria = indicatorService.searchIndicatorValue(InvCriteria);
         com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
         qo.setIndicatorName(Lists.newArrayList(ind.getName()));
         List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
         qo.setNeIds(neIds);
-        //取消分页，否则只能拿到10条指标
-        //qo.setPagination(false);
+        qo.setPagination(false);
+        qo.setFieldsNotNull(field);//过滤空值
         List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
         if (ObjectUtils.isEmpty(indValues)) {
             return null;
@@ -2231,15 +2284,18 @@ public class MonitorDataService {
         JSONObject transfer = MonitorUtils.unitTransfer(results, unit, "num");
         unit = transfer.getString("unit");
         results = transfer.getJSONArray("result");
+
+        JSONObject json = new JSONObject();
         JSONArray columns = new JSONArray();
+        json.put("columns", columns);
         columns.add("资源");
         if (Strings.isNullOrEmpty(unit)) {
             columns.add(name);
         } else {
             columns.add(name + "(" + unit + ")");
         }
-        json.put("columns", columns);
         JSONArray rows = new JSONArray();
+        json.put("rows", rows);
         for (Object result1 : results) {
             JSONObject result = (JSONObject) result1;
             JSONObject row = new JSONObject();
@@ -2249,17 +2305,17 @@ public class MonitorDataService {
             } else {
                 row.put("资源", neName);
             }
+            String num = result.getString("num");
+            row.put("num",num);//后台排序使用
             if (Strings.isNullOrEmpty(unit)) {
-                row.put(name, result.getString("num"));
+                row.put(name,num);
             } else {
-                row.put(name + "(" + unit + ")", result.getString("num"));
+                row.put(name + "(" + unit + ")", num);
             }
             rows.add(row);
         }
-        json.put("rows", rows);
         return json;
     }
-
 
     private Long[] getDomainIds(Long domainId, HttpSession session) {
         if (domainId == null) {

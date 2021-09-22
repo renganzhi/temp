@@ -15,6 +15,7 @@ import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.model.RunStatus;
 import com.uxsino.leaderview.model.SiteOrganizationCriteria;
 import com.uxsino.leaderview.model.monitor.*;
+import com.uxsino.leaderview.model.monitor.indicator.CompoundIndicator;
 import com.uxsino.leaderview.rpc.MonitorService;
 import com.uxsino.leaderview.service.query.NeComponentQuery;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -625,13 +626,17 @@ public class MonitorDataParamsService {
                 }
             }
         }
-        if (ObjectUtils.isEmpty(arrs)){
+        if (!ObjectUtils.isEmpty(arrs)){
+            // 遍历取指标交集
+            return getIntersection(arrs);
+        }else {
             JSONArray arr = new JSONArray();
             arr.add(newResultObj("健康度", "healthy"));
+            arr.add(newResultObj(CompoundIndicator.CPU.getText(), CompoundIndicator.CPU.toString()));
+            arr.add(newResultObj(CompoundIndicator.Memory.getText(), CompoundIndicator.Memory.toString()));
             arrs.add(arr);
+            return new JsonModel(true, arr);
         }
-        // 遍历取指标交集
-        return getIntersection(arrs);
     }
 
 

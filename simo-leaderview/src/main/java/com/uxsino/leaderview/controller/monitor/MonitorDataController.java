@@ -562,7 +562,7 @@ public class MonitorDataController {
     public JsonModel getTopNByItObjects(@RequestParam String indicators, @RequestParam(required = false) Long domainId,
                                         @RequestParam(required = false) String neIds, @RequestParam(required = false) String baseNeClass,
                                         @RequestParam(required = false) String neClass, @RequestParam(required = false) String field,
-                                        @RequestParam String number, @RequestParam String windows, @RequestParam String order, HttpSession session, Boolean bar,
+                                        @RequestParam String number, @RequestParam(required = false) String windows, @RequestParam String order, HttpSession session, Boolean bar,
                                         @RequestParam(required = false) String topoId) {
         try {
             return monitorDataService.getTopNByItObjects(indicators, domainId, neIds, baseNeClass, neClass, field, number, windows, order, session, bar,topoId);
