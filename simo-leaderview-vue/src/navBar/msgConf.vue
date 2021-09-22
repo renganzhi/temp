@@ -78,7 +78,7 @@ export default {
     // }
   },
   created () {
-    this.axios.get('/alert/currencyAlertmanager/findRingConfig').then(res => {
+    this.axios.get('/msg/config/findRingConfig').then(res => {
       if (res.success) {
         this.oldData = res.obj
         this.form.id = res.obj.id
@@ -88,7 +88,7 @@ export default {
     })
     //
     this.axios
-      .get('/alert/currencyAlertmanager/findAlertLevelList')
+      .get('/msg/config/rings')
       .then(res => {
         if (res.success) {
           this.levels = res.obj || []
@@ -104,7 +104,7 @@ export default {
     onSure () {
       this.$refs.form.validate(valid => {
         if (valid) {
-          let myurl = '/alert/currencyAlertmanager/saveRingConfig'
+          let myurl = '/msg/config/saveRingConfig'
           const config = {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -127,6 +127,15 @@ export default {
       })
     },
     resetCancel () {
+      let myurl = '/msg/config/delRingConfig'
+      this.axios.post(myurl).then(res => {
+        this.mdpram.show = false
+        this.$notify({
+          message: res.msg,
+          position: 'bottom-right',
+          customClass: 'toast toast-success'
+        })
+      })
       if (this.oldData) {
         this.form.id = this.oldData.id
         this.form.ring = this.oldData.ring
