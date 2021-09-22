@@ -897,6 +897,9 @@ public class RpcProcessService {
     private static List<IndValue> toJavaBeanListIndValue(JsonModel jsonModel){
         List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
         List<IndValue> ts = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(list)){
+           return  ts;
+        }
         // 由于IndicatorValue的类型为JSON ，通过toJavaObject创建实例的过程中：
         // 对JSONObject类型的IndicatorValue字段会造成数据丢失， 所以手动赋值
         for (LinkedHashMap map: list) {
