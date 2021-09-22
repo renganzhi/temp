@@ -15,6 +15,8 @@ import org.apache.poi.poifs.filesystem.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,6 +29,9 @@ public class AssetDataService {
 
     public JsonModel getAlertCount(String remindType,String remindLevel) throws Exception {
         ArrayList<LinkedHashMap<Object,Object>> arrayList = (ArrayList<LinkedHashMap<Object, Object>>) rpcProcessService.alert_report().getObj();
+        if(ObjectUtils.isEmpty(arrayList)){
+            return new JsonModel(false,"资产服务调用失败");
+        }
         List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
         JSONObject result = new JSONObject();
         JSONArray columns = new JSONArray();
@@ -354,7 +359,7 @@ public class AssetDataService {
         //查询部门，做一个部门id和name的Map
         SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
         JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
-        JSONObject obj = (JSONObject) jsonModel.getObj();
+        LinkedHashMap<Object,Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
         List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
         Map<String,String> organNameMap = new HashMap<>();
         for (LinkedHashMap<Object,Object> map : orgaList){
