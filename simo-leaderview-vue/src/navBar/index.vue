@@ -241,8 +241,6 @@ export default {
             }
           })
         })
-        console.log(this.dropPramCompsMenu)
-        console.log(this.dropPramMenu)
       }
     })
     // this.axios.get("/mc/getMenu?" + new Date().getTime()).then((res) => {

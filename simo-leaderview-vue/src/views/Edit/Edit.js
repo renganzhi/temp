@@ -3069,7 +3069,7 @@ export default {
     },
     // 发送更新视图的请求
     sentViewReq(curConf, datas, param) {
-      if (datas.neIds && datas.neIds !== null && JSON.parse(datas.windows)[0].fields === null) {
+      if (datas.neIds && datas.neIds !== null && datas.windows && JSON.parse(datas.windows)[0].fields === null) {
         this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(datas.windows)[0].indicator}`).then((res) => {
           if (res.success) {
             if (res.obj) {
@@ -3256,7 +3256,6 @@ export default {
       } else if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
         this.selectedItem.chartData = JSON.parse(JSON.stringify(this.alertMapData))
       } else if (this.selectedItem.chartType === 'text' || this.selectedItem.chartType === 'marquee' || this.selectedItem.chartType === 'NewMarquee' || this.selectedItem.chartType === 'NEWtextArea') {
-        console.log(this.$refs.textarea.innerText)
         this.selectedItem.ctName = this.$refs.textarea.innerText
         // this.$refs.textarea.innerText = this.selectedItem.ctName
       } else {
