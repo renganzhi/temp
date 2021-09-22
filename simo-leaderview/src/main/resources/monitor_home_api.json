@@ -2470,7 +2470,7 @@
         "key": "database_performance_MoveTable",
         "name": "资源性能视图",
         "component": "monitor",
-        "type": "NewMoveTable",
+        "type": "table,NewMoveTable,NewTable",
         "url": "/leaderview/monitor/getNetMoveTablePerformance",
         "method" : "get",
         "params": [

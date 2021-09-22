@@ -1534,7 +1534,7 @@ public class MonitorDataParamsService {
     public JsonModel getorgas() {
         SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
         JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
-        JSONObject obj = (JSONObject) jsonModel.getObj();
+        LinkedHashMap<Object,Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
         List<Map<String,String>> list = new ArrayList<>();
         List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
         for (LinkedHashMap<Object,Object> map : orgaList){

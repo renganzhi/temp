@@ -1009,24 +1009,34 @@ public class RpcProcessService {
         return jsonModel;
     }
 
-    public JsonModel alert_report() {
-        JsonModel jsonModel = assetService.alert_report();
+    public JsonModel alert_report() throws Exception {
+        JsonModel jsonModel = null;
+        try {
+            jsonModel = assetService.alert_report();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
         return jsonModel;
     }
 
-    public JsonModel alarmMsgByPage(Integer lastNum) {
+    public JsonModel alarmMsgByPage(Integer lastNum) throws Exception {
         JsonModel jsonModel= assetService.alarmMsgByPage(lastNum);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
         return jsonModel;
     }
 
-    public JsonModel searchTest(AssetTreeVo criteria) {
+    public JsonModel search(AssetCriteria criteria) throws Exception {
         String params = JSON.toJSONString(criteria);
         JsonModel jsonModel = assetService.search(params);
-        return jsonModel;
-    }
-    public JsonModel search(AssetCriteria criteria) {
-        String params = JSON.toJSONString(criteria);
-        JsonModel jsonModel = assetService.search(params);
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
         return jsonModel;
     }
 
@@ -1059,7 +1069,12 @@ public class RpcProcessService {
         return mcService.getOrganList(params);
     }
 
-    public JsonModel searchStandingbook(AssetCriteria criteria) {
-        return assetService.searchStandingbook(JSON.toJSONString(criteria));
+    public JsonModel searchStandingbook(AssetCriteria criteria) throws Exception {
+
+        JsonModel jsonModel = assetService.searchStandingbook(JSON.toJSONString(criteria));
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
     }
 }
