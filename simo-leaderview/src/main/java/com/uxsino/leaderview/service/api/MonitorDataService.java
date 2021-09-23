@@ -1781,6 +1781,10 @@ public class MonitorDataService {
                 columns.add(label);
                 filedLabelMap.put(field, label);
                 IndicatorValueQO qo = new IndicatorValueQO();
+                Date now = new Date();
+                Date startDate = IndPeriod.getStartDate(period, now);
+                qo.setDateFrom(startDate);
+                qo.setDateTo(now);
                 qo.setNeIds(Lists.newArrayList(ne.getId()));
                 qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
