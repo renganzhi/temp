@@ -73,11 +73,13 @@ export default {
     },
     'item': {
       handler (newVal, oldVal) {
-        if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
-          this.showLine = false
-        } else {
-          this.showLine = true
-          this.drawFlow()
+        if(this.item.chartData.rows && this.item.chartData.columns){
+          if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+            this.showLine = false
+          } else {
+            this.showLine = true
+            this.drawFlow()
+          }
         }
       },
       deep: true

@@ -756,13 +756,16 @@ export default {
 .homeBack {
   float: right;
   background: transparent;
-  color: #0088cc;
+  color: #5b8bff;
   font-size: 13px;
   border: none;
   i {
     font-size: 15px;
     margin-right: 2px;
   }
+}
+.homeBack:hover {
+  background: transparent;
 }
 
 .page-item {
@@ -838,7 +841,7 @@ export default {
   height: 20px;
   text-align: center;
   border-radius: 50%;
-  background: #0088cc;
+  background: #5b8bff;
   float: left;
   margin-top: 10px;
   margin-right: 10px;

@@ -172,8 +172,9 @@ html[data-theme='default'] {
   button,
   .ux-btn,
   .btn {
-    color: #cad6dd;
-    background: #0088cc;
+    color: hsla(0,0%,100%,.9);
+    background-color: #5b8bff;
+    border-color: transparent;
   }
   button[disabled],
   button[disabled]:hover,
@@ -189,8 +190,9 @@ html[data-theme='default'] {
   .btn.focus,
   .btn:hover,
   .btn-group .btn-default.active:hover {
-    color: #cad6dd;
-    background-color: #02699c;
+    color: hsla(0,0%,100%,.9);
+    background-color: #436bf6;
+    border-color: transparent;
   }
   .modal-header .close {
     background-color: transparent;

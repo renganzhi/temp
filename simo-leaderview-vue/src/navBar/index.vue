@@ -311,7 +311,7 @@ export default {
     },
 
     logout () {
-      this.$ensureModal.confirm('确认要退出系统？', () => {
+      this.$ensureModal.confirm('确认退出系统？', () => {
         window.location.href = window.location.origin + '/mc/logout'
       })
     },

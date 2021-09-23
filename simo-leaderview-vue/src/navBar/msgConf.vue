@@ -31,12 +31,12 @@
             <el-switch v-model="form.opened" active-color="#13ce66">
             </el-switch>
           </FormItem>
-          <FormItem>
+          <FormItem style="margin-bottom: 0px; text-align: right;">
             <Button @click="onSure">
               确定
             </Button>
-            <Button @click="resetCancel">
-              重置
+            <Button @click="resetCancel" cancel>
+              清空
             </Button>
           </FormItem>
         </Form>

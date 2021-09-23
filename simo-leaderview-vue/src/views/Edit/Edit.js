@@ -4489,6 +4489,9 @@ export default {
               newData.ne = [mydata]
               data.params.windows = JSON.stringify([newData])
             }
+            $.each(data.params, function (i, d) {
+              data.params[i] = $.isArray(d) ? d.join(',') : d
+            })
             $.ajax({
               url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
               data: data.params,

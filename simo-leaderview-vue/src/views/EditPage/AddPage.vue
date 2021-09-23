@@ -45,9 +45,35 @@
               </div>
               <div class="form-group"
                    style="margin-bottom: 0">
-                <label class="page-lable">选择模板</label>
+                <label class="page-lable" style="margin-right: 15px;">选择模板</label>
+                <div class="inputArry" style="height: 28px;line-height: 28px;">
+                <input type="radio"
+                       id="pageTypestrue"
+                       name="pageTypes"
+                       v-model="pageTypes"
+                       :value="true"/>
+                <label for="pageTypestrue"> 
+                    一键应用
+                    <Tooltip content="此模板中，展示的图标，统计数据均已内置完毕，仅需单独选择资源即可。（部分页面为整体统计，无需选择资源）" placement="top" max-width="400">
+                    <Icon type="ios-help-circle" style="font-size: 18px;"/>
+                  </Tooltip>
+                </label>
+                <input type="radio"
+                       name="pageTypes"
+                       id="pageTypesfalse"
+                       v-model="pageTypes"
+                       style="margin-left: 15px;margin-bottom: 10px;"
+                       :value="false" />
+                <label for="pageTypesfalse"> 
+                  自定义
+                  <Tooltip content="此模板中，所有内容均可自定义设置，包括图表样式，显示的数据，统计的资源等。" placement="top" max-width="400">
+                    <Icon type="ios-help-circle" style="font-size: 18px;"/>
+                  </Tooltip>
+                </label>
+              </div>
                 <div class="page-lable-content">
-                  <div class="defPages flex">
+                  <div class="defPages flex"
+                        v-if="!pageTypes">
                     <div class="flex-item first-item"
                          :class="{active:temId===''}"
                          @click="choosePage('')">
@@ -55,7 +81,22 @@
                     </div>
                     <div class="flex-item first-item"
                          :class="{ active:temId===item.id }"
-                         v-for="(item,index) in tems"
+                         v-for="(item,index) in tems1"
+                         :key=index
+                         @click="choosePage(item.id)">
+                      <img :src="baseUrl + item.viewImage"
+                           alt=""
+                           style="width:100%;height:100%;" />
+                           <div class="mask"  :class="{ maskActive: temId===item.id }">
+                     <div class="mask-text">{{item.name}}</div>
+                   </div>
+                    </div>
+                  </div>
+                  <div class="defPages flex"
+                        v-if="pageTypes">
+                    <div class="flex-item first-item"
+                         :class="{ active:temId===item.id }"
+                         v-for="(item,index) in tems2"
                          :key=index
                          @click="choosePage(item.id)">
                       <img :src="baseUrl + item.viewImage"
@@ -93,6 +134,7 @@ export default {
     return {
       name: '',
       visible: true,
+      pageTypes: true,
       baseUrl: gbs.host,
       addId: 0,
       addOne: false,
@@ -100,6 +142,7 @@ export default {
       showErr: false,
       userIds: [],
       tems: [],
+      tems2: [],
       temId: ''
     }
   },
@@ -164,7 +207,17 @@ export default {
     getTemps () {
       // this.tems.splice(0, this.tems.length)
       this.axios.get('/leaderview/home/template/list').then((res) => {
-        this.tems = res.obj
+        let items1 = []
+        let items2 = []
+        res.obj.forEach(element => {
+          if(element.templateType && element.templateType === 'single'){
+            items2.push(element)
+          }else{
+            items1.push(element)
+          }
+        });
+        this.tems1 = items1
+        this.tems2 = items2
       })
       /*  this.$nextTick(function(){
         _this.$modal.find('.defPages').get(0).scrollTop = 0;
