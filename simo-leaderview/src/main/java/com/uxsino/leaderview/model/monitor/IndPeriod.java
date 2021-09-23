@@ -12,6 +12,11 @@ public enum IndPeriod {
     /**
      *最近1天
      */
+    _1hour(Calendar.HOUR,-1,"最近1小时"),
+
+    /**
+     *最近1天
+     */
     _1day(Calendar.DATE,-1,"最近1天"),
 
     /**

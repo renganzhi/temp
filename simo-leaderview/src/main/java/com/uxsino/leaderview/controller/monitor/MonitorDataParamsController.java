@@ -321,6 +321,8 @@ public class MonitorDataParamsController {
     @RequestMapping(value = "/getInterval", method = RequestMethod.GET)
     public JsonModel getInterval(@RequestParam IndPeriod period) {
         JSONArray result = new JSONArray();
+        String[] hourArray = { "1分钟","2分钟","3分钟","4分钟","5分钟"};
+        Integer[] hourValue = { 1, 2, 3, 4, 5 };
         String[] dayArray = { "5分钟","15分钟","30分钟", "1小时", "2小时"};
         Integer[] dayValue = { 5, 15, 30, 60, 120 };
         String[] weekArray = { "2小时","4小时","8小时", "16小时", "1天"};
@@ -336,8 +338,12 @@ public class MonitorDataParamsController {
             for (int i = 0; i < weekArray.length; i++) {
                 result.add(MonitorUtils.newResultObj( weekArray[i], weekValue[i]));
             }
+        }else if ("_1hour".equals(period.name())) {
+            for (int i = 0; i < hourArray.length; i++) {
+                result.add(MonitorUtils.newResultObj( hourArray[i], hourValue[i]));
+            }
         } else {
-            for (int i = 0; i < weekArray.length; i++) {
+            for (int i = 0; i < dayArray.length; i++) {
                 result.add(MonitorUtils.newResultObj( dayArray[i], dayValue[i]));
             }
         }

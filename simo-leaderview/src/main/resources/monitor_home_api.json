@@ -1917,6 +1917,10 @@
                 "dataType": "static",
                 "data": [
                     {
+                        "name": "最近1小时",
+                        "value": "_1hour"
+                    },
+                    {
                         "name": "最近1天",
                         "value": "_1day"
                     },
@@ -2025,6 +2029,10 @@
                 "dataType": "static",
                 "data": [
                     {
+                        "name": "最近1小时",
+                        "value": "_1hour"
+                    },
+                    {
                         "name": "最近1天",
                         "value": "_1day"
                     },
@@ -2132,6 +2140,10 @@
                 "type": "drop-down",
                 "dataType": "static",
                 "data": [
+                    {
+                        "name": "最近1小时",
+                        "value": "_1hour"
+                    },
                     {
                         "name": "最近1天",
                         "value": "_1day"

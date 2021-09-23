@@ -477,8 +477,10 @@ public class HomePageService {
             JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), tempImg);
 
             String name = page.getName();
-            String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
-                    + "', now() ,'" + viewConf.getString("str")
+            String templateType = page.getTemplateType();
+            String templateConf = page.getTemplateConf();
+            String sql = "insert into public.simo_mc_home_template (name, template_type, template_conf, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
+                    + "','" + templateType + "','" + templateConf + "', now() ,'" + viewConf.getString("str")
                     + "', '" + viewImage.getString("str")
                     + "', '" + paintObj.getString("str")
                     + "', '" + composeObj.getString("str")
