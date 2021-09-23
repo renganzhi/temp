@@ -143,6 +143,7 @@ export default {
     },
     widthArry: function () {
       let arr = this.item.LineSizeArry || []
+      if(this.item.chartData.columns){
       this.item.chartData.columns.forEach((element, i) => {
         if (arr[i]) {
 
@@ -150,6 +151,7 @@ export default {
           arr.push(86)
         }
       })
+      }
       return arr
     },
     theadTrStyle: function () {
@@ -332,6 +334,7 @@ export default {
       }
       var _this = this
       this.nowPage = 0
+      if(this.item.chartData.rows){
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
       // 这里不用注释
@@ -386,6 +389,7 @@ export default {
           _this.intervalId = setTimeout(tableFn, _this.intervalTime)
         }, _this.intervalTime)
       }
+      }
     }
     // initMove () {
     //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
@@ -415,6 +419,7 @@ export default {
     // }
   },
   mounted: function () {
+    if(this.item.chartData.columns){
     this.item.chartData.columns.forEach((element, i) => {
       if (this.widthArry[i]) {
 
@@ -422,6 +427,7 @@ export default {
         this.widthArry.push(86)
       }
     })
+    }
     this.pageNum = Number(this.item.pageNum)
     if (this.item.speed === '3') {
       this.intervalTime = 6000

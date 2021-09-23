@@ -71,7 +71,7 @@ html[data-theme="default"] {
     }
     .ivu-modal .ivu-btn.ivu-btn-default {
         background-color: #08c;
-        color: #cad6dd;
+        color: #ffffff;
         border: none;
         padding: 5px 10px;
         min-width: 60px;
@@ -108,11 +108,14 @@ html[data-theme="default"] {
         border: none;
     }
     .ivu-btn.ivu-btn-default[cancel] {
-        background-color: #666f8b;
+        color: #8c94ac;
+        background-color: transparent;
+        border: 1px solid #8c94ac;
     }
     .ivu-btn.ivu-btn-default[cancel]:hover {
-        background-color: #5e667e;
-        border: none;
+        color: hsla(0,0%,100%,.9);
+        background-color: #8c94ac;
+        border: 1px solid transparent;
     }
     .ivu-btn + .ivu-btn {
         margin-left: 10px;
@@ -154,7 +157,7 @@ html[data-theme="default"] {
     }
     .ivu-btn-primary:hover {
         color: #fff;
-        background-color: #0253f5 !important;
+        background-color: #436bf6 !important;
         border: none !important;
     }
     .content{
