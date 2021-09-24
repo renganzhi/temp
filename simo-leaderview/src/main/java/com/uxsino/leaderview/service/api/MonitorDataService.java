@@ -1826,7 +1826,7 @@ public class MonitorDataService {
     }
 
     /**
-     * 获取topN的展示数据(定位到资源)
+     * 获取topN的展示数据(定位到资源，多资源-单指标属性-多部件)
      *
      * @param indicators  topN展示的指标类型
      * @param domainId    域ID
@@ -1944,11 +1944,34 @@ public class MonitorDataService {
 
     private JSONObject getCompoundIndValueTopN(String indicators, List<NetworkEntity> nes, String number, JSONArray window,
             String order) {
+        List<RunStatus> runStatuses = Lists.newArrayList(RunStatus.Loading, RunStatus.Good, RunStatus.Warning);
+        nes = nes.stream().filter(ne -> runStatuses.contains(ne.getRunStatus())).collect(Collectors.toList());
+        nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(nes)) {
+            return null;
+        }
+        String itObjectIds = String.join(",", nes.stream().map(NetworkEntity::getId).toArray(String[]::new));
+        List<String> availableIds = new ArrayList<>();
+        availableIds.add(itObjectIds);
+        JSONObject ipObj = new JSONObject();
+        JSONObject nameObj = new JSONObject();
+        for (NetworkEntity ne : nes) {
+            ipObj.put(ne.getId(), ne.getIp());
+            nameObj.put(ne.getId(), ne.getName());
+            availableIds.add(ne.getId());
+        }
+        if (availableIds.size() == 0) {
+            return null;
+        }
+
         CompoundIndicator compoundIndicator = CompoundIndicator.valueOf(indicators);
+        String compoundIndicatorName = compoundIndicator.getText();
         List<String> compoundInds = compoundIndicator.getIndicators();
         String field = compoundIndicator.getField();
+        String unit = null;
+        JSONObject json = new JSONObject();
+
         JSONArray compoundIndValues = new JSONArray();
-        JSONObject json = null;
         for (String compoundInd : compoundInds) {
             IndicatorTable ind = null;
             try {
@@ -1959,15 +1982,48 @@ public class MonitorDataService {
                 if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
                     return empObj();
                 }
-                json = getTopNByItObjects(ind, nes, number, field, window, order);
-                if (null != json && !json.isEmpty()) {
-                    JSONArray rows = json.getJSONArray("rows");
-                    compoundIndValues.addAll(rows);
+
+                JSONObject transfer = getTransferTopNByItObjects(ind, nes, number, field, window, order);
+                if (null == transfer || transfer.isEmpty()) {
+                    continue;
+                }
+
+                unit = transfer.getString("unit");
+                JSONArray results = transfer.getJSONArray("result");
+
+                for (Object result1 : results) {
+                    JSONObject result = (JSONObject) result1;
+                    JSONObject row = new JSONObject();
+                    String neName = nameObj.getString(result.getString("id")) + "(" + ipObj.getString(result.getString("id")) + ")";
+                    if (result.containsKey("componentName") && StringUtils.isNotBlank(result.getString("componentName"))) {
+                        row.put("资源", neName + result.getString("componentName"));
+                    } else {
+                        row.put("资源", neName);
+                    }
+                    String num = result.getString("num");
+                    if (Strings.isNullOrEmpty(unit)) {
+                        row.put(compoundIndicatorName,num);
+                    } else {
+                        row.put(compoundIndicatorName + "(" + unit + ")", num);
+                    }
+                    row.put("num",num);//后台符合指标排序使用字段
+                    compoundIndValues.add(row);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        JSONArray columns = new JSONArray();
+        json.put("columns", columns);
+        columns.add("资源");
+        if (Strings.isNullOrEmpty(unit)) {
+            columns.add(compoundIndicatorName);
+        } else {
+            columns.add(compoundIndicatorName + "(" + unit + ")");
+        }
+
+        //复合指标排序
         if (!CollectionUtils.isEmpty(compoundIndValues)) {
             Comparator<Object> comparator = null;
             if ("desc".equals(order)) {
@@ -1979,20 +2035,11 @@ public class MonitorDataService {
             }
             compoundIndValues.sort(comparator);
             if (compoundIndValues.size() > Integer.valueOf(number)) {
-                List<Object> rows = compoundIndValues.subList(0, Integer.valueOf(number));
-                json.put("rows", rows);
+                List<Object> topCompoundIndValues = compoundIndValues.subList(0, Integer.valueOf(number));
+                json.put("rows", topCompoundIndValues);
             }else{
                 json.put("rows", compoundIndValues);
             }
-            JSONArray columns = json.getJSONArray("columns");
-            String indName = columns.getString(1);
-            columns.remove(indName);
-            String[] split = indName.split("\\(");
-            if (split.length > 1) {//替换成复合指标，（）里存单位
-                indName = compoundIndicator.getText() + "(" + split[1];
-                columns.add(indName);
-            }
-            json.put("columns",columns);
         }
         return json;
     }
@@ -2109,6 +2156,39 @@ public class MonitorDataService {
         if (CollectionUtils.isEmpty(neList)) {
             return null;
         }
+
+        JSONObject transfer = getTransferTopNByItObjects(ind, neList, topStr, field, window, order);
+        if (null == transfer || transfer.isEmpty()) {
+            return null;
+        }
+        JSONArray results = transfer.getJSONArray("result");
+
+        String name = "指标值";
+        try {
+            if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
+                for (int i = 0; i < ind.getFields().size(); i++) {
+                    JSONObject obj = ind.getFields().getJSONObject(i);
+                    if (field.equals(obj.getString("name"))) {
+                        name = obj.getString("label");
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String unit = transfer.getString("unit");
+
+        JSONObject json = new JSONObject();
+        JSONArray columns = new JSONArray();
+        json.put("columns", columns);
+        columns.add("资源");
+        if (Strings.isNullOrEmpty(unit)) {
+            columns.add(name);
+        } else {
+            columns.add(name + "(" + unit + ")");
+        }
+
         String itObjectIds = String.join(",", neList.stream().map(NetworkEntity::getId).toArray(String[]::new));
         List<String> availableIds = new ArrayList<>();
         availableIds.add(itObjectIds);
@@ -2123,17 +2203,31 @@ public class MonitorDataService {
             return null;
         }
 
-        // 默认为-1，表明查询个数不限
-        Integer topNumber = -1;
-        if (StringUtils.isNoneBlank(topStr)) {
-            try {
-                // String类型转换成Integer的转换异常处理
-                topNumber = Integer.valueOf(topStr);
-            } catch (Exception e) {
-                log.error("字符串:{}无法转换成Integer类型,错误:", topStr, e);
-                return null;
+        JSONArray rows = new JSONArray();
+        json.put("rows", rows);
+        for (Object result1 : results) {
+            JSONObject result = (JSONObject) result1;
+            JSONObject row = new JSONObject();
+            String neName = nameObj.getString(result.getString("id")) + "(" + ipObj.getString(result.getString("id")) + ")";
+            if (result.containsKey("componentName") && StringUtils.isNotBlank(result.getString("componentName"))) {
+                row.put("资源", neName + result.getString("componentName"));
+            } else {
+                row.put("资源", neName);
             }
+            String num = result.getString("num");
+            row.put("num",num);//后台排序使用
+            if (Strings.isNullOrEmpty(unit)) {
+                row.put(name,num);
+            } else {
+                row.put(name + "(" + unit + ")", num);
+            }
+            rows.add(row);
         }
+        return json;
+    }
+
+    private JSONObject getTransferTopNByItObjects(IndicatorTable ind, List<NetworkEntity> neList, String topStr,
+            String field, JSONArray window, String order) {
         com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
         qo.setIndicatorName(Lists.newArrayList(ind.getName()));
         List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
@@ -2147,7 +2241,6 @@ public class MonitorDataService {
         // 如果是部件，则需要取属性值
         JSONArray allValue = new JSONArray();
         String unit = null;
-        boolean multipleComp = false;
 
         FieldModel model = new FieldModel();
         model.setIndicator(ind);
@@ -2190,7 +2283,12 @@ public class MonitorDataService {
                         NeComponentQuery compQuery = new NeComponentQuery();
                         compQuery.setNeIds(Lists.newArrayList(neId));
                         compQuery.setIndicatorName(ind.getName());
-                        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
+                        List<Map<String, Object>> idAndComponent = null;
+                        try {
+                            idAndComponent = rpcProcessService.findNeComps(compQuery);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         Map<String, Object> compMap =
                                 idAndComponent.stream().filter(map -> map.get("identifier").equals(component))
                                         .findFirst().orElse(Maps.newHashMap());
@@ -2235,6 +2333,19 @@ public class MonitorDataService {
                 allValue.add(obj);
             }
         }
+
+        // 默认为-1，表明查询个数不限
+        Integer topNumber = -1;
+        if (StringUtils.isNoneBlank(topStr)) {
+            try {
+                // String类型转换成Integer的转换异常处理
+                topNumber = Integer.valueOf(topStr);
+            } catch (Exception e) {
+                log.error("字符串:{}无法转换成Integer类型,错误:", topStr, e);
+                return null;
+            }
+        }
+
         JSONArray results = new JSONArray();
         // 降序或升序排列(取决于order)取topNumber个
         for (int fI = 0; fI < allValue.size(); fI++) {
@@ -2258,54 +2369,7 @@ public class MonitorDataService {
                 break;
             }
         }
-        String name = "指标值";
-        try {
-            if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
-                for (int i = 0; i < ind.getFields().size(); i++) {
-                    JSONObject obj = ind.getFields().getJSONObject(i);
-                    if (field.equals(obj.getString("name"))) {
-                        name = obj.getString("label");
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JSONObject transfer = MonitorUtils.unitTransfer(results, unit, "num");
-        unit = transfer.getString("unit");
-        results = transfer.getJSONArray("result");
-
-        JSONObject json = new JSONObject();
-        JSONArray columns = new JSONArray();
-        json.put("columns", columns);
-        columns.add("资源");
-        if (Strings.isNullOrEmpty(unit)) {
-            columns.add(name);
-        } else {
-            columns.add(name + "(" + unit + ")");
-        }
-        JSONArray rows = new JSONArray();
-        json.put("rows", rows);
-        for (Object result1 : results) {
-            JSONObject result = (JSONObject) result1;
-            JSONObject row = new JSONObject();
-            String neName = nameObj.getString(result.getString("id")) + "(" + ipObj.getString(result.getString("id")) + ")";
-            if (multipleComp) {
-                row.put("资源", neName + result.getString("componentName"));
-            } else {
-                row.put("资源", neName);
-            }
-            String num = result.getString("num");
-            row.put("num",num);//后台排序使用
-            if (Strings.isNullOrEmpty(unit)) {
-                row.put(name,num);
-            } else {
-                row.put(name + "(" + unit + ")", num);
-            }
-            rows.add(row);
-        }
-        return json;
+        return MonitorUtils.unitTransfer(results, unit, "num");
     }
 
     private Long[] getDomainIds(Long domainId, HttpSession session) {
