@@ -1345,7 +1345,7 @@
         ]
     },
     {
-        "key": "enable_single_ne_indicator_statistics",
+        "key": "enable_multiple_ne_indicator_statistics",
         "name": "单资源单指标多部件统计",
         "component": "monitor",
         "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
@@ -1421,7 +1421,7 @@
         ]
     },
     {
-        "key": "enable_single_ne_indicator_statistics_topN",
+        "key": "enable_multiple_ne_indicator_statistics_topN",
         "name": "单资源单指标多部件TopN",
         "component": "monitor",
         "type": "ve-pie,NewPie,ve-ring,NewRing,ve-histogram,NewHistogram,ve-bar,NewBar",

@@ -479,9 +479,8 @@ public class HomePageService {
             String name = page.getName();
             String templateType = page.getTemplateType();
             String templateConf = page.getTemplateConf();
-            Boolean isDynamicTemplate = page.getIsDynamicTemplate();
-            String sql = "insert into public.simo_mc_home_template (name, template_type, template_conf, is_dynamic_template, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
-                    + "','" + templateType + "','" + templateConf + "','" + isDynamicTemplate + "', now() ,'" + viewConf.getString("str")
+            String sql = "insert into public.simo_mc_home_template (name, template_type, template_conf, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
+                    + "','" + templateType + "','" + templateConf + "', now() ,'" + viewConf.getString("str")
                     + "', '" + viewImage.getString("str")
                     + "', '" + paintObj.getString("str")
                     + "', '" + composeObj.getString("str")
