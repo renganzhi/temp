@@ -2280,17 +2280,18 @@ public class MonitorDataService {
         String name = "指标值";
         try {
             if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
-                for (int i = 0; i < ind.getFields().size(); i++) {
-                    JSONObject obj = ind.getFields().getJSONObject(i);
-                    if (field.equals(obj.getString("name"))) {
-                        name = obj.getString("label");
-                        break;
+                if(ObjectUtils.isEmpty(field) && ObjectUtils.isEmpty(ind.getFields())){
+                    name = ind.getLabel();
+                }else {
+                    for (int i = 0; i < ind.getFields().size(); i++) {
+                        JSONObject obj = ind.getFields().getJSONObject(i);
+                        if (field.equals(obj.getString("name"))) {
+                            name = obj.getString("label");
+                            break;
+                        }
                     }
                 }
-            }/*else {
-                name = ind.getLabel();
-            }*/
-            //当没有部件没有属性时，将指标的标签名作为name;当时特殊组合指标时，统一name为特殊指标对应的lable
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
