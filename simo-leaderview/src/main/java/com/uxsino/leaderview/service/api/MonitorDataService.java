@@ -167,23 +167,10 @@ public class MonitorDataService {
         JSONObject json = new JSONObject();
         json.put("columns", newColumns("资源类型", "数量"));
         JSONArray rows = new JSONArray();
-        Map<String, Object> map = Maps.newHashMap();
-        if (null == baseClass) {
-            for (BaseNeClass baseNeClass1 : BaseNeClass.getBaseClass(true)) {
-                map.put(baseNeClass1.getText(), "0");
-            }
-            list.forEach(v -> map.put(BaseNeClass.valueOf(v.get("name").toString()).getText(), v.get("value")));
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                rows.add(newResultObj("资源类型", entry.getKey(), "数量", entry.getValue()));
-            }
-        } else {
-            for (NeClass neClass : baseClass.getNeClass()) {
-                map.put(neClass.getText(), 0);
-            }
-            list.forEach(v -> map.put(NeClass.valueOf(v.get("name").toString()).getText(), v.get("value")));
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                rows.add(newResultObj("资源类型", entry.getKey(), "数量", entry.getValue()));
-            }
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        list.stream().filter(v -> Long.parseLong(v.get("value").toString()) > 0).forEach(v -> map.put(BaseNeClass.valueOf(v.get("name").toString()).getText(), v.get("value")));
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            rows.add(newResultObj("资源类型", entry.getKey(), "数量", entry.getValue()));
         }
         json.put("rows", rows);
         return new JsonModel(true, json);
