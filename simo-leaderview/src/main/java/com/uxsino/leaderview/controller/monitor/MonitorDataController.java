@@ -537,6 +537,8 @@ public class MonitorDataController {
                 intervalType = IntervalType.hour;
             } else if (IndPeriod._1month == period) {
                 intervalType = IntervalType.hour;
+            }else if (IndPeriod._1hour == period) {
+                intervalType = IntervalType.minute;
             }
 
             return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period);
