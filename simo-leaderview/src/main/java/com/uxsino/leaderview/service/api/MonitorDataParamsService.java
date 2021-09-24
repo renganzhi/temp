@@ -947,10 +947,6 @@ public class MonitorDataParamsService {
             result.add(newResultObj("剩余容量大小", "used_rate_sum"));
             return new JsonModel(true, result);
         }
-        if(CompoundIndicator.valueList().contains(indicators)){//大屏特殊化组合指标
-            result.add(newResultObj("值", null));
-            return new JsonModel(true, result);
-        }
         IndicatorTable ind = rpcProcessService.getIndicatorInfoByName(indicators);
         if (ObjectUtils.isEmpty(ind)) {
             return new JsonModel(false, "未查询到任何指标");
