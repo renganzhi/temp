@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface IHomeTemplateDao extends ICustomRepository<HomeTemplate, Long> {
 
-    @Query("select new com.uxsino.leaderview.entity.HomeTemplate(id, name, viewImage, lastUpdateTime, templateType, templateConf) from HomeTemplate order by id")
+    @Query("select new com.uxsino.leaderview.entity.HomeTemplate(id, name, viewImage, lastUpdateTime, templateType, templateConf, isDynamicTemplate) from HomeTemplate order by id")
     List<HomeTemplate> noConf();
 }

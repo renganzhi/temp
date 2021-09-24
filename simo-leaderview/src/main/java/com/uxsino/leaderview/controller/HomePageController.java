@@ -215,7 +215,7 @@ public class HomePageController {
                 homePage.setPaintObj(template.getPaintObj());
                 homePage.setTemplateType(template.getTemplateType());
                 homePage.setTemplateConf(template.getTemplateConf());
-                //从当前session中获取用户id
+                homePage.setIsDynamicTemplate(template.getIsDynamicTemplate());
             }
         }
         Long pageId = homePageService.addAndGetId(homePage);
