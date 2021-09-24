@@ -1191,9 +1191,6 @@ export default {
           // this.paintObj.templateConf.baseneclss  neclass
           this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
             this.resourcesValueIds = res.obj || []
-            if (res.obj[0]) {
-              this.resourcesIds = res.obj[0].value
-            }
           })
         } else {
           this.CanChangeServes = false
