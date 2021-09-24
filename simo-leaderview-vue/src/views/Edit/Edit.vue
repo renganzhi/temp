@@ -1979,7 +1979,6 @@
                                :name="v.key"
                                v-model="syst.curConf.params[v.key]"
                                :obj="v"
-                               :selectObj="selectedItem"
                                @input="chgSelects(v)">
                       </Select2>
                     </div>

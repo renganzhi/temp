@@ -21,7 +21,7 @@
 <script>
 export default {
   name: 'select2',
-  props: ['obj','selectObj', 'value', 'mapSelect', 'sameName', 'disData', 'multip', 'maxLength'], // disData 不可被选中的数据项
+  props: ['obj', 'value', 'mapSelect', 'sameName', 'disData', 'multip', 'maxLength'], // disData 不可被选中的数据项
   data () {
     return {
       myData: {}
@@ -126,7 +126,7 @@ export default {
       if (!this.mapSelect) {
         var _this = this
         this.$nextTick(function () {
-          _this.init((!_this.obj.notNull || !newV.length) ? null : _this.selectObj.params[_this.obj.key] || newV[0].value)
+          _this.init((!_this.obj.notNull || !newV.length) ? null : newV[0].value)
           _this = null
         })
       }
