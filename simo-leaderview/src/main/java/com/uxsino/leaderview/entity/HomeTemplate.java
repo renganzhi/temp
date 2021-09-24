@@ -59,9 +59,6 @@ public class HomeTemplate {
     @Column(columnDefinition = "TEXT")
     private String templateConf;
 
-    /** 是否为动态模板*/
-    private Boolean isDynamicTemplate;
-
     public HomeTemplate(Long id, String name, String viewImage, Date lastUpdateTime) {
         this.id = id;
         this.name = name;
@@ -69,14 +66,13 @@ public class HomeTemplate {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public HomeTemplate(Long id, String name, String viewImage, Date lastUpdateTime, String templateType, String templateConf, Boolean isDynamicTemplate) {
+    public HomeTemplate(Long id, String name, String viewImage, Date lastUpdateTime, String templateType, String templateConf) {
         this.id = id;
         this.name = name;
         this.viewImage = viewImage;
         this.lastUpdateTime = lastUpdateTime;
         this.templateType = templateType;
         this.templateConf = templateConf;
-        this.isDynamicTemplate = isDynamicTemplate;
     }
 
 }
