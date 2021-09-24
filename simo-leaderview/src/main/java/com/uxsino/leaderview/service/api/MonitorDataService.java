@@ -605,7 +605,9 @@ public class MonitorDataService {
         }
         criteria.setId(neIds);
         criteria.setMonitoring(true);
-        NetworkEntity ne = rpcProcessService.getNeList(criteria).get(0);
+        List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
+        NetworkEntity ne = null;
+        if(!ObjectUtils.isEmpty(list)) ne =list.get(0);
         // 判断资源是否存在或者是否已被销毁或者未监控
         if (ObjectUtils.isEmpty(ne) || ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
             return new JsonModel(true, empObj);
@@ -1197,7 +1199,7 @@ public class MonitorDataService {
     }
 
     public JsonModel getHistoryValue(String[] neIds, String indicators, String windows, String field, IntervalType intervalType,
-                                     Integer interval) throws Exception {
+                                     Integer interval, IndPeriod period) throws Exception {
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
@@ -1258,6 +1260,10 @@ public class MonitorDataService {
         FieldModel model = new FieldModel();
 
         IndicatorValueQO qo = new IndicatorValueQO();
+        Date now = new Date();
+        Date startDate = IndPeriod.getStartDate(period, now);
+        qo.setDateFrom(startDate);
+        qo.setDateTo(now);
         qo.setNeIds(Lists.newArrayList(neIds));
         qo.setIndicatorNames(Lists.newArrayList(ind.getName()));
 
@@ -2281,7 +2287,10 @@ public class MonitorDataService {
                         break;
                     }
                 }
-            }
+            }/*else {
+                name = ind.getLabel();
+            }*/
+            //当没有部件没有属性时，将指标的标签名作为name;当时特殊组合指标时，统一name为特殊指标对应的lable
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -4474,8 +4483,8 @@ public class MonitorDataService {
         NetworkLinkModel networkLinkModel = new NetworkLinkModel();
         networkLinkModel.setGroupField("linkStatus");
         networkLinkModel.setTopoId(topoId);
-        List<Map<String, Object>> statisMapList = new ArrayList<>();
-        statisMapList = (List<Map<String, Object>>) rpcProcessService.statisticsNetworkLink(networkLinkModel).getObj();
+        List<LinkedHashMap<String, Object>> statisMapList = new ArrayList<>();
+        statisMapList = (List<LinkedHashMap<String, Object>>) rpcProcessService.statisticsNetworkLink(networkLinkModel).getObj();
         int count = 0;
 
         //如果是总数，取unknown+alert+unConnection+enable，否则取unknown+alert+unConnection

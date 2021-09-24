@@ -59,6 +59,9 @@ public class HomePage {
     @Column(columnDefinition = "TEXT")
     private String templateConf;
 
+    /** 是否为动态模板*/
+    private Boolean isDynamicTemplate;
+
     // 创建人ID
     private Long createUserId;
     // 接收人ID
