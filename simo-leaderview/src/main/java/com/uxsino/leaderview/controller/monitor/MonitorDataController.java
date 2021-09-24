@@ -434,7 +434,7 @@ public class MonitorDataController {
      * @param interval
      * @return
      */
-    @ApiOperation("指标历史统计-资源 (可以选择多个资源)")
+    @ApiOperation("多资源单指标历史统计-资源 (可以选择多个资源)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
@@ -460,15 +460,14 @@ public class MonitorDataController {
                 if(ObjectUtils.isEmpty(interval)) interval=5;
                 if (IndPeriod._1day == period) {
                     intervalType = IntervalType.minute;
-                    //interval = 5;
                 } else if (IndPeriod._1week == period) {
                     intervalType = IntervalType.hour;
-                    //interval = 8;
                 } else if (IndPeriod._1month == period) {
                     intervalType = IntervalType.hour;
-                    //interval = 24;
+                }else if (IndPeriod._1hour == period) {
+                    intervalType = IntervalType.minute;
                 }
-                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval);
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval, period);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -498,6 +497,8 @@ public class MonitorDataController {
                 intervalType = IntervalType.hour;
             } else if (IndPeriod._1month == period) {
                 intervalType = IntervalType.hour;
+            }else if (IndPeriod._1hour == period) {
+                intervalType = IntervalType.minute;
             }
             return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period);
         } catch (Exception e) {
@@ -516,7 +517,7 @@ public class MonitorDataController {
      * @param period
      * @return
      */
-    @ApiOperation("指标历史统计-指标 (可以选择多个指标)(资源唯一)")
+    @ApiOperation("单资源多指标历史统计-指标 (可以选择多个指标)(资源唯一)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "List<String>", value = "资源IDs", required = true),
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "List<String>", value = "指标名称", required = true),
