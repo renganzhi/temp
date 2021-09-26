@@ -1214,7 +1214,7 @@
         "key": "enable_multiple_ne_indicator_statistics",
         "name": "多资源多指标统计",
         "component": "monitor",
-        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram,BiaxialBarChart",
         "url": "/leaderview/monitor/indicator/multipleIndicator",
         "method" : "post",
         "params": [
@@ -1348,7 +1348,7 @@
         "key": "enable_single_ne_indicator_statistics",
         "name": "单资源单指标多部件统计",
         "component": "monitor",
-        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram",
+        "type": "groupHistogram,NewGroupHistogram,NewGroupLeftHistogram,BiaxialBarChart",
         "url": "/leaderview/monitor/indicator/multipleComp",
         "method" : "post",
         "params": [
