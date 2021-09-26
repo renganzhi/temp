@@ -174,20 +174,22 @@ export default {
   methods: {
     getNewChartData(){
       var _this = this
-      let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
-      $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
-        _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
-      })
-      $.ajax({
-        url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
-        data: _this.item.moreUrlArry[_this.nowShowIndex].params,
-        type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
-        cache: false,
-        ascyn: false,
-        success: function (res) {
-          _this.item.chartData = res.obj
-        },
-      })
+      if(_this.item.moreUrlArry[_this.nowShowIndex]){
+        let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
+        $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
+          _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
+        })
+        $.ajax({
+          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
+          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+          cache: false,
+          ascyn: false,
+          success: function (res) {
+            _this.item.chartData = res.obj
+          },
+        })
+      }
     },
     sortArry (key) {
       if (this.noworder[key] === 'down') {

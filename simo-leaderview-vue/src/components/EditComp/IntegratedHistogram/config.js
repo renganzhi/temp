@@ -11,7 +11,7 @@ var NewHistogram = {
   'topTextColor': '#fff', // 柱状图类型2、3顶部文字的颜色
   'imgClass1': 'icon-n-histogram',
   'chartType1': 'NewHistogram',
-  'intervieData': 5000,
+  'intervieData': 5,
   'ctLegendShow1': true,
   'colorful1': false,
   'ifGradual1': 'false',
