@@ -21,6 +21,7 @@
 
     <Modal
       v-model="showUpload"
+      id="InputModelBox"
       footer-hide
       title="导入模型">
       <Form ref="importModelForm" :label-width="80">
@@ -2457,6 +2458,28 @@ export default EditJs
 .county {
   position: absolute;
   right: 130px;
+}
+#InputModelBox{
+  .ivu-modal{
+    .ivu-modal-content{
+      background: #222739;
+    }
+    .ivu-modal-header {
+      height: 40px;
+      color: #1b2031;
+      box-shadow: 0px 0px 20px 0px #0d080966;
+      border: none;
+      background-color: transparent;
+      .ivu-modal-header-inner{
+        color: #c2c6d7;
+      }
+    }
+    .ivu-modal-body {
+      padding: 20px 20px 10px 50px;
+      color: #c2c6d7;
+      margin-bottom: 0px;
+    }
+  }
 }
 .img_src_list {
   .src_item {
