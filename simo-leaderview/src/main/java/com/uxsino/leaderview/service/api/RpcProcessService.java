@@ -1045,7 +1045,7 @@ public class RpcProcessService {
 
     public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view) {
         Calendar ca = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM hh-mm-ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
         ca.setTime(new Date());
         Date endTime = ca.getTime();
         ca.add(Calendar.DATE, -1);
@@ -1053,7 +1053,7 @@ public class RpcProcessService {
 
         JsonModel jsonModel = null;
         if (PerormanceView.TopSql.equals(view)) {
-            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime), 10);
+            jsonModel = this.monitorService.topSQL(neId, format.format(startTime), format.format(endTime), 5);
         } else if (PerormanceView.TopEvent.equals(view)) {
             jsonModel = this.monitorService.topEvent(neId, format.format(startTime), format.format(endTime));
         } else if (PerormanceView.TopSession.equals(view)) {
