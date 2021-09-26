@@ -280,7 +280,7 @@ export default {
 
       function MessageControl () {
       // 默认停靠位置和偏移量
-        this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT
+        this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT
         this.defaultOffset = new window.BMap.Size(10, 10)
       }
 
