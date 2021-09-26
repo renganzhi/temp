@@ -484,9 +484,8 @@ export default {
         if (element.neId && element.neId !== '') {
           this.iputneIdArry.push(element)
         }
-      });
+      })
     })
-
   },
   methods: {
     ...mapActions([
@@ -964,53 +963,22 @@ export default {
     uploadJson() {
       var filesList = document.querySelector('#uploadJson').files
       var file = filesList[0]
-      var formdata = new FormData()
-      formdata.append('file', file)
-      formdata.append('name', this.selectedItem.countyCode)
-      var name = this.selectedItem.countyCode
-      this.selectedItem.countyCode = 'test'
-      this.axios.post('/leaderview/home/uploadJson', formdata).then((data) => {
-        var url = data.obj.url
-        this.axios.get('/' + url).then((data) => {
-          this.areaArr = this.initMapData(data)
-          this.selectedItem.countyCode = name
-          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
-            this.initLevelData()
-          }
-          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-            if (this.selfMapLevel && this.selectedItem.countyCode) {
-              this.clearAlertMap()
-            }
-          }
-        }).catch((err) => {
-          if (err) {
-            this.areaArr = []
-          }
-        })
-        document.getElementById('uploadJson').value = ''
-      })
-    },
-    openJsonClick() {
-      var upload = document.getElementById('uploadJson')
-      upload.click()
-    },
-    chgCounty(id) {
-      id = id || this.selectedItem.countyCode
-      if (id && this.selfMapLevel) {
-        this.axios.get('/leaderview/home/getJson', {
-          params: {
-            name: id
-          }
-        }).then((data) => {
-          let url = data.obj['文件路径']
-          this.axios.get('/' + url).then((data) => {
-            this.selectedItem.countyCode = id
+      if (file.name.includes(this.selectedItem.countyCode)) {
+        var formdata = new FormData()
+        formdata.append('file', file)
+        formdata.append('name', this.selectedItem.countyCode)
+        var name = this.selectedItem.countyCode
+        this.selectedItem.countyCode = 'test'
+        this.axios.post('/leaderview/home/uploadJson', formdata).then((data) => {
+          var url = data.obj.url
+          this.axios.get('/leaderview' + url).then((data) => {
             this.areaArr = this.initMapData(data)
+            this.selectedItem.countyCode = name
             if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
               this.initLevelData()
             }
             if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-              if (this.selfMapLevel && id) {
+              if (this.selfMapLevel && this.selectedItem.countyCode) {
                 this.clearAlertMap()
               }
             }
@@ -1019,6 +987,38 @@ export default {
               this.areaArr = []
             }
           })
+          document.getElementById('uploadJson').value = ''
+        })
+      } else {
+        Notification({
+          message: '请上传所选对应区县的数据!',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+      }
+    },
+    openJsonClick() {
+      var upload = document.getElementById('uploadJson')
+      upload.click()
+    },
+    chgCounty(id) {
+      id = id || this.selectedItem.countyCode
+      if (id && this.selfMapLevel) {
+        this.axios.get('/leaderview/staticlv/mapjson/' + id + '.json').then((data) => {
+          this.selectedItem.countyCode = id
+          this.areaArr = this.initMapData(data)
+          if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+            this.initLevelData()
+          }
+          if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+            if (this.selfMapLevel && id) {
+              this.clearAlertMap()
+            }
+          }
+        }).catch((err) => {
+          if (err) {
+            this.areaArr = []
+          }
         })
       }
     },
@@ -1040,7 +1040,7 @@ export default {
           {
             url: this.selectedItem.url,
             method: this.selectedItem.method,
-            params: JSON.parse(JSON.stringify(this.selectedItem.params)),
+            params: JSON.parse(JSON.stringify(this.selectedItem.params))
           }
         )
       } else {
@@ -1729,6 +1729,7 @@ export default {
         }
       }
       if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+        console.log(this.selectedItem)
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
@@ -1748,7 +1749,7 @@ export default {
               this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
               this.selectedPositn = _.map(this.alertMapData, 'name')
             })
-          } else {
+          } else if (this.selectedItem.mapLevel === 'city') {
             this.getMapData(this.selectedItem.provinceCode).then((data) => {
               this.cityArr = data
             })
@@ -1756,6 +1757,24 @@ export default {
               this.areaArr = data
               this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
               this.selectedPositn = _.map(this.alertMapData, 'name')
+            })
+          } else if (this.selectedItem.mapLevel === 'county') {
+            this.getMapData(this.selectedItem.provinceCode).then((data) => {
+              this.cityArr = data
+            })
+            this.getMapData(this.selectedItem.cityCode).then((data) => {
+              this.countyArr = data
+            })
+
+            this.axios.get('/leaderview/staticlv/mapjson/' + this.selectedItem.countyCode + '.json').then((data) => {
+              this.areaArr = this.initMapData(data)
+              this.alertMapData = _.cloneDeep(this.selectedItem.chartData)
+              this.selectedPositn = _.map(this.alertMapData, 'name')
+            }).catch((err) => {
+              if (err) {
+                this.areaArr = []
+                this.chartDataToMap()
+              }
             })
           }
         }
@@ -1795,29 +1814,22 @@ export default {
             this.getMapData(this.selectedItem.cityCode).then((data) => {
               this.countyArr = data
             })
-            this.axios.get('/leaderview/home/getJson', {
-              params: {
-                name: this.selectedItem.countyCode
+            this.axios.get('/leaderview/staticlv/mapjson/' + this.selectedItem.countyCode + '.json').then((data) => {
+              this.areaArr = this.initMapData(data)
+              if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
+                this.initLevelData()
               }
-            }).then((data) => {
-              let url = data.obj['文件路径']
-              this.axios.get('/' + url).then((data) => {
-                this.areaArr = this.initMapData(data)
-                if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
-                  this.initLevelData()
+              if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
+                if (this.selfMapLevel && this.selectedItem.countyCode) {
+                  this.clearAlertMap()
                 }
-                if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-                  if (this.selfMapLevel && id) {
-                    this.clearAlertMap()
-                  }
-                }
+              }
+              this.chartDataToMap()
+            }).catch((err) => {
+              if (err) {
+                this.areaArr = []
                 this.chartDataToMap()
-              }).catch((err) => {
-                if (err) {
-                  this.areaArr = []
-                  this.chartDataToMap()
-                }
-              })
+              }
             })
           }
         } else {
@@ -2854,7 +2866,7 @@ export default {
       const file = e.target.files[0]
       this.importModelForm.fileName = file.name
 
-      this.TDmodelFormData.set("file", file);
+      this.TDmodelFormData.set('file', file)
     },
     getModelFun() {
       this.axios.get('/leaderview/home/findAllModles').then((data) => {
@@ -2863,7 +2875,7 @@ export default {
     },
     sureUpload: function () {
       var _this = this
-      this.TDmodelFormData.set("name", this.importModelForm.name);
+      this.TDmodelFormData.set('name', this.importModelForm.name)
       this.axios.post('/leaderview/home/upload3dModel', this.TDmodelFormData).then((res) => {
         if (res.success) {
           Notification({
@@ -4581,10 +4593,10 @@ export default {
                 } else {
                   data.chartData = res.success ? res.obj : []
                 }
-              },
+              }
             })
           }
-        });
+        })
       }
     },
     chooseIndexs: function (newV) {
@@ -4884,6 +4896,9 @@ export default {
             customClass: 'toast toast-info'
           })
         } else {
+          this.getMapData(this.selectedItem.provinceCode).then((data) => {
+            this.cityArr = data
+          })
           this.getMapData(this.selectedItem.provinceCode).then((data) => {
             this.getMapData(data[0].value).then((dataCounty) => {
               _this.countyArr = dataCounty
