@@ -1,13 +1,14 @@
 <template>
   <ve-map
-          :width="comWidth"
-          :height="comHeight"
-          :settings="settings"
-          :data="dealChartData"
-          :extend="extend"
-          :id="'map_' + keyId"
-          :key="keyId"
-          :judge-width="true">
+    :width="comWidth"
+    :height="comHeight"
+    :settings="settings"
+    :data="dealChartData"
+    :extend="extend"
+    :id="'map_' + keyId"
+    :key="keyId"
+    :judge-width="true"
+  >
   </ve-map>
 </template>
 <script>
@@ -18,7 +19,7 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 export default {
   name: 'NewScatter',
-  components: {VeMap},
+  components: { VeMap },
   props: ['item'],
   data () {
     var code = 100000 // 中国
@@ -26,11 +27,18 @@ export default {
       code = this.item.provinceCode
     } else if (this.item.mapLevel === 'city') {
       code = this.item.cityCode
+    } else if (this.item.mapLevel === 'county') {
+      code = this.item.countyCode
     }
     // var code = 510000
+    var _jsonUrl = gbs.inDev ? '/api' : 'http://' + window.location.host
     var _static = gbs.inDev ? 'static' : 'leaderview/leaderviewWeb'
+    var linkUrl = './../../../../' + _static + '/libs/map/' + code + '.json'
+    if (this.item.mapLevel === 'county') {
+      linkUrl = _jsonUrl + '/leaderview/staticlv/mapjson/' + code + '.json'
+    }
     this.settings = {
-      positionJsonLink: './../../../../' + _static + '/libs/map/' + code + '.json', // 打包部署
+      positionJsonLink: linkUrl,
       position: code === 100000 ? 'china' : 'map_' + code // 设置为非china才不显示南海群岛
     }
     var colordirectionArry = [
@@ -95,7 +103,8 @@ export default {
         legend: {
           show: false
         },
-        geo: { // 地图配置
+        geo: {
+          // 地图配置
           silent: true, // 不响应和触发鼠标事件
           show: true,
           map: code === 100000 ? 'china' : 'map_' + code,
@@ -117,13 +126,16 @@ export default {
                 y: colordirectionArry[this.item.colordirection][1],
                 x2: colordirectionArry[this.item.colordirection][2],
                 y2: colordirectionArry[this.item.colordirection][3],
-                colorStops: [{
-                  offset: 0,
-                  color: this.item.normalcolor[0] // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: this.item.normalcolor[1] // 50% 处的颜色
-                }],
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: this.item.normalcolor[0] // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: this.item.normalcolor[1] // 50% 处的颜色
+                  }
+                ],
                 global: true // 缺省为 false
               },
               borderColor: this.item.borderColor,
@@ -144,7 +156,8 @@ export default {
           // data: [
           //   { name: '成都', value: [104.06, 30.67, 10] },
           // ],
-          rippleEffect: { // 涟漪特效
+          rippleEffect: {
+            // 涟漪特效
             period: 4, // 动画时间，值越小速度越快
             brushType: 'stroke', // 波纹绘制方式 stroke, fill
             scale: 6 // 波纹圆环最大限制，值越大波纹越大
@@ -208,13 +221,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'areaData',
-      'alertInfo'
-    ]),
+    ...mapGetters(['areaData', 'alertInfo']),
     geoCoordMap: function () {
       var geoData = {}
-      this.areaData.forEach((item) => {
+      this.areaData.forEach(item => {
         geoData[item.name] = item.geoCoord
       })
       return geoData
@@ -284,33 +294,68 @@ export default {
     'item.piecesData': function (newV) {
       this.extend.visualMap.pieces = this.formatPieces(newV)
       var len = newV.length
-      this.extend.visualMap.inRange.color = this.item.ctColors.slice(0, len).reverse()
+      this.extend.visualMap.inRange.color = this.item.ctColors
+        .slice(0, len)
+        .reverse()
     },
     'item.mapLevel': function (newV, oldV) {
-      this.$nextTick(() => {
+      setTimeout(() => {
         if (newV === 'city') {
           if (this.item.cityCode) {
-            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.cityCode + '.json'
+            this.settings.positionJsonLink =
+              './../../../../' +
+              this.mapStatic +
+              '/libs/map/' +
+              this.item.cityCode +
+              '.json'
             this.settings.position = 'map_' + this.item.cityCode
             this.extend.geo.map = 'map_' + this.item.cityCode
           }
         } else if (newV === 'province') {
           if (this.item.provinceCode) {
-            this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + this.item.provinceCode + '.json'
+            this.settings.positionJsonLink =
+              './../../../../' +
+              this.mapStatic +
+              '/libs/map/' +
+              this.item.provinceCode +
+              '.json'
             this.settings.position = 'map_' + this.item.provinceCode
             this.extend.geo.map = 'map_' + this.item.provinceCode
           }
+        } else if (newV === 'county') {
+          if (this.item.countyCode) {
+            this.axios
+              .get(
+                '/leaderview/staticlv/mapjson/' + this.item.countyCode + '.json'
+              )
+              .then(data => {
+                this.settings.mapOrigin = data
+                this.settings.positionJsonLink = null
+                this.settings.position = 'map_' + this.item.countyCode
+                this.extend.geo.map = 'map_' + this.item.countyCode
+              })
+              .catch(err => {
+                if (err) {
+                  this.settings.mapOrigin = null
+                  this.settings.positionJsonLink = null
+                  this.settings.position = 'map_' + this.item.countyCode
+                  this.extend.geo.map = 'map_' + this.item.countyCode
+                }
+              })
+          }
         } else {
-          this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/100000.json'
+          this.settings.positionJsonLink =
+            './../../../../' + this.mapStatic + '/libs/map/100000.json'
           this.settings.position = 'china'
           this.extend.geo.map = 'china'
         }
         this.keyId = new Date().getTime() + Math.random() * 10000
-      })
+      }, 100)
     },
     'item.provinceCode': function (newV) {
       if (this.item.mapLevel === 'province') {
-        this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
+        this.settings.positionJsonLink =
+          './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
@@ -318,10 +363,33 @@ export default {
     },
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
-        this.settings.positionJsonLink = './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
+        this.settings.positionJsonLink =
+          './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
         this.extend.geo.map = 'map_' + newV
         this.keyId = new Date().getTime() + Math.random() * 10000
+      }
+    },
+    'item.countyCode': function (newV, oldV) {
+      if (this.item.mapLevel === 'county') {
+        this.axios
+          .get('/leaderview/staticlv/mapjson/' + this.item.countyCode + '.json')
+          .then(data => {
+            this.settings.mapOrigin = data
+            this.settings.positionJsonLink = null
+            this.settings.position = 'map_' + newV
+            this.extend.geo.map = 'map_' + newV
+            this.keyId = new Date().getTime() + Math.random() * 10000
+          })
+          .catch(err => {
+            if (err) {
+              this.settings.mapOrigin = null
+              this.settings.positionJsonLink = null
+              this.settings.position = 'map_' + newV
+              this.extend.geo.map = 'map_' + newV
+              this.keyId = new Date().getTime() + Math.random() * 10000
+            }
+          })
       }
     },
     'item.ctName': function (newV, oldValue) {
@@ -331,13 +399,16 @@ export default {
       this.extend.geo.roam = newV
     },
     'item.normalcolor': function (newV, oldValue) {
-      this.extend.geo.itemStyle.normal.color.colorStops = [{
-        offset: 0,
-        color: this.item.normalcolor[0] // 0% 处的颜色
-      }, {
-        offset: 1,
-        color: this.item.normalcolor[1] // 50% 处的颜色
-      }]
+      this.extend.geo.itemStyle.normal.color.colorStops = [
+        {
+          offset: 0,
+          color: this.item.normalcolor[0] // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: this.item.normalcolor[1] // 50% 处的颜色
+        }
+      ]
     },
     'item.width': function (newV, oldValue) {
       var colordirectionArry = [
@@ -346,10 +417,14 @@ export default {
         [0, 0, 0, this.item.height],
         [this.item.width, 0, 0, this.item.height]
       ]
-      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
-      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
-      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
-      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+      this.extend.geo.itemStyle.normal.color.x =
+        colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y =
+        colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 =
+        colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 =
+        colordirectionArry[this.item.colordirection][3]
     },
     'item.height': function (newV, oldValue) {
       var colordirectionArry = [
@@ -358,10 +433,14 @@ export default {
         [0, 0, 0, this.item.height],
         [this.item.width, 0, 0, this.item.height]
       ]
-      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
-      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
-      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
-      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+      this.extend.geo.itemStyle.normal.color.x =
+        colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y =
+        colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 =
+        colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 =
+        colordirectionArry[this.item.colordirection][3]
     },
     'item.colordirection': function (newV) {
       var colordirectionArry = [
@@ -370,10 +449,14 @@ export default {
         [0, 0, 0, this.item.height],
         [this.item.width, 0, 0, this.item.height]
       ]
-      this.extend.geo.itemStyle.normal.color.x = colordirectionArry[this.item.colordirection][0]
-      this.extend.geo.itemStyle.normal.color.y = colordirectionArry[this.item.colordirection][1]
-      this.extend.geo.itemStyle.normal.color.x2 = colordirectionArry[this.item.colordirection][2]
-      this.extend.geo.itemStyle.normal.color.y2 = colordirectionArry[this.item.colordirection][3]
+      this.extend.geo.itemStyle.normal.color.x =
+        colordirectionArry[this.item.colordirection][0]
+      this.extend.geo.itemStyle.normal.color.y =
+        colordirectionArry[this.item.colordirection][1]
+      this.extend.geo.itemStyle.normal.color.x2 =
+        colordirectionArry[this.item.colordirection][2]
+      this.extend.geo.itemStyle.normal.color.y2 =
+        colordirectionArry[this.item.colordirection][3]
     },
     'item.ctColors': function (newV) {
       var len = this.extend.visualMap.pieces.length
@@ -389,9 +472,7 @@ export default {
       this.handlePieces()
     }
   },
-  beforeMount: function () {
-
-  },
+  beforeMount: function () {},
   mounted: function () {
     this.handlePieces()
     /*
@@ -426,14 +507,15 @@ export default {
       var piecesArr = []
       if (this.alertInfo && this.alertInfo.length > 0) {
         _.forEach(this.alertInfo, function (item) {
-          let obj = { 'value': item.level, color: item.color, label: item.name }
+          let obj = { value: item.level, color: item.color, label: item.name }
           piecesArr.push(obj)
         })
         this.extend.visualMap.pieces = piecesArr
       }
     },
     formatPieces (piecesData) {
-      piecesData[piecesData.length - 1].gte = piecesData[piecesData.length - 1].min
+      piecesData[piecesData.length - 1].gte =
+        piecesData[piecesData.length - 1].min
       return piecesData
     },
     formatData (newV) {
@@ -441,12 +523,14 @@ export default {
       if ($('#home-html').length) {
         // 大屏展示更新
         mapData = JSON.parse(JSON.stringify(this.item.scatterPoint))
-        mapData.forEach((item) => {
-          let id = _.findIndex(newV, function (o) { return o.name == item.name })
+        mapData.forEach(item => {
+          let id = _.findIndex(newV, function (o) {
+            return o.name == item.name
+          })
           item.value[2] = newV[id].value
         })
       } else {
-        newV.forEach((item) => {
+        newV.forEach(item => {
           let _value = []
           if (this.geoCoordMap[item.name]) {
             _value = this.geoCoordMap[item.name].concat(item.value)
@@ -472,8 +556,7 @@ export default {
       chart.dispose() // 销毁
     }
   },
-  destroyed: function () {
-  }
+  destroyed: function () {}
 }
 </script>
 <style>
