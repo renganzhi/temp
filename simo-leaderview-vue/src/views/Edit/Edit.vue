@@ -2006,9 +2006,9 @@
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
                 <div class="MyUrlArry" v-if="selectedItem.ctDataSource === 'system'">
-                    <div  class="advancedset" style="width: 250px;" v-for="(item,index) in selectedItem.moreUrlArry" :key="index">
-                      <span style="width: 160px;display: inline-block;overflow: hidden;">数据接口{{item.url}}  </span>
-                      <div class="deletOneUrl" @click="DeletOneUrl(index)" style="display: inline-block;padding-left: 15px;">
+                    <div  class="advancedset" id="colorWhiteUrl" style="width: 250px;" v-for="(item,index) in selectedItem.moreUrlArry" :key="index">
+                      <span style="width: 160px;display: inline-block;overflow: hidden;">{{item.name}}  </span>
+                      <div class="deletOneUrl" @click="DeletOneUrl(index)" style="position: absolute;display: inherit;padding-left: 15px">
                         删除
                       </div>
                     </div>
@@ -2275,7 +2275,7 @@
                 </div>
                 <div v-show="selectedItem.barType === 'NewHistogram' || selectedItem.chartType === 'NewTable'">
                   <div class="form-group cols2">
-                    <label>轮播间隔</label>
+                    <label>轮播间隔(s)</label>
                     <input type="number"
                             v-model="selectedItem.intervieData">
                   </div>
@@ -2556,6 +2556,12 @@ html[data-theme="blueWhite"] {
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
+}
+#colorWhiteUrl{
+  color: white;
+  .deletOneUrl{
+    color: #0088cc ;
+  }
 }
 .ringparent{
   display: flex;

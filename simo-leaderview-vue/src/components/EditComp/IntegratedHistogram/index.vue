@@ -89,7 +89,7 @@ export default {
           this.myInterVale = setInterval(() => {
             this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData1.length
             this.drawFlow()
-          }, this.item.intervieData);
+          }, this.item.intervieData * 1000);
           }
           return this.item.chartData1[this.nowShowIndex]
         }
@@ -126,7 +126,7 @@ export default {
       this.myInterVale = setInterval(() => {
         this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
         this.drawFlow()
-      }, this.item.intervieData);
+      }, this.item.intervieData *1000);
     },
     'item.barType': function () {
       this.drawFlow()

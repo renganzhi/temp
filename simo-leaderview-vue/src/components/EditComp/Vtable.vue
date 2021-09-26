@@ -110,6 +110,7 @@ export default {
     },
     widthArry: function () {
       let arr = this.item.LineSizeArry || []
+      if(this.item.chartData.columns){
       this.item.chartData.columns.forEach((element, i) => {
         if (arr[i]) {
 
@@ -117,6 +118,7 @@ export default {
           arr.push(86)
         }
       })
+      }
       return arr
     },
     theadTrStyle: function () {
@@ -270,6 +272,7 @@ export default {
     }
   },
   mounted: function () {
+    if(this.item.chartData.columns){
     this.item.chartData.columns.forEach((element, i) => {
       if (this.widthArry[i]) {
 
@@ -280,6 +283,7 @@ export default {
     this.item.LineSizeArry = this.widthArry
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
+    }
     }
     // 这里不用注释
     // if ($('#home-html').length > 0) {

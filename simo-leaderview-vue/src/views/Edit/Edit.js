@@ -1035,10 +1035,16 @@ export default {
     },
     AddNewUrl() {
       if (this.selectedItem.url !== '' && this.selectedItem.params !== {}) {
-        console.log(this.selectedItem.method)
+        let name = ''
+        this.syst.urlSel.forEach(element => {
+          if (element.url === this.selectedItem.url) {
+            name = element.name
+          }
+        });
         this.selectedItem.moreUrlArry.push(
           {
             url: this.selectedItem.url,
+            name: name,
             method: this.selectedItem.method,
             params: JSON.parse(JSON.stringify(this.selectedItem.params))
           }
