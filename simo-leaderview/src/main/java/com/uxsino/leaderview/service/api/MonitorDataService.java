@@ -1963,11 +1963,34 @@ public class MonitorDataService {
 
     private JSONObject getCompoundIndValueTopN(String indicators, List<NetworkEntity> nes, String number, JSONArray window,
             String order) {
+        List<RunStatus> runStatuses = Lists.newArrayList(RunStatus.Loading, RunStatus.Good, RunStatus.Warning);
+        nes = nes.stream().filter(ne -> runStatuses.contains(ne.getRunStatus())).collect(Collectors.toList());
+        nes = nes.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(nes)) {
+            return null;
+        }
+        String itObjectIds = String.join(",", nes.stream().map(NetworkEntity::getId).toArray(String[]::new));
+        List<String> availableIds = new ArrayList<>();
+        availableIds.add(itObjectIds);
+        JSONObject ipObj = new JSONObject();
+        JSONObject nameObj = new JSONObject();
+        for (NetworkEntity ne : nes) {
+            ipObj.put(ne.getId(), ne.getIp());
+            nameObj.put(ne.getId(), ne.getName());
+            availableIds.add(ne.getId());
+        }
+        if (availableIds.size() == 0) {
+            return null;
+        }
+
         CompoundIndicator compoundIndicator = CompoundIndicator.valueOf(indicators);
+        String compoundIndicatorName = compoundIndicator.getText();
         List<String> compoundInds = compoundIndicator.getIndicators();
         String field = compoundIndicator.getField();
+        String unit = null;
+        JSONObject json = new JSONObject();
+
         JSONArray compoundIndValues = new JSONArray();
-        JSONObject json = null;
         for (String compoundInd : compoundInds) {
             IndicatorTable ind = null;
             try {
@@ -1978,15 +2001,47 @@ public class MonitorDataService {
                 if (ObjectUtils.isEmpty(field) && validHasFields(ind)) {
                     return empObj();
                 }
-                json = getTopNByItObjects(ind, nes, number, field, window, order);
-                if (null != json && !json.isEmpty()) {
-                    JSONArray rows = json.getJSONArray("rows");
-                    compoundIndValues.addAll(rows);
+
+                JSONObject transfer = getTransferTopNByItObjects(ind, nes, number, field, window, order);
+                if(null == transfer || transfer.isEmpty()){
+                    continue;
+                }
+                unit = transfer.getString("unit");
+                JSONArray results = transfer.getJSONArray("result");
+
+                for (Object result1 : results) {
+                    JSONObject result = (JSONObject) result1;
+                    JSONObject row = new JSONObject();
+                    String neName = nameObj.getString(result.getString("id")) + "(" + ipObj.getString(result.getString("id")) + ")";
+                    if (result.containsKey("componentName") && StringUtils.isNotBlank(result.getString("componentName"))) {
+                        row.put("资源", neName + result.getString("componentName"));
+                    } else {
+                        row.put("资源", neName);
+                    }
+                    String num = result.getString("num");
+                    if (Strings.isNullOrEmpty(unit)) {
+                        row.put(compoundIndicatorName,num);
+                    } else {
+                        row.put(compoundIndicatorName + "(" + unit + ")", num);
+                    }
+                    row.put("num",num);//后台符合指标排序使用字段
+                    compoundIndValues.add(row);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        JSONArray columns = new JSONArray();
+        json.put("columns", columns);
+        columns.add("资源");
+        if (Strings.isNullOrEmpty(unit)) {
+            columns.add(compoundIndicatorName);
+        } else {
+            columns.add(compoundIndicatorName + "(" + unit + ")");
+        }
+
+        //复合指标排序
         if (!CollectionUtils.isEmpty(compoundIndValues)) {
             Comparator<Object> comparator = null;
             if ("desc".equals(order)) {
@@ -1998,22 +2053,159 @@ public class MonitorDataService {
             }
             compoundIndValues.sort(comparator);
             if (compoundIndValues.size() > Integer.valueOf(number)) {
-                List<Object> rows = compoundIndValues.subList(0, Integer.valueOf(number));
-                json.put("rows", rows);
+                List<Object> topCompoundIndValues = compoundIndValues.subList(0, Integer.valueOf(number));
+                json.put("rows", topCompoundIndValues);
             }else{
                 json.put("rows", compoundIndValues);
             }
-            JSONArray columns = json.getJSONArray("columns");
-            String indName = columns.getString(1);
-            columns.remove(indName);
-            String[] split = indName.split("\\(");
-            if (split.length > 1) {//替换成复合指标，（）里存单位
-                indName = compoundIndicator.getText() + "(" + split[1];
-                columns.add(indName);
-            }
-            json.put("columns",columns);
         }
         return json;
+    }
+
+    private JSONObject getTransferTopNByItObjects(IndicatorTable ind, List<NetworkEntity> neList, String topStr,
+            String field, JSONArray window, String order) {
+        com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
+        qo.setIndicatorName(Lists.newArrayList(ind.getName()));
+        List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
+        qo.setNeIds(neIds);
+        qo.setPagination(false);
+        qo.setFieldsNotNull(field);//过滤空值
+        List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
+        if (ObjectUtils.isEmpty(indValues)) {
+            return null;
+        }
+        // 如果是部件，则需要取属性值
+        JSONArray allValue = new JSONArray();
+        String unit = null;
+
+        FieldModel model = new FieldModel();
+        model.setIndicator(ind);
+        model.setField(field);
+        JSONObject fieldLabel = model.getFieldLabel();
+        unit = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("unit"))).orElse(unit);
+        if ("LIST".equals(ind.getIndicatorType())) {
+            if (StringUtils.isEmpty(field)) {
+                return null;
+            }
+            IndicatorValueUtils valueUtils = new IndicatorValueUtils();
+            JSONArray arr = new JSONArray();
+            for (int i = 0; i < window.size(); i++) {
+                JSONObject windowObj = window.getJSONObject(i);
+                JSONObject obj = new JSONObject();
+                obj.put("id", windowObj.getJSONObject("ne").getString("id"));
+                obj.put("component", windowObj.getJSONObject("ne").getString("component"));
+                arr.add(obj);
+            }
+            for (int i = 0; i < arr.size(); i++) {
+                JSONObject object = arr.getJSONObject(i);
+                String neId = object.getString("id");
+                String component = object.getString("component");
+                for (IndValue indValue : indValues) {
+                    if (indValue.getNeId().equals(neId)) {
+                        JSONObject obj = new JSONObject();
+                        JSONObject value = new JSONObject();
+                        // 对cup核心利用率指标做特殊化处理
+                        if ("cpu_usage_core".equals(ind.getName())) {
+                            value = getValueJSON(indValue.getIndicatorValue());
+                        } else {
+                            value = getValueJSON(indValue.getIndicatorValue(), component);
+                        }
+                        obj.put("num", value.getString(field));
+                        valueUtils.transferItem(fieldLabel, value);
+                        obj.put("id", neId);
+                        obj.put("value", value.getString(field));
+                        obj.put("unit", unit);
+
+                        NeComponentQuery compQuery = new NeComponentQuery();
+                        compQuery.setNeIds(Lists.newArrayList(neId));
+                        compQuery.setIndicatorName(ind.getName());
+                        List<Map<String, Object>> idAndComponent = null;
+                        try {
+                            idAndComponent = rpcProcessService.findNeComps(compQuery);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> compMap =
+                                idAndComponent.stream().filter(map -> map.get("identifier").equals(component))
+                                        .findFirst().orElse(Maps.newHashMap());
+                        // 对cup核心利用率指标做特殊化处理
+                        if ("cpu_usage_core".equals(ind.getName())) {
+                            obj.put("componentName", "cpu");
+                        } else {
+                            obj.put("componentName", compMap.get("componentName").toString());
+                        }
+                        allValue.add(obj);
+                    }
+                }
+
+            }
+        } else if ("COMPOUND".equals(ind.getIndicatorType())) {
+            if (StringUtils.isEmpty(field)) {
+                return null;
+            }
+            IndicatorValueUtils valueUtils = new IndicatorValueUtils();
+            for (IndValue value : indValues) {
+                JSONObject obj = new JSONObject();
+                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
+                obj.put("num", valueJson.getString(field));
+                valueUtils.transferItem(fieldLabel, valueJson);
+                obj.put("id", value.getNeId());
+                obj.put("value", valueJson.getString(field));
+                obj.put("unit", unit);
+                allValue.add(obj);
+            }
+        } else {
+            // 如果不是部件，直接取值
+            if ("PERCENT".equals(ind.getIndicatorType())) {
+                unit = "%";
+            }
+            for (IndValue value : indValues) {
+                JSONObject obj = new JSONObject();
+                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
+                obj.put("num", valueJson.getString(value.getIndicatorName()));
+                obj.put("id", value.getNeId());
+                obj.put("value", valueJson.getString(value.getIndicatorName()) + unit);
+                obj.put("unit", unit);
+                allValue.add(obj);
+            }
+        }
+
+        // 默认为-1，表明查询个数不限
+        Integer topNumber = -1;
+        if (StringUtils.isNoneBlank(topStr)) {
+            try {
+                // String类型转换成Integer的转换异常处理
+                topNumber = Integer.valueOf(topStr);
+            } catch (Exception e) {
+                log.error("字符串:{}无法转换成Integer类型,错误:", topStr, e);
+                return null;
+            }
+        }
+
+        JSONArray results = new JSONArray();
+        // 降序或升序排列(取决于order)取topNumber个
+        for (int fI = 0; fI < allValue.size(); fI++) {
+            int i = fI;
+            JSONObject temp = new JSONObject();
+            JSONObject jsonAvg = (JSONObject) allValue.get(i);
+            for (int secondI = allValue.size() - 1; secondI > fI; secondI--) {
+                JSONObject jsonAvgs = (JSONObject) allValue.get(secondI);
+                if ((JSONUtils.getDoubleValue(jsonAvgs, "num") > JSONUtils.getDoubleValue(jsonAvg, "num")
+                        && "desc".equals(order))
+                        || (JSONUtils.getDoubleValue(jsonAvgs, "num") < JSONUtils.getDoubleValue(jsonAvg, "num")
+                        && "asc".equals(order))) {
+                    i = secondI;
+                    jsonAvg = (JSONObject) allValue.get(i);
+                }
+            }
+            results.add(allValue.get(i));
+            allValue.remove(i);
+            allValue.add(0, temp);
+            if (results.size() == topNumber) {
+                break;
+            }
+        }
+        return MonitorUtils.unitTransfer(results, unit, "num");
     }
 
     public JsonModel getTopNByItObjectsTopNHost(String indicators, Long domainId, String neIds,
@@ -2121,13 +2313,46 @@ public class MonitorDataService {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public JSONObject getTopNByItObjects(IndicatorTable ind, List<NetworkEntity> neList, String topStr, String field,
-                                         JSONArray window, String order) throws Exception {
+            JSONArray window, String order) throws Exception {
         List<RunStatus> runStatuses = Lists.newArrayList(RunStatus.Loading, RunStatus.Good, RunStatus.Warning);
         neList = neList.stream().filter(ne -> runStatuses.contains(ne.getRunStatus())).collect(Collectors.toList());
         neList = neList.stream().filter(ne -> !ne.getManageStatus().equals(ManageStatus.Delected)).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(neList)) {
             return null;
         }
+
+        JSONObject transfer = getTransferTopNByItObjects(ind,neList,topStr,field,window,order);
+        if(null == transfer || transfer.isEmpty()){
+            return null;
+        }
+        JSONArray results = transfer.getJSONArray("result");
+
+        String name = "指标值";
+        try {
+            if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
+                for (int i = 0; i < ind.getFields().size(); i++) {
+                    JSONObject obj = ind.getFields().getJSONObject(i);
+                    if (field.equals(obj.getString("name"))) {
+                        name = obj.getString("label");
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String unit = transfer.getString("unit");
+
+        JSONObject json = new JSONObject();
+        JSONArray columns = new JSONArray();
+        json.put("columns", columns);
+        columns.add("资源");
+        if (Strings.isNullOrEmpty(unit)) {
+            columns.add(name);
+        } else {
+            columns.add(name + "(" + unit + ")");
+        }
+
         String itObjectIds = String.join(",", neList.stream().map(NetworkEntity::getId).toArray(String[]::new));
         List<String> availableIds = new ArrayList<>();
         availableIds.add(itObjectIds);
@@ -2142,179 +2367,13 @@ public class MonitorDataService {
             return null;
         }
 
-        // 默认为-1，表明查询个数不限
-        Integer topNumber = -1;
-        if (StringUtils.isNoneBlank(topStr)) {
-            try {
-                // String类型转换成Integer的转换异常处理
-                topNumber = Integer.valueOf(topStr);
-            } catch (Exception e) {
-                log.error("字符串:{}无法转换成Integer类型,错误:", topStr, e);
-                return null;
-            }
-        }
-        com.uxsino.commons.db.criteria.IndicatorValueCriteria qo = new com.uxsino.commons.db.criteria.IndicatorValueCriteria();
-        qo.setIndicatorName(Lists.newArrayList(ind.getName()));
-        List<String> neIds = neList.stream().map(NetworkEntity::getId).collect(Collectors.toList());
-        qo.setNeIds(neIds);
-        qo.setPagination(false);
-        qo.setFieldsNotNull(field);//过滤空值
-        List<IndValue> indValues = rpcProcessService.getCurIndValues(qo);
-        if (ObjectUtils.isEmpty(indValues)) {
-            return null;
-        }
-        // 如果是部件，则需要取属性值
-        JSONArray allValue = new JSONArray();
-        String unit = null;
-        boolean multipleComp = false;
-
-        FieldModel model = new FieldModel();
-        model.setIndicator(ind);
-        model.setField(field);
-        JSONObject fieldLabel = model.getFieldLabel();
-        unit = Optional.ofNullable(fieldLabel).flatMap(o -> Optional.ofNullable(o.getString("unit"))).orElse(unit);
-        if ("LIST".equals(ind.getIndicatorType())) {
-            if (StringUtils.isEmpty(field)) {
-                return null;
-            }
-            IndicatorValueUtils valueUtils = new IndicatorValueUtils();
-            JSONArray arr = new JSONArray();
-            for (int i = 0; i < window.size(); i++) {
-                JSONObject windowObj = window.getJSONObject(i);
-                JSONObject obj = new JSONObject();
-                obj.put("id", windowObj.getJSONObject("ne").getString("id"));
-                obj.put("component", windowObj.getJSONObject("ne").getString("component"));
-                arr.add(obj);
-            }
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject object = arr.getJSONObject(i);
-                String neId = object.getString("id");
-                String component = object.getString("component");
-                for (IndValue indValue : indValues) {
-                    if (indValue.getNeId().equals(neId)) {
-                        JSONObject obj = new JSONObject();
-                        JSONObject value = new JSONObject();
-                        // 对cup核心利用率指标做特殊化处理
-                        if ("cpu_usage_core".equals(ind.getName())) {
-                            value = getValueJSON(indValue.getIndicatorValue());
-                        } else {
-                            value = getValueJSON(indValue.getIndicatorValue(), component);
-                        }
-                        obj.put("num", value.getString(field));
-                        valueUtils.transferItem(fieldLabel, value);
-                        obj.put("id", neId);
-                        obj.put("value", value.getString(field));
-                        obj.put("unit", unit);
-
-                        NeComponentQuery compQuery = new NeComponentQuery();
-                        compQuery.setNeIds(Lists.newArrayList(neId));
-                        compQuery.setIndicatorName(ind.getName());
-                        List<Map<String, Object>> idAndComponent = rpcProcessService.findNeComps(compQuery);
-                        Map<String, Object> compMap =
-                                idAndComponent.stream().filter(map -> map.get("identifier").equals(component))
-                                        .findFirst().orElse(Maps.newHashMap());
-                        // 对cup核心利用率指标做特殊化处理
-                        if ("cpu_usage_core".equals(ind.getName())) {
-                            obj.put("componentName", "cpu");
-                        } else {
-                            obj.put("componentName", compMap.get("componentName").toString());
-                        }
-                        allValue.add(obj);
-                    }
-                }
-
-            }
-        } else if ("COMPOUND".equals(ind.getIndicatorType())) {
-            if (StringUtils.isEmpty(field)) {
-                return null;
-            }
-            IndicatorValueUtils valueUtils = new IndicatorValueUtils();
-            for (IndValue value : indValues) {
-                JSONObject obj = new JSONObject();
-                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
-                obj.put("num", valueJson.getString(field));
-                valueUtils.transferItem(fieldLabel, valueJson);
-                obj.put("id", value.getNeId());
-                obj.put("value", valueJson.getString(field));
-                obj.put("unit", unit);
-                allValue.add(obj);
-            }
-        } else {
-            // 如果不是部件，直接取值
-            if ("PERCENT".equals(ind.getIndicatorType())) {
-                unit = "%";
-            }
-            for (IndValue value : indValues) {
-                JSONObject obj = new JSONObject();
-                JSONObject valueJson = getValueJSON(value.getIndicatorValue());
-                obj.put("num", valueJson.getString(value.getIndicatorName()));
-                obj.put("id", value.getNeId());
-                obj.put("value", valueJson.getString(value.getIndicatorName()) + unit);
-                obj.put("unit", unit);
-                allValue.add(obj);
-            }
-        }
-        JSONArray results = new JSONArray();
-        // 降序或升序排列(取决于order)取topNumber个
-        for (int fI = 0; fI < allValue.size(); fI++) {
-            int i = fI;
-            JSONObject temp = new JSONObject();
-            JSONObject jsonAvg = (JSONObject) allValue.get(i);
-            for (int secondI = allValue.size() - 1; secondI > fI; secondI--) {
-                JSONObject jsonAvgs = (JSONObject) allValue.get(secondI);
-                if ((JSONUtils.getDoubleValue(jsonAvgs, "num") > JSONUtils.getDoubleValue(jsonAvg, "num")
-                        && "desc".equals(order))
-                        || (JSONUtils.getDoubleValue(jsonAvgs, "num") < JSONUtils.getDoubleValue(jsonAvg, "num")
-                        && "asc".equals(order))) {
-                    i = secondI;
-                    jsonAvg = (JSONObject) allValue.get(i);
-                }
-            }
-            results.add(allValue.get(i));
-            allValue.remove(i);
-            allValue.add(0, temp);
-            if (results.size() == topNumber) {
-                break;
-            }
-        }
-        String name = "指标值";
-        try {
-            if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
-                if(ObjectUtils.isEmpty(field) && ObjectUtils.isEmpty(ind.getFields())){
-                    name = ind.getLabel();
-                }else {
-                    for (int i = 0; i < ind.getFields().size(); i++) {
-                        JSONObject obj = ind.getFields().getJSONObject(i);
-                        if (field.equals(obj.getString("name"))) {
-                            name = obj.getString("label");
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JSONObject transfer = MonitorUtils.unitTransfer(results, unit, "num");
-        unit = transfer.getString("unit");
-        results = transfer.getJSONArray("result");
-
-        JSONObject json = new JSONObject();
-        JSONArray columns = new JSONArray();
-        json.put("columns", columns);
-        columns.add("资源");
-        if (Strings.isNullOrEmpty(unit)) {
-            columns.add(name);
-        } else {
-            columns.add(name + "(" + unit + ")");
-        }
         JSONArray rows = new JSONArray();
         json.put("rows", rows);
         for (Object result1 : results) {
             JSONObject result = (JSONObject) result1;
             JSONObject row = new JSONObject();
             String neName = nameObj.getString(result.getString("id")) + "(" + ipObj.getString(result.getString("id")) + ")";
-            if (multipleComp) {
+            if (result.containsKey("componentName") && StringUtils.isNotBlank(result.getString("componentName"))) {
                 row.put("资源", neName + result.getString("componentName"));
             } else {
                 row.put("资源", neName);
