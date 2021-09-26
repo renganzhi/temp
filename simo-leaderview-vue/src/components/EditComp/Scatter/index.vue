@@ -67,10 +67,10 @@ export default {
             shadowOffsetX: 10,
             color: this.item.ifGradual === 'false' ? this.item.ScatterColor[index] : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
               offset: 0,
-              color: this.item.DScatterColor[index][0]
+              color: this.item.DScatterColor[index] ? this.item.DScatterColor[index][0] : '#6fcaf7'
             }, {
               offset: 1,
-              color: this.item.DScatterColor[index][1]
+              color: this.item.DScatterColor[index] ? this.item.DScatterColor[index][1] : '#0c79c5'
             }])
           }
         })
