@@ -1186,18 +1186,6 @@ export default {
           pageData = JSON.parse(res.obj.templateConf)
           this.windowtemplateData = pageData
         }
-        if (res.obj.templateType === 'single') {
-          this.CanChangeServes = true
-          // this.paintObj.templateConf.baseneclss  neclass
-          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
-            this.resourcesValueIds = res.obj || []
-            if (res.obj[0]) {
-              this.resourcesIds = res.obj[0].value
-            }
-          })
-        } else {
-          this.CanChangeServes = false
-        }
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
@@ -1229,7 +1217,76 @@ export default {
         } else {
           this.chartNum = []
         }
+        if (res.obj.isDynamicTemplate || true) {
+          if (res.obj.templateType === 'single') {
+            this.CanChangeServes = true
+            // this.paintObj.templateConf.baseneclss  neclass
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
+              this.resourcesValueIds = res.obj || []
+            })
+          } else {
+            this.resourceFirstIds()
+          }
+        } else {
+          this.CanChangeServes = false
+        }
         // this.saveHistory()
+      })
+    },
+    resourceFirstIds: function () {
+      this.chartNum.forEach(data => {
+        if (data.chartType === 'ELine') {
+          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass}&neClass=${data.params.neClass}`).then(res => {
+            if (res.obj[0].value) {
+              this.sendNewAjax(data, res.obj[0].value)
+            }
+          })
+        }
+      })
+    },
+    sendNewAjax(data, newV) {
+      data.params.neIds = newV
+      if (data.params.windows) {
+        let newData = JSON.parse(data.params.windows)[0]
+        let mydata = newData.ne[0]
+        mydata.id = newV
+        newData.ne = [mydata]
+        data.params.windows = JSON.stringify([newData])
+      }
+      $.each(data.params, function (i, d) {
+        data.params[i] = $.isArray(d) ? d.join(',') : d
+      })
+      $.ajax({
+        url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+        data: data.params,
+        type: data.method || 'get',
+        cache: false,
+        ascyn: false,
+        success: function (res) {
+          console.log(data)
+          if (data.barType === 'NewHistogram') {
+            data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+          }
+          if (data.barType === 'NewGroupHistogram') {
+            data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+          }
+          if (data.barType === 'NewGroupLeftHistogram') {
+            data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+          }
+          if (data.barType === 'NewBar') {
+            data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+          }
+          if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+            if (res.obj) {
+              data.ctName = res.obj.info
+            }
+            if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+              data.chartData = res.obj
+            }
+          } else {
+            data.chartData = res.success ? res.obj : []
+          }
+        },
       })
     },
     formatVersion() {

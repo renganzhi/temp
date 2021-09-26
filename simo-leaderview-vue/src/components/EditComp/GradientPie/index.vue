@@ -48,7 +48,7 @@ export default {
   methods: {
     drawPre () {
       this.mychart1 = echarts.init(this.$refs.Gradient1)
-      let array = this.item.chartData.rows
+      let array = this.item.chartData.rows || []
       let allData = 0
       array.forEach((element) => {
         allData = allData + element.value * 1 
@@ -130,7 +130,7 @@ export default {
           textStyle: {
             color: this.item.NotesColor,
             fontSize: this.item.NotesSize,
-            lineHeight: parseInt(this.item.NotesSpacing)
+            lineHeight: parseInt(this.item.NotesSpacing || 30)
           },
           left: this.item.NotesToLeft,
           top: this.item.NotesToTop

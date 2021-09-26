@@ -289,7 +289,7 @@ export default {
             symbol: 'none',
             data: this.calculateMA(5, data),
             smooth: true,
-            color: this.item.LinerColor[0] || '',
+            color: this.item.LinerColor ? this.item.LinerColor[0] || '' : '',
             lineStyle: {
               opacity: 0.5
             }
@@ -300,7 +300,7 @@ export default {
             symbol: 'none',
             data: this.calculateMA(10, data),
             smooth: true,
-            color: this.item.LinerColor[1] || '',
+            color: this.item.LinerColor ? this.item.LinerColor[1] || '' : '',
             lineStyle: {
               opacity: 0.5
             }
@@ -311,7 +311,7 @@ export default {
             data: this.calculateMA(20, data),
             smooth: true,
             symbol: 'none',
-            color: this.item.LinerColor[2] || '',
+            color: this.item.LinerColor ?this.item.LinerColor[2] || '':'',
             lineStyle: {
               opacity: 0.5
             }
@@ -322,7 +322,7 @@ export default {
             data: this.calculateMA(30, data),
             smooth: true,
             symbol: 'none',
-            color: this.item.LinerColor[3] || '',
+            color: this.item.LinerColor ?this.item.LinerColor[3] || '':'',
             lineStyle: {
               opacity: 0.5
             }

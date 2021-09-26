@@ -301,7 +301,7 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    if(this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
+    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
       this.myNewInterVal = setInterval(() => {
         this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
         this.getNewChartData()

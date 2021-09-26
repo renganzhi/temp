@@ -219,10 +219,10 @@ export default {
           normal: {
             color: {
               type: 'linear',
-              x: _this.colordirectionArry[_this.item.colordirection][0],
-              y: _this.colordirectionArry[_this.item.colordirection][1],
-              x2: _this.colordirectionArry[_this.item.colordirection][2],
-              y2: _this.colordirectionArry[_this.item.colordirection][3],
+              x: _this.colordirectionArry[_this.item.colordirection] ? _this.colordirectionArry[_this.item.colordirection][0] : '0',
+              y: _this.colordirectionArry[_this.item.colordirection] ? _this.colordirectionArry[_this.item.colordirection][1] : '10',
+              x2: _this.colordirectionArry[_this.item.colordirection] ? _this.colordirectionArry[_this.item.colordirection][2] : '0',
+              y2: _this.colordirectionArry[_this.item.colordirection] ? _this.colordirectionArry[_this.item.colordirection][3] : '10',
               colorStops: [{
                 offset: 0,
                 color: _this.item.normalcolor[0] // 0% 处的颜色
