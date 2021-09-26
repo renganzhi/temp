@@ -190,7 +190,7 @@ export default {
         },
         xAxis: {
           type: 'value',
-          name: this.item.chartData.unit,
+          name: this.item.chartData.unit || '',
           nameTextStyle: {
             color: this.item.DanweiColor || '#828bac',
             fontSize: this.item.DanweiSize || 16
