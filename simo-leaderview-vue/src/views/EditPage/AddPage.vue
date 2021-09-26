@@ -210,7 +210,7 @@ export default {
         let items1 = []
         let items2 = []
         res.obj.forEach(element => {
-          if(element.templateType && element.templateType === 'single'){
+          if(element.isDynamicTemplate){
             items2.push(element)
           }else{
             items1.push(element)

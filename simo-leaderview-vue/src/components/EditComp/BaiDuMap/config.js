@@ -3,12 +3,12 @@ export default {
     'text': '在线地图',
     'imgClass': 'icon-dituonline',
     'chartType': 'BaiDuMap',
-    'width': 300,
+    'width': 600,
     'height': 300,
     'showPOI': 'on',
     'pointArray': [], // 点标记数组
     'textArray': [], // 文本标注数组
-    'mapType': '卫星',
+    'mapType': '2D',
     'markerType': 'http://api.map.baidu.com/images/marker_red_sprite.png', // 点标记图标类型
     'selectMark': {
       'lng': 0,
