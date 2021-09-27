@@ -96,6 +96,8 @@ export default {
       page1Data: [],
       page2Data: [],
       intervalId: 0,
+      nowShowIndex: -1,
+      myNewInterVal:'',
       nowPage: 0,
       tableEmpty: false
     }
@@ -262,11 +264,29 @@ export default {
     //     }, this.intervalTime)
     //   }
     // },
+    getNewChartData(){
+      var _this = this
+      if(_this.item.moreUrlArry[_this.nowShowIndex]){
+        let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
+        $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
+          _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
+        })
+        $.ajax({
+          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
+          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+          cache: false,
+          ascyn: false,
+          success: function (res) {
+            _this.item.chartData = res.obj
+          }
+        })
+      }
+    },
     warnStyle (ArryName, index) {
       if (this.item.AlarmField) {
         if (this.item.AlarmType === 'chart') {
           if (this.item.AlarmChart !== '' && JSON.stringify(this[ArryName][index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
-            console.log(11)
             return {
               'color': this.item.AlarmColor + ' !important'
             }
@@ -358,7 +378,11 @@ export default {
           totalPage--
         }
         if (!this.moving || this.moving === 'false') return
-        this.intervalId = setTimeout(function tableFn () {
+        if (this.intervalId) {
+          clearInterval(this.intervalId)
+          this.intervalId = null
+        }
+        this.intervalId = setInterval(()=> {
           _this.tableMove = !_this.tableMove
           if (_this.tableMove) {
             _this.nowPage++
@@ -385,8 +409,8 @@ export default {
           //   }
           // })
           // 这里不用注释
-          clearTimeout(_this.intervalId)
-          _this.intervalId = setTimeout(tableFn, _this.intervalTime)
+          // clearTimeout(_this.intervalId)
+          // _this.intervalId = setTimeout(tableFn, _this.intervalTime)
         }, _this.intervalTime)
       }
       }
@@ -445,14 +469,26 @@ export default {
     if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
+    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
+      if (this.myNewInterVal){
+        clearInterval(this.myNewInterVal)
+      }
+      this.myNewInterVal = setInterval(() => {
+        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+        this.getNewChartData()
+      }, this.item.intervieData *1000);
+    }
   },
   beforeDestroy: function () {
     if (this.intervalId) {
-      clearTimeout(this.intervalId)
+      clearInterval(this.intervalId)
       this.intervalId = null
     }
     if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
+    }
+    if (this.myNewInterVal){
+      clearInterval(this.myNewInterVal)
     }
     this.page1Data = null
     this.page2Data = null
