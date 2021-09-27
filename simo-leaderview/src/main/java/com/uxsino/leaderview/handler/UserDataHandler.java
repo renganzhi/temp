@@ -2,6 +2,7 @@ package com.uxsino.leaderview.handler;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.uxsino.commons.utils.StringUtils;
 import com.uxsino.leaderview.dao.IHomePageUserConfDao;
 import com.uxsino.leaderview.entity.HomePage;
 import com.uxsino.leaderview.entity.HomePageUserConf;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,7 @@ public class UserDataHandler {
     private IHomePageUserConfDao homePageUserConfDao;
 
     // 用户信息变更
+    @Transactional
     public void handle(JSONObject user) {
         JSONObject users = user.getJSONObject("users");
         JSONObject userRoles = user.getJSONObject("userRoles");
@@ -58,6 +61,28 @@ public class UserDataHandler {
         }
         List<HomePage> homePages = pageService.findByUserIds(new ArrayList<>(userIds));
         for (HomePage page : homePages) {
+            String shareConfStr = page.getShareConf();
+            JSONObject shareConf;
+            JSONArray roles,uids;
+            if(!StringUtils.isEmpty(shareConfStr)){
+                shareConf = JSONObject.parseObject(shareConfStr);
+                roles = shareConf.getJSONArray("roles");
+                uids = shareConf.getJSONArray("uids");
+            }else {
+                shareConf = new JSONObject();
+                roles = new JSONArray();
+                uids = new JSONArray();
+            }
+            uids.add(id);
+            shareConf.put("uids",uids);
+            roleIds.forEach(roleId ->{
+                if(!roles.contains(roleId)){
+                    roles.add(roleId);
+                }
+            });
+            shareConf.put("roles",roles);
+            page.setShareConf(shareConf.toJSONString());
+            pageService.update(page);
             HomePageUserConf pageUserConf = new HomePageUserConf();
             pageUserConf.setUserId(id);
             pageUserConf.setPageId(page.getId());
