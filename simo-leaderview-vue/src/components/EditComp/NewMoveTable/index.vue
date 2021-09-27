@@ -278,7 +278,6 @@ export default {
           cache: false,
           ascyn: false,
           success: function (res) {
-            console.log('接口切换！！！！！！！')
             _this.item.chartData = res.obj
           }
         })
@@ -288,7 +287,6 @@ export default {
       if (this.item.AlarmField) {
         if (this.item.AlarmType === 'chart') {
           if (this.item.AlarmChart !== '' && JSON.stringify(this[ArryName][index][this.item.AlarmField]).indexOf(this.item.AlarmChart) >= 0) {
-            console.log(11)
             return {
               'color': this.item.AlarmColor + ' !important'
             }
@@ -395,7 +393,6 @@ export default {
               _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
             }
             _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
-            console.log('数据轮播！！！！！！！')
           }
           // 这里不用注释
           // if ($(_this.$el).find('[title]').length > 0) {
