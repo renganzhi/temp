@@ -47,13 +47,24 @@ public class AuthorityService {
                         homePage.setHandoverId(handoverId);
                         homePageDao.update(homePage.getId(), homePage);
                     }
+                    boolean isUpdate = false;
                     for (HomePageUserConf conf : confList) {
-                        homePageUserConfDao.rightPageIndex(count, homePageUserConfDao.countByUserId(handoverId), handoverId);
+                        HomePageUserConf oldConf = homePageUserConfDao.findByUserIdAndPageId(handoverId, conf.getPageId());
+                        if(oldConf != null){
+                            conf = oldConf;
+                            isUpdate = true;
+                        }else {
+                            homePageUserConfDao.rightPageIndex(count, homePageUserConfDao.countByUserId(handoverId), handoverId);
+                            conf.setPageIndex(count);
+                        }
                         conf.setVisible(false);
                         conf.setShared(false);
                         conf.setUserId(handoverId);
-                        conf.setPageIndex(count);
-                        homePageUserConfDao.save(conf);
+                        if(isUpdate){
+                            homePageUserConfDao.update(conf.getId(),conf);
+                        }else {
+                            homePageUserConfDao.save(conf);
+                        }
                         count++;
                     }
                 }
