@@ -2005,7 +2005,7 @@
                        v-if="refreshData"
                        contenteditable="true">{{selectedItem.ctName}}</div>
                 </div>
-                <div class="MyUrlArry" v-if="selectedItem.ctDataSource === 'system'">
+                <div class="MyUrlArry" v-if="selectedItem.ctDataSource === 'system' && selectedItem.moreUrlArry">
                     <div  class="advancedset" id="colorWhiteUrl" style="width: 250px;" v-for="(item,index) in selectedItem.moreUrlArry" :key="index">
                       <span style="width: 160px;display: inline-block;overflow: hidden;">{{item.name}}  </span>
                       <div class="deletOneUrl" @click="DeletOneUrl(index)" style="position: absolute;display: inherit;padding-left: 15px">
@@ -2015,7 +2015,7 @@
                 </div>
                 <div class="form-group cols2"
                      style="width: 120px;"
-                     v-if="(selectedItem.chartType==='NewTable' || selectedItem.chartType==='IntegratedHistogram') && selectedItem.ctDataSource === 'system'">
+                     v-if="(selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable' || selectedItem.chartType==='IntegratedHistogram') && selectedItem.ctDataSource === 'system'">
                   <label class="advancedset" style="width: 120px;" @click="AddNewUrl">新增数据接口</label>
                 </div>
                 <div class="form-group cols2"
@@ -2273,9 +2273,9 @@
                        @click="delAlertLevel(index)"></i>
                   </div>
                 </div>
-                <div v-show="selectedItem.barType === 'NewHistogram' || selectedItem.chartType === 'NewTable'">
+                <div v-show="selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable' || selectedItem.chartType==='IntegratedHistogram'">
                   <div class="form-group cols2">
-                    <label>轮播间隔(s)</label>
+                    <label>接口间隔(s)</label>
                     <input type="number"
                             v-model="selectedItem.intervieData">
                   </div>
