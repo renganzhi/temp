@@ -361,7 +361,7 @@ public class MonitorDataService {
             row.put("IP地址", ne.getIp());
             row.put("资源类型", ne.getNeClass());
             row.put("运行状态", Optional.ofNullable(ne.getRunStatus()).map(RunStatus::getName).orElse(""));
-            row.put("更新时间", ne.getPatrolTime());
+            row.put("更新时间", sdf.format(ne.getPatrolTime()));
             row.put("健康度", ne.getHealth());
             if (!ObjectUtils.isEmpty(hostColumn)) {
                 NetworkEntity hardWare = map.get(ne.getHostId());
@@ -981,7 +981,7 @@ public class MonitorDataService {
                     if (ObjectUtils.isEmpty(value.getString(f))) {
                         row.put(fieldLabelMap.get(f), "--");
                     } else
-                        row.put(fieldLabelMap.get(f), value.getString(f));
+                        row.put(fieldLabelMap.get(f), getChineseValue(value.getString(f)));
                 });
                 rows.add(row);
             }
@@ -991,6 +991,20 @@ public class MonitorDataService {
         result.put("rows", rows);
         result.put("columns", columns);
         return new JsonModel(true, result);
+    }
+
+    /**
+     * 目前只处理了布尔值
+     * @param value 需要进行转换的值
+     * @return 转换后前端显示的结果
+     */
+    public String getChineseValue(String value){
+        if("t".equalsIgnoreCase(value)||"true".equalsIgnoreCase(value)){
+            value = "是";
+        }else if("f".equalsIgnoreCase(value)||"false".equalsIgnoreCase(value)){
+            value = "否";
+        }
+        return value;
     }
 
 //    private JSONObject getValueJSON(JSON indicatorValues) {

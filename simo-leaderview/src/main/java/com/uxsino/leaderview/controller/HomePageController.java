@@ -21,12 +21,11 @@ import com.uxsino.leaderview.rpc.MCService;
 import com.uxsino.leaderview.service.*;
 import com.uxsino.leaderview.service.api.ImageService;
 import com.uxsino.leaderview.utils.ImageUtils;
+import com.uxsino.leaderview.utils.TdsrResourceUtil;
 import com.uxsino.leaderview.utils.ZipUtils;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,7 +59,7 @@ public class HomePageController {
 
     private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
 
-    private final int MAX_PAGE_INDEX = 20;
+    private final int MAX_PAGE_INDEX = 1000;
 
     private final int MIN_PAGE_INDEX = 1;
 
@@ -188,7 +187,7 @@ public class HomePageController {
         long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
         int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
         if (maxIndex >= MAX_PAGE_INDEX) {
-            return new JsonModel(false, "当前页面已达到最大数[20]");
+            return new JsonModel(false, "当前页面已达到最大数[1000]");
         }
         List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
         for (HomePage homePage : allHomePages) {
@@ -301,7 +300,7 @@ public class HomePageController {
         }
         int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
         if (maxIndex >= MAX_PAGE_INDEX) {
-            return new JsonModel(false, "当前页面已达到最大数[20]");
+            return new JsonModel(false, "当前页面已达到最大数[1000]");
         }
         HomePage targetPage = new HomePage();
         String targetName = sourcePage.getName() + "_副本";
@@ -1218,25 +1217,31 @@ public class HomePageController {
                                 @RequestParam(required = false) String name
                                 ) {
         String fileName = file.getOriginalFilename();
-        String extension = fileName.substring(fileName.indexOf(".") + 1);
-        //存放文件的目录
-        File filePath = new File(jsonPath + "/mapJson");
-        File fileDir = new File(filePath.getAbsoluteFile() + File.separator);
-        fileDir.mkdirs();
-        name = Strings.isNullOrEmpty(name) ? fileName : name+"."+extension;
-        File saveFile = new File(fileDir, name);
-
-        File pathName = new File("leaderview/mapJson/"+name);
-        String path = pathName.toString();
-        String jsonPath = path.replaceAll("\\\\", "/");
-        JSONObject result = new JSONObject();
-        result.put("url",jsonPath);
+        String realName = fileName.substring(0,fileName.indexOf("."));
+        //进行名称校验,如果传入的name和文件名不一致，则直接返回false
+        if(!name.equals(realName)){
+            return new JsonModel(false,"上传失败");
+        }
+        String fullPath = TdsrResourceUtil.getFilesFullPath(upload_path);
+        String parentPath = fullPath + "mapjson"+ File.separator;
+        File parentFile = new File(parentPath);
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        //存放文件的新路径
+        String newpath = parentPath+ fileName;
         try {
-            file.transferTo(saveFile);
+            file.transferTo(new File(newpath));
         } catch (Exception e) {
             e.printStackTrace();
-            return new JsonModel(false, "上传失败");
+            return new JsonModel(false, "上传文件名和区县名不匹配，上传失败！");
         }
+        //返回路径给前端
+        String url = "staticlv"+File.separator+"mapjson"+File.separator+fileName;
+        String jsonPath = url.replaceAll("\\\\", "/");
+        JSONObject result = new JSONObject();
+        result.put("url",jsonPath);
+
         return new JsonModel(true, "上传成功",result);
     }
 

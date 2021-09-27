@@ -95,6 +95,7 @@ public class AssetDataService {
         ArrayList<LinkedHashMap<Object,Object>> rows = new ArrayList<>();
         JSONArray columns = new JSONArray();
         JSONObject result = new JSONObject();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0;i < arrayList.size();i++){
          LinkedHashMap<Object,Object> row = new LinkedHashMap<>();
          row.put("规格型号",arrayList.get(i).get("提醒对象"));
@@ -103,7 +104,7 @@ public class AssetDataService {
          row.put("实际剩余",arrayList.get(i).get("实际剩余"));
          row.put("告警级别",arrayList.get(i).get("告警级别"));
          row.put("提醒内容",arrayList.get(i).get("提醒内容"));
-         row.put("更新时间",arrayList.get(i).get("更新时间"));
+         row.put("更新时间",sdf.format(arrayList.get(i).get("更新时间")));
          rows.add(row);
         }
 
