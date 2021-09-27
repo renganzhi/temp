@@ -18,6 +18,7 @@
 </template>
 <script>
 // import echarts from 'echarts'
+import { gbs } from '@/config/settings'
 export default {
   name: 'NewHistogram',
   props: ['item'],
@@ -25,6 +26,8 @@ export default {
     return {
       mychart: null,
       // showLine: true,
+      myNewInterVal: '',
+      nowShowIndex: -1,
       oldOption: '',
       oldmyData: '',
       Oldcolorful: '',
@@ -43,8 +46,6 @@ export default {
       oldOption4: '',
       oldmyData4: '',
       Oldcolorful4: '',
-      myInterVale: '',
-      nowShowIndex: 0,
       //   Linesubsection: '',
       oldformatterType4: ''
     //   oldchartData: ''
@@ -53,7 +54,7 @@ export default {
   computed: {
     showLine: function () {
       if (this.item.barType === 'NewHistogram') {
-        if (this.nowShowDataObj.rows.length === 0 || this.nowShowDataObj.columns.length === 0) {
+         if (this.item.chartData1.rows.length === 0 || this.item.chartData1.columns.length === 0) {
           return false
         }
       }
@@ -73,27 +74,6 @@ export default {
         }
       }
       return true
-    },
-    nowShowDataObj:function(){
-      var reg = /^\{[\s\S]*\}$/
-        // 先判断是{}类型的对象，而不是new Object
-      if(this.item.chartData1 && this.item.barType === 'NewHistogram'){
-        var textData = JSON.stringify(this.item.chartData1)
-        if (reg.test(textData.trim())) {
-          return this.item.chartData1
-        }else{
-          if(this.item.chartData1.length > 1){
-          if (this.myInterVale){
-            clearInterval(this.myInterVale)
-          }
-          this.myInterVale = setInterval(() => {
-            this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData1.length
-            this.drawFlow()
-          }, this.item.intervieData * 1000);
-          }
-          return this.item.chartData1[this.nowShowIndex]
-        }
-      }
     },
     boxStyle: function () {
       return {
@@ -119,15 +99,6 @@ export default {
         this.mychart.resize()
       })
     },
-    'item.intervieData':function() {
-      if (this.myInterVale){
-        clearInterval(this.myInterVale)
-      }
-      this.myInterVale = setInterval(() => {
-        this.nowShowIndex = ( this.nowShowIndex + 1)% this.item.chartData.length
-        this.drawFlow()
-      }, this.item.intervieData *1000);
-    },
     'item.barType': function () {
       this.drawFlow()
     },
@@ -150,13 +121,43 @@ export default {
     }
   },
   methods: {
+    getNewChartData(){
+      var _this = this
+      if(_this.item.moreUrlArry[_this.nowShowIndex]){
+        let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
+        $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
+          _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
+        })
+        $.ajax({
+          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
+          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+          cache: false,
+          ascyn: false,
+          success: function (res) {
+            if(_this.item.chartData1){
+              _this.item.chartData1 = res.obj
+            }
+            if(_this.item.chartData2){
+              _this.item.chartData2 = res.obj
+            }
+            if(_this.item.chartData3){
+              _this.item.chartData3 = res.obj
+            }
+            if(_this.item.chartData4){
+              _this.item.chartData4 = res.obj
+            }
+          },
+        })
+      }
+    },
     drawFlow () {
       this.mychart = echarts.init(this.$refs.NewHistogram)
       if (this.item.barType === 'NewHistogram') {
         let myseries = []
         let myXAxisData = []
         let mySeriesData = []
-        let myData = this.nowShowDataObj
+        let myData = this.item.chartData1
         myData.rows.forEach(element => {
           myData.columns.forEach((e, d) => {
             if (d === 0) {
@@ -322,7 +323,7 @@ export default {
         let myoption = {
           xAxis: {
             type: 'category',
-            name: this.nowShowDataObj.unitX,
+            name: this.item.chartData1.unitX,
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
@@ -356,7 +357,7 @@ export default {
                 fontSize: this.item.axisLabelSize1 || '14'
               },
               formatter: (params, index) => {
-                var rows = this.nowShowDataObj.rows
+                var rows = this.item.chartData1.rows
                 let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
                 let strLen = Math.round(barW / (this.item.axisLabelSize1 * 2))
                 if (this.item.formatterType1 === '0') {
@@ -370,7 +371,7 @@ export default {
           },
           yAxis: {
             type: 'value',
-            name: this.nowShowDataObj.unit,
+            name: this.item.chartData1.unit,
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
@@ -449,7 +450,7 @@ export default {
           },
           series: myseries
         }
-        var rows = this.nowShowDataObj.rows
+        var rows = this.item.chartData1.rows
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / (this.item.axisLabelSize1 * 2))
         if (this.item.formatterType1 === '0' && this.oldformatterType !== this.item.formatterType1) {
@@ -1210,12 +1211,18 @@ export default {
   },
   mounted () {
     this.drawFlow()
+    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
+      this.myNewInterVal = setInterval(() => {
+        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+        this.getNewChartData()
+      }, this.item.intervieData * 1000);
+    }
   },
   beforeDestroy () {
     this.mychart.dispose()
     this.mychart = null
-    if (this.myInterVale){
-      clearInterval(this.myInterVale)
+    if (this.myNewInterVal){
+      clearInterval(this.myNewInterVal)
     }
   }
 

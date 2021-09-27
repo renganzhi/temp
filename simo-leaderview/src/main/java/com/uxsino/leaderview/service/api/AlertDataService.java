@@ -601,22 +601,41 @@ public class AlertDataService {
             neIds.add(arr.get(i).toString());
         }
 
-        List<String> statusList = new ArrayList<>();
-
         StatisticsQuery statisticsQuery = new StatisticsQuery();
         statisticsQuery.setGroupField("handleStatus");
         statisticsQuery.setObjIds(org.apache.commons.lang3.StringUtils.join(arr, ","));
         statisticsQuery.setAlertType(alertType);
-        if (!StringUtils.isEmpty(status)) {
+
+        List<String> statusList = new ArrayList<>();
+        if(!ObjectUtils.isEmpty(status)) {
+            statusList = Arrays.asList(status.split(","));
+        }
+        //用来判断状态参数的输入情况
+        Integer type = 3;
+        if(statusList.size() == 0){
+            type = 0;
+        }else if (statusList.size() == 1 && arr.size() == 1 ){
+            //只选了一种资源、一种状态，用来作为文本框的返回
+            type = 1;
+        }
+        if(type == 1) {
             statisticsQuery.setHandleStatus(AlertHandleStatus.valueOf(status));
         }
         List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
 
         JSONObject result = new JSONObject();
-        if (!StringUtils.isEmpty(status)) {
+
+        //List<String> statusList = new ArrayList<>();
+        if (type == 1) {
+            Object count ;
+            if(ObjectUtils.isEmpty(statisticsResults)){
+                count = 0;
+            }else {
+                count = statisticsResults.get(0).getAlertCount();
+            }
             result.put("unit",null);
-            result.put("总数",statisticsResults.get(0).getAlertCount());
-            result.put("info",statisticsResults.get(0).getAlertCount());
+            result.put("总数",count);
+            result.put("info",count);
             return result;
         }else {
             JSONArray columns = new JSONArray();
@@ -626,8 +645,11 @@ public class AlertDataService {
             JSONArray rows = new JSONArray();
             Map<Object,String> statusMap = new HashMap<>();
             for (AlertHandleStatus handleStatus:AlertHandleStatus.values()){
-                statusList.add(String.valueOf(handleStatus));
                 statusMap.put(String.valueOf(handleStatus),handleStatus.getText());
+                if(type == 0) {
+                    String s = String.valueOf(handleStatus);
+                    statusList.add(s);
+                }
             }
             // 告警颜色数组，顺序跟rows一致
             JSONArray colors = new JSONArray();
@@ -699,7 +721,7 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
-                                  Integer number, HttpSession session, String[] column) throws Exception{
+                                  Integer number, HttpSession session, String[] column, String topoId) throws Exception{
         JSONObject result = new JSONObject();
         List<String > diffColumns = Lists.newArrayList("资源名称","告警级别","告警来源","IP地址","告警内容","告警时间","状态");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
@@ -709,6 +731,10 @@ public class AlertDataService {
             NetworkEntityCriteria criteria = new NetworkEntityCriteria();
             rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
             rpcProcessService.setCriteriaNeClass(criteria, baseNeClass);
+            //当传入topoId时，只查询该拓扑下的资源
+            if (!Strings.isNullOrEmpty(topoId)) {
+                criteria.setTopoId(topoId);
+            }
             List<String > neIdList = rpcProcessService.getNeIds(criteria);
             neIds = neIdList.toArray(new String[neIdList.size()]);
         }

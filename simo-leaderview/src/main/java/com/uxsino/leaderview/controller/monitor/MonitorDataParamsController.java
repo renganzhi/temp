@@ -2,6 +2,7 @@ package com.uxsino.leaderview.controller.monitor;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.uxsino.commons.model.BaseNeClass;
 import com.uxsino.commons.model.JsonModel;
@@ -94,11 +95,16 @@ public class MonitorDataParamsController {
     @ResponseBody
     public JsonModel findNes(HttpSession session, @ApiParam("域ID") @RequestParam(required = false) Long domainId,
                              @ApiParam("资源父类型") @RequestParam(required = false) BaseNeClass baseNeClass,
+                             @ApiParam("拓扑Id") @RequestParam(required = false) String topoId,
                              @ApiParam("资源子类型") @RequestParam(required = false) NeClass neClass,
                              @ApiParam("过滤未知类型") @RequestParam(required = false) Boolean notUnknown,@RequestParam(required = false)Boolean isHardware) {
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         criteria = rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         criteria = rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         return monitorDataParamsService.findNes(criteria,notUnknown,isHardware);
     }
 
