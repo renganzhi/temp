@@ -478,12 +478,13 @@ public class AlertDataController {
     @ResponseBody
     public JsonModel getAlertInfo(@RequestParam(required = false) Long domainId,
                                   @RequestParam(required = false) String baseNeClass,
+                                  @RequestParam(required = false) String topoId,
                                   @RequestParam(required = false) String[] neIds,
                                   @RequestParam Integer number,
                                   @RequestParam(required = false) String[] column,
                                   HttpSession session){
         try {
-            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column);
+            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

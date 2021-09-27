@@ -886,9 +886,11 @@ public class RpcProcessService {
     private static <T> List<T> toJavaBeanList(JsonModel jsonModel, Class<T> clazz){
         List<LinkedHashMap> list = (List<LinkedHashMap>) jsonModel.getObj();
         List<T> ts = Lists.newArrayList();
-        for (LinkedHashMap map: list) {
-            T t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)),clazz);
-            ts.add(t);
+        if(!ObjectUtils.isEmpty(list)) {
+            for (LinkedHashMap map : list) {
+                T t = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(map)), clazz);
+                ts.add(t);
+            }
         }
         return ts;
     }
