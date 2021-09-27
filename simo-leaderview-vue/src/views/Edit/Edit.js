@@ -2890,6 +2890,7 @@ export default {
             customClass: 'toast toast-success'
           })
           _this.showUpload = false
+          _this.selectedItem.gltfName = res.obj.mtlPath
           _this.getModelFun()
         } else {
           Notification({
