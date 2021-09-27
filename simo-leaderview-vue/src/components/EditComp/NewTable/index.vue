@@ -307,7 +307,7 @@ export default {
       this.myNewInterVal = setInterval(() => {
         this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
         this.getNewChartData()
-      }, this.item.intervieData);
+      }, this.item.intervieData *1000);
     }
     // 这里不用注释
     // if ($('#home-html').length > 0) {
@@ -319,7 +319,6 @@ export default {
   },
   beforeDestroy: function () {
     if (this.myNewInterVal){
-      console.log(1111111)
       clearInterval(this.myNewInterVal)
     }
     // this.$destroy(true)

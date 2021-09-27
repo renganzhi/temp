@@ -15,7 +15,7 @@ export default {
     'Zebra': 'false',
     'Alignment': 'left',
     'ZebraColor': '#343c58',
-    'intervieData': 5000,
+    'intervieData': 5,
     'tableBack': '',
     'tableBackName': '',
     'AlarmField': '',

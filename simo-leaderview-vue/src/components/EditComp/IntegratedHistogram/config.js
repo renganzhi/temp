@@ -355,6 +355,7 @@ export default {
     'barType': 'NewHistogram',
     'chartData': {},
     'ifGradual': 'false',
+    'moreUrlArry': [],
     ...NewHistogram,
     ...NewGroupHistogram,
     ...NewGroupLeftHistogram,
