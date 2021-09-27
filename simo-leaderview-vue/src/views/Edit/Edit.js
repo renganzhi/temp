@@ -4571,37 +4571,80 @@ export default {
             $.each(data.params, function (i, d) {
               data.params[i] = $.isArray(d) ? d.join(',') : d
             })
-            $.ajax({
-              url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
-              data: data.params,
-              type: data.method || 'get',
-              cache: false,
-              ascyn: false,
-              success: function (res) {
-                if (data.barType === 'NewHistogram') {
-                  data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
-                }
-                if (data.barType === 'NewGroupHistogram') {
-                  data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
-                }
-                if (data.barType === 'NewGroupLeftHistogram') {
-                  data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
-                }
-                if (data.barType === 'NewBar') {
-                  data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
-                }
-                if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+            if (data.params.neIds && data.params.neIds !== null && data.params.windows && JSON.parse(data.params.windows)[0].fields === null) {
+              this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(data.params.windows)[0].indicator}`).then((res) => {
+                if (res.success) {
                   if (res.obj) {
-                    data.ctName = res.obj.info
+                    let mydata = JSON.parse(data.params.windows)[0]
+                    mydata.fields = [mydata.indicator]
+                    data.params.windows = JSON.stringify([mydata])
                   }
-                  if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
-                    data.chartData = res.obj
-                  }
-                } else {
-                  data.chartData = res.success ? res.obj : []
+                  $.ajax({
+                    url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+                    data: data.params,
+                    type: data.method || 'get',
+                    cache: false,
+                    ascyn: false,
+                    success: function (res) {
+                      if (data.barType === 'NewHistogram') {
+                        data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                      }
+                      if (data.barType === 'NewGroupHistogram') {
+                        data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                      }
+                      if (data.barType === 'NewGroupLeftHistogram') {
+                        data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                      }
+                      if (data.barType === 'NewBar') {
+                        data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                      }
+                      if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                        if (res.obj) {
+                          data.ctName = res.obj.info
+                        }
+                        if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                          data.chartData = res.obj
+                        }
+                      } else {
+                        data.chartData = res.success ? res.obj : []
+                      }
+                    }
+                  })
                 }
-              }
-            })
+              })
+            } else {
+              $.ajax({
+                url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+                data: data.params,
+                type: data.method || 'get',
+                cache: false,
+                ascyn: false,
+                success: function (res) {
+                  if (data.barType === 'NewHistogram') {
+                    data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                  }
+                  if (data.barType === 'NewGroupHistogram') {
+                    data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                  }
+                  if (data.barType === 'NewGroupLeftHistogram') {
+                    data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                  }
+                  if (data.barType === 'NewBar') {
+                    data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                  }
+                  if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                    if (res.obj) {
+                      data.ctName = res.obj.info
+                    }
+                    if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                      data.chartData = res.obj
+                    }
+                  } else {
+                    data.chartData = res.success ? res.obj : []
+                  }
+                }
+              })
+            }
           }
         })
       }
