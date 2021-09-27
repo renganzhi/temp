@@ -46,8 +46,8 @@ public class AlertDataParamsService {
             AlertHandleStatus[] values = AlertHandleStatus.values();
             for (AlertHandleStatus handleStatus : values) {
                 JSONObject map = new JSONObject();
-                map.put("name", handleStatus);
-                map.put("value", handleStatus.getText());
+                map.put("name", handleStatus.getText());
+                map.put("value", handleStatus);
                 result.add(map);
             }
         } else {
@@ -67,8 +67,8 @@ public class AlertDataParamsService {
                     .collect(Collectors.toSet());
             result = collect.stream().map(handleStatus -> {
                 JSONObject map = new JSONObject();
-                map.put("name", handleStatus);
-                map.put("value", handleStatus.getText());
+                map.put("name", handleStatus.getText());
+                map.put("value", handleStatus);
                 return map;
             }).collect(Collectors.toCollection(JSONArray::new));
         }
