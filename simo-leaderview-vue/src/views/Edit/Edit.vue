@@ -2015,7 +2015,7 @@
                 </div>
                 <div class="form-group cols2"
                      style="width: 120px;"
-                     v-if="(selectedItem.chartType==='NewTable' || selectedItem.chartType==='NewMoveTable')&&selectedItem.ctDataSource === 'system'">
+                     v-if="(selectedItem.chartType==='NewTable' || selectedItem.chartType==='IntegratedHistogram') && selectedItem.ctDataSource === 'system'">
                   <label class="advancedset" style="width: 120px;" @click="AddNewUrl">新增数据接口</label>
                 </div>
                 <div class="form-group cols2"
