@@ -47,8 +47,8 @@ public class HomeCarouselService {
                 num++;
             }
         }
-        if (num > 20){
-            return new JsonModel(false, "页面可见数量设置不可大于20个！");
+        if (num > 1000){
+            return new JsonModel(false, "页面可见数量设置不可大于1000个！");
         }
         pages.forEach(page -> {
             HomePageUserConf existPage = homePageUserConfDao.findOne(page.getId());

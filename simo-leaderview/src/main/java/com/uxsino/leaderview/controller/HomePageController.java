@@ -59,7 +59,7 @@ public class HomePageController {
 
     private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
 
-    private final int MAX_PAGE_INDEX = 20;
+    private final int MAX_PAGE_INDEX = 1000;
 
     private final int MIN_PAGE_INDEX = 1;
 
@@ -187,7 +187,7 @@ public class HomePageController {
         long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
         int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
         if (maxIndex >= MAX_PAGE_INDEX) {
-            return new JsonModel(false, "当前页面已达到最大数[20]");
+            return new JsonModel(false, "当前页面已达到最大数[1000]");
         }
         List<HomePage> allHomePages = homePageService.findByUserId(currentUserId);
         for (HomePage homePage : allHomePages) {
@@ -300,7 +300,7 @@ public class HomePageController {
         }
         int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
         if (maxIndex >= MAX_PAGE_INDEX) {
-            return new JsonModel(false, "当前页面已达到最大数[20]");
+            return new JsonModel(false, "当前页面已达到最大数[1000]");
         }
         HomePage targetPage = new HomePage();
         String targetName = sourcePage.getName() + "_副本";

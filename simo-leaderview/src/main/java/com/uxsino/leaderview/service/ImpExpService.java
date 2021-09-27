@@ -54,7 +54,7 @@ public class ImpExpService {
     private HomePageUserConfService homePageUserConfService;
 
     private static Set<String> videoSet = Sets.newHashSet();
-    private final int MAX_PAGE_INDEX = 20;
+    private final int MAX_PAGE_INDEX = 1000;
     //以\结尾的为目录文件
     private static Pattern imgPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)\"");
     private static Pattern img2Pattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
