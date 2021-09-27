@@ -968,10 +968,11 @@ export default {
         formdata.append('file', file)
         formdata.append('name', this.selectedItem.countyCode)
         var name = this.selectedItem.countyCode
-        this.selectedItem.countyCode = 'test'
+        this.selectedItem.countyCode = ''
         this.axios.post('/leaderview/home/uploadJson', formdata).then((data) => {
           var url = data.obj.url
-          this.axios.get('/leaderview' + url).then((data) => {
+
+          this.axios.get('/leaderview/' + url).then((data) => {
             this.areaArr = this.initMapData(data)
             this.selectedItem.countyCode = name
             if (this.selectedItem.chartType === 'v-map' || this.selectedItem.chartType === 'NewVMap') {
@@ -1040,7 +1041,7 @@ export default {
           if (element.url === this.selectedItem.url) {
             name = element.name
           }
-        });
+        })
         this.selectedItem.moreUrlArry.push(
           {
             url: this.selectedItem.url,
@@ -1292,7 +1293,7 @@ export default {
           } else {
             data.chartData = res.success ? res.obj : []
           }
-        },
+        }
       })
     },
     formatVersion() {

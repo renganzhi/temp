@@ -371,7 +371,7 @@ export default {
       }
     },
     'item.countyCode': function (newV, oldV) {
-      if (this.item.mapLevel === 'county') {
+      if (this.item.mapLevel === 'county' && this.item.countyCode) {
         this.axios
           .get('/leaderview/staticlv/mapjson/' + this.item.countyCode + '.json')
           .then(data => {
