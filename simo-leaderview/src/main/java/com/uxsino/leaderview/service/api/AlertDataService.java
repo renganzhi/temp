@@ -582,12 +582,16 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getStatByStatus(HttpSession session, String status, Long domainId,
-                                    String baseNeClass, String neClass, String neIds) throws Exception{
+                                    String baseNeClass, String neClass, String neIds, String topoId) throws Exception{
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
         if(neIds!=null && !neIds.isEmpty())
             criteria.setIds(Lists.newArrayList(neIds.split(",")));
         rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
         return new JsonModel(true, getStatByStatus(arr, status, AlertType.Alert));
     }

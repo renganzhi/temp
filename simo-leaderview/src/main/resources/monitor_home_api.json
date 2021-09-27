@@ -769,6 +769,14 @@
                 "dataUrl": "/leaderview/monitor/params/getDomainByUser"
             },
             {
+                "key": "topoId",
+                "name": "拓扑名称",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/monitor/topo/findTopoForDropDown"
+            },
+            {
                 "key": "baseNeClass",
                 "name": "父类型",
                 "notNull": false,
@@ -792,7 +800,7 @@
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/nes",
-                "params": ["domainId","baseNeClass","neClass"]
+                "params": ["domainId","baseNeClass","neClass","topoId"]
             },
             {
                 "key": "status",
