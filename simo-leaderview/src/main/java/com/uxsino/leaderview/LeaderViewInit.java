@@ -5,6 +5,7 @@ import javax.jms.JMSException;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.leaderview.handler.LeaderViewAuthorityHandler;
+import com.uxsino.leaderview.handler.UserDataHandler;
 import com.uxsino.leaderview.service.AuthorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,9 @@ public class LeaderViewInit implements InitializingBean {
 
 	@Autowired
 	private AuthorityService authorityService;
+
+	@Autowired
+	private UserDataHandler userDataHandler;
 
 	@Value("${simo.leaderview.templateInit:#{false}}")
 	private Boolean templateInit;
@@ -116,6 +120,11 @@ public class LeaderViewInit implements InitializingBean {
 			// 订阅工作移交
 			rqFactory.createTopicFlux(EventTopicConstants.SIMO_HANDOVER_NOTIFY, String.class).subscribe(
 					JMSFlux.Catch(authorityService::handOver, LoggerFactory.getLogger(AuthorityService.class)));
+
+			// 订阅用户创建广播
+			rqFactory.createTopicFlux(EventTopicConstants.SIMO_MC_TO_WORKFLOW,JSONObject.class).subscribe(
+					JMSFlux.Catch(userDataHandler::handle, LoggerFactory.getLogger(UserDataHandler.class))
+			);
 		} catch (JMSException e) {
 			logger.error("mq 域变更订阅异常: {}", e);
 		}

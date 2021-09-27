@@ -307,6 +307,10 @@ public class HomePageService {
         return homePageDao.findByUserId(employeeId);
     }
 
+    public List<HomePage> findByUserIds(List<Long> userIds){
+        return homePageDao.findDistinctByUserIdIn(userIds);
+    }
+
     /**
      * 查询指定角色的首页配置信息
      *
