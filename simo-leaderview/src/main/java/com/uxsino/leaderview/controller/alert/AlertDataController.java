@@ -145,10 +145,11 @@ public class AlertDataController {
     })
     @RequestMapping(value = "/getStatByStatus", method = RequestMethod.POST)
     @ResponseBody
-    public JsonModel getStatByStatus(HttpSession session,@RequestParam(required = false) String status, Long domainId,
+    public JsonModel getStatByStatus(HttpSession session,@RequestParam(required = false) String status,
+                                     @RequestParam(required = false) String topoId,Long domainId,
                                     String baseNeClass, String neClass, String neIds) {
         try {
-            return alertDataService.getStatByStatus(session, status, domainId, baseNeClass, neClass, neIds);
+            return alertDataService.getStatByStatus(session, status, domainId, baseNeClass, neClass, neIds, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -478,12 +479,13 @@ public class AlertDataController {
     @ResponseBody
     public JsonModel getAlertInfo(@RequestParam(required = false) Long domainId,
                                   @RequestParam(required = false) String baseNeClass,
+                                  @RequestParam(required = false) String topoId,
                                   @RequestParam(required = false) String[] neIds,
                                   @RequestParam Integer number,
                                   @RequestParam(required = false) String[] column,
                                   HttpSession session){
         try {
-            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column);
+            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

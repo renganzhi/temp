@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '地图实时图',
     'imgClass': 'icon-n-scatterMap',
@@ -13,6 +13,7 @@ export default{
     'ctLegendShow': true, // 地名是否展示
     'provinceCode': '',
     'cityCode': '',
+    'countyCode': '',
     'themeType': '1',
     'ctLegendColor': '#fff423',
     'areaColor': '#121a33',

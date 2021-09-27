@@ -293,7 +293,7 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session,
-                            String[] column, String[] hostColumn, String sortColumn, Boolean sortType, String runStatus) throws Exception {
+                            String[] column, String[] hostColumn, String sortColumn, Boolean sortType, String runStatus, String topoId) throws Exception {
         //List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
         List<String> diffColumns = Lists.newArrayList("资源名称", "IP地址", "资源类型", "运行状态", "更新时间", "健康度");
         List<String> hostColums = Lists.newArrayList("宿主机资源名称", "宿主机IP地址", "宿主机资源类型", "宿主机运行状态", "宿主机更新时间", "宿主机健康度");
@@ -309,6 +309,10 @@ public class MonitorDataService {
         if (StringUtils.isNoneBlank(neIds) && !SessionUtils.isSuperAdmin(session)) {
             List<String> targetNeIds = Arrays.asList(neIds.split(","));
             NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+            //当传入topoId时，只查询该拓扑下的资源
+            if (!Strings.isNullOrEmpty(topoId)) {
+                criteria.setTopoId(topoId);
+            }
             if (!ObjectUtils.isEmpty(criteria.getIds())) {
                 neIds = targetNeIds.stream().filter(id -> criteria.getIds().contains(id))
                         .collect(Collectors.joining(","));
@@ -316,7 +320,10 @@ public class MonitorDataService {
         }
         JSONObject json = new JSONObject(true);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-
+        //当传入topoId时，只查询该拓扑下的资源
+        if (!Strings.isNullOrEmpty(topoId)) {
+            criteria.setTopoId(topoId);
+        }
         if (!StringUtils.isEmpty(runStatus)) {
             String[] list = runStatus.split(",");
             List<RunStatus> runStatuses = Arrays.stream(list).map(x -> RunStatus.valueOf(x)).collect(Collectors.toList());
@@ -4452,7 +4459,7 @@ public class MonitorDataService {
 
         //criteria.setGroupField("manageStatus");
         criteria.setGroupField("baseNeClass");
-        if(Strings.isNullOrEmpty(topoId)) criteria.setTopoId(topoId);
+        if(!Strings.isNullOrEmpty(topoId)) criteria.setTopoId(topoId);
         JsonModel jsonModel = rpcProcessService.statisticsNe(criteria);
         statisMapList = (List<Map<String, Object>>) jsonModel.getObj();
         int count = 0;

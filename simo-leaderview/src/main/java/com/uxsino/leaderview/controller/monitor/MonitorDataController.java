@@ -335,11 +335,12 @@ public class MonitorDataController {
     @RequestMapping(value = "/neList", method = RequestMethod.POST)
     public JsonModel neList(@RequestParam(required = false) Long domainId, @RequestParam(required = false) String neIds,
                             @RequestParam(required = false) BaseNeClass baseNeClass, HttpSession session,
+                            @RequestParam(required = false) String topoId,
                             @RequestParam(required = false) String[] column,@RequestParam(required = false)String[] hostColumn,
                             @RequestParam(required = false)String sortColumn, @RequestParam(required = false)Boolean sortType,
                             @RequestParam(required = false)String runStatus) {
         try {
-            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus);
+            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

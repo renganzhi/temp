@@ -1,10 +1,12 @@
 package com.uxsino.leaderview.controller.alert;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.AlertType;
+import com.uxsino.leaderview.model.alert.AlertHandleStatus;
 import com.uxsino.leaderview.service.api.AlertDataParamsService;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
@@ -12,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,5 +96,21 @@ public class AlertParamsController {
     public JsonModel getStatus(@RequestParam(required = false) String neId) {
         JSONArray result = alertDataParamsService.getStatus(neId);
         return new JsonModel(true, result);
+    }
+
+    @ApiOperation("获取资源告警处理状态列表")
+    @RequestMapping(value = "/findAlertHandleStatus", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonModel findAlertHandleStatus() {
+
+        List<JSONObject> result = new ArrayList<>();
+        for (AlertHandleStatus handleStatus : AlertHandleStatus.values()) {
+            JSONObject map = new JSONObject();
+            map.put("name", handleStatus.getText());
+            map.put("value", handleStatus);
+            result.add(map);
+        }
+
+        return new JsonModel(true,result);
     }
 }
