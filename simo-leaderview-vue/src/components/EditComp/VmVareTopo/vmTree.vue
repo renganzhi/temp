@@ -13,7 +13,7 @@
         height="100%"
         :style="svgStyle"
       >
-        <g :transform="`scale(${scaleNum}) translate(40,${maxXY.height/2 - 80})`" ref="mycanvasD">
+        <g :transform="`scale(${scaleNum}) translate(40,${maxXY.height/2 - 40})`" ref="mycanvasD">
           <path
             v-for="(item,index) in links"
             :key="index"

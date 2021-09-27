@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '轮播表格',
     'imgClass': 'icon-slidertable',
@@ -14,6 +14,8 @@ export default{
     'bgClr': 'rgba(34, 40, 58, 0.5)',
     'clr': '#919cc1',
     'bdClr': '#c2c6d7',
+    'intervieData': 10,
+    'moreUrlArry': [],
     'Internal': 'false',
     'Zebra': 'false',
     'Alignment': 'left',
