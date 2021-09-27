@@ -410,13 +410,17 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID", required = true),
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
             @ApiImplicitParam(name = "componentName", paramType = "query", dataType = "String", value = "部件名称"),
-            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true)})
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
+            @ApiImplicitParam(name = "isAddComOrIndName", paramType = "query", dataType = "boolean", value = "添加部件名或指标名", required = true)})
     @RequestMapping(value = "/indicator/valueStrTable", method = RequestMethod.GET)
     @ResponseBody
     public JsonModel getIndicatorValueStrTable(@RequestParam String neIds, @RequestParam BaseNeClass baseNeClass, @RequestParam String indicators,
-                                               @RequestParam(required = false) String[] componentName, @RequestParam String[] field) {
+                                               @RequestParam(required = false) String[] componentName, @RequestParam String[] field,
+                                               @RequestParam(required = false)Boolean isAddComOrIndName) {
         try {
-            return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field);
+            //防止未选择该选项
+            isAddComOrIndName = Boolean.TRUE.equals(isAddComOrIndName);
+            return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field,isAddComOrIndName);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

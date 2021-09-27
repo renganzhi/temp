@@ -119,4 +119,9 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     public JsonModel topSession(String neId, String startTime, String endTime) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
+
+    @Override
+    public JsonModel findVolume(String neId) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
 }
