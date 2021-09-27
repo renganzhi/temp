@@ -2650,12 +2650,29 @@
             {
                 "key": "componentName",
                 "name": "部件",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getComponentName",
                 "params": ["neIds","indicators"]
+            },
+            {
+                "key": "isAddComOrIndName",
+                "name": "添加默认列",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "是",
+                        "value": true
+                    },
+                    {
+                        "name": "否",
+                        "value": false
+                    }
+                ]
             },
             {
                 "key": "field",
