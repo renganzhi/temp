@@ -4554,7 +4554,7 @@ export default {
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
         this.chartNum.forEach(data => {
-          if (data.params.neIds && data.url) {
+          if (data.params.neIds && data.url && data.ctDataSource === "system") {
             data.params.neIds = newV
             if (data.params.baseNeClass !== undefined) {
               data.params.baseNeClass = this.windowtemplateData.baseneclss || ''
