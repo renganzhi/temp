@@ -122,6 +122,9 @@ public class ImpExpService {
         JSONObject result = new JSONObject();
         result.put("name",page.getName());
         result.put("id",page.getId());
+        result.put("templateType",page.getTemplateType());
+        result.put("templateConf",page.getTemplateConf());
+        result.put("isDynamicTemplate",page.getIsDynamicTemplate());
         result.put("viewConf",viewConf.getString("str"));
         result.put("viewImage",viewImage.getString("str"));
         result.put("paintObj",paintObj.getString("str"));
@@ -710,6 +713,9 @@ public class ImpExpService {
                 page.setLastUpdateTime(new Date());
                 page.setComposeObj(composeObj);
                 page.setName(pageName);
+                page.setTemplateType((String) obj.get("templateType"));
+                page.setTemplateConf((String) obj.get("templateConf"));
+                page.setIsDynamicTemplate((Boolean) obj.get("isDynamicTemplate"));
                 //这里需要将获取到的viewConf中url里getimg/true/后面的id替换为上面获取到的插入上传表的自增id
                 //如果viewConf中有多个图片，需要用到前面的id来匹配对应的url
                 //这里可以用
