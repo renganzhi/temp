@@ -860,26 +860,41 @@ export default {
         mapData.push({
           value: mapJson.features[i].id || mapJson.features[i].properties.adcode,
           name: mapJson.features[i].properties.name,
-          geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates)
+          geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates, mapJson.features[i].geometry.type)
           // geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
         })
       }
       return mapData
     },
     // 计算地市级地图的中心点
-    getCenterPoint(data) {
-      let index = data.length - 1
-      var tempObj = data[index][0]
-      if (tempObj) {
-        let totalX = 0, totalY = 0
-        tempObj.forEach((item) => {
-          totalX += item[0]
-          totalY += item[1]
-        })
-        let _length = tempObj.length
-        return [totalX / _length, totalY / _length]
+    getCenterPoint(data, type) {
+      if (type === 'MultiPolygon') {
+        let index = data.length - 1
+        var tempObj = data[index][0]
+        if (tempObj) {
+          let totalX = 0, totalY = 0
+          tempObj.forEach((item) => {
+            totalX += item[0]
+            totalY += item[1]
+          })
+          let _length = tempObj.length
+          return [totalX / _length, totalY / _length]
+        } else {
+          return data[0][0][0]
+        }
       } else {
-        return data[0][0][0]
+        var tempObj = data[0]
+        if (tempObj) {
+          let totalX = 0, totalY = 0
+          tempObj.forEach((item) => {
+            totalX += item[0]
+            totalY += item[1]
+          })
+          let _length = tempObj.length
+          return [totalX / _length, totalY / _length]
+        } else {
+          return data[0][0][0]
+        }
       }
     },
     // 删除实时图数据点
@@ -4554,7 +4569,7 @@ export default {
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
         this.chartNum.forEach(data => {
-          if (data.params.neIds && data.url && data.ctDataSource === "system") {
+          if (data.params.neIds && data.url && data.ctDataSource === 'system') {
             data.params.neIds = newV
             if (data.params.baseNeClass !== undefined) {
               data.params.baseNeClass = this.windowtemplateData.baseneclss || ''

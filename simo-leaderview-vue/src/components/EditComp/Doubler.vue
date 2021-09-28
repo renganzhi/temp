@@ -4,18 +4,24 @@
       <!-- <span class="autoSize"
             ref="hideNum"
             :style="numCardValue">8</span> -->
-      <TurnOver v-for="(num,index) in numArr"
-                :key="index"
-                :nextNum="num"
-                :numWidth="numWidth"
-                :numHeight="numHeight"
-                :bgClr="bgdColor"
-                :style="numCardValue">
+      <TurnOver
+        v-for="(num, index) in numArr"
+        :key="index"
+        :nextNum="num"
+        :numWidth="numWidth"
+        :numHeight="numHeight"
+        :bgClr="bgdColor"
+        :style="numCardValue"
+      >
       </TurnOver>
     </div>
-    <div v-show="showTitle"
-         class="doublerName"
-         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{comUnit}}</div>
+    <div
+      v-show="showTitle"
+      class="doublerName"
+      :style="{ color: item.legendColor || '#828bac' }"
+    >
+      {{ item.chartData.name }}{{ comUnit }}
+    </div>
   </div>
 </template>
 <script>
@@ -32,16 +38,16 @@ export default {
       numHeight: 100,
       numWidth: 80,
       defConf: {
-        'f12': [22, 23],
-        'f13': [25, 24],
-        'f14': [25, 25],
-        'f16': [27, 28],
-        'f18': [28.5, 31],
-        'f20': [30, 34],
-        'f28': [35, 45],
-        'f36': [41, 57],
-        'f48': [49, 74],
-        'f72': [66, 108]
+        f12: [22, 23],
+        f13: [25, 24],
+        f14: [25, 25],
+        f16: [27, 28],
+        f18: [28.5, 31],
+        f20: [30, 34],
+        f28: [35, 45],
+        f36: [41, 57],
+        f48: [49, 74],
+        f72: [66, 108]
       }
     }
   },
@@ -51,7 +57,7 @@ export default {
     },
     comUnit: function () {
       var unit = this.item.chartData.unit
-      return unit === '' ? '' : ('(' + unit + ')')
+      return unit === '' ? '' : '(' + unit + ')'
     },
     numArr: function () {
       if (!this.item.chartData.value && this.item.chartData.value !== 0) {
@@ -104,7 +110,9 @@ export default {
   },
   methods: {
     getPageScale () {
-      var _transform = $(this.$el).parents('.paint-bg').css('transform')
+      var _transform = $(this.$el)
+        .parents('.paint-bg')
+        .css('transform')
       if (_transform && _transform !== 'none') {
         var reg = /\((.*)\)$/
         var _temp = reg.exec(_transform)
