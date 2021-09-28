@@ -255,6 +255,7 @@ export default {
     },
     'item.mapLevel': function (newV, oldV) {
       setTimeout(() => {
+        this.settings.mapOrigin = null
         if (newV === 'city') {
           if (this.item.cityCode) {
             this.settings.positionJsonLink =
@@ -309,6 +310,7 @@ export default {
     },
     'item.provinceCode': function (newV) {
       if (this.item.mapLevel === 'province') {
+        this.settings.mapOrigin = null
         this.settings.positionJsonLink =
           './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
@@ -318,6 +320,7 @@ export default {
     },
     'item.cityCode': function (newV, oldV) {
       if (this.item.mapLevel === 'city') {
+        this.settings.mapOrigin = null
         this.settings.positionJsonLink =
           './../../../../' + this.mapStatic + '/libs/map/' + newV + '.json'
         this.settings.position = 'map_' + newV
