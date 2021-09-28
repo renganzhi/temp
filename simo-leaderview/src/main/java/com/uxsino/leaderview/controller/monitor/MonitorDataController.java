@@ -23,7 +23,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Api(tags = {"资源-大屏展示数据接口"})
@@ -420,6 +423,11 @@ public class MonitorDataController {
         try {
             //防止未选择该选项
             isAddComOrIndName = Boolean.TRUE.equals(isAddComOrIndName);
+            //过滤空值
+            if(!ObjectUtils.isEmpty(componentName)){
+               List<String> componentNameList =  Arrays.stream(componentName).filter(s -> !StringUtils.isEmpty(s)).collect(Collectors.toList());
+                componentName =  componentNameList.toArray(new String[componentNameList.size()]);
+            }
             return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field,isAddComOrIndName);
         } catch (Exception e) {
             e.printStackTrace();

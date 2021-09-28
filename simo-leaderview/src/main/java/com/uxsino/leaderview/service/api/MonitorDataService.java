@@ -743,17 +743,28 @@ public class MonitorDataService {
             return getListEmptyComponentTable(neIds, field, ind);
         }
         JSONArray columns = new JSONArray();
-        if(isAddComOrIndName){
-            if (ObjectUtils.isEmpty(componentName)) {
-                columns.add("指标名");
-            } else {
-                columns.add("部件名");
-            }
+        if (ObjectUtils.isEmpty(componentName)) {
+            columns.add("指标名");
+        } else if(isAddComOrIndName){
+            columns.add("部件名");
         }
         // 资源ID和指标名为必选项
         if (StringUtils.isEmpty(neIds) || StringUtils.isEmpty(indicators)) {
             return new JsonModel(true, empMsg,result);
         }
+        Map<String, JSONObject> fieldLabelMap = Maps.newHashMap();
+        JSONArray fields = ind.getFields();
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < fields.size(); j++) {
+                JSONObject fieldObj = fields.getJSONObject(j);
+                if(field[i].equalsIgnoreCase(fieldObj.getString("name"))){
+                    fieldLabelMap.put(field[i], fieldObj);
+                    columns.add(fieldObj.getString("label"));
+                    break;
+                }
+            }
+        }
+        result.put("columns", columns);
         NetworkEntityCriteria criteria = new NetworkEntityCriteria();
         if (!ObjectUtils.isEmpty(baseNeClass) && BaseNeClass.virtualization.equals(baseNeClass)) {
             criteria.setSourceManage(false);
@@ -804,21 +815,8 @@ public class MonitorDataService {
             columns.add("参数");
             for (int i = 0; i < field.length; i++) {
                 JSONObject row = new JSONObject(true);
-                JSONArray fields = ind.getFields();
-                if (CollectionUtils.isEmpty(fields)) {
-                    return new JsonModel(true, empMsg,result);
-                }
-                // 查找属性的label
-                for (int j = 0; j < fields.size(); j++) {
-                    JSONObject fieldJson = fields.getJSONObject(j);
-                    if (field[i].equalsIgnoreCase(fieldJson.getString("name"))) {
-                        fieldLabel = fieldJson;
-                        break;
-                    }
-                }
-                if(isAddComOrIndName){
-                    row.put("指标名", fieldLabel.getString("label"));
-                }
+                fieldLabel = fieldLabelMap.get(field[i]);
+                row.put("指标名", fieldLabel.getString("label"));
                 String fieldStr = field[i];
                 valueJSON = getValueJSON(indicatorValues);
                 valueUtils.transferItem(fieldLabel, valueJSON);
@@ -842,22 +840,6 @@ public class MonitorDataService {
                     continue;
                 }
                 componentNameMap.put(map.get("identifier").toString(), map.get("componentName").toString());
-            }
-            Map<String, JSONObject> fieldLabelMap = Maps.newHashMap();
-            for (int i = 0; i < field.length; i++) {
-                JSONArray fields = ind.getFields();
-                if (CollectionUtils.isEmpty(fields)) {
-                    return new JsonModel(true, empMsg,result);
-                }
-                // 查找属性的label
-                for (int j = 0; j < fields.size(); j++) {
-                    JSONObject fieldJson = fields.getJSONObject(j);
-                    if (field[i].equalsIgnoreCase(fieldJson.getString("name"))) {
-                        fieldLabelMap.put(field[i], fieldJson);
-                        columns.add(fieldJson.getString("label"));
-                        break;
-                    }
-                }
             }
             for (String componentId : componentName) {
                 JSONObject row = new JSONObject(true);
