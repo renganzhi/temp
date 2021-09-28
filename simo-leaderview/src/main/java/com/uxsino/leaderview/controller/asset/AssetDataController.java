@@ -38,9 +38,9 @@ public class AssetDataController {
 
     @ApiOperation("资产告警信息")
     @RequestMapping(value = "/getAlertByPage",method = RequestMethod.GET)
-    public JsonModel getAlertByPage(@RequestParam Integer number){
+    public JsonModel getAlertByPage(@RequestParam Integer number,@RequestParam(required = false)String dateFormatStr){
         try {
-            return assetDataService.getAlertPage(number);
+            return assetDataService.getAlertPage(number,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());

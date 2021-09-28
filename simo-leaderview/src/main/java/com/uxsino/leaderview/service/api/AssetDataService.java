@@ -89,13 +89,13 @@ public class AssetDataService {
     }
 
 
-    public JsonModel getAlertPage(Integer number) throws Exception{
+    public JsonModel getAlertPage(Integer number,String dateFormatStr) throws Exception{
         JsonModel jsonModel = rpcProcessService.alarmMsgByPage(number);
         ArrayList<LinkedHashMap<String,String>> arrayList = (ArrayList<LinkedHashMap<String,String>>) jsonModel.getObj();
         ArrayList<LinkedHashMap<Object,Object>> rows = new ArrayList<>();
         JSONArray columns = new JSONArray();
         JSONObject result = new JSONObject();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dateFormatStr");
         for (int i = 0;i < arrayList.size();i++){
          LinkedHashMap<Object,Object> row = new LinkedHashMap<>();
          row.put("规格型号",arrayList.get(i).get("提醒对象"));
