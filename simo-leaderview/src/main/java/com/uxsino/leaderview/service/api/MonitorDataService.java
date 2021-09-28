@@ -714,10 +714,10 @@ public class MonitorDataService {
             if(!model.isSuccess()){
                 return model;
             }
-            JSONObject value = (JSONObject)model.getObj();
+            JSONObject value = ObjectUtils.isEmpty(model.getObj()) ? new JSONObject() : JSONObject.parseObject(JSON.toJSONString(model.getObj()));
             res.put("name",field);
             res.put("value",value.getString(field));
-            res.put("info",field);
+            res.put("info",value.getString(field));
             return new JsonModel(true, res);
         }
         return new JsonModel(false);
