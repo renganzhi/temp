@@ -3765,7 +3765,7 @@
             {
                 "key": "orgaIds",
                 "name": "部门",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "leaderview/monitor/params/getorgas"
@@ -3801,7 +3801,7 @@
             {
                 "key": "operType",
                 "name": "台账类别",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "dataType": "static",
                 "data": [

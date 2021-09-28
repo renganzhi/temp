@@ -84,7 +84,7 @@ public class AssetDataController {
     }
 
     @ApiOperation("仓储物资变动趋势")
-    @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
+    @ApiImplicitParam(name = "operType",paramType = "query",dataType = "String",value = "需要统计的台账类别",required = false)
     @RequestMapping("/searchStandingBook")
     public JsonModel searchStandingBook(@RequestParam String operType,@RequestParam Integer interval){
         try {

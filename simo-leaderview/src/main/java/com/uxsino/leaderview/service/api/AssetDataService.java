@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.leaderview.model.SiteOrganizationCriteria;
 import com.uxsino.leaderview.model.alert.AlertLevel;
 import com.uxsino.leaderview.model.alert.AlertLevelQuery;
@@ -32,7 +33,7 @@ public class AssetDataService {
         if(ObjectUtils.isEmpty(arrayList)){
             return new JsonModel(false,"资产服务调用失败");
         }
-        List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
+        //List<AlertLevel> allLevel = rpcProcessService.findAlertLevelList(new AlertLevelQuery());
         JSONObject result = new JSONObject();
         JSONArray columns = new JSONArray();
         JSONArray colors= new JSONArray();
@@ -53,16 +54,16 @@ public class AssetDataService {
 
         columns.add("告警类别");
         if (levelList.contains("1")) {
-            columns.add(allLevel.get(5).getName());
-            colors.add(allLevel.get(5).getColor());
+            columns.add("一般");
+            colors.add("");
         }
         if (levelList.contains("2")){
-            columns.add(allLevel.get(7).getName());
-            colors.add(allLevel.get(7).getColor());
+            columns.add("严重");
+            colors.add("");
         }
         if (levelList.contains("3")) {
-            columns.add(allLevel.get(8).getName());
-            colors.add(allLevel.get(8).getColor());
+            columns.add("紧急");
+            colors.add("");
         }
         LinkedHashMap<String,String> alertName = new LinkedHashMap<>();
         alertName.put("REPERTORY","库存提醒");
@@ -267,11 +268,22 @@ public class AssetDataService {
     }
 
     public JsonModel assetCountByOrga(String orgaIds) {
-        List<String> orgaIdsList = new ArrayList<>();
-        if(Strings.isNullOrEmpty(orgaIds)){
-            //ToDo
-            //这里把后面的mc的调用移上来，然后遍历结果，得到一个所有部门的list
+        List<String> orgaIdsList ;
+        List<String> orgaIdsList2 = new ArrayList<>();
 
+        //查询部门，做一个部门id和name的Map
+        SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
+        JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
+        LinkedHashMap<Object,Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
+        List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
+        Map<String,String> organNameMap = new HashMap<>();
+        for (LinkedHashMap<Object,Object> map : orgaList){
+            organNameMap.put((String) map.get("id"), (String) map.get("name"));
+            orgaIdsList2.add((String) map.get("id"));
+        }
+        if(Strings.isNullOrEmpty(orgaIds)){
+            //如果没选部门，则展示所有部门
+            orgaIdsList = orgaIdsList2;
         }else {
             orgaIdsList = Arrays.asList(orgaIds.split(","));
         }
@@ -357,23 +369,6 @@ public class AssetDataService {
         JSONArray colors = new JSONArray();
         colors.add("#fc9822");
         colors.add("#e91818");
-        //查询部门，做一个部门id和name的Map
-        SiteOrganizationCriteria criteria = new SiteOrganizationCriteria();
-        JsonModel jsonModel = rpcProcessService.getOrganList(criteria);
-        LinkedHashMap<Object,Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
-        List<LinkedHashMap<Object,Object>> orgaList = (List<LinkedHashMap<Object, Object>>) obj.get("object");
-        Map<String,String> organNameMap = new HashMap<>();
-        for (LinkedHashMap<Object,Object> map : orgaList){
-            organNameMap.put((String) map.get("id"), (String) map.get("name"));
-        }
-        /*//组装数据
-        for(int i = 0;i < orgaIdsList.size();i++){
-            JSONObject row = new JSONObject();
-            row.put("部门",organNameMap.get(orgaIdsList.get(i)));
-            row.put("物理资产",hardwareMap.get(orgaIdsList.get(i)));
-            row.put("软件资产",softwareMap.get(orgaIdsList.get(i)));
-            rows.add(row);
-        }*/
 
         for(Map.Entry<String, Integer> map : list){
             JSONObject row = new JSONObject();
@@ -391,10 +386,10 @@ public class AssetDataService {
     }
 
     public JsonModel searchStandingBook(String operType, Integer interval) {
+        if(ObjectUtils.isEmpty(operType)){
+            operType = "in,transfer,taking,onSecondment,backToWarehouse";
+        }
         List<String> typelist = Arrays.asList(operType.split(","));
-        String startime = "2021-7-29 00:00:00";
-        startime.substring(0,10);
-
         //做一个台账类型的nameMap
         LinkedHashMap<String,String> operTypeNameMap = new LinkedHashMap<>();
         operTypeNameMap.put("in","入库");
@@ -404,7 +399,7 @@ public class AssetDataService {
         operTypeNameMap.put("backToWarehouse","回库");
 
         //去asset查询数据循环的次数,按年查则查询12次，否则都查询7次
-        int times = 0;
+        int times;
         if (interval == 30){
             times = 12;
         }else {
@@ -423,10 +418,12 @@ public class AssetDataService {
             for(int j = 0;j < times;j++){
                 LinkedHashMap<Object,Object> map = new LinkedHashMap<>();
                 //先把查询的时间设置好
-                calendar.add(Calendar.DATE,-1*interval);
+                if(j > 0) {
+                    calendar.add(Calendar.DATE, -1 * interval);
+                    calendar2.add(Calendar.DATE, -1 * interval);
+                }
                 String startTime = sf.format(calendar.getTime());
                 String fetchDate = sf2.format(calendar.getTime());
-                calendar2.add(Calendar.DATE,-1*interval);
                 String endTime = sf.format(calendar2.getTime());
 
                 AssetCriteria criteria = new AssetCriteria();
