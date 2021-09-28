@@ -2847,7 +2847,7 @@ public class MonitorDataService {
             for (LinkedHashMap<Object, Object> map : list) {
                 JSONObject row = new JSONObject();
                 row.put(name, map.get(field));
-                row.put("部件", componentNameMap.get(map.get("identifier")));
+                row.put("部件", componentNameMap.get(String.valueOf(map.get("identifier"))));
                 rows.add(row);
             }
         }
