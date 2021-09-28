@@ -361,7 +361,7 @@
             },
             {
                 "key": "dateFormatStr",
-                "name": "日期格式",
+                "name": "日期裁剪",
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
@@ -449,7 +449,7 @@
             },
             {
                 "key": "dateFormatStr",
-                "name": "日期格式",
+                "name": "日期裁剪",
                 "notNull": true,
                 "type": "drop-down",
                 "dataType": "remote",
