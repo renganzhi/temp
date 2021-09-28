@@ -338,9 +338,9 @@ public class MonitorDataController {
                             @RequestParam(required = false) String topoId,
                             @RequestParam(required = false) String[] column,@RequestParam(required = false)String[] hostColumn,
                             @RequestParam(required = false)String sortColumn, @RequestParam(required = false)Boolean sortType,
-                            @RequestParam(required = false)String runStatus) {
+                            @RequestParam(required = false)String runStatus, @RequestParam(required = false)String dateFormatStr) {
         try {
-            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId);
+            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -446,12 +446,13 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
             @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
             @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
-            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true)})
+            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true),
+            @ApiImplicitParam(name = "dataFormat", paramType = "query", dataType = "String", value = "日期格式", required = true)})
     @RequestMapping(value = "/indicator/history/record", method = RequestMethod.GET)
     @ResponseBody
     public JsonModel getIndHistoryValue(@RequestParam String[] neIds, String indicators,
                                         @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
-                                        @RequestParam IndPeriod period, @RequestParam Integer interval) {
+                                        @RequestParam IndPeriod period, @RequestParam Integer interval,@RequestParam String dateFormatStr) {
         try {
             if (Objects.equals("healthy", indicators)) {
                 if (IndPeriod._1day == period) {
@@ -472,7 +473,7 @@ public class MonitorDataController {
                 }else if (IndPeriod._1hour == period) {
                     intervalType = IntervalType.minute;
                 }
-                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval, period);
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval, period, dateFormatStr);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -493,7 +494,8 @@ public class MonitorDataController {
     public JsonModel getMultipleIndHistoryValueRecordHost(@RequestParam String[] neIds, String[] indicators,
                                                   @RequestParam(required = false) String windows,
                                                   @RequestParam IndPeriod period,
-                                                  @RequestParam Integer interval) {
+                                                  @RequestParam Integer interval,
+                                                  @RequestParam String dateFormatStr) {
         try {
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
@@ -505,7 +507,7 @@ public class MonitorDataController {
             }else if (IndPeriod._1hour == period) {
                 intervalType = IntervalType.minute;
             }
-            return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period);
+            return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -534,7 +536,8 @@ public class MonitorDataController {
     public JsonModel getMultipleIndHistoryValue(@RequestParam String[] neIds, String[] indicators,
                                                 @RequestParam(required = false) String windows,
                                                 @RequestParam IndPeriod period,
-                                                @RequestParam Integer interval) {
+                                                @RequestParam Integer interval,
+                                                @RequestParam String dateFormatStr) {
         try {
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
@@ -547,7 +550,7 @@ public class MonitorDataController {
                 intervalType = IntervalType.minute;
             }
 
-            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period);
+            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -800,13 +803,14 @@ public class MonitorDataController {
     @ResponseBody
     public JsonModel recordDoubleAxis(@RequestParam String[] neIds, @RequestParam String indicatorsLeft,
                                       @RequestParam String componentNameLeft, @RequestParam String fieldLeft, @RequestParam String indicatorsRight,
-                                      @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period) {
+                                      @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period,
+                                      @RequestParam(required = false) String dateFormatStr) {
         try {
             if (ObjectUtils.isEmpty(neIds)) {
                 return new JsonModel(true, MonitorUtils.empObj());
             }
             return monitorDataService.multipleIndicatorHistory(neIds[0], indicatorsLeft, componentNameLeft, fieldLeft, indicatorsRight,
-                    componentNameRight, fieldRight, period);
+                    componentNameRight, fieldRight, period, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

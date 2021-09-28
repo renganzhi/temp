@@ -28,6 +28,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -215,10 +216,12 @@ public class AlertDataService {
     }
 
     @SuppressWarnings("unchecked")
-    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column) throws Exception {
+    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column, String dateFormatStr) throws Exception {
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         List<String > diffColumns;
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
             diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
         }else {
@@ -278,7 +281,7 @@ public class AlertDataService {
                 row.put("IP地址", alert.getIp());
             }
             row.put("告警内容", alert.getRecentAlertBrief());
-            row.put("告警时间", alert.getRecentAlertDateStr());
+            row.put("告警时间", dateFormat.format(oldDateFormat.parse(alert.getRecentAlertDateStr())));
             if (++num > number) break;
             rows.add(row);
         }
@@ -725,8 +728,10 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
-                                  Integer number, HttpSession session, String[] column, String topoId) throws Exception{
+                                  Integer number, HttpSession session, String[] column, String topoId, String dateFormatStr) throws Exception{
         JSONObject result = new JSONObject();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         List<String > diffColumns = Lists.newArrayList("资源名称","告警级别","告警来源","IP地址","告警内容","告警时间","状态");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
@@ -764,7 +769,7 @@ public class AlertDataService {
                 }
                 row.put("IP地址", ne.getIp());
                 row.put("告警内容", alert.getRecentAlertBrief());
-                row.put("告警时间", alert.getRecentAlertDateStr());
+                row.put("告警时间", dateFormat.format(oldDateFormat.parse(alert.getRecentAlertDateStr())));
                 row.put("状态", alert.getHandleStatusName());
                 diffColumns.forEach(row::remove);
                 rows.add(row);
