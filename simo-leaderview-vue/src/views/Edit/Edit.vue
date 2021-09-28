@@ -2008,7 +2008,7 @@
                 <div class="MyUrlArry" v-if="selectedItem.ctDataSource === 'system' && selectedItem.moreUrlArry">
                     <div  class="advancedset" id="colorWhiteUrl" style="width: 250px;" v-for="(item,index) in selectedItem.moreUrlArry" :key="index">
                       <span style="width: 160px;display: inline-block;overflow: hidden;">{{item.name}}  </span>
-                      <div class="deletOneUrl" @click="DeletOneUrl(index)" style="position: absolute;display: inherit;padding-left: 15px">
+                      <div class="deletOneUrl" @click="DeletOneUrl(index)" style="display: inherit;padding-left: 15px">
                         删除
                       </div>
                     </div>
