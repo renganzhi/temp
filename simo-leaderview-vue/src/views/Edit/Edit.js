@@ -1239,7 +1239,7 @@ export default {
         } else {
           this.chartNum = []
         }
-        if (res.obj.isDynamicTemplate || true) {
+        if (res.obj.isDynamicTemplate) {
           if (res.obj.templateType === 'single') {
             this.CanChangeServes = true
             // this.paintObj.templateConf.baseneclss  neclass

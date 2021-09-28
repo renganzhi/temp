@@ -1147,14 +1147,10 @@ public class HomePageController {
     @ApiOperation("模板导出成zip包")
     @GetMapping("/exportTemplate")
     public void exportTemplate(@RequestParam("ids") String ids, HttpServletRequest request, HttpServletResponse response) {
-//		try {
         List<HomePage> pages = Lists.newArrayList();
         for (String str : ids.split(",")) {
             Long id = Long.valueOf(str);
             HomePage page = homePageService.getById(id);
-//			if (ObjectUtils.isEmpty(page)){
-//				return new JsonModel(false, "页面不存在");
-//			}
             pages.add(page);
         }
         logger.info("导出开始");

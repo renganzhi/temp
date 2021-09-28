@@ -265,9 +265,9 @@ public class BusinessDataController {
     })
     @ResponseBody
     public JsonModel getHistoryValue(HttpSession session, @RequestParam String[] business,
-                                     @RequestParam Indicator indicator, @RequestParam String period){
+                                     @RequestParam Indicator indicator, @RequestParam String period,@RequestParam String dateFormatStr){
         try {
-            return businessDataService.getHistoryValue(session, business, indicator, period);
+            return businessDataService.getHistoryValue(session, business, indicator, period, dateFormatStr);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -299,9 +299,9 @@ public class BusinessDataController {
             @ApiImplicitParam(name = "number", paramType = "query", dataType = "int", value = "展示条数") })
     @ResponseBody
     public JsonModel getBusinessAlertInfoForTable(HttpSession session, @RequestParam String business,
-                                                  @RequestParam Integer number) {
+                                                  @RequestParam Integer number,@RequestParam(required = false)String dateFormatStr) {
         try {
-            return businessDataService.getBusinessAlertInfoForTable(session, business, number);
+            return businessDataService.getBusinessAlertInfoForTable(session, business, number, dateFormatStr);
         }catch (Exception e){
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

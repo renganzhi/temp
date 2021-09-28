@@ -358,6 +358,15 @@
                         "value": 20
                     }
                 ]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -437,6 +446,15 @@
                 "dataUrl": "/leaderview/monitor/params/getInterval",
                 "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
                 "params": ["period"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },

@@ -83,9 +83,9 @@ public class AlertDataController {
     @ResponseBody
     public JsonModel getOtherAlertTable(HttpSession session,
                                         @RequestParam String type, @RequestParam Long number,
-                                        @RequestParam(required = false)String[] column) {
+                                        @RequestParam(required = false)String[] column,@RequestParam(required = false)String dateFormatStr) {
         try {
-            return alertDataService.getOtherAlertTable(session, type, number, column);
+            return alertDataService.getOtherAlertTable(session, type, number, column, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -483,9 +483,10 @@ public class AlertDataController {
                                   @RequestParam(required = false) String[] neIds,
                                   @RequestParam Integer number,
                                   @RequestParam(required = false) String[] column,
+                                  @RequestParam(required = false) String dateFormatStr,
                                   HttpSession session){
         try {
-            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column, topoId);
+            return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column, topoId, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

@@ -255,7 +255,7 @@ public class BusinessDataService {
      * @param business 业务Id
      * @param number 展示条数
      */
-    public JsonModel getBusinessAlertInfoForTable(HttpSession session, String business, Integer number) throws Exception {
+    public JsonModel getBusinessAlertInfoForTable(HttpSession session, String business, Integer number, String dateFormatStr) throws Exception {
         JSONArray columns = new JSONArray();
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
@@ -272,7 +272,7 @@ public class BusinessDataService {
             obj.put("rows", emp);
             return new JsonModel(true, obj);
         }
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         Set<String> bnsIds = alertRecords.stream().map(AlertRecord::getObjectId).collect(Collectors.toSet());
 
         // 根据业务id获取业务id与业务名称键值对
@@ -298,7 +298,7 @@ public class BusinessDataService {
                 }
             }
             row.put("告警内容", alertRecord.getRecentAlertBrief());
-            row.put("首次告警时间", simpleDateFormat.format(alertRecord.getFirstAlertDate()));
+            row.put("首次告警时间", dateFormat.format(alertRecord.getFirstAlertDate()));
             rows.add(row);
             if (++j > number)
                 break;
@@ -350,7 +350,7 @@ public class BusinessDataService {
      * @param indicator 指标名
      * @param period 统计时段
      */
-    public JsonModel getHistoryValue(HttpSession session, String[] business, Indicator indicator, String period) throws Exception{
+    public JsonModel getHistoryValue(HttpSession session, String[] business, Indicator indicator, String period,String dateFormatStr) throws Exception{
         if (ObjectUtils.isEmpty(business) || ObjectUtils.isEmpty(indicator)){
             return new JsonModel(true, empObj());
         }
@@ -423,7 +423,7 @@ public class BusinessDataService {
             }
         }
         //遍历统计所有数据，将时间相同的数据归为一组数据用于展示
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         List<Long> usedData = Lists.newArrayList();
         for (int i = 0; i < wrapArr.size(); i++) {
             JSONObject obj = wrapArr.getJSONObject(i);
@@ -431,7 +431,7 @@ public class BusinessDataService {
             Long fetchDateLong = obj.getLong("fetchDate");
             if (usedData.contains(fetchDateLong)) continue;
             usedData.add(fetchDateLong);
-            row.put("采集时间", format.format(new Date(fetchDateLong)));
+            row.put("采集时间", dateFormat.format(new Date(fetchDateLong)));
             row.put(obj.getString("name"), obj.getDoubleValue("value"));
             for (int j = i + 1; j < wrapArr.size(); j++) {
                 JSONObject temObj = wrapArr.getJSONObject(j);

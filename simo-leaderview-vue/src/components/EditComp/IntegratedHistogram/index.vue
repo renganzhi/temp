@@ -1083,7 +1083,11 @@ export default {
                 fontSize: this.item.axisLabelSize4 || '14'
               },
               formatter: (params, index) => {
-                var rows = this.item.chartData4.rows
+                var newArr=[];
+                for(var i=0;i<this.item.chartData4.rows.length;i++){
+                    newArr.unshift(this.item.chartData4.rows[i])
+                }
+                var rows = newArr
                 let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
                 let strLen = Math.round(barW / (this.item.axisLabelSize4 * 2))
                 if (this.item.formatterType4 === '0') {
@@ -1176,7 +1180,12 @@ export default {
           },
           series: myseries
         }
-        let rows = this.item.chartData4.rows
+        var newArr=[];
+        for(var i=0;i<this.item.chartData4.rows.length;i++){
+            newArr.unshift(this.item.chartData4.rows[i])
+        }
+        var rows = newArr
+        // let rows = this.item.chartData4.rows.reverse()
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / (this.item.axisLabelSize4 * 2))
         if (this.item.formatterType4 === '0' && this.oldformatterType !== this.item.formatterType4) {

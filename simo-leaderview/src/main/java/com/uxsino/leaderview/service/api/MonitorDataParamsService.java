@@ -1556,4 +1556,14 @@ public class MonitorDataParamsService {
 
         return new JsonModel(true,list);
     }
+
+    public JsonModel getDateFormat() {
+        JSONArray res = new JSONArray();
+        res.add(newResultObj("年-月-日 时:分:秒","yyyy-MM-dd hh:mm:ss"));
+        res.add(newResultObj("年-月-日 时:分","yyyy-MM-dd hh:mm"));
+        res.add(newResultObj("月-日 时:分","MM-dd hh:mm"));
+        res.add(newResultObj("年-月-日","yyyy-MM-dd"));
+        res.add(newResultObj("时:分:秒","hh:mm:ss"));
+        return new JsonModel(true,res);
+    }
 }

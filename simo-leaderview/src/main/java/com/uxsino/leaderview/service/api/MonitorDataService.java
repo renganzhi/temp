@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
@@ -293,8 +294,9 @@ public class MonitorDataService {
      * @return
      */
     public JsonModel neList(Long domainId, String neIds, BaseNeClass baseNeClass, HttpSession session,
-                            String[] column, String[] hostColumn, String sortColumn, Boolean sortType, String runStatus, String topoId) throws Exception {
+                            String[] column, String[] hostColumn, String sortColumn, Boolean sortType, String runStatus, String topoId,String dateFormatStr) throws Exception {
         //List<String > diffColumns = Lists.newArrayList("资源名称","IP地址","资源类型","运行状态","更新时间");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         List<String> diffColumns = Lists.newArrayList("资源名称", "IP地址", "资源类型", "运行状态", "更新时间", "健康度");
         List<String> hostColums = Lists.newArrayList("宿主机资源名称", "宿主机IP地址", "宿主机资源类型", "宿主机运行状态", "宿主机更新时间", "宿主机健康度");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]) : column;
@@ -368,7 +370,7 @@ public class MonitorDataService {
             row.put("IP地址", ne.getIp());
             row.put("资源类型", ne.getNeClass());
             row.put("运行状态", Optional.ofNullable(ne.getRunStatus()).map(RunStatus::getName).orElse(""));
-            row.put("更新时间", sdf.format(ne.getPatrolTime()));
+            row.put("更新时间", dateFormat.format(ne.getPatrolTime()));
             row.put("健康度", ne.getHealth());
             if (!ObjectUtils.isEmpty(hostColumn)) {
                 NetworkEntity hardWare = map.get(ne.getHostId());
@@ -377,7 +379,7 @@ public class MonitorDataService {
                 row.put("宿主机IP地址", flag ? "--" : hardWare.getIp());
                 row.put("宿主机资源类型", flag ? "--" : hardWare.getNeClass());
                 row.put("宿主机运行状态", flag ? "--" : Optional.ofNullable(hardWare.getRunStatus()).map(RunStatus::getName).orElse(""));
-                row.put("宿主机更新时间", flag ? "--" : hardWare.getPatrolTime());
+                row.put("宿主机更新时间", flag ? "--" : dateFormat.format(hardWare.getPatrolTime()));
                 row.put("宿主机健康度", flag ? "--" : hardWare.getHealth());
 
             }
@@ -714,10 +716,10 @@ public class MonitorDataService {
             if(!model.isSuccess()){
                 return model;
             }
-            JSONObject value = (JSONObject)model.getObj();
+            JSONObject value = ObjectUtils.isEmpty(model.getObj()) ? new JSONObject() : JSONObject.parseObject(JSON.toJSONString(model.getObj()));
             res.put("name",field);
             res.put("value",value.getString(field));
-            res.put("info",field);
+            res.put("info",value.getString(field));
             return new JsonModel(true, res);
         }
         return new JsonModel(false);
@@ -1165,7 +1167,7 @@ public class MonitorDataService {
     }
 
     public JsonModel getHistoryValue(String[] neIds, String indicators, String windows, String field, IntervalType intervalType,
-                                     Integer interval, IndPeriod period) throws Exception {
+                                     Integer interval, IndPeriod period, String dateFormatStr) throws Exception {
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
@@ -1263,6 +1265,8 @@ public class MonitorDataService {
         JSONObject unitTransfer = MonitorUtils.unitTransfer(values, getUnit(model), field);
         values = unitTransfer.getJSONArray("result");
         List<String> cacheTime = Lists.newArrayList();
+        SimpleDateFormat oldDataFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);
             JSONObject row = new JSONObject();
@@ -1270,7 +1274,7 @@ public class MonitorDataService {
             if (!cacheTime.contains(fetchDate)) {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate) && !"Infinity".equals(o.getString(finalField)));
-                row.put("采集时间", fetchDate);
+                row.put("采集时间", dateFormat.format(oldDataFormat.parse(fetchDate)));
                 MonitorUtils.action(filter, o -> row.put(neIpMap.get(o.getString("neId")), o.getString(finalField)));
                 cacheTime.add(fetchDate);
                 if (row.size() == 1) continue;
@@ -1663,7 +1667,7 @@ public class MonitorDataService {
     }
 
     public JsonModel getMultipleIndHistoryValueRecordHost(String[] neIds, String[] indicators, String windows,
-                                                          IntervalType intervalType, Integer interval, IndPeriod period) throws Exception {
+                                                          IntervalType intervalType, Integer interval, IndPeriod period, String dateFormatStr) throws Exception {
         if ((neIds == null || neIds.length == 0)) {
             return new JsonModel(false, "未选择资源");
         }
@@ -1680,11 +1684,11 @@ public class MonitorDataService {
         if (org.springframework.util.StringUtils.isEmpty(hostIds)) {
             return new JsonModel(false, "宿主资源不存在");
         }
-        return getMultipleIndHistoryValue(hostIds.split(","), indicators, windows, intervalType, interval, period);
+        return getMultipleIndHistoryValue(hostIds.split(","), indicators, windows, intervalType, interval, period, dateFormatStr);
     }
 
     public JsonModel getMultipleIndHistoryValue(String[] neIds, String[] indicators, String windows,
-                                                IntervalType intervalType, Integer interval, IndPeriod period) throws Exception {
+                                                IntervalType intervalType, Integer interval, IndPeriod period,String dateFormatStr) throws Exception {
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
@@ -1719,7 +1723,8 @@ public class MonitorDataService {
 
         List<String> filedList = Lists.newArrayList();
         Map<String, String> filedLabelMap = Maps.newHashMap();
-
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         // 获取数据中心的指标数据
         for (int i = 0; i < indicatorArr.size(); i++) {
             String indicatorId = indicatorArr.getString(i);
@@ -1733,7 +1738,11 @@ public class MonitorDataService {
                 action(aggValues, o -> {
                     o.put("field", "healthy");
                     o.put("neId", ne.getId());
-                    o.put("fetchDate", o.get("采集时间"));
+                    try {
+                        o.put("fetchDate", dateFormat.format(oldDateFormat.parse(o.get("采集时间").toString())));
+                    } catch (ParseException e) {
+                        log.error("日期格式化错误{}",o.get("采集时间"));
+                    }
                     o.put("healthy", o.get(ne.getIp() + ne.getName()));
                 });
             } else {
@@ -1796,7 +1805,7 @@ public class MonitorDataService {
             if (!cacheTime.contains(fetchDate)) {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
-                row.put("采集时间", fetchDate);
+                row.put("采集时间",  dateFormat.format(oldDateFormat.parse(fetchDate)));
                 MonitorUtils.action(filter, o -> row.put(filedLabelMap.get(o.getString("field")), o.getString(MonitorUtils.getValueKey(o, filedList))));
                 cacheTime.add(fetchDate);
                 rows.add(row);
@@ -3359,7 +3368,7 @@ public class MonitorDataService {
      */
     public JsonModel multipleIndicatorHistory(String neId, String indicatorsLeft, String componentNameLeft,
                                               String fieldLeft, String indicatorsRight, String componentNameRight,
-                                              String fieldRight, IndPeriod period) throws Exception {
+                                              String fieldRight, IndPeriod period, String dateFormatStr) throws Exception {
         // 由于双轴曲线没有可选的时间间隔,故统计时段为天、周、月时的时间间隔分别为5分钟、20分钟、60分钟
 
         //由于会出现indicatorName和fieldName相同但ComponentName不同的情况，如果只将indicatorName+fieldName
@@ -3577,11 +3586,13 @@ public class MonitorDataService {
             }
             rows.add(row);
         }
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         while (i < leftCount) {
             JSONObject leftObj = leftValueArray.getJSONObject(i);
             String leftTime = leftObj.getString("fetchDate");
             JSONObject row = new JSONObject();
-            row.put("采集时间", leftTime);
+            row.put("采集时间", dateFormat.format(oldDateFormat.parse(leftTime)));
             row.put(filedLabelMap.get(leftNameKey), leftObj.getString(MonitorUtils.getValueKey(leftObj, filedList)));
             row.put(filedLabelMap.get(rightNameKey), "0");
             i++;
@@ -3591,7 +3602,7 @@ public class MonitorDataService {
             JSONObject rightObj = rightValueArray.getJSONObject(j);
             String rightTime = rightObj.getString("fetchDate");
             JSONObject row = new JSONObject();
-            row.put("采集时间", rightTime);
+            row.put("采集时间", dateFormat.format(oldDateFormat.parse(rightTime)));
             row.put(filedLabelMap.get(rightNameKey), rightObj.getString(MonitorUtils.getValueKey(rightObj, filedList)));
             if (!isOnlyOne)
                 row.put(filedLabelMap.get(leftNameKey), "0");
