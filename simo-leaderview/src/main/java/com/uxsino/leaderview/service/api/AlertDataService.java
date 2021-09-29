@@ -220,7 +220,7 @@ public class AlertDataService {
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         List<String > diffColumns;
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
             diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
@@ -731,7 +731,7 @@ public class AlertDataService {
                                   Integer number, HttpSession session, String[] column, String topoId, String dateFormatStr) throws Exception{
         JSONObject result = new JSONObject();
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         List<String > diffColumns = Lists.newArrayList("资源名称","告警级别","告警来源","IP地址","告警内容","告警时间","状态");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);

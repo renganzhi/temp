@@ -3,6 +3,7 @@ package com.uxsino.leaderview.controller.asset;
 
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.api.AssetDataService;
+import com.uxsino.leaderview.service.api.MonitorDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,6 +41,9 @@ public class AssetDataController {
     @RequestMapping(value = "/getAlertByPage",method = RequestMethod.GET)
     public JsonModel getAlertByPage(@RequestParam Integer number,@RequestParam(required = false)String dateFormatStr){
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return assetDataService.getAlertPage(number,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();

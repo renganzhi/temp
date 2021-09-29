@@ -97,7 +97,7 @@ public class AssetDataService {
         JSONArray columns = new JSONArray();
         JSONObject result = new JSONObject();
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormatStr);
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf2 = new SimpleDateFormat(MonitorDataService.sdfStr);
         for (int i = 0;i < arrayList.size();i++){
          LinkedHashMap<Object,Object> row = new LinkedHashMap<>();
          row.put("规格型号",arrayList.get(i).get("提醒对象"));
