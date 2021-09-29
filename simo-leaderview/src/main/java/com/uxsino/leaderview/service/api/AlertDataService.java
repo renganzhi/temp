@@ -576,6 +576,57 @@ public class AlertDataService {
         return result;
     }
 
+    public JsonModel getStatByStatusText(HttpSession session, String status, Long domainId,
+                                     String baseNeClass, String neClass, String neIds) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        if(StringUtils.isEmpty(neIds)){
+            return new JsonModel(false,"未传入关键数据");
+        }
+        criteria.setIds(Lists.newArrayList(neIds));
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+
+        ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
+        if (ObjectUtils.isEmpty(arr)) {
+            return new JsonModel(false,"未查询到相关数据");
+        }
+        List<String> statusList = new ArrayList<>();
+        if(StringUtils.isEmpty(status)){
+            for (AlertHandleStatus value : AlertHandleStatus.values()) {
+                statusList.add(value.toString());
+            }
+        }else {
+            statusList = Arrays.asList(status.split(","));
+        }
+
+        long count = 0;
+        StatisticsQuery statisticsQuery = new StatisticsQuery();
+        statisticsQuery.setGroupField("handleStatus");
+        statisticsQuery.setObjIds(neIds);
+        statisticsQuery.setAlertType(AlertType.Alert);
+        //不传就是查所有状态
+        statisticsQuery.setHandleStatus(null);
+        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
+        for (String s: statusList) {
+            for (int i = 0; i < statisticsResults.size(); i++) {
+                StatisticsResult statisticsResult = statisticsResults.get(i);
+                if(statisticsResult.getScopeValue().equals(s)) {
+                    count += statisticsResult.getAlertCount();
+                }
+            }
+        }
+        if(!ObjectUtils.isEmpty(statisticsResults)){
+            count = + statisticsResults.get(0).getAlertCount();
+        }
+        JSONObject result = new JSONObject();
+        result.put("unit","个");
+        result.put("value",count);
+        result.put("info",count);
+        result.put("name","资源告警数");
+        return new JsonModel(true,result);
+    }
+
+
     /**
      * 按状态统计资源的告警条数
      * @param domainId 域ID
