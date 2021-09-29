@@ -343,6 +343,9 @@ public class MonitorDataController {
                             @RequestParam(required = false)String sortColumn, @RequestParam(required = false)Boolean sortType,
                             @RequestParam(required = false)String runStatus, @RequestParam(required = false)String dateFormatStr) {
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
@@ -460,8 +463,12 @@ public class MonitorDataController {
     @ResponseBody
     public JsonModel getIndHistoryValue(@RequestParam String[] neIds, String indicators,
                                         @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
-                                        @RequestParam IndPeriod period, @RequestParam Integer interval,@RequestParam String dateFormatStr) {
+                                        @RequestParam IndPeriod period, @RequestParam Integer interval,
+                                        @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             if (Objects.equals("healthy", indicators)) {
                 if (IndPeriod._1day == period) {
                     interval = 5;
@@ -503,8 +510,11 @@ public class MonitorDataController {
                                                   @RequestParam(required = false) String windows,
                                                   @RequestParam IndPeriod period,
                                                   @RequestParam Integer interval,
-                                                  @RequestParam String dateFormatStr) {
+                                                  @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
                 intervalType = IntervalType.minute;
@@ -545,8 +555,11 @@ public class MonitorDataController {
                                                 @RequestParam(required = false) String windows,
                                                 @RequestParam IndPeriod period,
                                                 @RequestParam Integer interval,
-                                                @RequestParam String dateFormatStr) {
+                                                @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
                 intervalType = IntervalType.minute;
@@ -816,6 +829,9 @@ public class MonitorDataController {
         try {
             if (ObjectUtils.isEmpty(neIds)) {
                 return new JsonModel(true, MonitorUtils.empObj());
+            }
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
             }
             return monitorDataService.multipleIndicatorHistory(neIds[0], indicatorsLeft, componentNameLeft, fieldLeft, indicatorsRight,
                     componentNameRight, fieldRight, period, dateFormatStr);

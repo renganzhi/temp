@@ -8,6 +8,7 @@ import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.model.NeClass;
 import com.uxsino.commons.utils.StringUtils;
 import com.uxsino.leaderview.service.api.AlertDataService;
+import com.uxsino.leaderview.service.api.MonitorDataService;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
@@ -85,6 +86,9 @@ public class AlertDataController {
                                         @RequestParam String type, @RequestParam Long number,
                                         @RequestParam(required = false)String[] column,@RequestParam(required = false)String dateFormatStr) {
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return alertDataService.getOtherAlertTable(session, type, number, column, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
@@ -486,6 +490,9 @@ public class AlertDataController {
                                   @RequestParam(required = false) String dateFormatStr,
                                   HttpSession session){
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return alertDataService.getAlertInfo(domainId, baseNeClass, neIds, number, session, column, topoId, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();

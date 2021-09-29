@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.business.Indicator;
 import com.uxsino.leaderview.service.api.BusinessDataService;
+import com.uxsino.leaderview.service.api.MonitorDataService;
 import com.uxsino.watcher.lib.annoation.Business;
 import com.uxsino.watcher.lib.enums.BusinessConstants;
 import io.swagger.annotations.Api;
@@ -265,8 +266,11 @@ public class BusinessDataController {
     })
     @ResponseBody
     public JsonModel getHistoryValue(HttpSession session, @RequestParam String[] business,
-                                     @RequestParam Indicator indicator, @RequestParam String period,@RequestParam String dateFormatStr){
+                                     @RequestParam Indicator indicator, @RequestParam String period,@RequestParam(required = false) String dateFormatStr){
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return businessDataService.getHistoryValue(session, business, indicator, period, dateFormatStr);
         }catch (Exception e){
             e.printStackTrace();
@@ -301,6 +305,9 @@ public class BusinessDataController {
     public JsonModel getBusinessAlertInfoForTable(HttpSession session, @RequestParam String business,
                                                   @RequestParam Integer number,@RequestParam(required = false)String dateFormatStr) {
         try {
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return businessDataService.getBusinessAlertInfoForTable(session, business, number, dateFormatStr);
         }catch (Exception e){
             e.printStackTrace();

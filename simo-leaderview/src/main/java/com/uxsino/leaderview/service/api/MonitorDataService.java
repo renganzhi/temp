@@ -57,7 +57,7 @@ import static com.uxsino.leaderview.utils.MonitorUtils.getValueJSON;
 @Slf4j
 public class MonitorDataService {
 
-    private static String sdfStr = "yyyy-MM-dd HH:mm:ss";
+    public static String sdfStr = "yyyy-MM-dd HH:mm:ss";
 
     private static Pattern NUMBER_PATTERN = Pattern.compile("(-?[1-9]\\d*\\.?\\d*)|(0\\.\\d*[1-9])");
 
@@ -1249,7 +1249,7 @@ public class MonitorDataService {
         JSONObject unitTransfer = MonitorUtils.unitTransfer(values, getUnit(model), field);
         values = unitTransfer.getJSONArray("result");
         List<String> cacheTime = Lists.newArrayList();
-        SimpleDateFormat oldDataFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat oldDataFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);
@@ -1707,7 +1707,7 @@ public class MonitorDataService {
 
         List<String> filedList = Lists.newArrayList();
         Map<String, String> filedLabelMap = Maps.newHashMap();
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         // 获取数据中心的指标数据
         for (int i = 0; i < indicatorArr.size(); i++) {
@@ -3570,7 +3570,7 @@ public class MonitorDataService {
             }
             rows.add(row);
         }
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         while (i < leftCount) {
             JSONObject leftObj = leftValueArray.getJSONObject(i);
