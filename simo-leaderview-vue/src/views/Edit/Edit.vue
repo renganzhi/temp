@@ -2524,8 +2524,8 @@ html[data-theme="blueWhite"] {
     border-bottom: 1px solid transparent;
   }
   .el-collapse-item__content {
-    padding-top: 25px;
-    padding-bottom: 0px;
+    padding-top: 25px !important;
+    padding-bottom: 0px !important;
     color: inherit;
   }
   .el-collapse {
