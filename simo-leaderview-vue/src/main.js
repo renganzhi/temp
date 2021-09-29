@@ -4,9 +4,6 @@ import ElementUI, { Notification } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './vuex/store'
 // import ''
 import JSMpeg from '../static/js/jsmpeg'
 
@@ -26,7 +23,9 @@ import './plugins/element'
 import '#/font/asn/icon.css'
 import { gbs } from '@/config/settings'
 import { VTooltip } from 'v-tooltip'
-
+import App from './App.vue'
+import router from './router'
+import store from './vuex/store'
 // Vue.use(VueAxios, axios)
 // Vue.use(VCharts)
 // Vue.use(ElementUI)
