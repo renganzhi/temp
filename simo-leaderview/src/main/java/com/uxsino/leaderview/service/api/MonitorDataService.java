@@ -471,6 +471,8 @@ public class MonitorDataService {
                 return new JsonModel(true, empObj);
             }
         }
+        //当查找到属性label后，需要替换空值内的指标名称
+        empObj = newResultObj("name", Objects.isNull(ind) ? "" : fieldLabel.get("label"), "unit", "");
 
         // 获取指标监控策略
         Boolean strategyField = getStrategy(neIds, indicators, field);
