@@ -825,8 +825,8 @@
         "key": "enable_single_alert_status_statistics",
         "name": "单个资源告警状态统计",
         "component": "alert",
-        "type": "NEWtextArea",
-        "url": "/leaderview/alert/getStatByStatus",
+        "type": "NEWtextArea,NewDoubler",
+        "url": "/leaderview/alert/getStatByStatusText",
         "method" : "post",
         "params": [
             {
@@ -866,8 +866,8 @@
             {
                 "key": "status",
                 "name": "告警状态",
-                "notNull": true,
-                "type": "drop-down",
+                "notNull": false,
+                "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/alert/params/getStatus",
                 "params": ["neId"]
