@@ -2291,11 +2291,15 @@ public class MonitorDataService {
         String name = "指标值";
         try {
             if (org.apache.commons.lang3.ObjectUtils.allNotNull(ind.getFields())) {
-                for (int i = 0; i < ind.getFields().size(); i++) {
-                    JSONObject obj = ind.getFields().getJSONObject(i);
-                    if (field.equals(obj.getString("name"))) {
-                        name = obj.getString("label");
-                        break;
+                if(ObjectUtils.isEmpty(field) && ObjectUtils.isEmpty(ind.getFields())){
+                    name = ind.getLabel();
+                }else {
+                    for (int i = 0; i < ind.getFields().size(); i++) {
+                        JSONObject obj = ind.getFields().getJSONObject(i);
+                        if (field.equals(obj.getString("name"))) {
+                            name = obj.getString("label");
+                            break;
+                        }
                     }
                 }
             }
