@@ -60,7 +60,7 @@ public class HomePage {
     private String templateConf;
 
     /** 是否为动态模板*/
-    private Boolean isDynamicTemplate;
+    private Boolean isDynamicTemplate = false;
 
     // 创建人ID
     private Long createUserId;

@@ -472,7 +472,9 @@ public class MonitorDataService {
             }
         }
         //当查找到属性label后，需要替换空值内的指标名称
-        empObj = newResultObj("name", Objects.isNull(ind) ? "" : fieldLabel.get("label"), "unit", "");
+        if(!ObjectUtils.isEmpty(fieldLabel)){
+            empObj = newResultObj("name", Objects.isNull(ind) ? "" : fieldLabel.get("label"), "unit", "");
+        }
 
         // 获取指标监控策略
         Boolean strategyField = getStrategy(neIds, indicators, field);
@@ -2851,6 +2853,10 @@ public class MonitorDataService {
     }
 
     public JsonModel getswRunEntryOfOracle(String neIds, Integer number) throws Exception {
+        JSONObject result = new JSONObject();
+        List<String> columns = Lists.newArrayList("资源名称","用户名","进程名","进程状态","内存消耗量","CPU使用率");
+        result.put("columns", columns);
+        result.put("rows", new JSONArray());
         // 1、取出宿主机id
         NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
         String hostId = ne.getHostId();
@@ -2878,14 +2884,12 @@ public class MonitorDataService {
             jsonModel = rpcProcessService.searchByFieldQuery(type, IsHistory, indValueQuery);
         } catch (Exception e) {
             e.printStackTrace();
-            return new JsonModel(false, jsonModel.getMsg());
+            return new JsonModel(false, jsonModel.getMsg(),result);
         }
         //3、封装获取的数据
         List<LinkedHashMap<Object, Object>> list = new ArrayList<>();
         list = (List<LinkedHashMap<Object, Object>>) jsonModel.getObj();
         List<LinkedHashMap<Object,Object>> rows = new ArrayList<>();
-        JSONObject result = new JSONObject();
-        List<String> columns = Lists.newArrayList("资源名称","用户名","进程名","进程状态","内存消耗量","CPU使用率");
 
         Integer count = 0;
         if (!ObjectUtils.isEmpty(list)) {
@@ -2908,7 +2912,6 @@ public class MonitorDataService {
                 }
             }
         }
-        result.put("columns", columns);
         result.put("rows", rows);
         return new JsonModel(true, result);
     }
@@ -4532,12 +4535,12 @@ public class MonitorDataService {
     public JsonModel getnNetMoveTablePerformance(String neId, PerormanceView view, String[] needColumns) {
         JSONObject res = new JSONObject();
         JSONArray columns = new JSONArray();
-        res.put("columns", columns);
         Map translator = view.getTranslator();
         for (int i = 0; i < needColumns.length; ++i) {
             columns.add(translator.get(needColumns[i]));
         }
-
+        res.put("columns", columns);
+        res.put("rows", new JSONArray());
         if (StringUtils.isEmpty(neId)) {
             return new JsonModel(false, "未选择资源",res);
         }
@@ -4695,8 +4698,12 @@ public class MonitorDataService {
             NetworkEntity networkEntity = list.get(0);
             networkEntity.getName();
 
+
             Object value = this.getValue(networkEntity, field);
             value = ObjectUtils.isEmpty(value) ? "未检测到所需信息" : value;
+            if ("runStatus".equals(field)){
+                value = RunStatus.valueOf(String.valueOf(value)).getName();
+            }
             result.put("name","");
             result.put("value",value);
             result.put("info",value);
