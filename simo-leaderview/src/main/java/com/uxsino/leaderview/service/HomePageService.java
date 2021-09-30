@@ -572,7 +572,7 @@ public class HomePageService {
             if(ispaintObj.equals(false)) {
                 str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
             }else {
-                str = str.replace(string, "\"bgImg\":\"/home/getImg/false/" + ++num);
+                str = str.replace(string, "\"bgImg\":\"/home/getImg/false/" + ++num +"\"");
             }
             Matcher m2 = numPattern.matcher(string);
             map.put(Long.valueOf(m2.replaceAll("").trim()), num);
