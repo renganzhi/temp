@@ -4702,7 +4702,7 @@ public class MonitorDataService {
             Object value = this.getValue(networkEntity, field);
             value = ObjectUtils.isEmpty(value) ? "未检测到所需信息" : value;
             if ("runStatus".equals(field)){
-                value = RunStatus.valueOf((String) value).getName();
+                value = RunStatus.valueOf(String.valueOf(value)).getName();
             }
             result.put("name","");
             result.put("value",value);
