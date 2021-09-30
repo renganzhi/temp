@@ -881,6 +881,7 @@ public class MonitorDataService {
     private JsonModel getListEmptyComponentTable(String neIds, String[] field, IndicatorTable ind) throws Exception {
         JSONArray columns = new JSONArray();
         Map<String, String> fieldLabelMap = Maps.newHashMap();
+        Map<String, JSONObject> transformDesc = new HashMap<>();
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         Arrays.stream(field).forEach(f -> {
@@ -889,6 +890,9 @@ public class MonitorDataService {
                 if (Objects.equals(f, itm.getString("name"))) {
                     columns.add(itm.getString("label"));
                     fieldLabelMap.put(f, itm.getString("label"));
+                    if(itm.containsKey("desc")){
+                        transformDesc.put(f,itm.getJSONObject("desc"));
+                    }
                 }
             }
         });
@@ -921,8 +925,13 @@ public class MonitorDataService {
                 Arrays.stream(field).forEach(f -> {
                     if (ObjectUtils.isEmpty(value.getString(f))) {
                         row.put(fieldLabelMap.get(f), "--");
-                    } else
-                        row.put(fieldLabelMap.get(f), getChineseValue(value.getString(f)));
+                    } else{
+                        if(transformDesc.containsKey(f)){
+                            row.put(fieldLabelMap.get(f), transformDesc.get(f).getString(value.getString(f)));
+                        }else {
+                            row.put(fieldLabelMap.get(f), value.getString(f));
+                        }
+                    }
                 });
                 rows.add(row);
             }
@@ -931,20 +940,6 @@ public class MonitorDataService {
         }
         result.put("rows", rows);
         return new JsonModel(true, result);
-    }
-
-    /**
-     * 目前只处理了布尔值
-     * @param value 需要进行转换的值
-     * @return 转换后前端显示的结果
-     */
-    public String getChineseValue(String value){
-        if("t".equalsIgnoreCase(value)||"true".equalsIgnoreCase(value)){
-            value = "是";
-        }else if("f".equalsIgnoreCase(value)||"false".equalsIgnoreCase(value)){
-            value = "否";
-        }
-        return value;
     }
 
 //    private JSONObject getValueJSON(JSON indicatorValues) {
