@@ -717,15 +717,15 @@ export default {
   watch: {
     editName: function (newV, oldV) {
       // 缩略图编辑校验，不能输入特殊字符
-      if (newV.length > 15) {
-        this.editName = newV.slice(0, 15)
-      } else {
-        var str = new RegExp(
-          "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？ ]"
-        )
-        var flag = !str.test(newV) && !/\s/.test(newV)
-        if (!flag) {
-          this.editName = oldV
+      var str = new RegExp(
+        "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？ ]"
+      )
+      var flag = !str.test(newV) && !/\s/.test(newV)
+      if (!flag) {
+        this.editName = oldV
+      } else { // 先判断是否存在特殊字符，如果有则不改变名字，如果没有再去判断长度是否需要裁剪
+        if (newV.length > 15) {
+          this.editName = newV.slice(0, 15)
         }
       }
     }
