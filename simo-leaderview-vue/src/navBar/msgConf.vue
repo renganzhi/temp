@@ -36,7 +36,7 @@
               确定
             </Button>
             <Button @click="resetCancel" cancel>
-              清空
+              重置
             </Button>
           </FormItem>
         </Form>
@@ -131,7 +131,7 @@ export default {
       this.axios.post(myurl).then(res => {
         this.mdpram.show = false
         this.$notify({
-          message: res.msg,
+          message: '重置成功！',
           position: 'bottom-right',
           customClass: 'toast toast-success'
         })
