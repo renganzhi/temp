@@ -145,7 +145,7 @@ export default {
     },
     widthArry: function () {
       let arr = this.item.LineSizeArry || []
-      if(this.item.chartData.columns){
+      if(this.item.chartData && this.item.chartData.columns){
       this.item.chartData.columns.forEach((element, i) => {
         if (arr[i]) {
 
@@ -195,6 +195,13 @@ export default {
       }
     },
     'item.chartData': function (newV, oldV) {
+      console.log(this.item.chartData)
+      if(this.item.chartData === null || this.item.chartData === ''){
+        this.item.chartData = {
+          'columns': [],
+          'rows': []
+        }
+      }
       this.pageNum = Number(this.item.pageNum)
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
       if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
@@ -354,7 +361,7 @@ export default {
       }
       var _this = this
       this.nowPage = 0
-      if(this.item.chartData.rows){
+      if(this.item.chartData && this.item.chartData.rows){
       this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
       this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
       // 这里不用注释
@@ -443,7 +450,7 @@ export default {
     // }
   },
   mounted: function () {
-    if(this.item.chartData.columns){
+    if(this.item.chartData && this.item.chartData.columns){
     this.item.chartData.columns.forEach((element, i) => {
       if (this.widthArry[i]) {
 
@@ -466,7 +473,7 @@ export default {
     //   this.initTopMove()
     // }
     this.initLeftMove()
-    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
     if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
