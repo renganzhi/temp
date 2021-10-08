@@ -67,7 +67,6 @@ export default {
     return {
       // isOpen: this.value,
       modelName: 'voice',
-      oldData: null,
       form: {
         id: '',
         ring: '',
@@ -84,16 +83,21 @@ export default {
   created () {
     this.axios.get('/msg/config/findRingConfig').then(res => {
       if (res.success) {
-        this.oldData = res.obj
-        this.form.id = res.obj.id
-        this.form.ring = res.obj.ring
-        this.form.opened = res.obj.opened
+        if(res.obj){
+          this.form.id = res.obj.id || ''
+          this.form.ring = res.obj.ring || ''
+          this.form.opened = res.obj.opened || ''
+        }
       }
     })
     //
     this.axios.get('/msg/config/rings').then(res => {
       if (res.success) {
-        this.levels = res.obj || []
+        res.obj.forEach(element => {
+          this.levels.push({
+            music: element
+          })
+        });
       }
     })
   },
@@ -131,18 +135,15 @@ export default {
     resetCancel () {
       let myurl = '/msg/config/delRingConfig'
       this.axios.post(myurl).then(res => {
-        this.mdpram.show = false
+        // this.mdpram.show = false
+        this.form.ring = 'alertLevel_10.mp3'
+        this.form.opened = true
         this.$notify({
-          message: '重置成功！',
+          message: '告警铃声配置重置成功',
           position: 'bottom-right',
           customClass: 'toast toast-success'
         })
       })
-      if (this.oldData) {
-        this.form.id = this.oldData.id
-        this.form.ring = this.oldData.ring
-        this.form.opened = this.oldData.opened
-      }
     },
     onCancel () {
       this.mdpram.show = false
