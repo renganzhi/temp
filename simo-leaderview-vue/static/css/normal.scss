@@ -64,7 +64,7 @@ body {
       }
     }
   border: none;
-  padding: 0 20px 20px 20px;
+  padding: 0 40px 20px 20px;
   overflow: hidden;
   .ivu-btn-text {
     background-color: #666f8b;
@@ -107,6 +107,7 @@ body {
 .ivu-modal-content {
   position: relative;
   border: 0;
+  
 }
 .ivu-modal-mask {
   background: rgba(0, 0, 0, 0.5);
@@ -130,10 +131,12 @@ body {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  border-radius: 6px;
 }
 .ivu-modal-wrap .ivu-modal .ivu-modal-content .ivu-modal-header {
   padding: 9px 20px;
   border: none;
+  border-radius: 6px;
 }
 .ivu-form .ivu-form-item {
   margin-bottom: 20px;
