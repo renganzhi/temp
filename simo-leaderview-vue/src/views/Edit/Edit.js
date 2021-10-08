@@ -145,6 +145,7 @@ export default {
       editable: true, // 操作flag,编辑为true,查看为false
       showStyleTab: true,
       pageName: '', // 页面名称
+      pageType: '', // 页面类型
       showDataConf: false, // 展示系统数据配置
       selectedItem: {},
       selectedIndex: null,
@@ -1246,11 +1247,20 @@ export default {
         }
         if (res.obj.isDynamicTemplate) {
           if (res.obj.templateType === 'single') {
+            this.pageType = 'single'
             this.CanChangeServes = true
             // this.paintObj.templateConf.baseneclss  neclass
-            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss !== null ? pageData.baseneclss : ''}&neClass=${pageData.neclass !== null ? pageData.neclass : ''}`).then(res => {
               this.resourcesValueIds = res.obj || []
             })
+          } else if (res.obj.templateType === 'topo') {
+            this.pageType = 'topo'
+            this.CanChangeServes = true
+            this.axios.get(`/monitor/topo/findTopoForDropDown`).then(res => {
+              this.resourcesValueIds = res.obj || []
+            })
+          } else if (res.obj.templateType === 'switch') {
+
           } else {
             this.resourceFirstIds()
           }
@@ -1263,9 +1273,41 @@ export default {
     resourceFirstIds: function () {
       this.chartNum.forEach(data => {
         if (data.chartType === 'ELine') {
-          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass}&neClass=${data.params.neClass}`).then(res => {
+          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
             if (res.obj[0].value) {
               this.sendNewAjax(data, res.obj[0].value)
+            }
+          })
+        } else {
+          $.ajax({
+            url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+            data: data.params,
+            type: data.method || 'get',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              if (data.barType === 'NewHistogram') {
+                data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupHistogram') {
+                data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupLeftHistogram') {
+                data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewBar') {
+                data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                if (res.obj) {
+                  data.ctName = res.obj.info
+                }
+                if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                  data.chartData = res.obj
+                }
+              } else {
+                data.chartData = res.success ? res.obj : []
+              }
             }
           })
         }
@@ -1290,7 +1332,6 @@ export default {
         cache: false,
         ascyn: false,
         success: function (res) {
-          console.log(data)
           if (data.barType === 'NewHistogram') {
             data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
           }
@@ -1472,11 +1513,9 @@ export default {
       // 画布中心位置
       const editCanvas = this.$refs.editCanvas
       const { scrollTop, scrollLeft, clientHeight, clientWidth } = editCanvas
-      // console.log('width: ', clientHeight, clientWidth);
       const scale = this.paintObj.scale / 100
       const transformX = (clientWidth / 2 + scrollLeft - (value.width || 350) / 2) / scale
       const transformY = (clientHeight / 2 + scrollTop - (value.height || 350) / 2) / scale
-      // console.log(editCanvas.scrollLeft, editCanvas.scrollTop, this.paintObj.scale);
       this.showStyleTab = true
       this.showWindowBtn = false // 隐藏部件弹窗按钮
       this.saveHistory()
@@ -1756,7 +1795,6 @@ export default {
         }
       }
       if (this.selectedItem.chartType === 'v-scatter' || this.selectedItem.chartType === 'NewScatter') {
-        console.log(this.selectedItem)
         this.showWindowBtn = false
         if (ev !== 'move' && this.oldCheckId !== item.id) {
           this.alertMapData = []
@@ -4573,67 +4611,22 @@ export default {
     },
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
-        this.chartNum.forEach(data => {
-          if (data.params.neIds && data.url && data.ctDataSource === 'system') {
-            data.params.neIds = newV
-            if (data.params.baseNeClass !== undefined) {
-              data.params.baseNeClass = this.windowtemplateData.baseneclss || ''
-            }
-            if (data.params.neClass !== undefined) {
-              data.params.neClass = this.windowtemplateData.neclass || ''
-            }
-            if (data.params.windows) {
-              let newData = JSON.parse(data.params.windows)[0]
-              let mydata = newData.ne[0]
-              mydata.id = newV
-              newData.ne = [mydata]
-              data.params.windows = JSON.stringify([newData])
-            }
-            $.each(data.params, function (i, d) {
-              data.params[i] = $.isArray(d) ? d.join(',') : d
-            })
-            if (data.params.neIds && data.params.neIds !== null && data.params.windows && JSON.parse(data.params.windows)[0].fields === null) {
-              this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(data.params.windows)[0].indicator}`).then((res) => {
-                if (res.success) {
-                  if (res.obj) {
-                    let mydata = JSON.parse(data.params.windows)[0]
-                    mydata.fields = [mydata.indicator]
-                    data.params.windows = JSON.stringify([mydata])
-                  }
-                  $.ajax({
-                    url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
-                    data: data.params,
-                    type: data.method || 'get',
-                    cache: false,
-                    ascyn: false,
-                    success: function (res) {
-                      if (data.barType === 'NewHistogram') {
-                        data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
-                      }
-                      if (data.barType === 'NewGroupHistogram') {
-                        data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
-                      }
-                      if (data.barType === 'NewGroupLeftHistogram') {
-                        data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
-                      }
-                      if (data.barType === 'NewBar') {
-                        data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
-                      }
-                      if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
-                        if (res.obj) {
-                          data.ctName = res.obj.info
-                        }
-                        if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
-                          data.chartData = res.obj
-                        }
-                      } else {
-                        data.chartData = res.success ? res.obj : []
-                      }
-                    }
+        if (this.pageType === 'topo') {
+          this.chartNum.forEach(data => {
+            if (data.params.topoId !== undefined && data.url && data.ctDataSource === 'system') {
+              console.log(data.params.topoId)
+              data.params.topoId = newV
+              if (data.moreUrlArry) {
+                data.moreUrlArry.forEach(element => {
+                  element.params.topoId = newV
+                  $.each(element.params, function (i, d) {
+                    element.params[i] = $.isArray(d) ? d.join(',') : d
                   })
-                }
+                });
+              }
+              $.each(data.params, function (i, d) {
+                data.params[i] = $.isArray(d) ? d.join(',') : d
               })
-            } else {
               $.ajax({
                 url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
                 data: data.params,
@@ -4666,8 +4659,104 @@ export default {
                 }
               })
             }
-          }
-        })
+          })
+        } else {
+          this.chartNum.forEach(data => {
+            if (data.params.neIds && data.url && data.ctDataSource === 'system') {
+              data.params.neIds = newV
+              if (data.params.baseNeClass !== undefined) {
+                data.params.baseNeClass = this.windowtemplateData.baseneclss || ''
+              }
+              if (data.params.neClass !== undefined) {
+                data.params.neClass = this.windowtemplateData.neclass || ''
+              }
+              if (data.params.windows) {
+                let newData = JSON.parse(data.params.windows)[0]
+                let mydata = newData.ne[0]
+                mydata.id = newV
+                newData.ne = [mydata]
+                data.params.windows = JSON.stringify([newData])
+              }
+              $.each(data.params, function (i, d) {
+                data.params[i] = $.isArray(d) ? d.join(',') : d
+              })
+              if (data.params.neIds && data.params.neIds !== null && data.params.windows && JSON.parse(data.params.windows)[0].fields === null) {
+                this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(data.params.windows)[0].indicator}`).then((res) => {
+                  if (res.success) {
+                    if (res.obj) {
+                      let mydata = JSON.parse(data.params.windows)[0]
+                      mydata.fields = [mydata.indicator]
+                      data.params.windows = JSON.stringify([mydata])
+                    }
+                    $.ajax({
+                      url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+                      data: data.params,
+                      type: data.method || 'get',
+                      cache: false,
+                      ascyn: false,
+                      success: function (res) {
+                        if (data.barType === 'NewHistogram') {
+                          data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                        }
+                        if (data.barType === 'NewGroupHistogram') {
+                          data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                        }
+                        if (data.barType === 'NewGroupLeftHistogram') {
+                          data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                        }
+                        if (data.barType === 'NewBar') {
+                          data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                        }
+                        if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                          if (res.obj) {
+                            data.ctName = res.obj.info
+                          }
+                          if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                            data.chartData = res.obj
+                          }
+                        } else {
+                          data.chartData = res.success ? res.obj : []
+                        }
+                      }
+                    })
+                  }
+                })
+              } else {
+                $.ajax({
+                  url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+                  data: data.params,
+                  type: data.method || 'get',
+                  cache: false,
+                  ascyn: false,
+                  success: function (res) {
+                    if (data.barType === 'NewHistogram') {
+                      data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                    }
+                    if (data.barType === 'NewGroupHistogram') {
+                      data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                    }
+                    if (data.barType === 'NewGroupLeftHistogram') {
+                      data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                    }
+                    if (data.barType === 'NewBar') {
+                      data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                    }
+                    if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                      if (res.obj) {
+                        data.ctName = res.obj.info
+                      }
+                      if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                        data.chartData = res.obj
+                      }
+                    } else {
+                      data.chartData = res.success ? res.obj : []
+                    }
+                  }
+                })
+              }
+            }
+          })
+        }
       }
     },
     chooseIndexs: function (newV) {

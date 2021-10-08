@@ -366,7 +366,7 @@ export default {
                   return params
                 }
               },
-              interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+              interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
             }
           },
           yAxis: {
@@ -399,7 +399,7 @@ export default {
               }
             },
             axisLabel: {
-              interval: 'auto', // 采用不重叠的方式展示
+              interval: 0, // 采用不重叠的方式展示
               textStyle: {
                 color: this.item.legendColor1 || '#828bac',
                 fontSize: this.item.axisLabelSize1 || '14'
@@ -576,7 +576,7 @@ export default {
                   return params
                 }
               },
-              interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+              interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
             }
           },
           yAxis: {
@@ -609,7 +609,7 @@ export default {
               }
             },
             axisLabel: {
-              interval: 'auto', // 采用不重叠的方式展示
+              interval: 0, // 采用不重叠的方式展示
               textStyle: {
                 color: this.item.legendColor2 || '#828bac',
                 fontSize: this.item.axisLabelSize2 || '14'
@@ -838,7 +838,7 @@ export default {
                   return params
                 }
               },
-              interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+              interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
             }
           },
           yAxis: {
@@ -871,7 +871,7 @@ export default {
               }
             },
             axisLabel: {
-              interval: 'auto', // 采用不重叠的方式展示
+              interval: 0, // 采用不重叠的方式展示
               textStyle: {
                 color: this.item.legendColor3 || '#828bac',
                 fontSize: this.item.axisLabelSize3 || '14'
@@ -950,10 +950,10 @@ export default {
         myData.rows.forEach(element => {
           myData.columns.forEach((e, d) => {
             if (d === 0) {
-              myXAxisData.push(element[e])
+              myXAxisData.unshift(element[e])
             } else {
               if (mySeriesData[d]) {
-                mySeriesData[d].push(element[e])
+                mySeriesData[d].unshift(element[e])
               } else {
                 mySeriesData[d] = [element[e]]
               }
@@ -1096,7 +1096,7 @@ export default {
                   return params
                 }
               },
-              interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+              interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
             }
           },
           xAxis: {
@@ -1129,7 +1129,7 @@ export default {
               }
             },
             axisLabel: {
-              interval: 'auto', // 采用不重叠的方式展示
+              interval: 0, // 采用不重叠的方式展示
               textStyle: {
                 color: this.item.legendColor4 || '#828bac',
                 fontSize: this.item.axisLabelSize4 || '14'
@@ -1180,12 +1180,7 @@ export default {
           },
           series: myseries
         }
-        var newArr=[];
-        for(var i=0;i<this.item.chartData4.rows.length;i++){
-            newArr.unshift(this.item.chartData4.rows[i])
-        }
-        var rows = newArr
-        // let rows = this.item.chartData4.rows.reverse()
+        let rows = this.item.chartData4.rows
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / (this.item.axisLabelSize4 * 2))
         if (this.item.formatterType4 === '0' && this.oldformatterType !== this.item.formatterType4) {

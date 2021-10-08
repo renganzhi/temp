@@ -91,12 +91,7 @@
               formInfo.subordinate ? formInfo.subordinate.split(' ').length : 0
             }}人)
           </span>
-          <Input
-            v-model="formInfo.subordinate"
-            type="textarea"
-            readonly
-            disabled
-          />
+          <Input v-model="formInfo.subordinate" type="textarea" readonly />
         </FormItem>
       </div>
       <!-- <div class="userInfo">
@@ -474,7 +469,6 @@ hr {
   position: absolute;
   left: -45px;
   top: 20px;
-  color: #515a6e;
 }
 .img-box {
   width: 100px;

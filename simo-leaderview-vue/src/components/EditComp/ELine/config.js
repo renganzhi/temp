@@ -504,7 +504,8 @@ export default {
             'name': '分段类型',
             'key': 'subsectionType',
             'parentKey': {
-              'Linesubsection': true
+              'Linesubsection': true,
+              'lineArea': true
             },
             'tag': 'select',
             'options': [

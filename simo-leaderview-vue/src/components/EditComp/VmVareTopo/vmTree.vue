@@ -13,7 +13,7 @@
         height="100%"
         :style="svgStyle"
       >
-        <g :transform="`scale(${scaleNum}) translate(40,${maxXY.height/2 - 40})`" ref="mycanvasD">
+        <g :transform="`scale(${scaleNum}) translate(80,${maxXY.height/2})`" ref="mycanvasD">
           <path
             v-for="(item,index) in links"
             :key="index"
@@ -167,10 +167,9 @@ export default {
         maxy = Math.max(d.y, maxy)
         minx = Math.min(d.x, minx)
       })
-
       return {
-        width: Math.max(maxx, Math.abs(minx)) + 120, // 120矩形宽
-        height: maxy + 60
+        width: (maxx - minx) + 60, // 120矩形宽
+        height: maxy + 180
       }
     }
   },
