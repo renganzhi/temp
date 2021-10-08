@@ -120,6 +120,20 @@ public class MonitorUtils {
         }
         JSONArray result = new JSONArray();
         switch (unit){
+            case "%": {
+                for (int i = 0; i < array.size(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+                    String valueStr = obj.getString(getValueKey(obj, valueKey));
+                    if (ObjectUtils.isEmpty(valueStr)) {
+                        result.add(obj);
+                    } else {
+                        Double objValue = getValueDob(valueStr);
+                        obj.put(getValueKey(obj, valueKey), getValueStr(objValue));
+                        result.add(obj);
+                    }
+                }
+                break;
+            }
             case "cs": {
                 unit = "厘秒";
                 if (value / 100D > 1) {
@@ -144,6 +158,7 @@ public class MonitorUtils {
 
                         }
                         obj.put(getValueKey(obj, valueKey), getValueStr(objValue));
+                        result.add(obj);
                     }
                 }
                 break;
@@ -206,9 +221,10 @@ public class MonitorUtils {
         if (ObjectUtils.isEmpty(valueStr)) {
             return valueStr;
         }else if (valueStr.contains(".") && !valueStr.contains("E")) {
-            valueStr = valueStr.substring(0, valueStr.indexOf(".") + 2);
+            valueStr = new DecimalFormat("0.00").format(Double.parseDouble(valueStr));
+            valueStr = valueStr.substring(0, valueStr.indexOf(".") + 3);
         }else if (valueStr.contains("E")){
-            valueStr = new DecimalFormat("0.0").format(Double.parseDouble(valueStr));
+            valueStr = new DecimalFormat("0.00").format(Double.parseDouble(valueStr));
         }
         return valueStr;
     }
