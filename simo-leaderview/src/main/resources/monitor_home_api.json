@@ -384,6 +384,15 @@
                 ]
             },
             {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
+            },
+            {
                 "key": "sortType",
                 "name": "排序方式",
                 "notNull": true,
@@ -816,8 +825,8 @@
         "key": "enable_single_alert_status_statistics",
         "name": "单个资源告警状态统计",
         "component": "alert",
-        "type": "NEWtextArea",
-        "url": "/leaderview/alert/getStatByStatus",
+        "type": "NEWtextArea,NewDoubler",
+        "url": "/leaderview/alert/getStatByStatusText",
         "method" : "post",
         "params": [
             {
@@ -857,8 +866,8 @@
             {
                 "key": "status",
                 "name": "告警状态",
-                "notNull": true,
-                "type": "drop-down",
+                "notNull": false,
+                "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/alert/params/getStatus",
                 "params": ["neId"]
@@ -1952,6 +1961,15 @@
                 "dataUrl": "/leaderview/monitor/params/getInterval",
                 "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
                 "params": ["period"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -2064,6 +2082,15 @@
                 "dataUrl": "/leaderview/monitor/params/getInterval",
                 "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
                 "params": ["period"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -2176,6 +2203,15 @@
                 "dataUrl": "/leaderview/monitor/params/getInterval",
                 "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
                 "params": ["period"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -2283,6 +2319,15 @@
                         "value": "状态"
                     }
                 ]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -2650,12 +2695,29 @@
             {
                 "key": "componentName",
                 "name": "部件",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "method" : "get",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getComponentName",
                 "params": ["neIds","indicators"]
+            },
+            {
+                "key": "isAddComOrIndName",
+                "name": "添加默认列",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "是",
+                        "value": true
+                    },
+                    {
+                        "name": "否",
+                        "value": false
+                    }
+                ]
             },
             {
                 "key": "field",
@@ -3170,6 +3232,15 @@
                 "dataType": "remote",
                 "dataUrl": "/leaderview/alert/params/otherAlertColumn",
                 "params": ["type"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -3310,6 +3381,15 @@
                 "dataUrl": "/leaderview/monitor/params/getInterval",
                 "title": "时间间隔越小，展示数据越精细，但更容易出现数据空值，请酌情选择",
                 "params": ["period"]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -3644,6 +3724,15 @@
                         "value": 20
                     }
                 ]
+            },
+            {
+                "key": "dateFormatStr",
+                "name": "日期裁剪",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "method" : "get",
+                "dataUrl": "/leaderview/monitor/params/getDateFormat"
             }
         ]
     },
@@ -3676,7 +3765,7 @@
             {
                 "key": "orgaIds",
                 "name": "部门",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "leaderview/monitor/params/getorgas"
@@ -3712,7 +3801,7 @@
             {
                 "key": "operType",
                 "name": "台账类别",
-                "notNull": true,
+                "notNull": false,
                 "type": "multi-select",
                 "dataType": "static",
                 "data": [

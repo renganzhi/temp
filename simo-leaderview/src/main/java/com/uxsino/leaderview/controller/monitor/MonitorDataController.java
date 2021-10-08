@@ -23,7 +23,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Api(tags = {"资源-大屏展示数据接口"})
@@ -338,9 +341,12 @@ public class MonitorDataController {
                             @RequestParam(required = false) String topoId,
                             @RequestParam(required = false) String[] column,@RequestParam(required = false)String[] hostColumn,
                             @RequestParam(required = false)String sortColumn, @RequestParam(required = false)Boolean sortType,
-                            @RequestParam(required = false)String runStatus) {
+                            @RequestParam(required = false)String runStatus, @RequestParam(required = false)String dateFormatStr) {
         try {
-            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId);
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
+            return monitorDataService.neList(domainId, neIds, baseNeClass, session, column,hostColumn,sortColumn,sortType,runStatus, topoId,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -410,13 +416,22 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID", required = true),
             @ApiImplicitParam(name = "indicators", paramType = "query", dataType = "String", value = "指标名称", required = true),
             @ApiImplicitParam(name = "componentName", paramType = "query", dataType = "String", value = "部件名称"),
-            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true)})
+            @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
+            @ApiImplicitParam(name = "isAddComOrIndName", paramType = "query", dataType = "boolean", value = "添加部件名或指标名", required = true)})
     @RequestMapping(value = "/indicator/valueStrTable", method = RequestMethod.GET)
     @ResponseBody
     public JsonModel getIndicatorValueStrTable(@RequestParam String neIds, @RequestParam BaseNeClass baseNeClass, @RequestParam String indicators,
-                                               @RequestParam(required = false) String[] componentName, @RequestParam String[] field) {
+                                               @RequestParam(required = false) String[] componentName, @RequestParam String[] field,
+                                               @RequestParam(required = false)Boolean isAddComOrIndName) {
         try {
-            return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field);
+            //防止未选择该选项
+            isAddComOrIndName = Boolean.TRUE.equals(isAddComOrIndName);
+            //过滤空值
+            if(!ObjectUtils.isEmpty(componentName)){
+               List<String> componentNameList =  Arrays.stream(componentName).filter(s -> !StringUtils.isEmpty(s)).collect(Collectors.toList());
+                componentName =  componentNameList.toArray(new String[componentNameList.size()]);
+            }
+            return monitorDataService.getIndicatorValueStrTable(neIds, baseNeClass,indicators, componentName, field,isAddComOrIndName);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -442,13 +457,18 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "windows", paramType = "query", dataType = "String", value = "弹窗数据"),
             @ApiImplicitParam(name = "field", paramType = "query", dataType = "String", value = "属性", required = true),
             @ApiImplicitParam(name = "period", paramType = "query", dataType = "String", value = "统计时段", required = true),
-            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true)})
+            @ApiImplicitParam(name = "interval", paramType = "query", dataType = "Integer", value = "时间间隔", required = true),
+            @ApiImplicitParam(name = "dataFormat", paramType = "query", dataType = "String", value = "日期格式", required = true)})
     @RequestMapping(value = "/indicator/history/record", method = RequestMethod.GET)
     @ResponseBody
     public JsonModel getIndHistoryValue(@RequestParam String[] neIds, String indicators,
                                         @RequestParam(required = false) String windows, @RequestParam(required = false) String field,
-                                        @RequestParam IndPeriod period, @RequestParam Integer interval) {
+                                        @RequestParam IndPeriod period, @RequestParam Integer interval,
+                                        @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             if (Objects.equals("healthy", indicators)) {
                 if (IndPeriod._1day == period) {
                     interval = 5;
@@ -468,7 +488,7 @@ public class MonitorDataController {
                 }else if (IndPeriod._1hour == period) {
                     intervalType = IntervalType.minute;
                 }
-                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval, period);
+                return monitorDataService.getHistoryValue(neIds, indicators, windows, field, intervalType, interval, period, dateFormatStr);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -489,8 +509,12 @@ public class MonitorDataController {
     public JsonModel getMultipleIndHistoryValueRecordHost(@RequestParam String[] neIds, String[] indicators,
                                                   @RequestParam(required = false) String windows,
                                                   @RequestParam IndPeriod period,
-                                                  @RequestParam Integer interval) {
+                                                  @RequestParam Integer interval,
+                                                  @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
                 intervalType = IntervalType.minute;
@@ -501,7 +525,7 @@ public class MonitorDataController {
             }else if (IndPeriod._1hour == period) {
                 intervalType = IntervalType.minute;
             }
-            return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period);
+            return monitorDataService.getMultipleIndHistoryValueRecordHost(neIds, indicators, windows, intervalType, interval, period, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -530,8 +554,12 @@ public class MonitorDataController {
     public JsonModel getMultipleIndHistoryValue(@RequestParam String[] neIds, String[] indicators,
                                                 @RequestParam(required = false) String windows,
                                                 @RequestParam IndPeriod period,
-                                                @RequestParam Integer interval) {
+                                                @RequestParam Integer interval,
+                                                @RequestParam(required = false) String dateFormatStr) {
         try {
+            if(StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             IntervalType intervalType = IntervalType.minute;
             if (IndPeriod._1day == period) {
                 intervalType = IntervalType.minute;
@@ -543,7 +571,7 @@ public class MonitorDataController {
                 intervalType = IntervalType.minute;
             }
 
-            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period);
+            return monitorDataService.getMultipleIndHistoryValue(neIds, indicators, windows, intervalType, interval, period,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());
@@ -796,13 +824,17 @@ public class MonitorDataController {
     @ResponseBody
     public JsonModel recordDoubleAxis(@RequestParam String[] neIds, @RequestParam String indicatorsLeft,
                                       @RequestParam String componentNameLeft, @RequestParam String fieldLeft, @RequestParam String indicatorsRight,
-                                      @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period) {
+                                      @RequestParam String componentNameRight, @RequestParam String fieldRight, @RequestParam IndPeriod period,
+                                      @RequestParam(required = false) String dateFormatStr) {
         try {
             if (ObjectUtils.isEmpty(neIds)) {
                 return new JsonModel(true, MonitorUtils.empObj());
             }
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
             return monitorDataService.multipleIndicatorHistory(neIds[0], indicatorsLeft, componentNameLeft, fieldLeft, indicatorsRight,
-                    componentNameRight, fieldRight, period);
+                    componentNameRight, fieldRight, period, dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

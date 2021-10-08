@@ -214,7 +214,7 @@ public class MonitorUtils {
     }
 
     public static String getValueStr(Double value){
-        return new DecimalFormat("0.0").format(value);
+        return new DecimalFormat("0.00").format(value);
     }
 
     public static Double getValueDob(String valueStr){

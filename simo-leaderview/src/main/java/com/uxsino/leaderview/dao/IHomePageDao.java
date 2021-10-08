@@ -59,4 +59,6 @@ public interface IHomePageDao extends ICustomRepository<HomePage, Long> {
     @Query(nativeQuery = true,
         value = "update simo_mc_home_page set id = :target where id = :origin")
     void updateId(@Param("origin") Long origin, @Param("target") Long target);
+
+    List<HomePage> findDistinctByUserIdIn(List<Long> userIds);
 }

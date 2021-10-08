@@ -7,7 +7,7 @@
     :width="980"
     footer-hide
   >
-    <Form ref="form" class="">
+    <Form ref="form" class="" :rules="fmRules" :model="formInfo">
       <div class="form-title">
         个人信息
       </div>
@@ -165,7 +165,7 @@
       </div> -->
 
       <div class="fr page__footer ivu-modal-footer" style="padding-bottom: 0px">
-        <Button @click="update"> 确认 </Button>
+        <Button style="background:#5b8bfd;" @click="update"> 确认 </Button>
         <Button cancel @click="cancel"> 取消 </Button>
       </div>
     </Form>
@@ -449,6 +449,10 @@ hr {
   }
   & > ::v-deep .ivu-form-item {
     flex: 1;
+    color: black;
+  }
+  ::v-deep .ivu-form-item-content {
+    color: black;
   }
 }
 ::v-deep .ivu-input-type-textarea {
@@ -456,12 +460,15 @@ hr {
   textarea {
     width: 750px !important;
     height: 100px;
+    background-color: #f1f1f1 !important;
+    color: rgba(0, 0, 0, 0.619) !important;
   }
 }
 .label-tip {
   position: absolute;
   left: -45px;
   top: 20px;
+  color: rgba(0, 0, 0, 0.719) !important;
 }
 .img-box {
   width: 100px;
@@ -470,8 +477,9 @@ hr {
   border-radius: 3px;
   cursor: pointer;
   border-color: #cacdd7;
+
   span {
-    color: #bfbfbf;
+    color: rgba(0, 0, 0, 0.719) !important;
   }
   div {
     height: 100%;
@@ -481,7 +489,6 @@ hr {
     vertical-align: middle;
     justify-content: center;
     flex-wrap: nowrap;
-    flex-direction: column;
     img {
       width: 100%;
       height: 100%;

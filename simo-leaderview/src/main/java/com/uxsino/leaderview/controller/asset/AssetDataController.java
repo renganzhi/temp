@@ -3,6 +3,7 @@ package com.uxsino.leaderview.controller.asset;
 
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.api.AssetDataService;
+import com.uxsino.leaderview.service.api.MonitorDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -38,9 +39,12 @@ public class AssetDataController {
 
     @ApiOperation("资产告警信息")
     @RequestMapping(value = "/getAlertByPage",method = RequestMethod.GET)
-    public JsonModel getAlertByPage(@RequestParam Integer number){
+    public JsonModel getAlertByPage(@RequestParam Integer number,@RequestParam(required = false)String dateFormatStr){
         try {
-            return assetDataService.getAlertPage(number);
+            if(org.springframework.util.StringUtils.isEmpty(dateFormatStr)){
+                dateFormatStr = MonitorDataService.sdfStr;
+            }
+            return assetDataService.getAlertPage(number,dateFormatStr);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
@@ -84,7 +88,7 @@ public class AssetDataController {
     }
 
     @ApiOperation("仓储物资变动趋势")
-    @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
+    @ApiImplicitParam(name = "operType",paramType = "query",dataType = "String",value = "需要统计的台账类别",required = false)
     @RequestMapping("/searchStandingBook")
     public JsonModel searchStandingBook(@RequestParam String operType,@RequestParam Integer interval){
         try {

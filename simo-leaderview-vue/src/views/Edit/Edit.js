@@ -860,26 +860,41 @@ export default {
         mapData.push({
           value: mapJson.features[i].id || mapJson.features[i].properties.adcode,
           name: mapJson.features[i].properties.name,
-          geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates)
+          geoCoord: mapJson.features[i].properties.cp || this.getCenterPoint(mapJson.features[i].geometry.coordinates, mapJson.features[i].geometry.type)
           // geoCoord: mapJson.features[i].properties.cp || mapJson.features[i].geometry.coordinates[0][0][0]
         })
       }
       return mapData
     },
     // 计算地市级地图的中心点
-    getCenterPoint(data) {
-      let index = data.length - 1
-      var tempObj = data[index][0]
-      if (tempObj) {
-        let totalX = 0, totalY = 0
-        tempObj.forEach((item) => {
-          totalX += item[0]
-          totalY += item[1]
-        })
-        let _length = tempObj.length
-        return [totalX / _length, totalY / _length]
+    getCenterPoint(data, type) {
+      if (type === 'MultiPolygon') {
+        let index = data.length - 1
+        var tempObj = data[index][0]
+        if (tempObj) {
+          let totalX = 0, totalY = 0
+          tempObj.forEach((item) => {
+            totalX += item[0]
+            totalY += item[1]
+          })
+          let _length = tempObj.length
+          return [totalX / _length, totalY / _length]
+        } else {
+          return data[0][0][0]
+        }
       } else {
-        return data[0][0][0]
+        var tempObj = data[0]
+        if (tempObj) {
+          let totalX = 0, totalY = 0
+          tempObj.forEach((item) => {
+            totalX += item[0]
+            totalY += item[1]
+          })
+          let _length = tempObj.length
+          return [totalX / _length, totalY / _length]
+        } else {
+          return data[0][0][0]
+        }
       }
     },
     // 删除实时图数据点
@@ -1112,74 +1127,79 @@ export default {
         this.selectedItem.radius = this.progressObj.radius
       }
     },
-    colorToAll(key, KeyColor) {
+    colorToAll(obj, KeyColor) {
       var _colors = this.selectedItem.ctColors
       if (this.chartNum.length) {
         this.saveHistory()
       }
-      console.log(key, KeyColor, this.chartNum)
       let ScatterColorArry = ['ScatterColor1', 'ScatterColor2', 'ScatterColor3', 'ScatterColor4', 'ScatterColor', 'LineColorArray']
       this.chartNum.forEach((item) => {
         // AreaDScatterColor
-        if (key === 'AreaScatterColor') {
-          if (item.AreaScatterColor && KeyColor) {
-            item.AreaScatterColor = JSON.parse(KeyColor)
-          }
-        } else if (key === 'AreaDScatterColor') {
-          if (item.AreaDScatterColor && KeyColor) {
-            item.AreaDScatterColor = JSON.parse(KeyColor)
-          }
-        } else if (ScatterColorArry.indexOf(key) >= 0) {
-          if (item.ScatterColor && KeyColor) {
-            item.ScatterColor = JSON.parse(KeyColor)
-          }
-          if (item.ScatterColor1 && KeyColor) {
-            item.ScatterColor1 = JSON.parse(KeyColor)
-          }
-          if (item.ScatterColor2 && KeyColor) {
-            item.ScatterColor2 = JSON.parse(KeyColor)
-          }
-          if (item.ScatterColor3 && KeyColor) {
-            item.ScatterColor3 = JSON.parse(KeyColor)
-          }
-          if (item.ScatterColor4 && KeyColor) {
-            item.ScatterColor4 = JSON.parse(KeyColor)
-          }
-          if (item.LineColorArray && KeyColor) {
-            item.LineColorArray = JSON.parse(KeyColor)
-          }
-        } else {
-          if (item.DScatterColor && KeyColor) {
-            item.DScatterColor = JSON.parse(KeyColor)
-          }
-          if (item.DScatterColor1 && KeyColor) {
-            item.DScatterColor1 = JSON.parse(KeyColor)
-          }
-          if (item.DScatterColor2 && KeyColor) {
-            item.DScatterColor2 = JSON.parse(KeyColor)
-          }
-          if (item.DScatterColor3 && KeyColor) {
-            item.DScatterColor3 = JSON.parse(KeyColor)
-          }
-          if (item.DScatterColor4 && KeyColor) {
-            item.DScatterColor4 = JSON.parse(KeyColor)
-          }
-          if (item.DLineColorArray && KeyColor) {
-            item.DLineColorArray = JSON.parse(KeyColor)
+        // item.ifEidetColor = true
+        // item.ifGradual = obj.parentKey.ifGradual
+        if (item.chartType === this.selectedItem.chartType) {
+          if (obj.key === 'AreaScatterColor') {
+            if (item.AreaScatterColor && KeyColor) {
+              item.AreaScatterColor = JSON.parse(KeyColor)
+            }
+          } else if (obj.key === 'AreaDScatterColor') {
+            if (item.AreaDScatterColor && KeyColor) {
+              item.AreaDScatterColor = JSON.parse(KeyColor)
+            }
+          } else if (ScatterColorArry.indexOf(obj.key) >= 0) {
+            if (item.ScatterColor && KeyColor) {
+              item.ScatterColor = JSON.parse(KeyColor)
+            }
+            if (item.ScatterColor1 && KeyColor) {
+              item.ScatterColor1 = JSON.parse(KeyColor)
+            }
+            if (item.ScatterColor2 && KeyColor) {
+              item.ScatterColor2 = JSON.parse(KeyColor)
+            }
+            if (item.ScatterColor3 && KeyColor) {
+              item.ScatterColor3 = JSON.parse(KeyColor)
+            }
+            if (item.ScatterColor4 && KeyColor) {
+              item.ScatterColor4 = JSON.parse(KeyColor)
+            }
+            if (item.LineColorArray && KeyColor) {
+              item.LineColorArray = JSON.parse(KeyColor)
+            }
+          } else {
+            if (item.DScatterColor && KeyColor) {
+              item.DScatterColor = JSON.parse(KeyColor)
+            }
+            if (item.DScatterColor1 && KeyColor) {
+              item.DScatterColor1 = JSON.parse(KeyColor)
+            }
+            if (item.DScatterColor2 && KeyColor) {
+              item.DScatterColor2 = JSON.parse(KeyColor)
+            }
+            if (item.DScatterColor3 && KeyColor) {
+              item.DScatterColor3 = JSON.parse(KeyColor)
+            }
+            if (item.DScatterColor4 && KeyColor) {
+              item.DScatterColor4 = JSON.parse(KeyColor)
+            }
+            if (item.DLineColorArray && KeyColor) {
+              item.DLineColorArray = JSON.parse(KeyColor)
+            }
           }
         }
       })
       this.chartNum.forEach((item) => {
-        if (item.chartType.indexOf('ve-') !== -1) {
-          if (
-            item.chartData &&
-            item.chartData.colors &&
-            item.ctDataSource !== 'static'
-          ) {
-            // 接口返回的系统默认颜色不做修改
-          } else {
-            item.ctColors = JSON.parse(JSON.stringify(_colors))
-            item.colorType = 'custom'
+        if (item.chartType === this.selectedItem.chartType) {
+          if (item.chartType.indexOf('ve-') !== -1) {
+            if (
+              item.chartData &&
+              item.chartData.colors &&
+              item.ctDataSource !== 'static'
+            ) {
+              // 接口返回的系统默认颜色不做修改
+            } else {
+              item.ctColors = JSON.parse(JSON.stringify(_colors))
+              item.colorType = 'custom'
+            }
           }
         }
       })
@@ -1228,7 +1248,7 @@ export default {
           if (res.obj.templateType === 'single') {
             this.CanChangeServes = true
             // this.paintObj.templateConf.baseneclss  neclass
-            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss !== null ? pageData.baseneclss : ''}&neClass=${pageData.neclass !== null ? pageData.neclass : ''}`).then(res => {
               this.resourcesValueIds = res.obj || []
             })
           } else {
@@ -1243,7 +1263,8 @@ export default {
     resourceFirstIds: function () {
       this.chartNum.forEach(data => {
         if (data.chartType === 'ELine') {
-          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass}&neClass=${data.params.neClass}`).then(res => {
+          console.log(data)
+          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
             if (res.obj[0].value) {
               this.sendNewAjax(data, res.obj[0].value)
             }
@@ -4554,7 +4575,7 @@ export default {
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
         this.chartNum.forEach(data => {
-          if (data.params.neIds && data.url && data.ctDataSource === "system") {
+          if (data.params.neIds && data.url && data.ctDataSource === 'system') {
             data.params.neIds = newV
             if (data.params.baseNeClass !== undefined) {
               data.params.baseNeClass = this.windowtemplateData.baseneclss || ''

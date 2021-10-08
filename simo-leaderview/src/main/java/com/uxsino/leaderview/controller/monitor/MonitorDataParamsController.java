@@ -213,6 +213,16 @@ public class MonitorDataParamsController {
         }
     }
 
+    @ApiOperation("获取日期的转换格式")
+    @RequestMapping(value = "/getDateFormat", method = RequestMethod.GET)
+    public JsonModel getDateFormat() {
+        try {
+            return monitorDataParamsService.getDateFormat();
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
 
     @ApiOperation("获取某指标的数值属性-用于下拉框")
     @ApiImplicitParams({

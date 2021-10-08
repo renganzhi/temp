@@ -83,7 +83,8 @@ public class HomePageService {
     private static Pattern strPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
     private static Pattern numPattern = Pattern.compile("[^0-9]");
     private static Pattern imgFalsePattern = Pattern.compile("/leaderview/home/getImg/false/(\\d*)\"");
-
+    //用来匹配大屏画布
+    private static Pattern img3Pattern = Pattern.compile("\"bgImg\":\"/home/getImg/true/(\\d*)\"");
 
     @Transactional
     public void add(HomePage homePage) {
@@ -285,8 +286,8 @@ public class HomePageService {
             String shareConf = (String) obj[10];
             HomePage homePage = new HomePage(id,composeObj,lastUpdateTime,name,pageIndex,paintObj,viewConf,visible,createUserId,handoverId,shareConf);
             JSONArray userRole = SessionUtils.getSessionUserRoleIdArr(session);
-            if (SessionUtils.isSuperAdmin(session) ||
-                    validSharedorAuthor(homePage, String.valueOf(userId), userRole) == (ShareState.IS_BELONGS_CURRENT.getValue())){
+//            if (SessionUtils.isSuperAdmin(session) ||
+            if (validSharedorAuthor(homePage, String.valueOf(userId), userRole) == (ShareState.IS_BELONGS_CURRENT.getValue())){
                 homePage.setBelongCurrentUser("true");
             }else {
                 homePage.setBelongCurrentUser("false");
@@ -304,6 +305,10 @@ public class HomePageService {
      */
     public List<HomePage> findByUserId(long employeeId) {
         return homePageDao.findByUserId(employeeId);
+    }
+
+    public List<HomePage> findByUserIds(List<Long> userIds){
+        return homePageDao.findDistinctByUserIdIn(userIds);
     }
 
     /**
@@ -541,12 +546,34 @@ public class HomePageService {
             Matcher m2 = numPattern.matcher(m.group());
             ids.add(Long.valueOf(m2.replaceAll("").trim()));
         }
+
+        //进行大屏画布的匹配替换
+        //判断此次匹配的是否是大屏画布
+        Boolean ispaintObj = false;
+        if (ObjectUtils.isEmpty(list)){
+            ispaintObj = true;
+            m = img3Pattern.matcher(str);
+            while (m.find()){
+                if (list.contains(m.group())){
+                    continue;
+                }
+                list.add(m.group());
+                Matcher m2 = numPattern.matcher(m.group());
+                //将大屏画布中图片的id存入ids集合
+                ids.add(Long.valueOf(m2.replaceAll("").trim()));
+            }
+        }
+
         Matcher vm = videoPattern.matcher(str);
         while (vm.find()){
             videoSet.add(vm.group());
         }
         for (String string : list) {
-            str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
+            if(ispaintObj.equals(false)) {
+                str = str.replace(string, "/leaderview/home/getImg/false/" + ++num);
+            }else {
+                str = str.replace(string, "\"bgImg\":\"/home/getImg/false/" + ++num +"\"");
+            }
             Matcher m2 = numPattern.matcher(string);
             map.put(Long.valueOf(m2.replaceAll("").trim()), num);
         }

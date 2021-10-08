@@ -22,7 +22,11 @@
               </Option>
             </Select>
             <Tooltip content="试听">
-              <Button class="margin-left-5" @click="listenRing">
+              <Button
+                class="margin-left-5"
+                @click="listenRing"
+                style="background:white !important;color:#6c95ff;"
+              >
                 <i class="icon-n-zhanneixiaoxi" />
               </Button>
             </Tooltip>
@@ -32,7 +36,7 @@
             </el-switch>
           </FormItem>
           <FormItem style="margin-bottom: 0px; text-align: right;">
-            <Button @click="onSure">
+            <Button style="background:#5c8bff;" @click="onSure">
               确定
             </Button>
             <Button @click="resetCancel" cancel>
@@ -87,13 +91,11 @@ export default {
       }
     })
     //
-    this.axios
-      .get('/msg/config/rings')
-      .then(res => {
-        if (res.success) {
-          this.levels = res.obj || []
-        }
-      })
+    this.axios.get('/msg/config/rings').then(res => {
+      if (res.success) {
+        this.levels = res.obj || []
+      }
+    })
   },
   methods: {
     listenRing () {

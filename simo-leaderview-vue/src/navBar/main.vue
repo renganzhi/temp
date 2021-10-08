@@ -14,7 +14,7 @@
     v-model="isOpen"
     class="us-xs modal__ensure"
     :class="{ 'modal-ensure-radio': showRadio }"
-    title="请选择"
+    :title="title"
     v-bind="$attrs"
     v-on="$listeners"
     @on-cancel="onCancel"
@@ -52,6 +52,7 @@ export default {
   data () {
     return {
       isOpen: this.value,
+      title: '请选择',
       content: '',
       okText: '确认',
       noText: '否',
@@ -90,8 +91,7 @@ export default {
 <style lang="scss" scoped>
 .modal__ensure {
   ::v-deep .ivu-modal {
-    min-height: 180px;
-    height: auto;
+    height: 150px;
     .ivu-modal-body {
       padding: 20px 20px 0px 20px;
       text-align: center;

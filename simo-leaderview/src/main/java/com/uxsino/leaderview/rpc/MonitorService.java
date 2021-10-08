@@ -86,4 +86,7 @@ public interface MonitorService {
 
     @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/perf/topSession"}, consumes = {"application/json"})
     JsonModel topSession(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
+
+    @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/volume/info"}, consumes = {"application/json"})
+    JsonModel findVolume(@RequestParam("neId") String neId);
 }

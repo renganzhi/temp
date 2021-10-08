@@ -185,6 +185,7 @@ public class HomePageController {
                                  @RequestParam(required = false) String[] adminId,
                                  @RequestParam boolean visible) {
         long currentUserId = SessionUtils.getCurrentUserIdFromSession(session);
+        String roleIds = SessionUtils.getSessionUserRoleIds(session);
         int maxIndex = homePageUserConfService.getMaxMinePage(currentUserId, false);
         if (maxIndex >= MAX_PAGE_INDEX) {
             return new JsonModel(false, "当前页面已达到最大数[1000]");
@@ -217,6 +218,10 @@ public class HomePageController {
                 homePage.setIsDynamicTemplate(template.getIsDynamicTemplate());
             }
         }
+        JSONObject shareConf = new JSONObject();
+        shareConf.put("roles",Arrays.toString(roleIds.split(",")));
+        shareConf.put("uids", Arrays.toString(adminId));
+        homePage.setShareConf(shareConf.toJSONString());
         Long pageId = homePageService.addAndGetId(homePage);
         HomePageUserConf homePageUserConf = new HomePageUserConf();
         homePageUserConf.setPageId(pageId);
@@ -1142,14 +1147,10 @@ public class HomePageController {
     @ApiOperation("模板导出成zip包")
     @GetMapping("/exportTemplate")
     public void exportTemplate(@RequestParam("ids") String ids, HttpServletRequest request, HttpServletResponse response) {
-//		try {
         List<HomePage> pages = Lists.newArrayList();
         for (String str : ids.split(",")) {
             Long id = Long.valueOf(str);
             HomePage page = homePageService.getById(id);
-//			if (ObjectUtils.isEmpty(page)){
-//				return new JsonModel(false, "页面不存在");
-//			}
             pages.add(page);
         }
         logger.info("导出开始");

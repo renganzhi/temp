@@ -33,7 +33,7 @@
       </div>
     </template>
     <template v-if="item.tag === 'typeSelect'">
-      <div class="typeSelect">
+      <div :class="isDev ? 'typeSelect dev' : 'typeSelect'">
         <div
           v-for="(option, index) in item.options"
           :key="index"
@@ -233,7 +233,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll(item.key)"
+          @click="colorToAll(item)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -297,7 +297,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll(item.key)"
+          @click="colorToAll(item)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -333,7 +333,7 @@
         <span>序号</span>
         <span class="color-w70 text">颜色</span>
         <span
-          @click="colorToAll(item.key)"
+          @click="colorToAll(item)"
           v-if="
             selectedItem.chartType !== 'TDHistogram' &&
               selectedItem.chartType !== 'KLine'
@@ -427,6 +427,7 @@ export default {
     return {
       markExit: false, // 在线地图查询添加时，判断添加的点是否存在
       baseUrl: '',
+      isDev: true,
       settingData: baseData,
       picSrc: '',
       cardCase: [
@@ -478,6 +479,7 @@ export default {
     }
   },
   mounted: function () {
+    this.isDev = gbs.inDev
     for (let i = 0; i < 11; i++) {
       // console.log('i: ', typeof i);
       const src = `/leaderview/border/titleBg${6 + Number(i)}.png`
@@ -744,9 +746,10 @@ export default {
         }
       }
     },
-    colorToAll (key) {
-      this.$parent.$parent.$parent.colorToAll(key,
-        JSON.stringify(this.selectedItem[key])
+    colorToAll (obj) {
+      this.$parent.$parent.$parent.colorToAll(
+        obj,
+        JSON.stringify(this.selectedItem[obj.key])
       )
     },
     myreverseColor (index) {
@@ -883,7 +886,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .typeSelect {
   height: 70px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -891,24 +894,29 @@ export default {
   align-items: center;
   justify-content: space-around;
   position: relative;
+  top: -20px;
+  div {
+    width: 20%;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span {
+      font-size: 30px;
+    }
+  }
+}
+.dev {
   top: -40px;
-}
-.typeSelect div {
-  width: 20%;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.typeSelect div span {
-  font-size: 30px;
 }
 .hoverShow {
   font-size: 20px;
 }
-#mainEdit-edit .color-w200 input[type='file'] {
-  color: transparent !important;
+#mainEdit-edit {
+  .color-w200 input[type='file'] {
+    color: transparent !important;
+  }
 }
 .delete_text {
   cursor: pointer;

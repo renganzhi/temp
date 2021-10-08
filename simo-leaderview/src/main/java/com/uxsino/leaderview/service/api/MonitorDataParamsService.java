@@ -943,8 +943,9 @@ public class MonitorDataParamsService {
             return new JsonModel(true, result);
         }
         if("oracle_table_space_sum".equals(indicators)){
-            result.add(newResultObj("空间利用率", "space_usae_avg"));
-            result.add(newResultObj("剩余容量大小", "used_rate_sum"));
+            result.add(newResultObj("总空间大小", "total_size"));
+            result.add(newResultObj("空间利用率", "used_rate"));
+            result.add(newResultObj("可使用天数", "remaining_day"));
             return new JsonModel(true, result);
         }
         if(CompoundIndicator.valueList().contains(indicators)){//大屏特殊化组合指标
@@ -1554,5 +1555,15 @@ public class MonitorDataParamsService {
         }
 
         return new JsonModel(true,list);
+    }
+
+    public JsonModel getDateFormat() {
+        JSONArray res = new JSONArray();
+        res.add(newResultObj("年-月-日 时:分:秒","yyyy-MM-dd hh:mm:ss"));
+        res.add(newResultObj("年-月-日 时:分","yyyy-MM-dd hh:mm"));
+        res.add(newResultObj("月-日 时:分","MM-dd hh:mm"));
+        res.add(newResultObj("年-月-日","yyyy-MM-dd"));
+        res.add(newResultObj("时:分:秒","hh:mm:ss"));
+        return new JsonModel(true,res);
     }
 }

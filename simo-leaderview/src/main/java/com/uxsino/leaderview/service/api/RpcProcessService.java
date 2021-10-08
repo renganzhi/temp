@@ -1082,4 +1082,8 @@ public class RpcProcessService {
         }
         return jsonModel;
     }
+
+    public JsonModel findVolume(String neIds) {
+        return monitorService.findVolume(neIds);
+    }
 }

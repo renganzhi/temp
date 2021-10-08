@@ -311,9 +311,15 @@ export default {
     },
 
     logout () {
-      this.$ensureModal.confirm('确认退出系统？', () => {
-        window.location.href = window.location.origin + '/mc/logout'
-      })
+      this.$ensureModal.confirm(
+        {
+          content: '确认退出系统？',
+          title: '退出系统'
+        },
+        () => {
+          window.location.href = window.location.origin + '/mc/logout'
+        }
+      )
     },
 
     getThirdPlat () {

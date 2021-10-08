@@ -28,6 +28,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -215,10 +216,12 @@ public class AlertDataService {
     }
 
     @SuppressWarnings("unchecked")
-    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column) throws Exception {
+    public JsonModel getOtherAlertTable(HttpSession session, String type, Long number, String[] column, String dateFormatStr) throws Exception {
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         List<String > diffColumns;
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         if ("SysLogAlert".equals(type) || "SnmpTrapAlert".equals(type) || "TerminalAlert".equals(type) || "IpAlert".equals(type)) {
             diffColumns = Lists.newArrayList("状态","IP地址","告警内容","告警时间");
         }else {
@@ -278,7 +281,7 @@ public class AlertDataService {
                 row.put("IP地址", alert.getIp());
             }
             row.put("告警内容", alert.getRecentAlertBrief());
-            row.put("告警时间", alert.getRecentAlertDateStr());
+            row.put("告警时间", dateFormat.format(oldDateFormat.parse(alert.getRecentAlertDateStr())));
             if (++num > number) break;
             rows.add(row);
         }
@@ -573,6 +576,57 @@ public class AlertDataService {
         return result;
     }
 
+    public JsonModel getStatByStatusText(HttpSession session, String status, Long domainId,
+                                     String baseNeClass, String neClass, String neIds) throws Exception{
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
+        if(StringUtils.isEmpty(neIds)){
+            return new JsonModel(false,"未传入关键数据");
+        }
+        criteria.setIds(Lists.newArrayList(neIds));
+        rpcProcessService.setCriteriaNeClass(criteria, baseNeClass, neClass);
+
+        ArrayList arr = (ArrayList<String>) rpcProcessService.getNeIds(criteria);
+        if (ObjectUtils.isEmpty(arr)) {
+            return new JsonModel(false,"未查询到相关数据");
+        }
+        List<String> statusList = new ArrayList<>();
+        if(StringUtils.isEmpty(status)){
+            for (AlertHandleStatus value : AlertHandleStatus.values()) {
+                statusList.add(value.toString());
+            }
+        }else {
+            statusList = Arrays.asList(status.split(","));
+        }
+
+        long count = 0;
+        StatisticsQuery statisticsQuery = new StatisticsQuery();
+        statisticsQuery.setGroupField("handleStatus");
+        statisticsQuery.setObjIds(neIds);
+        statisticsQuery.setAlertType(AlertType.Alert);
+        //不传就是查所有状态
+        statisticsQuery.setHandleStatus(null);
+        List<StatisticsResult> statisticsResults = rpcProcessService.getLevelStatisticsResult(statisticsQuery);
+        for (String s: statusList) {
+            for (int i = 0; i < statisticsResults.size(); i++) {
+                StatisticsResult statisticsResult = statisticsResults.get(i);
+                if(statisticsResult.getScopeValue().equals(s)) {
+                    count += statisticsResult.getAlertCount();
+                }
+            }
+        }
+        if(!ObjectUtils.isEmpty(statisticsResults)){
+            count = + statisticsResults.get(0).getAlertCount();
+        }
+        JSONObject result = new JSONObject();
+        result.put("unit","个");
+        result.put("value",count);
+        result.put("info",count);
+        result.put("name","资源告警数");
+        return new JsonModel(true,result);
+    }
+
+
     /**
      * 按状态统计资源的告警条数
      * @param domainId 域ID
@@ -725,8 +779,10 @@ public class AlertDataService {
      * @return
      */
     public JsonModel getAlertInfo(Long domainId, String baseNeClass, String[] neIds,
-                                  Integer number, HttpSession session, String[] column, String topoId) throws Exception{
+                                  Integer number, HttpSession session, String[] column, String topoId, String dateFormatStr) throws Exception{
         JSONObject result = new JSONObject();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         List<String > diffColumns = Lists.newArrayList("资源名称","告警级别","告警来源","IP地址","告警内容","告警时间","状态");
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
@@ -764,7 +820,7 @@ public class AlertDataService {
                 }
                 row.put("IP地址", ne.getIp());
                 row.put("告警内容", alert.getRecentAlertBrief());
-                row.put("告警时间", alert.getRecentAlertDateStr());
+                row.put("告警时间", dateFormat.format(oldDateFormat.parse(alert.getRecentAlertDateStr())));
                 row.put("状态", alert.getHandleStatusName());
                 diffColumns.forEach(row::remove);
                 rows.add(row);
