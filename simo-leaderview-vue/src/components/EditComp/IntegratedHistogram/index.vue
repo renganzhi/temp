@@ -950,10 +950,10 @@ export default {
         myData.rows.forEach(element => {
           myData.columns.forEach((e, d) => {
             if (d === 0) {
-              myXAxisData.push(element[e])
+              myXAxisData.unshift(element[e])
             } else {
               if (mySeriesData[d]) {
-                mySeriesData[d].push(element[e])
+                mySeriesData[d].unshift(element[e])
               } else {
                 mySeriesData[d] = [element[e]]
               }
@@ -1180,12 +1180,7 @@ export default {
           },
           series: myseries
         }
-        var newArr=[];
-        for(var i=0;i<this.item.chartData4.rows.length;i++){
-            newArr.unshift(this.item.chartData4.rows[i])
-        }
-        var rows = newArr
-        // let rows = this.item.chartData4.rows.reverse()
+        let rows = this.item.chartData4.rows
         let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
         let strLen = Math.round(barW / (this.item.axisLabelSize4 * 2))
         if (this.item.formatterType4 === '0' && this.oldformatterType !== this.item.formatterType4) {
