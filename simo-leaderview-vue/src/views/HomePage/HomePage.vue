@@ -793,7 +793,7 @@ export default {
           }
         })
       } else {
-        if (d.params.neIds && d.params.neIds !== null && JSON.parse(d.params.windows)[0].fields === null) {
+        if (d.params.neIds && d.params.neIds !== null && d.params.windows && JSON.parse(d.params.windows)[0].fields === null) {
           this.axios.get(`/leaderview/monitor/params/valid/singleFieldInd?indicatorId=${JSON.parse(d.params.windows)[0].indicator}`).then((res) => {
             if (res.success) {
             if (res.obj) {
