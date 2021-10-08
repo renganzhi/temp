@@ -370,7 +370,7 @@ public class MonitorDataService {
             row.put("IP地址", ne.getIp());
             row.put("资源类型", ne.getNeClass());
             row.put("运行状态", Optional.ofNullable(ne.getRunStatus()).map(RunStatus::getName).orElse(""));
-            row.put("更新时间", dateFormat.format(ne.getPatrolTime()));
+            row.put("更新时间", !ObjectUtils.isEmpty(ne.getPatrolTime())?dateFormat.format(ne.getPatrolTime()):ne.getPatrolTime());
             row.put("健康度", ne.getHealth());
             if (!ObjectUtils.isEmpty(hostColumn)) {
                 NetworkEntity hardWare = map.get(ne.getHostId());

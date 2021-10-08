@@ -444,10 +444,11 @@ public class HomePageService {
     @SuppressWarnings("unchecked")
     public String makeTemplate(HomePage page) {
         Long num = new Date().getTime();
-        JSONObject viewConf = templateImgTransform(page.getViewConf(),num, false);
-        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), false);
-        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), false);
-        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), false);
+        String name = page.getName();
+        JSONObject viewConf = templateImgTransform(page.getViewConf(),num, false, name);
+        JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), false, name);
+        JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), false, name);
+        JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), false, name);
         HomeTemplate homeTemplate = new HomeTemplate();
         homeTemplate.setLastUpdateTime(new Date());
         homeTemplate.setPaintObj(paintObj.getString("str"));
@@ -455,7 +456,7 @@ public class HomePageService {
         homeTemplate.setViewImage(viewImage.getString("str"));
         homeTemplate.setViewConf(viewConf.getString("str"));
         homeTemplate.setName(page.getName());
-        String name = page.getName();
+
         String sql = "insert into public.simo_mc_home_template (name, last_update_time, view_conf, view_image, paint_obj, compose_obj) values ('" + name
                 + "', now() ,'" + viewConf.getString("str")
                 + "', '" + viewImage.getString("str")
@@ -474,14 +475,17 @@ public class HomePageService {
 //            videoSet = Sets.newHashSet();
 //        }
         StringBuilder sb = new StringBuilder();
+        String templateName = null;
         for (HomePage page: pages) {
             Long num = new Date().getTime();
-            JSONObject viewConf = templateImgTransform(page.getViewConf(),num, tempImg);
-            JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), tempImg);
-            JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), tempImg);
-            JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), tempImg);
-
             String name = page.getName();
+            templateName = name;
+
+            JSONObject viewConf = templateImgTransform(page.getViewConf(),num, tempImg, templateName);
+            JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), tempImg, templateName);
+            JSONObject composeObj = templateImgTransform(page.getComposeObj(),viewImage.getLong("num"), tempImg, templateName);
+            JSONObject paintObj = templateImgTransform(page.getPaintObj(), composeObj.getLong("num"), tempImg, templateName);
+
             String templateType = page.getTemplateType();
             String templateConf = page.getTemplateConf();
             Boolean isDynamicTemplate = page.getIsDynamicTemplate();
@@ -494,16 +498,16 @@ public class HomePageService {
             sb.append(sql);
             sb.append("\n");
         }
-        String jsonPath = zipPath + File.separator + "templateCustom" + zipNum + File.separator + "json" + File.separator + "template.txt";
+        String jsonPath = zipPath + File.separator + templateName + File.separator + "json" + File.separator + "template.txt";
         impExpService.writeConfigJson(sb.toString(),jsonPath);
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(new File(zipPath + File.separator +"templateCustom" + zipNum + ".zip"));
+            fos = new FileOutputStream(new File(zipPath + File.separator + templateName + ".zip"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ZipUtils.toZip(zipPath + File.separator +"templateCustom"  + zipNum + File.separator ,fos, true);
-        return zipPath + File.separator +"templateCustom"  + zipNum++ + ".zip";
+        ZipUtils.toZip(zipPath + File.separator + templateName + File.separator ,fos, true);
+        return zipPath + File.separator + templateName + ".zip";
     }
 
     public void outputVideo(Set<String> sets, String url) {
@@ -512,8 +516,8 @@ public class HomePageService {
         }
     }
 
-    private JSONObject templateImgTransform(String str, Long num, Boolean tempImg){
-        String imgPath = zipPath +  File.separator +"templateCustom" + zipNum + File.separator + "img" + File.separator;
+    private JSONObject templateImgTransform(String str, Long num, Boolean tempImg, String templateName){
+        String imgPath = zipPath +  File.separator + templateName + File.separator + "img" + File.separator;
         if (tempImg){
             // 把模板中的图片也下载下来
             Set<Long> tempImgIds = Sets.newHashSet();
