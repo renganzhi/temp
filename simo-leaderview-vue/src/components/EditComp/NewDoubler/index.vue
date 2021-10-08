@@ -15,7 +15,7 @@
     </div>
     <div v-show="showTitle"
          class="doublerName"
-         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{comUnit}}</div>
+         :style="{'color': item.legendColor || '#828bac'}">{{item.chartData?item.chartData.name : ''}}{{comUnit}}</div>
   </div>
 </template>
 <script>
@@ -50,15 +50,22 @@ export default {
       return this.item.ctLegendShow === 'true'
     },
     comUnit: function () {
-      var unit = this.item.chartData.unit
+      var unit = ''
+      if(this.item.chartData){
+        unit = this.item.chartData.unit
+      }
       return unit === '' ? '' : ('(' + unit + ')')
     },
     numArr: function () {
-      if (!this.item.chartData.value && this.item.chartData.value !== 0) {
-        return '--'
+      if(this.item.chartData){
+        if (!this.item.chartData.value && this.item.chartData.value !== 0) {
+          return '--'
+        }
+        var str = this.item.chartData.value.toString().trim()
+        return str.split('')
+      }else{
+        return '0'
       }
-      var str = this.item.chartData.value.toString().trim()
-      return str.split('')
     },
     numCardValue: function () {
       return {

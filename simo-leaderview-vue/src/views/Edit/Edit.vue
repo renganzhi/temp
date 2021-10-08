@@ -2604,6 +2604,14 @@ html[data-theme="blueWhite"] {
 #resourcesIds input{
   width: 100%;
 }
+#resourcesIds{
+  .ivu-select-dropdown{
+    background-color: black;
+    .ivu-select-item{
+      color: white;
+    }
+  }
+}
 .edui-default {
   ::deep .edui-editor-bottomContainer {
     display: none;
