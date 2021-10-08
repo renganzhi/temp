@@ -133,7 +133,7 @@ html[data-theme="default"] {
         border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #3e4554
+        color: #3e4554 !important;
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #fff;
@@ -144,14 +144,18 @@ html[data-theme="default"] {
     }
     .ivu-btn-text {
         background-color: #fff;
-        border: solid 1px #026bf4;
-        color: #026bf4 !important;
-    }
-    .ivu-btn-text:hover {
-        background-color: #ebedf1;
-        border: solid 1px #026bf4;
-        color: #026bf4 !important;
-    }
+        // border: solid 1px #0000008e;
+        // color: #0000008e !important;
+        border: solid 1px #8c94ac;
+        color: #8c94ac !important;
+      }
+      .ivu-btn-text:hover {
+        // background-color: #ebedf1;
+        // border: solid 1px #0000008e;
+        // color: #0000008e !important;
+        color: #fff !important;
+        background-color: #8c94ac;
+      }
     .ivu-btn-primary {
         color: #fff;
     }
@@ -226,9 +230,14 @@ html[data-theme="default"] {
     .user-info>div{
         flex: 2;
     }
-    .user-info> .ivu-form-item {
+    .form-percent2{
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .user-info > .ivu-form-item {
         flex: 1;
-    }
+        display: inline-block;
+      }
     .form-percent2 .ivu-form-item{
         width: 49%;
         display: inline-block;
@@ -246,11 +255,13 @@ html[data-theme="default"] {
     .userInfoBox .ivu-input-wrapper .ivu-input[disabled]{
         background-color: #f1f1f1 !important;
     }
-    .userInfoBox .ivu-input-wrapper .ivu-input{
+    .userInfoBox .ivu-input-wrapper .ivu-input {
         border-color: #c9ccd6 !important;
         border-radius: 4px;
         width: 150px;
-    }
+        // color: rgba(0, 0, 0, 0.619) !important;
+        color: rgba(0, 0, 0, 0.619);
+      }
     .percent1{
         width: 100% !important;
     }
@@ -317,9 +328,12 @@ html[data-theme="default"] {
     .ivu-collapse>.ivu-collapse-item>.ivu-collapse-header{
         color: #cad6dd;
     }
-    .ivu-input{
-        color: #cad6dd;
-    }
+    .ivu-input {
+        // color: #cad6dd;
+        font-family: sans-serif !important;
+        color: #595959 !important;
+        padding: 4px 7px;
+      }
     .input-item{
         color: #cad6dd;
     }
@@ -509,7 +523,7 @@ html[data-theme="blackWhite"] {
         border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #3e4554
+        color: #3e4554;
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #fff;
@@ -768,7 +782,7 @@ html[data-theme="blueWhite"] {
         border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
-        color: #3e4554
+        color: #3e4554;
     }
     .ivu-modal-wrap .ivu-modal .ivu-modal-content {
         background: #fff;

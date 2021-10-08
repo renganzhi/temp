@@ -9,7 +9,7 @@ body {
     background: #222739;
     font-weight: normal !important;
     font-size: 12px !important;
-    font-family: 'SourceHanSansCN-Regular' !important;
+    /* font-family: 'SourceHanSansCN-Regular' !important; */
 }
 
 a,
@@ -140,9 +140,11 @@ select {
     border: solid 1px #3d445a !important;
     border-radius: 3px !important;
     background-color: transparent !important;
-    color: #cad6dd !important;
+    /* color: #cad6dd !important; */
+    color: #cad6dd;
     /* border-radius: 0px !important; */
-    padding: 0 10px !important;
+    /* padding: 0 10px !important; */
+    padding: 0 10px;
     font-size: 12px !important;
     display: inline-block;
     vertical-align: middle;

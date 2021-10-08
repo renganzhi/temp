@@ -172,7 +172,7 @@ html[data-theme='default'] {
   button,
   .ux-btn,
   .btn {
-    color: hsla(0,0%,100%,.9);
+    color: hsla(0, 0%, 100%, 0.9);
     background-color: #5b8bff;
     border-color: transparent;
   }
@@ -190,7 +190,7 @@ html[data-theme='default'] {
   .btn.focus,
   .btn:hover,
   .btn-group .btn-default.active:hover {
-    color: hsla(0,0%,100%,.9);
+    color: hsla(0, 0%, 100%, 0.9);
     background-color: #436bf6;
     border-color: transparent;
   }
@@ -238,7 +238,8 @@ html[data-theme='default'] {
   select {
     border: solid 1px #3d445a;
     background-color: transparent !important;
-    color: #cad6dd !important;
+    // color: #cad6dd !important;
+    color: #cad6dd;
   }
   .select2-selection {
     border: solid 1px #3d445a;

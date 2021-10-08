@@ -5,9 +5,16 @@
     class="userInfoBox"
     :loading="true"
     :width="980"
-    footer-hide
+    :on-ok="update"
+    :on-cancel="cancel"
   >
-    <Form ref="form" class="">
+    <Form
+      ref="form"
+      class=""
+      :rules="fmRules"
+      :model="formInfo"
+      label-width="120"
+    >
       <div class="form-title">
         个人信息
       </div>
@@ -84,7 +91,12 @@
               formInfo.subordinate ? formInfo.subordinate.split(' ').length : 0
             }}人)
           </span>
-          <Input v-model="formInfo.subordinate" type="textarea" readonly />
+          <Input
+            v-model="formInfo.subordinate"
+            type="textarea"
+            readonly
+            disabled
+          />
         </FormItem>
       </div>
       <!-- <div class="userInfo">
@@ -164,10 +176,10 @@
         </div>
       </div> -->
 
-      <div class="fr page__footer ivu-modal-footer" style="padding-bottom: 0px">
+      <!-- <div class="fr page__footer ivu-modal-footer" style="padding-bottom: 0px">
         <Button @click="update"> 确认 </Button>
         <Button cancel @click="cancel"> 取消 </Button>
-      </div>
+      </div> -->
     </Form>
     <div v-if="previewMd.isShow">
       <PreviewMd :mdpram="previewMd" />
@@ -462,6 +474,7 @@ hr {
   position: absolute;
   left: -45px;
   top: 20px;
+  color: #515a6e;
 }
 .img-box {
   width: 100px;
@@ -470,7 +483,9 @@ hr {
   border-radius: 3px;
   cursor: pointer;
   border-color: #cacdd7;
+
   span {
+    // color: rgba(0, 0, 0, 0.719) !important;
     color: #bfbfbf;
   }
   div {
@@ -481,7 +496,6 @@ hr {
     vertical-align: middle;
     justify-content: center;
     flex-wrap: nowrap;
-    flex-direction: column;
     img {
       width: 100%;
       height: 100%;
@@ -505,7 +519,14 @@ hr {
     &:first-child {
       font-size: 40px;
       font-weight: lighter;
+      font-family: SourceHanSansCN-Regular;
     }
   }
+}
+.ivu-btn-primary {
+  background: #5b8bff;
+}
+.ivu-input-wrapper {
+  width: fit-content;
 }
 </style>
