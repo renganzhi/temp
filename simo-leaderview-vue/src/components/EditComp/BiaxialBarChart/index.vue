@@ -185,7 +185,7 @@ export default {
                 return params
               }
             },
-            interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+            interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
           }
         },
         xAxis: {
@@ -218,7 +218,7 @@ export default {
             }
           },
           axisLabel: {
-            interval: 'auto', // 采用不重叠的方式展示
+            interval: 0, // 采用不重叠的方式展示
             textStyle: {
               color: this.item.legendColor || '#828bac',
               fontSize: this.item.axisLabelSize || '14'
