@@ -1253,7 +1253,7 @@ export default {
             this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss !== null ? pageData.baseneclss : ''}&neClass=${pageData.neclass !== null ? pageData.neclass : ''}`).then(res => {
               this.resourcesValueIds = res.obj || []
             })
-          } else if (res.obj.name === '2145' || res.obj.templateType === 'topo') {
+          } else if (res.obj.templateType === 'topo') {
             this.pageType = 'topo'
             this.CanChangeServes = true
             this.axios.get(`/monitor/topo/findTopoForDropDown`).then(res => {
