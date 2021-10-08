@@ -5,9 +5,16 @@
     class="userInfoBox"
     :loading="true"
     :width="980"
-    footer-hide
+    :on-ok="update"
+    :on-cancel="cancel"
   >
-    <Form ref="form" class="" :rules="fmRules" :model="formInfo">
+    <Form
+      ref="form"
+      class=""
+      :rules="fmRules"
+      :model="formInfo"
+      label-width="120"
+    >
       <div class="form-title">
         个人信息
       </div>
@@ -164,10 +171,10 @@
         </div>
       </div> -->
 
-      <div class="fr page__footer ivu-modal-footer" style="padding-bottom: 0px">
-        <Button style="background:#5b8bfd;" @click="update"> 确认 </Button>
+      <!-- <div class="fr page__footer ivu-modal-footer" style="padding-bottom: 0px">
+        <Button @click="update"> 确认 </Button>
         <Button cancel @click="cancel"> 取消 </Button>
-      </div>
+      </div> -->
     </Form>
     <div v-if="previewMd.isShow">
       <PreviewMd :mdpram="previewMd" />
@@ -449,10 +456,6 @@ hr {
   }
   & > ::v-deep .ivu-form-item {
     flex: 1;
-    color: black;
-  }
-  ::v-deep .ivu-form-item-content {
-    color: black;
   }
 }
 ::v-deep .ivu-input-type-textarea {
@@ -460,15 +463,12 @@ hr {
   textarea {
     width: 750px !important;
     height: 100px;
-    background-color: #f1f1f1 !important;
-    color: rgba(0, 0, 0, 0.619) !important;
   }
 }
 .label-tip {
   position: absolute;
   left: -45px;
   top: 20px;
-  color: rgba(0, 0, 0, 0.719) !important;
 }
 .img-box {
   width: 100px;
@@ -479,7 +479,8 @@ hr {
   border-color: #cacdd7;
 
   span {
-    color: rgba(0, 0, 0, 0.719) !important;
+    // color: rgba(0, 0, 0, 0.719) !important;
+    color: #bfbfbf;
   }
   div {
     height: 100%;
@@ -512,7 +513,14 @@ hr {
     &:first-child {
       font-size: 40px;
       font-weight: lighter;
+      font-family: SourceHanSansCN-Regular;
     }
   }
+}
+.ivu-btn-primary {
+  background: #5b8bff;
+}
+.ivu-input-wrapper {
+  width: fit-content;
 }
 </style>
