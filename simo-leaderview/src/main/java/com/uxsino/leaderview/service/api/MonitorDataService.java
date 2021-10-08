@@ -1903,17 +1903,6 @@ public class MonitorDataService {
         if (Objects.isNull(json)) {
             return new JsonModel(true, empObj());
         }
-        if (bar) {
-            JSONArray rows = json.getJSONArray("rows");
-            if (!ObjectUtils.isEmpty(rows)) {
-                JSONArray tmpRows = new JSONArray();
-                for (int i = rows.size() - 1; i >= 0; i--) {
-                    JSONObject obj = rows.getJSONObject(i);
-                    tmpRows.add(obj);
-                }
-                json.put("rows", tmpRows);
-            }
-        }
         return new JsonModel(true, json);
     }
 
