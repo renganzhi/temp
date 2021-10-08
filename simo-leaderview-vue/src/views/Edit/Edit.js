@@ -1248,9 +1248,11 @@ export default {
           if (res.obj.templateType === 'single') {
             this.CanChangeServes = true
             // this.paintObj.templateConf.baseneclss  neclass
-            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss}&neClass=${pageData.neclass}`).then(res => {
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=&baseNeClass=${pageData.baseneclss !== null ? pageData.baseneclss : ''}&neClass=${pageData.neclass !== null ? pageData.neclass : ''}`).then(res => {
               this.resourcesValueIds = res.obj || []
             })
+          } else if (res.obj.templateType === 'switch') {
+
           } else {
             this.resourceFirstIds()
           }
@@ -1263,9 +1265,43 @@ export default {
     resourceFirstIds: function () {
       this.chartNum.forEach(data => {
         if (data.chartType === 'ELine') {
-          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass}&neClass=${data.params.neClass}`).then(res => {
+          console.log(data)
+          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
             if (res.obj[0].value) {
               this.sendNewAjax(data, res.obj[0].value)
+            }
+          })
+        } else {
+          $.ajax({
+            url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+            data: data.params,
+            type: data.method || 'get',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              console.log(data)
+              if (data.barType === 'NewHistogram') {
+                data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupHistogram') {
+                data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupLeftHistogram') {
+                data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewBar') {
+                data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                if (res.obj) {
+                  data.ctName = res.obj.info
+                }
+                if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                  data.chartData = res.obj
+                }
+              } else {
+                data.chartData = res.success ? res.obj : []
+              }
             }
           })
         }
