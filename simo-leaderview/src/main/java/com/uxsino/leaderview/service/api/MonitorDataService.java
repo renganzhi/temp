@@ -859,10 +859,18 @@ public class MonitorDataService {
                             fieldLabel = fieldLabelMap.get(fieldStr);
                             valueUtils.transferItem(fieldLabel, fieldObj);
                             value = fieldObj.getString(fieldStr);
+                            String label = fieldLabel.getString("label");
+                            if("表空间名称".equals(label)){
+                                label = "表空间名";
+                            }else if("表空间使用率".equals(label)){
+                                label = "利用率";
+                            }else if("表空间剩余大小".equals(label)){
+                                label = "剩余大小";
+                            }
                             if (Strings.isNullOrEmpty(value)) {
-                                row.put(fieldLabel.getString("label"), "--");
+                                row.put(label, "--");
                             } else {
-                                row.put(fieldLabel.getString("label"),
+                                row.put(label,
                                         ObjectUtils.isEmpty(fieldLabel.getJSONObject("desc")) ? value
                                                 : fieldLabel.getJSONObject("desc").get(value));
                             }
@@ -889,7 +897,15 @@ public class MonitorDataService {
             for (int i = 0; i < ind.getFields().size(); i++) {
                 JSONObject itm = (JSONObject) ind.getFields().get(i);
                 if (Objects.equals(f, itm.getString("name"))) {
-                    columns.add(itm.getString("label"));
+                    String label = itm.getString("label");
+                    if("表空间名称".equals(label)){
+                        label = "表空间名";
+                    }else if("表空间使用率".equals(label)){
+                        label = "利用率";
+                    }else if("表空间剩余大小".equals(label)){
+                        label = "剩余大小";
+                    }
+                    columns.add(label);
                     fieldLabelMap.put(f, itm);
                     if(itm.containsKey("desc")){
                         transformDesc.put(f,itm.getJSONObject("desc"));
@@ -929,13 +945,21 @@ public class MonitorDataService {
                     fieldLabel = fieldLabelMap.get(f);
                     valueUtils.transferItem(fieldLabel, fieldObj );
                     String value = fieldObj.getString(f);
+                    String label = fieldLabel.getString("label");
+                    if("表空间名称".equals(label)){
+                        label = "表空间名";
+                    }else if("表空间使用率".equals(label)){
+                        label = "利用率";
+                    }else if("表空间剩余大小".equals(label)){
+                        label = "剩余大小";
+                    }
                     if (ObjectUtils.isEmpty(value)) {
-                        row.put(fieldLabel.getString("label"), "--");
+                        row.put(label, "--");
                     } else{
                         if(transformDesc.containsKey(f)){
-                            row.put(fieldLabel.getString("label"), transformDesc.get(f).getString(value));
+                            row.put(label, transformDesc.get(f).getString(value));
                         }else {
-                            row.put(fieldLabel.getString("label"), value);
+                            row.put(label, value);
                         }
                     }
                 };
@@ -1086,8 +1110,8 @@ public class MonitorDataService {
         return MonitorUtils.existJudgment(value, defaultValue);
     }
 
-    public JsonModel getHistoryHealth(String[] neIds, IndPeriod period, Integer interval) throws Exception {
-        JSONArray rows = getHistoryHealthValues(neIds, period, interval);
+    public JsonModel getHistoryHealth(String[] neIds, IndPeriod period, Integer interval, String dateFormatStr) throws Exception {
+        JSONArray rows = getHistoryHealthValues(neIds, period, interval, dateFormatStr);
         JSONArray columns = new JSONArray();
         columns.add("采集时间");
         List<NetworkEntity> neList = rpcProcessService.findNetworkEntityByIdIn(neIds);
@@ -1100,7 +1124,7 @@ public class MonitorDataService {
         return new JsonModel().success(result);
     }
 
-    public JSONArray getHistoryHealthValues(String[] neIds, IndPeriod period, Integer interval) throws Exception {
+    public JSONArray getHistoryHealthValues(String[] neIds, IndPeriod period, Integer interval, String dateFormatStr) throws Exception {
         Date now = new Date();
         Date startDate = IndPeriod.getStartDate(period, now);
         startDate.setTime(startDate.getTime() - startDate.getTime() % 60000L);
@@ -1119,6 +1143,14 @@ public class MonitorDataService {
             healthMap.put(ne.getId(), healthList);
         }
 
+
+        //标识是否传入日期裁剪数组
+        Boolean ifDateFormat = false;
+        SimpleDateFormat dateFormat = null;
+        if(!Strings.isNullOrEmpty(dateFormatStr)) {
+            dateFormat = new SimpleDateFormat(dateFormatStr);
+            ifDateFormat = true;
+        }
 
         JSONArray rows = new JSONArray();
         for (Date date : allDate) {
@@ -1148,7 +1180,7 @@ public class MonitorDataService {
                     row.put(ne.getIp() + ne.getName(), lastValue);
                 }
             }
-            row.put("采集时间", DateUtils.formatCommonDate(date));
+            row.put("采集时间", ifDateFormat ? dateFormat.format(date) : DateUtils.formatCommonDate(date));
             rows.add(row);
         }
         return rows;
@@ -1253,7 +1285,6 @@ public class MonitorDataService {
         JSONObject unitTransfer = MonitorUtils.unitTransfer(values, getUnit(model), field);
         values = unitTransfer.getJSONArray("result");
         List<String> cacheTime = Lists.newArrayList();
-        SimpleDateFormat oldDataFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         for (int i = 0; i < values.size(); i++) {
             JSONObject obj = values.getJSONObject(i);
@@ -1262,7 +1293,7 @@ public class MonitorDataService {
             if (!cacheTime.contains(fetchDate)) {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate) && !"Infinity".equals(o.getString(finalField)));
-                row.put("采集时间", dateFormat.format(oldDataFormat.parse(fetchDate)));
+                row.put("采集时间", dateFormat.format(sdf.parse(fetchDate)));
                 MonitorUtils.action(filter, o -> row.put(neIpMap.get(o.getString("neId")), o.getString(finalField)));
                 cacheTime.add(fetchDate);
                 if (row.size() == 1) continue;
@@ -1711,7 +1742,6 @@ public class MonitorDataService {
 
         List<String> filedList = Lists.newArrayList();
         Map<String, String> filedLabelMap = Maps.newHashMap();
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat(MonitorDataService.sdfStr);
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatStr);
         // 获取数据中心的指标数据
         for (int i = 0; i < indicatorArr.size(); i++) {
@@ -1719,7 +1749,7 @@ public class MonitorDataService {
             JSONArray aggValues = new JSONArray();
             if ("healthy".equals(indicatorId)) {
                 // 对健康度指标特殊处理获取数据
-                aggValues = getHistoryHealthValues(neIds, period, interval);
+                aggValues = getHistoryHealthValues(neIds, period, interval, null);
                 filedLabelMap.put("healthy", "健康度");
                 filedList.add("healthy");
                 columns.add("健康度");
@@ -1727,7 +1757,7 @@ public class MonitorDataService {
                     o.put("field", "healthy");
                     o.put("neId", ne.getId());
                     try {
-                        o.put("fetchDate", dateFormat.format(oldDateFormat.parse(o.get("采集时间").toString())));
+                        o.put("fetchDate", dateFormat.format(sdf.parse(o.get("采集时间").toString())));
                     } catch (ParseException e) {
                         log.error("日期格式化错误{}",o.get("采集时间"));
                     }
@@ -1804,7 +1834,7 @@ public class MonitorDataService {
             if (!cacheTime.contains(fetchDate)) {
                 JSONArray arr = values;
                 JSONArray filter = MonitorUtils.filter(arr, o -> o.getString("fetchDate").equals(fetchDate));
-                row.put("采集时间",  dateFormat.format(oldDateFormat.parse(fetchDate)));
+                row.put("采集时间",  dateFormat.format(sdf.parse(fetchDate)));
                 MonitorUtils.action(filter, o -> row.put(filedLabelMap.get(o.getString("field")), o.getString(MonitorUtils.getValueKey(o, filedList))));
                 cacheTime.add(fetchDate);
                 rows.add(row);
@@ -3643,7 +3673,7 @@ public class MonitorDataService {
             if (ObjectUtils.isEmpty(ne)) {
                 return new JSONObject();
             }
-            JSONArray healthValues = getHistoryHealthValues(neIds, period, interval);
+            JSONArray healthValues = getHistoryHealthValues(neIds, period, interval, null);
             action(healthValues, o -> {
                 o.put("fetchDate", o.get("采集时间"));
                 o.put("indicator_name", "healthy");

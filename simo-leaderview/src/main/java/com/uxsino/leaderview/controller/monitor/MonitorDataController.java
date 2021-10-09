@@ -473,7 +473,7 @@ public class MonitorDataController {
                 if (IndPeriod._1day == period) {
                     interval = 5;
                 }
-                return monitorDataService.getHistoryHealth(neIds, period, interval);
+                return monitorDataService.getHistoryHealth(neIds, period, interval, dateFormatStr);
             } else {
                 //TODO 这里的时间值在之后的版本中可调整至灵活输入的。
                 IntervalType intervalType = IntervalType.minute;

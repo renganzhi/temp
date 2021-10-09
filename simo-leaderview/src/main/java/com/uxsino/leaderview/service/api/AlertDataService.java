@@ -795,6 +795,9 @@ public class AlertDataService {
             if (!Strings.isNullOrEmpty(topoId)) {
                 criteria.setTopoId(topoId);
             }
+            if (BaseNeClass.virtualization.equals(baseNeClass)) {
+                criteria.setSourceManage(false);
+            }
             List<String > neIdList = rpcProcessService.getNeIds(criteria);
             neIds = neIdList.toArray(new String[neIdList.size()]);
         }
