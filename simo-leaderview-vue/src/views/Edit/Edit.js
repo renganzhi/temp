@@ -1246,7 +1246,6 @@ export default {
           this.chartNum = []
         }
         if (res.obj.isDynamicTemplate) {
-          console.log(res.obj.templateType)
           if (res.obj.templateType === 'single') {
             this.pageType = 'single'
             this.CanChangeServes = true
@@ -1908,7 +1907,7 @@ export default {
         }
       }
 
-      if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
+      if (!window.event.ctrlKey) {
         // 切换选中的元件
         this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id

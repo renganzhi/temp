@@ -426,16 +426,19 @@ export default {
   .navTittle {
     display: inline-block;
     font-size: 16px;
-    margin-left: 15px;
     line-height: 50px;
     cursor: pointer;
     font-weight: 400;
     color: #436bf6;
     padding: 0 15px;
     vertical-align: top;
+    i{
+      font-size: 12px;
+    }
   }
   .navRight {
     float: right;
+    margin-right: 20px;
     & > li {
       position: relative;
       float: left;
@@ -493,15 +496,14 @@ export default {
   }
   .dropdownMenuWrap {
     width: 100%;
-    position: absolute;
+    position: fixed;
+    height: calc(100% - 50px);
     top: 50px;
     z-index: 9999;
-    height: 670px;
     background-color: #fff;
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 10px;
     display: flex;
     flex-wrap: nowrap;
     background: url(./images/head/bg.png);
