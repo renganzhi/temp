@@ -880,7 +880,8 @@ public class MonitorDataService {
 
     private JsonModel getListEmptyComponentTable(String neIds, String[] field, IndicatorTable ind) throws Exception {
         JSONArray columns = new JSONArray();
-        Map<String, String> fieldLabelMap = Maps.newHashMap();
+        Map<String, JSONObject> fieldLabelMap = Maps.newHashMap();
+        JSONObject fieldLabel = null;
         Map<String, JSONObject> transformDesc = new HashMap<>();
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
@@ -889,7 +890,7 @@ public class MonitorDataService {
                 JSONObject itm = (JSONObject) ind.getFields().get(i);
                 if (Objects.equals(f, itm.getString("name"))) {
                     columns.add(itm.getString("label"));
-                    fieldLabelMap.put(f, itm.getString("label"));
+                    fieldLabelMap.put(f, itm);
                     if(itm.containsKey("desc")){
                         transformDesc.put(f,itm.getJSONObject("desc"));
                     }
@@ -917,22 +918,27 @@ public class MonitorDataService {
             return new JsonModel(true, result);
         }
 
+        IndicatorValueUtils valueUtils = new IndicatorValueUtils();
         if (indValue.getIndicatorValue() instanceof JSONArray) {
             JSONArray indicatorValue = (JSONArray) indValue.getIndicatorValue();
             for (int i = 0; i < indicatorValue.size(); i++) {
-                JSONObject value = indicatorValue.getJSONObject(i);
+                JSONObject fieldObj  = indicatorValue.getJSONObject(i);
                 JSONObject row = new JSONObject(true);
-                Arrays.stream(field).forEach(f -> {
-                    if (ObjectUtils.isEmpty(value.getString(f))) {
-                        row.put(fieldLabelMap.get(f), "--");
+                //Arrays.stream(field).forEach(f -> {
+                for(String f : field){
+                    fieldLabel = fieldLabelMap.get(f);
+                    valueUtils.transferItem(fieldLabel, fieldObj );
+                    String value = fieldObj.getString(f);
+                    if (ObjectUtils.isEmpty(value)) {
+                        row.put(fieldLabel.getString("label"), "--");
                     } else{
                         if(transformDesc.containsKey(f)){
-                            row.put(fieldLabelMap.get(f), transformDesc.get(f).getString(value.getString(f)));
+                            row.put(fieldLabel.getString("label"), transformDesc.get(f).getString(value));
                         }else {
-                            row.put(fieldLabelMap.get(f), value.getString(f));
+                            row.put(fieldLabel.getString("label"), value);
                         }
                     }
-                });
+                };
                 rows.add(row);
             }
         } else {
@@ -977,6 +983,7 @@ public class MonitorDataService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             return false;
         }
         return ObjectUtils.isEmpty(strategyField) ? false : strategyField;
@@ -1739,7 +1746,18 @@ public class MonitorDataService {
                 model.setIndicator(ind);
                 model.setField(field);
                 unit = getUnit(model);
-                String label = getLabel(ind, field);
+                String label = null;
+
+                if (!validHasFields(ind)) {
+                    label = ind.getLabel();
+                } else {
+                    JSONArray fieldArr = ind.getFields();
+                    fieldArr = filter(fieldArr, o -> field.equals(o.getString("name")));
+                    if (!ObjectUtils.isEmpty(fieldArr)) {
+                        label = "宿主机" + fieldArr.getJSONObject(0).getString("label");
+                    }
+                }
+
                 columns.add(label);
                 filedLabelMap.put(field, label);
                 IndicatorValueQO qo = new IndicatorValueQO();
