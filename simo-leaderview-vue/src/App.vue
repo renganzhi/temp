@@ -239,7 +239,8 @@ html[data-theme='default'] {
     border: solid 1px #3d445a;
     background-color: transparent !important;
     // color: #cad6dd !important;
-    color: #cad6dd;
+    // color: #cad6dd;
+    color: #595959;
   }
   .select2-selection {
     border: solid 1px #3d445a;

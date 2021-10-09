@@ -68,12 +68,7 @@ body {
   overflow: hidden;
   .ivu-btn-text {
     background-color: #666f8b;
-    font-size: 12px;
-    border: none;
     // padding: 0 40px 20px 20px;
-    overflow: hidden;
-    // .ivu-btn-text {
-      background-color: #666f8b;
       font-size: 12px;
       border: none;
       padding: 5px 10px;
@@ -87,12 +82,12 @@ body {
       font-size: 12px;
       background-color: #5c8bff;
       margin-right: 10px;
+      padding: 5px 10px;
       border: none;
       border-radius: 3px;
       min-width: 60px;
       height: 28px;
       float: right;
-      margin-left: 0;
       font-weight: 10;
     }
   // }
@@ -117,7 +112,7 @@ body {
     padding: 20px 40px;
     overflow: auto;
     flex: 1;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     max-height: 550px;
     font-size: 14px;
     line-height: 1.5;
@@ -126,8 +121,9 @@ body {
     border: none;
 }
 .ivu-modal-wrap .ivu-modal .ivu-modal-content {
-  border-radius: 0%;
+  // border-radius: 0%;
   height: 100%;
+  max-height: 600px;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -136,7 +132,7 @@ body {
 .ivu-modal-wrap .ivu-modal .ivu-modal-content .ivu-modal-header {
   padding: 9px 20px;
   border: none;
-  border-radius: 6px;
+  // border-radius: 6px;
 }
 .ivu-form .ivu-form-item {
   margin-bottom: 20px;
@@ -154,7 +150,7 @@ body {
 }
 .ivu-modal-header p,
 .ivu-modal-header-inner {
-  font-size: 14px;
+  font-size: 12px;
   color: inherit;
   display: inline-block;
   width: 100%;
