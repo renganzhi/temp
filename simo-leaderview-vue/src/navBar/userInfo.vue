@@ -519,7 +519,8 @@ hr {
     &:first-child {
       font-size: 40px;
       font-weight: lighter;
-      font-family: SourceHanSansCN-Regular;
+      // font-family: SourceHanSansCN-Regular;
+      font-family: SourceHanSansCN-Light;
     }
   }
 }
