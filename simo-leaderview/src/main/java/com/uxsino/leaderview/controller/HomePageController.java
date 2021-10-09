@@ -1146,7 +1146,9 @@ public class HomePageController {
 
     @ApiOperation("模板导出成zip包")
     @GetMapping("/exportTemplate")
-    public void exportTemplate(@RequestParam("ids") String ids, HttpServletRequest request, HttpServletResponse response) {
+    public void exportTemplate(@RequestParam("ids") String ids,
+                               @RequestParam("name") String name,
+                               HttpServletRequest request, HttpServletResponse response) {
         List<HomePage> pages = Lists.newArrayList();
         for (String str : ids.split(",")) {
             Long id = Long.valueOf(str);
@@ -1154,12 +1156,10 @@ public class HomePageController {
             pages.add(page);
         }
         logger.info("导出开始");
-        String path = impExpService.makeTemplate(pages);
+        String path = impExpService.makeTemplate(pages,name);
         logger.info("缓存目标地址： " + path);
         impExpService.download(path, request, response);
-//		}catch (Exception e){
-//			e.printStackTrace();
-//		}
+        impExpService.deleteTempFile(path);
     }
 
 

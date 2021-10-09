@@ -82,7 +82,7 @@ public class ImpExpService {
      */
     @Transactional
     @SuppressWarnings("unchecked")
-    public String  makeTemplate(List<HomePage> pages){
+    public String  makeTemplate(List<HomePage> pages,String name){
         JSONArray json = new JSONArray();
         //需要导出的模板数
         Set<Long> ids = Sets.newConcurrentHashSet();
@@ -92,17 +92,17 @@ public class ImpExpService {
             json.add(makeTemplate(page,ids));
         }
         //创建config.json文件
-        String jsonPath = zipPath + File.separator + "templateZip" + zipNum + File.separator + "json" + File.separator + "config.json";
+        String jsonPath = zipPath + File.separator + "templateZip" + name + File.separator + "json" + File.separator + "config.json";
         //编写配置文件
         writeConfigJson(json.toJSONString(),jsonPath);
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(new File(zipPath + File.separator +"templateZip" + zipNum + ".zip"));
+            fos = new FileOutputStream(new File(zipPath + File.separator +"templateZip" + name + ".zip"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ZipUtils.toZip(zipPath + File.separator +"templateZip" + zipNum + File.separator ,fos, true);
-        return zipPath + File.separator + "templateZip" + zipNum++ + ".zip";
+        ZipUtils.toZip(zipPath + File.separator +"templateZip" + name + File.separator ,fos, true);
+        return zipPath + File.separator + "templateZip" + name + ".zip";
     }
 
     @Transactional
@@ -805,7 +805,7 @@ public class ImpExpService {
             // 清空response
             response.reset();
             // 设置response的Header
-            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("utf-8"),"ISO8859-1"));
             response.addHeader("Content-Length", "" + file.length());
             response.setHeader("Content-Type", "multipart/form-data");
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
