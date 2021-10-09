@@ -1271,49 +1271,60 @@ export default {
       })
     },
     resourceFirstIds: function () {
-      this.chartNum.forEach(data => {
-        if (data.chartType === 'ELine' && data.params.neIds && data.params.domainId && data.params.baseNeClass && data.params.neClass) {
-          this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
-            if (res.obj[0].value) {
-              this.sendNewAjax(data, res.obj[0].value)
-            }
-          })
-        } else {
-          $.each(data.params, function (i, d) {
-            data.params[i] = $.isArray(d) ? d.join(',') : d
-          })
-          $.ajax({
-            url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
-            data: data.params,
-            type: data.method || 'get',
-            cache: false,
-            ascyn: false,
-            success: function (res) {
-              if (data.barType === 'NewHistogram') {
-                data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+      let topoIdsArry = []
+      this.axios.get(`/monitor/topo/findTopoForDropDown`).then(res => {
+        res.obj.forEach(element => {
+          topoIdsArry.push(element.value)
+        });
+        this.chartNum.forEach(data => {
+          if (data.chartType === 'ELine' && data.params.neIds && data.params.domainId && data.params.baseNeClass && data.params.neClass) {
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
+              if (res.obj[0].value) {
+                this.sendNewAjax(data, res.obj[0].value)
               }
-              if (data.barType === 'NewGroupHistogram') {
-                data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
-              }
-              if (data.barType === 'NewGroupLeftHistogram') {
-                data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
-              }
-              if (data.barType === 'NewBar') {
-                data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
-              }
-              if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
-                if (res.obj) {
-                  data.ctName = res.obj.info
-                }
-                if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
-                  data.chartData = res.obj
-                }
-              } else {
-                data.chartData = res.success ? res.obj : []
+            })
+          } else {
+            if (data.params.topoId) {
+              if (topoIdsArry.indexOf(data.params.topoId) < 0) {
+                data.params.topoId = topoIdsArry[0]
               }
             }
-          })
-        }
+            $.each(data.params, function (i, d) {
+              data.params[i] = $.isArray(d) ? d.join(',') : d
+            })
+            $.ajax({
+              url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+              data: data.params,
+              type: data.method || 'get',
+              cache: false,
+              ascyn: false,
+              success: function (res) {
+                if (data.barType === 'NewHistogram') {
+                  data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupHistogram') {
+                  data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewGroupLeftHistogram') {
+                  data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.barType === 'NewBar') {
+                  data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+                }
+                if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                  if (res.obj) {
+                    data.ctName = res.obj.info
+                  }
+                  if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                    data.chartData = res.obj
+                  }
+                } else {
+                  data.chartData = res.success ? res.obj : []
+                }
+              }
+            })
+          }
+        })
       })
     },
     sendNewAjax(data, newV) {

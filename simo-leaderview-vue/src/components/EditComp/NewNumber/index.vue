@@ -16,6 +16,17 @@ export default {
       showOver: true
     }
   },
+  watch: {
+    'item.chartData': function () {
+      if(!this.item.chartData){
+        this.item.chartData = {
+          'name': '--',
+          'unit': '',
+          'value': '-'
+        }
+      }
+    },
+  },
   computed: {
     numStr: function () {
       if (this.item.chartData.value !== 0 && !this.item.chartData.value) {
