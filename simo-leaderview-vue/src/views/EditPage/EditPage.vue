@@ -759,6 +759,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.searchForm{
+  font-size: 12px;
+}
 .homeBack {
   float: right;
   background: transparent;
@@ -782,6 +785,7 @@ export default {
   box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
   border-radius: 3px;
   overflow: hidden;
+  font-size: 12px;
   .canSee {
     position: absolute;
     top: 0px;
