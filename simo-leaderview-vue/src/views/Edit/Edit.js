@@ -4677,6 +4677,14 @@ export default {
                 newData.ne = [mydata]
                 data.params.windows = JSON.stringify([newData])
               }
+              if (data.moreUrlArry) {
+                data.moreUrlArry.forEach(element => {
+                  element.params.neIds = newV
+                  $.each(element.params, function (i, d) {
+                    element.params[i] = $.isArray(d) ? d.join(',') : d
+                  })
+                });
+              }
               $.each(data.params, function (i, d) {
                 data.params[i] = $.isArray(d) ? d.join(',') : d
               })

@@ -111,15 +111,16 @@ export default {
       }
     },
     widthArry: function () {
-      console.log(this.item.LineSizeArry)
       let arr = this.item.LineSizeArry || []
-      this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
-        if (arr[i]) {
+      if(this.item.chartData){
+        this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
+          if (arr[i]) {
 
-        } else {
-          arr.push(86)
-        }
-      })
+          } else {
+            arr.push(86)
+          }
+        })
+      }
       return arr
     },
     theadTrStyle: function () {
@@ -143,6 +144,12 @@ export default {
     'item.chartData': function (newV, oldV) {
       if (JSON.stringify(newV) === JSON.stringify(oldV)) {
         return
+      }
+      if(this.item.chartData === null || this.item.chartData === ''|| this.item.chartData === undefined){
+        this.item.chartData = {
+          'columns': [],
+          'rows': []
+        }
       }
       if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
         this.tableEmpty = true
@@ -179,16 +186,18 @@ export default {
         $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
           _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
         })
-        $.ajax({
-          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
-          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
-          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
-          cache: false,
-          ascyn: false,
-          success: function (res) {
-            _this.item.chartData = res.obj
-          },
-        })
+        if(_this.item.ctDataSource === 'system'){
+          $.ajax({
+            url: gbs.host + myUrl, // 第三方的ur已经拼接好host
+            data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+            type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              _this.item.chartData = res.obj
+            },
+          })
+        }
       }
     },
     sortArry (key) {
@@ -292,22 +301,24 @@ export default {
     }
   },
   mounted: function () {
-    this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
-      if (this.widthArry[i]) {
+    if(this.item.chartData){
+      this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
+        if (this.widthArry[i]) {
 
-      } else {
-        this.widthArry.push(86)
+        } else {
+          this.widthArry.push(86)
+        }
+      })
+      this.item.LineSizeArry = this.widthArry
+      if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+        this.tableEmpty = true
       }
-    })
-    this.item.LineSizeArry = this.widthArry
-    if (this.item.chartData.rows && this.item.chartData.rows.length < 1) {
-      this.tableEmpty = true
-    }
-    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
-      this.myNewInterVal = setInterval(() => {
-        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
-        this.getNewChartData()
-      }, this.item.intervieData *1000);
+      if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
+        this.myNewInterVal = setInterval(() => {
+          this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+          this.getNewChartData()
+        }, this.item.intervieData *1000);
+      }
     }
     // 这里不用注释
     // if ($('#home-html').length > 0) {
