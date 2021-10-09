@@ -1,7 +1,7 @@
 export default {
   'item': {
     'text': '3D模型',
-    'imgClass': 'icon-3dhistogram',
+    'imgClass': 'icon-a-3Dmoxing',
     'chartType': 'TDModel',
     'width': 600,
     'height': 400,

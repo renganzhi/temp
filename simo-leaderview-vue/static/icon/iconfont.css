@@ -1,8 +1,8 @@
 @font-face {
   font-family: "simo"; /* Project id 778626 */
-  src: url('iconfont.woff2?t=1630396258144') format('woff2'),
-       url('iconfont.woff?t=1630396258144') format('woff'),
-       url('iconfont.ttf?t=1630396258144') format('truetype');
+  src: url('iconfont.woff2?t=1633764954533') format('woff2'),
+       url('iconfont.woff?t=1633764954533') format('woff'),
+       url('iconfont.ttf?t=1633764954533') format('truetype');
 }
 
 .simo {
@@ -31,6 +31,139 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-a-3Dmoxing:before {
+  content: "\e7e9";
+}
+
+.icon-xunishitu:before {
+  content: "\e7e8";
+}
+
+.icon-fanhui:before {
+  content: "\e7e7";
+}
+
+.icon-suoxiao:before {
+  content: "\e7e5";
+}
+
+.icon-fangda:before {
+  content: "\e7e6";
+}
+
+.icon-n-editClear:before {
+  content: "\e7e4";
+}
+
+.icon-n-fileDel:before {
+  content: "\e7e3";
+}
+
+.icon-n-fileView:before {
+  content: "\e7e2";
+}
+
+.icon-n-dataView:before {
+  content: "\e7e1";
+}
+
+.icon-n-fileIcon2:before {
+  content: "\e7e0";
+}
+
+.icon-n-fileIcon1:before {
+  content: "\e7df";
+}
+
+.icon-n-colorMd:before {
+  content: "\e7de";
+}
+
+.icon-youhua2:before {
+  content: "\e7dd";
+}
+
+.icon-youhua1:before {
+  content: "\e7dc";
+}
+
+.icon-n-dmcSource:before {
+  content: "\e7d9";
+}
+
+.icon-n-dmcView:before {
+  content: "\e7da";
+}
+
+.icon-n-dmcEditor:before {
+  content: "\e7db";
+}
+
+.icon-youhua:before {
+  content: "\e7d8";
+}
+
+.icon-daohanglantubiao-04:before {
+  content: "\e7d4";
+}
+
+.icon-daohanglantubiao-01:before {
+  content: "\e7d5";
+}
+
+.icon-daohanglantubiao-02:before {
+  content: "\e7d6";
+}
+
+.icon-daohanglantubiao-03:before {
+  content: "\e7d7";
+}
+
+.icon-n-userLg:before {
+  content: "\e7d3";
+}
+
+.icon-n-key:before {
+  content: "\e7cf";
+}
+
+.icon-working:before {
+  content: "\e7d0";
+}
+
+.icon-end:before {
+  content: "\e7cd";
+}
+
+.icon-n-role:before {
+  content: "\e7cc";
+}
+
+.icon-n-user:before {
+  content: "\e7ce";
+}
+
+.icon-n-commSet:before {
+  content: "\e7c8";
+}
+
+.icon-n-auditLog:before {
+  content: "\e7c9";
+}
+
+.icon-n-licInfo:before {
+  content: "\e7ca";
+}
+
+.icon-n-sysSet:before {
+  content: "\e7cb";
+}
+
+.icon-n-platform:before {
+  content: "\e733";
+}
+
 .icon-shuangzhuheng-108:before {
   content: "\e7c7";
 }
@@ -633,10 +766,6 @@
 
 .icon-n-pandect:before {
   content: "\e732";
-}
-
-.icon-n-sysSet:before {
-  content: "\e733";
 }
 
 .icon-n-procsMonit:before {
