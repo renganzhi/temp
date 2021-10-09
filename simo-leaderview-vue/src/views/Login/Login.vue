@@ -1,12 +1,11 @@
 <template>
   <div style="margin: 20px;">
-    <input v-model="name"
-           placeholder="请输入用户名" /><br>
-    <input v-model="pwd"
-           placeholder="请输入密码" /><br>
+    <input v-model="name" placeholder="请输入用户名" /><br />
+    <input v-model="pwd" placeholder="请输入密码" /><br />
     <img :src="baseUrl + '/verification'" />
-    <input v-model="code"
-           @keyup.enter="login" /><button @click='login'>登录</button>
+    <input v-model="code" @keyup.enter="login" /><button @click="login">
+      登录
+    </button>
   </div>
 </template>
 <script>
@@ -19,9 +18,11 @@ export default {
     return {
       baseUrl: '',
       code: '',
-      name: 'admin',
+      // name: 'admin',
+      name: 'yn',
       // pwd: 'iegJXNo9DJiNXndQJ+vgm3NQLLBrmPJCI88ZTHsuE+h8NMGYrzdxY2ki+LEcqYr5vD93mE+GwTYPxnuiari2He+PnKo5IFuSGikYwq+XDV2AEwaf2adH9RnTwtCG2ZXg+boBS8O+Mu1GQ33bnwXof823U2yIQqY4QD59o3ETRVA='
-      pwd: 'PvdD05Lzi7hl2I5Foizn16eIPpTdXfkx85bCrFZ+Ry3bBK0f5lqYI12T05VNR1IlbR7AiQ1X/6465hJk2p+Dz9a5h0451tUGhA/ZIEd7pyAmljstut+ymKBduMuoryw2fja/7/DV3b22L6lUJMloYi12mG122vDy4kFfgLAVgQ0='
+      pwd:
+        'PvdD05Lzi7hl2I5Foizn16eIPpTdXfkx85bCrFZ+Ry3bBK0f5lqYI12T05VNR1IlbR7AiQ1X/6465hJk2p+Dz9a5h0451tUGhA/ZIEd7pyAmljstut+ymKBduMuoryw2fja/7/DV3b22L6lUJMloYi12mG122vDy4kFfgLAVgQ0='
     }
   },
   mounted: function () {
@@ -29,13 +30,19 @@ export default {
   },
   methods: {
     login () {
-      var _data = { 'username': this.name, 'password': this.pwd, 'checkCode': this.code }
+      var _data = {
+        username: this.name,
+        password: this.pwd,
+        checkCode: this.code
+      }
       this.axios({
         method: 'post',
         url: '/login',
         data: qs.stringify(_data),
-        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' }
-      }).then((res) => {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        }
+      }).then(res => {
         if (res.success) {
           this.$router.push('/')
         }
