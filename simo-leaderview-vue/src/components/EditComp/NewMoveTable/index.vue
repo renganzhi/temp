@@ -195,7 +195,6 @@ export default {
       }
     },
     'item.chartData': function (newV, oldV) {
-      console.log(this.item.chartData)
       if(this.item.chartData === null || this.item.chartData === ''){
         this.item.chartData = {
           'columns': [],
@@ -278,16 +277,18 @@ export default {
         $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
           _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
         })
-        $.ajax({
-          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
-          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
-          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
-          cache: false,
-          ascyn: false,
-          success: function (res) {
-            _this.item.chartData = res.obj
-          }
-        })
+        if(_this.item.ctDataSource === 'system'){
+          $.ajax({
+            url: gbs.host + myUrl, // 第三方的ur已经拼接好host
+            data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+            type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              _this.item.chartData = res.obj
+            }
+          })
+        }
       }
     },
     warnStyle (ArryName, index) {

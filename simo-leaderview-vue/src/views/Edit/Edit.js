@@ -1246,6 +1246,7 @@ export default {
           this.chartNum = []
         }
         if (res.obj.isDynamicTemplate) {
+          console.log(res.obj.templateType)
           if (res.obj.templateType === 'single') {
             this.pageType = 'single'
             this.CanChangeServes = true
@@ -1279,6 +1280,9 @@ export default {
             }
           })
         } else {
+          $.each(data.params, function (i, d) {
+            data.params[i] = $.isArray(d) ? d.join(',') : d
+          })
           $.ajax({
             url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
             data: data.params,
@@ -4677,6 +4681,14 @@ export default {
                 newData.ne = [mydata]
                 data.params.windows = JSON.stringify([newData])
               }
+              if (data.moreUrlArry) {
+                data.moreUrlArry.forEach(element => {
+                  element.params.neIds = newV
+                  $.each(element.params, function (i, d) {
+                    element.params[i] = $.isArray(d) ? d.join(',') : d
+                  })
+                });
+              }
               $.each(data.params, function (i, d) {
                 data.params[i] = $.isArray(d) ? d.join(',') : d
               })
@@ -4688,6 +4700,9 @@ export default {
                       mydata.fields = [mydata.indicator]
                       data.params.windows = JSON.stringify([mydata])
                     }
+                    $.each(data.params, function (i, d) {
+                      data.params[i] = $.isArray(d) ? d.join(',') : d
+                    })
                     $.ajax({
                       url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
                       data: data.params,
@@ -4709,7 +4724,7 @@ export default {
                         }
                         if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
                           if (res.obj) {
-                            data.ctName = res.obj.info
+                            data.ctName = res.obj.info || ''
                           }
                           if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
                             data.chartData = res.obj
@@ -4722,6 +4737,9 @@ export default {
                   }
                 })
               } else {
+                $.each(data.params, function (i, d) {
+                  data.params[i] = $.isArray(d) ? d.join(',') : d
+                })
                 $.ajax({
                   url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
                   data: data.params,

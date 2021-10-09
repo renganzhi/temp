@@ -128,27 +128,29 @@ export default {
         $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
           _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
         })
-        $.ajax({
-          url: _this.item.ctDataSource === 'system' ? (gbs.host + myUrl) : myUrl, // 第三方的ur已经拼接好host
-          data: _this.item.moreUrlArry[_this.nowShowIndex].params,
-          type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
-          cache: false,
-          ascyn: false,
-          success: function (res) {
-            if(_this.item.chartData1){
-              _this.item.chartData1 = res.obj
-            }
-            if(_this.item.chartData2){
-              _this.item.chartData2 = res.obj
-            }
-            if(_this.item.chartData3){
-              _this.item.chartData3 = res.obj
-            }
-            if(_this.item.chartData4){
-              _this.item.chartData4 = res.obj
-            }
-          },
-        })
+        if(_this.item.ctDataSource === 'system'){
+          $.ajax({
+            url: gbs.host + myUrl, // 第三方的ur已经拼接好host
+            data: _this.item.moreUrlArry[_this.nowShowIndex].params,
+            type: _this.item.moreUrlArry[_this.nowShowIndex].method || 'post',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              if(_this.item.chartData1){
+                _this.item.chartData1 = res.obj
+              }
+              if(_this.item.chartData2){
+                _this.item.chartData2 = res.obj
+              }
+              if(_this.item.chartData3){
+                _this.item.chartData3 = res.obj
+              }
+              if(_this.item.chartData4){
+                _this.item.chartData4 = res.obj
+              }
+            },
+          })
+        }
       }
     },
     drawFlow () {
