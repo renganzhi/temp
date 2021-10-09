@@ -8,7 +8,7 @@ body {
     color: #cad6dd;
     background: #222739;
     font-weight: normal !important;
-    font-size: 12px !important;
+    font-size: 12px;
     /* font-family: 'SourceHanSansCN-Regular' !important; */
 }
 
@@ -107,13 +107,13 @@ li {
    滚动条，仅chorme有效
 */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
 }
 
 ::-webkit-scrollbar-corner {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
     background-color: transparent;
 }
 
@@ -122,8 +122,8 @@ li {
 }
 
 ::-webkit-scrollbar-thumb {
-    /* background: #33394b; */
-    background: #d3d6db;
+    background: #33394b;
+    /* background: #d3d6db; */
 }
 
 /*
@@ -138,8 +138,8 @@ textarea,
 select {
     width: 270px;
     height: 28px;
-    /* border: solid 1px #3d445a !important; */
-    border: solid 1px #cacdd7 !important;
+    border: solid 1px #3d445a;
+    /* border: solid 1px #cacdd7 !important; */
     border-radius: 4px !important;
     background-color: transparent !important;
     /* color: #cad6dd !important; */
@@ -330,7 +330,8 @@ button,
     min-width: 60px;
     border-radius: 3px;
     vertical-align: middle;
-    font-size: 12px !important;
+    /* font-size: 12px !important; */
+    font-size: 12px;
     height: 28px;
 }
 

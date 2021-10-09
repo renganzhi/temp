@@ -530,4 +530,23 @@ hr {
 .ivu-input-wrapper {
   width: fit-content;
 }
+
+/deep/::-webkit-scrollbar-thumb {
+  background: #d3d6db !important;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  color: #595959;
+  border: solid 1px #cacdd7 !important;
+}
+
+/deep/.ivu-modal-wrap
+  .ivu-modal
+  .ivu-modal-content
+  .ivu-modal-header
+  .ivu-modal-header-inner::before {
+  background: #426bf5;
+}
 </style>

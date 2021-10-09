@@ -60,6 +60,9 @@ modal
     background: #0088cc;
     margin-right: 10px;
     content: '';
+    font-size: 10px;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
 .modal-body {
