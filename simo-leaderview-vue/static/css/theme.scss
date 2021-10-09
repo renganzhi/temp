@@ -139,7 +139,7 @@ html[data-theme="default"] {
         background: #fff;
         .ivu-modal-header {
             box-shadow: 0px 0px 20px 0px #0000001a;
-            background: #ebedf1;
+            // background: #ebedf1;
         }
     }
     .ivu-btn-text {
@@ -405,6 +405,9 @@ html[data-theme="default"] {
     }
     .ivu-select-selection{
         border: 1px solid #3d445a !important;
+        .ivu-icon-ios-arrow-down:before {
+            content: "\F33D";
+        }
     }
 }
 

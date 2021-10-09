@@ -4,10 +4,55 @@
     title="消息配置"
     class="us-md"
     :loading="true"
-    footer-hide
+    :width="580"
+    cancel-text="清空"
+    @on-ok="onSure"
     @on-cancel="onCancel"
   >
-    <Tabs v-model="modelName" :animated="false">
+    <div class="form-title">
+      声音配置
+    </div>
+    <Form ref="form" :model="form" label-width="120">
+      <FormItem label="告警铃声" prop="ring" :rules="$rules.required">
+        <Select v-model="form.ring" filterable transfer clearable>
+          <Option
+            v-for="item in levels"
+            :key="item.music"
+            :value="item.music"
+            :label="item.music"
+          >
+            {{ item.music }}
+          </Option>
+        </Select>
+        <Tooltip content="试听">
+          <Button
+            class="margin-left-5"
+            @click="listenRing"
+            style="background:white !important;color:#6c95ff;"
+          >
+            <i class="icon-n-laba icon" />
+          </Button>
+        </Tooltip>
+      </FormItem>
+      <FormItem label="响铃开关" prop="opened">
+        <el-switch
+          v-model="form.opened"
+          active-color="rgb(19, 206, 102)"
+          inactive-color="rgb(191, 191, 191)"
+          width="36"
+        >
+        </el-switch>
+      </FormItem>
+      <!-- <FormItem style="margin-bottom: 0px; text-align: right;">
+        <Button style="background:#5c8bff;" @click="onSure">
+          确定
+        </Button>
+        <Button @click="resetCancel" cancel>
+          清空
+        </Button>
+      </FormItem> -->
+    </Form>
+    <!-- <Tabs v-model="modelName" :animated="false">
       <TabPane label="声音配置" name="voice">
         <Form ref="form" :model="form">
           <FormItem label="告警铃声" prop="ring" :rules="$rules.required">
@@ -45,7 +90,7 @@
           </FormItem>
         </Form>
       </TabPane>
-    </Tabs>
+    </Tabs> -->
     <audio
       id="myaudio"
       :src="'../../static/audio/' + form.ring"
@@ -83,7 +128,7 @@ export default {
   created () {
     this.axios.get('/msg/config/findRingConfig').then(res => {
       if (res.success) {
-        if(res.obj){
+        if (res.obj) {
           this.form.id = res.obj.id || ''
           this.form.ring = res.obj.ring || ''
           this.form.opened = res.obj.opened || ''
@@ -97,7 +142,7 @@ export default {
           this.levels.push({
             music: element
           })
-        });
+        })
       }
     })
   },
@@ -147,6 +192,11 @@ export default {
     },
     onCancel () {
       this.mdpram.show = false
+      this.$notify({
+        message: '告警铃声配置清空成功',
+        position: 'bottom-right',
+        customClass: 'toast toast-success'
+      })
     }
   }
 }
@@ -186,5 +236,9 @@ export default {
       // }
     }
   }
+}
+.icon {
+  color: #436bf6;
+  font-size: 20px;
 }
 </style>
