@@ -12,7 +12,7 @@
     <div class="form-title">
       声音配置
     </div>
-    <Form ref="form" :model="form" label-width="120">
+    <Form ref="form" :model="form" :label-width="120">
       <FormItem label="告警铃声" prop="ring" :rules="$rules.required">
         <Select v-model="form.ring" filterable transfer clearable>
           <Option
@@ -39,7 +39,7 @@
           v-model="form.opened"
           active-color="rgb(19, 206, 102)"
           inactive-color="rgb(191, 191, 191)"
-          width="36"
+          :width="36"
         >
         </el-switch>
       </FormItem>
