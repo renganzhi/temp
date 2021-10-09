@@ -1272,7 +1272,7 @@ export default {
     },
     resourceFirstIds: function () {
       this.chartNum.forEach(data => {
-        if (data.chartType === 'ELine') {
+        if (data.chartType === 'ELine' && data.params.neIds && data.params.domainId && data.params.baseNeClass && data.params.neClass) {
           this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
             if (res.obj[0].value) {
               this.sendNewAjax(data, res.obj[0].value)
