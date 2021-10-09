@@ -586,7 +586,7 @@ public class AlertDataController {
             return new JsonModel(true,result);
         } catch (Exception e) {
             e.printStackTrace();
-            return new JsonModel(true, e.getMessage());
+            return new JsonModel(false, e.getMessage());
         }
     }
 

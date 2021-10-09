@@ -471,15 +471,15 @@ public class HomePageService {
     @Transactional
     @SuppressWarnings("unchecked")
     public String makeTemplateList(Set<HomePage> pages, Boolean tempImg) {
-//        if (!videoSet.isEmpty()){
-//            videoSet = Sets.newHashSet();
-//        }
         StringBuilder sb = new StringBuilder();
         String templateName = null;
         for (HomePage page: pages) {
             Long num = new Date().getTime();
             String name = page.getName();
-            templateName = name;
+            //当有多个模板时，压缩包名取第一个模板的name，并且不变，否则图片会存放到不同的文件中
+            if(Strings.isNullOrEmpty(templateName)) {
+                templateName = name;
+            }
 
             JSONObject viewConf = templateImgTransform(page.getViewConf(),num, tempImg, templateName);
             JSONObject viewImage = templateImgTransform(page.getViewImage(),viewConf.getLong("num"), tempImg, templateName);
