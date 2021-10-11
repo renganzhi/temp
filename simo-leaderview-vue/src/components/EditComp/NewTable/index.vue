@@ -8,7 +8,7 @@
              :style="theadTrStyle">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
-            <th v-for="(title, index) in item.chartData.columns"
+            <th v-for="(title, index) in item.chartData?item.chartData.columns:[]"
                 :style="[thStyle,heightLinght,widthLinght(index)]"
                 :key="index"><span data-toggle='tooltip'
                     class="hoverTips"
@@ -91,7 +91,11 @@ export default {
       }
     },
     tableData: function () {
-      return this.item.chartData.rows
+      if(this.item.chartData){
+        return this.item.chartData.rows
+      }else{
+        return []
+      }
     },
     trStyle: function () {
       return {

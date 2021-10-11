@@ -4734,7 +4734,11 @@ export default {
                         }
                         if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
                           if (res.obj) {
-                            data.ctName = res.obj.info || ''
+                            if (res.obj.info !== undefined) {
+                              data.ctName = res.obj.info
+                            } else {
+                              data.ctName = ''
+                            }
                           }
                           if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
                             data.chartData = res.obj
