@@ -74,9 +74,6 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsNetworkLink", consumes = "application/json")
     JsonModel statisticsNetworkLink(@RequestBody String param);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/statisticsEachLevelAlarms", consumes = "application/json")
-    JsonModel statisticsEachLevelAlarms(@RequestParam("topoId") String topoId);
-
     @RequestMapping(method = {RequestMethod.GET}, value = {"/monitorApi/perf/topEvent"}, consumes = {"application/json"})
     JsonModel topEvent(@RequestParam("neId") String neId, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 

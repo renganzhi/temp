@@ -3644,7 +3644,7 @@
         "key": "count_Topo_Alert",
         "name": "拓扑统计-告警",
         "component": "alert",
-        "type": "NewDoubler,NewNumber",
+        "type": "NEWtextArea,marquee,NewMarquee,Dashboard,liquidfill,progress,NewProgress,NewGauge,NewDoubler,NewNumber",
         "url": "/leaderview/alert/countTopoAlert",
         "method" : "post",
         "params": [

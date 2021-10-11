@@ -1119,54 +1119,32 @@ public class AlertDataService {
     }
 
     public Object CountTopoAlert(String topoId, String alertLevel) throws Exception {
+        List<NetworkEntity> nes = Lists.newArrayList();
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria.setTopoId(topoId);
+        criteria.setMonitoring(true);
+        nes = rpcProcessService.getNeList(criteria);
+        String ids = nes.stream().map(NetworkEntity::getId).collect(Collectors.joining(","));
 
-        List<Integer> levelList = new ArrayList<>();
-        AlertLevelQuery query = new AlertLevelQuery();
-        query.setStatus(AlertLevelStatus.ACTIVATED);
-        List<AlertLevel> activeLevel = rpcProcessService.findAlertLevelList(query);
-        if (Strings.isNullOrEmpty(alertLevel)) {
-            for (AlertLevel level : activeLevel) {
-                levelList.add(level.getLevel());
-            }
-        } else {
-            levelList = Arrays.stream(alertLevel.split(",")).map(e -> {
-                Long level = Longs.tryParse(e);
-                return level != null ? level.intValue() : null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
-        }
-
-        AtomicLong count = new AtomicLong();
-
-        List<StatisticsResult> statisticsResults = rpcProcessService.statisticsEachLevelAlarms(topoId);
-
-        Map<Object, String> levelMap = new LinkedHashMap<>();
-        Map<Object, String> colorMap = new LinkedHashMap<>();
-        activeLevel.forEach(e -> {
-            levelMap.put(e.getLevel(), e.getName());
-            colorMap.put(e.getLevel(), e.getColor());
-        });
-
-        JSONArray rows = new JSONArray();
-        // 告警颜色数组，顺序跟rows一致
-        JSONArray colors = new JSONArray();
-        for (Integer level: levelList) {
-            JSONObject row = new JSONObject();
-            row.put("告警类型", levelMap.get(level));
-            //如果某一分类下没有该类型的通知，则alert方面不返回对应StatisticsResult，所以先全部初始化，然后如果有则在forEach中进行替换。
-            row.put("数量", 0L);
-            statisticsResults.forEach(e -> {
-                if(e.getScopeValue().equals(String.valueOf(level))) {
-                    count.addAndGet(e.getAlertCount());
-                    row.put("数量", e.getAlertCount());
+        AlertQuery queryObject = new AlertQuery();
+        queryObject.setObjectIds(ids);
+        queryObject.setAlertType(AlertType.Alert);
+        queryObject.setSourceManage(true);
+        if(!alertLevel.isEmpty()){
+            String[] split = StringUtils.split(alertLevel, ",");
+            List<Integer> levels = Lists.newArrayList();
+            if (ObjectUtils.isEmpty(split)) {
+                levels.add(Integer.valueOf(alertLevel));
+            } else {
+                for(String temp: split){
+                    levels.add(Integer.valueOf(temp));
                 }
-            });
-            rows.add(row);
-            colors.add(colorMap.get(level));
+            }
+            queryObject.setLevels(levels);
         }
+
         JSONObject result = new JSONObject();
-        result.put("rows", rows);
-        result.put("colors", colors);
-        result.put("count",count);
+        result.put("count", rpcProcessService.getAlertCount(queryObject, AlertType.Alert));
 
         return result;
     }

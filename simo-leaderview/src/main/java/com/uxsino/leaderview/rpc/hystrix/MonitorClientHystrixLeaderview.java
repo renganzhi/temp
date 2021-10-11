@@ -101,11 +101,6 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
-    public JsonModel statisticsEachLevelAlarms(String topoId) {
-        return new JsonModel(false, "Monitor服务调用失败");
-    }
-
-    @Override
     public JsonModel topEvent(String neId, String startTime, String endTime) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
