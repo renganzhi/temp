@@ -496,7 +496,7 @@ public class MonitorDataService {
         IndicatorValueUtils valueUtils = new IndicatorValueUtils();
         String unit = fieldLabel.getString("unit");
         if (StringUtils.isEmpty(componentName)) {
-            valueUtils.transferItem(fieldLabel, valueJSON);
+            valueJSON = valueUtils.transferItem(fieldLabel, valueJSON);
             String value = valueJSON.getString(field);
             if (Strings.isNullOrEmpty(value)) {
                 return new JsonModel(true, empObj);
@@ -505,7 +505,7 @@ public class MonitorDataService {
             String name = fieldLabel.getString("label");
             if (Strings.isNullOrEmpty(unit)) {
                 unit = "";
-                value = String.format("%.2f", Double.parseDouble(value));
+//                value = String.format("%.2f", Double.parseDouble(value));
             } else {
                 int index = value.lastIndexOf(" ");
                 unit = index > 0 ? value.substring(index + 1) : unit;
@@ -539,7 +539,7 @@ public class MonitorDataService {
 
                 JSONObject fieldObj = fieldArray.getJSONObject(0);
                 String name = componentNameMap.get(componentName) + ":" + fieldLabel.getString("label");
-                valueUtils.transferItem(fieldLabel, fieldObj);
+                fieldObj = valueUtils.transferItem(fieldLabel, fieldObj);
                 String value = fieldObj.getString(field);
                 if (Strings.isNullOrEmpty(value)) {
                     return new JsonModel(true, empObj);
@@ -558,7 +558,7 @@ public class MonitorDataService {
                     break;
                 }
                 if (Strings.isNullOrEmpty(unit)) {
-                    value = String.format("%.2f", Double.parseDouble(value));
+//                    value = String.format("%.2f", Double.parseDouble(value));
                     unit = "";
                 } else {
                     int index = value.lastIndexOf(" ");
@@ -710,8 +710,8 @@ public class MonitorDataService {
             }
             JSONObject value = ObjectUtils.isEmpty(model.getObj()) ? new JSONObject() : JSONObject.parseObject(JSON.toJSONString(model.getObj()));
             res.put("name",field);
-            res.put("value",value.getString(field));
-            res.put("info",value.getString(field));
+            res.put("value",ObjectUtils.isEmpty(value.getString(field)) ? "--" : value.getString(field));
+            res.put("info",ObjectUtils.isEmpty(value.getString(field)) ? "--" : value.getString(field));
             return new JsonModel(true, res);
         }
         return new JsonModel(false);
