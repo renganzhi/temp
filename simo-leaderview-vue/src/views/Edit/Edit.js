@@ -1270,6 +1270,13 @@ export default {
         // this.saveHistory()
       })
     },
+    getmorenData(data) {
+      if (data === undefined || data === null) {
+        return ''
+      } else {
+        return data
+      }
+    },
     resourceFirstIds: function () {
       let topoIdsArry = []
       this.axios.get(`/monitor/topo/findTopoForDropDown`).then(res => {
@@ -1277,8 +1284,8 @@ export default {
           topoIdsArry.push(element.value)
         });
         this.chartNum.forEach(data => {
-          if (data.chartType === 'ELine' && data.params.neIds && data.params.domainId && data.params.baseNeClass && data.params.neClass) {
-            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${data.params.domainId !== null ? data.params.domainId : ''}&baseNeClass=${data.params.baseNeClass !== null ? data.params.baseNeClass : ''}&neClass=${data.params.neClass !== null ? data.params.neClass : ''}`).then(res => {
+          if (data.chartType === 'ELine' && data.params.neIds) {
+            this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${this.getmorenData(data.params.domainId)}&baseNeClass=${this.getmorenData(data.params.baseNeClass)}&neClass=${this.getmorenData(data.params.neClass)}`).then(res => {
               if (res.obj[0].value) {
                 this.sendNewAjax(data, res.obj[0].value)
               }

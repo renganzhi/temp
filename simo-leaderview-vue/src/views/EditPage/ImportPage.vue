@@ -148,7 +148,19 @@ export default {
         _this.$modal.find('.defPages').get(0).scrollTop = 0;
       }) */
     },
-    save () {
+    save(){
+      var _this = this
+      this.axios.get(`/leaderview/home/getVersion`).then(versionData => {
+        if (versionData.success) {
+          if(_this.file.name.split('.zip')[0].split('^')[1] !== versionData.obj.version ){
+            this.$parent.sureInport()
+          }else{
+            _this.updateModel()
+          }
+        }
+      })
+    },
+    updateModel () {
       // 校验名称
       this.changeName()
       if (this.showErr) return

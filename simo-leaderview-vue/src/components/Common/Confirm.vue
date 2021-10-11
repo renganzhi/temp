@@ -5,9 +5,9 @@
        role="dialog"
        aria-hidden="true"
        style="z-index: 200100;">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="row">
-        <div class="col-lg-offset-3 col-md-offset-3 col-md-7 col-lg-7">
+        <div class="col-lg-offset-3 col-md-offset-3 col-md-4 col-lg-4">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title font-white-lemon">请选择</h4>
