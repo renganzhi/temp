@@ -787,6 +787,7 @@ public class AlertDataService {
         column = ObjectUtils.isEmpty(column) ? diffColumns.toArray(new String[diffColumns.size()]): column;
         JSONArray columns = newColumns(column);
         diffColumns.removeAll(columns);
+        boolean isVirtualization = BaseNeClass.virtualization.toString().equals(baseNeClass);
         if (ObjectUtils.isEmpty(neIds)){
             NetworkEntityCriteria criteria = new NetworkEntityCriteria();
             rpcProcessService.setCriteriaDomainIds(criteria, session, domainId);
@@ -795,9 +796,7 @@ public class AlertDataService {
             if (!Strings.isNullOrEmpty(topoId)) {
                 criteria.setTopoId(topoId);
             }
-            if (BaseNeClass.virtualization.equals(baseNeClass)) {
-                criteria.setSourceManage(false);
-            }
+            criteria.setSourceManage(!isVirtualization);
             List<String > neIdList = rpcProcessService.getNeIds(criteria);
             neIds = neIdList.toArray(new String[neIdList.size()]);
         }
@@ -813,7 +812,7 @@ public class AlertDataService {
         list = list.stream().sorted(Comparator.comparing(AlertRecord::getRecentAlertDate).reversed()).limit(number).collect(Collectors.toList());
         list.forEach(alert -> {
             try {
-                NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId(), false);
+                NetworkEntity ne = rpcProcessService.findNetworkEntityByIdIn(alert.getObjectId(), isVirtualization);
                 Map<String, String> row = new LinkedHashMap<>();
                 row.put("资源名称", ne.getName());
                 row.put("告警级别", rpcProcessService.getLevel(alert.getLevel()));
