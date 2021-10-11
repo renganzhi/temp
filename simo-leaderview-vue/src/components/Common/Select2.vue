@@ -80,6 +80,9 @@ export default {
     init: function (v) {
       var multi = this.obj.type === 'multi-select' || this.multip
       var value = typeof v === 'undefined' ? this.value : v
+      if(typeof(value) === 'string' && value.split(',').length>0){
+        value = value.split(',')
+      }
       // var maxLen = this.obj.maxLength || -1
       // if (this.mapSelect && this.sameName && !value) {
       //   value = this.obj[0].name

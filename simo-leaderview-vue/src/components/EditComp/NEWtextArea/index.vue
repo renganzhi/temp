@@ -157,6 +157,11 @@ export default {
         this.updateColor()
       }
     },
+    'item.ctName': function () {
+      if(this.item.ctName === null){
+        this.item.ctName = 0
+      }
+    },
     'item.fontSize': function () {
       this.updateHeight()
     },
