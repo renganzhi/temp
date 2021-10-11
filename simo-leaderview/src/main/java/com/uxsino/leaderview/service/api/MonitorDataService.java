@@ -2878,7 +2878,7 @@ public class MonitorDataService {
 
     public JsonModel getswRunEntryOfOracle(String neIds, Integer number) throws Exception {
         JSONObject result = new JSONObject();
-        List<String> columns = Lists.newArrayList("资源名称","用户名","进程名","进程状态","内存消耗量","CPU使用率");
+        List<String> columns = Lists.newArrayList("进程名","进程状态","内存消耗量","CPU使用率");
         result.put("columns", columns);
         result.put("rows", new JSONArray());
         // 1、取出宿主机id
@@ -2924,8 +2924,8 @@ public class MonitorDataService {
                 if((!ObjectUtils.isEmpty(runName) && runName.toLowerCase().contains("oracle")) ||
                   (!ObjectUtils.isEmpty(userName) && runName.toLowerCase().contains("ora_"))){
                     LinkedHashMap<Object,Object> row = new LinkedHashMap<>();
-                    row.put("资源名称",neName);
-                    row.put("用户名", map.get("identifier"));
+//                    row.put("资源名称",neName);
+//                    row.put("用户名", map.get("identifier"));
                     row.put("进程名", map.get("run_name"));
                     row.put("进程状态", map.get("run_status"));
                     row.put("内存消耗量", map.get("run_perf_mem"));
