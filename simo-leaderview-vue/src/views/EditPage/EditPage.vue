@@ -12,6 +12,7 @@
 
       <ImportPage
         :showModal="showImport"
+        ref="MyInportPage"
         @hideModal="hideImportModal"
         :tems="pageList"
       ></ImportPage>
@@ -287,6 +288,7 @@ export default {
       editIndex: -1,
       hoverIndex: -1,
       pageType: '1',
+      configBoxType: '',
       shareItem: {},
       shareId: 0,
       shareUsers: [],
@@ -595,8 +597,14 @@ export default {
       //   }
       // })
     },
+    sureInport(){
+      this.showDelModal = true
+      this.configBoxType = 'inport'
+      this.modelText = '文件版本与当前版本不符，导入可能存在兼容问题。是否确认导入？'
+    },
     del (item, belongCurrentUser) {
       this.showDelModal = true
+      this.configBoxType = 'del'
       if (belongCurrentUser === 'false') {
         this.modelText = '移除操作不可恢复，是否继续？'
       } else {
@@ -624,6 +632,7 @@ export default {
     sureDel (data) {
       this.showDelModal = false
       if (data && data.sure === '1') {
+        if(this.configBoxType === 'del'){
         if (this.ifBelongCurrentUser === 'true') {
           this.axios
             .delete('/leaderview/home/homePage/deleteById/' + this.delId)
@@ -652,6 +661,9 @@ export default {
                   })
               }
             })
+        }
+        }else{
+        this.$refs.MyInportPage.updateModel()
         }
       }
     },
@@ -699,9 +711,15 @@ export default {
             }
           })
       }
+      document.querySelectorAll('.tooltip').forEach(element => {
+        element.remove()
+      });
       this.editIndex = -1
     },
     cancleChange (index) {
+      document.querySelectorAll('.tooltip').forEach(element => {
+        element.remove()
+      });
       this.editIndex = -1
     },
     showHover (index) {

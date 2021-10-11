@@ -185,6 +185,8 @@ export default {
           // visible: this.visible,
           // adminId: this.userIds.join(',')
         }
+      this.axios.get(`/leaderview/home/getVersion`).then(versionData => {
+        if (versionData.success) {
         this.axios({
           method: 'get',
           url: '/leaderview/home/exportTemplate',
@@ -193,7 +195,7 @@ export default {
         }).then((res) => {
           $('#exportPage-modal').modal('hide')
           // console.log(res);
-          download(`${this.name}.zip`, res)
+          download(`${this.name+'^'+versionData.obj.version}.zip`, res)
           // if (res.success) {
           //   this.addOne = true
           //   this.addId = res.obj.id
@@ -211,6 +213,8 @@ export default {
           //     })
           // }
         })
+        }
+      })
       })
     },
     choosePage (id) {
