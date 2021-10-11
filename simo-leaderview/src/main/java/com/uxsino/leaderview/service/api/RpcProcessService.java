@@ -996,14 +996,6 @@ public class RpcProcessService {
         return jsonModel;
     }
 
-    public List<StatisticsResult> statisticsEachLevelAlarms(String topoId) throws Exception {
-        JsonModel jsonModel = monitorService.statisticsEachLevelAlarms(topoId);
-        if (!jsonModel.isSuccess()){
-            throw new Exception(jsonModel.getMsg());
-        }
-        return toJavaBeanList(jsonModel, StatisticsResult.class);
-    }
-
     public JsonModel statisticsNetworkLink(NetworkLinkModel networkLinkModel) throws Exception {
         String param = JSON.toJSONString(networkLinkModel);
         JsonModel jsonModel = monitorService.statisticsNetworkLink(param);

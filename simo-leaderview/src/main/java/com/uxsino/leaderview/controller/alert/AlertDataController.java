@@ -578,10 +578,11 @@ public class AlertDataController {
         try {
             JSONObject result = new JSONObject();
             JSONObject countTopoAlert = (JSONObject) alertDataService.CountTopoAlert(topoId, alertLevel);
-            AtomicLong alertCount = (AtomicLong) countTopoAlert.get("count");
+            Long alertCount = (Long) countTopoAlert.get("count");
             result.put("name","异常告警数");
             result.put("unit","");
             result.put("value",alertCount);
+            result.put("info",alertCount);
 
             return new JsonModel(true,result);
         } catch (Exception e) {
