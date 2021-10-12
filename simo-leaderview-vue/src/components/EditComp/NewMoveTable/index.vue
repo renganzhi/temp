@@ -140,7 +140,8 @@ export default {
     },
     heightLinght: function () {
       return {
-        height: this.item.heightLinght + 'px'
+        height: this.item.heightLinght + 'px',
+        'line-height': this.item.heightLinght - 16 + 'px'
       }
     },
     widthArry: function () {
