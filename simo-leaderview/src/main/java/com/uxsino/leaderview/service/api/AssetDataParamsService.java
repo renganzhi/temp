@@ -1,12 +1,15 @@
 package com.uxsino.leaderview.service.api;
 
 
+import com.netflix.discovery.converters.Auto;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.model.asset.AssetStatusEnum;
 import com.uxsino.leaderview.model.asset.RemindLevelEnum;
 import com.uxsino.leaderview.model.asset.RemindTypeEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,10 @@ import java.util.Map;
 
 @Component
 public class AssetDataParamsService {
+
+    @Autowired
+    RpcProcessService rpcProcessService;
+
     public JsonModel getAssetStatusEnum() {
         List<Map<String,String>> list = new ArrayList<>();
         for(AssetStatusEnum assetStatus : AssetStatusEnum.values()){
@@ -42,6 +49,18 @@ public class AssetDataParamsService {
             Map<String,String> map = new HashMap<>(2);
             map.put("name",levelEnum.getValue());
             map.put("value", String.valueOf(levelEnum.getLevel()));
+            list.add(map);
+        }
+        return new JsonModel(true,list);
+    }
+
+    public JsonModel getAssetCategory() throws Exception {
+        Map<String,String > categoryMap = rpcProcessService.getCategory();
+        List<Map<String,String>> list = new ArrayList<>();
+        for(Map.Entry<String,String> entry:categoryMap.entrySet()){
+            Map<String,String> map = new HashMap<>(2);
+            map.put("name",entry.getValue());
+            map.put("value",entry.getKey());
             list.add(map);
         }
         return new JsonModel(true,list);

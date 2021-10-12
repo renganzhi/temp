@@ -175,7 +175,7 @@ public class AssetDataService {
         return new JsonModel(true,result);
     }
 
-    public JsonModel assetStatusTotalCount(String status) {
+    public JsonModel assetStatusTotalCount(String status, String category) throws Exception {
         List<String> statusList = new ArrayList<>();
         if(Strings.isNullOrEmpty(status)){
             for (AssetStatusEnum statusEnum:AssetStatusEnum.values()){
@@ -184,80 +184,72 @@ public class AssetDataService {
         }else {
             statusList = Arrays.asList(status.split(","));
         }
-        //分别封装物理资产和软件资产的数量
-        LinkedHashMap<String,Integer> hardwareMap = new LinkedHashMap<>();
-        LinkedHashMap<String,Integer> softwareMap = new LinkedHashMap<>();
-        for(int i = 0;i< statusList.size();i++){
-            List<String> state = Arrays.asList(statusList.get(i));
-            AssetCriteria hardwareCriteria = new AssetCriteria();
-            AssetCriteria softwareCriteria = new AssetCriteria();
-            ArrayList<QueryCond> fixquery = new ArrayList<>();
-            QueryCond Status = new QueryCond();
-            QueryCond assetNo = new QueryCond();
-            QueryCond spercification = new QueryCond();
-            QueryCond assetName = new QueryCond();
-            QueryCond hard = new QueryCond();
-            QueryCond soft = new QueryCond();
-            Status.setCond("in");
-            Status.setFieldKey("status");
-            Status.setFieldValue(state);
-            assetNo.setCond("contains");
-            assetNo.setFieldKey("assetNo");
-            assetNo.setFieldValue("");
-            spercification.setCond("contains");
-            spercification.setFieldKey("spercification");
-            spercification.setFieldValue("");
-            assetName.setCond("contains");
-            assetName.setFieldKey("assetName");
-            assetName.setFieldValue("");
-            hard.setCond("eq");
-            hard.setFieldKey("category");
-            hard.setFieldValue("1000001");
-            soft.setCond("eq");
-            soft.setFieldKey("category");
-            soft.setFieldValue("1000002");
-            fixquery.add(Status);
-            fixquery.add(assetName);
-            fixquery.add(assetNo);
-            fixquery.add(spercification);
-            fixquery.add(hard);
-            hardwareCriteria.setFixQuery(fixquery);
+        if(Strings.isNullOrEmpty(category)){
+            category = "1000001,1000002";
+        }
+        List<String> categoryList = Arrays.asList(category.split(","));
+        //用来存放不同状态的不同资产类别的数量
+        List<LinkedHashMap<String,Integer>> categoryMapList = new ArrayList<>();
+        for(int i = 0;i< statusList.size();i++) {
+            LinkedHashMap<String,Integer> countMap = new LinkedHashMap<>();
+            for (String categoryone : categoryList) {
+                List<String> state = Arrays.asList(statusList.get(i));
+                AssetCriteria Criteria = new AssetCriteria();
+                ArrayList<QueryCond> fixquery = new ArrayList<>();
+                QueryCond Status = new QueryCond();
+                QueryCond assetNo = new QueryCond();
+                QueryCond spercification = new QueryCond();
+                QueryCond assetName = new QueryCond();
+                QueryCond categoryCond = new QueryCond();
+                Status.setCond("in");
+                Status.setFieldKey("status");
+                Status.setFieldValue(state);
+                assetNo.setCond("contains");
+                assetNo.setFieldKey("assetNo");
+                assetNo.setFieldValue("");
+                spercification.setCond("contains");
+                spercification.setFieldKey("spercification");
+                spercification.setFieldValue("");
+                assetName.setCond("contains");
+                assetName.setFieldKey("assetName");
+                assetName.setFieldValue("");
+                categoryCond.setCond("eq");
+                categoryCond.setFieldKey("category");
+                categoryCond.setFieldValue(categoryone);
+                fixquery.add(Status);
+                fixquery.add(assetName);
+                fixquery.add(assetNo);
+                fixquery.add(spercification);
+                fixquery.add(categoryCond);
+                Criteria.setFixQuery(fixquery);
 
-            JsonModel hardcount = null;
-            JsonModel softcount = null;
-            try {
-                //先查询物理资产数量
-                hardcount = rpcProcessService.search(hardwareCriteria);
-                //查询完物理资产数量后，修改资产类别，复用fixQuery再次查询
-                fixquery.remove(hard);
-                fixquery.add(soft);
-                softwareCriteria.setFixQuery(fixquery);
-                softcount = rpcProcessService.search(softwareCriteria);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new JsonModel(false, e.getMessage());
+                JsonModel count = null;
+                try {
+                    count = rpcProcessService.search(Criteria);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new JsonModel(false, e.getMessage());
+                }
+                LinkedHashMap<Object, Object> obj = (LinkedHashMap<Object, Object>)count.getObj();
+                //取出该状态库存的数量
+                countMap.put(categoryone, (Integer) obj.get("count"));
             }
-            LinkedHashMap<Object, Object> obj1 = (LinkedHashMap<Object, Object>) hardcount.getObj();
-            LinkedHashMap<Object, Object> obj2 = (LinkedHashMap<Object, Object>) softcount.getObj();
-            //取出该状态库存的数量
-            hardwareMap.put(statusList.get(i),(Integer) obj1.get("count"));
-            softwareMap.put(statusList.get(i),(Integer) obj2.get("count"));
+            categoryMapList.add(countMap);
         }
 
         JSONObject result = new JSONObject();
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         columns.add("资产状态");
-        columns.add("物理资产");
-        columns.add("软件资产");
         JSONArray colors = new JSONArray();
-        colors.add("#fc9822");
-        colors.add("#e91818");
-        for(int i = 0;i < statusList.size();i++){
+        Map<String,String > categoryNameMap = rpcProcessService.getCategory();
+        for(int i = 0;i < categoryMapList.size();i++){
             JSONObject row = new JSONObject();
             row.put("资产状态",AssetStatusEnum.valueOf(statusList.get(i)).getText());
-            row.put("物理资产",hardwareMap.get(statusList.get(i)));
-            row.put("软件资产",softwareMap.get(statusList.get(i)));
+            for(String categoryone : categoryList) {
+                if(i == 0)columns.add(categoryNameMap.get(categoryone));
+                row.put(categoryNameMap.get(categoryone), categoryMapList.get(i).get(categoryone));
+            }
             rows.add(row);
         }
 
@@ -268,8 +260,10 @@ public class AssetDataService {
         return new JsonModel(true,result);
     }
 
-    public JsonModel assetCountByOrga(String orgaIds) {
+    public JsonModel assetCountByOrga(String orgaIds, String category) throws Exception {
+        //用来存放选择了的部门ID
         List<String> orgaIdsList ;
+        //用来存放所有的部门ID
         List<String> orgaIdsList2 = new ArrayList<>();
 
         //查询部门，做一个部门id和name的Map
@@ -288,76 +282,74 @@ public class AssetDataService {
         }else {
             orgaIdsList = Arrays.asList(orgaIds.split(","));
         }
-        //分别封装物理资产和软件资产的数量
-        LinkedHashMap<String,Integer> hardwareMap = new LinkedHashMap<>();
-        LinkedHashMap<String,Integer> softwareMap = new LinkedHashMap<>();
-        for(int i = 0;i< orgaIdsList.size();i++){
 
-            AssetCriteria hardwareCriteria = new AssetCriteria();
-            AssetCriteria softwareCriteria = new AssetCriteria();
-            ArrayList<QueryCond> fixquery = new ArrayList<>();
-            QueryCond Status = new QueryCond();
-            QueryCond assetNo = new QueryCond();
-            QueryCond spercification = new QueryCond();
-            QueryCond assetName = new QueryCond();
-            QueryCond hard = new QueryCond();
-            QueryCond soft = new QueryCond();
-            Status.setCond("in");
-            Status.setFieldKey("department");
-            JSONObject department = new JSONObject();
-            department.put("0",orgaIdsList.get(i));
-            department.put("1",orgaIdsList.get(i));
-            department.put("2",orgaIdsList.get(i));
-            Status.setFieldValue(department);
-            assetNo.setCond("contains");
-            assetNo.setFieldKey("assetNo");
-            assetNo.setFieldValue("");
-            spercification.setCond("contains");
-            spercification.setFieldKey("spercification");
-            spercification.setFieldValue("");
-            assetName.setCond("contains");
-            assetName.setFieldKey("assetName");
-            assetName.setFieldValue("");
-            hard.setCond("eq");
-            hard.setFieldKey("category");
-            hard.setFieldValue("1000001");
-            soft.setCond("eq");
-            soft.setFieldKey("category");
-            soft.setFieldValue("1000002");
-            fixquery.add(Status);
-            fixquery.add(assetName);
-            fixquery.add(assetNo);
-            fixquery.add(spercification);
-            fixquery.add(hard);
-            hardwareCriteria.setFixQuery(fixquery);
-
-            JsonModel hardcount = null;
-            JsonModel softcount = null;
-            try {
-                //先查询物理资产数量
-                hardcount = rpcProcessService.search(hardwareCriteria);
-                //查询完物理资产数量后，修改资产类别，复用fixQuery再次查询
-                fixquery.remove(hard);
-                fixquery.add(soft);
-                softwareCriteria.setFixQuery(fixquery);
-                softcount = rpcProcessService.search(softwareCriteria);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new JsonModel(false, e.getMessage());
-            }
-            LinkedHashMap<Object, Object> obj1 = (LinkedHashMap<Object, Object>) hardcount.getObj();
-            LinkedHashMap<Object, Object> obj2 = (LinkedHashMap<Object, Object>) softcount.getObj();
-            //取出该状态库存的数量
-            hardwareMap.put(orgaIdsList.get(i),(Integer) obj1.get("count"));
-            softwareMap.put(orgaIdsList.get(i),(Integer) obj2.get("count"));
+        if(Strings.isNullOrEmpty(category)){
+            category = "1000001,1000002";
         }
-        //对各部门软件资产数量进行排序
-        List<Map.Entry<String,Integer>> list = new ArrayList<>(softwareMap.entrySet());
-        Collections.sort(list,new Comparator<Map.Entry<String, Integer>>(){
-            //降序排序
+        List<String> categoryList = Arrays.asList(category.split(","));
+        //用来存放不同状态的不同资产类别的数量
+        List<LinkedHashMap<String,Integer>> categoryMapList = new ArrayList<>();
+        for(int i = 0;i< orgaIdsList.size();i++) {
+            LinkedHashMap<String, Integer> countMap = new LinkedHashMap<>();
+            //各部门的资产总数量，用于排序
+            Integer totalCount = 0;
+            for (String categoryone : categoryList) {
+                AssetCriteria Criteria = new AssetCriteria();
+                ArrayList<QueryCond> fixquery = new ArrayList<>();
+                QueryCond Status = new QueryCond();
+                QueryCond assetNo = new QueryCond();
+                QueryCond spercification = new QueryCond();
+                QueryCond assetName = new QueryCond();
+                QueryCond categoryCond = new QueryCond();
+
+                Status.setCond("in");
+                Status.setFieldKey("department");
+                JSONObject department = new JSONObject();
+                department.put("0", orgaIdsList.get(i));
+                department.put("1", orgaIdsList.get(i));
+                department.put("2", orgaIdsList.get(i));
+                Status.setFieldValue(department);
+                assetNo.setCond("contains");
+                assetNo.setFieldKey("assetNo");
+                assetNo.setFieldValue("");
+                spercification.setCond("contains");
+                spercification.setFieldKey("spercification");
+                spercification.setFieldValue("");
+                assetName.setCond("contains");
+                assetName.setFieldKey("assetName");
+                assetName.setFieldValue("");
+                categoryCond.setCond("eq");
+                categoryCond.setFieldKey("category");
+                categoryCond.setFieldValue("1000001");
+                fixquery.add(Status);
+                fixquery.add(assetName);
+                fixquery.add(assetNo);
+                fixquery.add(spercification);
+                fixquery.add(categoryCond);
+                Criteria.setFixQuery(fixquery);
+
+                JsonModel count = null;
+                try {
+                    count = rpcProcessService.search(Criteria);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new JsonModel(false, e.getMessage());
+                }
+                LinkedHashMap<Object, Object> countobj = (LinkedHashMap<Object, Object>) count.getObj();
+                //取出该状态库存的数量
+                countMap.put(categoryone, (Integer) countobj.get("count"));
+                totalCount+= (Integer) countobj.get("count");
+            }
+            countMap.put("totalCount",totalCount);
+            categoryMapList.add(countMap);
+        }
+        //对各部门资产总数量进行排序
+        Collections.sort(categoryMapList,new Comparator<LinkedHashMap<String, Integer>>(){
             @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o2.getValue().compareTo(o1.getValue());
+            public int compare(LinkedHashMap<String, Integer> o1, LinkedHashMap<String, Integer> o2) {
+                int count1 = o1.get("totalCount");
+                int count2 = o2.get("totalCount");
+                return count2 - count1;
             }
         });
 
@@ -365,17 +357,15 @@ public class AssetDataService {
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         columns.add("部门");
-        columns.add("物理资产");
-        columns.add("软件资产");
         JSONArray colors = new JSONArray();
-        colors.add("#fc9822");
-        colors.add("#e91818");
-
-        for(Map.Entry<String, Integer> map : list){
+        Map<String,String > categoryNameMap = rpcProcessService.getCategory();
+        for(int i = 0;i < categoryMapList.size();i++){
             JSONObject row = new JSONObject();
-            row.put("部门",organNameMap.get(map.getKey()));
-            row.put("物理资产",hardwareMap.get(map.getKey()));
-            row.put("软件资产",map.getValue());
+            row.put("部门",organNameMap.get(orgaIdsList.get(i)));
+            for(String categoryone : categoryList) {
+                if(i == 0)columns.add(categoryNameMap.get(categoryone));
+                row.put(categoryNameMap.get(categoryone), categoryMapList.get(i).get(categoryone));
+            }
             rows.add(row);
         }
 

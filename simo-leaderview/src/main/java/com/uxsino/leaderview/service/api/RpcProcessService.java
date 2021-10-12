@@ -1078,4 +1078,13 @@ public class RpcProcessService {
     public JsonModel findVolume(String neIds) {
         return monitorService.findVolume(neIds);
     }
+
+    public Map<String, String> getCategory() throws Exception {
+        JsonModel jsonModel = assetService.searchAssetCategory(null);
+        Map<String,String > categoryMap = (Map<String, String>) jsonModel.getObj();
+        if(!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return categoryMap;
+    }
 }

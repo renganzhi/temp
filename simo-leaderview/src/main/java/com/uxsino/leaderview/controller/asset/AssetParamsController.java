@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 @Api(tags = { "资产-大屏展示数据项接口" })
 @RestController
 @RequestMapping("/asset/params")
@@ -50,6 +52,18 @@ public class AssetParamsController {
     public JsonModel getAlertLevelEnum(){
         try {
             return assetDataParamsService.getRemindLevelEnum();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage());
+        }
+    }
+
+    @ApiOperation("返回所有的资产类别")
+    @GetMapping("/assetCategory")
+    @ResponseBody
+    public JsonModel getAssetCategory(){
+        try {
+            return assetDataParamsService.getAssetCategory();
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
