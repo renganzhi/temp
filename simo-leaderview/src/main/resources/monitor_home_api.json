@@ -3751,6 +3751,14 @@
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "leaderview/asset/params/assetStatus"
+            },
+            {
+                "key": "category",
+                "name": "资产类别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "leaderview/asset/params/assetCategory"
             }
         ]
     },
@@ -3769,6 +3777,14 @@
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "leaderview/monitor/params/getorgas"
+            },
+            {
+                "key": "category",
+                "name": "资产类别",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "leaderview/asset/params/assetCategory"
             }
         ]
     },

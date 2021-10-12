@@ -105,6 +105,7 @@ simo:
       url: failover:tcp://localhost:61616
   leaderview:
     templateInit: true
+    version: dev_v2.0.2.0_r2
 
 heartbeat:
     send_interval: 20000

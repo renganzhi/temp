@@ -66,9 +66,10 @@ public class AssetDataController {
     @ApiOperation("资产状态总量统计")
     @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
     @RequestMapping("/assetStatusTotalCount")
-    public JsonModel assetStatusTotalCount(@RequestParam(required = false) String status){
+    public JsonModel assetStatusTotalCount(@RequestParam(required = false) String status,
+                                           @RequestParam(required = false) String category){
         try {
-            return assetDataService.assetStatusTotalCount(status);
+            return assetDataService.assetStatusTotalCount(status, category);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
@@ -78,9 +79,10 @@ public class AssetDataController {
     @ApiOperation("TOP N部门资产类别统计")
     @ApiImplicitParam(name = "status",paramType = "query",dataType = "String",value = "需要统计的资产状态的字符串，用,分割",required = false)
     @RequestMapping("/assetCountByOrga")
-    public JsonModel assetCountByOrga(@RequestParam String orgaIds){
+    public JsonModel assetCountByOrga(@RequestParam(required = false) String orgaIds,
+                                      @RequestParam(required = false) String category){
         try {
-            return assetDataService.assetCountByOrga(orgaIds);
+            return assetDataService.assetCountByOrga(orgaIds, category);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());

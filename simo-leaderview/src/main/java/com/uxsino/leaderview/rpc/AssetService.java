@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+
 @FeignClient(value = "${service-asset}", fallback = AssetClientHystrixLeaderview.class)
 public interface AssetService {
 
@@ -23,6 +25,9 @@ public interface AssetService {
 
     @RequestMapping( method = RequestMethod.POST,value = "/apis/standingbook",consumes = "application/json")
     JsonModel  searchStandingbook(@RequestBody String param);
+
+    @RequestMapping(method = RequestMethod.GET,value = "/apis/assetCategory",consumes = "application/json")
+    JsonModel  searchAssetCategory(@RequestParam("session") HttpSession session);
 
 
 }
