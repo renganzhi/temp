@@ -2604,7 +2604,12 @@ public class MonitorDataService {
         //如果部件为空，则查询所有部件的指标
         Boolean ifnull = false;
         List<String> componentList = new ArrayList<>();
-        for (String v : component) componentList.add(v);
+        //如果部件为""，则没有部件
+        if(!ObjectUtils.isEmpty(component) && "".equals(component[0])) {
+            componentList.add("");
+        }else {
+            for (String v : component) componentList.add(v);
+        }
         if (component.length == 0) ifnull = true;
 
         Map<String, String> componentNameMap = Maps.newHashMap();
