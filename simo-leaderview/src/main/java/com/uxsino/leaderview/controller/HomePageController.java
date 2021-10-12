@@ -114,6 +114,9 @@ public class HomePageController {
     @Value("${datasource.source:#{null}}")
     private String datasource;
 
+    @Value("${simo.leaderview.version}")
+    private String version;
+
     @ApiOperation("获取数据来源接口")
     @RequestMapping(value = "/getDatasource", method = RequestMethod.GET)
     public JsonModel getDatasource() {
@@ -1143,6 +1146,14 @@ public class HomePageController {
 
     }
 
+    @ApiOperation("获取大屏当前版本分支信息")
+    @GetMapping("/getVersion")
+    public JsonModel getVersion(){
+        String versionInfo = version;
+        JSONObject result = new JSONObject();
+        result.put("version",versionInfo);
+        return new JsonModel(true,result);
+    }
 
     @ApiOperation("模板导出成zip包")
     @GetMapping("/exportTemplate")

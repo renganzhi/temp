@@ -75,6 +75,10 @@ public class ImpExpService {
     @Value("${web.upload.file.path}")
     private String upload_path;
 
+    //配置的当前版本分支信息
+    @Value("${simo.leaderview.version}")
+    private String version;
+
     /**
      * 整合各方法完成模板的导出
      * @param pages
@@ -91,18 +95,19 @@ public class ImpExpService {
             //完成模板的处理
             json.add(makeTemplate(page,ids));
         }
+        String versionInfo = version;
         //创建config.json文件
-        String jsonPath = zipPath + File.separator + "templateZip" + name + File.separator + "json" + File.separator + "config.json";
+        String jsonPath = zipPath + File.separator + name + versionInfo + File.separator + "json" + File.separator + "config.json";
         //编写配置文件
         writeConfigJson(json.toJSONString(),jsonPath);
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(new File(zipPath + File.separator +"templateZip" + name + ".zip"));
+            fos = new FileOutputStream(new File(zipPath + File.separator + name + versionInfo + ".zip"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ZipUtils.toZip(zipPath + File.separator +"templateZip" + name + File.separator ,fos, true);
-        return zipPath + File.separator + "templateZip" + name + ".zip";
+        ZipUtils.toZip(zipPath + File.separator + name + versionInfo + File.separator ,fos, true);
+        return zipPath + File.separator + name + versionInfo + ".zip";
     }
 
     @Transactional
