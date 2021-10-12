@@ -2571,7 +2571,7 @@
                 "type": "drop-down",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getPerformance",
-                "params": ["neId"]
+                "params": ["neIds"]
             },
             {
                 "key": "columns",
@@ -2580,7 +2580,7 @@
                 "type": "multi-select",
                 "dataType": "remote",
                 "dataUrl": "/leaderview/monitor/params/getPerformanceColumn",
-                "params": ["neId","view"]
+                "params": ["neIds","view"]
             }
         ]
     },

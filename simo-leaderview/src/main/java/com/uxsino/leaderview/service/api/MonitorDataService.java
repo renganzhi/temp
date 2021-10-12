@@ -3048,7 +3048,13 @@ public class MonitorDataService {
     private Map<String, Object> UnitTransfer(Double value, String unit) {
         Map<String, Object> result = Maps.newHashMap();
         if ("bps".equals(unit)) {
-            if (value / (1024L * 1024L) >= 1) {
+            if (value / (1024L * 1024L * 1024L * 1024L) >= 1) {
+                result.put("value", value / (1024L * 1024L * 1024L * 1024L));
+                result.put("unit", "Tbps");
+            }else if (value / (1024L * 1024L * 1024L) >= 1) {
+                result.put("value", value / (1024L * 1024L * 1024L));
+                result.put("unit", "Gbps");
+            }else if (value / (1024L * 1024L) >= 1) {
                 result.put("value", value / (1024L * 1024L));
                 result.put("unit", "Mbps");
             } else if (value / 1024L >= 1) {
