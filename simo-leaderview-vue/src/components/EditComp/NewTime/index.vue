@@ -54,11 +54,20 @@ export default {
     }
   },
   mounted () {
-    if (this.item.timeSource === 'system') {
-      this.serviceTimeFn()
-    } else {
-      this.localTimeFn()
-    }
+      if(this.item.timeName && this.item.timeName === '2'){
+        this.timeoutId && clearTimeout(this.timeoutId)
+        if (this.item.timeSource === 'system') {
+          this.serviceWeekDayFn()
+        } else {
+          this.showTime = this.weekDateArru[new Date().getDay()]
+        }
+      }else{
+        if (this.item.timeSource === 'system') {
+          this.serviceTimeFn()
+        } else {
+          this.localTimeFn()
+        }
+      }
   },
   methods: {
     initTime (type, time) {
