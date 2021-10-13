@@ -88,41 +88,43 @@ public class ImpExpService {
     @SuppressWarnings("unchecked")
     public String  makeTemplate(List<HomePage> pages,String name){
         JSONArray json = new JSONArray();
+        String versionInfo = version;
+        String fileName = name+versionInfo;
         //需要导出的模板数
         Set<Long> ids = Sets.newConcurrentHashSet();
         pages.forEach(p -> ids.add(p.getId()));
         for (HomePage page: pages) {
             //完成模板的处理
-            json.add(makeTemplate(page,ids));
+            json.add(makeTemplate(page,ids,fileName));
         }
-        String versionInfo = version;
+
         //创建config.json文件
-        String jsonPath = zipPath + File.separator + name + versionInfo + File.separator + "json" + File.separator + "config.json";
+        String jsonPath = zipPath + File.separator + fileName + File.separator + "json" + File.separator + "config.json";
         //编写配置文件
         writeConfigJson(json.toJSONString(),jsonPath);
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(new File(zipPath + File.separator + name + versionInfo + ".zip"));
+            fos = new FileOutputStream(new File(zipPath + File.separator + fileName + ".zip"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ZipUtils.toZip(zipPath + File.separator + name + versionInfo + File.separator ,fos, true);
-        return zipPath + File.separator + name + versionInfo + ".zip";
+        ZipUtils.toZip(zipPath + File.separator + fileName + File.separator ,fos, true);
+        return zipPath + File.separator + fileName + ".zip";
     }
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public JSONObject makeTemplate(HomePage page, Set<Long> ids) {
+    public JSONObject makeTemplate(HomePage page, Set<Long> ids, String fileName) {
         if (!videoSet.isEmpty()){
             videoSet = Sets.newHashSet();
         }
         //num就是当前数据表内自定义图片中id最大的那一个
         Long num = homeTemplateImgService.getMaxId();
         //对page的各字段进行图片、视频、跳转处理
-        JSONObject viewConf = templateTransform(page.getViewConf(),num,ids);
-        JSONObject viewImage = templateTransform(page.getViewImage(),viewConf.getLong("num"));
-        JSONObject composeObj = templateTransform(page.getComposeObj(),viewImage.getLong("num"));
-        JSONObject paintObj = templateTransform(page.getPaintObj(), composeObj.getLong("num"));
+        JSONObject viewConf = templateTransform(page.getViewConf(),num,ids,fileName);
+        JSONObject viewImage = templateTransform(page.getViewImage(),viewConf.getLong("num"),fileName);
+        JSONObject composeObj = templateTransform(page.getComposeObj(),viewImage.getLong("num"),fileName);
+        JSONObject paintObj = templateTransform(page.getPaintObj(), composeObj.getLong("num"),fileName);
         //这个result是用来输出config.json的
         JSONObject result = new JSONObject();
         result.put("name",page.getName());
@@ -134,33 +136,31 @@ public class ImpExpService {
         result.put("viewImage",viewImage.getString("str"));
         result.put("paintObj",paintObj.getString("str"));
         result.put("composeObj",composeObj.getString("str"));
-        //这个linkConfig为null，不用管它
         result.put("linkConfig",viewConf.getJSONObject("linkConfig"));
         return result;
     }
 
-    private JSONObject templateTransform(String origin, Long num, Set<Long> ids){
+    private JSONObject templateTransform(String origin, Long num, Set<Long> ids, String fileName){
         //先做图片处理、视频处理
         //这个origin就是page中需要处理的字段,如viewconf、viewimage
-        JSONObject result = templateTransform(origin, num);
+        JSONObject result = templateTransform(origin, num, fileName);
         //再做跳转处理
-        //这个跳转处理不知道是干什么的，很多viewconf里面都没有linkid
         linkProcess(result, ids);
         return result;
     }
 
 
 
-    private JSONObject templateTransform(String origin, Long num){
+    private JSONObject templateTransform(String origin, Long num, String fileName){
         JSONObject result = new JSONObject();
         result.put("str",origin);
-        imgProcess(result, num);
+        imgProcess(result, num, fileName);
         //视频处理
-        videoProcess(result);
+        videoProcess(result, fileName);
         return result;
     }
 
-    private JSONObject videoProcess(JSONObject result){
+    private JSONObject videoProcess(JSONObject result, String fileName){
         String str = result.getString("str");
         if (Strings.isEmpty(str)){
             return result;
@@ -187,7 +187,7 @@ public class ImpExpService {
         while (videoMatcher.find()){
             set.add(videoMatcher.group());
         }
-        String videoPath = zipPath + "/templateZip" + zipNum + "/video/";
+        String videoPath = zipPath + File.separator + fileName + "/video/";
         for (String s: set) {
             VideoFile videoFile = videoFileService.getByName(s);
             copyFile(videoFile.getFilePath(), videoPath + videoFile.getName());
@@ -196,7 +196,7 @@ public class ImpExpService {
         return result;
     }
 
-    private JSONObject imgProcess(JSONObject result, Long num){
+    private JSONObject imgProcess(JSONObject result, Long num, String fileName){
         //str是TemplateTransform中的参数origin，调用时传入的是需要处理的内容，如page.getViewConf()
         String str = result.getString("str");
         if (Strings.isEmpty(str)){
@@ -305,7 +305,7 @@ public class ImpExpService {
             imgs.add(img);*/
 
             //将图片写入到zip文件里/templateZipzipNum/img/中
-            String imgPath = zipPath + "/templateZip" + zipNum + "/img/";
+            String imgPath = zipPath + File.separator + fileName + "/img/";
             saveToFile(imgPath + name, uploadedFile.getFileStream());
 
         }
@@ -513,7 +513,7 @@ public class ImpExpService {
                             UploadedFile fileInfo = new UploadedFile();
                             UploadedFileCompressed uploadedFileCompressed = new UploadedFileCompressed();
                             fileInfo.setName(name.substring(name.indexOf("img/") + 4 ));
-                            String extension = name.substring(name.indexOf(".") + 1);
+                            String extension = name.substring(name.lastIndexOf(".") + 1);
                             fileInfo.setExtension(extension);
                             fileInfo.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
                             fileInfo.setFileStream(b);
@@ -646,7 +646,7 @@ public class ImpExpService {
                     //拼接图片的name
                     String oldId = m1.replaceAll("").trim()+".png";
                     List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
-                    num = fileList.get(fileList.size()-1).getId();
+                    if(fileList.size() != 0) num = fileList.get(fileList.size()-1).getId();
                     viewConf = viewConf.replace(string, "/leaderview/home/getImg/true/" + num +"\"");
                     num = 0;
                 }
@@ -664,7 +664,7 @@ public class ImpExpService {
                     Matcher m22 = numPattern.matcher(string);
                     String oldId = m22.replaceAll("").trim()+".png";
                     List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
-                    num = fileList.get(fileList.size()-1).getId();
+                    if(fileList.size() != 0) num = fileList.get(fileList.size()-1).getId();
                     viewImage = viewImage.replace(string, "/leaderview/home/getImg/true/" + num);
                     num = 0;
                 }
@@ -682,7 +682,7 @@ public class ImpExpService {
                     Matcher m33 = numPattern.matcher(string);
                     String oldId = m33.replaceAll("").trim()+".png";
                     List<UploadedFile> fileList = uploadedFileService.findByName(oldId);
-                    num = fileList.get(fileList.size()-1).getId();
+                    if(fileList.size() != 0) num = fileList.get(fileList.size()-1).getId();
                     composeObj = composeObj.replace(string, "/leaderview/home/getImg/true/" + num +"\"");
                     num = 0;
                 }
