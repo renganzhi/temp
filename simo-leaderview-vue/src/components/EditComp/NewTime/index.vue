@@ -15,6 +15,15 @@ export default {
       serverceTime: '',
       refreshTime: 1, // 设置为1误差最小
       timeoutId: null,
+      weekDateArru:[
+        '星期天',
+        '星期一',
+        '星期二',
+        '星期三',
+        '星期四',
+        '星期五',
+        '星期六',
+      ],
       sizeObj: {
         'f12': { w: 44, h: 17 },
         'f13': { w: 48, h: 18 },
@@ -90,6 +99,11 @@ export default {
           break
       }
     },
+    serviceWeekDayFn(){
+      this.axios.get('/leaderview/home/getWeekDay').then((res) => {
+        this.showTime = res.obj[0]
+      })
+    },
     serviceTimeFn () {
       // 取服务器时间
       this.axios.get('/leaderview/home/getTime').then((res) => {
@@ -146,10 +160,37 @@ export default {
       //     _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
       //   }, this.refreshTime * 1000)
       // }
-      if (newV === 'system') {
-        this.serviceTimeFn()
-      } else {
-        this.localTimeFn()
+      if(this.item.timeName === '1'){
+        if (newV === 'system') {
+          this.serviceTimeFn()
+        } else {
+          this.localTimeFn()
+        }
+      }else{
+        this.timeoutId && clearTimeout(this.timeoutId)
+        if (newV === 'system') {
+          this.serviceWeekDayFn()
+        } else {
+          this.showTime = this.weekDateArru[new Date().getDay()]
+        }
+      }
+    },
+    'item.timeName':function(){
+      if(this.item.timeName === '1'){
+        if (this.item.timeSource === 'system') {
+          this.timeoutId && clearTimeout(this.timeoutId)
+          this.serviceTimeFn()
+        } else {
+          this.localTimeFn()
+          // this.initTime(newV)
+        }
+      }else{
+        this.timeoutId && clearTimeout(this.timeoutId)
+        if (this.item.timeSource === 'system') {
+          this.serviceWeekDayFn()
+        }else{
+          this.showTime = this.weekDateArru[new Date().getDay()]
+        }
       }
     },
     'item.timeType': function (newV, oldV) {

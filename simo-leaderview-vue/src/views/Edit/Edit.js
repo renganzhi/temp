@@ -93,6 +93,7 @@ export default {
         left: 0
       },
       advanced: false,
+      reqItemdata: {},
       helpLineColor: '#348cea',
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
@@ -1925,7 +1926,7 @@ export default {
         }
       }
 
-      if (!window.event.ctrlKey) {
+      if (!window.event.ctrlKey && this.oldCheckId !== item.id) {
         // 切换选中的元件
         this.showWindowBtn = false // 隐藏部件弹窗按钮
         this.oldCheckId = item.id
@@ -3245,6 +3246,7 @@ export default {
     },
     sentViewReqSend(curConf, datas, param) {
       let _this = this
+      _this.reqItemdata = _this.selectedItem
       if (_this.selectedItem.chartType === 'JSMpeg') {
         _this.selectedItem.chartData = JSON.stringify(param)
         _this.selectedItem.urlData = _this.syst.curConf.url
@@ -3257,40 +3259,40 @@ export default {
             if (data.success) {
               data.obj = data.obj || {}
               if (data.obj.colors) {
-                _this.selectedItem.ctColors = data.obj.colors
-                _this.selectedItem.colorType = 'defalut'
+                _this.reqItemdata.ctColors = data.obj.colors
+                _this.reqItemdata.colorType = 'defalut'
               } else {
-                if (_this.selectedItem.colorType === 'defalut') {
-                  _this.selectedItem.ctColors = _this.defalutColors.concat()
+                if (_this.reqItemdata.colorType === 'defalut') {
+                  _this.reqItemdata.ctColors = _this.defalutColors.concat()
                 }
               }
-              if (_this.selectedItem.chartType === 'v-map' || _this.selectedItem.chartType === 'NewVMap') {
+              if (_this.reqItemdata.chartType === 'v-map' || _this.reqItemdata.chartType === 'NewVMap') {
                 _this.selectMapData = data.obj
                 _this.mapDataToChart()
-                _this.selectedItem.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
-              } else if (_this.selectedItem.chartType === 'IntegratedHistogram') {
-                if (_this.selectedItem.barType === 'NewHistogram') {
-                  _this.selectedItem.chartData1 = data.obj
+                _this.reqItemdata.piecesData = JSON.parse(JSON.stringify(_this.editPieces))
+              } else if (_this.reqItemdata.chartType === 'IntegratedHistogram') {
+                if (_this.reqItemdata.barType === 'NewHistogram') {
+                  _this.reqItemdata.chartData1 = data.obj
                 }
-                if (_this.selectedItem.barType === 'NewGroupHistogram') {
-                  _this.selectedItem.chartData2 = data.obj
+                if (_this.reqItemdata.barType === 'NewGroupHistogram') {
+                  _this.reqItemdata.chartData2 = data.obj
                 }
-                if (_this.selectedItem.barType === 'NewGroupLeftHistogram') {
-                  _this.selectedItem.chartData3 = data.obj
+                if (_this.reqItemdata.barType === 'NewGroupLeftHistogram') {
+                  _this.reqItemdata.chartData3 = data.obj
                 }
-                if (_this.selectedItem.barType === 'NewBar') {
-                  _this.selectedItem.chartData4 = data.obj
+                if (_this.reqItemdata.barType === 'NewBar') {
+                  _this.reqItemdata.chartData4 = data.obj
                 }
               } else {
-                _this.selectedItem.chartData = data.obj
+                _this.reqItemdata.chartData = data.obj
               }
-              _this.selectedItem.url = curConf.url
-              _this.selectedItem.method = curConf.method
-              _this.selectedItem.params = param
-              if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NewMarquee' || _this.selectedItem.chartType === 'marquee' || _this.selectedItem.chartType === 'NEWtextArea') {
-                _this.selectedItem.ctName = data.obj.info
-                if (_this.selectedItem.chartType === 'text' || _this.selectedItem.chartType === 'NEWtextArea') {
-                  _this.selectedItem.chartData = data.obj
+              _this.reqItemdata.url = curConf.url
+              _this.reqItemdata.method = curConf.method
+              _this.reqItemdata.params = param
+              if (_this.reqItemdata.chartType === 'text' || _this.reqItemdata.chartType === 'NewMarquee' || _this.reqItemdata.chartType === 'marquee' || _this.reqItemdata.chartType === 'NEWtextArea') {
+                _this.reqItemdata.ctName = data.obj.info
+                if (_this.reqItemdata.chartType === 'text' || _this.reqItemdata.chartType === 'NEWtextArea') {
+                  _this.reqItemdata.chartData = data.obj
                 }
               }
             } else {
@@ -4632,10 +4634,10 @@ export default {
     },
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
+        this.oldCheckId = ''
         if (this.pageType === 'topo') {
           this.chartNum.forEach(data => {
             if (data.params.topoId !== undefined && data.url && data.ctDataSource === 'system') {
-              console.log(data.params.topoId)
               data.params.topoId = newV
               if (data.moreUrlArry) {
                 data.moreUrlArry.forEach(element => {

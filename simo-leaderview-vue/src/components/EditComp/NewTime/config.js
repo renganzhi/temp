@@ -1,4 +1,4 @@
-export default{
+export default {
   'item': {
     'text': '时间器',
     'imgClass': 'icon-n-time',
@@ -9,7 +9,8 @@ export default{
     'fontSize': 18,
     'clr': '#666f8b',
     'timeFrom': 'local',
-    'timeType': '1'
+    'timeType': '1',
+    'timeName': '1'
   },
   'styles': {
     'base': [
@@ -102,8 +103,26 @@ export default{
             ]
           },
           {
+            'name': '时间类型',
+            'key': 'timeName',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '日期时间',
+                'value': '1'
+              },
+              {
+                'name': '星期',
+                'value': '2'
+              },
+            ]
+          },
+          {
             'name': '时间格式',
             'key': 'timeType',
+            'parentKey': {
+              'timeName': '1'
+            },
             'tag': 'select',
             'options': [
               {
