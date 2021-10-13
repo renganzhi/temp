@@ -987,6 +987,25 @@ public class HomePageController {
         return new JsonModel(true, result);
     }
 
+    /**
+     * 返回当前服务端的时间
+     */
+    @ApiOperation("返回服务端当前日期是星期几")
+    @RequestMapping(value = "/getWeekDay", method = RequestMethod.GET)
+    public JsonModel getWeekDay() {
+        JSONArray result = new JSONArray();
+        String[] weeks = {"星期日","星期一","星期二","星期三","星期四","星期五","星期六"};
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date();
+        cal.setTime(date);
+        int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if(week_index<0){
+            week_index = 0;
+        }
+        result.add(weeks[week_index]);
+        return new JsonModel(true, result);
+    }
+
     @ApiOperation("遍历主页模板")
     @GetMapping("/template/list")
     public JsonModel getTemplateList() {
