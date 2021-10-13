@@ -1215,6 +1215,9 @@ export default {
           pageData = JSON.parse(res.obj.templateConf)
           this.windowtemplateData = pageData
         }
+        if (JSON.parse(res.obj.paintObj).resourcesIds) {
+          this.resourcesIds = JSON.parse(res.obj.paintObj).resourcesIds
+        }
         this.pageName = res.obj.name
         if (!res.obj.viewConf) {
           res.obj.viewConf = '[]'
@@ -4635,6 +4638,7 @@ export default {
     resourcesIds: function (newV) {
       if (newV !== '' && newV) {
         this.oldCheckId = ''
+        this.paintObj.resourcesIds = newV
         if (this.pageType === 'topo') {
           this.chartNum.forEach(data => {
             if (data.params.topoId !== undefined && data.url && data.ctDataSource === 'system') {
