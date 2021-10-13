@@ -200,16 +200,16 @@ public class MonitorDataController {
     }
 
     @ApiOperation("资源性能视图")
-    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源Id", required = false),
+    @ApiImplicitParams({@ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源Id", required = false),
             @ApiImplicitParam(name = "view", paramType = "query", dataType = "PerormanceView", value = "资源视图", required = false),
             @ApiImplicitParam(name = "columns", paramType = "query", dataType = "Arrays", value = "需要的列", required = false)})
     @RequestMapping(
             value = {"/getNetMoveTablePerformance"},
             method = {RequestMethod.GET}
     )
-    public JsonModel getnNetMoveTablePerformance(@RequestParam(required = false) String neId, @RequestParam(required = false) PerormanceView view, @RequestParam(required = false) String[] columns) {
+    public JsonModel getnNetMoveTablePerformance(@RequestParam(required = false) String neIds, @RequestParam(required = false) PerormanceView view, @RequestParam(required = false) String[] columns) {
         try {
-            return this.monitorDataService.getnNetMoveTablePerformance(neId, view, columns);
+            return this.monitorDataService.getnNetMoveTablePerformance(neIds, view, columns);
         } catch (Exception var5) {
             var5.printStackTrace();
             return new JsonModel(false, var5.getMessage());
