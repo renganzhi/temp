@@ -473,18 +473,18 @@ public class MonitorDataParamsController {
     }
 
     @ApiOperation("查询资源可获取的性能视图")
-    @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "neIds", paramType = "query", dataType = "String", value = "资源ID")})
     @GetMapping({"/getPerformance"})
-    public JsonModel getPerformance(@RequestParam(required = false) String neId) {
-        return this.monitorDataParamsService.getPerormance(neId);
+    public JsonModel getPerformance(@RequestParam(required = false) String neIds) {
+        return this.monitorDataParamsService.getPerormance(neIds);
     }
 
     @ApiOperation("查询性能视图的可展示列")
     @ApiImplicitParams({@ApiImplicitParam(name = "neId", paramType = "query", dataType = "String", value = "资源ID"),
             @ApiImplicitParam(name = "type", paramType = "query", dataType = "String", value = "性能视图类型")})
     @GetMapping({"/getPerformanceColumn"})
-    public JsonModel getPerformanceColumn(@RequestParam(required = false) String neId, @RequestParam PerormanceView view) {
-        return this.monitorDataParamsService.getPerformanceColumn(neId, view);
+    public JsonModel getPerformanceColumn(@RequestParam(required = false) String neIds, @RequestParam PerormanceView view) {
+        return this.monitorDataParamsService.getPerformanceColumn(neIds, view);
     }
 
     @ApiOperation("查询性能视图的可展示列")
