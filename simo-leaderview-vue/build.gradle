@@ -29,12 +29,12 @@ task domesticNpmInstall(type: YarnTask) {
 
 task npmBuild(type: YarnTask, dependsOn: domesticNpmInstall) {
     group = 'node'
-    args = ['run', 'build']
+    args = ['run', 'build', '--registry=https://registry.npm.taobao.org']
 }
 
 task npmDev(type: YarnTask, dependsOn: domesticNpmInstall) {
     group = 'node'
-    args = ['run', 'dev']
+    args = ['run', 'dev', '--registry=https://registry.npm.taobao.org']
 }
 
 task copyDist(dependsOn: npmBuild){
