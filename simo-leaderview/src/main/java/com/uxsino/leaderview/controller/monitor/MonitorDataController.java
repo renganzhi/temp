@@ -470,8 +470,16 @@ public class MonitorDataController {
                 dateFormatStr = MonitorDataService.sdfStr;
             }
             if (Objects.equals("healthy", indicators)) {
-                if (IndPeriod._1day == period) {
-                    interval = 5;
+                //健康度查询没有intervalType，需要单独转换interval
+                switch (period){
+                    case _1hour:
+                    case _1day:
+                        interval = interval;
+                        break;
+                    case _1week:
+                    case _1month:
+                        interval = interval * 60;
+                        break;
                 }
                 return monitorDataService.getHistoryHealth(neIds, period, interval, dateFormatStr);
             } else {
