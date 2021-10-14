@@ -4,7 +4,7 @@
       <span class="us-link" @click="checkAll"> 查看全部 </span>
       <i
         class="us-link"
-        :class="open ? 'icon-n-laba' : 'icon-n-mute'"
+        :class="form.open ? 'icon-n-laba' : 'icon-n-mute'"
         @click.stop="clickOpenVoice"
       />
     </div>
@@ -46,15 +46,14 @@ export default {
     return {
       levelMap: {},
       latestMsg: [],
-      open: this.openVoice,
+      form:{
+        id:'',
+        ring:'',
+        open: false,
+      },
       hasMsg: true,
       originArr: []
     }
-  },
-  computed: {
-    ...mapState('base', {
-      openVoice: state => state.notice.openVoice
-    })
   },
 
   created () {
@@ -67,6 +66,16 @@ export default {
     //   this.originArr = res.obj.origin || []
     // })
     // 获取最新5条消息
+    
+    this.axios.get('/msg/config/findRingConfig').then(res => {
+      if (res.success) {
+        if (res.obj) {
+          this.form.id = res.obj.id || ''
+          this.form.ring = res.obj.ring || ''
+          this.form.open = res.obj.open
+        }
+      }
+    })
     this.axios
       .get('/msg/mailbox/list?currentNo=1&pageSize=5&isRead=false')
       .then(res => {
@@ -89,9 +98,20 @@ export default {
       }
     },
     clickOpenVoice () {
-      console.log(22222)
-      this.open = !this.open
-      // $store.commit('base/setVoice', !open)
+      this.form.open = !this.form.open
+      let myurl = '/msg/config/saveRingConfig'
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      const formData = new FormData()
+      formData.append('id', this.form.id)
+      formData.append('ring', this.form.ring)
+      formData.append('opened', this.form.open)
+      this.axios.post(myurl, formData, config).then(res => {
+        
+      })
     }
   }
 }

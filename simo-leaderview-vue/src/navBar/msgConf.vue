@@ -1,13 +1,11 @@
 <template>
   <Modal
-    v-model="mdpram.show"
+    v-model="mdpram.isShow"
     title="消息配置"
     class="us-md"
     :loading="true"
     :width="580"
-    cancel-text="清空"
-    @on-ok="onSure"
-    @on-cancel="onCancel"
+    footer-hide
   >
     <div class="form-title">
       声音配置
@@ -43,54 +41,15 @@
         >
         </el-switch>
       </FormItem>
-      <!-- <FormItem style="margin-bottom: 0px; text-align: right;">
+      <FormItem style="margin-bottom: 0px; text-align: right;">
         <Button style="background:#5c8bff;" @click="onSure">
           确定
         </Button>
         <Button @click="resetCancel" cancel>
           清空
         </Button>
-      </FormItem> -->
+      </FormItem>
     </Form>
-    <!-- <Tabs v-model="modelName" :animated="false">
-      <TabPane label="声音配置" name="voice">
-        <Form ref="form" :model="form">
-          <FormItem label="告警铃声" prop="ring" :rules="$rules.required">
-            <Select v-model="form.ring" filterable>
-              <Option
-                v-for="item in levels"
-                :key="item.music"
-                :value="item.music"
-                :label="item.music"
-              >
-                {{ item.music }}
-              </Option>
-            </Select>
-            <Tooltip content="试听">
-              <Button
-                class="margin-left-5"
-                @click="listenRing"
-                style="background:white !important;color:#6c95ff;"
-              >
-                <i class="icon-n-zhanneixiaoxi" />
-              </Button>
-            </Tooltip>
-          </FormItem>
-          <FormItem label="响铃开关" prop="opened">
-            <el-switch v-model="form.opened" active-color="#13ce66">
-            </el-switch>
-          </FormItem>
-          <FormItem style="margin-bottom: 0px; text-align: right;">
-            <Button style="background:#5c8bff;" @click="onSure">
-              确定
-            </Button>
-            <Button @click="resetCancel" cancel>
-              重置
-            </Button>
-          </FormItem>
-        </Form>
-      </TabPane>
-    </Tabs> -->
     <audio
       id="myaudio"
       :src="'../../static/audio/' + form.ring"
@@ -131,7 +90,7 @@ export default {
         if (res.obj) {
           this.form.id = res.obj.id || ''
           this.form.ring = res.obj.ring || ''
-          this.form.opened = res.obj.opened || ''
+          this.form.opened = res.obj.opened
         }
       }
     })
@@ -167,7 +126,7 @@ export default {
           formData.append('opened', this.form.opened)
           this.axios.post(myurl, formData, config).then(res => {
             // this.$store.commit('base/setRing', this.form.ring)
-            this.mdpram.show = false
+            this.mdpram.isShow = false
             this.$notify({
               message: res.msg,
               position: 'bottom-right',
@@ -180,7 +139,7 @@ export default {
     resetCancel () {
       let myurl = '/msg/config/delRingConfig'
       this.axios.post(myurl).then(res => {
-        // this.mdpram.show = false
+        // this.mdpram.isShow = false
         this.form.ring = 'alertLevel_10.mp3'
         this.form.opened = true
         this.$notify({
@@ -188,14 +147,6 @@ export default {
           position: 'bottom-right',
           customClass: 'toast toast-success'
         })
-      })
-    },
-    onCancel () {
-      this.mdpram.show = false
-      this.$notify({
-        message: '告警铃声配置清空成功',
-        position: 'bottom-right',
-        customClass: 'toast toast-success'
       })
     }
   }

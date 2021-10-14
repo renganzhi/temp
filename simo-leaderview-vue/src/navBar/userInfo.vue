@@ -5,15 +5,15 @@
     class="userInfoBox"
     :loading="true"
     :width="980"
-    :on-ok="update"
-    :on-cancel="cancel"
+    @on-ok="update"
+    @on-cancel="cancel"
   >
     <Form
-      ref="form"
+      ref="Myform"
       class=""
       :rules="fmRules"
       :model="formInfo"
-      label-width="120"
+      :label-width="120"
     >
       <div class="form-title">
         个人信息
@@ -398,12 +398,13 @@ export default {
           formData.append(key, params[key])
         }
       }
-      this.$refs.formInfo.validate(valid => {
+      this.$refs.Myform.validate(valid => {
         if (valid) {
           this.axios
             .post(`/user/${this.formInfo.id}/updateUserInfo`, formData)
             .then(
               res => {
+                this.cancel()
                 this.$Message.success({
                   background: true,
                   content: '修改成功'
