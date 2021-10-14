@@ -1736,6 +1736,13 @@ public class MonitorDataService {
             String indicatorId = indicatorArr.getString(i);
             JSONArray aggValues = new JSONArray();
             if ("healthy".equals(indicatorId)) {
+                //健康度查询没有intervalType，需要单独转换interval
+                switch (period){
+                    case _1week:
+                    case _1month:
+                        interval = interval * 60;
+                        break;
+                }
                 // 对健康度指标特殊处理获取数据
                 aggValues = getHistoryHealthValues(neIds, period, interval, null);
                 filedLabelMap.put("healthy", "健康度");
@@ -1744,11 +1751,7 @@ public class MonitorDataService {
                 action(aggValues, o -> {
                     o.put("field", "healthy");
                     o.put("neId", ne.getId());
-                    try {
-                        o.put("fetchDate", dateFormat.format(sdf.parse(o.get("采集时间").toString())));
-                    } catch (ParseException e) {
-                        log.error("日期格式化错误{}",o.get("采集时间"));
-                    }
+                    o.put("fetchDate", (o.get("采集时间").toString()));
                     o.put("healthy", o.get(ne.getIp() + ne.getName()));
                 });
             } else {
