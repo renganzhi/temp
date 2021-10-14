@@ -746,6 +746,7 @@ export default {
       let ct = this
       let xhrobj = ''
       if (d.url === '/monitor/topo/domainTopo') {
+        $('#lead-screen').addClass('disShow')
         xhrobj = $.ajax({
           url: (d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url) + '/' + d.params.topoId, // 第三方的ur已经拼接好host
           // data: d.params,
@@ -753,6 +754,7 @@ export default {
           cache: false,
           ascyn: false,
           success: function (res) {
+            $('#lead-screen').removeClass('disShow')
             res.obj = res.obj || []
             if (res.obj.colors) {
               d.ctColors = res.obj.colors
@@ -801,6 +803,7 @@ export default {
               data.fields = [data.indicator]
               d.params.windows = JSON.stringify([data])
             }
+            $('#lead-screen').addClass('disShow')
             xhrobj = $.ajax({
               url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url, // 第三方的ur已经拼接好host
               data: d.params,
@@ -808,6 +811,7 @@ export default {
               cache: false,
               ascyn: false,
               success: function (res) {
+                $('#lead-screen').removeClass('disShow')
                 res.obj = res.obj || []
                 if (res.obj.colors) {
                   d.ctColors = res.obj.colors
@@ -824,6 +828,7 @@ export default {
                 }
               },
               error: async function (xhr) {
+                $('#lead-screen').removeClass('disShow')
                 if (xhr.status === 776) {
                   if (d.ctDataSource !== 'static' && d.ctDataSource !== 'system') { // 第三方登录过期:重新登录后再请求
                     ct.xhrArr.pop()
@@ -850,6 +855,7 @@ export default {
             }
           })
         } else {
+           $('#lead-screen').addClass('disShow')
           xhrobj = $.ajax({
             url: d.ctDataSource === 'system' ? (gbs.host + d.url) : d.url, // 第三方的ur已经拼接好host
             data: d.params,
@@ -857,6 +863,7 @@ export default {
             cache: false,
             ascyn: false,
             success: function (res) {
+              $('#lead-screen').removeClass('disShow')
               res.obj = res.obj || []
               if (res.obj.colors) {
                 d.ctColors = res.obj.colors
@@ -873,6 +880,7 @@ export default {
               }
             },
             error: async function (xhr) {
+              $('#lead-screen').removeClass('disShow')
               if (xhr.status === 776) {
                 if (d.ctDataSource !== 'static' && d.ctDataSource !== 'system') { // 第三方登录过期:重新登录后再请求
                   ct.xhrArr.pop()
@@ -1204,7 +1212,7 @@ export default {
     this.pageVisibInit()
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
-    $('#lead-screen').addClass('disShow')
+    // $('#lead-screen').addClass('disShow')
   },
   updated() {
     if (this.pageList[(this.pageIndex - 1) % this.pageSize] && this.pageList[(this.pageIndex - 1) % this.pageSize].belongCurrentUser !== 'true') {
