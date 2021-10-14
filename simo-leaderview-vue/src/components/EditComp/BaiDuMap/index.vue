@@ -1,6 +1,7 @@
 <template>
     <div
       :id="id"
+      class="Boxmap"
       style="
         width: calc(100% - 20px);
         height: calc(100% - 20px);
@@ -764,6 +765,14 @@ export default {
     // .BMap_contextMenu div:first-child{
     //   margin-bottom: 10px;
     // }
+    // 处理删除按钮会被点标记覆盖的问题
+    .Boxmap>div:first-child{
+      >div:nth-child(2){
+        >div:nth-child(4){
+          z-index: 1000 !important;
+        }
+      }
+    }
     .BMap_Marker div img {
       width: 100%;
       height: 100%;
