@@ -28,11 +28,6 @@ export default {
   },
   created: function () {
     $('html').attr('data-theme', 'default')
-    this.axios.get('/mc/system/setting/get').then((res) => {
-      if(res.success && res.obj.SITE_NAME){
-        document.title = res.obj.SITE_NAME.value
-      }
-    })
     // /mc/system/setting/get
     // var _hash = window.location.hash
     // if (_hash.split('/')[1]) {

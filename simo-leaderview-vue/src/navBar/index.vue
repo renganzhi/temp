@@ -2,7 +2,7 @@
   <div class="navbarWrap">
     <div class="navLeft">
       <div class="logo">
-        <img :src="require('./images/logo_white.png')" />
+        <img :src="headpicSrc?headpicSrc:require('./images/logo_white.png')" />
       </div>
       <!-- theme === 'default'
               ? require('./images/logo.png')
@@ -175,6 +175,7 @@ export default {
       },
       dropPramCompsMenu: [],
       dropPramMenu: [],
+      headpicSrc:'',
       comps: ['SYS01', 'USERAUTH01', 'MSG01', 'DS_00', 'KBMenu'],
       iconUser: {
         userInfo: '用户信息',
@@ -241,6 +242,14 @@ export default {
             }
           })
         })
+      }
+    })
+    this.axios.get('/mc/system/setting/get').then((res) => {
+      if(res.success && res.obj.SITE_NAME){
+        document.title = res.obj.SITE_NAME.value
+      }
+      if(res.success && res.obj.SITE_LOGO_MINI){
+        this.headpicSrc = res.obj.SITE_LOGO_MINI.value
       }
     })
     // this.axios.get("/mc/getMenu?" + new Date().getTime()).then((res) => {
