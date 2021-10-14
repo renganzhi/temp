@@ -123,7 +123,7 @@
     <div v-if="transJobMd.isShow">
       <!-- <TransJob :mdpram="transJobMd" /> -->
     </div>
-    <div v-if="myUsMsgConf.show">
+    <div v-if="myUsMsgConf.isShow">
       <UsMsgConf :mdpram="myUsMsgConf" />
       <!-- <Component
         :is="curModal"
@@ -315,7 +315,7 @@ export default {
       this.isOpen = ''
     },
     msgConf () {
-      this.myUsMsgConf.show = true
+      this.myUsMsgConf.isShow = true
       // this.curModal = 'UsMsgConf'
     },
 
