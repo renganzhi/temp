@@ -115,7 +115,7 @@ export default {
   'styles': {
     'base': [
       {
-        'name': '地图配置',
+        'name': '2D地图配置',
         'tag': 'Hint',
         'childoption': [
           {
