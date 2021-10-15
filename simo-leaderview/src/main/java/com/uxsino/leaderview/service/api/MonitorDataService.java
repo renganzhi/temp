@@ -4687,53 +4687,58 @@ public class MonitorDataService {
 
     public JsonModel VmwareStatistics(String neIds, String indicatorId, Integer type) throws Exception {
 
-        IndValueQuery indValueQuery = new IndValueQuery();
-        indValueQuery.setNeId(neIds);
-        indValueQuery.setIndicatorId(indicatorId);
-        JSONObject fieldFilters = new JSONObject();
-        //type=1：总数；2：故障；3：打开；4：关闭
-        //虚拟主机：powerState   ESXI:power_state
-
-        //当type=1:查询总数时，无需传入参数
-        if (type == 3) {
-            if("v_host".equals(indicatorId)){
-                fieldFilters.put("powerState", "poweredOn");
-            }else if("vm_info".equals(indicatorId)){
-                fieldFilters.put("power_state", "poweredOn");
-            }
-        } else if (type == 4) {
-            if("v_host".equals(indicatorId)){
-                fieldFilters.put("powerState", "poweredOff");
-            }else if("vm_info".equals(indicatorId)){
-                fieldFilters.put("power_state", "poweredOff");
-            }
-        }
-        indValueQuery.setFieldShouldFilters(fieldFilters);
-        String type2 = "count";
-        Boolean IsHistory = false;
-        JsonModel jsonModel = null;
-        try {
-            jsonModel = rpcProcessService.searchByFieldQuery(type2, IsHistory, indValueQuery);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new JsonModel(false, jsonModel.getMsg());
-        }
-        LinkedHashMap<Object, Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
-        Integer count = (Integer) obj.get("count");
-        //type=2 :故障只能用networkentity的Runstatus来判断,其中exsi的状态可以直接通过getNelist来查询
-        //虚拟主机则需要查询simo_monitor_vm_ne_relation表(vm_info的状态也可以通过relation表查询)
+        Integer count;
+        //type=2 :故障只能用Runstatus来判断,虚拟主机的状态需要查询simo_monitor_vm_ne_relation表
         if(type == 2){
-            if("vm_info".equals(indicatorId)) {
-                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
-                criteria.setHostId(neIds);
-                criteria.setRunStatus(RunStatus.Warning);
-                criteria.setMonitoring(true);
-                criteria.setBaseNeClass(BaseNeClass.virtualization);
-                criteria.setNeClass(NeClass.esxi);
-                criteria.setSourceManage(false);
-                List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
-                count = list.size();
+            VirtualizationRelationCriteria criteria = new VirtualizationRelationCriteria();
+            criteria.setVmId(neIds);
+            criteria.setType(indicatorId);
+            criteria.setStatus(String.valueOf(RunStatus.Warning));
+            criteria.setPageSize(Integer.MAX_VALUE);
+            criteria.setMonitoring(true);
+            JsonModel jsonModel = null;
+            try {
+                jsonModel = rpcProcessService.getNeRelationList(criteria);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new JsonModel(false,e.getMessage());
             }
+            JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(jsonModel.getObj()));
+            count = jsonArray.size();
+        }else {
+            IndValueQuery indValueQuery = new IndValueQuery();
+            indValueQuery.setNeId(neIds);
+            indValueQuery.setIndicatorId(indicatorId);
+            JSONObject fieldFilters = new JSONObject();
+            //type=1：总数；2：故障；3：打开；4：关闭
+            //虚拟主机：powerState   ESXI:power_state
+
+            //当type=1:查询总数时，无需传入参数
+            if (type == 3) {
+                if ("v_host".equals(indicatorId)) {
+                    fieldFilters.put("powerState", "poweredOn");
+                } else if ("vm_info".equals(indicatorId)) {
+                    fieldFilters.put("power_state", "poweredOn");
+                }
+            } else if (type == 4) {
+                if ("v_host".equals(indicatorId)) {
+                    fieldFilters.put("powerState", "poweredOff");
+                } else if ("vm_info".equals(indicatorId)) {
+                    fieldFilters.put("power_state", "poweredOff");
+                }
+            }
+            indValueQuery.setFieldShouldFilters(fieldFilters);
+            String type2 = "count";
+            Boolean IsHistory = false;
+            JsonModel jsonModel2 = null;
+            try {
+                jsonModel2 = rpcProcessService.searchByFieldQuery(type2, IsHistory, indValueQuery);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new JsonModel(false, jsonModel2.getMsg());
+            }
+            LinkedHashMap<Object, Object> obj = (LinkedHashMap<Object, Object>) jsonModel2.getObj();
+            count = (Integer) obj.get("count");
         }
         JSONObject result = new JSONObject();
         //总数、故障、打开、关闭

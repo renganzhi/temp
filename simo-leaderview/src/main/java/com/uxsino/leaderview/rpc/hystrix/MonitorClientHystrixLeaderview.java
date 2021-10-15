@@ -28,6 +28,11 @@ public class MonitorClientHystrixLeaderview implements MonitorService {
     }
 
     @Override
+    public JsonModel getNeRelationList(String param) {
+        return new JsonModel(false, "Monitor服务调用失败");
+    }
+
+    @Override
     public JsonModel getUsableInd(String indicatorName, NetworkEntityCriteria criteria) {
         return new JsonModel(false, "Monitor服务调用失败");
     }
