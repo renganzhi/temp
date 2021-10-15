@@ -31,6 +31,7 @@ import com.uxsino.leaderview.utils.MonitorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jpedal.parser.shape.N;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -2667,17 +2668,16 @@ public class MonitorDataService {
             //单资源多部件则改为遍历部件
             //for (int j = 0; j < component.length; j++) {
             for (int j = 0; j < componentList.size(); j++) {
+                if (ObjectUtils.isEmpty(ne)) {
+                    return new JsonModel(true, "该资源不存在", empObj());
+                }
                 String neId = ne.getId();
-                //String componentName = component[j];
                 String componentName = componentList.get(j);
 
                 // 如果资源已被删除或者取消监控，将此资源的数据展示取消
                 if (ne.getManageStatus().equals(ManageStatus.Delected) || !ne.isMonitoring()) {
                     invalidId.add(neId);
                     continue;
-                }
-                if (ObjectUtils.isEmpty(ne)) {
-                    return new JsonModel(true, "该资源不存在", empObj());
                 }
                 // 获取指标监控策略
                 Boolean strategyField = getStrategy(neId, indicators, fieldsName);
@@ -4636,7 +4636,7 @@ public class MonitorDataService {
         fields.add("freeSpace");
         indValueQuery.setFieldResFilter(fields);
         JSONObject fieldSort = new JSONObject();
-        fieldSort.put("volumn", "desc");
+        fieldSort.put("diskUsage", "desc");
         indValueQuery.setFieldSort(fieldSort);
         indValueQuery.setFieldSize(number);
         String type = "list";
@@ -4656,13 +4656,26 @@ public class MonitorDataService {
         columns.add("总量");
         columns.add("已使用率");
         columns.add("剩余总量");
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
         for (LinkedHashMap<Object, Object> map : list) {
             LinkedHashMap row = new LinkedHashMap();
+            Double volumn = (Double) map.get("volumn");
+            Double freeSpace = (Double) map.get("freeSpace");
+            String unit1 = "GB";
+            String unit2 = "GB";
+            if(volumn/ 1024L >= 1){
+                volumn = volumn/ 1024L;
+                unit1 = "TB";
+            }
+            if(freeSpace/ 1024L >= 1){
+                freeSpace = freeSpace/ 1024L;
+                unit2 = "TB";
+            }
             row.put("名称", map.get("name"));
-            row.put("总量", map.get("volumn"));
-            row.put("已使用率", map.get("diskUsage"));
-            row.put("剩余总量", map.get("freeSpace"));
+            row.put("总量", decimalFormat.format(volumn)+unit1);
+            row.put("已使用率", map.get("diskUsage")+"%");
+            row.put("剩余总量", decimalFormat.format(freeSpace)+unit2);
             rows.add(row);
         }
 
@@ -4672,19 +4685,28 @@ public class MonitorDataService {
         return new JsonModel(true, result);
     }
 
-    public JsonModel VmwareStatistics(String neIds, String indicatorId, Integer type) {
+    public JsonModel VmwareStatistics(String neIds, String indicatorId, Integer type) throws Exception {
 
         IndValueQuery indValueQuery = new IndValueQuery();
         indValueQuery.setNeId(neIds);
         indValueQuery.setIndicatorId(indicatorId);
         JSONObject fieldFilters = new JSONObject();
+        //type=1：总数；2：故障；3：打开；4：关闭
+        //虚拟主机：powerState   ESXI:power_state
+
+        //当type=1:查询总数时，无需传入参数
         if (type == 3) {
-            fieldFilters.put("powerState", "poweredOn");
+            if("v_host".equals(indicatorId)){
+                fieldFilters.put("powerState", "poweredOn");
+            }else if("vm_info".equals(indicatorId)){
+                fieldFilters.put("power_state", "poweredOn");
+            }
         } else if (type == 4) {
-            fieldFilters.put("powerState", "poweredOff");
-        } else if (type == 1) {
-        } else if (type == 2) {
-            fieldFilters.put("vm_status", "Warning");
+            if("v_host".equals(indicatorId)){
+                fieldFilters.put("powerState", "poweredOff");
+            }else if("vm_info".equals(indicatorId)){
+                fieldFilters.put("power_state", "poweredOff");
+            }
         }
         indValueQuery.setFieldShouldFilters(fieldFilters);
         String type2 = "count";
@@ -4698,6 +4720,21 @@ public class MonitorDataService {
         }
         LinkedHashMap<Object, Object> obj = (LinkedHashMap<Object, Object>) jsonModel.getObj();
         Integer count = (Integer) obj.get("count");
+        //type=2 :故障只能用networkentity的Runstatus来判断,其中exsi的状态可以直接通过getNelist来查询
+        //虚拟主机则需要查询simo_monitor_vm_ne_relation表(vm_info的状态也可以通过relation表查询)
+        if(type == 2){
+            if("vm_info".equals(indicatorId)) {
+                NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+                criteria.setHostId(neIds);
+                criteria.setRunStatus(RunStatus.Warning);
+                criteria.setMonitoring(true);
+                criteria.setBaseNeClass(BaseNeClass.virtualization);
+                criteria.setNeClass(NeClass.esxi);
+                criteria.setSourceManage(false);
+                List<NetworkEntity> list = rpcProcessService.getNeList(criteria);
+                count = list.size();
+            }
+        }
         JSONObject result = new JSONObject();
         //总数、故障、打开、关闭
         String name = null;
