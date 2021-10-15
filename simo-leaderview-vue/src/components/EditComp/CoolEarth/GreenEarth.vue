@@ -93,8 +93,12 @@ export default {
       this.scene = new THREE.Scene()
       var _this = this
       let geometry = new THREE.SphereGeometry(1.2 * _this.radius, 66, 44) // 大气层所在球体
+      let imgsrc = `../../../../static/img/大气云图1.jpg`
+      if (process.env.NODE_ENV !== "development") {
+        imgsrc = `../../../../leaderview/leaderviewWeb/img/大气云图1.jpg`
+      }
       let map = new THREE.TextureLoader().load(
-        '../../../../static/img/大气云图1.jpg'
+        imgsrc
       )
       let borderLight = new THREE.SphereGeometry(1 * _this.radius, 66, 44) // 球体边缘辉光
       _this.lightmesh = new THREE.Mesh(borderLight, new THREE.ShaderMaterial({
