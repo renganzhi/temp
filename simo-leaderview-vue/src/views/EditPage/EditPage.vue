@@ -130,8 +130,7 @@
                   <a
                     class="icon-n-edit2 edit-icon noClk"
                     v-if="
-                      (item.belongCurrentUser === 'false' || access !== 'w') &&
-                      !isSuperAdmin
+                      (item.belongCurrentUser === 'false' || access !== 'w')
                     "
                   ></a>
                   <a
