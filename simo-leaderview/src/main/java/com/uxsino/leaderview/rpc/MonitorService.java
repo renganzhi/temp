@@ -27,6 +27,9 @@ public interface MonitorService {
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getNeList", consumes = "application/json")
     JsonModel getNeList(@RequestBody String param);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getNeRelationList", consumes = "application/json")
+    JsonModel getNeRelationList(@RequestBody String param);
+
     @RequestMapping(method = RequestMethod.POST, value = "/monitorApi/getUsableInd", consumes = "application/json")
     JsonModel getUsableInd(@RequestParam("indicatorName") String indicatorName,@RequestBody NetworkEntityCriteria criteria );
 
