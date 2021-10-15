@@ -538,6 +538,15 @@ public class RpcProcessService {
         return toJavaBeanList(jsonModel, NetworkEntity.class);
     }
 
+    public JsonModel getNeRelationList(VirtualizationRelationCriteria criteria) throws Exception{
+        String param = JSON.toJSONString(criteria);
+        JsonModel jsonModel = monitorService.getNeRelationList(param);
+        if (!jsonModel.isSuccess()){
+            throw new Exception(jsonModel.getMsg());
+        }
+        return jsonModel;
+    }
+
     public List<String> getNeIds(NetworkEntityCriteria criteria) throws Exception{
         criteria.setMonitoring(true);
         List<NetworkEntity> neList = getNeList(criteria);
