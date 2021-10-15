@@ -177,7 +177,7 @@ export default {
   computed:{
     markerTypeName(){
       if (process.env.NODE_ENV !== "development") {
-        return this.item.markerType.replace('static/img','leaderview/leaderviewWeb')
+        return this.item.markerType.replace('static','leaderview/leaderviewWeb')
       }else{
         return this.item.markerType
       }
