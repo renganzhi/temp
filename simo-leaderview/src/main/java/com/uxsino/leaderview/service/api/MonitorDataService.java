@@ -4728,6 +4728,7 @@ public class MonitorDataService {
                 }
             }
             indValueQuery.setFieldShouldFilters(fieldFilters);
+            indValueQuery.setFieldSize(10000);
             String type2 = "count";
             Boolean IsHistory = false;
             JsonModel jsonModel2 = null;
