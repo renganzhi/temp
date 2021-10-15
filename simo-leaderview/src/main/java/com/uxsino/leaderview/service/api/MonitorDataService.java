@@ -1700,7 +1700,10 @@ public class MonitorDataService {
         // 从弹窗数据中取得各资源选择的指标名和资源名
         JSONArray windowsJsonArray = JSONArray.parseArray(windows);
         if (ObjectUtils.isEmpty(windowsJsonArray)) {
-            return new JsonModel(true, "弹窗数据未选择", empObj());
+            return new JsonModel(false, "弹窗数据未选择", empObj());
+        }
+        if(ObjectUtils.isEmpty(interval)){
+            return new JsonModel(false,"时间间隔未选择");
         }
         windowsJsonArray = windowBreakUp(windowsJsonArray);
         JSONArray componentArray = new JSONArray();
