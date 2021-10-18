@@ -64,7 +64,8 @@
 
     <ul v-show="openName === 'menu' && isOpen" class="dropdownMenuWrap">
       <div class="drop-Menu-wrap flex1">
-        <template v-for="item in dropPramMenu">
+        <ul class="dropwrapul">
+        <template v-for="item in dropPramMenu.concat(thirdData)">
           <li
             :key="item.id"
             class="head-nav-item"
@@ -95,20 +96,21 @@
             </div>
           </li>
         </template>
-      </div>
-      <div class="drop-menu-comps">
-        <ul v-if="dropPramCompsMenu.length > 0">
-          <li
-            v-for="item in dropPramCompsMenu"
-            :key="item.id"
-            @click="toggleMenu(item)"
-          >
-            <div>
-              <i :class="item.iclass" />
-            </div>
-            {{ item.name }}
-          </li>
         </ul>
+        <div class="drop-menu-comps">
+          <ul v-if="dropPramCompsMenu.length > 0">
+            <li
+              v-for="item in dropPramCompsMenu"
+              :key="item.id"
+              @click="toggleMenu(item)"
+            >
+              <div>
+                <i :class="item.iclass" />
+              </div>
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
       </div>
     </ul>
     <div v-if="userInfoMd.isShow">
@@ -150,6 +152,7 @@
 <script>
 // import { gbs } from "@/config/settings.js";
 import { navImg } from './menuIcon'
+import SockJS from 'sockjs-client'
 
 export default {
   components: {
@@ -216,9 +219,11 @@ export default {
       rightMenu: [],
       MenuUrlArry: {},
       theme: 'default',
-      typeId: '',
+      typeId: 497,
       typeTitle: '数据可视化',
-      msgNum: ''
+      msgNum: 0,
+      msgisopened: false,
+      msgring: 'alertLevel_10.mp3'
     }
   },
   created () {
@@ -258,6 +263,30 @@ export default {
     //   }
     // });
   },
+  mounted () {
+    this.socket = new SockJS('/socket')
+    this.socket.onopen = () => {
+      this.socket.send(JSON.stringify({ eventKey: 'MSG', data: '' }))
+    }
+    this.axios.get('/msg/config/findRingConfig').then(res => {
+      if (res.success) {
+        if (res.obj) {
+          this.msgring = res.obj.ring || ''
+          this.msgisopened = res.obj.opened
+        }
+      }
+    })
+    this.socket.onmessage = (msg) => {
+      const msgData = JSON.parse(msg.data)
+      if (msgData.eventKey === 'MSG' && Object.prototype.hasOwnProperty.call(msgData.data, 'unreadCount')) {
+        const num = Number(msgData.data.unreadCount || 0)
+        if (num > this.msgNum) { // 新消息-开启铃声
+          this.playRing()
+        }
+        this.msgNum = num
+      }
+    }
+  },
   computed: {
     iclassMap () {
       const map = {}
@@ -288,6 +317,11 @@ export default {
     eventBus (eveName) {
       this.isOpen = ''
       this[eveName]()
+    },
+    playRing () {
+      const ring = require('../../static/audio/' + this.msgring)
+      const audio = new Audio(ring)
+      audio.play()
     },
     userInfo () {
       this.userInfoMd.isShow = true
@@ -436,10 +470,11 @@ export default {
     display: inline-block;
     font-size: 16px;
     line-height: 50px;
+    margin-left: 15px;
     cursor: pointer;
-    font-weight: 400;
-    color: #436bf6;
-    padding: 0 15px;
+    // font-weight: 400;
+    color: #666;;
+    font-family: SourceHanSansCN-Regular;
     vertical-align: top;
     i{
       font-size: 12px;
@@ -447,7 +482,6 @@ export default {
   }
   .navRight {
     float: right;
-    margin-right: 20px;
     & > li {
       position: relative;
       float: left;
@@ -507,6 +541,8 @@ export default {
     width: 100%;
     position: fixed;
     height: calc(100% - 50px);
+    padding: 10px 5px 5px 0;
+    margin: .125rem 0 0;
     top: 50px;
     z-index: 9999;
     background-color: #fff;
@@ -522,9 +558,16 @@ export default {
 
     .drop-Menu-wrap {
       width: 100%;
+      position: fixed;
+      top: 50px;
+      padding: 10px 5px 5px 0;
+      height: calc(100% - 50px);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      .dropwrapul{
+      height: calc(100% - 87px);
       overflow: auto;
-      padding: 10px;
-      flex: 1;
       li {
         float: left;
         display: flex;
@@ -538,7 +581,7 @@ export default {
         position: relative;
         &.bordColor,
         &:hover {
-          // background: rgba(0, 71, 179, 0.08);
+          background: rgba(0, 71, 179, 0.08);
           border-radius: 9px;
           box-shadow: 0 0 1px #3c96ff;
           box-shadow: -1px 0px 1px #4650fb, 0px -1px 1px #3c96ff,
@@ -566,8 +609,8 @@ export default {
           }
           .left_icon {
             display: block;
-            line-height: 38px;
-            font-size: 38px;
+            line-height: 30px;
+            font-size: 30px;
             position: relative;
             margin-bottom: 14px;
             color: #436bf6;
@@ -590,11 +633,12 @@ export default {
             // }
           }
           .head-nav-name-bg {
-            width: 80px;
-            height: 4px;
+            width: 112px;
+            height: 3px;
             margin-top: 6px;
           }
         }
+      }
       }
     }
     .drop-menu-comps {
@@ -602,16 +646,17 @@ export default {
       ul {
         background: #fff;
         display: inline-block;
-        padding: 10px 8px;
+        // padding: 10px 8px;
         border-radius: 10px;
-        margin-bottom: 20px;
+        // margin-bottom: 20px;
       }
       li {
         color: #436bf6;
         float: left;
         text-align: center;
         font-size: 12px;
-        margin: 0 40px;
+        // margin: 0 40px;
+        padding: 10px 40px;
         cursor: pointer;
         list-style: none;
         i {

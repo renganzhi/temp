@@ -12,14 +12,25 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: 'http://localhost:9999',
-        // target: 'http://192.100.100.42:9999',
-        target: 'http://192.168.2.23:9999',
+        // target: 'http://192.168.2.23:9999',
+        target: 'http://192.100.100.42:9999/',
+        // target: 'http://192.100.101.101:9999/',
+        // target: 'http://192.168.2.40:9999',
         // target: 'http://192.168.1.188:9999',
         // target: 'http://192.168.1.135:9999',
         // target: 'http://192.168.1.160:9999',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
+        secure: false,
+        ws: true,
         pathRewrite: {
           '^/api': '' // 重写
+        }
+      },
+      '/socket': {
+        target: 'http://192.100.100.42:9999/',
+        ws: true,
+        pathRewrite: {
+          '^/socket': '/socket'
         }
       }
     },
