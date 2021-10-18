@@ -1342,48 +1342,57 @@ export default {
     },
     sendNewAjax(data, newV) {
       data.params.neIds = newV
-      if (data.params.windows) {
-        let newData = JSON.parse(data.params.windows)[0]
-        let mydata = newData.ne[0]
-        mydata.id = newV
-        newData.ne = [mydata]
-        data.params.windows = JSON.stringify([newData])
-      }
-      $.each(data.params, function (i, d) {
-        data.params[i] = $.isArray(d) ? d.join(',') : d
-      })
-      $('#lead-screen').addClass('disShow')
-      $.ajax({
-        url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
-        data: data.params,
-        type: data.method || 'get',
-        cache: false,
-        ascyn: false,
-        success: function (res) {
-          $('#lead-screen').removeClass('disShow')
-          if (data.barType === 'NewHistogram') {
-            data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
-          }
-          if (data.barType === 'NewGroupHistogram') {
-            data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
-          }
-          if (data.barType === 'NewGroupLeftHistogram') {
-            data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
-          }
-          if (data.barType === 'NewBar') {
-            data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
-          }
-          if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
-            if (res.obj) {
-              data.ctName = res.obj.info
+      this.axios.get(`/leaderview/monitor/params/getComponentNameForWindows?neIds=${data.params.neIds}&indicators=${data.params.indicators}`).then(res => {
+        let valueArry = []
+        res.obj[0].ne[0].component.forEach(element => {
+          valueArry.push(element.value)
+          if (data.params.windows) {
+            let newData = JSON.parse(data.params.windows)[0]
+            let mydata = newData.ne[0]
+            mydata.id = newV
+            if (valueArry.indexOf(mydata.component) < 0) {
+              mydata.component = valueArry[0]
             }
-            if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
-              data.chartData = res.obj
-            }
-          } else {
-            data.chartData = res.success ? res.obj : []
+            newData.ne = [mydata]
+            data.params.windows = JSON.stringify([newData])
           }
-        }
+          $.each(data.params, function (i, d) {
+            data.params[i] = $.isArray(d) ? d.join(',') : d
+          })
+          $('#lead-screen').addClass('disShow')
+          $.ajax({
+            url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
+            data: data.params,
+            type: data.method || 'get',
+            cache: false,
+            ascyn: false,
+            success: function (res) {
+              $('#lead-screen').removeClass('disShow')
+              if (data.barType === 'NewHistogram') {
+                data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupHistogram') {
+                data.chartData2 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewGroupLeftHistogram') {
+                data.chartData3 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.barType === 'NewBar') {
+                data.chartData4 = res.success ? res.obj : { columns: [], rows: [] }
+              }
+              if (data.chartType === 'text' || data.chartType === 'NewMarquee' || data.chartType === 'marquee' || data.chartType === 'NEWtextArea') {
+                if (res.obj) {
+                  data.ctName = res.obj.info
+                }
+                if (data.chartType === 'text' || data.chartType === 'NEWtextArea') {
+                  data.chartData = res.obj
+                }
+              } else {
+                data.chartData = res.success ? res.obj : []
+              }
+            }
+          })
+        });
       })
     },
     formatVersion() {
