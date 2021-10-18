@@ -1713,7 +1713,6 @@ export default {
       }
     },
     selected: function (item, ev, type, i) {
-      $('.select2-container').remove()
       if (ev === 'down') {
         this.activeNames = [0]
       }
