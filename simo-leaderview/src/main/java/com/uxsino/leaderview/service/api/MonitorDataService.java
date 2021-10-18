@@ -3229,7 +3229,7 @@ public class MonitorDataService {
         }
     }
 
-    public JsonModel networkTopNforTable(HttpSession session, String network, Long number, String field, String order) {
+    public JsonModel networkTopNforTable(HttpSession session, String network, Long number, String field, String order, String topoId) {
         try {
             if (ObjectUtils.isEmpty(field)) {
                 field = "upBps";
@@ -3240,6 +3240,10 @@ public class MonitorDataService {
             networkLinkModel.setNeIds(rpcProcessService.getNeIdsByDomainIds(domains, session));
             networkLinkModel.setSortField(field);
             networkLinkModel.setDesc(order);
+            //当传入topoId时，只查询该拓扑下的资源
+            if (!Strings.isNullOrEmpty(topoId)) {
+                networkLinkModel.setTopoId(topoId);
+            }
             PageModel temPage = new PageModel();
             temPage.setCurrentNo(1);
             temPage.setPageSize(10000);
