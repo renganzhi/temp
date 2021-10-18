@@ -107,69 +107,71 @@ export default {
     // },
     'item.showPOI': function (newV) {
       this.item.styleJson.forEach(element => {
-        if (element.featureType === 'poi') {
-          element.visibility = newV
+        if (element.featureType === 'poilabel') {
+          element.stylers.visibility = newV
         }
       })
-      this.map.setMapStyle({
+      this.map.setMapStyleV2({
         styleJson: this.item.styleJson
       })
     },
     'item.landColor': function (newV) {
       this.item.styleJson.forEach(element => {
-        if (element.featureType === 'land' && element.elementType === 'all') {
-          element.color = this.getHexColor(newV)
+        if (
+          element.featureType === 'land' &&
+          element.elementType === 'geometry'
+        ) {
+          element.stylers.color = this.getHexColor(newV) + 'ff'
         }
       })
-      this.map.setMapStyle({
+      this.map.setMapStyleV2({
         styleJson: this.item.styleJson
       })
     },
     'item.roadColor': function (newV) {
       this.item.styleJson.forEach(element => {
         if (
-          element.featureType === 'road' &&
-          element.elementType === 'geometry'
+          (element.featureType === 'highway' &&
+            element.elementType === 'geometry.fill') ||
+          (element.featureType === 'cityhighway' &&
+            element.elementType === 'geometry.fill') ||
+          (element.featureType === 'fourlevelway' &&
+            element.elementType === 'geometry.fill') ||
+          (element.featureType === 'nationalway' &&
+            element.elementType === 'geometry.fill') ||
+          (element.featureType === 'provincialway' &&
+            element.elementType === 'geometry.fill') ||
+          (element.featureType === 'tertiaryway' &&
+            element.elementType === 'geometry.fill')
         ) {
-          element.color = this.getHexColor(newV) + 'ff'
+          element.stylers.color = this.getHexColor(newV) + 'ff'
         }
       })
-      this.map.setMapStyle({
-        styleJson: this.item.styleJson
-      })
-    },
-    'item.boundaryColor': function (newV) {
-      this.item.styleJson.forEach(element => {
-        if (element.featureType === 'boundary') {
-          element.color = this.getHexColor(newV)
-        }
-      })
-      this.map.setMapStyle({
+      this.map.setMapStyleV2({
         styleJson: this.item.styleJson
       })
     },
     'item.oceanColor': function (newV) {
       this.item.styleJson.forEach(element => {
-        if (element.featureType === 'water' && element.elementType === 'all') {
-          element.color = this.getHexColor(newV)
+        if (
+          element.featureType === 'water' &&
+          element.elementType === 'geometry'
+        ) {
+          element.stylers.color = this.getHexColor(newV) + 'ff'
         }
       })
-      this.map.setMapStyle({
+      console.log(this.item.styleJson)
+      this.map.setMapStyleV2({
         styleJson: this.item.styleJson
       })
     },
     'item.mapTextColor': function (newV) {
       this.item.styleJson.forEach(element => {
-        if (
-          (element.featureType === 'label' &&
-            element.elementType === 'labels.text.fill') ||
-          (element.featureType === 'road' &&
-            element.elementType === 'labels.text.fill')
-        ) {
-          element.color = this.getHexColor(newV)
+        if (element.elementType === 'labels.text.fill') {
+          element.stylers.color = this.getHexColor(newV) + 'ff'
         }
       })
-      this.map.setMapStyle({
+      this.map.setMapStyleV2({
         styleJson: this.item.styleJson
       })
     }
@@ -437,10 +439,9 @@ export default {
       this.map.enableScrollWheelZoom() // 启用地图滚轮放大缩小
       this.map.enableDoubleClickZoom() // 启用鼠标双击放大，默认启用(可不写)
       this.map.enableKeyboard() // 启用键盘上下左右键移动地图
-      this.map.setMapStyle({
-        styleJson: this.item.styleJson
+      this.map.setMapStyleV2({
+        styleId: 'a8a122804c7d2f4c15bf04aba0956cbf'
       })
-
       if (this.item.mapType === '2D') {
         this.map.setMapType(BMAP_NORMAL_MAP)
       } else if (this.item.mapType === '卫星') {
@@ -462,9 +463,7 @@ export default {
       // })
     },
     addMapControl (list) {
-      // this.map.setMapStyleV2({
-      //   styleId: this.item.mapTypeID
-      // })
+      console.log(this.item.mapTypeID)
       if (list) {
         let gatewayList = []
         let getindexList = []
