@@ -2801,6 +2801,7 @@ export default {
     // 根据选中图标类型获取可以配置的接口
     getUrlByType(flag) {
       var _this = this
+      $('#lead-screen').addClass('disShow')
       newAjax({
         url: gbs.host + '/leaderview/home/getUrl',
         // url: _this.curDataHost + '/leaderview/home/getUrl',
@@ -2818,6 +2819,7 @@ export default {
           _this.$nextTick(function () {
             _this.syst.urlSel.length && _this.chgUrl(flag)
           })
+          $('#lead-screen').removeClass('disShow')
         },
         errorCallback: async function (xhr) {
           // if ( _this.isThird && xhr.status === 776 ) { //第三方登录过期->重新登录->重新请求当前接口
@@ -2829,6 +2831,7 @@ export default {
             position: 'bottom-right',
             customClass: 'toast toast-error'
           })
+          $('#lead-screen').removeClass('disShow')
         }
       })
     },
@@ -2874,7 +2877,6 @@ export default {
         var api = (_this.syst.curUrl = urlsel.params)
         var reg = /^\//
         if (!api) return
-        $('#lead-screen').addClass('disShow')
         let remoteapiLen = 0
         let konwAjaxLengt = 0
         api.forEach(d => {
@@ -2900,6 +2902,7 @@ export default {
               _this.syst.windowData = JSON.parse(selectedP.windows)
             }
             // _this.sentReq(d, postData, selectedP)  //发送请求
+            $('#lead-screen').addClass('disShow')
             newAjax({
               url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
               async: false,
@@ -2926,6 +2929,7 @@ export default {
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               errorCallback: function (xhr) {
+                $('#lead-screen').removeClass('disShow')
                 Notification({
                   message: '连接错误！',
                   position: 'bottom-right',
