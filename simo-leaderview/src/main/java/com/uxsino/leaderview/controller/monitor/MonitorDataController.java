@@ -786,9 +786,9 @@ public class MonitorDataController {
             @ApiImplicitParam(name = "order", paramType = "query", dataType = "String", value = "排序方式")})
     @RequestMapping(value = "/networkTopNforTable", method = RequestMethod.GET)
     public JsonModel networkTopNforTable(HttpSession session, @RequestParam String network, @RequestParam Long number,
-                                       @RequestParam String field,@RequestParam String order) {
+                                       @RequestParam String field,@RequestParam String order,@RequestParam(required = false) String topoId) {
         try {
-            return monitorDataService.networkTopNforTable(session, network, number, field, order);
+            return monitorDataService.networkTopNforTable(session, network, number, field, order, topoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new JsonModel(false, e.getMessage());

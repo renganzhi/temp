@@ -176,6 +176,15 @@ export default {
       })
     }
   },
+  computed:{
+    markerTypeName(){
+      if (process.env.NODE_ENV !== "development") {
+        return this.item.markerType.replace('static','leaderview/leaderviewWeb')
+      }else{
+        return this.item.markerType
+      }
+    }
+  },
   mounted () {
     this.id = this.id + Math.round(Math.random() * 100000) // 百度地图通过id绑定DOM，设置每次产生的id不同
     this.inputId = this.inputId + Math.round(Math.random() * 100000)
@@ -655,31 +664,31 @@ export default {
             let point1 = new window.BMap.Point(val.lng, val.lat)
             let marker1 = new window.BMap.Marker(point1, {
               icon:
-                _this.item.markerType.indexOf('类型3') !== -1 ||
-                _this.item.markerType.indexOf('类型4') !== -1
+                _this.markerTypeName.indexOf('类型3') !== -1 ||
+                _this.markerTypeName.indexOf('类型4') !== -1
                   ? new window.BMap.Icon(
-                    _this.item.markerType,
+                    _this.markerTypeName,
                     new window.BMap.Size(80, 80)
                   )
-                  : _this.item.markerType.indexOf('marker_red_sprite') !== -1
+                  : _this.markerTypeName.indexOf('marker_red_sprite') !== -1
                     ? new window.BMap.Icon(
-                      _this.item.markerType,
+                      _this.markerTypeName,
                       new window.BMap.Size(39, 25)
                     )
-                    : _this.item.markerType.indexOf('类型1') !== -1
+                    : _this.markerTypeName.indexOf('类型1') !== -1
                       ? new window.BMap.Icon(
-                        _this.item.markerType,
+                        _this.markerTypeName,
                         new window.BMap.Size(30, 30)
                       )
                       : new window.BMap.Icon(
-                        _this.item.markerType,
+                        _this.markerTypeName,
                         new window.BMap.Size(40, 40)
                       )
             })
             _this.item.pointArray.push({
               lng: val.lng,
               lat: val.lat,
-              icon: _this.item.markerType
+              icon: _this.markerTypeName
             })
             _this.map.addOverlay(marker1)
             if (
