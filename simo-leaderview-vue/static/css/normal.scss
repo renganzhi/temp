@@ -99,11 +99,6 @@ body {
 .ivu-modal-close {
   top: 4px;
 }
-.ivu-modal-content {
-  position: relative;
-  border: 0;
-  
-}
 .ivu-modal-mask {
   background: rgba(0, 0, 0, 0.5);
 }
@@ -130,7 +125,6 @@ body {
   border-radius: 6px;
 }
 .ivu-modal-wrap .ivu-modal .ivu-modal-content .ivu-modal-header {
-  padding: 9px 20px;
   border: none;
   // border-radius: 6px;
 }

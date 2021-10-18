@@ -137,7 +137,7 @@
     </div>
     <Modal
       v-model="showContent"
-      class="msgdefultBox us-md"
+      class="msgdefultBox md-sm"
       footer-hide
       title="消息内容"
       @on-cancel="confirm"
@@ -414,6 +414,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.msgBox{
+  min-height: 120px;
+  max-height: 320px;
+}
 .navbarWrap {
   position: fixed;
   top: 0;

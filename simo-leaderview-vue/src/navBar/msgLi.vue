@@ -146,7 +146,7 @@ export default {
         color: #08c;
       }
       .us-link:hover {
-        color: #cad6dd;
+        color: #5b8bff;
       }
     }
     .overflow {

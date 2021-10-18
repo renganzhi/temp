@@ -129,12 +129,11 @@ export default {
   padding: 0 14px;
   border: 1px solid;
   z-index: 5;
-  min-height: 260px;
   border-radius: 3px;
   .title {
-    padding: 15px 5px;
+    padding: 15px 0px;
     line-height: 22px;
-    margin: 0 10px;
+    margin: 0 5px;
     width: calc(100% - 20px);
     text-align: left;
     i {
@@ -143,7 +142,6 @@ export default {
     }
   }
   .msgInfo {
-    height: 206px;
     overflow: auto;
     .noMsg {
       height: 206px;
