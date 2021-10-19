@@ -118,7 +118,7 @@
                     data-toggle="tooltip"
                     data-placement="bottom"
                     data-trigger="hover"
-                    :title="'分享人：' + item.shareName"
+                    :data-original-title="'分享人：' + item.shareName"
                     v-show="item.belongCurrentUser === 'false'"
                     >
                     <i
