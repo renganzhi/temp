@@ -73,10 +73,12 @@ export default {
     },
     lookDetail () {
       if (this.urlArry.msg) {
-        const msgurl = this.urlArry.msg.split('#')
-        window.location = `${window.location.origin + msgurl[0]}?msgId=${
-          this.pram.data.id
-        }#${msgurl[1]}`
+        const msgurl = this.urlArry.msg.split('#')[0]
+        const url = this.urlArry.monitoring.split('#')[0]
+        window.open(`${location.origin + url}?msgId=${this.pram.data.id}`)
+        // window.location = `${window.location.origin + msgurl[0]}?msgId=${
+        //   this.pram.data.id
+        // }#${msgurl[1]}`
       }
       // this.$api.msgTagRead({ ids: this.pram.data.id });
       // this.$emit("close-pop");
