@@ -261,7 +261,7 @@ export default {
     },
     cancleRequest: function () {
       this.xhrArr.forEach((xhr) => {
-        if (xhr.status !== 200) {
+        if (xhr.status && xhr.status !== 200) {
           xhr.abort() // 取消当前所有请求
         }
       })
@@ -1223,7 +1223,7 @@ export default {
     $('#lead-screen').removeClass('disShow')
     this.stopRefreshTimer()
     this.xhrArr.forEach((xhr) => {
-      if (xhr.status !== 200) {
+      if (xhr.status && xhr.status !== 200) {
         xhr.abort() // 取消当前所有请求
       }
     })
