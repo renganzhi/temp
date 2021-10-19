@@ -64,13 +64,13 @@
 
     <ul v-show="openName === 'menu' && isOpen" class="dropdownMenuWrap">
       <div class="drop-Menu-wrap flex1">
-        <ul class="dropwrapul">
+        <ul class="dropwrapul" @click="closedropwrapul">
         <template v-for="item in dropPramMenu.concat(thirdData)">
           <li
             :key="item.id"
             class="head-nav-item"
             :class="{ bordColor: typeId === item.id }"
-            @click="toggleMenu(item)"
+            @click.stop="toggleMenu(item)"
           >
             <div class="head-nav-img">
               <img
@@ -102,7 +102,7 @@
             <li
               v-for="item in dropPramCompsMenu"
               :key="item.id"
-              @click="toggleMenu(item)"
+              @click.stop="toggleMenu(item)"
             >
               <div>
                 <i :class="item.iclass" />
@@ -400,6 +400,9 @@ export default {
       if (item.url) {
         window.location = window.location.origin + item.url
       }
+    },
+    closedropwrapul(){
+      this.isOpen = false
     },
     closePop () {
       this.openName = ''

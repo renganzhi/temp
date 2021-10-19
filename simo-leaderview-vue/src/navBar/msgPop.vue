@@ -143,8 +143,11 @@ export default {
   }
   .msgInfo {
     overflow: auto;
+    min-height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .noMsg {
-      height: 206px;
       text-align: center;
     }
   }
