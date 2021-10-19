@@ -5,14 +5,14 @@
        role="dialog"
        aria-hidden="true"
        style="z-index: 200100;">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="row">
-        <div class="col-lg-offset-3 col-md-offset-3 col-md-4 col-lg-4">
-          <div class="modal-content">
+        <div class="col-lg-offset-3 col-md-offset-3 col-md-9 col-lg-9">
+          <div class="modal-content" style="height:200px">
             <div class="modal-header">
               <h4 class="modal-title font-white-lemon">请选择</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="display:flex;justify-content:center;align-items:center">
               <h5 style="text-align: center; line-height: 24px; word-wrap: break-word;font-size:14px">{{message}}
               </h5>
             </div>
