@@ -7,7 +7,7 @@
       </span>
       <p
         ref="msgContent"
-        class="overflow"
+        id="overflow"
         :class="isOverFlow ? 'overflow' : ''"
       >
         {{ pram.data.content }}
@@ -135,9 +135,7 @@ export default {
         top: 17px;
         right: 0;
         font-weight: normal;
-        // @include getTheme($themes){
-        //   background-color: themed('navbarWrap-dropdownMenuWrap-background-color');
-        // }
+        background-color: white;
         width: 60px;
         text-align: right;
       }
@@ -148,6 +146,12 @@ export default {
       .us-link:hover {
         color: #5b8bff;
       }
+    }
+    #overflow{
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
     .overflow {
       overflow: hidden;
