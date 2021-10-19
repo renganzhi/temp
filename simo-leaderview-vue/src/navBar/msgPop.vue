@@ -124,7 +124,7 @@ export default {
   // right: 0;
   position: fixed;
   top: 50px;
-  right: 0;
+  right: 44px;
   width: 400px;
   padding: 0 14px;
   border: 1px solid;
