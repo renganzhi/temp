@@ -46,7 +46,7 @@
           确定
         </Button>
         <Button @click="resetCancel" cancel>
-          清空
+          重置
         </Button>
       </FormItem>
     </Form>
@@ -73,8 +73,8 @@ export default {
       modelName: 'voice',
       form: {
         id: '',
-        ring: '',
-        opened: false
+        ring: 'alertLevel_10.mp3',
+        opened: true
       },
       levels: []
     }

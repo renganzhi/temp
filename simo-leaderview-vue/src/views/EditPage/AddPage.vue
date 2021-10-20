@@ -143,7 +143,7 @@ export default {
       userIds: [],
       tems: [],
       tems2: [],
-      temId: ''
+      temId: 509
     }
   },
   mounted: function () {
@@ -164,6 +164,13 @@ export default {
         $('#addHomePage-modal').modal('show')
         this.temId = ''
         this.name = ''
+      }
+    },
+    pageTypes:function(){
+      if(this.pageTypes){
+        this.temId = 509
+      }else{
+        this.temId = ''
       }
     }
   },

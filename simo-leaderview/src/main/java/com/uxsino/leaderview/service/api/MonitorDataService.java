@@ -2892,10 +2892,17 @@ public class MonitorDataService {
         List<String> columns = Lists.newArrayList("进程名","进程状态","内存消耗量","CPU使用率");
         result.put("columns", columns);
         result.put("rows", new JSONArray());
+
         // 1、取出宿主机id
-        NetworkEntity ne = rpcProcessService.findNetworkEntityById(neIds);
+        NetworkEntityCriteria criteria = new NetworkEntityCriteria();
+        criteria.setId(neIds);
+        criteria.setMonitoring(true);
+        List<NetworkEntity> neList = rpcProcessService.getNeList(criteria);
+        if(ObjectUtils.isEmpty(neList)){
+            return new JsonModel(false,"宿主机未监控",result);
+        }
+        NetworkEntity ne = neList.get(0);
         String hostId = ne.getHostId();
-        String neName = ne.getName();
 
         //2、组装query，查询指标值
         IndValueQuery indValueQuery = new IndValueQuery();

@@ -34,7 +34,7 @@
       <li @click.stop="iconDropDown('msg')">
         <i class="simo icon-n-xiaoxi" />
         <span class="msgNum">
-          {{ msgNum > 99 ? '99+' : msgNum }}
+          {{ msgNum > 0 ? msgNum > 99 ? '99+' : msgNum : ''}}
         </span>
         <MsgPop
           v-if="openName === 'msg' && isOpen"
@@ -222,8 +222,6 @@ export default {
       typeId: 497,
       typeTitle: '数据可视化',
       msgNum: 0,
-      msgisopened: false,
-      msgring: 'alertLevel_10.mp3'
     }
   },
   created () {
@@ -268,14 +266,6 @@ export default {
     this.socket.onopen = () => {
       this.socket.send(JSON.stringify({ eventKey: 'MSG', data: '' }))
     }
-    this.axios.get('/msg/config/findRingConfig').then(res => {
-      if (res.success) {
-        if (res.obj) {
-          this.msgring = res.obj.ring || ''
-          this.msgisopened = res.obj.opened
-        }
-      }
-    })
     this.socket.onmessage = (msg) => {
       const msgData = JSON.parse(msg.data)
       if (msgData.eventKey === 'MSG' && Object.prototype.hasOwnProperty.call(msgData.data, 'unreadCount')) {
@@ -319,9 +309,19 @@ export default {
       this[eveName]()
     },
     playRing () {
-      const ring = require('../../static/audio/' + this.msgring)
-      const audio = new Audio(ring)
-      audio.play()
+      this.axios.get('/msg/config/findRingConfig').then(res => {
+        if (res.success) {
+          if (res.obj) {
+            let msgring = res.obj.ring || 'alertLevel_10.mp3'
+            let msgisopened = res.obj.opened
+            if(msgisopened){
+              const ring = require('../../static/audio/' + msgring)
+              const audio = new Audio(ring)
+              audio.play()
+            }
+          }
+        }
+      })
     },
     userInfo () {
       this.userInfoMd.isShow = true

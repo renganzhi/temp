@@ -532,13 +532,17 @@ export default {
         }
       })
       if (!this.markExit) {
+        let iconName = this.selectedItem.markerType
+        if (process.env.NODE_ENV === "development") {
+         iconName =  this.selectedItem.markerType.replace('static','leaderview/leaderviewWeb')
+        }
         this.selectedItem.selectMark.lng = Number(this.$refs.lng.value)
         this.selectedItem.selectMark.lat = Number(this.$refs.lat.value)
-        this.selectedItem.selectMark.icon = this.selectedItem.markerType
+        this.selectedItem.selectMark.icon = iconName
         this.selectedItem.pointArray.push({
           lng: Number(this.$refs.lng.value),
           lat: Number(this.$refs.lat.value),
-          icon: this.selectedItem.markerType
+          icon: iconName
         })
         this.selectedItem.selectChange = !this.selectedItem.selectChange // 每次点查一直询就修改，保证地图能一直更新
       }
