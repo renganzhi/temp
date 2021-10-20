@@ -1913,8 +1913,8 @@
                   </select>
                 </div>
                 <div class="form-group cols2">
-                  <Button class="ivu-primary"
-                          @click="openUpload">导入模型</Button>
+                  <button
+                          @click="openUpload">导入模型</button>
                 </div>
               </div>
               <div class="form-group"
