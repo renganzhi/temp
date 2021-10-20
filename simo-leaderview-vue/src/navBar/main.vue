@@ -98,6 +98,12 @@ export default {
       justify-content: center;
       align-items: center;
     }
+    .ivu-modal-footer{
+      padding: .75rem
+    }
+    .ivu-modal-footer div{
+      text-align: right;
+    }
   }
   &:not(.modal-ensure-radio) ::v-deep .ivu-modal-footer {
     border: none;
@@ -105,7 +111,7 @@ export default {
     button {
       float: none !important;
       & + button {
-        margin: 0 0 0 50px !important;
+        margin: 0 0 0 10px !important;
       }
     }
   }
