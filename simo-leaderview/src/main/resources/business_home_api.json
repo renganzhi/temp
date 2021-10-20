@@ -393,7 +393,7 @@
         "key": "enable_business_history_indicator_statistics",
         "name": "业务指标趋势监控",
         "component": "business",
-        "type": "ELine",
+        "type": "ELine,ve-line",
         "url": "/leaderview/business/history/record",
         "method" : "get",
         "params": [
