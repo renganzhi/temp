@@ -146,12 +146,6 @@
         {{ msgRow.content }}
       </div>
     </Modal>
-    <div v-if="showExit">
-      <Confirm :showModal="showExit"
-             :message="'确认退出系统？'"
-             :modalTitle="'退出系统'"
-             @hideModal="exitSystem" aria-hidden="false" data-backdrop="static"></Confirm>
-    </div>
   </div>
 </template>
 
@@ -165,8 +159,7 @@ export default {
     MsgPop: () => import('./msgPop'),
     NavUserInfo: () => import('./userInfo'),
     UsPassWord: () => import('./passWord'),
-    UsMsgConf: () => import('./msgConf'),
-    Confirm: () => import('../components/Common/Confirm.vue')
+    UsMsgConf: () => import('./msgConf')
     // Authorize: () => import('./authorize'),
     // TransJob: () => import('./transJob'),
     // UsMenuManage: () => import('./menuManage'),
@@ -177,7 +170,6 @@ export default {
       menu: [],
       navImg,
       curText: '',
-      showExit: false,
       thirdData: '',
       iconSkin: {
         default: '深蓝',
@@ -312,12 +304,6 @@ export default {
     }
   },
   methods: {
-    exitSystem (data) {
-      this.showExit = false
-      if (data && data.sure === '1') {
-        window.location.href = window.location.origin + '/mc/logout'
-      }
-    },
     eventBus (eveName) {
       this.isOpen = ''
       this[eveName]()
@@ -368,16 +354,15 @@ export default {
     },
 
     logout () {
-      this.showExit = true
-      // this.$ensureModal.confirm(
-      //   {
-      //     content: '确认退出系统？',
-      //     title: '退出系统'
-      //   },
-      //   () => {
-      //     window.location.href = window.location.origin + '/mc/logout'
-      //   }
-      // )
+      this.$ensureModal.confirm(
+        {
+          content: '确认退出系统？',
+          title: '退出系统'
+        },
+        () => {
+          window.location.href = window.location.origin + '/mc/logout'
+        }
+      )
     },
 
     getThirdPlat () {
@@ -445,7 +430,7 @@ export default {
   //   background-color: themed('navbarWrap-background-color');
   //   box-shadow: themed('navbarWrap-box-shadow');
   // }
-  z-index: 2000;
+  z-index: 9;
   .headIcon {
     width: 44px;
     height: 50px;
