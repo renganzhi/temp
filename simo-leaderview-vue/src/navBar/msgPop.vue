@@ -48,7 +48,7 @@ export default {
       latestMsg: [],
       form:{
         id:'',
-        ring:'',
+        ring:'alertLevel_10.mp3',
         open: false,
       },
       hasMsg: true,
@@ -71,8 +71,8 @@ export default {
       if (res.success) {
         if (res.obj) {
           this.form.id = res.obj.id || ''
-          this.form.ring = res.obj.ring || ''
-          this.form.open = res.obj.open
+          this.form.ring = res.obj.ring || 'alertLevel_10.mp3'
+          this.form.open = res.obj.opened
         }
       }
     })
@@ -110,7 +110,20 @@ export default {
       formData.append('ring', this.form.ring)
       formData.append('opened', this.form.open)
       this.axios.post(myurl, formData, config).then(res => {
-        
+        if(res.success){
+            this.$notify({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-success'
+            })
+        }else{
+            this.form.open = !this.form.open
+            this.$notify({
+              message: res.msg,
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
+        }
       })
     }
   }
