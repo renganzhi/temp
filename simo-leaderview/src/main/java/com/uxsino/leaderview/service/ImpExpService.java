@@ -879,6 +879,10 @@ public class ImpExpService {
                     continue;
                 }
             }
+            //如果num等于0，说明URL中的模板图片没有被导出，则不替换URL
+            if(0 == num){
+                break;
+            }
 
             if (templateimgPattern.equals(pattern2)){
                 imgconf = imgconf.replace(string, "/leaderview/home/getImg/true/" + num + "\"");
