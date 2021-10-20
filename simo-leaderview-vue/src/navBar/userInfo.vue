@@ -289,6 +289,7 @@ export default {
     delPic () {
       this.$ensureModal.confirm('确定删除？', () => {
         this.imageUrl = ''
+        this.headFile = ''
       })
     },
     addFmRules () {
@@ -405,15 +406,17 @@ export default {
             .then(
               res => {
                 this.cancel()
-                this.$Message.success({
-                  background: true,
-                  content: '修改成功'
+                this.$notify({
+                  message: '修改成功',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
                 })
               },
               errRes => {
-                this.$Message.erro({
-                  background: true,
-                  content: '修改失败'
+                this.$notify({
+                  message: '修改失败',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
                 })
               }
             )
