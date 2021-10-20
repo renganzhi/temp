@@ -260,7 +260,7 @@ html[data-theme='default'] {
     border: solid 1px #3d445a;
     background-color: transparent !important;
     // color: #cad6dd !important;
-    color: #3b3e3f;
+    color: #adb3b5;
     // color: #595959;
   }
   .select2-selection {
