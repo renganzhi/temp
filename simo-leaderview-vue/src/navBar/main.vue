@@ -91,10 +91,12 @@ export default {
 <style lang="scss" scoped>
 .modal__ensure {
   ::v-deep .ivu-modal {
-    height: 150px;
+    height: 200px !important;
+    width: 400px !important;
     .ivu-modal-body {
-      padding: 20px 20px 0px 20px;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
   &:not(.modal-ensure-radio) ::v-deep .ivu-modal-footer {
