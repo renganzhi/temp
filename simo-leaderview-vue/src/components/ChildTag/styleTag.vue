@@ -533,7 +533,7 @@ export default {
       })
       if (!this.markExit) {
         let iconName = this.selectedItem.markerType
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV !== "development") {
          iconName =  this.selectedItem.markerType.replace('static','leaderview/leaderviewWeb')
         }
         this.selectedItem.selectMark.lng = Number(this.$refs.lng.value)
