@@ -57,7 +57,7 @@ public class ImpExpService {
     private final int MAX_PAGE_INDEX = 1000;
     //匹配自定义图片
     private static Pattern imgPattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)\"");
-    private static Pattern imgPattern2 = Pattern.compile("/leaderview/home/getImg/^[A-Za-z]+$/(\\d*)\"");
+    private static Pattern imgPatternAll = Pattern.compile("/leaderview/home/getImg/^[A-Za-z]+$/(\\d*)\"");
     private static Pattern img2Pattern = Pattern.compile("/leaderview/home/getImg/true/(\\d*)");
     private static Pattern img3Pattern = Pattern.compile("\"bgImg\":\"/home/getImg/true/(\\d*)\"");
 
@@ -316,6 +316,7 @@ public class ImpExpService {
             saveToFile(imgPath + name, uploadedFile.getFileStream());
         }
         for (HomeTemplateImg templateFile: templateFiles) {
+            //如果模板表和上传表的两张图片ID相同就会冲突，所以为模板表的图片name加上"template"前缀。
             String name = "template" + templateFile.getId() + "." + templateFile.getExtension();
             String imgPath = zipPath + File.separator + fileName + "/img/";
             saveToFile(imgPath + name, templateFile.getFileStream());
@@ -490,7 +491,7 @@ public class ImpExpService {
             //zip文件的枚举集合
             java.util.Enumeration zipEnum = zf.entries();
             //存放uploadfile表新生成的自增id，下面替换原id的时候要用
-            List<Long> ids = Lists.newArrayList();
+            Boolean ifOldVersion = false;
             while (zipEnum.hasMoreElements()) {
 
                 ze = (ZipEntry) zipEnum.nextElement();
@@ -523,7 +524,12 @@ public class ImpExpService {
                             //从存到模板图表改为存到上传文件表，这样初始化的时候就不会被清除了
                             UploadedFile fileInfo = new UploadedFile();
                             UploadedFileCompressed uploadedFileCompressed = new UploadedFileCompressed();
-                            fileInfo.setName(name.substring(name.indexOf("img/") + 4 ));
+                            String imgName = name.substring(name.indexOf("img/") + 4 );
+                            if(imgName.contains("templateCustom_")){
+                                ifOldVersion = true;
+                                imgName = imgName.substring(15);
+                            }
+                            fileInfo.setName(imgName);
                             String extension = name.substring(name.lastIndexOf(".") + 1);
                             fileInfo.setExtension(extension);
                             fileInfo.setUserId(SessionUtils.getCurrentUserIdFromSession(session));
@@ -532,10 +538,6 @@ public class ImpExpService {
                                 uploadedFileCompressed.setCompressedFileStream(ImageUtils.compressImage(b, extension));
                             uploadedFileCompressed.setUploadedFile(fileInfo);
                             uploadedFileService.save(fileInfo, uploadedFileCompressed);
-                            //取出id放入数组
-                            //如果id为空，则这里没取到id
-                            ids.add(fileInfo.getId());
-
 
                         }catch (Exception e){
                             log.error("图片解析错误");
@@ -631,26 +633,26 @@ public class ImpExpService {
                 }
 
                 //处理page中的viewconf和viewimage、composeObj、paintObj
-                List<String> imgList = new ArrayList<>();
+                /*List<String> imgList = new ArrayList<>();
                 List<String> imgList2 = new ArrayList<>();
                 List<String> imgList3 = new ArrayList<>();
                 List<String> imgList4 = new ArrayList<>();
                 List<String> TemplateimgList = new ArrayList<>();
                 List<String> TemplateimgList2 = new ArrayList<>();
                 List<String> TemplateimgList3 = new ArrayList<>();
-                List<String> TemplateimgList4 = new ArrayList<>();
+                List<String> TemplateimgList4 = new ArrayList<>();*/
                 String viewConf = obj.getString("viewConf");
                 String viewImage = obj.getString("viewImage");
                 String composeObj = obj.getString("composeObj");
                 String paintObj = obj.getString("paintObj");
-                long num = 0;
+                //long num = 0;
                 //String oldId;
-                int i = 0;
+                //int i = 0;
                 //处理viewConf
-                viewConf = this.imgReplace(imgPattern,templateimgPattern,viewConf);
-                viewImage = this.imgReplace(img2Pattern,templateimg2Pattern,viewImage);
-                composeObj = this.imgReplace(imgPattern,templateimgPattern,composeObj);
-                paintObj = this.imgReplace(img3Pattern,templateimg3Pattern,paintObj);
+                viewConf = this.imgReplace(imgPattern,templateimgPattern,viewConf,ifOldVersion);
+                viewImage = this.imgReplace(img2Pattern,templateimg2Pattern,viewImage,ifOldVersion);
+                composeObj = this.imgReplace(imgPattern,templateimgPattern,composeObj,ifOldVersion);
+                paintObj = this.imgReplace(img3Pattern,templateimg3Pattern,paintObj,ifOldVersion);
                 /*Matcher m = imgPattern.matcher(viewConf);
                 while (m.find()){
                     if (imgList.contains(m.group())){
@@ -797,7 +799,14 @@ public class ImpExpService {
             return new JsonModel(false,"由于您只能创建最多20个大屏，当前成功导入" + j + "个，还剩" + remaining + "个未导入");
     }
 
-    public String imgReplace(Pattern pattern,Pattern pattern2, String imgconf){
+    /**
+     * 用于替换配置信息中图片URL中的ID
+     * @param pattern 用于匹配自定义图片
+     * @param pattern2 用于匹配模板图片匹配
+     * @param imgconf 需要替换图片URL中ID的配置信息
+     * @return
+     */
+    public String imgReplace(Pattern pattern,Pattern pattern2, String imgconf, Boolean ifOldVersion){
         List<String> imgList = new ArrayList<>();
         List<String> TemplateimgList = new ArrayList<>();
         Matcher m1 = pattern.matcher(imgconf);
@@ -810,27 +819,36 @@ public class ImpExpService {
         }
         for (String string : imgList) {
             //从string中提取出原来的ID，然后用id作为name，获取插入图片后的最新id
-            //num = ids.get(i++);
             Matcher m11 = numPattern.matcher(string);
-            //拼接图片的name
-            String name = m11.replaceAll("").trim()+".png";
-            List<UploadedFile> fileList = uploadedFileService.findByName(name);
-            if(fileList.size()>=1) {
-                num = fileList.get(fileList.size() - 1).getId();
-            }else {
-                String oldId2 = m11.replaceAll("").trim()+".jpg";
-                fileList = uploadedFileService.findByName(oldId2);
-                if(fileList.size()>=1){
+            //拼接图片的name   兼容jpg,jpeg,png,gif4种格式的图片
+            List<String> extensions = Arrays.asList(".png",".jpg",".gif",".jpeg");
+            for(String extension:extensions) {
+
+                String name = m11.replaceAll("").trim() + extension;
+                List<UploadedFile> fileList = uploadedFileService.findByName(name);
+                if (fileList.size() >= 1) {
+                    //如果有多张name相同的图片，则取最新的一张
                     num = fileList.get(fileList.size() - 1).getId();
+                    break;
+                } else {
+                    continue;
                 }
             }
+
             if(img3Pattern.equals(pattern)) {
-                imgconf = imgconf.replace(string, "\"bgImg\":\"/home/getImg/false/" + num + "\"");
-            }else {
+                imgconf = imgconf.replace(string, "\"bgImg\":\"/home/getImg/true/" + num + "\"");
+            }else if (imgPattern.equals(pattern)){
                 imgconf = imgconf.replace(string, "/leaderview/home/getImg/true/" + num + "\"");
+            }else if(img2Pattern.equals(pattern)){
+                imgconf = imgconf.replace(string, "/leaderview/home/getImg/true/" + num );
             }
             num = 0;
         }
+        /*//如果是旧版本的导入包，则不替换模板图片的URL
+        if(ifOldVersion){
+            return imgconf;
+        }*/
+
         Matcher m2 = pattern2.matcher(imgconf);
         while (m2.find()){
             if (TemplateimgList.contains(m2.group())){
@@ -840,25 +858,36 @@ public class ImpExpService {
         }
         for (String string : TemplateimgList) {
             //从string中提取出原来的ID，然后用id作为name，获取插入图片后的最新id
-            //num = ids.get(i++);
             Matcher m22 = numPattern.matcher(string);
             //拼接图片的name
-            String name = "template" + m22.replaceAll("").trim()+".png";
-            List<HomeTemplateImg> fileList = homeTemplateImgService.findByName(name);
-            if(fileList.size()>=1) {
-                num = fileList.get(fileList.size() - 1).getId();
-            }else {
-                String oldId2 = m22.replaceAll("").trim()+".jpg";
-                fileList = homeTemplateImgService.findByName(oldId2);
-                if(fileList.size()>=1){
+            List<String> extensions = Arrays.asList(".png",".jpg",".gif",".jpeg");
+            for(String extension:extensions) {
+                String name;
+                //"template"是导出时为了避免模板图片和自定义图片ID相同而冲突加上的
+                if(ifOldVersion){
+                    //老版本所有图片URL都被改成了getimg/false
+                    name = m22.replaceAll("").trim() + extension;
+                }else {
+                    name = "template" + m22.replaceAll("").trim() + extension;
+                }
+                List<UploadedFile> fileList = uploadedFileService.findByName(name);
+                if (fileList.size() >= 1) {
+                    //如果有多张name相同的图片，则取最新的一张
                     num = fileList.get(fileList.size() - 1).getId();
+                    break;
+                } else {
+                    continue;
                 }
             }
-            if(templateimg3Pattern.equals(pattern2)) {
-                imgconf = imgconf.replace(string, "\"bgImg\":\"/home/getImg/false/" + num + "\"");
-            }else {
+
+            if (templateimgPattern.equals(pattern2)){
                 imgconf = imgconf.replace(string, "/leaderview/home/getImg/true/" + num + "\"");
+            }else if(templateimg2Pattern.equals(pattern2)){
+                imgconf = imgconf.replace(string, "/leaderview/home/getImg/true/" + num );
+            }else if (templateimg3Pattern.equals(pattern2)) {
+                imgconf = imgconf.replace(string, "\"bgImg\":\"/home/getImg/true/" + num + "\"");
             }
+
             num = 0;
         }
         return imgconf;
