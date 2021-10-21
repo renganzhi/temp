@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { JSEncrypt } from 'jsencrypt/bin/jsencrypt.min.js'
 import { sysUserPswConf } from './passwordsMixs'
 
 export default {
@@ -106,7 +107,7 @@ export default {
             }
             const formData = new FormData()
             formData.append('userId', pram.userId)
-            formData.append('oldPassword', value)
+            formData.append('oldPassword', this.encryptedData(value))
             this.axios.post(myurl, formData, config).then(
               res => {
                 if (res.obj === true) {
@@ -125,6 +126,14 @@ export default {
         }
       }
     },
+    encryptedData (data) {
+      if (data === null || data === 'undefined' || data === '') {
+        return ''
+      }
+      let encryptor = new JSEncrypt()
+      encryptor.setPublicKey('MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnCP4x5GfUeKEjCf7b5k8S7DPbc7db6YZbkXKRMBkbgF/VIjgdCv6rwnGhCHc/JwVXF8ui6ozyQq5AfJrjQynK/139hfyM+7ob3lVQz6dZiYI3BtTbQMSXD58IYVQ7SeijWmnGQ/EOP4R4FeLEsxAmoLw/xoNeErfNplmM8nxg+wIDAQAB')
+      return encryptor.encrypt(data)
+    },
     sure () {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -136,7 +145,7 @@ export default {
             }
           }
           const formData = new FormData()
-          formData.append('newPassword', this.form.newPassword)
+          formData.append('newPassword', this.encryptedData(this.form.newPassword))
           this.axios.post(myurl, formData, config).then(res=>{
             this.$Message.success({
               background: true,
