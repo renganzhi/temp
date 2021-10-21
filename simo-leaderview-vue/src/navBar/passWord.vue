@@ -129,17 +129,25 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.mdpram.isShow = false
-          this.$api
-            .sysUserUpdatePsw(
-              { newPassword: this.form.newPassword },
-              { id: this.id }
-            )
-            .then(res => {
-              this.$Message.success({
-                background: true,
-                content: res.msg + ',请重新登录！'
-              })
+          let myurl = `/mc/user/${this.id}/pwd/update`
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+          const formData = new FormData()
+          formData.append('newPassword', this.form.newPassword)
+          this.axios.post(myurl, formData, config).then(res=>{
+            this.$Message.success({
+              background: true,
+              content: res.msg + ',请重新登录！'
             })
+            if (process.env.NODE_ENV !== "development") {
+              window.location.href = window.location.origin + '/loginPage'
+            }else{
+              window.location.href = window.location.origin + '/#/login'
+            }
+          })
         }
       })
     },
