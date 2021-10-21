@@ -1855,7 +1855,7 @@
         "key": "enable_history_indicator_statistics",
         "name": "多资源单指标趋势监控",
         "component": "monitor",
-        "type": "ELine",
+        "type": "ELine,ve-line",
         "url": "/leaderview/monitor/indicator/history/record",
         "method" : "get",
         "params": [
@@ -1977,7 +1977,7 @@
         "key": "enable_multiple_indicator_statistics",
         "name": "单资源多指标趋势监控",
         "component": "monitor",
-        "type": "ELine",
+        "type": "ELine,ve-line",
         "url": "/leaderview/monitor/multiple_indicator/record",
         "method" : "get",
         "params": [
@@ -2098,7 +2098,7 @@
         "key": "single_host_indicator_statistics",
         "name": "宿主机指标趋势监控",
         "component": "monitor",
-        "type": "ELine",
+        "type": "ELine,ve-line",
         "url": "/leaderview/monitor/multiple_indicator/recordHost",
         "method" : "get",
         "params": [
@@ -3810,7 +3810,7 @@
         "key": "search_Standing_Book",
         "name": "仓储物资变动趋势",
         "component": "asset",
-        "type": "ELine",
+        "type": "ELine,ve-line",
         "url": "/leaderview/asset/searchStandingBook",
         "method" : "post",
         "params": [

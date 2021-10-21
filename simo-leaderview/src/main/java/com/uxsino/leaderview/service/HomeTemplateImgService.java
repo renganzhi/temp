@@ -9,6 +9,7 @@ import com.uxsino.leaderview.dao.IUploadedFileCompressedDao;
 import com.uxsino.leaderview.entity.HomeTemplateImg;
 
 import com.uxsino.leaderview.entity.HomeTemplateImgCompressed;
+import com.uxsino.leaderview.entity.UploadedFile;
 import com.uxsino.leaderview.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,9 +170,17 @@ public class HomeTemplateImgService {
         return imgDao.getMaxId();
     }
 
+    public List<HomeTemplateImg> findByIds(List<Long> ids){
+        return imgDao.getByIdIn(ids);
+    }
+
     @Transactional
     public void saveAll(List<HomeTemplateImg> imgs){
         imgDao.saveAll(imgs);
+    }
+
+    public List<HomeTemplateImg> findByName(String name) {
+        return imgDao.findByName(name);
     }
 
     /**
