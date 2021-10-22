@@ -131,7 +131,9 @@ export default {
         return ''
       }
       let encryptor = new JSEncrypt()
-      encryptor.setPublicKey('MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnCP4x5GfUeKEjCf7b5k8S7DPbc7db6YZbkXKRMBkbgF/VIjgdCv6rwnGhCHc/JwVXF8ui6ozyQq5AfJrjQynK/139hfyM+7ob3lVQz6dZiYI3BtTbQMSXD58IYVQ7SeijWmnGQ/EOP4R4FeLEsxAmoLw/xoNeErfNplmM8nxg+wIDAQAB')
+      encryptor.setPublicKey(
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnCP4x5GfUeKEjCf7b5k8S7DPbc7db6YZbkXKRMBkbgF/VIjgdCv6rwnGhCHc/JwVXF8ui6ozyQq5AfJrjQynK/139hfyM+7ob3lVQz6dZiYI3BtTbQMSXD58IYVQ7SeijWmnGQ/EOP4R4FeLEsxAmoLw/xoNeErfNplmM8nxg+wIDAQAB'
+      )
       return encryptor.encrypt(data)
     },
     sure () {
@@ -145,16 +147,21 @@ export default {
             }
           }
           const formData = new FormData()
-          formData.append('newPassword', this.encryptedData(this.form.newPassword))
-          this.axios.post(myurl, formData, config).then(res=>{
+          formData.append(
+            'newPassword',
+            this.encryptedData(this.form.newPassword)
+          )
+          this.axios.post(myurl, formData, config).then(res => {
             this.$Message.success({
               background: true,
               content: res.msg + ',请重新登录！'
             })
-            if (process.env.NODE_ENV !== "development") {
+            if (process.env.NODE_ENV !== 'development') {
               window.location.href = window.location.origin + '/loginPage'
-            }else{
+              window.location.reload(true)
+            } else {
               window.location.href = window.location.origin + '/#/login'
+              window.location.reload(true)
             }
           })
         }
