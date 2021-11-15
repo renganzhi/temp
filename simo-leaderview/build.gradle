@@ -11,13 +11,12 @@ dependencyManagement {
 }
 
 dependencies {
-	compile project(":simo-commons")
-    compile project(":simo-commons-db")
-    compile project(":simo-commons-authority")
-    compile project(":simo-commons-reactorq")
-    compile project(":simo-component-watcher")
-    compile project(":simo-commons-web-support")
-    compile project(":simo-commons-validator")
+
+    compile "com.uxsino:simo-commons:1.0.1-RELEASE"
+    compile "com.uxsino:simo-commons-authority:1.0.1-RELEASE"
+    compile "com.uxsino:simo-commons-reactorq:1.0.1-RELEASE"
+    compile "com.uxsino:simo-component-watcher:1.0.1-RELEASE"
+    compile "com.uxsino:simo-commons-web-support:1.0.1-RELEASE"
 
     compile "org.slf4j:slf4j-api:1.7.21"
     compile "org.projectlombok:lombok:1.18.16"
