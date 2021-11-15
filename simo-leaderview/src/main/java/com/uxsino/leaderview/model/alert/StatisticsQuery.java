@@ -2,7 +2,6 @@ package com.uxsino.leaderview.model.alert;
 
 import com.uxsino.commons.db.criteria.Criteria;
 import com.uxsino.leaderview.model.AlertType;
-import com.uxsino.rule.model.IpAlertRuleType;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
