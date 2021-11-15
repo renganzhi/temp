@@ -8,9 +8,9 @@ html[data-theme="default"] {
         color: #cad6dd;
     }
     .navbarWrap {
-        background-color: #ffffff;
+        background-color: #1c2132;
         .dropdownMenuWrap {
-            background-color: #ffffff;
+            background-color: #1c2132;
             .head-nav-name p {
                 color: #436bf6;
             }
@@ -24,9 +24,9 @@ html[data-theme="default"] {
         //     }
         // }
         .navRight {
-            color: #85a7f9;
+            color: #828bac;
             ul {
-                background-color: #fff;
+                background-color: #141929;
                 font-size: 12px;
                 li:hover {
                     background-color: rgba(130, 139, 171, 0.2);
@@ -35,11 +35,11 @@ html[data-theme="default"] {
             li > a,
             i:hover {
                 cursor: pointer;
-                background-color: #f5f9fe;
+                background-color: rgba(130, 139, 171, 0.2);
             }
             .msgPop {
-                background-color: #fff;
-                border: 1px solid #ebedf1;
+                background-color: #141929;
+                border: 1px solid #565f77;
                 .title { 
                     .us-link{
                         color: #436bf6;
@@ -62,10 +62,10 @@ html[data-theme="default"] {
         color: #cad6dd;
     }
     .ivu-tabs .ivu-tabs-bar {
-        border-bottom: solid 1px #ebedf1;
+        border-bottom: solid 1px #565f77;
     }
     .us-border-bottom {
-        border-bottom: 1px solid #ebedf1;
+        border-bottom: 1px solid #565f77;
     }
     .ivu-modal-header-inner{
         color: #50607c;
@@ -129,9 +129,6 @@ html[data-theme="default"] {
     }
     .ivu-modal-body{
         color: #50607c;
-    }
-    .us-border-bottom {
-        border-bottom: 1px solid #ebedf1;
     }
     .ivu-form .ivu-form-item .ivu-form-item-label {
         color: #3e4554 !important;

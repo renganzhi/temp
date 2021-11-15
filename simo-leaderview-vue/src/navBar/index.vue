@@ -2,7 +2,9 @@
   <div class="navbarWrap">
     <div class="navLeft">
       <div class="logo">
-        <img :src="headpicSrc?headpicSrc:require('./images/logo_white.png')" />
+        <img
+          :src="headpicSrc ? headpicSrc : require('./images/logo_white.png')"
+        />
       </div>
       <!-- theme === 'default'
               ? require('./images/logo.png')
@@ -34,7 +36,7 @@
       <li @click.stop="iconDropDown('msg')">
         <i class="simo icon-n-xiaoxi" />
         <span class="msgNum">
-          {{ msgNum > 0 ? msgNum > 99 ? '99+' : msgNum : ''}}
+          {{ msgNum > 0 ? (msgNum > 99 ? '99+' : msgNum) : '' }}
         </span>
         <MsgPop
           v-if="openName === 'msg' && isOpen"
@@ -65,37 +67,37 @@
     <ul v-show="openName === 'menu' && isOpen" class="dropdownMenuWrap">
       <div class="drop-Menu-wrap flex1">
         <ul class="dropwrapul" @click="closedropwrapul">
-        <template v-for="item in dropPramMenu.concat(thirdData)">
-          <li
-            :key="item.id"
-            class="head-nav-item"
-            :class="{ bordColor: typeId === item.id }"
-            @click.stop="toggleMenu(item)"
-          >
-            <div class="head-nav-img">
-              <img
-                v-if="!isNaN(Number(item.iclass))"
-                class="head-nav-curimg"
-                :src="'mc/menu/icon/' + item.iclass"
-              />
-              <template v-else>
+          <template v-for="item in dropPramMenu.concat(thirdData)">
+            <li
+              :key="item.id"
+              class="head-nav-item"
+              :class="{ bordColor: typeId === item.id }"
+              @click.stop="toggleMenu(item)"
+            >
+              <div class="head-nav-img">
                 <img
-                  v-if="navImg.includes(item.iclass)"
-                  class="head-nav-curimg nav-system-img"
-                  :src="iclassMap[item.iclass]"
+                  v-if="!isNaN(Number(item.iclass))"
+                  class="head-nav-curimg"
+                  :src="'mc/menu/icon/' + item.iclass"
                 />
-                <i v-else class="left_icon simo" :class="item.iclass" />
-              </template>
-              <img class="head-nav-img-bg" :src="iclassMap.imgBg" />
-            </div>
-            <div class="head-nav-name">
-              <p>
-                {{ item.name }}
-              </p>
-              <img class="head-nav-name-bg" :src="iclassMap.nameBg" />
-            </div>
-          </li>
-        </template>
+                <template v-else>
+                  <img
+                    v-if="navImg.includes(item.iclass)"
+                    class="head-nav-curimg nav-system-img"
+                    :src="iclassMap[item.iclass]"
+                  />
+                  <i v-else class="left_icon simo" :class="item.iclass" />
+                </template>
+                <img class="head-nav-img-bg" :src="iclassMap.imgBg" />
+              </div>
+              <div class="head-nav-name">
+                <p>
+                  {{ item.name }}
+                </p>
+                <img class="head-nav-name-bg" :src="iclassMap.nameBg" />
+              </div>
+            </li>
+          </template>
         </ul>
         <div class="drop-menu-comps">
           <ul v-if="dropPramCompsMenu.length > 0">
@@ -147,10 +149,14 @@
       </div>
     </Modal>
     <div v-if="showExit">
-      <Confirm :showModal="showExit"
-             :message="'确认退出系统？'"
-             :modalTitle="'退出系统'"
-             @hideModal="exitSystem" aria-hidden="false" data-backdrop="static"></Confirm>
+      <Confirm
+        :showModal="showExit"
+        :message="'确认退出系统？'"
+        :modalTitle="'退出系统'"
+        @hideModal="exitSystem"
+        aria-hidden="false"
+        data-backdrop="static"
+      ></Confirm>
     </div>
   </div>
 </template>
@@ -186,7 +192,7 @@ export default {
       },
       dropPramCompsMenu: [],
       dropPramMenu: [],
-      headpicSrc:'',
+      headpicSrc: '',
       comps: ['SYS01', 'USERAUTH01', 'MSG01', 'DS_00', 'KBMenu'],
       iconUser: {
         userInfo: '用户信息',
@@ -229,7 +235,7 @@ export default {
       theme: 'default',
       typeId: 497,
       typeTitle: '数据可视化',
-      msgNum: 0,
+      msgNum: 0
     }
   },
   created () {
@@ -255,11 +261,11 @@ export default {
         })
       }
     })
-    this.axios.get('/mc/system/setting/get').then((res) => {
-      if(res.success && res.obj.SITE_NAME){
+    this.axios.get('/mc/system/setting/get').then(res => {
+      if (res.success && res.obj.SITE_NAME) {
         document.title = res.obj.SITE_NAME.value
       }
-      if(res.success && res.obj.SITE_LOGO_MINI){
+      if (res.success && res.obj.SITE_LOGO_MINI) {
         this.headpicSrc = res.obj.SITE_LOGO_MINI.value
       }
     })
@@ -274,11 +280,15 @@ export default {
     this.socket.onopen = () => {
       this.socket.send(JSON.stringify({ eventKey: 'MSG', data: '' }))
     }
-    this.socket.onmessage = (msg) => {
+    this.socket.onmessage = msg => {
       const msgData = JSON.parse(msg.data)
-      if (msgData.eventKey === 'MSG' && Object.prototype.hasOwnProperty.call(msgData.data, 'unreadCount')) {
+      if (
+        msgData.eventKey === 'MSG' &&
+        Object.prototype.hasOwnProperty.call(msgData.data, 'unreadCount')
+      ) {
         const num = Number(msgData.data.unreadCount || 0)
-        if (num > this.msgNum) { // 新消息-开启铃声
+        if (num > this.msgNum) {
+          // 新消息-开启铃声
           this.playRing()
         }
         this.msgNum = num
@@ -296,15 +306,19 @@ export default {
             if (navImg.includes(d.iclass)) {
               // 系统图片
               var imgName = d.iclass.split('icon-n-')[1]
+              if (!imgName) {
+                imgName = d.iclass.split('icon-')[1]
+              }
               map[d.iclass] = require(`./images/head/${imgName +
+                '_black' +
                 (this.theme === 'default' ? '.png' : '_light.png')}`)
               // map[d.iclass] = require("./images/head/" + imgName + (this.theme === "default" ? "_dark.png" : "_light.png"));
             }
           }
         })
-      map['imgBg'] = require('./images/head/nav_bottom_bg' +
+      map['imgBg'] = require('./images/head/nav_bottom_black' +
         (this.theme === 'default' ? '.png' : '_light.png'))
-      map['nameBg'] = require('./images/head/nav_name_bg' +
+      map['nameBg'] = require('./images/head/nav_name_black' +
         (this.theme === 'default' ? '.png' : '_light.png'))
       map['system'] = require('./images/head/system' +
         (this.theme === 'default' ? '.png' : '_light.png'))
@@ -328,7 +342,7 @@ export default {
           if (res.obj) {
             let msgring = res.obj.ring || 'alertLevel_10.mp3'
             let msgisopened = res.obj.opened
-            if(msgisopened){
+            if (msgisopened) {
               const ring = require('../../static/audio/' + msgring)
               const audio = new Audio(ring)
               audio.play()
@@ -416,7 +430,7 @@ export default {
         window.location = window.location.origin + item.url
       }
     },
-    closedropwrapul(){
+    closedropwrapul () {
       this.isOpen = false
     },
     closePop () {
@@ -432,7 +446,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.msgBox{
+.msgBox {
   min-height: 120px;
   max-height: 320px;
 }
@@ -495,10 +509,9 @@ export default {
     margin-left: 15px;
     cursor: pointer;
     // font-weight: 400;
-    color: #666;;
     font-family: SourceHanSansCN-Regular;
     vertical-align: top;
-    i{
+    i {
       font-size: 12px;
     }
   }
@@ -564,7 +577,7 @@ export default {
     position: fixed;
     height: calc(100% - 50px);
     padding: 10px 5px 5px 0;
-    margin: .125rem 0 0;
+    margin: 0.125rem 0 0;
     top: 50px;
     z-index: 9999;
     background-color: #fff;
@@ -573,7 +586,7 @@ export default {
     background-size: cover;
     display: flex;
     flex-wrap: nowrap;
-    background: url(./images/head/bg.png);
+    background: url(./images/head/bg_T.png);
     background-size: 100% 100%;
     flex-direction: column;
     box-shadow: 0 1px 4px 0 #0015291f;
@@ -587,93 +600,93 @@ export default {
       background-position: center center;
       background-repeat: no-repeat;
       background-size: cover;
-      .dropwrapul{
-      height: calc(100% - 87px);
-      overflow: auto;
-      li {
-        float: left;
-        display: flex;
-        width: 220px;
-        height: 100px;
-        margin: 20px 60px 25px 20px;
-        text-align: center;
-        cursor: pointer;
-        align-items: center;
-        border: 1px solid rgba(0, 0, 0, 0);
-        position: relative;
-        &.bordColor,
-        &:hover {
-          background: rgba(0, 71, 179, 0.08);
-          border-radius: 9px;
-          box-shadow: 0 0 1px #3c96ff;
-          box-shadow: -1px 0px 1px #4650fb, 0px -1px 1px #3c96ff,
-            1px 0px 1px #4650fb, 0px 1px 1px #4650fb;
-        }
-        .head-nav-img {
-          position: relative;
-          width: 65px;
-          height: 100%;
+      .dropwrapul {
+        height: calc(100% - 87px);
+        overflow: auto;
+        li {
+          float: left;
           display: flex;
+          width: 220px;
+          height: 100px;
+          margin: 20px 60px 25px 20px;
+          text-align: center;
+          cursor: pointer;
           align-items: center;
-          justify-content: center;
-          margin: 0 10px 0 20px;
-          .head-nav-curimg {
-            height: 40px;
-            width: 40px;
-            margin-top: -14px;
+          border: 1px solid rgba(0, 0, 0, 0);
+          position: relative;
+          &.bordColor,
+          &:hover {
+            background: rgba(0, 71, 179, 0.08);
+            border-radius: 9px;
+            box-shadow: 0 0 1px #3c96ff;
+            box-shadow: -1px 0px 1px #4650fb, 0px -1px 1px #3c96ff,
+              1px 0px 1px #4650fb, 0px 1px 1px #4650fb;
           }
-          .head-nav-img-bg {
-            width: 65px;
-            height: 23px;
-            position: absolute;
-            top: 52px;
-            z-index: -1;
-          }
-          .left_icon {
-            display: block;
-            line-height: 30px;
-            font-size: 30px;
+          .head-nav-img {
             position: relative;
-            margin-bottom: 14px;
-            color: #436bf6;
+            width: 65px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px 0 20px;
+            .head-nav-curimg {
+              height: 40px;
+              width: 40px;
+              margin-top: -14px;
+            }
+            .head-nav-img-bg {
+              width: 65px;
+              height: 23px;
+              position: absolute;
+              top: 52px;
+              z-index: -1;
+            }
+            .left_icon {
+              display: block;
+              line-height: 30px;
+              font-size: 30px;
+              position: relative;
+              margin-bottom: 14px;
+              color: #436bf6;
+            }
           }
-        }
-        .head-nav-name {
-          width: 112px;
-          font-size: 0;
-          position: absolute;
-          left: 95px;
-          bottom: 35px;
-          p {
-            text-align: center;
-            font-size: 14px;
-            // @include getTheme($themes){
-            //   color: themed('navbarWrap-dropdownMenuWrap-p-color');
-            // }
-            // ::v-deep .ivu-tooltip-rel{
-            //   @include text-ellipsis('',2);
-            // }
-          }
-          .head-nav-name-bg {
+          .head-nav-name {
             width: 112px;
-            height: 3px;
-            margin-top: 6px;
+            font-size: 0;
+            position: absolute;
+            left: 95px;
+            bottom: 35px;
+            p {
+              text-align: center;
+              font-size: 14px;
+              // @include getTheme($themes){
+              //   color: themed('navbarWrap-dropdownMenuWrap-p-color');
+              // }
+              // ::v-deep .ivu-tooltip-rel{
+              //   @include text-ellipsis('',2);
+              // }
+            }
+            .head-nav-name-bg {
+              width: 112px;
+              height: 3px;
+              margin-top: 6px;
+            }
           }
         }
-      }
       }
     }
     .drop-menu-comps {
       text-align: center;
       ul {
-        background: #fff;
+        background: #262a40;
         display: inline-block;
         // padding: 10px 8px;
         border-radius: 10px;
         // margin-bottom: 20px;
       }
       li {
-        color: #436bf6;
+        color: #36a0f3;
         float: left;
         text-align: center;
         font-size: 12px;

@@ -1286,7 +1286,7 @@ export default {
       this.axios.get(`/monitor/topo/findTopoForDropDown`).then(res => {
         res.obj.forEach(element => {
           topoIdsArry.push(element.value)
-        });
+        })
         this.chartNum.forEach(data => {
           if (data.chartType === 'ELine' && data.params.neIds) {
             this.axios.get(`/leaderview/monitor/params/nes?notUnknown=true&domainId=${this.getmorenData(data.params.domainId)}&baseNeClass=${this.getmorenData(data.params.baseNeClass)}&neClass=${this.getmorenData(data.params.neClass)}`).then(res => {
@@ -1303,7 +1303,7 @@ export default {
             $.each(data.params, function (i, d) {
               data.params[i] = $.isArray(d) ? d.join(',') : d
             })
-            $('#lead-screen').addClass('disShow')
+            // $('#lead-screen').addClass('disShow')
             $.ajax({
               url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
               data: data.params,
@@ -1311,7 +1311,7 @@ export default {
               cache: false,
               ascyn: false,
               success: function (res) {
-                $('#lead-screen').removeClass('disShow')
+                // $('#lead-screen').removeClass('disShow')
                 if (data.barType === 'NewHistogram') {
                   data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
                 }
@@ -1360,7 +1360,7 @@ export default {
         $.each(data.params, function (i, d) {
           data.params[i] = $.isArray(d) ? d.join(',') : d
         })
-        $('#lead-screen').addClass('disShow')
+        // $('#lead-screen').addClass('disShow')
         $.ajax({
           url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
           data: data.params,
@@ -1368,7 +1368,7 @@ export default {
           cache: false,
           ascyn: false,
           success: function (res) {
-            $('#lead-screen').removeClass('disShow')
+            // $('#lead-screen').removeClass('disShow')
             if (data.barType === 'NewHistogram') {
               data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
             }
@@ -2801,7 +2801,7 @@ export default {
     // 根据选中图标类型获取可以配置的接口
     getUrlByType(flag) {
       var _this = this
-      $('#lead-screen').addClass('disShow')
+      // $('#lead-screen').addClass('disShow')
       newAjax({
         url: gbs.host + '/leaderview/home/getUrl',
         // url: _this.curDataHost + '/leaderview/home/getUrl',
@@ -2819,7 +2819,7 @@ export default {
           _this.$nextTick(function () {
             _this.syst.urlSel.length && _this.chgUrl(flag)
           })
-          $('#lead-screen').removeClass('disShow')
+          // $('#lead-screen').removeClass('disShow')
         },
         errorCallback: async function (xhr) {
           // if ( _this.isThird && xhr.status === 776 ) { //第三方登录过期->重新登录->重新请求当前接口
@@ -2831,7 +2831,7 @@ export default {
             position: 'bottom-right',
             customClass: 'toast toast-error'
           })
-          $('#lead-screen').removeClass('disShow')
+          // $('#lead-screen').removeClass('disShow')
         }
       })
     },
@@ -2883,7 +2883,7 @@ export default {
           if (d.dataType === 'remote') {
             remoteapiLen++
           }
-        });
+        })
         $.each(api, function (i, d) {
           if (d.dataType === 'remote') {
             // 需要通过请求拿数据
@@ -2902,7 +2902,7 @@ export default {
               _this.syst.windowData = JSON.parse(selectedP.windows)
             }
             // _this.sentReq(d, postData, selectedP)  //发送请求
-            $('#lead-screen').addClass('disShow')
+            // $('#lead-screen').addClass('disShow')
             newAjax({
               url: reg.test(d.dataUrl) ? gbs.host + d.dataUrl : gbs.host + '/' + d.dataUrl,
               async: false,
@@ -2911,7 +2911,7 @@ export default {
               success: function (data) {
                 konwAjaxLengt++
                 if (konwAjaxLengt === remoteapiLen) {
-                  $('#lead-screen').removeClass('disShow')
+                  // $('#lead-screen').removeClass('disShow')
                 }
                 d.data = data.obj || []
                 if (data.msg === 'windows') {
@@ -2929,7 +2929,7 @@ export default {
                 $.isEmptyObject(selectedP) && _this.setFirstV(d)
               },
               errorCallback: function (xhr) {
-                $('#lead-screen').removeClass('disShow')
+                // $('#lead-screen').removeClass('disShow')
                 Notification({
                   message: '连接错误！',
                   position: 'bottom-right',
@@ -3016,14 +3016,14 @@ export default {
     },
     sentReq(d, postData, selectedP) {
       let _this = this
-      $('#lead-screen').addClass('disShow')
+      // $('#lead-screen').addClass('disShow')
       $.ajax({
         url: /^\//.test(d.dataUrl) ? _this.curDataHost + d.dataUrl : _this.curDataHost + '/' + d.dataUrl,
         async: false,
         data: postData,
         type: d.method || 'get',
         success: function (data) {
-          $('#lead-screen').removeClass('disShow')
+          // $('#lead-screen').removeClass('disShow')
           d.data = data.obj || []
           if (data.msg === 'windows') {
             if (_this.isArray(data.obj) && data.obj.length > 0) {
@@ -4684,7 +4684,7 @@ export default {
                   $.each(element.params, function (i, d) {
                     element.params[i] = $.isArray(d) ? d.join(',') : d
                   })
-                });
+                })
               }
               $.each(data.params, function (i, d) {
                 data.params[i] = $.isArray(d) ? d.join(',') : d
@@ -4745,7 +4745,7 @@ export default {
                   $.each(element.params, function (i, d) {
                     element.params[i] = $.isArray(d) ? d.join(',') : d
                   })
-                });
+                })
               }
               $.each(data.params, function (i, d) {
                 data.params[i] = $.isArray(d) ? d.join(',') : d
@@ -4761,7 +4761,7 @@ export default {
                     $.each(data.params, function (i, d) {
                       data.params[i] = $.isArray(d) ? d.join(',') : d
                     })
-                    $('#lead-screen').addClass('disShow')
+                    // $('#lead-screen').addClass('disShow')
                     $.ajax({
                       url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
                       data: data.params,
@@ -4769,7 +4769,7 @@ export default {
                       cache: false,
                       ascyn: false,
                       success: function (res) {
-                        $('#lead-screen').removeClass('disShow')
+                        // $('#lead-screen').removeClass('disShow')
                         if (data.barType === 'NewHistogram') {
                           data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
                         }
@@ -4804,7 +4804,7 @@ export default {
                 $.each(data.params, function (i, d) {
                   data.params[i] = $.isArray(d) ? d.join(',') : d
                 })
-                $('#lead-screen').addClass('disShow')
+                // $('#lead-screen').addClass('disShow')
                 $.ajax({
                   url: data.ctDataSource === 'system' ? (gbs.host + data.url) : data.url, // 第三方的ur已经拼接好host
                   data: data.params,
@@ -4812,7 +4812,7 @@ export default {
                   cache: false,
                   ascyn: false,
                   success: function (res) {
-                    $('#lead-screen').removeClass('disShow')
+                    // $('#lead-screen').removeClass('disShow')
                     if (data.barType === 'NewHistogram') {
                       data.chartData1 = res.success ? res.obj : { columns: [], rows: [] }
                     }
@@ -5241,7 +5241,7 @@ export default {
         }
       }
     }
-    // $('#lead-screen').addClass('disShow')
+    // // $('#lead-screen').addClass('disShow')
     $('#screen').addClass('disShow')
     // 添加事件监听
     // if (document.addEventListener) {
@@ -5264,7 +5264,7 @@ export default {
     // stateBar.removeEventListener('mousedown ', this.userChoose)
     $('.navbar-fixed-top').css('display', 'block')
     $('.page-container').css('top', '50px')
-    $('#lead-screen').removeClass('disShow')
+    // $('#lead-screen').removeClass('disShow')
   },
   destroyed: function () {
     // $.comps.editHome = null;

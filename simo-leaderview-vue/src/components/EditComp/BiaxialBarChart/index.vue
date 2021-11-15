@@ -1,20 +1,17 @@
 <template>
   <div class="BiaxialBarChart">
+    <div ref="BiaxialBarChart" v-show="showLine" :style="boxStyle"></div>
     <div
-      ref="BiaxialBarChart"
-      v-show="showLine"
-      :style="boxStyle">
-    </div>
-    <div class="v-charts-data-empty"
-        v-show="!showLine"
-        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-        <div><i class="icon-n-nodata"
-            style="font-size: 108px;"></i><br>
-          <p>抱歉，没有数据可供展示...</p>
-        </div>
+      class="v-charts-data-empty"
+      v-show="!showLine"
+      style="width: 100%; height: 100%; text-align: center; font-size: 12px;"
+    >
+      <div>
+        <i class="icon-n-nodata" style="font-size: 108px;"></i><br />
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
     </div>
   </div>
-
 </template>
 <script>
 export default {
@@ -28,7 +25,7 @@ export default {
       oldmyData: '',
       //   Linesubsection: '',
       oldformatterType: ''
-    //   oldchartData: ''
+      //   oldchartData: ''
     }
   },
   computed: {
@@ -56,9 +53,12 @@ export default {
         this.mychart.resize()
       })
     },
-    'item': {
+    item: {
       handler (newVal, oldVal) {
-        if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+        if (
+          this.item.chartData.rows.length === 0 ||
+          this.item.chartData.columns.length === 0
+        ) {
           this.showLine = false
         } else {
           this.showLine = true
@@ -108,31 +108,46 @@ export default {
             },
             itemStyle: {
               normal: {
-                color: this.item.ifGradual === 'true' ? this.item.gradientDirection === '1'? {
-                  type: 'linear',
-                  x: 0,
-                  y: 0,
-                  x2: 0,
-                  y2: 1,
-                  colorStops: [{
-                    offset: 0, color: this.item.DScatterColor[index - 1][0] // 0% 处的颜色
-                  }, {
-                    offset: 1, color: this.item.DScatterColor[index - 1][1] // 100% 处的颜色
-                  }],
-                  global: false // 缺省为 false
-                } : {
-                  type: 'linear',
-                  x: 0,
-                  y: 0,
-                  x2: 1,
-                  y2: 0,
-                  colorStops: [{
-                    offset: 0, color: this.item.DScatterColor[index - 1][0] // 0% 处的颜色
-                  }, {
-                    offset: 1, color: this.item.DScatterColor[index - 1][1] // 100% 处的颜色
-                  }],
-                  global: false // 缺省为 false
-                } : this.item.ScatterColor[index - 1],
+                color:
+                  this.item.ifGradual === 'true'
+                    ? this.item.gradientDirection === '1'
+                      ? {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [
+                          {
+                            offset: 0,
+                            color: this.item.DScatterColor[index - 1][0] // 0% 处的颜色
+                          },
+                          {
+                            offset: 1,
+                            color: this.item.DScatterColor[index - 1][1] // 100% 处的颜色
+                          }
+                        ],
+                        global: false // 缺省为 false
+                      }
+                      : {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 1,
+                        y2: 0,
+                        colorStops: [
+                          {
+                            offset: 0,
+                            color: this.item.DScatterColor[index - 1][0] // 0% 处的颜色
+                          },
+                          {
+                            offset: 1,
+                            color: this.item.DScatterColor[index - 1][1] // 100% 处的颜色
+                          }
+                        ],
+                        global: false // 缺省为 false
+                      }
+                    : this.item.ScatterColor[index - 1],
                 borderRadius: Number(this.item.barRadius)
               }
             }
@@ -177,10 +192,14 @@ export default {
             },
             formatter: (params, index) => {
               var rows = this.item.chartData.rows
-              let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+              let barW = Math.floor(
+                ((this.item.width - 60) * 0.7) / rows.length
+              )
               let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
               if (this.item.formatterType === '0') {
-                return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                return params.length > strLen
+                  ? params.substr(0, strLen) + '...'
+                  : params
               } else {
                 return params
               }
@@ -225,7 +244,7 @@ export default {
             },
             formatter: function (value) {
               if (value >= 1000) {
-                return (value / 1000 + 'k')
+                return value / 1000 + 'k'
               } else {
                 return Math.abs(value)
               }
@@ -296,20 +315,38 @@ export default {
               if (i === 0) {
                 div = `<div style="margin: 0px 0 0;line-height:1;">
                       <div style="margin: 0px 0 0;line-height:1;">
-                        <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${typeof v.color == 'string' ? v.color : v.color.colorStops[0].color};"></span>
-                        <span style="font-weight:400;margin-left:2px">${v.seriesName}</span>
-                        <span style="float:right;margin-left:20px;font-weight:900">${v.value < 0 ? -v.value : v.value}</span>
+                        <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${
+  typeof v.color === 'string'
+    ? v.color
+    : v.color.colorStops[0].color
+};"></span>
+                        <span style="font-weight:400;margin-left:2px">${
+  v.seriesName
+}</span>
+                        <span style="float:right;margin-left:20px;font-weight:900">${
+  v.value < 0 ? -v.value : v.value
+}</span>
                         <div style="clear:both"></div>
                       </div>
                       <div style="clear:both"></div>
                     </div>`
               } else {
-                div = div + `
+                div =
+                  div +
+                  `
                 <div style="margin: 10px 0 0;line-height:1;">
                       <div style="margin: 0px 0 0;line-height:1;">
-                        <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${typeof v.color == 'string' ? v.color : v.color.colorStops[0].color};"></span>
-                        <span style="font-weight:400;margin-left:2px">${v.seriesName}</span>
-                        <span style="float:right;margin-left:20px;font-weight:900">${v.value < 0 ? -v.value : v.value}</span>
+                        <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${
+  typeof v.color === 'string'
+    ? v.color
+    : v.color.colorStops[0].color
+};"></span>
+                        <span style="font-weight:400;margin-left:2px">${
+  v.seriesName
+}</span>
+                        <span style="float:right;margin-left:20px;font-weight:900">${
+  v.value < 0 ? -v.value : v.value
+}</span>
                         <div style="clear:both"></div>
                       </div>
                       <div style="clear:both"></div>
@@ -317,14 +354,17 @@ export default {
                 `
               }
             })
-            html = `
+            html =
+              `
             <div style="margin: 0px 0 0;line-height:1;">
                 <div style="margin: 0px 0 0;line-height:1;">
                   <div style="font-weight:400;line-height:1;">
                     ${params[0].name}
                   </div>
                   <div style="margin: 10px 0 0;line-height:1;">
-                    ` + div + `
+                    ` +
+              div +
+              `
                     <div style="clear:both"></div>
                   </div>
                   <div style="clear:both"></div>
@@ -338,11 +378,16 @@ export default {
         series: myseries
       }
       var rows = this.item.chartData.rows
-      let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+      let barW = Math.floor(((this.item.width - 60) * 0.7) / rows.length)
       let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
-      if (this.item.formatterType === '0' && this.oldformatterType !== this.item.formatterType) {
+      if (
+        this.item.formatterType === '0' &&
+        this.oldformatterType !== this.item.formatterType
+      ) {
         myoption.yAxis.axisLabel.formatter = function (params, index) {
-          return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          return params.length > strLen
+            ? params.substr(0, strLen) + '...'
+            : params
         }
         this.oldformatterType = this.item.formatterType
         this.mychart.clear()
@@ -363,7 +408,6 @@ export default {
         this.oldOption = JSON.stringify(myoption)
         this.mychart.setOption(myoption)
       } else {
-
       }
     }
   },
@@ -374,6 +418,5 @@ export default {
     this.mychart.dispose()
     this.mychart = null
   }
-
 }
 </script>

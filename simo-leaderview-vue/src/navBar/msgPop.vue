@@ -10,7 +10,7 @@
     </div>
     <ul class="msgInfo">
       <div v-if="!hasMsg" class="noMsg">
-        <img src="./images/no_data.png" alt="" />
+        <img src="./images/no_data_back.png" alt="" />
         <p style="color: rgb(191, 191, 191);margin-top: 16px;">暂无数据</p>
       </div>
       <template v-else>
@@ -46,10 +46,10 @@ export default {
     return {
       levelMap: {},
       latestMsg: [],
-      form:{
-        id:'',
-        ring:'alertLevel_10.mp3',
-        open: false,
+      form: {
+        id: '',
+        ring: 'alertLevel_10.mp3',
+        open: false
       },
       hasMsg: true,
       originArr: []
@@ -66,7 +66,7 @@ export default {
     //   this.originArr = res.obj.origin || []
     // })
     // 获取最新5条消息
-    
+
     this.axios.get('/msg/config/findRingConfig').then(res => {
       if (res.success) {
         if (res.obj) {
@@ -110,19 +110,19 @@ export default {
       formData.append('ring', this.form.ring)
       formData.append('opened', this.form.open)
       this.axios.post(myurl, formData, config).then(res => {
-        if(res.success){
-            this.$notify({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-success'
-            })
-        }else{
-            this.form.open = !this.form.open
-            this.$notify({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+        if (res.success) {
+          this.$notify({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-success'
+          })
+        } else {
+          this.form.open = !this.form.open
+          this.$notify({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     }

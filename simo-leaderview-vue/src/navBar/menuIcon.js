@@ -73,11 +73,11 @@ export const menuName = [
 ]
 export const navImg = [
   'icon-n-visualize', // 可视化
-  'icon-n-capitalT', // 资产
+  'icon-n-assetManager', // 资产
   'icon-n-intelligenceOpt', // 智能运维
   'icon-n-ITserveMng', // IT服务流程管理
   'icon-n-ITbasicMonit', // IT基础监控
   'icon-n-report', // 报表
-  'icon-n-3dsroom', // 3d机房
+  'icon-ux-sys', // 3d机房
   'icon-n-system' // 系统默认
 ]
