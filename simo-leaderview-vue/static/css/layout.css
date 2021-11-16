@@ -56,8 +56,8 @@ modal
     display: inline-block;
     width: 2px;
     height: 14px;
-    line-height: 14px;
-    background: #0088cc;
+    line-height: 12px;
+    background: #436bf6;
     margin-right: 10px;
     content: '';
     font-size: 10px;

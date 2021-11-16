@@ -86,7 +86,7 @@ $headHeight: 50px;
     z-index: 1000;
     .active {
       background: #1b2031;
-      color: #0088cc;
+      color: #5b8bff;
     }
   }
 
@@ -280,7 +280,7 @@ $headHeight: 50px;
       border-top: solid 1px #3d445a !important;
     }
     .cs-item:hover {
-      border: 1px solid #0088cc !important;
+      border: 1px solid #5b8bff !important;
       z-index: 999;
     }
     .cs-item:before {
@@ -451,7 +451,7 @@ $headHeight: 50px;
   }
   .set-map{
     text-align: center;
-    color: #0088cc;
+    color: #5b8bff;
     font-weight: bold;
     margin-bottom: 5px;
   }
@@ -464,7 +464,7 @@ $headHeight: 50px;
     top: 0;
     left: 0;
     box-sizing: border-box;
-    outline: 1px dashed #0088cc;
+    outline: 1px dashed #5b8bff;
   }
   .vdr-stick {
     box-sizing: border-box;
@@ -785,7 +785,7 @@ html[data-theme="blueWhite"] {
       border-top: none !important;
     }
     .content-side .cs-item:hover {
-      border: 1px solid #026bf4 !important;
+      border: 1px solid #5b8bff !important;
     }
     .sp-replacer, .sp-replacer:hover {
       border: solid 1px #adb9ca !important;

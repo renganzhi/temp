@@ -272,7 +272,7 @@ html[data-theme='blueWhite'] {
     box-sizing: border-box !important;
     color: rgb(91, 123, 166) !important;
     .nav_icon {
-      color: #00a0e9;
+      color: #5b8bff;
     }
   }
   .archive {
@@ -302,7 +302,7 @@ html[data-theme='default'] {
       background-color: transparent;
       box-sizing: border-box !important;
       .nav_icon {
-        color: #00a0e9;
+        color: #5b8bff;
       }
     }
   }
@@ -363,7 +363,7 @@ html[data-theme='default'] {
     background-color: transparent;
     box-sizing: border-box !important;
     .nav_icon {
-      color: #00a0e9;
+      color: #5b8bff;
     }
   }
 }
@@ -373,7 +373,7 @@ html[data-theme='default'] {
   }
   .is-opened {
     .el-submenu__title {
-      border-left: solid 2.5px #00a0e9;
+      border-left: solid 2.5px #5b8bff;
     }
   }
 }
@@ -383,7 +383,7 @@ html[data-theme='default'] {
   }
   .is-opened {
     .el-submenu__title {
-      border-left: solid 2.5px #00a0e9;
+      border-left: solid 2.5px #5b8bff;
     }
   }
 }
@@ -448,7 +448,7 @@ html[data-theme='default'] {
 
     &:hover {
       background: none !important;
-      border: 1px solid #0088cc !important;
+      border: 1px solid #5b8bff !important;
     }
     &:before {
       font-size: 30px;

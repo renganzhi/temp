@@ -1,53 +1,72 @@
 <template>
   <div>
-    <div id="exportPage-modal"
-         style="z-index: 20100"
-         class="modal in"
-         role="dialog"
-         aria-hidden="false" data-backdrop="static">
+    <div
+      id="exportPage-modal"
+      style="z-index: 20100"
+      class="modal in"
+      role="dialog"
+      aria-hidden="false"
+      data-backdrop="static"
+    >
       <div class="modal-dialog modal-lg modal-dialog-centereds">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">导出页面</h4>
-            <button type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true">&times;</button>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="ivu-icon ivu-icon-ios-close"></i>
+            </button>
           </div>
           <div class="modal-body">
             <form autocomplete="off">
               <div class="form-group">
                 <label class="page-lable required-label">文件名称</label>
                 <div class="page-lable-content">
-                  <input type="text"
-                         :style="{'border': showErr ? '1px solid red !important' : ''}"
-                         @input="changeName"
-                         v-model="name"
-                         name="name" />
-                  <label class="error"
-                         v-show="showErr"
-                         style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
+                  <input
+                    type="text"
+                    :style="{
+                      border: showErr ? '1px solid red !important' : ''
+                    }"
+                    @input="changeName"
+                    v-model="name"
+                    name="name"
+                  />
+                  <label
+                    class="error"
+                    v-show="showErr"
+                    style="margin-left: 10px; margin-top: 8px;"
+                    >{{ errMsg }}</label
+                  >
                 </div>
               </div>
-              <div class="form-group"
-                   style="margin-bottom: 0">
+              <div class="form-group" style="margin-bottom: 0">
                 <label class="page-lable">选择大屏</label>
                 <div class="page-lable-content">
                   <div class="defPages flex">
-                    <div class="flex-item first-item"
-                         :class="{ active: temId.includes(item.id) }"
-                         v-for="(item,index) in mytems"
-                         :key=index
-                         @click="choosePage(item.id)">
-                      <img :src="baseUrl + item.viewImage"
-                      v-if="item.viewImage"
-                           alt=""
-                           style="width:100%;height:100%;" />
-              <img class="page-img"
-                   v-else />
-                       <div class="mask"  :class="{ maskActive: temId.includes(item.id) }">
-                     <div class="mask-text">{{item.name}}</div>
-                   </div>
+                    <div
+                      class="flex-item first-item"
+                      :class="{ active: temId.includes(item.id) }"
+                      v-for="(item, index) in mytems"
+                      :key="index"
+                      @click="choosePage(item.id)"
+                    >
+                      <img
+                        :src="baseUrl + item.viewImage"
+                        v-if="item.viewImage"
+                        alt=""
+                        style="width:100%;height:100%;"
+                      />
+                      <img class="page-img" v-else />
+                      <div
+                        class="mask"
+                        :class="{ maskActive: temId.includes(item.id) }"
+                      >
+                        <div class="mask-text">{{ item.name }}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -55,10 +74,8 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button"
-                    @click="save">确定</button>
-            <button type="button"
-                    data-dismiss="modal">取消</button>
+            <button type="button" @click="save">确定</button>
+            <button type="button" data-dismiss="modal">取消</button>
           </div>
         </div>
       </div>
@@ -123,7 +140,7 @@ export default {
     getAdminUsers () {
       // 获取超级管理员角色下的所有用户
       return new Promise((resolve, reject) => {
-        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then(res => {
           if (res.success) {
             this.userIds = res.obj
             return resolve()
@@ -146,8 +163,10 @@ export default {
         this.showErr = true
         return
       } else {
-        var str = new RegExp("[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]")
-        var flag = (!str.test(this.name)) && !/\s/.test(this.name)
+        var str = new RegExp(
+          "[`~!@#$^*|{}';',<>》《~！@#￥……*——|{}【】‘；”“'。，、？]"
+        )
+        var flag = !str.test(this.name) && !/\s/.test(this.name)
         if (!flag) {
           this.errMsg = '不能含有特殊字符'
           this.showErr = true
@@ -159,7 +178,7 @@ export default {
     getTemps () {
       let mythis = this
       // this.tems.splice(0, this.tems.length)
-      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+      this.axios.get('/leaderview/home/homePage/noConf').then(res => {
         mythis.tems = res.obj
       })
       /*  this.$nextTick(function(){
@@ -185,36 +204,36 @@ export default {
           // visible: this.visible,
           // adminId: this.userIds.join(',')
         }
-      this.axios.get(`/leaderview/home/getVersion`).then(versionData => {
-        if (versionData.success) {
-        this.axios({
-          method: 'get',
-          url: '/leaderview/home/exportTemplate',
-          params: data,
-          responseType: 'blob'
-        }).then((res) => {
-          $('#exportPage-modal').modal('hide')
-          // console.log(res);
-          download(`${this.name+'^'+versionData.obj.version}.zip`, res)
-          // if (res.success) {
-          //   this.addOne = true
-          //   this.addId = res.obj.id
-          //     Notification({
-          //       message: '操作成功！',
-          //       position: 'bottom-right',
-          //       customClass: 'toast toast-success'
-          //     })
-          //   $('#exportPage-modal').modal('hide')
-          // } else {
-          //     Notification({
-          //       message: res.msg,
-          //       position: 'bottom-right',
-          //       customClass: 'toast toast-error'
-          //     })
-          // }
+        this.axios.get(`/leaderview/home/getVersion`).then(versionData => {
+          if (versionData.success) {
+            this.axios({
+              method: 'get',
+              url: '/leaderview/home/exportTemplate',
+              params: data,
+              responseType: 'blob'
+            }).then(res => {
+              $('#exportPage-modal').modal('hide')
+              // console.log(res);
+              download(`${this.name + '^' + versionData.obj.version}.zip`, res)
+              // if (res.success) {
+              //   this.addOne = true
+              //   this.addId = res.obj.id
+              //     Notification({
+              //       message: '操作成功！',
+              //       position: 'bottom-right',
+              //       customClass: 'toast toast-success'
+              //     })
+              //   $('#exportPage-modal').modal('hide')
+              // } else {
+              //     Notification({
+              //       message: res.msg,
+              //       position: 'bottom-right',
+              //       customClass: 'toast toast-error'
+              //     })
+              // }
+            })
+          }
         })
-        }
-      })
       })
     },
     choosePage (id) {
@@ -231,8 +250,7 @@ export default {
     $('#exportPage-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destroyed: function () {
-  }
+  destroyed: function () {}
 }
 </script>
 <style scoped lang="scss">
@@ -251,7 +269,7 @@ export default {
   // height: 165px;
   width: 255px;
   height: 155px;
-  box-shadow: 0px 0px 2px 2px #141929;
+  box-shadow: 0px 0px 2px 2px #18142640;
   margin: 10px;
 }
 
@@ -260,81 +278,76 @@ export default {
   line-height: 152px;
   position: relative;
 }
- .mask-text{
-   width: 255px;
-   height: 20%;
-   background: rgba($color: #000000, $alpha: 0.45);
-   color: white;
+.mask-text {
+  width: 255px;
+  height: 20%;
+  background: rgba($color: #000000, $alpha: 0.45);
+  color: white;
   text-shadow: #000000 3px 3px 2px;
-   line-height: 0;
-   display: flex;
-   padding-left: 12px;
- //  font-weight: bold;
+  line-height: 0;
+  display: flex;
+  padding-left: 12px;
+  //  font-weight: bold;
   // font-size: 14px;
-   justify-content: flex-start;
-   align-items: center;
-   
+  justify-content: flex-start;
+  align-items: center;
 }
-.maskActive{
+.maskActive {
   display: flex;
 }
-.flex-item:hover .mask{
-    display: flex;
+.flex-item:hover .mask {
+  display: flex;
 }
-
-
 
 .mask {
-   width: 255px;
-   height: 155px;
-   position: absolute;
-   top:0;
-   left:0;
-  // background: #0088cc;
-   //display: none;
-   display: none;
-   align-items: flex-end;
-   padding: 0;
+  width: 255px;
+  height: 155px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  // background: #5b8bff
+  //display: none;
+  display: none;
+  align-items: flex-end;
+  padding: 0;
 }
- .mask-text{
-   width: 255px;
-   height: 20%;
-   background: rgba($color: #000000, $alpha: 0.45);
-   color: white;
+.mask-text {
+  width: 255px;
+  height: 20%;
+  background: rgba($color: #000000, $alpha: 0.45);
+  color: white;
   text-shadow: #000000 3px 3px 2px;
-   line-height: 0;
-   display: flex;
-   padding-left: 12px;
- //  font-weight: bold;
+  line-height: 0;
+  display: flex;
+  padding-left: 12px;
+  //  font-weight: bold;
   // font-size: 14px;
-   justify-content: flex-start;
-   align-items: center;
-   
+  justify-content: flex-start;
+  align-items: center;
 }
-.maskActive{
+.maskActive {
   display: flex;
 }
-.flex-item:hover .mask{
-    display: flex;
+.flex-item:hover .mask {
+  display: flex;
 }
-
 
 #exportPage-modal .active {
-   outline: 2px solid #0088cc;
-  box-shadow: #85d6ff 0px 0px 10px ;
+  outline: 2px solid #5b8bff;
+  box-shadow: #85d6ff 0px 0px 10px;
 }
-html[data-theme="blackWhite"],
-html[data-theme="blueWhite"] {
+html[data-theme='blackWhite'],
+html[data-theme='blueWhite'] {
   #exportPage-modal .flex-item {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   }
 }
-html[data-theme="blueWhite"] {
+html[data-theme='blueWhite'] {
   #exportPage-modal .active {
     outline: 2px solid #60abff;
   }
 }
-html[data-theme="blackWhite"] {
+html[data-theme='blackWhite'] {
   #exportPage-modal .active {
     outline: 2px solid #026bf4;
   }

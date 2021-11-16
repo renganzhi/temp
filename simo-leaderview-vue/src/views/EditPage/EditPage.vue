@@ -1,7 +1,9 @@
 <template>
   <!-- class="wrap moniwrap nofooter" -->
   <!-- padding: 10px; padding-bottom: 0px; -->
-  <div style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;">
+  <div
+    style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
+  >
     <navBar></navBar>
     <div id="editHome-wrap" style="height: 100%; padding: 15px">
       <AddPage :showModal="addPage" @hideModal="hideModal"></AddPage>
@@ -56,9 +58,11 @@
                 导入
               </button>
               <button type="button" @click="exportTemplate">导出</button>
-              <button type="button" class="homeBack" @click="backHome">
+              <div class="homeBack" @click="backHome">
                 <i class="icon-n-back"></i> 返回
-              </button>
+              </div>
+              <!-- <button type="button" class="homeBack" @click="backHome">
+              </button> -->
             </div>
             <div id="pagesBox" class="auto flex flex-wrap flex-1">
               <div
@@ -96,19 +100,24 @@
                     >编辑</a
                   >
 
+                  <a class="opera-item noUse" v-if="access !== 'w'">删除</a>
                   <a
-                    class="opera-item noUse"
-                    v-if="access !== 'w'"
-                    >删除</a
+                    class="opera-item"
+                    v-else
+                    @click.prevent="del(item, item.belongCurrentUser)"
+                    >{{
+                      item.belongCurrentUser === 'true' ? '删除' : '移除'
+                    }}</a
                   >
-                  <a class="opera-item" v-else @click.prevent="del(item,item.belongCurrentUser)">{{item.belongCurrentUser === 'true'?'删除':'移除'}}</a>
                 </div>
                 <div v-if="editIndex === index" class="page-title titleShow">
                   <form autocomplete="off">
                     <input name="name" v-model="editName" />
                   </form>
                   <span class="operate-title">
-                    <a class="simoLink" @click="changeName(index, item)">确定</a>
+                    <a class="simoLink" @click="changeName(index, item)"
+                      >确定</a
+                    >
                     <a class="cancle" @click="cancleChange(index)">取消</a>
                   </span>
                 </div>
@@ -120,18 +129,14 @@
                     data-trigger="hover"
                     :data-original-title="'分享人：' + item.shareName"
                     v-show="item.belongCurrentUser === 'false'"
-                    >
-                    <i
-                      class="icon-n-assetys"
-                    ></i
+                  >
+                    <i class="icon-n-assetys"></i
                   ></span>
                   <span class="title-name flex-1">{{ item.name }}</span>
 
                   <a
                     class="icon-n-edit2 edit-icon noClk"
-                    v-if="
-                      (item.belongCurrentUser === 'false' || access !== 'w')
-                    "
+                    v-if="item.belongCurrentUser === 'false' || access !== 'w'"
                   ></a>
                   <a
                     class="icon-n-edit2 edit-icon"
@@ -155,8 +160,18 @@
         </div>
       </div>
 
-      <div id="homeShareModal" class="modal" style="z-index: 10086" aria-hidden="false" data-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px !important;">
+      <div
+        id="homeShareModal"
+        class="modal"
+        style="z-index: 10086"
+        aria-hidden="false"
+        data-backdrop="static"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered"
+          role="document"
+          style="max-width: 500px !important;"
+        >
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">
@@ -169,7 +184,9 @@
                 data-dismiss="modal"
                 aria-hidden="true"
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">
+                  <i class="ivu-icon ivu-icon-ios-close"></i
+                ></span>
               </button>
             </div>
             <div class="modal-body">
@@ -316,16 +333,16 @@ export default {
     getAdminUsers () {
       // 获取超级管理员角色下的所有用户
       return new Promise((resolve, reject) => {
-        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then(res => {
           if (res.success) {
             this.userIds = res.obj
             return resolve()
           }
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         })
       })
     },
@@ -374,7 +391,7 @@ export default {
 
       this.axios
         .get('/mc/role/findAllUserByRoleId?roleIds=' + data.roles)
-        .then((object) => {
+        .then(object => {
           if (object.success) {
             data.uidsByRoles = object.obj.join(',')
             this.axios({
@@ -382,35 +399,35 @@ export default {
               url: '/leaderview/home/share/' + this.shareId,
               data: qs.stringify(data),
               headers: { 'content-type': 'application/x-www-form-urlencoded' }
-            }).then((res) => {
+            }).then(res => {
               if (res.success) {
                 this.search()
                 $('#homeShareModal').modal('hide')
-                  Notification({
-                    message: '操作成功！',
-                    position: 'bottom-right',
-                    customClass: 'toast toast-success'
-                  })
+                Notification({
+                  message: '操作成功！',
+                  position: 'bottom-right',
+                  customClass: 'toast toast-success'
+                })
               } else {
-                  Notification({
-                    message: res.msg,
-                    position: 'bottom-right',
-                    customClass: 'toast toast-error'
-                  })
+                Notification({
+                  message: res.msg,
+                  position: 'bottom-right',
+                  customClass: 'toast toast-error'
+                })
               }
             })
           }
         })
     },
     saerchShareUser () {
-      this.axios.get('/user/findAvailableUsers?isNotMe=true').then((res) => {
+      this.axios.get('/user/findAvailableUsers?isNotMe=true').then(res => {
         if (res.success) {
           this.userList = res.obj
           this.initSelect2('shareUsers')
           this.initSelect2User()
         }
       })
-      this.axios.get('/role/findAllEnableRoles').then((res) => {
+      this.axios.get('/role/findAllEnableRoles').then(res => {
         if (res.success) {
           this.roleList = res.obj
           this.initSelect2('shareRoles')
@@ -494,7 +511,7 @@ export default {
         })
     },
     search () {
-      this.axios.get('/leaderview/home/homePage/noConf').then((res) => {
+      this.axios.get('/leaderview/home/homePage/noConf').then(res => {
         if (res.success) {
           // this.pageList = res.obj
           this.allPage = res.obj
@@ -505,17 +522,17 @@ export default {
             })
           }
         } else {
-            Notification({
-              message: res.msg,
-              position: 'bottom-right',
-              customClass: 'toast toast-error'
-            })
+          Notification({
+            message: res.msg,
+            position: 'bottom-right',
+            customClass: 'toast toast-error'
+          })
         }
       })
     },
     getAccess () {
       this.access = sessionStorage.getItem('leaderAccess') || 'r'
-      this.axios.get('/leaderview/home/validSuperAdmin').then((res) => {
+      this.axios.get('/leaderview/home/validSuperAdmin').then(res => {
         if (res.success) {
           this.isSuperAdmin = res.obj.isSuperAdmin
         }
@@ -567,15 +584,15 @@ export default {
           .get('/leaderview/home/homePage/copy', {
             params: { pageId: item.id, adminId: this.userIds.join(',') }
           })
-          .then((res) => {
+          .then(res => {
             if (res.success) {
               this.search()
             } else {
-                Notification({
-                  message: res.msg,
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
             }
           })
       })
@@ -596,10 +613,11 @@ export default {
       //   }
       // })
     },
-    sureInport(){
+    sureInport () {
       this.showDelModal = true
       this.configBoxType = 'inport'
-      this.modelText = '文件版本与当前版本不符，导入可能存在兼容问题。是否确认导入？'
+      this.modelText =
+        '文件版本与当前版本不符，导入可能存在兼容问题。是否确认导入？'
     },
     del (item, belongCurrentUser) {
       this.showDelModal = true
@@ -631,38 +649,38 @@ export default {
     sureDel (data) {
       this.showDelModal = false
       if (data && data.sure === '1') {
-        if(this.configBoxType === 'del'){
-        if (this.ifBelongCurrentUser === 'true') {
-          this.axios
-            .delete('/leaderview/home/homePage/deleteById/' + this.delId)
-            .then((res) => {
-              if (res.success) {
-                this.search()
-              } else {
+        if (this.configBoxType === 'del') {
+          if (this.ifBelongCurrentUser === 'true') {
+            this.axios
+              .delete('/leaderview/home/homePage/deleteById/' + this.delId)
+              .then(res => {
+                if (res.success) {
+                  this.search()
+                } else {
                   Notification({
                     message: res.msg,
                     position: 'bottom-right',
                     customClass: 'toast toast-error'
                   })
-              }
-            })
+                }
+              })
+          } else {
+            this.axios
+              .delete('/leaderview/home/homePage/cancelShareById/' + this.delId)
+              .then(res => {
+                if (res.success) {
+                  this.search()
+                } else {
+                  Notification({
+                    message: res.msg,
+                    position: 'bottom-right',
+                    customClass: 'toast toast-error'
+                  })
+                }
+              })
+          }
         } else {
-          this.axios
-            .delete('/leaderview/home/homePage/cancelShareById/' + this.delId)
-            .then((res) => {
-              if (res.success) {
-                this.search()
-              } else {
-                  Notification({
-                    message: res.msg,
-                    position: 'bottom-right',
-                    customClass: 'toast toast-error'
-                  })
-              }
-            })
-        }
-        }else{
-        this.$refs.MyInportPage.updateModel()
+          this.$refs.MyInportPage.updateModel()
         }
       }
     },
@@ -693,32 +711,32 @@ export default {
           .post('/leaderview/home/homePage/edit', qs.stringify(data), {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
           })
-          .then((res) => {
+          .then(res => {
             if (res.success) {
               item.name = this.editName
-                Notification({
-                  message: '操作成功！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-success'
-                })
+              Notification({
+                message: '操作成功！',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
             } else {
-                Notification({
-                  message: res.msg,
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
+              Notification({
+                message: res.msg,
+                position: 'bottom-right',
+                customClass: 'toast toast-error'
+              })
             }
           })
       }
       document.querySelectorAll('.tooltip').forEach(element => {
         element.remove()
-      });
+      })
       this.editIndex = -1
     },
     cancleChange (index) {
       document.querySelectorAll('.tooltip').forEach(element => {
         element.remove()
-      });
+      })
       this.editIndex = -1
     },
     showHover (index) {
@@ -740,7 +758,8 @@ export default {
       var flag = !str.test(newV) && !/\s/.test(newV)
       if (!flag) {
         this.editName = oldV
-      } else { // 先判断是否存在特殊字符，如果有则不改变名字，如果没有再去判断长度是否需要裁剪
+      } else {
+        // 先判断是否存在特殊字符，如果有则不改变名字，如果没有再去判断长度是否需要裁剪
         if (newV.length > 15) {
           this.editName = newV.slice(0, 15)
         }
@@ -757,10 +776,12 @@ export default {
     // window.history.pushState({}, '', _url)
     this.getAccess()
     this.saerchShareUser()
-    $('.hoverTips').on('mouseenter', function () { // 绑定鼠标进入事件
+    $('.hoverTips').on('mouseenter', function () {
+      // 绑定鼠标进入事件
       $(this).tooltip('show')
     })
-    $('hoverTips').on('mouseleave', function () { // 绑定鼠标划出事件
+    $('hoverTips').on('mouseleave', function () {
+      // 绑定鼠标划出事件
       $(this).tooltip('hide')
     })
   },
@@ -769,18 +790,21 @@ export default {
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
-      $(this.$el).find('[title]').tooltip('destroy')
+      $(this.$el)
+        .find('[title]')
+        .tooltip('destroy')
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.searchForm{
+.searchForm {
   font-size: 12px;
 }
 .homeBack {
   float: right;
+  cursor: pointer;
   background: transparent;
   color: #5b8bff;
   font-size: 13px;
@@ -792,6 +816,7 @@ export default {
 }
 .homeBack:hover {
   background: transparent;
+  color: #436bf6;
 }
 
 .page-item {
@@ -809,10 +834,10 @@ export default {
     right: 0px;
     width: 30px;
     height: 30px;
-    background: url("../../assets/image/canSee.png");
+    background: url('../../assets/image/canSee.png');
   }
   .notSee {
-    background: url("../../assets/image/noSee.png");
+    background: url('../../assets/image/noSee.png');
   }
 }
 
@@ -852,7 +877,7 @@ export default {
 }
 
 .page-item .operates a:hover {
-  color: #0088cc;
+  color: #436bf6;
 }
 
 .page-item .operates .noUse {
@@ -930,8 +955,8 @@ export default {
 .wrap-body {
   height: 100%;
 }
-html[data-theme="blackWhite"],
-html[data-theme="blueWhite"] {
+html[data-theme='blackWhite'],
+html[data-theme='blueWhite'] {
   .page-item .operates .noUse {
     color: #a9a9a9 !important;
   }

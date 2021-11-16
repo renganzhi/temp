@@ -1,31 +1,43 @@
 <template>
   <div>
-    <div id="importPage-modal"
-         style="z-index: 20100"
-         class="modal in"
-         role="dialog"
-         aria-hidden="false" data-backdrop="static">
+    <div
+      id="importPage-modal"
+      style="z-index: 20100"
+      class="modal in"
+      role="dialog"
+      aria-hidden="false"
+      data-backdrop="static"
+    >
       <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">导入</h4>
-            <button type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true">&times;</button>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="ivu-icon ivu-icon-ios-close"></i>
+            </button>
           </div>
           <div class="modal-body">
             <form autocomplete="off">
               <div class="form-group">
                 <label class="page-lable required-label">待上传文件</label>
                 <div class="page-lable-content">
-                  <input type="file"
-                         accept=".zip"
-                         ref="file"
-                         @change='changeFile' />
-                  <label class="error"
-                         v-show="showErr"
-                         style="margin-left: 10px; margin-top: 8px;">{{errMsg}}</label>
+                  <input
+                    type="file"
+                    accept=".zip"
+                    ref="file"
+                    @change="changeFile"
+                  />
+                  <label
+                    class="error"
+                    v-show="showErr"
+                    style="margin-left: 10px; margin-top: 8px;"
+                    >{{ errMsg }}</label
+                  >
                 </div>
               </div>
               <!-- <div class="form-group"
@@ -51,10 +63,8 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button"
-                    @click="save">导入</button>
-            <button type="button"
-                    data-dismiss="modal">取消</button>
+            <button type="button" @click="save">导入</button>
+            <button type="button" data-dismiss="modal">取消</button>
           </div>
         </div>
       </div>
@@ -111,7 +121,7 @@ export default {
     getAdminUsers () {
       // 获取超级管理员角色下的所有用户
       return new Promise((resolve, reject) => {
-        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then((res) => {
+        this.axios.get('/mc/role/findAllUserByRoleId?roleIds=1').then(res => {
           if (res.success) {
             this.userIds = res.obj
             return resolve()
@@ -141,20 +151,23 @@ export default {
     },
     getTemps () {
       // this.tems.splice(0, this.tems.length)
-      this.axios.get('/leaderview/home/template/list').then((res) => {
+      this.axios.get('/leaderview/home/template/list').then(res => {
         this.tems = res.obj
       })
       /*  this.$nextTick(function(){
         _this.$modal.find('.defPages').get(0).scrollTop = 0;
       }) */
     },
-    save(){
+    save () {
       var _this = this
       this.axios.get(`/leaderview/home/getVersion`).then(versionData => {
         if (versionData.success) {
-          if(_this.file.name.split('.zip')[0].split('^')[1] !== versionData.obj.version ){
+          if (
+            _this.file.name.split('.zip')[0].split('^')[1] !==
+            versionData.obj.version
+          ) {
             this.$parent.sureInport()
-          }else{
+          } else {
             _this.updateModel()
           }
         }
@@ -172,11 +185,11 @@ export default {
           url: '/leaderview/home/importTemplate',
           data: formdata,
           headers: { 'content-type': 'application/x-www-form-urlencoded' }
-        }).then((res) => {
+        }).then(res => {
           $('#importPage-modal').modal('hide')
           if (res.success) {
-          //   this.addOne = true
-          //   this.addId = res.obj.id
+            //   this.addOne = true
+            //   this.addId = res.obj.id
             Notification({
               message: '上传成功！',
               position: 'bottom-right',
@@ -209,8 +222,7 @@ export default {
     $('#importPage-modal').modal('hide')
     $('.modal-backdrop').remove()
   },
-  destroyed: function () {
-  }
+  destroyed: function () {}
 }
 </script>
 <style scoped lang="scss">
@@ -241,18 +253,18 @@ export default {
 #importPage-modal .active {
   outline: 2px solid #0088cc;
 }
-html[data-theme="blackWhite"],
-html[data-theme="blueWhite"] {
+html[data-theme='blackWhite'],
+html[data-theme='blueWhite'] {
   #importPage-modal .flex-item {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   }
 }
-html[data-theme="blueWhite"] {
+html[data-theme='blueWhite'] {
   #importPage-modal .active {
     outline: 2px solid #60abff;
   }
 }
-html[data-theme="blackWhite"] {
+html[data-theme='blackWhite'] {
   #importPage-modal .active {
     outline: 2px solid #026bf4;
   }

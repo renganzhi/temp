@@ -29,16 +29,16 @@ export default {
   },
   created: function () {
     $('html').attr('data-theme', 'default')
-    
-    if(this.myInterVal){
+
+    if (this.myInterVal) {
       clearInterval(this.myInterVal)
     }
-   this.myInterVal = setInterval(() => {
-    this.axios.get('/system/time/getDataSourceTime').then((data) => {
-      if (data.success) {
-      }
-    })
-  }, 10000);
+    this.myInterVal = setInterval(() => {
+      this.axios.get('/system/time/getDataSourceTime').then(data => {
+        if (data.success) {
+        }
+      })
+    }, 10000)
     // /mc/system/setting/get
     // var _hash = window.location.hash
     // if (_hash.split('/')[1]) {
@@ -50,11 +50,10 @@ export default {
     // }
   },
   beforeDestroy: function () {
-    if(this.myInterVal){
+    if (this.myInterVal) {
       clearInterval(this.myInterVal)
     }
   }
-  
 }
 </script>
 
@@ -159,7 +158,7 @@ body {
   }
 }
 .simoLink:hover {
-  color: #0253f5 !important;
+  color: #436bf6 !important;
   text-decoration: underline;
 }
 
@@ -420,7 +419,7 @@ html[data-theme='blueWhite'] {
   }
 
   .select2-container.select2-container--focus .select2-selection {
-    border: solid 1px #026bf4 !important;
+    border: solid 1px #436bf6 !important;
   }
 
   .select2-container .select2-selection__placeholder {
