@@ -18,7 +18,7 @@
               data-dismiss="modal"
               aria-hidden="true"
             >
-              &times;
+              <i class="ivu-icon ivu-icon-ios-close"></i>
             </button>
           </div>
           <div class="modal-body">
@@ -353,7 +353,7 @@ export default {
 }
 
 #addHomePage-modal .active {
-  outline: 2px solid #0088cc;
+  outline: 2px solid #5b8bff;
 }
 html[data-theme='blackWhite'],
 html[data-theme='blueWhite'] {
@@ -378,7 +378,7 @@ html[data-theme='blackWhite'] {
   position: absolute;
   top: 0;
   left: 0;
-  // background: #0088cc;
+  // background: #5b8bff
   //display: none;
   display: none;
   align-items: flex-end;

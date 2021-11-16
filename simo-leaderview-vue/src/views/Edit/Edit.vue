@@ -2377,7 +2377,8 @@
             <button type="button"
                     class="close"
                     data-dismiss="modal"
-                    aria-hidden="true">&times;</button>
+                    aria-hidden="true">
+              <i class="ivu-icon ivu-icon-ios-close"></i></button>
           </div>
           <div class="modal-body"
                style="height: 450px; overflow: auto;">

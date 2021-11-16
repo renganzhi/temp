@@ -31,7 +31,7 @@
             </div>
             <div
               class="modal-footer"
-              style="border: 0; padding-top: 0; text-align: center; margin-left: 0px;justify-content: flex-end;"
+              style="border: 0; padding-top: 0; text-align: center; margin-left: 0px;justify-content: right;"
             >
               <button type="button" @click="sure2">{{ sureText }}</button>
               <span style="width: 1px; display: inline-block;"></span>

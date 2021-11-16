@@ -1,27 +1,36 @@
 <template>
-  <div class="vdr"
-       :style="{'width': this.w + 'px', 'height': this.h + 'px', 'left': this.x + 'px', 'top': this.y + 'px', 'z-index': this.zIndex}"
-       :class="active || is-active ? 'active' : 'inactive'"
-       @mousedown="bodyDown($event)"
-       @dblclick="dbClick($event)"
-       @contextmenu.prevent="contextMenu($event)"
-       @touchstart="bodyDown($event)"
-       @touchend="up($event)">
+  <div
+    class="vdr"
+    :style="{
+      width: this.w + 'px',
+      height: this.h + 'px',
+      left: this.x + 'px',
+      top: this.y + 'px',
+      'z-index': this.zIndex
+    }"
+    :class="active || is - active ? 'active' : 'inactive'"
+    @mousedown="bodyDown($event)"
+    @dblclick="dbClick($event)"
+    @contextmenu.prevent="contextMenu($event)"
+    @touchstart="bodyDown($event)"
+    @touchend="up($event)"
+  >
     <slot></slot>
     <div class="box_sticks">
-      <div v-for="(stick,index) in sticks"
-         :key="index"
-         class="vdr-stick"
-         :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']"
-         @mousedown.stop.prevent="stickDown(stick, $event)"
-         @touchstart.stop.prevent="stickDown(stick, $event)"
-         :style="vdrStick(stick)">
-      </div>
+      <div
+        v-for="(stick, index) in sticks"
+        :key="index"
+        class="vdr-stick"
+        :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']"
+        @mousedown.stop.prevent="stickDown(stick, $event)"
+        @touchstart.stop.prevent="stickDown(stick, $event)"
+        :style="vdrStick(stick)"
+      ></div>
     </div>
     <div class="grid_line" v-if="false">
       <div class="grid_line_top"></div>
       <div class="grid_line_left"></div>
-      <div class="grid_line_label">{{x}}, {{y}}</div>
+      <div class="grid_line_label">{{ x }}, {{ y }}</div>
     </div>
   </div>
 </template>
@@ -45,38 +54,56 @@ const styleMapping = {
 export default {
   name: 'dragResize',
   props: {
-    insideFlag: { // 是否是组合内的元件
-      type: Boolean, default: false
+    insideFlag: {
+      // 是否是组合内的元件
+      type: Boolean,
+      default: false
     },
     hasChild: {
-      type: Boolean, default: false // 内部是否还有拖拽组件
+      type: Boolean,
+      default: false // 内部是否还有拖拽组件
     },
     parentScaleX: {
-      type: Number, default: 1
+      type: Number,
+      default: 1
     },
     parentScaleY: {
-      type: Number, default: 1
+      type: Number,
+      default: 1
     },
-    isActive: { // 是否激活状态，处于激活状态才能进行拖拽与缩放等操作
-      type: Boolean, default: false
+    isActive: {
+      // 是否激活状态，处于激活状态才能进行拖拽与缩放等操作
+      type: Boolean,
+      default: false
     },
-    preventActiveBehavior: { // true，就可以解决在其他区域操作返回到组件区域的时候，不需要再次点击就激活组件;原组件不满足需求，做修改
-      type: Boolean, default: false
+    preventActiveBehavior: {
+      // true，就可以解决在其他区域操作返回到组件区域的时候，不需要再次点击就激活组件;原组件不满足需求，做修改
+      type: Boolean,
+      default: false
     },
-    isDraggable: { // 是否允许拖拽
-      type: Boolean, default: false
+    isDraggable: {
+      // 是否允许拖拽
+      type: Boolean,
+      default: false
     },
-    isResizable: { // 是否允许缩放
-      type: Boolean, default: true
+    isResizable: {
+      // 是否允许缩放
+      type: Boolean,
+      default: true
     },
-    aspectRatio: { // 是否等比例缩放
-      type: Boolean, default: false
+    aspectRatio: {
+      // 是否等比例缩放
+      type: Boolean,
+      default: false
     },
-    parentLimitation: { // 设置为true，则限制操作组件不能超出父级元素
-      type: Boolean, default: true
+    parentLimitation: {
+      // 设置为true，则限制操作组件不能超出父级元素
+      type: Boolean,
+      default: true
     },
     snapToGrid: {
-      type: Boolean, default: false
+      type: Boolean,
+      default: false
     },
     gridX: {
       type: Number,
@@ -92,28 +119,32 @@ export default {
         return val > 0
       }
     },
-    parentW: { // 父级宽度，该值限制了元素可以拖动的水平最大宽度，前提是parentLimitation=true
+    parentW: {
+      // 父级宽度，该值限制了元素可以拖动的水平最大宽度，前提是parentLimitation=true
       type: Number,
       default: 0,
       validator: function (val) {
         return val >= 0
       }
     },
-    parentH: {// 父级高度，该值限制了元素可以拖动的水平最大高度，前提是parentLimitation=true
+    parentH: {
+      // 父级高度，该值限制了元素可以拖动的水平最大高度，前提是parentLimitation=true
       type: Number,
       default: 0,
       validator: function (val) {
         return val >= 0
       }
     },
-    w: { // 组件宽
+    w: {
+      // 组件宽
       type: Number,
       default: 100,
       validator: function (val) {
         return val > 0
       }
     },
-    h: { // 组件高
+    h: {
+      // 组件高
       type: Number,
       default: 100,
       validator: function (val) {
@@ -134,43 +165,50 @@ export default {
         return val > 0
       }
     },
-    x: { // left
+    x: {
+      // left
       type: Number,
       default: 0,
       validator: function (val) {
         return typeof val === 'number'
       }
     },
-    y: { // top
+    y: {
+      // top
       type: Number,
       default: 0,
       validator: function (val) {
         return typeof val === 'number'
       }
     },
-    z: { // 层级，元素激活时层级最高
+    z: {
+      // 层级，元素激活时层级最高
       type: [String, Number],
       default: 'auto',
       validator: function (val) {
-        let valid = (typeof val === 'string') ? val === 'auto' : val >= 0
+        let valid = typeof val === 'string' ? val === 'auto' : val >= 0
         return valid
       }
     },
-    dragHandle: { // 定义拖拽时的classname
+    dragHandle: {
+      // 定义拖拽时的classname
       type: String,
       default: null
     },
-    dragCancel: { // 定义取消拖拽时的classname
+    dragCancel: {
+      // 定义取消拖拽时的classname
       type: String,
       default: null
     },
-    sticks: { // 缩放节点定义
+    sticks: {
+      // 缩放节点定义
       type: Array,
       default: function () {
         return ['tl', 'tm', 'tr', 'mr', 'br', 'bm', 'bl', 'ml']
       }
     },
-    axis: { // 允许拖拽的方向，取值可以为x、 y、 both、none
+    axis: {
+      // 允许拖拽的方向，取值可以为x、 y、 both、none
       type: String,
       default: 'both',
       validator: function (val) {
@@ -223,8 +261,12 @@ export default {
   },
   mounted: function () {
     this.parentElement = this.$el.parentNode
-    this.parentWidth = this.parentW ? this.parentW : this.parentElement.clientWidth
-    this.parentHeight = this.parentH ? this.parentH : this.parentElement.clientHeight
+    this.parentWidth = this.parentW
+      ? this.parentW
+      : this.parentElement.clientWidth
+    this.parentHeight = this.parentH
+      ? this.parentH
+      : this.parentElement.clientHeight
 
     this.rawRight = this.parentWidth - this.rawWidth - this.rawLeft
     this.rawBottom = this.parentHeight - this.rawHeight - this.rawTop
@@ -236,18 +278,26 @@ export default {
     document.documentElement.addEventListener('mousedown', this.deselect)
 
     document.documentElement.addEventListener('touchmove', this.move, true)
-    document.documentElement.addEventListener('touchend touchcancel', this.up, true)
+    document.documentElement.addEventListener(
+      'touchend touchcancel',
+      this.up,
+      true
+    )
     document.documentElement.addEventListener('touchstart', this.up, true)
 
     if (this.dragHandle) {
-      let dragHandles = Array.prototype.slice.call(this.$el.querySelectorAll(this.dragHandle))
+      let dragHandles = Array.prototype.slice.call(
+        this.$el.querySelectorAll(this.dragHandle)
+      )
       for (let i in dragHandles) {
         dragHandles[i].setAttribute('data-drag-handle', this._uid)
       }
     }
 
     if (this.dragCancel) {
-      let cancelHandles = Array.prototype.slice.call(this.$el.querySelectorAll(this.dragCancel))
+      let cancelHandles = Array.prototype.slice.call(
+        this.$el.querySelectorAll(this.dragCancel)
+      )
       for (let i in cancelHandles) {
         cancelHandles[i].setAttribute('data-drag-cancel', this._uid)
       }
@@ -262,13 +312,17 @@ export default {
     document.documentElement.removeEventListener('mousedown', this.deselect)
 
     document.documentElement.removeEventListener('touchmove', this.move, true)
-    document.documentElement.removeEventListener('touchend touchcancel', this.up, true)
+    document.documentElement.removeEventListener(
+      'touchend touchcancel',
+      this.up,
+      true
+    )
     document.documentElement.removeEventListener('touchstart', this.up, true)
   },
 
   methods: {
     deselect (e) {
-      e = e || window.event// debugger
+      e = e || window.event // debugger
       //  this.$emit('bodyDown', this.item,this.rect,e);
       //  debugger
       //   console.log(e.target,this)
@@ -314,7 +368,8 @@ export default {
       // this.active = false
       this.$emit('contextMenu', this.item, ev)
     },
-    bodyDown: function (ev) { // debugger
+    bodyDown: function (ev) {
+      // debugger
       let target = ev.target || ev.srcElement
 
       if (!this.preventActiveBehavior) {
@@ -331,11 +386,17 @@ export default {
         return
       }
 
-      if (this.dragHandle && target.getAttribute('data-drag-handle') !== this._uid.toString()) {
+      if (
+        this.dragHandle &&
+        target.getAttribute('data-drag-handle') !== this._uid.toString()
+      ) {
         return
       }
 
-      if (this.dragCancel && target.getAttribute('data-drag-cancel') === this._uid.toString()) {
+      if (
+        this.dragCancel &&
+        target.getAttribute('data-drag-cancel') === this._uid.toString()
+      ) {
         return
       }
 
@@ -343,14 +404,22 @@ export default {
       // if (this.item.chartType !== 'text' || this.item.ctDataSource !== 'static') {
       //   ev.preventDefault()
       // }
-      if (!(this.item.chartType === 'NEWtextArea' || this.item.chartType === 'text') || this.item.ctDataSource !== 'static') {
+      if (
+        !(
+          this.item.chartType === 'NEWtextArea' ||
+          this.item.chartType === 'text'
+        ) ||
+        this.item.ctDataSource !== 'static'
+      ) {
         ev.preventDefault()
       }
 
       this.bodyDrag = true
 
-      this.stickStartPos.mouseX = typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
-      this.stickStartPos.mouseY = typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
+      this.stickStartPos.mouseX =
+        typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
+      this.stickStartPos.mouseY =
+        typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
 
       this.stickStartPos.left = this.left
       this.stickStartPos.right = this.right
@@ -387,12 +456,20 @@ export default {
       const gridY = this.gridY
       const width = this.width
       const height = this.height
-      const pageX = typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
-      const pageY = typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
+      const pageX =
+        typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
+      const pageY =
+        typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
 
       let delta = {
-        x: (this.axis !== 'y' && this.axis !== 'none' ? stickStartPos.mouseX - pageX : 0) / this.parentScaleX,
-        y: (this.axis !== 'x' && this.axis !== 'none' ? stickStartPos.mouseY - pageY : 0) / this.parentScaleY
+        x:
+          (this.axis !== 'y' && this.axis !== 'none'
+            ? stickStartPos.mouseX - pageX
+            : 0) / this.parentScaleX,
+        y:
+          (this.axis !== 'x' && this.axis !== 'none'
+            ? stickStartPos.mouseY - pageY
+            : 0) / this.parentScaleY
       }
 
       let newTop = stickStartPos.top - delta.y
@@ -405,17 +482,35 @@ export default {
         let alignLeft = true
 
         let diffT = newTop - Math.floor(newTop / gridY) * gridY
-        let diffB = (parentHeight - newBottom) - Math.floor((parentHeight - newBottom) / gridY) * gridY
+        let diffB =
+          parentHeight -
+          newBottom -
+          Math.floor((parentHeight - newBottom) / gridY) * gridY
         let diffL = newLeft - Math.floor(newLeft / gridX) * gridX
-        let diffR = (parentWidth - newRight) - Math.floor((parentWidth - newRight) / gridX) * gridX
+        let diffR =
+          parentWidth -
+          newRight -
+          Math.floor((parentWidth - newRight) / gridX) * gridX
 
-        if (diffT > (gridY / 2)) { diffT = diffT - gridY }
-        if (diffB > (gridY / 2)) { diffB = diffB - gridY }
-        if (diffL > (gridX / 2)) { diffL = diffL - gridX }
-        if (diffR > (gridX / 2)) { diffR = diffR - gridX }
+        if (diffT > gridY / 2) {
+          diffT = diffT - gridY
+        }
+        if (diffB > gridY / 2) {
+          diffB = diffB - gridY
+        }
+        if (diffL > gridX / 2) {
+          diffL = diffL - gridX
+        }
+        if (diffR > gridX / 2) {
+          diffR = diffR - gridX
+        }
 
-        if (Math.abs(diffB) < Math.abs(diffT)) { alignTop = false }
-        if (Math.abs(diffR) < Math.abs(diffL)) { alignLeft = false }
+        if (Math.abs(diffB) < Math.abs(diffT)) {
+          alignTop = false
+        }
+        if (Math.abs(diffR) < Math.abs(diffL)) {
+          alignLeft = false
+        }
 
         newTop = newTop - (alignTop ? diffT : diffB)
         newBottom = parentHeight - height - newTop
@@ -439,14 +534,15 @@ export default {
             newLeft = this.rawLeft + (-20 - this.limitItem.minX)
             chgX = newLeft - this.rawLeft
           } else if (this.limitItem.maxX + chgX > this.homeData.width + 20) {
-            newLeft = this.rawLeft + (this.homeData.width + 20 - this.limitItem.maxX)
-            chgX = (this.homeData.width + 20 - this.limitItem.maxX)
+            newLeft =
+              this.rawLeft + (this.homeData.width + 20 - this.limitItem.maxX)
+            chgX = this.homeData.width + 20 - this.limitItem.maxX
           }
           if (this.limitItem.minY + chgY < -20) {
             newTop = this.rawTop + (-20 - this.limitItem.minY)
             chgY = newTop - this.rawTop
           } else if (this.limitItem.maxY + chgY > this.homeData.height + 20) {
-            chgY = (this.homeData.height + 20 - this.limitItem.maxY)
+            chgY = this.homeData.height + 20 - this.limitItem.maxY
             newTop = this.rawTop + chgY
           }
           newBottom = parentHeight - height - newTop
@@ -492,8 +588,10 @@ export default {
       }
 
       this.stickDrag = true
-      this.stickStartPos.mouseX = typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
-      this.stickStartPos.mouseY = typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
+      this.stickStartPos.mouseX =
+        typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
+      this.stickStartPos.mouseY =
+        typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
       this.stickStartPos.left = this.left
       this.stickStartPos.right = this.right
       this.stickStartPos.top = this.top
@@ -556,17 +654,17 @@ export default {
 
       if (this.aspectRatio) {
         const aspectLimits = {
-          minLeft: left - (Math.min(top, bottom) * aspectFactor) * 2,
-          maxLeft: left + ((((height - minh) / 2) * aspectFactor) * 2),
+          minLeft: left - Math.min(top, bottom) * aspectFactor * 2,
+          maxLeft: left + ((height - minh) / 2) * aspectFactor * 2,
 
-          minRight: right - (Math.min(top, bottom) * aspectFactor) * 2,
-          maxRight: right + ((((height - minh) / 2) * aspectFactor) * 2),
+          minRight: right - Math.min(top, bottom) * aspectFactor * 2,
+          maxRight: right + ((height - minh) / 2) * aspectFactor * 2,
 
           minTop: top - (Math.min(left, right) / aspectFactor) * 2,
-          maxTop: top + ((((width - minw) / 2) / aspectFactor) * 2),
+          maxTop: top + ((width - minw) / 2 / aspectFactor) * 2,
 
           minBottom: bottom - (Math.min(left, right) / aspectFactor) * 2,
-          maxBottom: bottom + ((((width - minw) / 2) / aspectFactor) * 2)
+          maxBottom: bottom + ((width - minw) / 2 / aspectFactor) * 2
         }
 
         if (stickAxis === 'x') {
@@ -591,8 +689,10 @@ export default {
 
     stickMove (ev) {
       const stickStartPos = this.stickStartPos
-      const pageX = typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
-      const pageY = typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
+      const pageX =
+        typeof ev.pageX !== 'undefined' ? ev.pageX : ev.touches[0].pageX
+      const pageY =
+        typeof ev.pageY !== 'undefined' ? ev.pageY : ev.touches[0].pageY
 
       const delta = {
         x: (stickStartPos.mouseX - pageX) / this.parentScaleX,
@@ -606,16 +706,17 @@ export default {
 
       switch (this.currentStick[0]) {
         case 'b':
-
           if (this.snapToGrid) {
-            newBottom = this.parentHeight - Math.round((this.parentHeight - newBottom) / this.gridY) * this.gridY
+            newBottom =
+              this.parentHeight -
+              Math.round((this.parentHeight - newBottom) / this.gridY) *
+                this.gridY
           }
 
           this.rawBottom = newBottom
           break
 
         case 't':
-
           if (this.snapToGrid) {
             newTop = Math.round(newTop / this.gridY) * this.gridY
           }
@@ -626,16 +727,17 @@ export default {
 
       switch (this.currentStick[1]) {
         case 'r':
-
           if (this.snapToGrid) {
-            newRight = this.parentWidth - Math.round((this.parentWidth - newRight) / this.gridX) * this.gridX
+            newRight =
+              this.parentWidth -
+              Math.round((this.parentWidth - newRight) / this.gridX) *
+                this.gridX
           }
 
           this.rawRight = newRight
           break
 
         case 'l':
-
           if (this.snapToGrid) {
             newLeft = Math.round(newLeft / this.gridX) * this.gridX
           }
@@ -722,11 +824,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'onlyOneItem',
-      'limitItem',
-      'homeData'
-    ]),
+    ...mapGetters(['onlyOneItem', 'limitItem', 'homeData']),
     left1: {
       get: function () {
         return this.x
@@ -755,13 +853,17 @@ export default {
     },
 
     vdrStick () {
-      return (stick) => {
+      return stick => {
         const stickStyle = {
-          width: `${stickSize / this.parentScaleX * 2}px`,
-          height: `${stickSize / this.parentScaleY * 2}px`
+          width: `${(stickSize / this.parentScaleX) * 2}px`,
+          height: `${(stickSize / this.parentScaleY) * 2}px`
         }
-        stickStyle[styleMapping.y[stick[0]]] = `${stickSize / this.parentScaleX / -1}px`
-        stickStyle[styleMapping.x[stick[1]]] = `${stickSize / this.parentScaleX / -1}px`
+        stickStyle[styleMapping.y[stick[0]]] = `${stickSize /
+          this.parentScaleX /
+          -1}px`
+        stickStyle[styleMapping.x[stick[1]]] = `${stickSize /
+          this.parentScaleX /
+          -1}px`
         return stickStyle
       }
     },
@@ -802,8 +904,8 @@ export default {
 
       if (aspectRatio && stickAxis === 'x') {
         const delta = left - newLeft
-        this.rawTop = top - (delta / aspectFactor) / 2
-        this.rawBottom = bottom - (delta / aspectFactor) / 2
+        this.rawTop = top - delta / aspectFactor / 2
+        this.rawBottom = bottom - delta / aspectFactor / 2
       }
 
       this.left = newLeft
@@ -826,8 +928,8 @@ export default {
 
       if (aspectRatio && stickAxis === 'x') {
         const delta = right - newRight
-        this.rawTop = top - (delta / aspectFactor) / 2
-        this.rawBottom = bottom - (delta / aspectFactor) / 2
+        this.rawTop = top - delta / aspectFactor / 2
+        this.rawBottom = bottom - delta / aspectFactor / 2
       }
 
       this.right = newRight
@@ -997,8 +1099,7 @@ export default {
       this.isDraggable = val
     }
   },
-  destroyed: function () {
-  }
+  destroyed: function () {}
 }
 </script>
 <style lang="scss" scoped>
@@ -1007,14 +1108,14 @@ export default {
   box-sizing: border-box;
 }
 .vdr.active:before {
-  content: "";
+  content: '';
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
   box-sizing: border-box;
-  outline: 1px dashed #0088cc;
+  outline: 1px dashed #5b8bff;
 }
 .vdr-stick {
   box-sizing: border-box;
@@ -1055,7 +1156,9 @@ export default {
 }
 .active {
   .grid_line {
-    .grid_line_top, .grid_line_left, .grid_line_label {
+    .grid_line_top,
+    .grid_line_left,
+    .grid_line_label {
       position: absolute;
       left: 0;
       top: 0;
@@ -1080,5 +1183,4 @@ export default {
     }
   }
 }
-
 </style>

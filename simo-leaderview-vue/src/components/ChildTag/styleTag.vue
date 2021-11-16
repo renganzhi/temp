@@ -42,7 +42,7 @@
             cursor: 'pointer',
             border:
               selectedItem[item.key] === option.value
-                ? '1px solid #409EFF'
+                ? '1px solid #5b8bff'
                 : '1px solid rgba(255,255,255,0.2)'
           }"
         >
@@ -50,7 +50,7 @@
             :class="option.icon"
             :style="{
               color:
-                selectedItem[item.key] === option.value ? '#409EFF' : '#fff'
+                selectedItem[item.key] === option.value ? '#5b8bff' : '#fff'
             }"
           ></span>
         </div>
@@ -533,8 +533,11 @@ export default {
       })
       if (!this.markExit) {
         let iconName = this.selectedItem.markerType
-        if (process.env.NODE_ENV !== "development") {
-         iconName =  this.selectedItem.markerType.replace('static','leaderview/leaderviewWeb')
+        if (process.env.NODE_ENV !== 'development') {
+          iconName = this.selectedItem.markerType.replace(
+            'static',
+            'leaderview/leaderviewWeb'
+          )
         }
         this.selectedItem.selectMark.lng = Number(this.$refs.lng.value)
         this.selectedItem.selectMark.lat = Number(this.$refs.lat.value)

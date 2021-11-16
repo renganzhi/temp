@@ -1,28 +1,33 @@
 <template>
-  <div id="homeSetting-modal"
-       style="z-index: 20100"
-       class="modal" aria-hidden="false" data-backdrop="static">
-    <div class="modal-lg modal-dialog modal-dialog-centered"
-         role="document">
+  <div
+    id="homeSetting-modal"
+    style="z-index: 20100"
+    class="modal"
+    aria-hidden="false"
+    data-backdrop="static"
+  >
+    <div class="modal-lg modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">
             设置
           </h4>
-          <button type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-hidden="true">
-            <span aria-hidden="true">&times;</span>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-hidden="true"
+          >
+            <span aria-hidden="true">
+              <i class="ivu-icon ivu-icon-ios-close"></i
+            ></span>
           </button>
         </div>
         <div class="modal-body">
-          <form autocomplete="off"
-                class="row">
+          <form autocomplete="off" class="row">
             <div class="form-group col-md-6">
               <label>轮播间隔</label>
-              <select name="intervalTime"
-                      v-model="intervalTime">
+              <select name="intervalTime" v-model="intervalTime">
                 <option value="5">5s</option>
                 <option value="10">10s</option>
                 <option value="30">30s</option>
@@ -31,8 +36,7 @@
             </div>
             <div class="form-group col-md-6">
               <label class="showSet">切换效果</label>
-              <select name="specialEffects"
-                      v-model="specialEffects">
+              <select name="specialEffects" v-model="specialEffects">
                 <option value="1">默认</option>
                 <option value="scale">缩放过渡</option>
                 <option value="left">左右平滑过渡</option>
@@ -52,12 +56,9 @@
             </div> -->
           </form>
           <!-- 表格数据 -->
-          <div class="bootstrap-table home-table"
-               :style="boxStyle">
-            <div class="fixed-table-header"
-                 style="height: 36px;">
-              <table class="table table-hover"
-                     style="table-layout: fixed;">
+          <div class="bootstrap-table home-table" :style="boxStyle">
+            <div class="fixed-table-header" style="height: 36px;">
+              <table class="table table-hover" style="table-layout: fixed;">
                 <thead>
                   <tr>
                     <th>所在页数</th>
@@ -87,33 +88,61 @@
                 </tbody> -->
               </table>
             </div>
-            <div class="bootstrap-table fixed-table-body"
-                 style="padding-bottom: 26px;">
-              <table class="table table-hover"
-                     style="table-layout: fixed;">
+            <div
+              class="bootstrap-table fixed-table-body"
+              style="padding-bottom: 26px;"
+            >
+              <table class="table table-hover" style="table-layout: fixed;">
                 <tbody>
-                  <tr v-for="(tr, index) in tableData"
-                      :key="index">
-                    <td>{{tr.visible ? index + 1 : '--'}}</td>
+                  <tr v-for="(tr, index) in tableData" :key="index">
+                    <td>{{ tr.visible ? index + 1 : '--' }}</td>
                     <td>
-                      <span data-toggle='tooltip'
+                      <span
+                        data-toggle="tooltip"
                         class="hoverTips"
-                        :title="tr.name">{{tr.name}}
+                        :title="tr.name"
+                        >{{ tr.name }}
                       </span>
                     </td>
                     <td>
-                      <div @click="changeVisiable(index, tr.visible)"
-                           :class="tr.visible ? 'u-switch u-switch-on' : 'u-switch u-switch-off'">
+                      <div
+                        @click="changeVisiable(index, tr.visible)"
+                        :class="
+                          tr.visible
+                            ? 'u-switch u-switch-on'
+                            : 'u-switch u-switch-off'
+                        "
+                      >
                         <div></div>
                       </div>
                     </td>
-                    <td>{{timeStamp2String(tr.lastUpdateTime)}}</td>
+                    <td>{{ timeStamp2String(tr.lastUpdateTime) }}</td>
                     <td>
-                      <span v-show="tr.visible"><a :class="{'simoLink': true, 'disabled': index === 0}"
-                           @click="moveTop(index)">置顶</a><a :class="{'simoLink': true, 'disabled': index === 0}"
-                           @click="moveUp(index)">上移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
-                           @click="moveDown(index)">下移</a><a :class="{'simoLink': true, 'disabled': index === visibleNum-1}"
-                           @click="moveBottom(index)">置底</a></span>
+                      <span v-show="tr.visible"
+                        ><a
+                          :class="{ simoLink: true, disabled: index === 0 }"
+                          @click="moveTop(index)"
+                          >置顶</a
+                        ><a
+                          :class="{ simoLink: true, disabled: index === 0 }"
+                          @click="moveUp(index)"
+                          >上移</a
+                        ><a
+                          :class="{
+                            simoLink: true,
+                            disabled: index === visibleNum - 1
+                          }"
+                          @click="moveDown(index)"
+                          >下移</a
+                        ><a
+                          :class="{
+                            simoLink: true,
+                            disabled: index === visibleNum - 1
+                          }"
+                          @click="moveBottom(index)"
+                          >置底</a
+                        ></span
+                      >
                     </td>
                   </tr>
                 </tbody>
@@ -126,10 +155,8 @@
           </div> -->
         </div>
         <div class="modal-footer">
-          <button type="button"
-                  @click="save">确定</button>
-          <button type="button"
-                  data-dismiss="modal">取消</button>
+          <button type="button" @click="save">确定</button>
+          <button type="button" data-dismiss="modal">取消</button>
         </div>
       </div>
     </div>
@@ -192,7 +219,7 @@ export default {
   methods: {
     getTableData () {
       // 获取表格数据
-      this.axios.get('/leaderview/home/getCarouselTimeConf').then((data) => {
+      this.axios.get('/leaderview/home/getCarouselTimeConf').then(data => {
         var res = data.obj
         if (data.success) {
           this.intervalTime = res.intervalTime || '10'
@@ -228,12 +255,37 @@ export default {
     timeStamp2String (time) {
       var datetime = new Date(time)
       var year = datetime.getFullYear()
-      var month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1
-      var date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate()
-      var hour = datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours()
-      var minute = datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes()
-      var second = datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()
-      return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+      var month =
+        datetime.getMonth() + 1 < 10
+          ? '0' + (datetime.getMonth() + 1)
+          : datetime.getMonth() + 1
+      var date =
+        datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate()
+      var hour =
+        datetime.getHours() < 10
+          ? '0' + datetime.getHours()
+          : datetime.getHours()
+      var minute =
+        datetime.getMinutes() < 10
+          ? '0' + datetime.getMinutes()
+          : datetime.getMinutes()
+      var second =
+        datetime.getSeconds() < 10
+          ? '0' + datetime.getSeconds()
+          : datetime.getSeconds()
+      return (
+        year +
+        '-' +
+        month +
+        '-' +
+        date +
+        ' ' +
+        hour +
+        ':' +
+        minute +
+        ':' +
+        second
+      )
     },
     getVisiableNum () {
       return _.sumBy(this.tableData, function (o) {
@@ -275,27 +327,42 @@ export default {
         this.tableData.unshift(temp)
       }
     },
-    moveTop: function (index) { // 置顶
+    moveTop: function (index) {
+      // 置顶
       if (index === 0) {
         return
       }
       var temp = this.tableData.splice(index, 1)[0]
       this.tableData.unshift(temp)
     },
-    moveUp: function (index) { // 上移
+    moveUp: function (index) {
+      // 上移
       if (index === 0) {
         return
       }
-      this.tableData[index] = this.tableData.splice(index - 1, 1, this.tableData[index])[0]
+      this.tableData[index] = this.tableData.splice(
+        index - 1,
+        1,
+        this.tableData[index]
+      )[0]
     },
-    moveDown: function (index) { // 下移
+    moveDown: function (index) {
+      // 下移
       if (index === this.tableData.length - 1) {
         return
       }
-      this.tableData[index] = this.tableData.splice(index + 1, 1, this.tableData[index])[0]
+      this.tableData[index] = this.tableData.splice(
+        index + 1,
+        1,
+        this.tableData[index]
+      )[0]
     },
-    moveBottom: function (index) { // 置底
-      if (index === this.tableData.length - 1 || !this.tableData[index + 1].visible) {
+    moveBottom: function (index) {
+      // 置底
+      if (
+        index === this.tableData.length - 1 ||
+        !this.tableData[index + 1].visible
+      ) {
         return
       }
       for (var i = index + 1, len = this.tableData.length; i < len; i++) {
@@ -323,9 +390,9 @@ export default {
         url: '/leaderview/home/carousel/conf',
         data: qs.stringify(datas),
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
-      }).then((res) => {
+      }).then(res => {
         if (res.success) {
-        this.changeSort = true
+          this.changeSort = true
           Notification({
             message: '操作成功！',
             position: 'bottom-right',
@@ -370,7 +437,9 @@ export default {
   },
   destroyed: function () {
     if ($('.tooltip').length > 0) {
-      $(this.$el).find('[title]').tooltip('destroy')
+      $(this.$el)
+        .find('[title]')
+        .tooltip('destroy')
     }
   }
 }
@@ -380,8 +449,8 @@ export default {
   color: rgb(74, 74, 78);
   pointer-events: none;
 }
-html[data-theme="blackWhite"],
-html[data-theme="blueWhite"] {
+html[data-theme='blackWhite'],
+html[data-theme='blueWhite'] {
   .disabled {
     color: #e1e1e1 !important;
   }

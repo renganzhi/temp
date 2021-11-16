@@ -2,9 +2,7 @@
   <div class="navbarWrap">
     <div class="navLeft">
       <div class="logo">
-        <img
-          :src="headpicSrc ? headpicSrc : require('./images/logo_white.png')"
-        />
+        <img :src="headpicSrc ? headpicSrc : require('./images/logo.png')" />
       </div>
       <!-- theme === 'default'
               ? require('./images/logo.png')
@@ -486,7 +484,8 @@ export default {
     width: 160px;
     height: 50px;
     text-align: center;
-    background: url(./images/head-bg.png);
+    // background: url(./images/head-bg.png);
+    background-color: #141a2d;
     // background-color: #141d2d;
     // @include getTheme($themes){
     //   background-color: themed('navbarWrap-navLeft-background-color');
