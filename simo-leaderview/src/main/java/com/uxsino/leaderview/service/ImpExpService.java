@@ -8,11 +8,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.utils.SessionUtils;
+import com.google.common.base.Strings;
 import com.uxsino.leaderview.entity.*;
 import com.uxsino.leaderview.utils.ImageUtils;
 import com.uxsino.leaderview.utils.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -168,7 +168,7 @@ public class ImpExpService {
 
     private JSONObject videoProcess(JSONObject result, String fileName){
         String str = result.getString("str");
-        if (Strings.isEmpty(str)){
+        if (Strings.isNullOrEmpty(str)){
             return result;
         }
         Set<String> set = Sets.newHashSet();
@@ -205,7 +205,7 @@ public class ImpExpService {
     private JSONObject imgProcess(JSONObject result, Long num, String fileName){
         //str是TemplateTransform中的参数origin，调用时传入的是需要处理的内容，如page.getViewConf()
         String str = result.getString("str");
-        if (Strings.isEmpty(str)){
+        if (Strings.isNullOrEmpty(str)){
             return result;
         }
 
@@ -338,7 +338,7 @@ public class ImpExpService {
     private JSONObject linkProcess(JSONObject result, Set<Long> ids) {
         //str是TemplateTransform中的参数origin，调用时传入的是需要处理的内容，如page.getViewConf()
         String str = result.getString("str");
-        if (Strings.isEmpty(str)){
+        if (Strings.isNullOrEmpty(str)){
             return result;
         }
         //用正则表达式匹配出viewconfig中linkId的部分
