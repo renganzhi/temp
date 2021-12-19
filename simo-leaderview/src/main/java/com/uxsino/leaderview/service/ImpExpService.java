@@ -354,7 +354,7 @@ public class ImpExpService {
             //去掉所有空格
             String trim = numMatcher.replaceAll("").trim();
             log.info(trim);
-            if (Strings.isBlank(trim)) continue;
+            if (Strings.isNullOrEmpty(trim)) continue;
             Long id = Long.valueOf(trim);
             //如果已经处理过，跳过此次循环
             if (processedId.contains(id)){
