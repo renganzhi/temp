@@ -408,6 +408,7 @@ html[data-theme='default'] {
     line-height: 50px;
     padding: 0;
     border-radius: 4px;
+    padding-left:0px !important;
     min-width: auto;
   }
   .el-menu {
@@ -452,12 +453,10 @@ html[data-theme='default'] {
     }
     &:before {
       font-size: 30px;
-      margin-left: -12px;
     }
     div {
       width: 88px;
       height: 88px;
-      margin-left: -40px;
       font-size: 12px;
       display: flex;
       flex-direction: column;
@@ -466,10 +465,8 @@ html[data-theme='default'] {
       text-align: center;
       position: relative;
       line-height: 36px;
-      text-indent: 15px;
       &:before {
         font-size: 30px;
-        margin-left: -12px;
       }
     }
   }

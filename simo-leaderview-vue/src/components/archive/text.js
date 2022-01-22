@@ -7,6 +7,8 @@ import NewNumber from '@/components/EditComp/NewNumber/config.js'
 import Ueditor from '@/components/EditComp/Ueditor/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
+import DownMenu from '@/components/EditComp/DownMenu/config.js'
+import WuhoIfream from '@/components/EditComp/WuhoIfream/config.js'
 
 const text = {
   name: '文本',
@@ -69,7 +71,9 @@ const text = {
     //   chartData: morenData.single
     // },
     pyramid.item,
-    bubble.item
+    bubble.item,
+    DownMenu.item,
+    WuhoIfream.item
   ]
 }
 

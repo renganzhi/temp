@@ -1815,7 +1815,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"

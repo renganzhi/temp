@@ -16,6 +16,8 @@ export default [
   'Sunrise',
   'Scatter',
   'KLine',
+  'DownMenu',
+  'WuhoIfream',
   'ELine',
   'Dashboard',
   'BulletFrame',

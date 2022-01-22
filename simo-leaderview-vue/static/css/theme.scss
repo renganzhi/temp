@@ -99,6 +99,22 @@ html[data-theme="default"] {
         background-color: white;
         font-size: 12px !important;
     }
+    .dropMenu{
+        .ivu-select-dropdown{
+            max-height: inherit;
+            background-color: transparent;
+            .ivu-dropdown-item{
+                color: inherit;
+                font-size: inherit !important;
+                a{
+                    color: inherit;
+                }
+            }
+        }
+        .ivu-dropdown-item:hover {
+            background-color: rgba(70, 89, 99, 0.445);
+        }  
+    }
     .ivu-select-item:hover {
         background-color: #08c;
         color: #fff;

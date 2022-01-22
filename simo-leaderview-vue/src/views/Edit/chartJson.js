@@ -9,6 +9,7 @@ import Scatter from '@/components/EditComp/Scatter/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
+import DownMenu from '@/components/EditComp/DownMenu/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
 import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
@@ -994,6 +995,7 @@ GradientPie.item,
 Sunrise.item,
 Scatter.item,
 KLine.item,
+DownMenu.item,
 BulletFrame.item,
 TreeMap.item,
 TDHistogram.item,
