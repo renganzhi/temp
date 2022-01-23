@@ -1,6 +1,6 @@
 <template>
   <div class="dropMenu">
-    <Dropdown :style="titleStyle" :trigger="item.trigger ||'hover'" :placement="item.placement ||'top'">
+    <Dropdown v-if="item.chartData.children" :style="titleStyle" :trigger="item.trigger ||'hover'" :placement="item.placement ||'top'">
         <div class="dropMenuTitle">
             {{item.chartData.title}}
             <Icon type="ios-arrow-down"></Icon>
@@ -23,6 +23,7 @@
           </div>
         </DropdownMenu>
     </Dropdown>
+    <a v-else-if="item.chartData.url" target="_blank" :href="item.chartData.url">{{item.chartData.title}}</a>
   </div>
 </template>
 <script>
