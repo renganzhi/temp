@@ -23,7 +23,7 @@
           </div>
         </DropdownMenu>
     </Dropdown>
-    <a v-else-if="item.chartData.url" target="_blank" :href="item.chartData.url">{{item.chartData.title}}</a>
+    <a :style="titleStyle"  v-else-if="item.chartData.url" target="_blank" :href="item.chartData.url">{{item.chartData.title}}</a>
   </div>
 </template>
 <script>
