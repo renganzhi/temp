@@ -454,6 +454,7 @@ export default {
     },
     prev: function () {
       // 上一页
+      this.changeNowPage(-1)
       this.cancleRequest()
       // window.$.cache = {}
       if (this.refreshType !== '1') {
@@ -479,7 +480,6 @@ export default {
       this.nowPage = JSON.parse(nowPageObj.viewConf)
       nowPageObj = null
       this.isFullScreen && this.interTimer()
-      this.changeNowPage(-1)
     },
     setPaint: function () {
       if (this.paintConf) {

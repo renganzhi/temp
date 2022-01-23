@@ -3,7 +3,6 @@ import Vue from 'vue'
 export default Vue.component('hotspot', {
   template: `<div :style="wrapStyle"></div>`,
   props: ['item'],
-  inject: ['editing'],
   computed: {
     wrapStyle () {
       let style = {
