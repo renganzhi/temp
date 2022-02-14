@@ -1,6 +1,6 @@
 <template>
   <div class="WuhoIfream">
-      <iframe src="http://183.131.193.69:8181/appli/start?appliId=934133524695351296&codeRate=8000&frameRate=30" frameborder="0"></iframe>
+      <iframe style="height:100%;width:100%" src="http://183.131.193.69:8181/appli/start?appliId=934133524695351296&codeRate=8000&frameRate=30" frameborder="0"></iframe>
   </div>
 </template>
 <script>
