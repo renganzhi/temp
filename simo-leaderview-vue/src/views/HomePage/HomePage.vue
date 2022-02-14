@@ -1,8 +1,8 @@
 <template>
   <div
-    style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
+    style="width: 100%;height:100%;position: absolute;"
   >
-    <navBar></navBar>
+    <!-- <navBar></navBar> -->
     <div id="home-html" class="flex flex-vertical full-height full-width">
       <div
         style="width: 100%; height: 100%;"
@@ -51,6 +51,9 @@
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
             <div class="full-height pagebox">
+              <div class="back" style="height: 1080px;width: 1920px;position: absolute;">
+                <beijing></beijing>
+              </div>
               <LookItem
                 v-for="(item, index) in nowPage"
                 :index="index"
@@ -189,6 +192,7 @@ import navBar from '../../../src/navBar/index.vue'
 import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
+import beijing from '@/components/EditComp/beijing'
 import ImportPage from './../EditPage/ImportPage'
 import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
@@ -203,6 +207,7 @@ export default {
     LookCompose,
     AddPage,
     ImportPage,
+    beijing,
     navBar
   },
   // mixins:[thirdLoginMix],
