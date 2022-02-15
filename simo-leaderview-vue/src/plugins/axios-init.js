@@ -65,12 +65,12 @@ Plugin.install = function (Vue) {
   window.axios = axios
   Object.defineProperties(Vue.prototype, {
     axios: {
-      get() {
+      get () {
         return axios
       }
     },
     $axios: {
-      get() {
+      get () {
         return axios
       }
     }

@@ -10,10 +10,15 @@ Vue.use(Router)
 export default new Router({
   // mode: 'history',
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'HomePage',
+    //   component: (resolve) => require(['@/views/HomePage/HomePage'], resolve)
+    // },
     {
       path: '/',
-      name: 'HomePage',
-      component: (resolve) => require(['@/views/HomePage/HomePage'], resolve)
+      name: 'pageShow',
+      component: (resolve) => require(['@/views/pageShow/pageShow'], resolve)
     },
     {
       path: '/editPage',
