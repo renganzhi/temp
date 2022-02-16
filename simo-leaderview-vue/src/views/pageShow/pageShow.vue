@@ -1,6 +1,25 @@
 <template>
   <div class="content">
     <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <div id="pop" v-show="popshow">
+      <div class="poptitle">
+        小旅馆
+      </div>
+      <div class="lineContain">
+        <div class="line">名称: 小旅馆</div>
+        <div class="line">标准地址：武侯祠大街252号5-4-204</div>
+        <div class="line">房间数：2</div>
+        <div class="line">床铺数：8</div>
+        <div class="line">社区民警（电话）：陈朝林(17708192501)</div>
+        <div class="line">网格员（电话）：张敏(13194994003)</div>
+        <div class="line">
+          微消站（电话）：刘长城(15700573360)
+        </div>
+        <button>入住历史</button>
+        <button>走访情况</button>
+
+      </div>
+    </div>
     <div id="cesiumContainer" />
   </div>
 </template>
@@ -15,7 +34,10 @@ export default {
   name: 'pageShow',
   data () {
     return {
-
+      popshow: false,
+      x: 0,
+      y: 0,
+      z: 0
     }
   },
   computed: {},
@@ -28,8 +50,53 @@ export default {
     this.initModels()
     this.initPostrender()
     this.fly()
+    this.addPoints()
+    this.addPopEvent()
   },
   methods: {
+    addPopEvent () {
+      var that = this
+      function pop () {
+        let container = document.getElementById('pop')
+        if (container) {
+          var windowPosition = new Cesium.Cartesian2()
+          var canvasHeight = viewer.scene.canvas.height
+          var canvasWidth = viewer.scene.canvas.width
+          Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            viewer.scene,
+            Cesium.Cartesian3.fromDegrees(
+              that.x,
+              that.y,
+              that.z + 100
+            ),
+            windowPosition
+          )
+          container.style.bottom = canvasHeight - windowPosition.y + 'px'
+          container.style.right = canvasWidth - windowPosition.x - container.offsetWidth * 0.5 + 'px'
+        /* container.style.left = windowPosition.x  + "px"; */
+        }
+      }
+      viewer.scene.preRender.addEventListener(pop)
+    },
+    addPoints () {
+      let height = 90
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.068146369733, 30.5874024040152, 80 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06053144060571, 30.571086359869128, 50 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06216701280734, 30.604087221823228, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04354503175277, 30.58950036552712, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03921297349484, 30.595079695239477, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.02454030361058, 30.591786782286736, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03543373128811, 30.61099993425912, 50 + height))
+    },
+    addPointer (position) {
+      viewer.entities.add({
+        position,
+        billboard: {
+          image: 'static/img/click.png',
+          scale: 0.4
+        }
+      })
+    },
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
@@ -149,8 +216,12 @@ return mix(factor,mirror,0.0);
         viewer.entities.add({
           polyline: {
             positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-            depthFailMaterial: Cesium.Color.AQUA,
-            material: Cesium.Color.AQUA
+            material: new Cesium.PolylineDashMaterialProperty({
+              color: Cesium.Color.DODGERBLUE,
+              dashLength: 10,
+              dashPattern: 255
+            }),
+            width: 1
           }
         })
       })
@@ -168,11 +239,11 @@ return mix(factor,mirror,0.0);
               polyline: {
                 positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
                 depthFailMaterial: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.ORANGERED,
+                  color: Cesium.Color.fromCssColorString('#00df61'),
                   duration: 200
                 }),
                 material: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.ORANGERED,
+                  color: Cesium.Color.fromCssColorString('#00df61'),
                   duration: 200
                 }),
                 width: 2
@@ -197,7 +268,7 @@ return mix(factor,mirror,0.0);
         tileset.style = new Cesium.Cesium3DTileStyle({
           color: {
             conditions: [
-              ['true', 'rgba(0, 127.5, 255 ,1)']// 'rgb(127, 59, 8)']
+              ['true', 'rgba(0, 205, 243 ,1)']// 'rgb(127, 59, 8)']
             ]
           }
         })
@@ -227,7 +298,7 @@ return mix(factor,mirror,0.0);
 '    vec4 position = czm_inverseModelView * vec4(' + v_position + ',1);\n' +
 '    float glowRange = 105.0;\n' +
 '    gl_FragColor = ' + color + ';\n' +
-'    gl_FragColor = vec4(0.2,  0.5, 1.0, 1.0);\n' +
+'    gl_FragColor = vec4(0.0,  205.0/255.0, 243.0/255.0, 1.0);\n' +
 '    gl_FragColor *= vec4(vec3(position.y / 40.0), 1.0);\n' +
 '    float time = fract(czm_frameNumber / 360.0);\n' +
 '    time = abs(time - 0.5) * 2.0;\n' +
@@ -331,14 +402,24 @@ return mix(factor,mirror,0.0);
         var lng = Cesium.Math.toDegrees(
           Cesium.Cartographic.fromCartesian(position).longitude
         )
+        this.x = lng
+        this.y = lat
+        this.z = Cesium.Cartographic.fromCartesian(position).height
         console.log(lng,
           lat,
           Cesium.Cartographic.fromCartesian(position).height + 3)
+        this.popshow = false
         contrastBias.selected = [baseObject]
         if (picked && picked.primitive) {
+          if (picked.id && picked.id._billboard) {
+            this.popshow = true
+          }
           let primitive = picked.primitive
           let pickIds = primitive._pickIds
           let pickId = picked.pickId
+          if (picked.id) {
+            pickId = primitive.pickId
+          }
           if (!pickId && !pickIds && picked.content) {
             pickIds = picked.content._model._pickIds
           }
@@ -376,5 +457,39 @@ return mix(factor,mirror,0.0);
   height: 100%;
   padding: 0px;
   margin: 0px;
+}
+.content #pop {
+  width: 300px;
+  height: 280px;
+  background: rgb(5, 31, 52);
+  border: 1px solid rgb(0, 195, 245);
+  color: rgb(255, 255, 255);
+  position: relative;
+  padding: 40px 0px 0px;
+  position: absolute;
+  z-index: 999;
+  font-size: 14px;
+}
+.content #pop .poptitle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 22px;
+  font-family: cusfont;
+  font-weight: 400;
+  color: rgb(255, 255, 255);
+}
+.content #pop .lineContain {
+  padding: 10px;
+}
+.content #pop .lineContain .line {
+  margin-bottom: 5px;
+}
+.content #pop .lineContain button {
+  color: #fff;
+  background: #1890ff;
+  border-color: #1890ff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
 }
 </style>
