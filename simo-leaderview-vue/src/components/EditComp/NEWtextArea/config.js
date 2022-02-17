@@ -18,6 +18,7 @@ export default{
     'Gradientclr': ['rgba(255, 38, 38, 0.44)', '#dc4908'],
     'fontFamily': '',
     'fontSize': 12,
+    'fontSpaceing': 5,
     'linkId': '',
     'chartData': {}
   },
@@ -158,6 +159,11 @@ export default{
         {
           'name': '字号',
           'key': 'fontSize',
+          'tag': 'input'
+        },
+        {
+          'name': '字间距',
+          'key': 'fontSpaceing',
           'tag': 'input'
         },
         {

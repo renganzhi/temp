@@ -5,6 +5,7 @@ var NewHistogram = {
   'barRadius1': 0, // 柱体圆角
   'barWidth1': 30, // 柱体大小
   'HistogramType': 1, // 柱状图类型
+  'dataTypeSet': 2, // 柱状图类型
   'lineColor': '#fff', // 类型2中的分割线颜色
   'downColor': '#6d9eeb', // 类型3中下方颜色
   'upColor': '#4a86e8', // 类型3中上方颜色
@@ -411,6 +412,21 @@ export default {
               {
                 'name': '类型三',
                 'value': 3
+              }
+            ]
+          },
+          {
+            'name': '数据类型',
+            'key': 'dataTypeSet',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '武侯定制',
+                'value': 1
+              },
+              {
+                'name': '普通',
+                'value': 2
               }
             ]
           },

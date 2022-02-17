@@ -51,7 +51,7 @@
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
             <div class="full-height pagebox">
-              <div class="back" style="height: 1080px;width: 1920px;position: absolute;">
+              <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing></beijing>
               </div>
               <LookItem

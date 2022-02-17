@@ -16,6 +16,8 @@ export default {
     'ringWidth': 50,
     'isRing': false,
     'showline': true,
+    'showword': true,
+    'showwordSize': 12,
     'tooltipShow': true,
     'tooltipBackColor': '#57625d',
     'tooltipTextColor': '#fff',
@@ -177,6 +179,26 @@ export default {
           {
             'name': '图元半径',
             'key': 'radius',
+            'tag': 'input'
+          },
+          {
+            'name': '图表文字显示',
+            'key': 'showword',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': true
+              },
+              {
+                'name': '隐藏',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '图表文字大小',
+            'key': 'showwordSize',
             'tag': 'input'
           },
           {

@@ -1,5 +1,10 @@
 <template>
   <div class="NewHistogram">
+    <div class="DataChangBtn" v-if="item.dataTypeSet === 1">
+      <div v-for="(item,index) in nameArry" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
+        {{item}}
+      </div>
+    </div>
     <div
       ref="NewHistogram"
       v-show="showLine"
@@ -47,14 +52,15 @@ export default {
       oldmyData4: '',
       Oldcolorful4: '',
       //   Linesubsection: '',
-      oldformatterType4: ''
-    //   oldchartData: ''
+      oldformatterType4: '',
+      //   oldchartData: ''
+      nowdataShowIndex: 0
     }
   },
   computed: {
     showLine: function () {
       if (this.item.barType === 'NewHistogram') {
-         if (this.item.chartData1.rows.length === 0 || this.item.chartData1.columns.length === 0) {
+        if (this.item.chartData1.rows.length === 0 || this.item.chartData1.columns.length === 0) {
           return false
         }
       }
@@ -74,6 +80,24 @@ export default {
         }
       }
       return true
+    },
+    nameArry: function () {
+      let arr = []
+      if (this.item.dataTypeSet === 1) {
+        if (this.item.barType === 'NewHistogram' && this.item.chartData1.dataArry) {
+          arr = this.item.chartData1.dataArry.nameArry
+        }
+        if (this.item.barType === 'NewGroupHistogram' && this.item.chartData2.dataArry) {
+          arr = this.item.chartData2.dataArry.nameArry
+        }
+        if (this.item.barType === 'NewGroupLeftHistogram' && this.item.chartData3.dataArry) {
+          arr = this.item.chartData3.dataArry.nameArry
+        }
+        if (this.item.barType === 'NewBar' && this.item.chartData4.dataArry) {
+          arr = this.item.chartData4.dataArry.nameArry
+        }
+      }
+      return arr
     },
     boxStyle: function () {
       return {
@@ -121,14 +145,14 @@ export default {
     }
   },
   methods: {
-    getNewChartData(){
+    getNewChartData () {
       var _this = this
-      if(_this.item.moreUrlArry[_this.nowShowIndex]){
-        let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
+      if (_this.item.moreUrlArry[_this.nowShowIndex]) {
+        let myUrl = _this.item.moreUrlArry[_this.nowShowIndex].url
         $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
           _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
         })
-        if(_this.item.ctDataSource === 'system'){
+        if (_this.item.ctDataSource === 'system') {
           $.ajax({
             url: gbs.host + myUrl, // 第三方的ur已经拼接好host
             data: _this.item.moreUrlArry[_this.nowShowIndex].params,
@@ -136,26 +160,35 @@ export default {
             cache: false,
             ascyn: false,
             success: function (res) {
-              if(_this.item.chartData1){
+              if (_this.item.chartData1) {
                 _this.item.chartData1 = res.obj
               }
-              if(_this.item.chartData2){
+              if (_this.item.chartData2) {
                 _this.item.chartData2 = res.obj
               }
-              if(_this.item.chartData3){
+              if (_this.item.chartData3) {
                 _this.item.chartData3 = res.obj
               }
-              if(_this.item.chartData4){
+              if (_this.item.chartData4) {
                 _this.item.chartData4 = res.obj
               }
-            },
+            }
           })
         }
       }
     },
+    changeDataIndex (index) {
+      this.nowdataShowIndex = index
+      this.drawFlow()
+    },
     drawFlow () {
       this.mychart = echarts.init(this.$refs.NewHistogram)
       if (this.item.barType === 'NewHistogram') {
+        if (this.item.dataTypeSet === 1) {
+          this.item.chartData1.columns = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].columns
+          this.item.chartData1.unit = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].unit
+          this.item.chartData1.rows = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].rows
+        }
         let myseries = []
         let myXAxisData = []
         let mySeriesData = []
@@ -487,6 +520,11 @@ export default {
         }
       }
       if (this.item.barType === 'NewGroupHistogram') {
+        if (this.item.dataTypeSet === 1) {
+          this.item.chartData2.columns = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].columns
+          this.item.chartData2.unit = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].unit
+          this.item.chartData2.rows = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].rows
+        }
         let myseries = []
         let myXAxisData = []
         let mySeriesData = []
@@ -683,6 +721,11 @@ export default {
         }
       }
       if (this.item.barType === 'NewGroupLeftHistogram') {
+        if (this.item.dataTypeSet === 1) {
+          this.item.chartData3.columns = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].columns
+          this.item.chartData3.unit = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].unit
+          this.item.chartData3.rows = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].rows
+        }
         let myseries = []
         let myXAxisData = []
         let mySeriesData = []
@@ -945,6 +988,11 @@ export default {
         }
       }
       if (this.item.barType === 'NewBar') {
+        if (this.item.dataTypeSet === 1) {
+          this.item.chartData4.columns = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].columns
+          this.item.chartData4.unit = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].unit
+          this.item.chartData4.rows = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].rows
+        }
         let myData = this.item.chartData4
         let myseries = []
         let myXAxisData = []
@@ -1085,9 +1133,9 @@ export default {
                 fontSize: this.item.axisLabelSize4 || '14'
               },
               formatter: (params, index) => {
-                var newArr=[];
-                for(var i=0;i<this.item.chartData4.rows.length;i++){
-                    newArr.unshift(this.item.chartData4.rows[i])
+                var newArr = []
+                for (var i = 0; i < this.item.chartData4.rows.length; i++) {
+                  newArr.unshift(this.item.chartData4.rows[i])
                 }
                 var rows = newArr
                 let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
@@ -1217,20 +1265,47 @@ export default {
   },
   mounted () {
     this.drawFlow()
-    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
+    if (this.item.moreUrlArry && this.item.moreUrlArry.length > 1 && this.item.intervieData > 0) {
       this.myNewInterVal = setInterval(() => {
-        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+        this.nowShowIndex = (this.nowShowIndex + 1) % this.item.moreUrlArry.length
         this.getNewChartData()
-      }, this.item.intervieData * 1000);
+      }, this.item.intervieData * 1000)
     }
   },
   beforeDestroy () {
     this.mychart.dispose()
     this.mychart = null
-    if (this.myNewInterVal){
+    if (this.myNewInterVal) {
       clearInterval(this.myNewInterVal)
     }
   }
 
 }
 </script>
+<style scoped>
+.DataChangBtn{
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 10000;
+}
+.checkBox{
+  padding: 4px 20px;
+  margin: 0 6px;
+  font-size: 32px;
+  font-family: PangmenMainRoadTitleBody !important;
+  cursor: pointer;
+}
+.checked{
+  color: #f8f9fa;
+  background: url(./checked.png);
+  background-size: 100% 100%;
+}
+.nochecked{
+  color: #7d8692;
+  background: url(./nochecked.png);
+  background-size: 100% 100%;
+}
+</style>

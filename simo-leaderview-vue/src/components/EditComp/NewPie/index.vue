@@ -1,20 +1,17 @@
 <template>
   <div class="NewPie">
+    <div ref="NewPie" v-show="showLine" :style="boxStyle"></div>
     <div
-      ref="NewPie"
-      v-show="showLine"
-      :style="boxStyle">
-    </div>
-    <div class="v-charts-data-empty"
-        v-show="!showLine"
-        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-        <div><i class="icon-n-nodata"
-            style="font-size: 108px;"></i><br>
-          <p>抱歉，没有数据可供展示...</p>
-        </div>
+      class="v-charts-data-empty"
+      v-show="!showLine"
+      style="width: 100%; height: 100%; text-align: center; font-size: 12px"
+    >
+      <div>
+        <i class="icon-n-nodata" style="font-size: 108px"></i><br />
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
     </div>
   </div>
-
 </template>
 <script>
 export default {
@@ -22,13 +19,14 @@ export default {
   props: ['item'],
   data () {
     return {
-      defaultcolor:[
-      '#2d98f1',
-      '#32c5e9',
-      '#67e0e3',
-      '#9fe6b8',
-      '#ffdb5c',
-      '#ffb092'],
+      defaultcolor: [
+        '#2d98f1',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c',
+        '#ffb092'
+      ],
       mychart: null,
       showLine: true,
       oldOption: '',
@@ -62,10 +60,13 @@ export default {
         this.mychart.resize()
       })
     },
-    'item': {
+    item: {
       handler (newVal, oldVal) {
-        if(this.item.chartData.rows&& this.item.chartData.columns){
-          if ( this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+        if (this.item.chartData.rows && this.item.chartData.columns) {
+          if (
+            this.item.chartData.rows.length === 0 ||
+            this.item.chartData.columns.length === 0
+          ) {
             this.showLine = false
           } else {
             this.showLine = true
@@ -81,45 +82,44 @@ export default {
       this.mychart = echarts.init(this.$refs.NewPie)
       let myData = this.item.chartData
       let optioncolor = []
-      if(this.item.ifEidetColor)
-      {
-          if (this.item.ifGradual === 'true') {
+      if (this.item.ifEidetColor) {
+        if (this.item.ifGradual === 'true') {
           this.item.DLineColorArray.forEach((element, index) => {
-            optioncolor.push(new echarts.graphic.LinearGradient(0, 0, 1, 1, [{ offset: 0, color: element[0] }, { offset: 1, color: element[1] }]))
+            optioncolor.push(
+              new echarts.graphic.LinearGradient(0, 0, 1, 1, [
+                { offset: 0, color: element[0] },
+                { offset: 1, color: element[1] }
+              ])
+            )
           })
         } else {
           optioncolor = this.item.LineColorArray
         }
+      } else {
+        optioncolor = this.defaultcolor
       }
-      else
-      {
-        optioncolor=this.defaultcolor
-      }
-     
+
       var SericeData = []
-      myData.rows.forEach((element,index) => {
+      myData.rows.forEach((element, index) => {
         SericeData.push({
           name: element[myData.columns[0]],
           value: element[myData.columns[1]] * 1,
-          label:{color:''}
+          label: { color: '' }
         })
-        if(this.item.ifEidetColor)  //判断是否是默认还是自定义颜色
-        {
-            if(this.item.ifGradual==='true')  //判断是否渐变
-          {
-            let i=index%this.item.DLineColorArray.length;
-            SericeData[index].label.color=this.item.DLineColorArray[i][0]
-          }
-          else
-          {
-            let i=index%this.item.LineColorArray.length;
-            SericeData[index].label.color=this.item.LineColorArray[i]
+        if (this.item.ifEidetColor) {
+          // 判断是否是默认还是自定义颜色
+          if (this.item.ifGradual === 'true') {
+            // 判断是否渐变
+            let i = index % this.item.DLineColorArray.length
+            SericeData[index].label.color = this.item.DLineColorArray[i][0]
+          } else {
+            let i = index % this.item.LineColorArray.length
+            SericeData[index].label.color = this.item.LineColorArray[i]
           }
         } else {
-          let i=index%this.item.LineColorArray.length;
-            SericeData[index].label.color=this.defaultcolor[i]
+          let i = index % this.item.LineColorArray.length
+          SericeData[index].label.color = this.defaultcolor[i]
         }
-       
       })
       let myoption = {
         tooltip: {
@@ -145,31 +145,60 @@ export default {
         series: [
           {
             type: 'pie',
-            roseType: this.item.pieType === '南丁格尔图' ? this.item.roseType : false,
+            roseType:
+              this.item.pieType === '南丁格尔图' ? this.item.roseType : false,
             // roseType: this.item.roseType || false,
+            label: {
+              normal: {
+                show: this.item.showword,
+                fontSize: this.item.showwordSize || 12
+              }
+            },
             labelLine: {
               normal: {
                 show: this.item.showline
               }
             },
             // radius:,
-            radius: this.item.pieType === '环形图' ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : this.item.pieType === '南丁格尔图' ? [(this.item.radius - this.item.ringWidth) > 0 ? (this.item.radius - this.item.ringWidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            radius:
+              this.item.pieType === '环形图'
+                ? [
+                  this.item.radius - this.item.detailwidth > 0
+                    ? this.item.radius - this.item.detailwidth + '%'
+                    : 0 + '%',
+                  this.item.radius + '%'
+                ]
+                : this.item.pieType === '南丁格尔图'
+                  ? [
+                    this.item.radius - this.item.ringWidth > 0
+                      ? this.item.radius - this.item.ringWidth + '%'
+                      : 0 + '%',
+                    this.item.radius + '%'
+                  ]
+                  : ['0%', this.item.radius + '%'],
             // radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
             data: SericeData,
             itemStyle: {
-              borderRadius: this.item.pieType === '饼图' || this.item.pieType === '南丁格尔图' ? this.item.borderRadius : 0
+              borderRadius:
+                this.item.pieType === '饼图' ||
+                this.item.pieType === '南丁格尔图'
+                  ? this.item.borderRadius
+                  : 0
             }
           }
         ]
       }
       if (this.oldOption !== JSON.stringify(myoption)) {
         this.oldOption = JSON.stringify(myoption)
-        this.mychart.setOption(myoption,true)
+        this.mychart.setOption(myoption, true)
       }
     }
   },
   mounted () {
-    if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+    if (
+      this.item.chartData.rows.length === 0 ||
+      this.item.chartData.columns.length === 0
+    ) {
       this.showLine = false
     } else {
       this.showLine = true
@@ -182,6 +211,5 @@ export default {
     }
     this.mychart = null
   }
-
 }
 </script>

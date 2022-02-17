@@ -7,6 +7,7 @@ export default{
     'height': 50,
     'clr': '#666f8b',
     'fontSize': 12,
+    'fontSpaceing': 1,
     'fontWeight': 'normal',
     'trigger': 'hover',
     'placement': 'top',
@@ -15,6 +16,7 @@ export default{
     'DropdownMenuBack': '',
     'chartData': {
       'title': '测试名称',
+      'nowCheckId': '72',
       'children': [
         {
           'title': '链接1',
@@ -91,6 +93,11 @@ export default{
           'name': '字体颜色',
           'key': 'clr',
           'tag': 'Color'
+        },
+        {
+          'name': '字间距',
+          'key': 'fontSpaceing',
+          'tag': 'input'
         },
         {
           'name': '字号',
