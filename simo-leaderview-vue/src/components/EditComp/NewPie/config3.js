@@ -11,6 +11,7 @@ export default {
     'legendY': 85,
     'radius': 50,
     'showline': true,
+    'showword': true,
     'isRing': true,
     'detailwidth': 12,
     'borderRadius': 0,

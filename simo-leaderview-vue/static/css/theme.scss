@@ -888,3 +888,58 @@ html[data-theme="blueWhite"] {
         }
     }
 }
+
+.RZWHtable{
+    .ivu-modal{
+        width: 1747px !important;
+    }
+    .ivu-modal-content{
+        max-width: 1747px !important;
+        max-height: 886px !important;
+        background-color: transparent !important;
+        .ivu-modal-close{
+            height: 40px;
+            width: 40px;
+            top: 53px;
+            right: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .ivu-icon-ios-close {
+            font-size: 0;
+        }
+    }
+    .ivu-modal-body{
+        padding: 0 !important;
+        max-width: 1747px !important;
+        max-height: 886px !important;
+    }
+}
+.LDWHtable{
+    .ivu-modal{
+        width: 1747px !important;
+    }
+    .ivu-modal-content{
+        max-width: 1747px !important;
+        max-height: 886px !important;
+        background-color: transparent !important;
+        .ivu-modal-close{
+            height: 40px;
+            width: 40px;
+            top: 53px;
+            right: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .ivu-icon-ios-close {
+            font-size: 0;
+        }
+    }
+    .ivu-modal-body{
+        padding: 0 !important;
+        max-width: 1747px !important;
+        max-height: 886px !important;
+    }
+}

@@ -1109,8 +1109,8 @@ export default {
 }
 .vdr.active:before {
   content: '';
-  width: 100%;
-  height: 100%;
+  width: 0%;
+  height: 0%;
   position: absolute;
   top: 0;
   left: 0;

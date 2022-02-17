@@ -18,11 +18,10 @@ export default {
     return {
       baseUrl: '',
       code: '',
-      // name: 'admin',
-      name: 'yn',
+      name: 'admin',
       // pwd: 'iegJXNo9DJiNXndQJ+vgm3NQLLBrmPJCI88ZTHsuE+h8NMGYrzdxY2ki+LEcqYr5vD93mE+GwTYPxnuiari2He+PnKo5IFuSGikYwq+XDV2AEwaf2adH9RnTwtCG2ZXg+boBS8O+Mu1GQ33bnwXof823U2yIQqY4QD59o3ETRVA='
       pwd:
-        'PvdD05Lzi7hl2I5Foizn16eIPpTdXfkx85bCrFZ+Ry3bBK0f5lqYI12T05VNR1IlbR7AiQ1X/6465hJk2p+Dz9a5h0451tUGhA/ZIEd7pyAmljstut+ymKBduMuoryw2fja/7/DV3b22L6lUJMloYi12mG122vDy4kFfgLAVgQ0='
+        'OetGyNLRbqQrGtMuvYxL613w+vqZBOz4b4KUfJjN8UgGvuBWqHiIwgDFdFjZtxH9yfxGwmAhE2NSmILVmgRcXc4qpRI4YTvCE/phh+UiSE/UhjmSJyZh3piPBlp42+ecWzrh+rkeHakM3NnqjLEu/nP8O6s0Um8NSgH84eVSPNE='
     }
   },
   mounted: function () {

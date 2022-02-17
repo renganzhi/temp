@@ -1,33 +1,30 @@
 <template>
   <div class="dropMenu">
-    <Dropdown v-if="item.chartData.children" :style="titleStyle" :trigger="item.trigger ||'hover'" :placement="item.placement ||'top'">
-        <div class="dropMenuTitle">
-            {{item.chartData.title}}
-            <Icon type="ios-arrow-down"></Icon>
-        </div>
-        <DropdownMenu :style="menuStyle" slot="list">
-          <div v-for="(data,index) in item.chartData.children" :key = index>
-            <DropdownItem v-if="data.url"><a  target="_blank" :href="data.url">{{data.title}}</a></DropdownItem>
-
-            <Dropdown v-else-if="data.children" :placement="item.placement === 'top'?'right-end':'right-start'">
-                <DropdownItem>
-                    {{data.title}}
-                    <Icon type="ios-arrow-forward"></Icon>
-                </DropdownItem>
-                <DropdownMenu :style="menuStyle" slot="list">
-                  <div v-for="(a,i) in data.children" :key = i>
-                    <DropdownItem v-if="a.url"><a  target="_blank" :href="a.url">{{a.title}}</a></DropdownItem>
-                  </div>
-                </DropdownMenu>
-            </Dropdown>
+    <div class="" :style="titleStyle" v-if="item.chartData.children">
+      <div class="dropMenuTitle" id="dropMenuTitle">
+        {{ item.chartData.title }}
+        <div class="contenter" id="contenter">
+          <div v-for="(data, index) in item.chartData.children" :key="index" :class="item.chartData.nowCheckId === data.id?'checked':'onchecked'">
+            <a v-if="data.url" target="_blank" :href="data.url">{{
+              data.title
+            }}</a>
+            <div v-else @click="clickKnowPage(data.id)">{{ data.title }}</div>
           </div>
-        </DropdownMenu>
-    </Dropdown>
-    <a :style="titleStyle"  v-else-if="item.chartData.url" target="_blank" :href="item.chartData.url">{{item.chartData.title}}</a>
+        </div>
+      </div>
+    </div>
+    <a
+      :style="titleStyle"
+      v-else-if="item.chartData.url"
+      target="_blank"
+      :href="item.chartData.url"
+      >{{ item.chartData.title }}</a
+    >
   </div>
 </template>
 <script>
 import { gbs } from '@/config/settings'
+import { mapMutations } from 'vuex'
 export default {
   name: 'DownMenu',
   props: ['item'],
@@ -44,8 +41,11 @@ export default {
         position: 'relative',
         color: this.item.clr + ' !important',
         fontSize: this.item.fontSize + 'px !important',
+        letterSpacing: this.item.fontSpaceing + 'px !important',
         fontWeight: this.item.fontWeight + ' !important',
-        fontFamily: this.item.fontFamily ? this.item.fontFamily + ' !important' : ''
+        fontFamily: this.item.fontFamily
+          ? this.item.fontFamily + ' !important'
+          : ''
       }
     },
     menuStyle: function () {
@@ -54,13 +54,30 @@ export default {
           ? 'url(' + gbs.host + this.item.DropdownMenuBack + ')'
           : '',
         color: this.item.clr + ' !important',
+        letterSpacing: this.item.fontSpaceing + 'px !important',
         fontSize: this.item.fontSize + 'px !important',
         backgroundSize: '100% 100%',
         overflow: 'hidden'
       }
     }
   },
+  mounted () {
+    var Moveout = document.getElementById('dropMenuTitle')
+    var content = document.getElementById('contenter')
+    // 鼠标移入显示
+    Moveout.onmouseover = function () {
+      content.style.display = 'block'
+    }
+    // 鼠标移出隐藏
+    Moveout.onmouseout = function () {
+      content.style.display = 'none'
+    }
+  },
   methods: {
+    ...mapMutations(['changeNowPage']),
+    clickKnowPage () {
+      this.changeNowPage(this.linkId)
+    },
     handleOpen () {
       this.visible = true
     },
@@ -71,14 +88,31 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-  .dropMenu{
-      width: 100%;
-      height: 100%;
+.dropMenu {
+  width: 100%;
+  height: 100%;
+}
+.dropMenuTitle {
+  cursor: pointer;
+  text-align: center;
+  .ivu-icon {
+    display: none;
   }
-  .dropMenuTitle{
-    cursor: pointer;
-  }
-  .dropMenuTitle:hover{
-    color: #5b8bff;
-  }
+}
+.checked{
+  background: url(./checked.png);
+  background-size: 100% 100%;
+}
+.onchecked{
+  background: url(./onchecked.png);
+  background-size: 100% 100%;
+}
+.contenter {
+  text-align: center;
+  display: none;
+  background-color: rgb(10, 19, 56);
+}
+// .dropMenuTitle:hover{
+//   color: #5b8bff;
+// }
 </style>

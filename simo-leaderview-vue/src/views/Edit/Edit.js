@@ -42,6 +42,7 @@ let config = {
   KLine: require('@/components/EditComp/KLine/config.js'),
   DownMenu: require('@/components/EditComp/DownMenu/config.js'),
   WuhoIfream: require('@/components/EditComp/WuhoIfream/config.js'),
+  WuhoTbale: require('@/components/EditComp/WuhoTbale/config.js'),
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),
   ELine: require('@/components/EditComp/ELine/config.js'),
   DataFlow: require('@/components/EditComp/DataFlow/config.js'),
