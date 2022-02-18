@@ -75,8 +75,8 @@ export default {
   },
   methods: {
     ...mapMutations(['changeNowPage']),
-    clickKnowPage () {
-      this.changeNowPage(this.linkId)
+    clickKnowPage (id) {
+      this.changeNowPage(id)
     },
     handleOpen () {
       this.visible = true
@@ -107,10 +107,16 @@ export default {
   background: url(./onchecked.png);
   background-size: 100% 100%;
 }
+.onchecked:hover{
+  background: url(./checked.png);
+  background-size: 100% 100%;
+}
 .contenter {
+  margin: 8px 0px;
+  padding: 7px;
   text-align: center;
   display: none;
-  background-color: rgb(10, 19, 56);
+  background-color: #13288359;
 }
 // .dropMenuTitle:hover{
 //   color: #5b8bff;

@@ -1,8 +1,8 @@
 <template>
   <div
-    style="width: 100%;height:100%;position: absolute;"
+    style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
   >
-    <!-- <navBar></navBar> -->
+    <navBar></navBar>
     <div id="home-html" class="flex flex-vertical full-height full-width">
       <div
         style="width: 100%; height: 100%;"
