@@ -1,13 +1,13 @@
 
 import NewTable from '@/components/EditComp/NewTable/config.js'
 import NewMoveTable from '@/components/EditComp/NewMoveTable/config.js'
-import WuhoTbale from '@/components/EditComp/WuhoTbale/config.js'
+import WuhouTable from '@/components/EditComp/WuhouTable/config.js'
 const table = {
   name: '表格',
   child: [
     NewTable.item,
     NewMoveTable.item,
-    WuhoTbale.item
+    WuhouTable.item
     // {
     //   text: '表格',
     //   imgClass: 'icon-n-table',

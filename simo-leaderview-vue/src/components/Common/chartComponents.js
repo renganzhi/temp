@@ -45,7 +45,8 @@ import Scatter from '@/components/EditComp/Scatter' // 散点图
 import KLine from '@/components/EditComp/KLine' // 散点图
 import DownMenu from '@/components/EditComp/DownMenu' // 散点图
 import WuhoIfream from '@/components/EditComp/WuhoIfream' // 散点图
-import WuhoTbale from '@/components/EditComp/WuhoTbale' // 散点图
+import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
+import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
 import ELine from '@/components/EditComp/ELine' // 散点图
 import Dashboard from '@/components/EditComp/Dashboard' // 散点图
 import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
@@ -114,7 +115,8 @@ export default {
   KLine,
   DownMenu,
   WuhoIfream,
-  WuhoTbale,
+  WuhouTable,
+  XiaLaShu,
   ELine,
   Dashboard,
   BulletFrame,
