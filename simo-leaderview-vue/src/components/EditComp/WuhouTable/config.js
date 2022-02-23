@@ -5,8 +5,8 @@ export default{
     'chartType': 'WuhouTable',
     'width': 990,
     'height': 750,
-    'headHeight': '',
-    'boduHeight': '',
+    'headHeight': '80',
+    'boduHeight': '80',
     'Fontsize': '',
     'chartData': {
       'columns': [
