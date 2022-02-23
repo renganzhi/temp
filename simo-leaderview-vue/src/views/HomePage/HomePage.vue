@@ -73,6 +73,23 @@
                   </div>
                 </div>
               </div>
+              <div class="ParentBox">
+                <div class="BoxArry">
+                  <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
+                  <div class="BigBox" v-else>
+                    <div class="CloseBox" @click="OpenBox = true"></div>
+                    <div class="AhrefBox"><a href="">视频调度</a></div>
+                    <div class="AhrefBox"><a href="">语音调度</a></div>
+                    <div class="AhrefBox" @mousemove="OpenChileBox = true"><a href="">事件调度</a></div>
+                    <div class="ChildrenBox" v-if="OpenChileBox"  @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false">
+                      <a href="">社区</a>
+                      <a href="">专版/指挥部</a>
+                      <a href="">网格长</a>
+                      <a href="">委办局/街道</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <LookItem
                 v-for="(item, index) in nowPage"
                 :index="index"
@@ -238,6 +255,8 @@ export default {
       showModelBox: false,
       boxData: {},
       isSuperAdmin: false,
+      OpenBox: true,
+      OpenChileBox: false,
       moveFlag: true,
       defTheme: true, // 默认主题
       isFullScreen: false,
@@ -1682,6 +1701,81 @@ html[data-theme='blueWhite'] {
   height: 2160px;
   z-index: 5000;
   background-color: #15192a65;
+}
+.ParentBox{
+  position: relative;
+}
+.BoxArry{
+  .SmallBox{
+    height: 770px;
+    width: 45px;
+    position: fixed;
+    top: 700px;
+    left: 3790px;
+    position: absolute;
+    z-index: 10000;
+    background: url(./boxClose.png);
+    background-size: 100%  100%;
+  }
+  .BigBox{
+    height: 770px;
+    width: 260px;
+    position: fixed;
+    top: 700px;
+    left: 3580px;
+    background-color: rgb(12, 236, 206);
+    position: absolute;
+    z-index: 10000;
+    background: url(./boxTan.png);
+    background-size: 100%  100%;
+    .CloseBox{
+      height: 220px;
+      width: 50px;
+      position: absolute;
+      top: 280px;
+      z-index: 10000;
+    }
+    .AhrefBox{
+      height: 260px;
+      padding: 30px;
+      position: relative;
+      width: 260px;
+      cursor: pointer;
+      a{
+        font-size: 34px;
+        display: block;
+        top: 176px;
+        color: #CCE7FF;
+        width: 200px;
+        position: absolute;
+        text-align: center;
+      }
+    }
+    .AhrefBox:hover a{
+      color: #15ABFF;
+    }
+    .ChildrenBox{
+      height: 365px;
+      width: 260px;
+      left: -260px;
+      top: 525px;
+      background: url(./btBack.png);
+      background-size: 100%  100%;
+      position: absolute;
+      a{
+        display: block;
+        width: 100%;
+        height: 25%;
+        text-align: center;
+        font-size: 34px;
+        line-height: 100px;
+        color: #CCE7FF;
+      }
+      a:hover{
+        color: #15ABFF;
+      }
+    }
+  }
 }
 .ModelBox {
   height: 886px;
