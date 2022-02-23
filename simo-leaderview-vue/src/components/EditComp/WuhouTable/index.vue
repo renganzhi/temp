@@ -6,7 +6,7 @@
           {{ data }}
         </th>
       </tr>
-    </div>\
+    </div>
     <div class="TableBody"  :style="bodyAllStyle" ref="MyLunBoTbale">
       <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i">
         <th v-for="(data, index) in item.chartData.columns" :key="index"
@@ -20,7 +20,7 @@
           <div v-if="data === '查看详情'">
             <div class="selctXQ" @click="showXQ(rowsData)">{{rowsData[data]}}</div>
           </div>
-          {{ data === "操作" || data === "查看详情" ? "" : rowsData[data].value?rowsData[data].value:rowsData[data] }}
+          {{ data === "操作" || data === "查看详情" ? "" : rowsData[data] && rowsData[data].value?rowsData[data].value:rowsData[data] }}
         </th>
       </tr>
     </div>
@@ -256,7 +256,6 @@ export default {
       this.nowShowData = rowsData
     },
     showXQ(data){
-      console.log(data)
       let boxData = {
         title:'测试弹框',
         data:data

@@ -16,7 +16,7 @@
                 <div :class="index%2===1?'leftBox':'rightBox'">
                     <div class="Title">{{data.time}}</div>
                     <div class="Value">
-                        <div :class="data.open?'openData':'data'" @click="data.open = !data.open">{{data.value}}</div>
+                        <div class="data" @click="openBox(data)">{{data.title}}</div>
                     </div>
                 </div>
             </div>
@@ -39,6 +39,16 @@ export default {
   mounted () {
   },
   methods: {
+      openBox(data){
+      let boxData = {
+        title:data.title,
+        type: 1,
+        data:{
+            '详情信息':data.value
+        }
+      }
+      this.$parent.$parent.ShowTanKuangBox(boxData)
+      }
   },
   beforeDestroy () {
   }

@@ -58,12 +58,17 @@
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
-                  <div class="BoxBody">
+                  <div class="BoxBody" v-if="showModelBoxtype === 0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae">{{data.title}} : </div>
                       <div class="Data" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
+                    </div>
+                  </div>
+                  <div v-else-if="showModelBoxtype === 1">
+                    <div class="DataValue" v-for="(data,index) in boxData.data" :key="index">
+                      {{ data.value }}
                     </div>
                   </div>
                 </div>
@@ -328,6 +333,7 @@ export default {
     },
     ShowTanKuangBox(dataArry){
       this.showModelBox = true
+      this.showModelBoxtype = dataArry.type || 0
       let newData = []
       for (const key in dataArry.data) {
         if (Object.hasOwnProperty.call(dataArry.data, key)) {
@@ -1717,5 +1723,12 @@ html[data-theme='blueWhite'] {
   .Data {
     color: #789fb0;
   }
+}
+.DataValue{
+  height: 600px;
+  overflow: auto;
+  width: 100%;
+  font-size: 28px;
+  text-indent:2em
 }
 </style>
