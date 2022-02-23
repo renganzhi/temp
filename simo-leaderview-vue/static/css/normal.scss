@@ -199,3 +199,28 @@ body {
   margin-left: 120px;
   line-height: 28px;
 }
+.XiaLaShu{
+  
+  .ivu-select{
+    .ivu-select-selected-value{
+        font-size: 29px !important;
+    }
+    .ivu-icon{
+      font-size: 29px !important;
+    }
+    .ivu-select-dropdown{
+      top: 60px !important;
+      max-height: 10000px;
+      background-color: rgba(46, 73, 87, 0.288);
+    }
+    .ivu-select-item{
+      font-size: 29px !important;
+    }
+    .ivu-select-item.ivu-select-item-selected{
+      background-color: rgba(0, 136, 204, 0.288);
+    }
+    .ivu-select-item:hover{
+      background-color: rgba(55, 163, 218, 0.288);
+    }
+  }
+}

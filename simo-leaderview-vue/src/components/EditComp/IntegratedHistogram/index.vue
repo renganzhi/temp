@@ -1271,6 +1271,24 @@ export default {
         this.getNewChartData()
       }, this.item.intervieData * 1000)
     }
+    var _this = this
+    this.mychart.on('click', function (params) {
+      let dataOut = []
+      if(_this.item.barType === 'NewHistogram'){
+          dataOut = _this.item.chartData1.rows[params.dataIndex]
+      }else if(_this.item.barType === 'NewGroupHistogram'){
+          dataOut = _this.item.chartData2.rows[params.dataIndex]
+      }else if(_this.item.barType === 'NewGroupLeftHistogram'){
+          dataOut = _this.item.chartData3.rows[params.dataIndex]
+      }else if(_this.item.barType === 'NewBar'){
+          dataOut = _this.item.chartData4.rows[params.dataIndex]
+      }
+      let boxData = {
+        title:'测试弹框',
+        data:dataOut
+      }
+      _this.$parent.$parent.ShowTanKuangBox(boxData)
+    });
   },
   beforeDestroy () {
     this.mychart.dispose()

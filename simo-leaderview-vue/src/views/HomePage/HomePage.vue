@@ -54,6 +54,20 @@
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing></beijing>
               </div>
+              <div class="BoxMban"  v-if="showModelBox">
+                <div class="ModelBox">
+                  <div class="closeBtn" @click="closeBoxTtn()"></div>
+                  <div class="BoxTitle">{{boxData.title}}</div>
+                  <div class="BoxBody">
+                    <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
+                      <div class="Nmae">{{data.title}} : </div>
+                      <div class="Data" :style="{
+                          color: data.value && data.value.color? data.value.color:'#5983b6'
+                        }">{{ data.value.value ? data.value.value : data.value}} </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <LookItem
                 v-for="(item, index) in nowPage"
                 :index="index"
@@ -216,6 +230,8 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showImport: false,
+      showModelBox: false,
+      boxData: {},
       isSuperAdmin: false,
       moveFlag: true,
       defTheme: true, // 默认主题
@@ -309,6 +325,24 @@ export default {
       if (data.ifAdd) {
         this.$router.push('/edit/' + data.addId)
       }
+    },
+    ShowTanKuangBox(dataArry){
+      this.showModelBox = true
+      let newData = []
+      for (const key in dataArry.data) {
+        if (Object.hasOwnProperty.call(dataArry.data, key)) {
+          let data = {
+            title:key,
+            value:dataArry.data[key]
+          }
+          newData.push(data)
+        }
+      }
+      dataArry.data = newData
+      this.boxData = dataArry
+    },
+    closeBoxTtn(){
+      this.showModelBox = false
     },
     hideImportModal () {
       this.showImport = false
@@ -1632,6 +1666,56 @@ html[data-theme='blueWhite'] {
   }
   to {
     transform: scale(1);
+  }
+}
+.BoxMban{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3840px;
+  height: 2160px;
+  z-index: 5000;
+  background-color: #15192a65;
+}
+.ModelBox {
+  height: 886px;
+  width: 1747px;
+  padding: 100px;
+  top: 600px;
+  left: 1050px;
+  position: relative;
+  z-index: 5000;
+  background: url(./modelBox.png);
+  .closeBtn{
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .BoxTitle {
+    font-size: 46px !important;
+    color: #bbeefe;
+    font-family: PangmenMainRoadTitleBody !important;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 24px !important;
+    flex-wrap: wrap;
+  }
+  .lineBox {
+    display: flex;
+    width: 33%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    color: #415468;
+  }
+  .Data {
+    color: #789fb0;
   }
 }
 </style>
