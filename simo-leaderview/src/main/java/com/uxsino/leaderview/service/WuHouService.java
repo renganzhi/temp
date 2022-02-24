@@ -4,9 +4,7 @@ package com.uxsino.leaderview.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.leaderview.utils.JwtUtil;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -17,13 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.*;
 
@@ -35,6 +27,9 @@ public class WuHouService {
     public static final String appId = "1942fc6b7aab121b22c892c920af8b74b9349f2611ce71d79a8324ce83227279:";
     public static final Integer namespace_id = 1;
     public static final String encoded_data = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lc3BhY2VfaWQiOjF9.dgGuGkLelFnT9ups0kUoBw-AAOFsvUW_fl7HN3KVUWE";
+
+    /*@Autowired
+    private ScheduleManager scheduleManager;*/
 
 
     public String getData(String formId, String pagination, String query, Boolean ifFormInfo){
@@ -305,4 +300,22 @@ public class WuHouService {
 
         return result;
     }
+
+    /*public void getDataByTime(GetDataJob job) throws SchedulerException {
+        try {
+            //这个方法中带有更新功能,但是更新功能无法更新job里面的实现,所以仍然需要进行重新创建
+            scheduleManager.start(new Job<GetDataJob>() {
+                @Override
+                public void run() {
+                    System.out.println(job.getConf() + DateUtils.formatCommonDate(new Date()));
+                }
+            }.name(job.getName()).target(job).group(job.getGroup()).cron(job.getCron()));
+        } catch (Exception e) {
+            log.error("开启计划定时任务异常：{}", e.getMessage());
+        }
+
+        //scheduleManager.delete(job.getName(),job.getGroup());
+
+    }*/
+
 }
