@@ -300,7 +300,7 @@ export default {
         width: 15%;
       }
       th:nth-child(3) {
-        width: 35%;
+        width: 25%;
         padding-right: 3%;
         padding-left: 2%;
       }
@@ -308,7 +308,10 @@ export default {
         width: 20%;
       }
       th:nth-child(5) {
-        width: 20%;
+        width: 25%;
+      }
+      th:nth-child(6) {
+        width: 25%;
       }
     }
   }
@@ -335,7 +338,7 @@ export default {
         width: 15%;
       }
       th:nth-child(3) {
-        width: 35%;
+        width: 25%;
         padding-right: 3%;
         padding-left: 2%;
       }
@@ -343,7 +346,10 @@ export default {
         width: 20%;
       }
       th:nth-child(5) {
-        width: 20%;
+        width: 25%;
+      }
+      th:nth-child(6) {
+        width: 25%;
       }
     }
   }
