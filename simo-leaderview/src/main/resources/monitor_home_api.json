@@ -4101,5 +4101,92 @@
                 ]
             }
         ]
+    },
+    {
+        "key": "get_form_data",
+        "name": "武侯表单数据",
+        "component": "monitor",
+        "type": "table,NewMoveTable,NewTable,WuhouTable",
+        "url": "/leaderview/WuHou/getFormData",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区矫正",
+                        "value": "89"
+                    },
+                    {
+                        "name": "重点人员管控-社区康复",
+                        "value": "90"
+                    },
+                    {
+                        "name": "重点人员管控-重症精神",
+                        "value": "93"
+                    },
+                    {
+                        "name": "重点人员管控-重点人员（信访维稳）",
+                        "value": "94"
+                    },
+                    {
+                        "name": "重点事件",
+                        "value": "95"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            }
+        ]
+    },
+    {
+        "key": "get_people_total_count",
+        "name": "基础人员总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getPeopleTotalCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区服刑人员",
+                        "value": "89"
+                    },
+                    {
+                        "name": "重点人员管控-吸毒",
+                        "value": "90"
+                    },
+                    {
+                        "name": "重点人员管控-重症精神",
+                        "value": "93"
+                    },
+                    {
+                        "name": "重点人员管控-重点人员（信访维稳）",
+                        "value": "94"
+                    },
+                    {
+                        "name": "重点人员管控-重点事件",
+                        "value": "95"
+                    }
+                ]
+            }
+        ]
     }
 ]
