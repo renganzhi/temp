@@ -1284,7 +1284,7 @@ export default {
           dataOut = _this.item.chartData4.rows[params.dataIndex]
       }
       let boxData = {
-        title:'测试弹框',
+        title:'数据详情',
         data:dataOut
       }
       _this.$parent.$parent.ShowTanKuangBox(boxData)

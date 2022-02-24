@@ -469,6 +469,20 @@ export default {
     } else {
       this.showLine = true
       this.drawFlow()
+      var _this = this
+      _this.mychart.getZr().on('click', function(params) {
+        const pointInPixel = [params.offsetX, params.offsetY];
+        if (_this.mychart.containPixel('grid',pointInPixel)) { // 第一步
+          let xIndex= _this.mychart.convertFromPixel({seriesIndex:0},[params.offsetX, params.offsetY])[0]; // 第二部
+          let dataOut = []
+          dataOut = _this.item.chartData.rows[xIndex]
+          let boxData = {
+            title:'数据详情',
+            data:dataOut
+          }
+          _this.$parent.$parent.ShowTanKuangBox(boxData)
+          }
+      })
     }
   },
   beforeDestroy () {
