@@ -7,7 +7,6 @@ ext {
             "simo-commons-authority",
             "simo-commons-reactorq",
             "simo-component-watcher",
-            'simo-commons-web-support',
-            "simo-collector-data"
+            'simo-commons-web-support'
     ]
 }
