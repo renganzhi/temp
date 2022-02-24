@@ -60,8 +60,8 @@
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
-                      <div class="Nmae">{{data.title}} : </div>
-                      <div class="Data" :style="{
+                      <div class="Nmae" v-if="data.title !== '查看详情'">{{data.title}} : </div>
+                      <div class="Data" v-if="data.title !== '查看详情'" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
                     </div>
