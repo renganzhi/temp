@@ -248,16 +248,18 @@ export default {
       this.modal10 = false
     },
     showRZ (rowsData) {
+      this.modal10 = false
       this.modal9 = true
       this.nowShowData = rowsData
     },
     showLD (rowsData) {
+      this.modal9 = false
       this.modal10 = true
       this.nowShowData = rowsData
     },
     showXQ(data){
       let boxData = {
-        title:'测试弹框',
+        title:'数据详情',
         data:data
       }
       this.$parent.$parent.ShowTanKuangBox(boxData)
