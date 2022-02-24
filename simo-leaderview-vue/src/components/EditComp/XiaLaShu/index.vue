@@ -147,7 +147,6 @@ export default {
                             }
                             .data{
                                 width: 100%;
-                                height: 100%;
                                 display: -webkit-box;
                                 -webkit-box-orient: vertical;
                                 -webkit-line-clamp: 2;
