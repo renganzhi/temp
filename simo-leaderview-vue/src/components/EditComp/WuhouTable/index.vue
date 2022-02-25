@@ -2,25 +2,26 @@
   <div class="WuhouTable">
     <div class="TableHead" :style="headStyle">
       <tr :style="headStyle">
-        <th v-for="(data, index) in item.chartData.columns" :key="index">
+        <th v-for="(data, index) in item.chartData.columns" :key="index" :style="{width:`calc(${100 / item.chartData.columns.length}%)`}">
           {{ data }}
         </th>
       </tr>
     </div>
     <div class="TableBody"  :style="bodyAllStyle" ref="MyLunBoTbale">
-      <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i">
+      <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i"  @click="showXQ(rowsData)">
         <th v-for="(data, index) in item.chartData.columns" :key="index"
           :style="{
-            color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#5983b6'
+            color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#5983b6',
+            width:`calc(${100 / item.chartData.columns.length}%)`
           }">
           <div v-if="data === '操作'">
-            <div class="btnBox" @click="showRZ(rowsData)">入住人信息</div>
-            <div class="btnBox" @click="showLD(rowsData)">联动处置情况</div>
+            <div class="btnBox" @click="showRZ(rowsData,e)">入住人信息</div>
+            <div class="btnBox" @click="showLD(rowsData,e)">联动处置情况</div>
           </div>
-          <div v-if="data === '查看详情'">
+          <div v-if="data === '详情'">
             <div class="selctXQ" @click="showXQ(rowsData)">{{rowsData[data]}}</div>
           </div>
-          {{ data === "操作" || data === "查看详情" ? "" : rowsData[data] && rowsData[data].value?rowsData[data].value:rowsData[data] }}
+          {{ data === "操作" || data === "详情" ? "" : rowsData[data] && rowsData[data].value?rowsData[data].value:rowsData[data] }}
         </th>
       </tr>
     </div>
@@ -133,7 +134,7 @@
             </div>
           </div>
           <div class="OneArry">
-            <div class="ArryTitle">网络</div>
+            <div class="ArryTitle">网格员</div>
             <div class="ArryBody">
               <div class="lineBox">
                 <div class="Nmae">预警情况:</div>
@@ -247,12 +248,14 @@ export default {
     closeBoxTtn2(){
       this.modal10 = false
     },
-    showRZ (rowsData) {
+    showRZ (rowsData,e) {
+      e.stopPropagation()
       this.modal10 = false
       this.modal9 = true
       this.nowShowData = rowsData
     },
-    showLD (rowsData) {
+    showLD (rowsData,e) {
+      e.stopPropagation()
       this.modal9 = false
       this.modal10 = true
       this.nowShowData = rowsData
@@ -292,27 +295,28 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
-      th:nth-child(1) {
-        width: 15%;
-      }
-      th:nth-child(2) {
-        width: 15%;
-      }
-      th:nth-child(3) {
-        width: 25%;
-        padding-right: 3%;
-        padding-left: 2%;
-      }
-      th:nth-child(4) {
-        width: 20%;
-      }
-      th:nth-child(5) {
-        width: 25%;
-      }
-      th:nth-child(6) {
-        width: 25%;
-      }
+      // th:nth-child(1) {
+      //   width: 15%;
+      // }
+      // th:nth-child(2) {
+      //   width: 15%;
+      // }
+      // th:nth-child(3) {
+      //   width: 25%;
+      //   padding-right: 3%;
+      //   padding-left: 2%;
+      // }
+      // th:nth-child(4) {
+      //   width: 20%;
+      // }
+      // th:nth-child(5) {
+      //   width: 25%;
+      // }
+      // th:nth-child(6) {
+      //   width: 25%;
+      // }
     }
   }
   .TableBody {
@@ -330,27 +334,28 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
       }
-      th:nth-child(1) {
-        width: 15%;
-      }
-      th:nth-child(2) {
-        width: 15%;
-      }
-      th:nth-child(3) {
-        width: 25%;
-        padding-right: 3%;
-        padding-left: 2%;
-      }
-      th:nth-child(4) {
-        width: 20%;
-      }
-      th:nth-child(5) {
-        width: 25%;
-      }
-      th:nth-child(6) {
-        width: 25%;
-      }
+      // th:nth-child(1) {
+      //   width: 15%;
+      // }
+      // th:nth-child(2) {
+      //   width: 15%;
+      // }
+      // th:nth-child(3) {
+      //   width: 25%;
+      //   padding-right: 3%;
+      //   padding-left: 2%;
+      // }
+      // th:nth-child(4) {
+      //   width: 20%;
+      // }
+      // th:nth-child(5) {
+      //   width: 25%;
+      // }
+      // th:nth-child(6) {
+      //   width: 25%;
+      // }
     }
   }
   .btnBox {

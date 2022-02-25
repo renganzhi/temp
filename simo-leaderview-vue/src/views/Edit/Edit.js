@@ -3731,7 +3731,7 @@ export default {
           this.downOnePage()
         } else {
           if (this.editId) {
-            this.$router.push('/')
+            // this.$router.push('/')
           } else {
             this.$router.push('/editPage')
           }

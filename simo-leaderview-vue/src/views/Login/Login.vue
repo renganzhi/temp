@@ -43,7 +43,7 @@ export default {
         }
       }).then(res => {
         if (res.success) {
-          this.$router.push('/')
+          // this.$router.push('/')
         }
       })
     }
