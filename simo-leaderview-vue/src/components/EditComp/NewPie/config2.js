@@ -16,7 +16,7 @@ export default {
     'isRing': false,
     'showline': true,
     'showword': true,
-    'roseType': 'area', // 与饼图的区别
+    'roseType': 'radius', // 与饼图的区别
     'tooltipShow': true,
     'tooltipBackColor': '#57625d',
     'tooltipTextColor': '#fff',

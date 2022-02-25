@@ -1,8 +1,7 @@
 <template>
   <div
-    style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
+    style="width: 100%;height: 100%;position: absolute;"
   >
-    <navBar></navBar>    
     <div id="home-html" class="flex flex-vertical full-height full-width">
       <div
         style="width: 100%; height: 100%;"
@@ -225,7 +224,6 @@
 </template>
 
 <script>
-import navBar from '../../../src/navBar/index.vue'
 import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
@@ -244,8 +242,7 @@ export default {
     LookCompose,
     AddPage,
     ImportPage,
-    beijing,
-    navBar
+    beijing
   },
   // mixins:[thirdLoginMix],
   data () {
@@ -277,6 +274,7 @@ export default {
       nowPage2: [],
       pageSize: 0,
       pageIndex: 0,
+      nowShowPageID:0,
       refreshType: '1',
       refreshTimer: null, // 每页的刷新定时器
       refreshTime: 3, // 刷新时间
@@ -625,6 +623,14 @@ export default {
     },
     // 加载第一页大屏
     loadFirstPage: function () {
+      console.log(this.nowShowPageID)
+      console.log(this.pageList)
+      this.pageList.forEach((d,i) => {
+        if(d.id*1 === this.nowShowPageID*1){
+          this.pageIndex = i
+        }
+      });
+      console.log(this.pageIndex)
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
@@ -1383,6 +1389,8 @@ export default {
     // }
   },
   beforeMount: function () {
+    var id = this.$route.params.id
+    this.nowShowPageID = id
     this.axios
       .get('/alert/currencyAlertmanager/findAlertLevelList')
       .then(res => {
@@ -1390,6 +1398,7 @@ export default {
       })
   },
   mounted: function () {
+    // this.pageId = id
     $('#screen').addClass('disShow')
     // var _url = window.location.protocol + '//' + window.location.host + '/index'
     // window.history.pushState({}, '', _url)

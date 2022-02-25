@@ -328,7 +328,7 @@ export default {
   },
   methods: {
     backHome () {
-      this.$router.push('/')
+      // this.$router.push('/')
     },
     getAdminUsers () {
       // 获取超级管理员角色下的所有用户

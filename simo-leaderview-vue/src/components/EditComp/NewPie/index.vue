@@ -146,12 +146,15 @@ export default {
           {
             type: 'pie',
             roseType:
-              this.item.pieType === '南丁格尔图' ? this.item.roseType : false,
+              this.item.pieType === '南丁格尔图' ? 'radius' : false,
             // roseType: this.item.roseType || false,
             label: {
               normal: {
                 show: this.item.showword,
-                fontSize: this.item.showwordSize || 12
+                fontSize: this.item.showwordSize || 12,
+                formatter: (params, ticket, callback) => {
+                  return params.name+'('+params.value+')'+'\n'+params.percent+'%'
+                }
               }
             },
             labelLine: {
