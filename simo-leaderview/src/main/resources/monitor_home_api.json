@@ -4106,7 +4106,7 @@
         "key": "get_form_data",
         "name": "武侯表单数据",
         "component": "monitor",
-        "type": "table,NewMoveTable,NewTable,WuhouTable",
+        "type": "WuhouTable",
         "url": "/leaderview/WuHou/getFormData",
         "method" : "get",
         "params": [
@@ -4151,6 +4151,51 @@
         ]
     },
     {
+        "key": "get_form_data_for_zf",
+        "name": "重点人员走访数据",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou/getFormDataForZF",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员走访表",
+                        "value": "106"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            },
+            {
+                "key": "query",
+                "name": "人员类别",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "社区矫正",
+                        "value": "query[734]=社区服刑人员"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "key": "get_people_total_count",
         "name": "基础人员总数",
         "component": "monitor",
@@ -4186,6 +4231,64 @@
                         "value": "95"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "key": "get_economic_data_value",
+        "name": "浆洗街道重点经济指标数据",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getEconomicDataValue",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "2022",
+                        "value": "2022"
+                    }
+                ]
+            },
+            {
+                "key": "jieDao",
+                "name": "街道",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "浆洗街街道",
+                        "value": "浆洗街街道"
+                    }
+                ]
+            },
+            {
+                "key": "jiDu",
+                "name": "季度",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "一季度",
+                        "value": "一季度"
+                    }
+                ]
+            },
+            {
+                "key": "fieldId",
+                "name": "经济指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getEconomicDataInfo",
+                "params": ["year","jieDao","jiDu"]
             }
         ]
     }

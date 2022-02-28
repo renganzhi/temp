@@ -1,15 +1,19 @@
 package com.uxsino.leaderview.controller;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.leaderview.model.GetDataJob;
 import com.uxsino.leaderview.service.WuHouService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
 
-import static org.reflections.Reflections.log;
+import java.io.IOException;
+import java.util.HashMap;
 
 @Api(tags = {"武侯智慧城市-大屏展示数据接口"})
 @RestController
@@ -25,15 +29,33 @@ public class WuHouController {
         try {
             return new JsonModel(true, wuHouService.getFormInfo(formId));
         } catch (Exception e) {
+            log.error("中台接口报错");
             log.error(e.getMessage(),e);
             return new JsonModel(false, e.getMessage());
         }
     }
 
     @RequestMapping(value = "/getFormData", method = RequestMethod.GET)
-    public JsonModel getFormData(String formId, String column){
+    public JsonModel getFormData(String formId, String column, @RequestParam(required = false) String query){
         try {
-            return wuHouService.getFormDataForTable(formId, column);
+            return wuHouService.getFormDataForTable(formId, column, query);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return new JsonModel(false,"中台接口报错", e.getMessage());
+        }
+    }
+
+    /**
+     * 获取重点人员走访表数据
+     * @param formId
+     * @param column
+     * @param query
+     * @return
+     */
+    @RequestMapping(value = "/getFormDataForZF", method = RequestMethod.GET)
+    public JsonModel getFormDataForZF(String formId, String column, @RequestParam(required = false) String query){
+        try {
+            return wuHouService.getFormDataForTable(formId, column, query);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return new JsonModel(false, e.getMessage());
@@ -49,6 +71,79 @@ public class WuHouController {
     public JsonModel getPeopleTotalCount(String formId){
 //        String query90 = "/search.json?query[634]=浆洗街";
         return new JsonModel(true,wuHouService.getFormDataForText(formId,null));
+    }
+
+    @GetMapping("/getXDZFXQ")
+    public JsonModel getXDZFXQ(){
+        //目前身份证号的查询有问题
+//        return wuHouService.getFormDataForWindow("106","人员姓名:毛智勇、人员身份证号:510107********2973、人员类别:吸毒人员");
+        return wuHouService.getFormDataForWindow("106","人员类别:吸毒人员");
+    }
+
+    /**
+     * 获取浆洗街道数据下拉项
+     * @return
+     */
+    @GetMapping("getEconomicDataInfo")
+    public JsonModel getJXDataInfo(String year, String jieDao, String jiDu){
+        String query = "query[756]=" + year + "&query[758]=" + jieDao + "&query[757]=" + jiDu;
+        JSONObject obj = new JSONObject();
+        try {
+            obj = wuHouService.getJXData("108",query);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"中台接口报错",e.getMessage());
+        }
+        if(ObjectUtils.isEmpty(obj)){
+            return new JsonModel(true,"暂无数据");
+        }
+        JSONArray res = (JSONArray) obj.get("info");
+        return new JsonModel(true,res);
+    }
+
+    /**
+     * 获取浆洗街道指定数据
+     * @param fieldId
+     * @return
+     */
+    @GetMapping("getEconomicDataValue")
+    public JsonModel getJXDataValue(Integer fieldId, String year, String jieDao, String jiDu){
+        String query = "query[756]=" + year + "&query[758]=" + jieDao + "&query[757]=" + jiDu;
+        JSONObject obj = new JSONObject();
+        try {
+            obj = wuHouService.getJXData("108",query);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"中台接口报错",e.getMessage());
+        }
+        if(ObjectUtils.isEmpty(obj)){
+            return new JsonModel(true,"暂无数据");
+        }
+        HashMap<Integer,String> valueMap = (HashMap<Integer, String>) obj.get("value");
+        JSONObject res = new JSONObject();
+        res.put("name","值");
+        res.put("info",valueMap.get(fieldId));
+        res.put("value",valueMap.get(fieldId));
+        return new JsonModel(true,res);
+    }
+
+    @GetMapping("/startTask")
+    public void startTask(){
+
+        GetDataJob job = new GetDataJob();
+
+        job.setName("时间测试");
+        job.setGroup("获取全量数据");
+        job.setCron("0/5 * * * * ? *");
+        job.setConf("获取重点事件全量数据");
+
+        try {
+            wuHouService.getDataByTime(job);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+
     }
 
 
