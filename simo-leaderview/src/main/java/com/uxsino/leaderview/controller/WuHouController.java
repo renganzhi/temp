@@ -73,6 +73,28 @@ public class WuHouController {
         return new JsonModel(true,wuHouService.getFormDataForText(formId,null));
     }
 
+    /**
+     * 浆洗街街道群租房治理-各类别总数
+     * @param category 群租房类别:包含小旅馆、民宿旅店、群租房
+     * @return
+     */
+    @GetMapping("/getHouseCount")
+    public JsonModel getHouseCount(String category){
+        String query87 = "query[773]=" + category;
+        return new JsonModel(true,wuHouService.getFormDataForText("87",query87));
+    }
+
+    /**
+     * 社区人口排行-条形图
+     * @param street 街道
+     * @return
+     */
+    @GetMapping("/getPopulationRanking")
+    public JsonModel getPopulationRanking(String street){
+        String query110 = "query[777]=" + street;
+        return wuHouService.getPopulationRanking(query110);
+    }
+
     @GetMapping("/getXDZFXQ")
     public JsonModel getXDZFXQ(){
         //目前身份证号的查询有问题
