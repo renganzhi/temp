@@ -4235,6 +4235,37 @@
         ]
     },
     {
+        "key": "get_house_count",
+        "name": "浆洗街街道群租房各类别总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getHouseCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "category",
+                "name": "类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "群租房",
+                        "value": "群租房"
+                    },
+                    {
+                        "name": "小旅馆",
+                        "value": "小旅馆"
+                    },
+                    {
+                        "name": "民宿旅店",
+                        "value": "民宿旅店"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "key": "get_economic_data_value",
         "name": "浆洗街道重点经济指标数据",
         "component": "monitor",
@@ -4289,6 +4320,37 @@
                 "dataType": "remote",
                 "dataUrl": "/leaderview/WuHou/getEconomicDataInfo",
                 "params": ["year","jieDao","jiDu"]
+            }
+        ]
+    },
+    {
+        "key": "get_population_ranking",
+        "name": "社区人口排行",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/WuHou/getPopulationRanking",
+        "method" : "get",
+        "params": [
+            {
+                "key": "street",
+                "name": "街道",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "浆洗街街道",
+                        "value": "浆洗街街道"
+                    },
+                    {
+                        "name": "玉林街道",
+                        "value": "玉林街道"
+                    },
+                    {
+                        "name": "簇桥街道",
+                        "value": "簇桥街道"
+                    }
+                ]
             }
         ]
     }

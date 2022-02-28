@@ -101,23 +101,24 @@ public class WuHouService {
         //社会治理-重点事件管理-重点事件	95
         //formId = "89";//社会治理-重点人员管控-社区服刑人员
         String prefix = "https://wunlzt.cdwh.gov.cn/api/v4/forms/";
-        //query = "query[622]=浆洗街";
-
-
         String url;
         if(ifFormInfo){
             url = prefix + formId;
         }else {
-            url = prefix + formId + "/responses";
+            url = prefix + formId + "/responses/search.json";
             //在pagination或者query中自己添加?
-            /*if(!ObjectUtils.isEmpty(pagination) || !ObjectUtils.isEmpty(query)){
+            if(!Strings.isNullOrEmpty(pagination) || !Strings.isNullOrEmpty(query) ){
                 url += "?";
-            }*/
-            if(!Strings.isNullOrEmpty(pagination)){
+            }
+            if(!ObjectUtils.isEmpty(pagination)){
                 url += pagination;
             }
-            if(!Strings.isNullOrEmpty(query)){
-                url += query;
+            if(!ObjectUtils.isEmpty(query)){
+                if(!ObjectUtils.isEmpty(pagination)) {
+                    url += "&" + query;
+                }else {
+                    url += query;
+                }
             }
         }
 
@@ -410,6 +411,51 @@ public class WuHouService {
         res.put("value",valueMap);
 
         return res;
+    }
+
+    /**
+     * 社区人口排行
+     * @param query
+     * @return
+     */
+    public JsonModel getPopulationRanking(String query){
+        String formInfo;
+        try {
+            formInfo = this.getData("110","?per_page=100",query,false);
+        } catch (Exception e) {
+            log.error("中台接口报错");
+            e.printStackTrace();
+            return new JsonModel(false,e.getMessage(),MonitorUtils.empObj());
+        }
+
+        JSONArray dataArray = JSONArray.parseArray(formInfo);
+        JSONObject result = new JSONObject();
+        List<String> columns = new ArrayList<>();
+        JSONArray rows = new JSONArray();
+        columns.add("社区");
+        columns.add("实有人口数");
+
+        //110人口表 778社区 777街道 779实有人口数
+        for(int i = dataArray.size()-1; i >= 0; i--) {
+            JSONObject obj = dataArray.getJSONObject(i);
+            JSONArray entries = obj.getJSONArray("entries");
+            JSONObject row = new JSONObject();
+            for (int j = 0; j < entries.size(); j++) {
+                JSONObject singleData = (JSONObject) entries.get(j);
+                if (singleData.getInteger("field_id") == 778) {
+                    row.put("社区", singleData.get("value"));
+                }
+                if (singleData.getInteger("field_id") == 779) {
+                    row.put("实有人口数", singleData.get("value"));
+                }
+            }
+            rows.add(row);
+        }
+
+        result.put("columns",columns);
+        result.put("rows",rows);
+
+        return new JsonModel(true,result);
     }
 
     /**
