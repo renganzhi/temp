@@ -8,13 +8,13 @@
       <div class="CloseBtn" @click="popshow = false"></div>
       <div class="lineContain">
         <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址：武侯祠大街252号5-4-204</div>
-        <div class="line">房间数：2</div>
-        <div class="line">床铺数：8</div>
-        <div class="line">社区民警（电话）：陈朝林(17708192501)</div>
-        <div class="line">网格员（电话）：张敏(13194994003)</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
         <div class="line">
-          微消站（电话）：刘长城(15700573360)
+          微消站(电话):刘长城(15700573360)
         </div>
       </div>
     </div>
@@ -25,13 +25,13 @@
       <div class="CloseBtn" @click="popshowBig = false"></div>
       <div class="lineContain">
         <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址：武侯祠大街252号5-4-204</div>
-        <div class="line">房间数：2</div>
-        <div class="line">床铺数：8</div>
-        <div class="line">社区民警（电话）：陈朝林(17708192501)</div>
-        <div class="line">网格员（电话）：张敏(13194994003)</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
         <div class="line">
-          微消站（电话）：刘长城(15700573360)
+          微消站(电话):刘长城(15700573360)
         </div>
       </div>
     </div>
@@ -431,7 +431,7 @@ return mix(factor,mirror,0.0);
         Cesium.CameraEventType.RIGHT_DRAG
       ]
       var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
-      // todo：在椭球下点击创建点
+      // todo:在椭球下点击创建点
       handler.setInputAction(e => {
         var mousePosition = e.position
         var picked = viewer.scene.pick(mousePosition)
