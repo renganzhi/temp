@@ -61,9 +61,21 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
-                      <div class="Data" v-if="data.title !== '详情'" :style="{
+                      <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
+                      <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
+                        <Select v-model="data.value">
+                            <Option value="1">1级 </Option>
+                            <Option value="2">2级 </Option>
+                            <Option value="3">3级 </Option>
+                        </Select>
+                        <div class="suerBtn" style="display: inline-block;">
+                          <Button style="background:#5c8bff;" @click="onSure">
+                            确定
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1">
@@ -78,7 +90,7 @@
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else>
                     <div class="CloseBox" @click="OpenBox = true"></div>
-                    <div class="AhrefBox"><div :class="isOpenTW?'openBox':'closeBox'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeBox'"></div> <a href="">天网调度</a></div>
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
@@ -257,6 +269,7 @@ export default {
       boxData: {},
       isSuperAdmin: false,
       OpenBox: true,
+      isOpenTW: false,
       OpenChileBox: false,
       moveFlag: true,
       defTheme: true, // 默认主题
@@ -344,6 +357,13 @@ export default {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
+    },
+    exchangeisOpenTW(){
+      this.isOpenTW = !this.isOpenTW
+      console.log(1111)
+    },
+    onSure(){
+      console.log(1111)
     },
     hideModal (data) {
       this.addPage = false
@@ -1743,12 +1763,18 @@ html[data-theme='blueWhite'] {
       width: 260px;
       cursor: pointer;
       .openBox{
+        top: 50px;
+        left: 80px;
+        position: absolute;
         height: 110px;
         width: 110px;
         background: url(./open.png);
         background-size: 100% 100%;
       }
       .closeBox{
+        top: 50px;
+        left: 80px;
+        position: absolute;
         height: 110px;
         width: 110px;
         background: url(./close.png);
