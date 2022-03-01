@@ -50,10 +50,10 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-            <div class="full-height pagebox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing></beijing>
+                <beijing :nowPageID="pageID"></beijing>
               </div>
+            <div class="full-height pagebox">
               <div class="BoxMban"  v-if="showModelBox">
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
@@ -348,6 +348,9 @@ export default {
     ...mapGetters(['pageVisiable', 'videoTims', 'editId', 'nowPageId']),
     showPagination () {
       return this.pageSize > 1
+    },
+    pageID(){
+      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
     }
   },
   methods: {
@@ -1239,9 +1242,9 @@ export default {
         let boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          width: paintW + 'px',
-          height: paintH + 'px',
-          overflow: 'hidden',
+          // width: paintW + 'px',
+          // height: paintH + 'px',
+          overflow: 'visible',
           margin: boxMrg
         })
         $el.find('.home_wrapBox').css({
