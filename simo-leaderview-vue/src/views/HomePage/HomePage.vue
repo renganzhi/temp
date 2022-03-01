@@ -90,7 +90,7 @@
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else>
                     <div class="CloseBox" @click="OpenBox = true"></div>
-                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeBox'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
@@ -1774,7 +1774,7 @@ html[data-theme='blueWhite'] {
         background: url(./open.png);
         background-size: 100% 100%;
       }
-      .closeBox{
+      .closeStyle{
         top: 50px;
         left: 80px;
         position: absolute;

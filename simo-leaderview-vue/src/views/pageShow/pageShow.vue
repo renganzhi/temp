@@ -71,9 +71,12 @@ export default {
     this.initLine()
     this.initModels()
     this.initPostrender()
-    this.fly()
     this.addPoints()
     this.addPopEvent()
+    this.fly()
+    setTimeout(() => {
+      this.fly()
+    }, 2000);
   },
   methods: {
     addPopEvent () {
@@ -140,16 +143,16 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.15382762573847,
-          30.525354562999283,
-          5648.141481220404
+          104.00875731174037,
+          30.58901673177306,
+          1084.6550371389826
         ),
         orientation: {
-          heading: 5.287504180425997,
-          pitch: -0.4594702554639958,
-          roll: 0.000044985178769607614
+          heading: 1.1170617187612724,
+          pitch: -0.4973789046560473,
+          roll: 6.283013004097901
         },
-        duration: 0.5
+        duration: 1
       })
     },
     initPostrender () {
