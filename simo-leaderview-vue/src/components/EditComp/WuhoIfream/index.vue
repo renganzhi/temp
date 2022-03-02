@@ -1,5 +1,5 @@
 <template>
-  <div class="WuhoIfream">
+  <div class="WuhoIfream" :style="headStyle">
     <div :id="boxId" class="playWnd"></div>
     <!-- <iframe style="height:100%;width:100%" src="http://183.131.193.69:8181/appli/start?appliId=934133524695351296&codeRate=8000&frameRate=30" frameborder="0"></iframe> -->
   </div>
@@ -13,27 +13,78 @@ export default {
       visible: false,
       boxId: 1,
       oWebControl: "",
+      nowScale:1
     };
+  },
+  computed: {
+    headStyle () {
+      return {
+        height: this.item.height + 'px !important',
+        width:this.item.width + 'px !important',
+      }
+    }
   },
   watch: {
     "item.width": function () {
       var _this = this;
       this.$nextTick(() => {
-        _this.oWebControl.JS_Resize(this.item.width, this.item.height);
+        _this.oWebControl.JS_Resize((this.item.width-40)*this.nowScale, (this.item.height-40)*this.nowScale);
+      });
+    },
+    "item.chartData.hkwsid": function () {
+      var _this = this;
+      console.log(this.item.chartData.hkwsid)
+        var cameraIndexCode = this.item.chartData.hkwsid; //获取输入的监控点编号值，必填
+        var streamMode = 0; //主子码流标识：0-主码流，1-子码流
+        var transMode = 1; //传输协议：0-UDP，1-TCP
+        var gpuMode = 0; //是否启用GPU硬解，0-不启用，1-启用
+        var wndId = -1; //播放窗口序号（在2x2以上布局下可指定播放窗口）
+
+        cameraIndexCode = cameraIndexCode.replace(/(^\s*)/g, "");
+        cameraIndexCode = cameraIndexCode.replace(/(\s*$)/g, "");
+
+        _this.oWebControl.JS_RequestInterface({
+          funcName: "startPreview",
+          argument: JSON.stringify({
+            cameraIndexCode: cameraIndexCode, //监控点编号
+            streamMode: streamMode, //主子码流标识
+            transMode: transMode, //传输协议
+            gpuMode: gpuMode, //是否开启GPU硬解
+            wndId: wndId, //可指定播放窗口
+          }),
+        });
+    },
+    "nowScale": function () {
+      var _this = this;
+      this.$nextTick(() => {
+        _this.oWebControl.JS_Resize((this.item.width-40)*this.nowScale, (this.item.height-40)*this.nowScale);
       });
     },
     "item.height": function () {
       var _this = this;
       this.$nextTick(() => {
-        _this.oWebControl.JS_Resize(this.item.width, this.item.height);
+        _this.oWebControl.JS_Resize((this.item.width-40)*this.nowScale, (this.item.height-40)*this.nowScale);
       });
     },
   },
   mounted() {
+    if(document.querySelector('.paint-bg')){
+      this.nowScale = document.querySelector('.paint-bg').style.transform.replace('scale(','').replace(')','')*1
+    } else if(document.querySelector('.pagebox')){
+      this.nowScale = document.querySelector('.pagebox').style.transform.replace('scale(','').replace(')','').split(',')[0]*1
+    }
     this.boxId =
       Number(Math.random().toString().substr(2, 9) + Date.now()).toString(36) +
       "";
     this.start();
+    setInterval(() => {
+      if(document.querySelector('.paint-bg')){
+        this.nowScale = document.querySelector('.paint-bg').style.transform.replace('scale(','').replace(')','')*1
+      } else if(document.querySelector('.pagebox')){
+        this.nowScale = document.querySelector('.pagebox').style.transform.replace('scale(','').replace(')','').split(',')[0]*1
+      }
+      console.log(this.nowScale)
+    }, 1000);
   },
   methods: {
     start() {
@@ -113,27 +164,26 @@ export default {
 
       // 推送消息
       function cbIntegrationCallBack(oData) {
-        showCBInfo(JSON.stringify(oData.responseMsg));
+        console.log(JSON.stringify(oData.responseMsg));
       }
 
       //初始化
       function init() {
         getPubKey(function () {
           ////////////////////////////////// 请自行修改以下变量值	////////////////////////////////////
-          var appkey = "28730366"; //综合安防管理平台提供的appkey，必填
-          var secret = setEncrypt("HSZkCJpSJ7gSUYrO6wVi"); //综合安防管理平台提供的secret，必填
-          var ip = "10.19.132.75"; //综合安防管理平台IP地址，必填
-          var playMode = 0; //初始播放模式：0-预览，1-回放
-          var port = 443; //综合安防管理平台端口，若启用HTTPS协议，默认443
-          var snapDir = "D:\\SnapDir"; //抓图存储路径
-          var videoDir = "D:\\VideoDir"; //紧急录像或录像剪辑存储路径
-          var layout = "1x1"; //playMode指定模式的布局
-          var enableHTTPS = 1; //是否启用HTTPS协议与综合安防管理平台交互，这里总是填1
-          var encryptedFields = "secret"; //加密字段，默认加密领域为secret
-          var showToolbar = 0; //是否显示工具栏，0-不显示，非0-显示
-          var showSmart = 0; //是否显示智能信息（如配置移动侦测后画面上的线框），0-不显示，非0-显示
-          var buttonIDs =
-            "0,16,256,257,258,259,260,512,513,514,515,516,517,768,769"; //自定义工具条按钮
+          var appkey = "24183731";                           //综合安防管理平台提供的appkey，必填
+          var secret = setEncrypt("babYTegRFvTRymoWubNS");   //综合安防管理平台提供的secret，必填
+          var ip = "172.16.152.136";                           //综合安防管理平台IP地址，必填
+          var playMode = 0;                                  //初始播放模式：0-预览，1-回放
+          var port = 443;                                    //综合安防管理平台端口，若启用HTTPS协议，默认443
+          var snapDir = "D:\\SnapDir";                       //抓图存储路径
+          var videoDir = "D:\\VideoDir";                     //紧急录像或录像剪辑存储路径
+          var layout = "1x1";                                //playMode指定模式的布局
+          var enableHTTPS = 1;                               //是否启用HTTPS协议与综合安防管理平台交互，这里总是填1
+          var encryptedFields = 'secret';					   //加密字段，默认加密领域为secret
+          var showToolbar = 0;                               //是否显示工具栏，0-不显示，非0-显示
+          var showSmart = 0;                                 //是否显示智能信息（如配置移动侦测后画面上的线框），0-不显示，非0-显示
+          var buttonIDs = "0,16,256,257,258,259,260,512,513,514,515,516,517,768,769";  //自定义工具条按钮
           ////////////////////////////////// 请自行修改以上变量值	////////////////////////////////////
 
           _this.oWebControl
@@ -156,7 +206,7 @@ export default {
               }),
             })
             .then(function (oData) {
-              _this.oWebControl.JS_Resize(200, 200); // 初始化后resize一次，规避firefox下首次显示窗口后插件窗口未与DIV窗口重合问题
+              _this.oWebControl.JS_Resize((_this.item.width-40)*_this.nowScale, (_this.item.height-40)*_this.nowScale);
             });
         });
       }
@@ -171,10 +221,32 @@ export default {
             }),
           })
           .then(function (oData) {
-            console.log(oData);
             if (oData.responseMsg.data) {
               pubKey = oData.responseMsg.data;
               callback();
+    
+              // var cameraIndexCode = "ff1fe21b20504ab68c4ae53c7cef99e3"; //获取输入的监控点编号值，必填
+              if(_this.item.chartData.hkwsid !== ''){
+                var cameraIndexCode = _this.item.chartData.hkwsid; //获取输入的监控点编号值，必填
+                var streamMode = 0; //主子码流标识：0-主码流，1-子码流
+                var transMode = 1; //传输协议：0-UDP，1-TCP
+                var gpuMode = 0; //是否启用GPU硬解，0-不启用，1-启用
+                var wndId = -1; //播放窗口序号（在2x2以上布局下可指定播放窗口）
+
+                cameraIndexCode = cameraIndexCode.replace(/(^\s*)/g, "");
+                cameraIndexCode = cameraIndexCode.replace(/(\s*$)/g, "");
+
+                _this.oWebControl.JS_RequestInterface({
+                  funcName: "startPreview",
+                  argument: JSON.stringify({
+                    cameraIndexCode: cameraIndexCode, //监控点编号
+                    streamMode: streamMode, //主子码流标识
+                    transMode: transMode, //传输协议
+                    gpuMode: gpuMode, //是否开启GPU硬解
+                    wndId: wndId, //可指定播放窗口
+                  }),
+                });
+              }
             }
           });
       }
@@ -189,7 +261,7 @@ export default {
       // 监听resize事件，使插件窗口尺寸跟随DIV窗口变化
       $(window).resize(function () {
         if (_this.oWebControl != null) {
-          _this.oWebControl.JS_Resize(200, 200);
+              _this.oWebControl.JS_Resize((_this.item.width-40)*_this.nowScale, (_this.item.height-40)*_this.nowScale);
           setWndCover();
         }
       });
@@ -197,7 +269,7 @@ export default {
       // 监听滚动条scroll事件，使插件窗口跟随浏览器滚动而移动
       $(window).scroll(function () {
         if (_this.oWebControl != null) {
-          _this.oWebControl.JS_Resize(200, 200);
+              _this.oWebControl.JS_Resize((_this.item.width-40)*_this.nowScale, (_this.item.height-40)*_this.nowScale);
           setWndCover();
         }
       });
@@ -247,29 +319,6 @@ export default {
         }
       }
 
-      //视频预览功能
-      $("#startPreview").click(function () {
-        var cameraIndexCode = "0cedf77f831144cb8f255fbc9d0f2c66"; //获取输入的监控点编号值，必填
-        var streamMode = 0; //主子码流标识：0-主码流，1-子码流
-        var transMode = 1; //传输协议：0-UDP，1-TCP
-        var gpuMode = 0; //是否启用GPU硬解，0-不启用，1-启用
-        var wndId = -1; //播放窗口序号（在2x2以上布局下可指定播放窗口）
-
-        cameraIndexCode = cameraIndexCode.replace(/(^\s*)/g, "");
-        cameraIndexCode = cameraIndexCode.replace(/(\s*$)/g, "");
-
-        _this.oWebControl.JS_RequestInterface({
-          funcName: "startPreview",
-          argument: JSON.stringify({
-            cameraIndexCode: cameraIndexCode, //监控点编号
-            streamMode: streamMode, //主子码流标识
-            transMode: transMode, //传输协议
-            gpuMode: gpuMode, //是否开启GPU硬解
-            wndId: wndId, //可指定播放窗口
-          }),
-        });
-      });
-
       //停止全部预览
       $("#stopAllPreview").click(function () {
         _this.oWebControl.JS_RequestInterface({
@@ -305,7 +354,7 @@ export default {
 .WuhoIfream {
   width: 100%;
   height: 100%;
-  padding: 5px;
+  padding: 20px;
 }
 #playWnd {
   width: 100%;

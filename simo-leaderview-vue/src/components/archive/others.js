@@ -4,6 +4,7 @@ import NewBorder from '@/components/EditComp/NewBorder/config.js'
 import TDModel from '@/components/EditComp/TDModel/config.js'
 import VmVareTopo from '@/components/EditComp/VmVareTopo/config.js'
 import XiaLaShu from '@/components/EditComp/XiaLaShu/config.js'
+import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL/config.js'
 
 const others = {
   name: '其他',
@@ -30,7 +31,8 @@ const others = {
     decorator.item,
     TDModel.item,
     VmVareTopo.item,
-    XiaLaShu.item
+    XiaLaShu.item,
+    WuhoMaoBL.item
   ]
 }
 
