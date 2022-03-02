@@ -4266,6 +4266,29 @@
         ]
     },
     {
+        "key": "get_pie_data",
+        "name": "社会治理大屏定时数据",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/WuHou/getPieData",
+        "method" : "get",
+        "params": [
+            {
+                "key": "name",
+                "name": "接口名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "涉访类别详细分析",
+                        "value": "涉访类别详细分析"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "key": "get_economic_data_value",
         "name": "浆洗街道重点经济指标数据",
         "component": "monitor",

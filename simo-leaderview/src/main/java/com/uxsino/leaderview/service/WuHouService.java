@@ -5,8 +5,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.uxsino.commons.model.JsonModel;
+import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.commons.utils.DateUtils;
-import com.uxsino.leaderview.model.GetDataJob;
+import com.uxsino.commons.utils.UUIDUtils;
+import com.uxsino.leaderview.dao.ITimeDataDao;
+import com.uxsino.leaderview.entity.TimeData;
+import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import com.uxsino.quartz.lib.Job;
 import com.uxsino.quartz.lib.ScheduleManager;
@@ -20,11 +24,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import springfox.documentation.spring.web.json.Json;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Service
@@ -39,6 +46,17 @@ public class WuHouService {
     @Autowired
     private ScheduleManager scheduleManager;
 
+    @Autowired
+    ITimeDataDao timeDataDao;
+
+    @Autowired
+    JdbcTemplate template;
+
+    /**
+     * 初始化文件名称
+     */
+    private static final String FILEPATH = "classpath*:sql/init_time_data.sql";
+
 
     public String getData(String formId, String pagination, String query, Boolean ifFormInfo) throws IOException {
         //社会治理-重点人员管控-社区服刑人员	89   街道：query[622]
@@ -49,7 +67,7 @@ public class WuHouService {
         //社会治理-重点事件管理-重点人员	94
         //社会治理-重点事件管理-重点事件	95
         //formId = "89";//社会治理-重点人员管控-社区服刑人员
-        String prefix = "https://wunlzt.cdwh.gov.cn/api/v4/forms/";
+        String prefix = "http://wunlzt.cdwh.gov.cn/api/v4/forms/";
         String url;
         if(ifFormInfo){
             url = prefix + formId;
@@ -78,7 +96,13 @@ public class WuHouService {
 
         String result = "";
 
-        CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpGet);
+        CloseableHttpResponse closeableHttpResponse = null;
+        try {
+            closeableHttpResponse = httpClient.execute(httpGet);
+        } catch (IOException e) {
+            log.error("中台接口请求表单{}失败{}",formId,e.getMessage());
+            e.printStackTrace();
+        }
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
         result = EntityUtils.toString(httpEntity);//响应内容
         System.out.println("请求结果是：" + result);
@@ -100,7 +124,7 @@ public class WuHouService {
         //社会治理-重点事件管理-重点人员	94
         //社会治理-重点事件管理-重点事件	95
         //formId = "89";//社会治理-重点人员管控-社区服刑人员
-        String prefix = "https://wunlzt.cdwh.gov.cn/api/v4/forms/";
+        String prefix = "http://wunlzt.cdwh.gov.cn/api/v4/forms/";
         String url;
         if(ifFormInfo){
             url = prefix + formId;
@@ -139,6 +163,7 @@ public class WuHouService {
             String value = headers[0].getValue();*/
 
         } catch (Exception e) {
+            log.error("中台接口请求表单{}失败{}",formId,e.getMessage());
             e.printStackTrace();
         }
 
@@ -227,7 +252,7 @@ public class WuHouService {
             String[] strings = s.split(":");
             nameValueMap.put(strings[0],strings[1]);
         }
-        String query = "/search.json?";
+        String query = "";
         HashMap<String,Integer> NameIdMap = new HashMap<>();
         try {
             NameIdMap = this.getFormNameIdMap(formId);
@@ -235,7 +260,7 @@ public class WuHouService {
             log.error("表单title和fieldId的Map获取失败");
             e.printStackTrace();
         }
-//        String queryP = "/search.json?" + pagination + "&query[622]=浆洗街";
+        String pagination = "";
         for(Map.Entry<String,String> entry: nameValueMap.entrySet()){
             query += "query[" + NameIdMap.get(entry.getKey()) + "]=" + entry.getValue() + "&";
         }
@@ -243,7 +268,7 @@ public class WuHouService {
 
         //获取指定走访情况数据
         try {
-            formInfo = this.getData(formId,"",query,false);
+            formInfo = this.getData(formId,pagination,query,false);
         } catch (IOException e) {
             log.error("中台获取表单数据接口报错");
             e.printStackTrace();
@@ -360,20 +385,117 @@ public class WuHouService {
         return titleIdMap;
     }
 
-    public void getDataByTime(GetDataJob job) throws SchedulerException {
+    public void getDataByTime(DataJob job) throws SchedulerException {
         try {
             //这个方法中带有更新功能,但是更新功能无法更新job里面的实现,所以仍然需要进行重新创建
-            scheduleManager.start(new Job<GetDataJob>() {
+            scheduleManager.start(new Job<DataJob>() {
                 @Override
                 public void run() {
-                    System.out.println(job.getConf() + DateUtils.formatCommonDate(new Date()));
+                    System.out.println(DateUtils.formatCommonDate(new Date()) + "————"+ job.getName() + "接口定时调用开始");
+                    switch (job.getGroup()){
+                        case "饼图" : getPieData(job);
+                    }
+                    System.out.println(DateUtils.formatCommonDate(new Date()) + "————"+ job.getName() + "接口定时调用结束");
                 }
             }.name(job.getName()).target(job).group(job.getGroup()).cron(job.getCron()));
         } catch (Exception e) {
             log.error("开启计划定时任务异常：{}", e.getMessage());
         }
 
-        //scheduleManager.delete(job.getName(),job.getGroup());
+    }
+
+    /**
+     * 创建饼图类型的定时任务,每个任务保存后，创建的信息就可以删了或者保存一下
+     */
+    public void savePieData(){
+        //需要提供的数据
+        //枚举全量 有哪些类型
+        List<String> types = Arrays.asList("征地拆迁","涉军安置","涉法涉诉");
+        //表单ID
+        String formId = "94";
+        //属性ID
+        String fieldId = "679";
+        //属性name
+        String fieldName = "涉访类别";
+
+        //封装定时获取数据需要的数据
+        JSONObject info = new JSONObject();
+        info.put("types",types);
+        info.put("formId",formId);
+        info.put("fieldId",fieldId);
+        info.put("fieldName",fieldName);
+
+        String conf = info.toString();
+
+        TimeData data = new TimeData();
+        data.setId(1L);
+        data.setName("涉访类别详细分析");
+        data.setType("饼图");
+        // 0 0/5 * * * ?   5分钟一次
+        // 0 0 0/1 * * ?   1小时一次
+        data.setCron("0 0/5 * * * ? ");
+        data.setConf(conf);
+        timeDataDao.save(data);
+
+    }
+
+    public JSONObject getPieData(DataJob job){
+
+        String conf = job.getConf();
+
+        JSONObject confObj = JSONObject.parseObject(conf);
+        List<String> typeList = (List<String>) confObj.get("types");
+        String formId = (String) confObj.get("formId");
+        String fieldId = (String) confObj.get("fieldId");
+        String fieldName = (String) confObj.get("fieldName");
+
+        Map<Object,Object> nameAndCount = new HashMap<>();
+        for(String name : typeList){
+            String query = "query[" + fieldId + "]=" + name;
+            CloseableHttpResponse response = getResponse(formId, "", query, false);
+            Header[] headers = response.getHeaders("X-SLP-Total-Count");
+            String count = headers[0].getValue();
+            nameAndCount.put(name,count);
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("columns", new JSONArray(Arrays.asList(fieldName, "数量")));
+        JSONArray rows = new JSONArray();
+        for(Map.Entry<Object, Object> entry : nameAndCount.entrySet()){
+            rows.add(MonitorUtils.newResultObj("涉访类别",entry.getKey(),"数量",
+                    entry.getValue()));
+        }
+
+        json.put("rows",rows);
+        String value = json.toString();
+        System.out.println(value);
+
+        confObj.put("value",value);
+        job.setConf(confObj.toString());
+
+        String name = job.getName();
+        Long id = Long.valueOf(Arrays.asList(name.split("_")).get(1));
+        TimeData data = timeDataDao.findOne(id);
+        data.setValue(value);
+        //将结果存入库中
+        timeDataDao.save(data);
+        System.out.println("数据库中的value是:" + data.getValue());
+
+        return json;
+    }
+
+    public List<DataJob> createJobFromTimeData(List<TimeData> list){
+
+        List<DataJob> jobList = new ArrayList<>();
+        for(TimeData data : list){
+            DataJob job = new DataJob();
+            job.setName(data.getName()+"_"+data.getId());
+            job.setGroup(data.getType());
+            job.setCron(data.getCron());
+            job.setConf(data.getConf());
+            jobList.add(job);
+        }
+        return jobList;
 
     }
 
@@ -458,16 +580,45 @@ public class WuHouService {
         return new JsonModel(true,result);
     }
 
-    /**
-     * 定时更新各类统计数据
-     */
-    public void RefreshData(){
-
-        //定时更新饼图类数据
-
-        //定时更新折线图类数据
-
-        //更新更新柱状图类数据
+    public void initTimeData(){
+        Long count = timeDataDao.count();
+        try {
+            if (count > 0) {
+                timeDataDao.deleteAll();
+            }
+            new ClassPathResourceWalker(FILEPATH).forEach(file -> {
+                InputStream in;
+                try {
+                    in = file.openStream();
+                } catch (IOException e) {
+                    return;
+                }
+                try {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] cache = new byte[1024];
+                    int size = -1;
+                    while ((size = in.read(cache)) != -1) {
+                        out.write(cache, 0, size);
+                    }
+                    String sql = out.toString("UTF-8");
+                    template.execute(sql);
+                } catch (IOException e) {
+                    log.error("", e);
+                } finally {
+                    try {
+                        in.close();
+                    } catch (Exception e) {
+                        log.error("关闭流失败", e);
+                    }
+                }
+            });
+        } catch (FileNotFoundException e) {
+            log.error("未找到定时任务sql的文件[init_time_data.sql]", e);
+        } catch (IOException e) {
+            log.error("未找到定时任务sql的文件[init_time_data.sql]", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
