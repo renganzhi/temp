@@ -3,7 +3,9 @@ package com.uxsino.leaderview.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.model.JsonModel;
-import com.uxsino.leaderview.model.GetDataJob;
+import com.uxsino.leaderview.dao.ITimeDataDao;
+import com.uxsino.leaderview.entity.TimeData;
+import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.service.WuHouService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Api(tags = {"武侯智慧城市-大屏展示数据接口"})
 @RestController
@@ -23,6 +27,9 @@ public class WuHouController {
 
     @Autowired
     WuHouService wuHouService;
+
+    @Autowired
+    ITimeDataDao timeDataDao;
 
     @RequestMapping(value = "/getFormInfo", method = RequestMethod.GET)
     public JsonModel getFormInfo(String formId){
@@ -95,9 +102,15 @@ public class WuHouController {
         return wuHouService.getPopulationRanking(query110);
     }
 
-    @GetMapping("/getXDZFXQ")
-    public JsonModel getXDZFXQ(){
+    /**
+     * 吸毒走访人员详情弹窗接口
+     * 通过参数人员类别、人员姓名、身份证来定位单条走访详情，但是目前中台身份证作为参数查询有问题
+     * @return
+     */
+    @GetMapping("/getZFXQ")
+    public JsonModel getZFXQ(String param){
         //目前身份证号的查询有问题
+        param = "人员姓名:毛智勇";
 //        return wuHouService.getFormDataForWindow("106","人员姓名:毛智勇、人员身份证号:510107********2973、人员类别:吸毒人员");
         return wuHouService.getFormDataForWindow("106","人员类别:吸毒人员");
     }
@@ -152,20 +165,49 @@ public class WuHouController {
     @GetMapping("/startTask")
     public void startTask(){
 
-        GetDataJob job = new GetDataJob();
-
+        /*DataJob job = new DataJob();
         job.setName("时间测试");
         job.setGroup("获取全量数据");
         job.setCron("0/5 * * * * ? *");
-        job.setConf("获取重点事件全量数据");
+        job.setConf("获取重点事件全量数据");*/
 
+        wuHouService.savePieData();
+        List<TimeData> dataList = timeDataDao.findAll();
+        List<DataJob> jobs = wuHouService.createJobFromTimeData(dataList);
         try {
-            wuHouService.getDataByTime(job);
+            for(DataJob job : jobs) {
+                wuHouService.getDataByTime(job);
+            }
         } catch (SchedulerException e) {
             e.printStackTrace();
             log.error(e.getMessage());
         }
 
+    }
+
+    /**
+     * 获取涉访类别详细分析-饼图
+     * @return
+     */
+    @GetMapping("/getPieData")
+    public JsonModel getPieData(String name){
+        TimeData data = timeDataDao.findByName("涉访类别详细分析");
+        String value = data.getValue();
+        if(ObjectUtils.isEmpty(value)){
+            return new JsonModel(true,"暂无数据");
+        }
+        JSONObject result = JSONObject.parseObject(value);
+        return new JsonModel(true,result);
+    }
+
+    @GetMapping("/getPieDataTest")
+    public JsonModel getPieDataTest(String name){
+        TimeData data = timeDataDao.findByName("涉访类别详细分析");
+        List<TimeData> dataList = new ArrayList<>();
+        dataList.add(data);
+        List<DataJob> jobList = wuHouService.createJobFromTimeData(dataList);
+        JSONObject result = wuHouService.getPieData(jobList.get(0));
+        return new JsonModel(true,result);
     }
 
 
