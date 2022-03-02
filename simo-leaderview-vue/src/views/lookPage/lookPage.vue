@@ -1721,7 +1721,7 @@ html[data-theme='blueWhite'] {
     width: 45px;
     position: fixed;
     top: 600px;
-    left: 3790px;
+    left: 0px;
     position: absolute;
     z-index: 10000;
     background: url(./boxClose.png);
@@ -1732,7 +1732,7 @@ html[data-theme='blueWhite'] {
     width: 253px;
     position: fixed;
     top: 600px;
-    left: 3580px;
+    left: 0px;
     background-color: rgb(12, 236, 206);
     position: absolute;
     z-index: 10000;
@@ -1741,6 +1741,8 @@ html[data-theme='blueWhite'] {
     .CloseBox{
       height: 220px;
       width: 50px;
+      cursor: pointer;
+      right: 0px;
       position: absolute;
       top: 400px;
       z-index: 10000;
@@ -1782,7 +1784,7 @@ html[data-theme='blueWhite'] {
     .ChildrenBox{
       height: 365px;
       width: 260px;
-      left: -260px;
+      left: 260px;
       top: 750px;
       background: url(./btBack.png);
       background-size: 100%  100%;
