@@ -1,8 +1,7 @@
 <template>
   <div
-    style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
+    style="width: 100%;height: 100%;position: absolute;"
   >
-    <navBar></navBar>    
     <div id="home-html" class="flex flex-vertical full-height full-width">
       <div
         style="width: 100%; height: 100%;"
@@ -51,7 +50,7 @@
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing :nowPageID="pageID"></beijing>
+                <beijing></beijing>
               </div>
             <div class="full-height pagebox">
               <div class="BoxMban"  v-if="showModelBox">
@@ -61,21 +60,9 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
-                      <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
+                      <div class="Data" v-if="data.title !== '详情'" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
-                      <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
-                        <Select v-model="data.value">
-                            <Option value="1">1级 </Option>
-                            <Option value="2">2级 </Option>
-                            <Option value="3">3级 </Option>
-                        </Select>
-                        <div class="suerBtn" style="display: inline-block;">
-                          <Button style="background:#5c8bff;" @click="onSure">
-                            确定
-                          </Button>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1">
@@ -90,7 +77,7 @@
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else>
                     <div class="CloseBox" @click="OpenBox = true"></div>
-                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
@@ -237,7 +224,6 @@
 </template>
 
 <script>
-import navBar from '../../../src/navBar/index.vue'
 import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
@@ -256,8 +242,7 @@ export default {
     LookCompose,
     AddPage,
     ImportPage,
-    beijing,
-    navBar
+    beijing
   },
   // mixins:[thirdLoginMix],
   data () {
@@ -269,7 +254,6 @@ export default {
       boxData: {},
       isSuperAdmin: false,
       OpenBox: true,
-      isOpenTW: false,
       OpenChileBox: false,
       moveFlag: true,
       defTheme: true, // 默认主题
@@ -290,6 +274,7 @@ export default {
       nowPage2: [],
       pageSize: 0,
       pageIndex: 0,
+      nowShowPageID:0,
       refreshType: '1',
       refreshTimer: null, // 每页的刷新定时器
       refreshTime: 3, // 刷新时间
@@ -348,9 +333,6 @@ export default {
     ...mapGetters(['pageVisiable', 'videoTims', 'editId', 'nowPageId']),
     showPagination () {
       return this.pageSize > 1
-    },
-    pageID(){
-      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
     }
   },
   methods: {
@@ -360,13 +342,6 @@ export default {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
-    },
-    exchangeisOpenTW(){
-      this.isOpenTW = !this.isOpenTW
-      console.log(1111)
-    },
-    onSure(){
-      console.log(1111)
     },
     hideModal (data) {
       this.addPage = false
@@ -648,6 +623,14 @@ export default {
     },
     // 加载第一页大屏
     loadFirstPage: function () {
+      console.log(this.nowShowPageID)
+      console.log(this.pageList)
+      this.pageList.forEach((d,i) => {
+        if(d.id*1 === this.nowShowPageID*1){
+          this.pageIndex = i
+        }
+      });
+      console.log(this.pageIndex)
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
@@ -1242,9 +1225,9 @@ export default {
         let boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          // width: paintW + 'px',
-          // height: paintH + 'px',
-          overflow: 'visible',
+          width: paintW + 'px',
+          height: paintH + 'px',
+          overflow: 'hidden',
           margin: boxMrg
         })
         $el.find('.home_wrapBox').css({
@@ -1406,6 +1389,8 @@ export default {
     // }
   },
   beforeMount: function () {
+    var id = this.$route.params.id
+    this.nowShowPageID = id
     this.axios
       .get('/alert/currencyAlertmanager/findAlertLevelList')
       .then(res => {
@@ -1413,6 +1398,7 @@ export default {
       })
   },
   mounted: function () {
+    // this.pageId = id
     $('#screen').addClass('disShow')
     // var _url = window.location.protocol + '//' + window.location.host + '/index'
     // window.history.pushState({}, '', _url)
@@ -1766,20 +1752,17 @@ html[data-theme='blueWhite'] {
       width: 260px;
       cursor: pointer;
       .openBox{
-        top: 50px;
-        left: 80px;
-        position: absolute;
         height: 110px;
         width: 110px;
         background: url(./open.png);
         background-size: 100% 100%;
       }
       .closeStyle{
+        height: 110px;
+        width: 110px;
         top: 50px;
         left: 80px;
         position: absolute;
-        height: 110px;
-        width: 110px;
         background: url(./close.png);
         background-size: 100% 100%;
       }

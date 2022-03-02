@@ -18,6 +18,7 @@ export default [
   'KLine',
   'DownMenu',
   'WuhoIfream',
+  'WuhoMaoBL',
   'WuhouTable',
   'XiaLaShu',
   'ELine',
