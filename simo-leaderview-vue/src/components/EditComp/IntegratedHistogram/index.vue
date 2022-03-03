@@ -1287,7 +1287,7 @@ export default {
         title:'数据详情',
         data:dataOut
       }
-      _this.$parent.$parent.ShowTanKuangBox(boxData)
+      _this.$parent.$parent.ShowTableBox(boxData)
     });
   },
   beforeDestroy () {

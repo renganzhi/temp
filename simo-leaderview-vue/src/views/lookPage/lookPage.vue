@@ -1721,10 +1721,11 @@ html[data-theme='blueWhite'] {
     width: 45px;
     position: fixed;
     top: 600px;
-    left: 0px;
+    left: 3790px;
+// left: 0px;
     position: absolute;
     z-index: 10000;
-    background: url(./boxClose.png);
+    background: url(./boxClose-r.png);
     background-size: 100%  100%;
   }
   .BigBox{
@@ -1732,17 +1733,18 @@ html[data-theme='blueWhite'] {
     width: 253px;
     position: fixed;
     top: 600px;
-    left: 0px;
+    left: 3580px;
+// left: 0px;
     background-color: rgb(12, 236, 206);
     position: absolute;
     z-index: 10000;
-    background: url(./boxTan.png);
+    background: url(./boxTan-r.png);
     background-size: 100%  100%;
     .CloseBox{
       height: 220px;
       width: 50px;
       cursor: pointer;
-      right: 0px;
+      // right: 0px;
       position: absolute;
       top: 400px;
       z-index: 10000;
@@ -1784,7 +1786,8 @@ html[data-theme='blueWhite'] {
     .ChildrenBox{
       height: 365px;
       width: 260px;
-      left: 260px;
+      left: -260px;
+      // left: 260px;
       top: 750px;
       background: url(./btBack.png);
       background-size: 100%  100%;
@@ -1842,11 +1845,11 @@ html[data-theme='blueWhite'] {
   }
   .Nmae {
     padding: 0px 10px;
-    width: 20%;
+    width: 30%;
     color: #415468;
   }
   .Data {
-    width: 80%;
+    width: 70%;
     color: #789fb0;
   }
 }
