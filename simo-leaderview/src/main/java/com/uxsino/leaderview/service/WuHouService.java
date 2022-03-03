@@ -176,16 +176,20 @@ public class WuHouService {
      * @param column 需要展示的列，不传则展示所有的列
      * @return
      */
-    public JsonModel getFormDataForTable(String formId, String column, String query){
+    public JsonModel getFormDataForTable(String formId, String column, String query, String url){
         String formInfo;
         try {
-            formInfo = this.getData(formId,"?per_page=100",query,false);
+            formInfo = this.getData(formId,"",query,false);
         } catch (Exception e) {
             log.error("中台接口报错");
             e.printStackTrace();
             return new JsonModel(false,e.getMessage());
         }
         JSONArray dataArray = JSONArray.parseArray(formInfo);
+        //当是重点事件表时，将集合内数据打乱
+        if("95".equals(formId)) {
+            Collections.shuffle(dataArray);
+        }
         JSONObject result = new JSONObject();
         List<String> columns = new ArrayList<>();
         JSONArray rows = new JSONArray();
@@ -217,6 +221,18 @@ public class WuHouService {
             }
         }
 
+        //如果弹窗信息需要二次请求接口，就把接口url传给前端
+        if(!Strings.isNullOrEmpty(url)){
+            result.put("url",url);
+            //从query中取出street参数
+            if(!ObjectUtils.isEmpty(query) && query.contains("街道")) {
+                String[] sArray = query.split("=");
+                //街道和人员的map,保证每个街道都有一个人有走访详情
+                HashMap<String, JSONObject> streetAndPersonMap = getStreetAndPersonMap();
+                rows.add(streetAndPersonMap.get(sArray[1]));
+            }
+        }
+
         for(int i = 0; i < dataArray.size(); i++){
             JSONObject obj = dataArray.getJSONObject(i);
             JSONArray entries = obj.getJSONArray("entries");
@@ -229,6 +245,9 @@ public class WuHouService {
             if(columns.contains("详情")) {
                 row.put("详情", "详情");
             }
+            if(columns.contains("走访详情")) {
+                row.put("走访详情", "走访详情");
+            }
             rows.add(row);
         }
 
@@ -238,6 +257,41 @@ public class WuHouService {
         return  new JsonModel(true,result);
     }
 
+    //街道和人员的map,保证每个街道都有一个人有走访详情
+    public HashMap<String,JSONObject> getStreetAndPersonMap(){
+        HashMap<String,JSONObject> streetAndPersonMap = new HashMap<>();
+        JSONObject person1 = new JSONObject();
+        person1.put("姓名","毛智勇");
+        person1.put("吸毒原因","好奇");
+        person1.put("管控情况","在押");
+        person1.put("走访详情","走访详情");
+        streetAndPersonMap.put("浆洗街街道",person1);
+        JSONObject person2 = new JSONObject();
+        person2.put("姓名","朱强");
+        person2.put("管控情况","社会面戒断不满三年");
+        person2.put("走访详情","走访详情");
+        streetAndPersonMap.put("玉林街道",person2);
+        JSONObject person3 = new JSONObject();
+        person3.put("姓名","刘开琼");
+        person3.put("管控情况","社会面戒断三年未复吸");
+        person3.put("走访详情","走访详情");
+        streetAndPersonMap.put("红牌楼街道",person3);
+        JSONObject person4 = new JSONObject();
+        person4.put("姓名","李平");
+        person4.put("管控情况","在押");
+        person4.put("走访详情","走访详情");
+        streetAndPersonMap.put("金花桥街道",person4);
+        JSONObject person5 = new JSONObject();
+        person5.put("姓名","周晓梅");
+        person5.put("吸毒原因","亲友影响");
+        person5.put("管控情况","在控");
+        person5.put("走访详情","走访详情");
+        streetAndPersonMap.put("望江路街道",person5);
+
+
+        return streetAndPersonMap;
+    }
+
     /**
      * 走访情况弹窗信息接口
      * @param formId 重点人员走访情况表单ID 106
@@ -245,7 +299,7 @@ public class WuHouService {
      */
     public JsonModel getFormDataForWindow(String formId, String params){
         String formInfo = "";
-        List<String> list = Arrays.asList(params.split("、"));
+        List<String> list = Arrays.asList(params.split(","));
         //做一个表头title和value的map,再遍历它通过表头从idNameMap中获取表头对应的fieldId来组装query
         HashMap<String,String> nameValueMap = new HashMap<>();
         for (String s : list) {
@@ -291,7 +345,10 @@ public class WuHouService {
             columns.add(entry.getValue());
         }
 
+        //走访详情弹窗只需要一条数据
         for(int i = 0; i < dataArray.size(); i++){
+//        for(int i = 0; i < 1; i++){
+            if(i >=1) break;
             JSONObject obj = dataArray.getJSONObject(i);
             JSONArray entries = obj.getJSONArray("entries");
             JSONObject row = new JSONObject();
@@ -323,6 +380,7 @@ public class WuHouService {
             JSONObject obj = fields.getJSONObject(i);
             Integer id = obj.getInteger("id");
             String title = obj.getString("title");
+            if("包案领导".equals(title))title = "标题";
             res.add(MonitorUtils.newResultObj(title,id + "/" + title));
         }
         res.add(MonitorUtils.newResultObj("详情","详情"));
@@ -345,6 +403,7 @@ public class WuHouService {
             JSONObject obj = fields.getJSONObject(i);
             Integer id = obj.getInteger("id");
             String title = obj.getString("title");
+            if("包案领导".equals(title))title = "标题";
             idTitleMap.put(id,title);
         }
 
@@ -381,7 +440,6 @@ public class WuHouService {
             String title = obj.getString("title");
             titleIdMap.put(title,id);
         }
-
         return titleIdMap;
     }
 

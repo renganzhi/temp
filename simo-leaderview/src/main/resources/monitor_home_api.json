@@ -4151,6 +4151,42 @@
         ]
     },
     {
+        "key": "get_form_data_and_url",
+        "name": "走访情况弹窗表格",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou/getFormDataAndUrl",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区矫正",
+                        "value": "89,社区服刑人员"
+                    },
+                    {
+                        "name": "重点人员管控-社区康复",
+                        "value": "90,吸毒人员"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            }
+        ]
+    },
+    {
         "key": "get_form_data_for_zf",
         "name": "重点人员走访数据",
         "component": "monitor",
@@ -4372,6 +4408,49 @@
                     {
                         "name": "簇桥街道",
                         "value": "簇桥街道"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_economic_data_value",
+        "name": "区情板块-数字武侯",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getSZWH",
+        "method" : "get",
+        "params": [
+            {
+                "key": "name",
+                "name": "数据条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "科学技术投入",
+                        "value": "科学技术投入"
+                    },
+                    {
+                        "name": "医疗投入",
+                        "value": "医疗投入"
+                    },
+                    {
+                        "name": "教育投入",
+                        "value": "教育投入"
+                    },
+                    {
+                        "name": "居民人均消费支出",
+                        "value": "居民人均消费支出"
+                    },
+                    {
+                        "name": "城镇居民人均可支配收入",
+                        "value": "城镇居民人均可支配收入"
+                    },
+                    {
+                        "name": "一般公共预算支出",
+                        "value": "一般公共预算支出"
                     }
                 ]
             }
