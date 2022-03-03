@@ -2,7 +2,7 @@
   <div
     style="width: 100%;height: calc(100% - 50px);top: 50px;position: absolute;"
   >
-    <navBar></navBar>    
+    <navBar></navBar>
     <div id="home-html" class="flex flex-vertical full-height full-width">
       <div
         style="width: 100%; height: 100%;"
@@ -443,8 +443,8 @@ export default {
       for (const key in dataArry.data) {
         if (Object.hasOwnProperty.call(dataArry.data, key)) {
           let data = {
-            title:key,
-            value:dataArry.data[key]
+            title: key,
+            value: dataArry.data[key]
           }
           newData.push(data)
         }
@@ -452,7 +452,7 @@ export default {
       dataArry.data = newData
       this.boxData = dataArry
     },
-    closeBoxTtn(){
+    closeBoxTtn () {
       this.showModelBox = false
     },
     hideImportModal () {
