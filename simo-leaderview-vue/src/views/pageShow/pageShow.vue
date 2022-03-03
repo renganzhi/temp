@@ -5,19 +5,34 @@
       <div class="poptitle">
         小旅馆
       </div>
+      <div class="CloseBtn" @click="popshow = false"></div>
       <div class="lineContain">
         <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址：武侯祠大街252号5-4-204</div>
-        <div class="line">房间数：2</div>
-        <div class="line">床铺数：8</div>
-        <div class="line">社区民警（电话）：陈朝林(17708192501)</div>
-        <div class="line">网格员（电话）：张敏(13194994003)</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
         <div class="line">
-          微消站（电话）：刘长城(15700573360)
+          微消站(电话):刘长城(15700573360)
         </div>
-        <button>入住历史</button>
-        <button>走访情况</button>
-
+      </div>
+    </div>
+    <div id="popBig" v-show="popshowBig">
+      <div class="poptitle">
+        小旅馆
+      </div>
+      <div class="CloseBtn" @click="popshowBig = false"></div>
+      <div class="lineContain">
+        <div class="line">名称: 小旅馆</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
+        <div class="line">
+          微消站(电话):刘长城(15700573360)
+        </div>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -32,15 +47,22 @@ var contrastBias
 var baseObject
 export default {
   name: 'pageShow',
+  props:["nowPageID"],
   data () {
     return {
       popshow: false,
+      popshowBig: false,
       x: 0,
       y: 0,
       z: 0
     }
   },
-  computed: {},
+  computed: {
+    pageIsJXJ(){
+      let idArry = [118,120,119,117,127,130,133,128]
+      return idArry.indexOf(this.nowPageID) > -1
+    }
+  },
   watch: {
 
   },
@@ -49,9 +71,12 @@ export default {
     this.initLine()
     this.initModels()
     this.initPostrender()
-    this.fly()
     this.addPoints()
     this.addPopEvent()
+    this.fly()
+    setTimeout(() => {
+      this.fly()
+    }, 2000);
   },
   methods: {
     addPopEvent () {
@@ -73,6 +98,24 @@ export default {
           )
           container.style.bottom = canvasHeight - windowPosition.y + 'px'
           container.style.right = canvasWidth - windowPosition.x - container.offsetWidth * 0.5 + 'px'
+        /* container.style.left = windowPosition.x  + "px"; */
+        }
+        let containerbig = document.getElementById('popBig')
+        if (containerbig) {
+          var windowPosition = new Cesium.Cartesian2()
+          var canvasHeight = viewer.scene.canvas.height
+          var canvasWidth = viewer.scene.canvas.width
+          Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            viewer.scene,
+            Cesium.Cartesian3.fromDegrees(
+              that.x,
+              that.y,
+              that.z + 100
+            ),
+            windowPosition
+          )
+          containerbig.style.bottom = canvasHeight - windowPosition.y + 'px'
+          containerbig.style.right = canvasWidth - windowPosition.x - containerbig.offsetWidth * 0.5 + 'px'
         /* container.style.left = windowPosition.x  + "px"; */
         }
       }
@@ -100,16 +143,16 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.15382762573847,
-          30.525354562999283,
-          5648.141481220404
+          104.00875731174037,
+          30.58901673177306,
+          1084.6550371389826
         ),
         orientation: {
-          heading: 5.287504180425997,
-          pitch: -0.4594702554639958,
-          roll: 0.000044985178769607614
+          heading: 1.1170617187612724,
+          pitch: -0.4973789046560473,
+          roll: 6.283013004097901
         },
-        duration: 0.5
+        duration: 1
       })
     },
     initPostrender () {
@@ -202,7 +245,7 @@ return mix(factor,mirror,0.0);
           pickId: pickId
         }
         contrastBias.selected = [baseObject]
-      }, 1000)
+      }, 2000)
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
@@ -391,7 +434,7 @@ return mix(factor,mirror,0.0);
         Cesium.CameraEventType.RIGHT_DRAG
       ]
       var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
-      // todo：在椭球下点击创建点
+      // todo:在椭球下点击创建点
       handler.setInputAction(e => {
         var mousePosition = e.position
         var picked = viewer.scene.pick(mousePosition)
@@ -409,10 +452,15 @@ return mix(factor,mirror,0.0);
           lat,
           Cesium.Cartographic.fromCartesian(position).height + 3)
         this.popshow = false
+        this.popshowBig = false
         contrastBias.selected = [baseObject]
         if (picked && picked.primitive) {
           if (picked.id && picked.id._billboard) {
-            this.popshow = true
+            if(this.pageIsJXJ){
+              this.popshow = true
+            }else{
+              this.popshowBig = true
+            }
           }
           let primitive = picked.primitive
           let pickIds = primitive._pickIds
@@ -459,10 +507,10 @@ return mix(factor,mirror,0.0);
   margin: 0px;
 }
 .content #pop {
-  width: 300px;
-  height: 280px;
-  background: rgb(5, 31, 52);
-  border: 1px solid rgb(0, 195, 245);
+  width: 650px;
+  height: 329px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
   color: rgb(255, 255, 255);
   position: relative;
   padding: 40px 0px 0px;
@@ -472,20 +520,74 @@ return mix(factor,mirror,0.0);
 }
 .content #pop .poptitle {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 22px;
-  font-family: cusfont;
+  top: 60px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
-  color: rgb(255, 255, 255);
+}
+.content #pop .CloseBtn {    
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
 }
 .content #pop .lineContain {
-  padding: 10px;
+  padding: 10px 60px;
+  top: 70px;
+  position: relative;
 }
 .content #pop .lineContain .line {
   margin-bottom: 5px;
 }
 .content #pop .lineContain button {
+  color: #fff;
+  background: #1890ff;
+  border-color: #1890ff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+}
+.content #popBig {
+  width: 650px;
+  height: 329px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
+  color: rgb(255, 255, 255);
+  position: relative;
+  padding: 40px 0px 0px;
+  position: absolute;
+  z-index: 999;
+  font-size: 14px;
+}
+.content #popBig .poptitle {
+  position: absolute;
+  top: 60px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
+  font-weight: 400;
+}
+.content #popBig .CloseBtn {    
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
+}
+.content #popBig .lineContain {
+  padding: 10px 60px;
+  top: 70px;
+  position: relative;
+}
+.content #popBig .lineContain .line {
+  margin-bottom: 5px;
+}
+.content #popBig .lineContain button {
   color: #fff;
   background: #1890ff;
   border-color: #1890ff;

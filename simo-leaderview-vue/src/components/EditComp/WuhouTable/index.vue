@@ -15,8 +15,8 @@
             width:`calc(${100 / item.chartData.columns.length}%)`
           }">
           <div v-if="data === '操作'">
-            <div class="btnBox" @click="showRZ(rowsData,e)">入住人信息</div>
-            <div class="btnBox" @click="showLD(rowsData,e)">联动处置情况</div>
+            <div class="btnBox" @click.stop="showRZ(rowsData)">入住人信息</div>
+            <div class="btnBox" @click.stop="showLD(rowsData)">联动处置情况</div>
           </div>
           <div v-if="data === '详情'">
             <div class="selctXQ" @click="showXQ(rowsData)">{{rowsData[data]}}</div>
@@ -248,14 +248,12 @@ export default {
     closeBoxTtn2(){
       this.modal10 = false
     },
-    showRZ (rowsData,e) {
-      e.stopPropagation()
+    showRZ (rowsData) {
       this.modal10 = false
       this.modal9 = true
       this.nowShowData = rowsData
     },
-    showLD (rowsData,e) {
-      e.stopPropagation()
+    showLD (rowsData) {
       this.modal9 = false
       this.modal10 = true
       this.nowShowData = rowsData

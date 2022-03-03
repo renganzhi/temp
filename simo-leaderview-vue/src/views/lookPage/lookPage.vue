@@ -49,10 +49,10 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-            <div class="full-height pagebox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing></beijing>
               </div>
+            <div class="full-height pagebox">
               <div class="BoxMban"  v-if="showModelBox">
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
@@ -77,7 +77,7 @@
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else>
                     <div class="CloseBox" @click="OpenBox = true"></div>
-                    <div class="AhrefBox"><div :class="isOpenTW?'openBox':'closeBox'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
@@ -1721,7 +1721,7 @@ html[data-theme='blueWhite'] {
     width: 45px;
     position: fixed;
     top: 600px;
-    left: 3790px;
+    left: 0px;
     position: absolute;
     z-index: 10000;
     background: url(./boxClose.png);
@@ -1732,7 +1732,7 @@ html[data-theme='blueWhite'] {
     width: 253px;
     position: fixed;
     top: 600px;
-    left: 3580px;
+    left: 0px;
     background-color: rgb(12, 236, 206);
     position: absolute;
     z-index: 10000;
@@ -1741,6 +1741,8 @@ html[data-theme='blueWhite'] {
     .CloseBox{
       height: 220px;
       width: 50px;
+      cursor: pointer;
+      right: 0px;
       position: absolute;
       top: 400px;
       z-index: 10000;
@@ -1757,9 +1759,12 @@ html[data-theme='blueWhite'] {
         background: url(./open.png);
         background-size: 100% 100%;
       }
-      .closeBox{
+      .closeStyle{
         height: 110px;
         width: 110px;
+        top: 50px;
+        left: 80px;
+        position: absolute;
         background: url(./close.png);
         background-size: 100% 100%;
       }
@@ -1779,7 +1784,7 @@ html[data-theme='blueWhite'] {
     .ChildrenBox{
       height: 365px;
       width: 260px;
-      left: -260px;
+      left: 260px;
       top: 750px;
       background: url(./btBack.png);
       background-size: 100%  100%;

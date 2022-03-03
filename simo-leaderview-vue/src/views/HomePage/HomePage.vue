@@ -50,10 +50,10 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-            <div class="full-height pagebox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing></beijing>
+                <beijing :nowPageID="pageID"></beijing>
               </div>
+            <div class="full-height pagebox">
               <div class="BoxMban"  v-if="showModelBox">
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
@@ -61,9 +61,21 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
-                      <div class="Data" v-if="data.title !== '详情'" :style="{
+                      <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
+                      <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
+                        <Select v-model="data.value">
+                            <Option value="1">1级 </Option>
+                            <Option value="2">2级 </Option>
+                            <Option value="3">3级 </Option>
+                        </Select>
+                        <div class="suerBtn" style="display: inline-block;">
+                          <Button style="background:#5c8bff;" @click="onSure">
+                            确定
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1">
@@ -78,7 +90,7 @@
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else>
                     <div class="CloseBox" @click="OpenBox = true"></div>
-                    <div class="AhrefBox"><div :class="isOpenTW?'openBox':'closeBox'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
@@ -257,6 +269,7 @@ export default {
       boxData: {},
       isSuperAdmin: false,
       OpenBox: true,
+      isOpenTW: false,
       OpenChileBox: false,
       moveFlag: true,
       defTheme: true, // 默认主题
@@ -335,6 +348,9 @@ export default {
     ...mapGetters(['pageVisiable', 'videoTims', 'editId', 'nowPageId']),
     showPagination () {
       return this.pageSize > 1
+    },
+    pageID(){
+      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
     }
   },
   methods: {
@@ -344,6 +360,13 @@ export default {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
+    },
+    exchangeisOpenTW(){
+      this.isOpenTW = !this.isOpenTW
+      console.log(1111)
+    },
+    onSure(){
+      console.log(1111)
     },
     hideModal (data) {
       this.addPage = false
@@ -1219,9 +1242,9 @@ export default {
         let boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          width: paintW + 'px',
-          height: paintH + 'px',
-          overflow: 'hidden',
+          // width: paintW + 'px',
+          // height: paintH + 'px',
+          overflow: 'visible',
           margin: boxMrg
         })
         $el.find('.home_wrapBox').css({
@@ -1712,7 +1735,7 @@ html[data-theme='blueWhite'] {
     width: 45px;
     position: fixed;
     top: 600px;
-    left: 3790px;
+    left: 0px;
     position: absolute;
     z-index: 10000;
     background: url(./boxClose.png);
@@ -1723,7 +1746,7 @@ html[data-theme='blueWhite'] {
     width: 253px;
     position: fixed;
     top: 600px;
-    left: 3580px;
+    left: 0px;
     background-color: rgb(12, 236, 206);
     position: absolute;
     z-index: 10000;
@@ -1732,6 +1755,8 @@ html[data-theme='blueWhite'] {
     .CloseBox{
       height: 220px;
       width: 50px;
+      right: 0px;
+      cursor: pointer;
       position: absolute;
       top: 400px;
       z-index: 10000;
@@ -1743,12 +1768,18 @@ html[data-theme='blueWhite'] {
       width: 260px;
       cursor: pointer;
       .openBox{
+        top: 50px;
+        left: 80px;
+        position: absolute;
         height: 110px;
         width: 110px;
         background: url(./open.png);
         background-size: 100% 100%;
       }
-      .closeBox{
+      .closeStyle{
+        top: 50px;
+        left: 80px;
+        position: absolute;
         height: 110px;
         width: 110px;
         background: url(./close.png);
@@ -1770,7 +1801,7 @@ html[data-theme='blueWhite'] {
     .ChildrenBox{
       height: 365px;
       width: 260px;
-      left: -260px;
+      left: 260px;
       top: 750px;
       background: url(./btBack.png);
       background-size: 100%  100%;

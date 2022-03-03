@@ -1,5 +1,5 @@
 <template>
-  <div class="back" id="back" :style="backStyle">
+  <div class="yingyan" id="yingyan" :style="backStyle">
     <div class="closeHead">
       鹰眼 {{ Math.floor(scale) }}%
       <button class="close" @click="closeBox">
@@ -162,22 +162,22 @@ export default {
         document.getElementById('HawkEye')
       )
       this.startDrag(
-        document.getElementById('back'),
-        document.getElementById('back')
+        document.getElementById('yingyan'),
+        document.getElementById('yingyan')
       )
       document
         .getElementById('HawkEye')
         .addEventListener('mousewheel', this.bbimg)
-      document.getElementById('back').onmousemove = event => {
+      document.getElementById('yingyan').onmousemove = event => {
         var e = event || window.event
         if (this.params.flag && !this.params.flagHawkEye) {
           var nowX = e.clientX
           var nowY = e.clientY
           var disX = nowX - this.params.currentX
           var disY = nowY - this.params.currentY
-          document.getElementById('back').style.left =
+          document.getElementById('yingyan').style.left =
             parseInt(this.params.left) + disX + 'px'
-          document.getElementById('back').style.top =
+          document.getElementById('yingyan').style.top =
             parseInt(this.params.top) + disY + 'px'
           if (typeof callback === 'function') {
             // callback((parseInt(this.params.left) || 0) + disX, (parseInt(this.params.top) || 0) + disY)
@@ -347,7 +347,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.back {
+.yingyan {
   min-height: 100px;
   width: 200px;
   position: absolute;
