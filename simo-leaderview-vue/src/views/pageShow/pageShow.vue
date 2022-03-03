@@ -143,14 +143,14 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.00875731174037,
-          30.58901673177306,
-          1084.6550371389826
+          104.12178941349616,
+          30.300340154010275,
+          40366.34831260118
         ),
         orientation: {
-          heading: 1.1170617187612724,
-          pitch: -0.4973789046560473,
-          roll: 6.283013004097901
+          heading: 0.12708259239067843,
+          pitch: -0.9993261545118939,
+          roll: 6.2805492815696455
         },
         duration: 1
       })
@@ -249,9 +249,9 @@ return mix(factor,mirror,0.0);
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
-        console.log(res)
+        // console.log(res)
         let positions = res.features[0].geometry.coordinates[0][0]
-        console.log(positions)
+        // console.log(positions)
         let linepositions = []
         positions.forEach(item => {
           linepositions.push(item[0])

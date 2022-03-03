@@ -60,14 +60,14 @@
                     <div class="BoxTitle">{{TableData.title}}</div>
                     <div class="TableHead">
                         <tr>
-                          <th v-for="(data, index) in tableData.columns" :key="index" :style="{width:`calc(${100 / tableData.columns.length}%)`}">
+                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
                             {{ data }}
                           </th>
                         </tr>
                     </div>
                     <div class="TableBody">
-                      <tr  v-for="(rowsData, i) in tableData.rows" :key="i"  @click="showXQ(rowsData)">
-                        <th v-for="(data, index) in tableData.columns" :key="index"  :style="{width:`calc(${100 / tableData.columns.length}%)`}">
+                      <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
+                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
@@ -78,7 +78,7 @@
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
-                  <div class="BoxBody" v-if="showModelBoxtype === 0">
+                  <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
                       <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
@@ -91,19 +91,20 @@
                             <Option value="3">3级 </Option>
                         </Select>
                         <div class="suerBtn" style="display: inline-block;">
-                          <Button style="background:#5c8bff;" @click="onSure">
+                          <Button style="background:#5c8bff;font-size:26px" @click="onSure">
                             确定
                           </Button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div v-else-if="showModelBoxtype === 1">
+                  <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
                     <div class="DataValue" v-for="(data,index) in boxData.data" :key="index">
                       {{ data.value }}
                     </div>
                   </div>
-                  <div v-else-if="showModelBoxtype === 2">
+                  <div class="NoData" v-else-if="boxData.data.length === 0">
+                    暂无数据！
                   </div>
                 </div>
               </div>
@@ -287,25 +288,7 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
-      tableData:{
-        columns: [
-          '姓名',
-          '入住时间',
-          '登记入住旅馆',
-          '预警提示'
-        ],
-        rows: [
-          {
-            '姓名': '高阳',
-            '入住时间': '1月28日',
-            '登记入住旅馆': '武侯区一环路西一段11号3栋',
-            '身份证号码': '54215454545465654684645',
-            '登记时间': '1月28日',
-            '手机号码': '14562878554568',
-            '预警提示': '[公安] 无异常 [本地] 矫正人员',
-          }
-        ]
-      },
+      DataTkArry:{},
       showImport: false,
       showModelBox: false,
       showTableBox: false,
@@ -412,6 +395,17 @@ export default {
     consoleOUT(){
       console.log(1111)
     },
+    showXQByUrl(DataTkArry,data){
+      if(DataTkArry.url){
+        this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
+          let boxData = {
+            title:'走访详情',
+            data:res.obj.rows[0]
+          }
+          this.ShowTanKuangBox(boxData)
+        })
+      }
+    },
     showXQ(data){
       let boxData = {
         title:'数据详情',
@@ -430,8 +424,11 @@ export default {
     },
     ShowTableBox(dataArry){
       this.showTableBox = true
-      console.log(dataArry.data)
-      // this.TableData = dataArry
+      this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+        if (data.success) {
+          this.DataTkArry = data.obj
+        }
+      })
     },
     closeTableTtn(){
       this.showTableBox = false
@@ -1812,6 +1809,8 @@ html[data-theme='blueWhite'] {
   }
   .TableBody {
     width: 100%;
+    height: 600px;
+    overflow: auto;
     tr {
       width: 100%;
       height: 90px;
@@ -1987,6 +1986,14 @@ html[data-theme='blueWhite'] {
     position: absolute;
     top: 20px;
     right: 20px;
+  }
+  .NoData{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
   }
   .BoxTitle {
     font-size: 46px !important;
