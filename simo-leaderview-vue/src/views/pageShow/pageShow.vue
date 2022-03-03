@@ -47,7 +47,7 @@ var contrastBias
 var baseObject
 export default {
   name: 'pageShow',
-  props:["nowPageID"],
+  props: ['nowPageID'],
   data () {
     return {
       popshow: false,
@@ -58,8 +58,8 @@ export default {
     }
   },
   computed: {
-    pageIsJXJ(){
-      let idArry = [118,120,119,117,127,130,133,128]
+    pageIsJXJ () {
+      let idArry = [118, 120, 119, 117, 127, 130, 133, 128]
       return idArry.indexOf(this.nowPageID) > -1
     }
   },
@@ -76,7 +76,7 @@ export default {
     this.fly()
     setTimeout(() => {
       this.fly()
-    }, 2000);
+    }, 2000)
   },
   methods: {
     addPopEvent () {
@@ -123,13 +123,13 @@ export default {
     },
     addPoints () {
       let height = 90
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.068146369733, 30.5874024040152, 80 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06053144060571, 30.571086359869128, 50 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06216701280734, 30.604087221823228, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04354503175277, 30.58950036552712, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03921297349484, 30.595079695239477, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.02454030361058, 30.591786782286736, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03543373128811, 30.61099993425912, 50 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.9560087384879, 30.621067454297123, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97744811147976, 30.630154473334926, 50 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97507519417769, 30.601843507403853, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.98045377835918, 30.636954326786963, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.99955353582837, 30.616759314294566, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.00787939994709, 30.6292473728405, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97129887928244, 30.647984750384545, 50 + height))
     },
     addPointer (position) {
       viewer.entities.add({
@@ -249,7 +249,9 @@ return mix(factor,mirror,0.0);
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
-        let positions = res.features[0].geometry.coordinates
+        console.log(res)
+        let positions = res.features[0].geometry.coordinates[0][0]
+        console.log(positions)
         let linepositions = []
         positions.forEach(item => {
           linepositions.push(item[0])
@@ -394,22 +396,26 @@ return mix(factor,mirror,0.0);
         vrButton: false, // vr部件
         shouldAnimate: true,
         shadows: false,
-        imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
-        // 影像注记
-          url: 'http://t{s}.tianditu.com/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
-          subdomains: subdomains,
-          layer: 'tdtCiaLayer',
-          style: 'default',
-          format: 'image/jpeg',
-          tileMatrixSetID: 'GoogleMapsCompatible',
-          show: true,
-          maximumLevel: 17
+        imageryProvider: new Cesium.SingleTileImageryProvider({
+          url: './static/Cesium/back.png'
         })
+        // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+        // // 影像注记
+        //   url: 'http://t{s}.tianditu.com/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
+        //   subdomains: subdomains,
+        //   layer: 'tdtCiaLayer',
+        //   style: 'default',
+        //   format: 'image/jpeg',
+        //   tileMatrixSetID: 'GoogleMapsCompatible',
+        //   show: true,
+        //   maximumLevel: 17
+        // })
       })
       let d3kit = new Cesium.D3Kit(viewer)
       let layer = viewer.scene.imageryLayers.get(0)
-      layer.brightness = 0.4
+      layer.brightness = 0.2
       viewer.scene.skyAtmosphere.show = false
+      viewer.scene.globe.enableLighting = false
       viewer.scene.globe.baseColor = Cesium.Color.BLACK
       viewer.cesiumWidget.creditContainer.style.display = 'none' // 去水印
       viewer.scene.globe.depthTestAgainstTerrain = true
@@ -456,9 +462,9 @@ return mix(factor,mirror,0.0);
         contrastBias.selected = [baseObject]
         if (picked && picked.primitive) {
           if (picked.id && picked.id._billboard) {
-            if(this.pageIsJXJ){
+            if (this.pageIsJXJ) {
               this.popshow = true
-            }else{
+            } else {
               this.popshowBig = true
             }
           }
@@ -527,7 +533,7 @@ return mix(factor,mirror,0.0);
   font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
 }
-.content #pop .CloseBtn {    
+.content #pop .CloseBtn {
   position: absolute;
   cursor: pointer;
   top: 5px;
@@ -571,7 +577,7 @@ return mix(factor,mirror,0.0);
   font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
 }
-.content #popBig .CloseBtn {    
+.content #popBig .CloseBtn {
   position: absolute;
   cursor: pointer;
   top: 5px;
