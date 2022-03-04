@@ -50,25 +50,79 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-            <div class="full-height pagebox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing></beijing>
+                <beijing :nowPageID="pageID"></beijing>
+              </div>
+            <div class="full-height pagebox">
+              <div class="Tbaleban"  v-if="showTableBox">
+                <div class="TableBox">
+                  <div class="closeBtn" @click="closeTableTtn()"></div>
+                    <div class="BoxTitle">{{TableData.title}}</div>
+                    <div class="TableHead">
+                        <tr>
+                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                            {{ data }}
+                          </th>
+                        </tr>
+                    </div>
+                    <div class="TableBody">
+                      <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
+                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                          {{  rowsData[data] }}
+                        </th>
+                      </tr>
+                    </div>
+                </div>
               </div>
               <div class="BoxMban"  v-if="showModelBox">
                 <div class="ModelBox">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
-                  <div class="BoxBody" v-if="showModelBoxtype === 0">
+                  <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
-                      <div class="Nmae">{{data.title}} : </div>
-                      <div class="Data" :style="{
+                      <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
+                      <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
                           color: data.value && data.value.color? data.value.color:'#5983b6'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
+                      <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
+                        <Select v-model="data.value">
+                            <Option value="1">1级 </Option>
+                            <Option value="2">2级 </Option>
+                            <Option value="3">3级 </Option>
+                        </Select>
+                        <div class="suerBtn" style="display: inline-block;">
+                          <Button style="background:#5c8bff;font-size:26px" @click="onSure">
+                            确定
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div v-else-if="showModelBoxtype === 1">
+                  <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
                     <div class="DataValue" v-for="(data,index) in boxData.data" :key="index">
                       {{ data.value }}
+                    </div>
+                  </div>
+                  <div class="NoData" v-else-if="boxData.data.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
+              <div class="ParentBox">
+                <div class="BoxArry">
+                  <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
+                  <div class="BigBox" v-else @mouseleave="OpenBox = true">
+                    <div class="CloseBox" @click="OpenBox = true"></div>
+                    <div class="AhrefBox" @click="exchangeisOpenTW()"><div :class="isOpenTW?'openBox':'closeStyle'"></div> <a href="">天网调度</a></div>
+                    <div class="AhrefBox"><a href="">视频调度</a></div>
+                    <div class="AhrefBox"><a href="">语音调度</a></div>
+                    <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseleave="OpenChileBox = false"><a href="">事件调度</a></div>
+                    <div class="AhrefBox"><a href="">队伍调度</a></div>
+                    <div class="ChildrenBox" v-if="OpenChileBox"  @mousemove="OpenChileBox = true" @mouseleave="OpenChileBox = false">
+                      <a href="">社区</a>
+                      <a href="">专版/指挥部</a>
+                      <a href="">网格长</a>
+                      <a href="">委办局/街道</a>
                     </div>
                   </div>
                 </div>
@@ -219,7 +273,7 @@ import { Notification } from 'element-ui'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { checkLogin } from '@/config/thirdLoginMix'
 export default {
-  name: 'HomePage',
+  name: 'lookPage',
   components: {
     Notification,
     LookItem,
@@ -234,10 +288,17 @@ export default {
     return {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
+      showModelBoxtype: 0,
+      DataTkArry:{},
       showImport: false,
       showModelBox: false,
+      showTableBox: false,
       boxData: {},
+      TableData: {},
       isSuperAdmin: false,
+      OpenBox: true,
+      isOpenTW: false,
+      OpenChileBox: false,
       moveFlag: true,
       defTheme: true, // 默认主题
       isFullScreen: false,
@@ -315,6 +376,9 @@ export default {
     ...mapGetters(['pageVisiable', 'videoTims', 'editId', 'nowPageId']),
     showPagination () {
       return this.pageSize > 1
+    },
+    pageID(){
+      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
     }
   },
   methods: {
@@ -325,11 +389,50 @@ export default {
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
+    exchangeisOpenTW(){
+      this.isOpenTW = !this.isOpenTW
+      console.log(1111)
+    },
+    consoleOUT(){
+      console.log(1111)
+    },
+    showXQByUrl(DataTkArry,data){
+      if(DataTkArry.url){
+        this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
+          let boxData = {
+            title:'走访详情',
+            data:res.obj.rows[0]
+          }
+          this.ShowTanKuangBox(boxData)
+        })
+      }
+    },
+    showXQ(data){
+      let boxData = {
+        title:'数据详情',
+        data:data
+      }
+      this.ShowTanKuangBox(boxData)
+    },
+    onSure(){
+      console.log(1111)
+    },
     hideModal (data) {
       this.addPage = false
       if (data.ifAdd) {
         this.$router.push('/edit/' + data.addId)
       }
+    },
+    ShowTableBox(dataArry){
+      this.showTableBox = true
+      this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+        if (data.success) {
+          this.DataTkArry = data.obj
+        }
+      })
+    },
+    closeTableTtn(){
+      this.showTableBox = false
     },
     ShowTanKuangBox(dataArry){
       this.showModelBox = true
@@ -338,8 +441,8 @@ export default {
       for (const key in dataArry.data) {
         if (Object.hasOwnProperty.call(dataArry.data, key)) {
           let data = {
-            title:key,
-            value:dataArry.data[key]
+            title: key,
+            value: dataArry.data[key]
           }
           newData.push(data)
         }
@@ -347,7 +450,7 @@ export default {
       dataArry.data = newData
       this.boxData = dataArry
     },
-    closeBoxTtn(){
+    closeBoxTtn () {
       this.showModelBox = false
     },
     hideImportModal () {
@@ -1199,9 +1302,9 @@ export default {
         let boxMrg = [0, Math.abs(w - paintW * scale) / 2 + 'px'].join(' ')
         $el.find('.pagebox').css({
           transform: 'scale(' + scale + ',' + scale + ')',
-          width: paintW + 'px',
-          height: paintH + 'px',
-          overflow: 'hidden',
+          // width: paintW + 'px',
+          // height: paintH + 'px',
+          overflow: 'visible',
           margin: boxMrg
         })
         $el.find('.home_wrapBox').css({
@@ -1683,7 +1786,146 @@ html[data-theme='blueWhite'] {
   z-index: 5000;
   background-color: #15192a65;
 }
-.ModelBox {
+.Tbaleban{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3840px;
+  height: 2160px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .TableHead {
+    width: 100%;
+    tr {
+      width: 100%;
+      height: 60px;
+      font-size: 30px !important;
+      display: flex;
+      color: #94cffa;
+      th {
+        height: 100%;
+        text-align: center;
+      }
+    }
+  }
+  .TableBody {
+    width: 100%;
+    height: 600px;
+    overflow: auto;
+    tr {
+      width: 100%;
+      height: 90px;
+      margin: 10px 0;
+      font-size: 30px !important;
+      display: flex;
+      color: #5983b6;
+      th {
+        height: 100%;
+        text-align: center;
+        overflow: hidden;
+      }
+    }
+  }
+}
+.ParentBox{
+  position: relative;
+}
+.BoxArry{
+  .SmallBox{
+    height: 1244px;
+    width: 45px;
+    position: fixed;
+    top: 500px;
+    left: 3790px;
+    // left: 0px;
+    position: absolute;
+    z-index: 10000;
+    background: url(./boxClose-r.png);
+    background-size: 100%  100%;
+  }
+  .BigBox{
+    height: 1244px;
+    width: 253px;
+    position: fixed;
+    top: 500px;
+    left: 3580px;
+//    left: 0px;
+    background-color: rgb(12, 236, 206);
+    position: absolute;
+    z-index: 10000;
+    background: url(./boxTan-r.png);
+    background-size: 100%  100%;
+    .CloseBox{
+      height: 220px;
+      width: 50px;
+      // right: 0px;
+      cursor: pointer;
+      position: absolute;
+      top: 510px;
+      z-index: 10000;
+    }
+    .AhrefBox{
+      height: 248px;
+      padding: 30px;
+      position: relative;
+      width: 260px;
+      cursor: pointer;
+      .openBox{
+        top: 50px;
+        left: 80px;
+        position: absolute;
+        height: 110px;
+        width: 110px;
+        background: url(./open.png);
+        background-size: 100% 100%;
+      }
+      .closeStyle{
+        top: 50px;
+        left: 80px;
+        position: absolute;
+        height: 110px;
+        width: 110px;
+        background: url(./close.png);
+        background-size: 100% 100%;
+      }
+      a{
+        font-size: 34px;
+        display: block;
+        top: 176px;
+        color: #CCE7FF;
+        width: 200px;
+        position: absolute;
+        text-align: center;
+      }
+    }
+    .AhrefBox:hover a{
+      color: #15ABFF;
+    }
+    .ChildrenBox{
+      height: 365px;
+      width: 260px;
+      left: -260px;
+      // left: 260px;
+      top: 750px;
+      background: url(./btBack.png);
+      background-size: 100%  100%;
+      position: absolute;
+      a{
+        display: block;
+        width: 100%;
+        height: 25%;
+        text-align: center;
+        font-size: 34px;
+        line-height: 100px;
+        color: #CCE7FF;
+      }
+      a:hover{
+        color: #15ABFF;
+      }
+    }
+  }
+}
+.TableBox {
   height: 886px;
   width: 1747px;
   padding: 100px;
@@ -1708,19 +1950,78 @@ html[data-theme='blueWhite'] {
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 24px !important;
+    font-size: 30px !important;
     flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
   }
   .lineBox {
     display: flex;
-    width: 33%;
+    width: 50%;
     padding: 30px 0px;
   }
   .Nmae {
     padding: 0px 10px;
+    width: 30%;
     color: #415468;
   }
   .Data {
+    width: 70%;
+    color: #789fb0;
+  }
+}
+.ModelBox {
+  height: 886px;
+  width: 1747px;
+  padding: 100px;
+  top: 600px;
+  left: 1050px;
+  position: relative;
+  z-index: 5000;
+  background: url(./modelBox.png);
+  .closeBtn{
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .NoData{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+  }
+  .BoxTitle {
+    font-size: 46px !important;
+    color: #bbeefe;
+    font-family: PangmenMainRoadTitleBody !important;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 30px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 50%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    width: 30%;
+    color: #415468;
+  }
+  .Data {
+    width: 70%;
     color: #789fb0;
   }
 }

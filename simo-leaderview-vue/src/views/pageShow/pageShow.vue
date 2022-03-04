@@ -1,23 +1,42 @@
 <template>
   <div class="content">
-    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="fasle" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
       </div>
+      <div class="CloseBtn" @click="popshow = false"></div>
       <div class="lineContain">
         <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址：武侯祠大街252号5-4-204</div>
-        <div class="line">房间数：2</div>
-        <div class="line">床铺数：8</div>
-        <div class="line">社区民警（电话）：陈朝林(17708192501)</div>
-        <div class="line">网格员（电话）：张敏(13194994003)</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
         <div class="line">
-          微消站（电话）：刘长城(15700573360)
+          微消站(电话):刘长城(15700573360)
         </div>
-        <button>入住历史</button>
-        <button>走访情况</button>
-
+        <button>入住记录</button>
+        <button>走访记录</button>
+      </div>
+    </div>
+    <div id="popBig" v-show="popshowBig">
+      <div class="poptitle">
+        小旅馆
+      </div>
+      <div class="CloseBtn" @click="popshowBig = false"></div>
+      <div class="lineContain">
+        <div class="line">名称: 小旅馆</div>
+        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
+        <div class="line">房间数:2</div>
+        <div class="line">床铺数:8</div>
+        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
+        <div class="line">网格员(电话):张敏(13194994003)</div>
+        <div class="line">
+          微消站(电话):刘长城(15700573360)
+        </div>
+        <button>入住记录</button>
+        <button>走访记录</button>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -32,15 +51,22 @@ var contrastBias
 var baseObject
 export default {
   name: 'pageShow',
+  props: ['nowPageID'],
   data () {
     return {
       popshow: false,
+      popshowBig: false,
       x: 0,
       y: 0,
       z: 0
     }
   },
-  computed: {},
+  computed: {
+    pageIsJXJ () {
+      let idArry = [118, 120, 119, 117, 127, 130, 133, 128]
+      return idArry.indexOf(this.nowPageID) > -1
+    }
+  },
   watch: {
 
   },
@@ -49,9 +75,15 @@ export default {
     this.initLine()
     this.initModels()
     this.initPostrender()
-    this.fly()
     this.addPoints()
     this.addPopEvent()
+    this.fly()
+    setTimeout(() => {
+      this.fly()
+    }, 2000)
+    setTimeout(() => {
+      this.fly()
+    }, 4000)
   },
   methods: {
     addPopEvent () {
@@ -75,18 +107,36 @@ export default {
           container.style.right = canvasWidth - windowPosition.x - container.offsetWidth * 0.5 + 'px'
         /* container.style.left = windowPosition.x  + "px"; */
         }
+        let containerbig = document.getElementById('popBig')
+        if (containerbig) {
+          var windowPosition = new Cesium.Cartesian2()
+          var canvasHeight = viewer.scene.canvas.height
+          var canvasWidth = viewer.scene.canvas.width
+          Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            viewer.scene,
+            Cesium.Cartesian3.fromDegrees(
+              that.x,
+              that.y,
+              that.z + 100
+            ),
+            windowPosition
+          )
+          containerbig.style.bottom = canvasHeight - windowPosition.y + 'px'
+          containerbig.style.right = canvasWidth - windowPosition.x - containerbig.offsetWidth * 0.5 + 'px'
+        /* container.style.left = windowPosition.x  + "px"; */
+        }
       }
       viewer.scene.preRender.addEventListener(pop)
     },
     addPoints () {
       let height = 90
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.068146369733, 30.5874024040152, 80 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06053144060571, 30.571086359869128, 50 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06216701280734, 30.604087221823228, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04354503175277, 30.58950036552712, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03921297349484, 30.595079695239477, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.02454030361058, 30.591786782286736, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03543373128811, 30.61099993425912, 50 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.9560087384879, 30.621067454297123, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97744811147976, 30.630154473334926, 50 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97507519417769, 30.601843507403853, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.98045377835918, 30.636954326786963, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.99955353582837, 30.616759314294566, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.00787939994709, 30.6292473728405, 30 + height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97129887928244, 30.647984750384545, 50 + height))
     },
     addPointer (position) {
       viewer.entities.add({
@@ -100,16 +150,16 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.15382762573847,
-          30.525354562999283,
-          5648.141481220404
+          104.08993840769945,
+          30.583815387362105,
+          32859.13617687835
         ),
         orientation: {
-          heading: 5.287504180425997,
-          pitch: -0.4594702554639958,
-          roll: 0.000044985178769607614
+          heading: 6.283185307179586,
+          pitch: -1.570785738725554,
+          roll: 0
         },
-        duration: 0.5
+        duration: 1
       })
     },
     initPostrender () {
@@ -202,11 +252,13 @@ return mix(factor,mirror,0.0);
           pickId: pickId
         }
         contrastBias.selected = [baseObject]
-      }, 1000)
+      }, 2000)
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
-        let positions = res.features[0].geometry.coordinates
+        // console.log(res)
+        let positions = res.features[0].geometry.coordinates[0][0]
+        // console.log(positions)
         let linepositions = []
         positions.forEach(item => {
           linepositions.push(item[0])
@@ -331,6 +383,19 @@ return mix(factor,mirror,0.0);
         pitch: pitch,
         roll: roll
       }
+      let data = `
+      destination: Cesium.Cartesian3.fromDegrees(
+          ${obj.longitude},
+          ${obj.latitude},
+          ${obj.height}
+        ),
+        orientation: {
+          heading: ${obj.heading},
+          pitch: ${obj.pitch},
+          roll: ${obj.roll}
+        },
+      `
+      console.log(data)
       console.log(obj, viewer.scene.primitives)
     },
     init3D () {
@@ -351,22 +416,26 @@ return mix(factor,mirror,0.0);
         vrButton: false, // vr部件
         shouldAnimate: true,
         shadows: false,
-        imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
-        // 影像注记
-          url: 'http://t{s}.tianditu.com/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
-          subdomains: subdomains,
-          layer: 'tdtCiaLayer',
-          style: 'default',
-          format: 'image/jpeg',
-          tileMatrixSetID: 'GoogleMapsCompatible',
-          show: true,
-          maximumLevel: 17
+        imageryProvider: new Cesium.SingleTileImageryProvider({
+          url: './static/Cesium/back.png'
         })
+        // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+        // // 影像注记
+        //   url: 'http://t{s}.tianditu.com/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
+        //   subdomains: subdomains,
+        //   layer: 'tdtCiaLayer',
+        //   style: 'default',
+        //   format: 'image/jpeg',
+        //   tileMatrixSetID: 'GoogleMapsCompatible',
+        //   show: true,
+        //   maximumLevel: 17
+        // })
       })
       let d3kit = new Cesium.D3Kit(viewer)
       let layer = viewer.scene.imageryLayers.get(0)
-      layer.brightness = 0.4
+      layer.brightness = 0.2
       viewer.scene.skyAtmosphere.show = false
+      viewer.scene.globe.enableLighting = false
       viewer.scene.globe.baseColor = Cesium.Color.BLACK
       viewer.cesiumWidget.creditContainer.style.display = 'none' // 去水印
       viewer.scene.globe.depthTestAgainstTerrain = true
@@ -391,7 +460,7 @@ return mix(factor,mirror,0.0);
         Cesium.CameraEventType.RIGHT_DRAG
       ]
       var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
-      // todo：在椭球下点击创建点
+      // todo:在椭球下点击创建点
       handler.setInputAction(e => {
         var mousePosition = e.position
         var picked = viewer.scene.pick(mousePosition)
@@ -409,10 +478,15 @@ return mix(factor,mirror,0.0);
           lat,
           Cesium.Cartographic.fromCartesian(position).height + 3)
         this.popshow = false
+        this.popshowBig = false
         contrastBias.selected = [baseObject]
         if (picked && picked.primitive) {
           if (picked.id && picked.id._billboard) {
-            this.popshow = true
+            if (this.pageIsJXJ) {
+              this.popshow = true
+            } else {
+              this.popshowBig = true
+            }
           }
           let primitive = picked.primitive
           let pickIds = primitive._pickIds
@@ -459,10 +533,10 @@ return mix(factor,mirror,0.0);
   margin: 0px;
 }
 .content #pop {
-  width: 300px;
-  height: 280px;
-  background: rgb(5, 31, 52);
-  border: 1px solid rgb(0, 195, 245);
+  width: 650px;
+  height: 329px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
   color: rgb(255, 255, 255);
   position: relative;
   padding: 40px 0px 0px;
@@ -472,20 +546,74 @@ return mix(factor,mirror,0.0);
 }
 .content #pop .poptitle {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 22px;
-  font-family: cusfont;
+  top: 60px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
-  color: rgb(255, 255, 255);
+}
+.content #pop .CloseBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
 }
 .content #pop .lineContain {
-  padding: 10px;
+  padding: 10px 60px;
+  top: 70px;
+  position: relative;
 }
 .content #pop .lineContain .line {
   margin-bottom: 5px;
 }
 .content #pop .lineContain button {
+  color: #fff;
+  background: #1890ff;
+  border-color: #1890ff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+}
+.content #popBig {
+  width: 650px;
+  height: 329px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
+  color: rgb(255, 255, 255);
+  position: relative;
+  padding: 40px 0px 0px;
+  position: absolute;
+  z-index: 999;
+  font-size: 14px;
+}
+.content #popBig .poptitle {
+  position: absolute;
+  top: 45px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
+  font-weight: 400;
+}
+.content #popBig .CloseBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
+}
+.content #popBig .lineContain {
+  padding: 10px 60px;
+  top: 50px;
+  position: relative;
+}
+.content #popBig .lineContain .line {
+  margin-bottom: 5px;
+}
+.content #popBig .lineContain button {
   color: #fff;
   background: #1890ff;
   border-color: #1890ff;

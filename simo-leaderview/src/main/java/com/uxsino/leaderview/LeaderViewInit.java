@@ -4,9 +4,14 @@ import javax.jms.JMSException;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.uxsino.leaderview.dao.ITimeDataDao;
+import com.uxsino.leaderview.entity.TimeData;
 import com.uxsino.leaderview.handler.LeaderViewAuthorityHandler;
 import com.uxsino.leaderview.handler.UserDataHandler;
+import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.service.AuthorityService;
+import com.uxsino.leaderview.service.WuHouService;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,6 +35,7 @@ import com.uxsino.reactorq.subscriber.EventSubscriber;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Configuration
@@ -51,6 +57,12 @@ public class LeaderViewInit implements InitializingBean {
 
 	@Autowired
 	private HomeTemplateService homeTemplateService;
+
+	@Autowired
+	WuHouService wuHouService;
+
+	@Autowired
+	ITimeDataDao timeDataDao;
 
 	@Autowired
 	private LeaderViewAuthorityHandler authorityHandler;
@@ -75,6 +87,10 @@ public class LeaderViewInit implements InitializingBean {
 		if (homeTemplateService.count() == 0 || templateInit){
 			homeTemplateService.init();
 		}
+		//初始化定时任务信息
+		wuHouService.initTimeData();
+		//初始化定时任务
+		initDataTimeJob();
 		// 订阅大屏展示API注册
 		try {
 			homeDataApiHandler.register();
@@ -127,6 +143,20 @@ public class LeaderViewInit implements InitializingBean {
 			);
 		} catch (JMSException e) {
 			logger.error("mq 域变更订阅异常: {}", e);
+		}
+	}
+
+	private void initDataTimeJob(){
+
+		List<TimeData> dataList = timeDataDao.findAll();
+		List<DataJob> jobs = wuHouService.createJobFromTimeData(dataList);
+		try {
+			for(DataJob job : jobs) {
+				wuHouService.getDataByTime(job);
+			}
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			logger.error("定时采集数据任务初始化失败，原因为{}",e.getMessage());
 		}
 	}
 
