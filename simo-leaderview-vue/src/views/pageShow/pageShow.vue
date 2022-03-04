@@ -49,6 +49,7 @@ var viewer
 var tileset
 var contrastBias
 var baseObject
+var highLightPolygon
 export default {
   name: 'pageShow',
   props: ['nowPageID'],
@@ -78,12 +79,6 @@ export default {
     this.addPoints()
     this.addPopEvent()
     this.fly()
-    setTimeout(() => {
-      this.fly()
-    }, 2000)
-    setTimeout(() => {
-      this.fly()
-    }, 4000)
   },
   methods: {
     addPopEvent () {
@@ -129,14 +124,10 @@ export default {
       viewer.scene.preRender.addEventListener(pop)
     },
     addPoints () {
-      let height = 90
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.9560087384879, 30.621067454297123, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97744811147976, 30.630154473334926, 50 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97507519417769, 30.601843507403853, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.98045377835918, 30.636954326786963, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.99955353582837, 30.616759314294566, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.00787939994709, 30.6292473728405, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(103.97129887928244, 30.647984750384545, 50 + height))
+      let height = 100
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.05225, 30.644971, height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04467606235154, 30.645521833155275, height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.044138, 30.645464, height))
     },
     addPointer (position) {
       viewer.entities.add({
@@ -247,18 +238,20 @@ return mix(factor,mirror,0.0);
       viewer.scene.postProcessStages.add(bloomUser)
       contrastBias.selected = []
       setTimeout(() => {
-        var pickId = viewer.scene.primitives._primitives[0]._primitives[0]._primitives[1]._pickIds[0]
-        baseObject = {
-          pickId: pickId
-        }
+        var pickIdchecks = viewer.scene.primitives._primitives[0]._primitives[0]._primitives
+        pickIdchecks.forEach(item => {
+          if (item._pickIds && item._pickIds.length === 1) {
+            baseObject = {
+              pickId: item._pickIds[0]
+            }
+          }
+        })
         contrastBias.selected = [baseObject]
       }, 2000)
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
-        // console.log(res)
         let positions = res.features[0].geometry.coordinates[0][0]
-        // console.log(positions)
         let linepositions = []
         positions.forEach(item => {
           linepositions.push(item[0])
@@ -304,6 +297,59 @@ return mix(factor,mirror,0.0);
           }
         })
       })
+      $.getJSON('./static/geojson/xzqh.json', (res) => {
+        console.log(res)
+        let positions = res.features
+        positions.forEach((item, index) => {
+          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+          if (item.properties.Name === '浆洗街街道') {
+            color = Cesium.Color.GOLD.withAlpha(0.6)
+          }
+          let linepositions = []
+          if (item.geometry.type === 'MultiPolygon') {
+            item.geometry.coordinates.forEach(item => {
+              item[0].forEach(child => {
+                linepositions.push(child[0])
+                linepositions.push(child[1])
+                linepositions.push(3)
+              })
+            })
+          } else {
+            item.geometry.coordinates[0].forEach(item => {
+              linepositions.push(item[0])
+              linepositions.push(item[1])
+              linepositions.push(3)
+            })
+          }
+          viewer.entities.add({
+            polygon: {
+              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              perPositionHeight: true,
+              material: color
+            },
+            name: item.properties.Name
+          })
+        })
+      })
+      $.getJSON('./static/geojson/bianjie_low.json', (res) => {
+        let positions = res.features[0].geometry.coordinates
+        positions.forEach((item, index) => {
+          let linepositions = []
+          item.forEach(item => {
+            linepositions.push(item[0])
+            linepositions.push(item[1])
+            linepositions.push(8)
+          })
+          viewer.entities.add({
+            polyline: {
+              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              material: Cesium.Color.AQUAMARINE,
+              depthFailMaterial: Cesium.Color.AQUAMARINE,
+              width: 2
+            }
+          })
+        })
+      })
     },
     initModels () {
       tileset = new Cesium.Cesium3DTileset({
@@ -313,10 +359,6 @@ return mix(factor,mirror,0.0);
       })
       viewer.scene.primitives.add(tileset)
       tileset.readyPromise.then(function (tileset) {
-        var boundingSphere = tileset.boundingSphere
-        viewer.camera.viewBoundingSphere(boundingSphere, new Cesium.HeadingPitchRange(0, -2.0, 0))
-        viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
-
         tileset.style = new Cesium.Cesium3DTileStyle({
           color: {
             conditions: [
@@ -480,7 +522,7 @@ return mix(factor,mirror,0.0);
         this.popshow = false
         this.popshowBig = false
         contrastBias.selected = [baseObject]
-        if (picked && picked.primitive) {
+        if (picked && picked.primitive && picked.id && picked.id._billboard) {
           if (picked.id && picked.id._billboard) {
             if (this.pageIsJXJ) {
               this.popshow = true
@@ -500,7 +542,7 @@ return mix(factor,mirror,0.0);
           if (!pickId) {
             if (picked.id) {
               pickId = pickIds.find(pickId => {
-                return pickId.object == picked
+                return pickId.object === picked
               })
             } else if (pickIds) {
               pickId = pickIds[0]
@@ -514,6 +556,31 @@ return mix(factor,mirror,0.0);
           }
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+      handler.setInputAction(e => {
+        var mousePosition = e.endPosition
+        var picked = viewer.scene.pick(mousePosition)
+        if (picked && picked.id && picked.id._polygon) {
+          if (picked.id.name === '浆洗街街道') {
+            return
+          }
+          if (highLightPolygon) {
+            if (highLightPolygon === picked.id._polygon) {
+              return
+            }
+            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+            highLightPolygon = picked.id._polygon
+            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+          } else {
+            highLightPolygon = picked.id._polygon
+            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+          }
+        } else {
+          if (highLightPolygon) {
+            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+            highLightPolygon = undefined
+          }
+        }
+      }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     }
   }
 }
