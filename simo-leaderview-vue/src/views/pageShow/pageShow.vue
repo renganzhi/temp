@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="true" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -77,6 +77,9 @@ export default {
     setTimeout(() => {
       this.fly()
     }, 2000)
+    setTimeout(() => {
+      this.fly()
+    }, 4000)
   },
   methods: {
     addPopEvent () {
@@ -143,14 +146,14 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.04264414119791,
-          30.47629004013827,
-          17985.62618458683
+          104.08993840769945,
+          30.583815387362105,
+          32859.13617687835
         ),
         orientation: {
-          heading: 0.12708256036787802,
-          pitch: -0.999325993348009,
-          roll: 6.280549319641865
+          heading: 6.283185307179586,
+          pitch: -1.570785738725554,
+          roll: 0
         },
         duration: 1
       })
@@ -376,6 +379,19 @@ return mix(factor,mirror,0.0);
         pitch: pitch,
         roll: roll
       }
+      let data = `
+      destination: Cesium.Cartesian3.fromDegrees(
+          ${obj.longitude},
+          ${obj.latitude},
+          ${obj.height}
+        ),
+        orientation: {
+          heading: ${obj.heading},
+          pitch: ${obj.pitch},
+          roll: ${obj.roll}
+        },
+      `
+      console.log(data)
       console.log(obj, viewer.scene.primitives)
     },
     init3D () {
