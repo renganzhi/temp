@@ -117,6 +117,7 @@
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseleave="OpenChileBox = false"><a href="">事件调度</a></div>
+                    <div class="AhrefBox"><a href="">队伍调度</a></div>
                     <div class="ChildrenBox" v-if="OpenChileBox"  @mousemove="OpenChileBox = true" @mouseleave="OpenChileBox = false">
                       <a href="">社区</a>
                       <a href="">专版/指挥部</a>
@@ -1831,10 +1832,10 @@ html[data-theme='blueWhite'] {
 }
 .BoxArry{
   .SmallBox{
-    height: 1016px;
+    height: 1244px;
     width: 45px;
     position: fixed;
-    top: 600px;
+    top: 500px;
     left: 3790px;
     // left: 0px;
     position: absolute;
@@ -1843,10 +1844,10 @@ html[data-theme='blueWhite'] {
     background-size: 100%  100%;
   }
   .BigBox{
-    height: 1016px;
+    height: 1244px;
     width: 253px;
     position: fixed;
-    top: 600px;
+    top: 500px;
     left: 3580px;
 //    left: 0px;
     background-color: rgb(12, 236, 206);
@@ -1860,11 +1861,11 @@ html[data-theme='blueWhite'] {
       // right: 0px;
       cursor: pointer;
       position: absolute;
-      top: 400px;
+      top: 510px;
       z-index: 10000;
     }
     .AhrefBox{
-      height: 260px;
+      height: 248px;
       padding: 30px;
       position: relative;
       width: 260px;
