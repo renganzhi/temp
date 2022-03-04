@@ -16,6 +16,8 @@
         <div class="line">
           微消站(电话):刘长城(15700573360)
         </div>
+        <button>入住记录</button>
+        <button>走访记录</button>
       </div>
     </div>
     <div id="popBig" v-show="popshowBig">
@@ -33,6 +35,8 @@
         <div class="line">
           微消站(电话):刘长城(15700573360)
         </div>
+        <button>入住记录</button>
+        <button>走访记录</button>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -586,7 +590,7 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .poptitle {
   position: absolute;
-  top: 60px;
+  top: 45px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -603,7 +607,7 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .lineContain {
   padding: 10px 60px;
-  top: 70px;
+  top: 50px;
   position: relative;
 }
 .content #popBig .lineContain .line {
