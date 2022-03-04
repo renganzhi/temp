@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="true" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="fasle" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
