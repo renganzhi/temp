@@ -143,14 +143,14 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.12178941349616,
-          30.300340154010275,
-          40366.34831260118
+          104.04264414119791,
+          30.47629004013827,
+          17985.62618458683
         ),
         orientation: {
-          heading: 0.12708259239067843,
-          pitch: -0.9993261545118939,
-          roll: 6.2805492815696455
+          heading: 0.12708256036787802,
+          pitch: -0.999325993348009,
+          roll: 6.280549319641865
         },
         duration: 1
       })
