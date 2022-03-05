@@ -4455,5 +4455,14 @@
                 ]
             }
         ]
+    },
+    {
+        "key": "get_housing_personnel_top",
+        "name": "入住人员Top10",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/WuHou/getHousingPersonnelTop",
+        "method" : "get",
+        "params": []
     }
 ]

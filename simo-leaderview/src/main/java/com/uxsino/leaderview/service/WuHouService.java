@@ -9,6 +9,7 @@ import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.UUIDUtils;
 import com.uxsino.leaderview.dao.ITimeDataDao;
+import com.uxsino.leaderview.dao.IWuhouHotelRegisterDao;
 import com.uxsino.leaderview.entity.TimeData;
 import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -51,6 +52,9 @@ public class WuHouService {
 
     @Autowired
     JdbcTemplate template;
+    
+    @Autowired
+    private IWuhouHotelRegisterDao wuhouHotelRegisterDao;
 
     /**
      * 初始化文件名称
@@ -678,6 +682,55 @@ public class WuHouService {
             e.printStackTrace();
         }
 
+
+    }
+
+    public JsonModel getHousingPersonnelTop() {
+        JSONObject res = new JSONObject();
+        JSONObject dataArry = new JSONObject();
+        JSONArray nameArry = new JSONArray();
+        nameArry.add("高频入住人员TOP10");
+        nameArry.add("高流动性人员TOP10");
+        dataArry.put("nameArry",nameArry);
+        JSONArray dataArray = new JSONArray();
+        //获取高频入住top10
+        JSONObject checkInTopObject = new JSONObject();
+        JSONArray checkInColumns = new JSONArray();
+        checkInColumns.add("姓名");
+        checkInColumns.add("次数");
+        JSONArray checkInTopRows = new JSONArray();
+        List<String[]> checkInTop = wuhouHotelRegisterDao.getHousingPersonnelTop(10);
+        for (int i = 0; i < checkInTop.size(); i++) {
+            JSONObject item = new JSONObject();
+            item.put(checkInColumns.getString(0),checkInTop.get(i)[0]);
+            item.put(checkInColumns.getString(1),checkInTop.get(i)[1]);
+            checkInTopRows.add(item);
+        }
+        checkInTopObject.put("columns",checkInColumns);
+        checkInTopObject.put("unit","家");
+        checkInTopObject.put("rows",checkInTopRows);
+        dataArray.add(checkInTopObject);
+        //获取高流动性人群top10
+        JSONObject flowTopObject = new JSONObject();
+        JSONArray flowColumns = new JSONArray();
+        flowColumns.add("姓名");
+        flowColumns.add("家数");
+        JSONArray flowTopRows = new JSONArray();
+        List<String[]> flowTop = wuhouHotelRegisterDao.getFlowHousingPersonnelTop(10);
+        for (int i = 0; i < flowTop.size(); i++) {
+            JSONObject item = new JSONObject();
+            item.put(flowColumns.getString(0),flowTop.get(i)[0]);
+            item.put(flowColumns.getString(1),flowTop.get(i)[1]);
+            flowTopRows.add(item);
+        }
+        flowTopObject.put("columns",flowColumns);
+        flowTopObject.put("unit","家");
+        flowTopObject.put("rows",flowTopRows);
+        dataArray.add(flowTopObject);
+        //封装返回值
+        dataArry.put("dataArry",dataArray);
+        res.put("dataArry",dataArry);
+        return new JsonModel(true,res);
 
     }
 }
