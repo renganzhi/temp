@@ -259,11 +259,21 @@ export default {
       this.nowShowData = rowsData
     },
     showXQ(data){
-      let boxData = {
-        title:'数据详情',
-        data:data
+      if(this.item.chartData.url){
+        this.axios.get(this.item.chartData.url+data['姓名']).then((res) => {
+          let boxData = {
+            title:'走访详情',
+            data:res.obj.rows[0]
+          }
+          this.$parent.$parent.ShowTanKuangBox(boxData)
+        })
+      }else{
+        let boxData = {
+          title:'数据详情',
+          data:data
+        }
+        this.$parent.$parent.ShowTanKuangBox(boxData)
       }
-      this.$parent.$parent.ShowTanKuangBox(boxData)
     }
   },
   beforeDestroy () {
@@ -295,26 +305,6 @@ export default {
         justify-content: center;
         overflow: hidden;
       }
-      // th:nth-child(1) {
-      //   width: 15%;
-      // }
-      // th:nth-child(2) {
-      //   width: 15%;
-      // }
-      // th:nth-child(3) {
-      //   width: 25%;
-      //   padding-right: 3%;
-      //   padding-left: 2%;
-      // }
-      // th:nth-child(4) {
-      //   width: 20%;
-      // }
-      // th:nth-child(5) {
-      //   width: 25%;
-      // }
-      // th:nth-child(6) {
-      //   width: 25%;
-      // }
     }
   }
   .TableBody {
@@ -334,26 +324,6 @@ export default {
         align-items: center;
         overflow: hidden;
       }
-      // th:nth-child(1) {
-      //   width: 15%;
-      // }
-      // th:nth-child(2) {
-      //   width: 15%;
-      // }
-      // th:nth-child(3) {
-      //   width: 25%;
-      //   padding-right: 3%;
-      //   padding-left: 2%;
-      // }
-      // th:nth-child(4) {
-      //   width: 20%;
-      // }
-      // th:nth-child(5) {
-      //   width: 25%;
-      // }
-      // th:nth-child(6) {
-      //   width: 25%;
-      // }
     }
   }
   .btnBox {

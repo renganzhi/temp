@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="fasle" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -16,6 +16,8 @@
         <div class="line">
           微消站(电话):刘长城(15700573360)
         </div>
+        <button>入住记录</button>
+        <button>走访记录</button>
       </div>
     </div>
     <div id="popBig" v-show="popshowBig">
@@ -33,6 +35,8 @@
         <div class="line">
           微消站(电话):刘长城(15700573360)
         </div>
+        <button>入住记录</button>
+        <button>走访记录</button>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -45,9 +49,10 @@ var viewer
 var tileset
 var contrastBias
 var baseObject
+var highLightPolygon
 export default {
   name: 'pageShow',
-  props:["nowPageID"],
+  props: ['nowPageID'],
   data () {
     return {
       popshow: false,
@@ -58,8 +63,8 @@ export default {
     }
   },
   computed: {
-    pageIsJXJ(){
-      let idArry = [118,120,119,117,127,130,133,128]
+    pageIsJXJ () {
+      let idArry = [118, 120, 119, 117, 127, 130, 133, 128]
       return idArry.indexOf(this.nowPageID) > -1
     }
   },
@@ -74,9 +79,6 @@ export default {
     this.addPoints()
     this.addPopEvent()
     this.fly()
-    setTimeout(() => {
-      this.fly()
-    }, 2000);
   },
   methods: {
     addPopEvent () {
@@ -122,14 +124,10 @@ export default {
       viewer.scene.preRender.addEventListener(pop)
     },
     addPoints () {
-      let height = 90
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.068146369733, 30.5874024040152, 80 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06053144060571, 30.571086359869128, 50 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.06216701280734, 30.604087221823228, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04354503175277, 30.58950036552712, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03921297349484, 30.595079695239477, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.02454030361058, 30.591786782286736, 30 + height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.03543373128811, 30.61099993425912, 50 + height))
+      let height = 100
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.05225, 30.644971, height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04467606235154, 30.645521833155275, height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.044138, 30.645464, height))
     },
     addPointer (position) {
       viewer.entities.add({
@@ -143,14 +141,14 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.00875731174037,
-          30.58901673177306,
-          1084.6550371389826
+          104.08993840769945,
+          30.583815387362105,
+          32859.13617687835
         ),
         orientation: {
-          heading: 1.1170617187612724,
-          pitch: -0.4973789046560473,
-          roll: 6.283013004097901
+          heading: 6.283185307179586,
+          pitch: -1.570785738725554,
+          roll: 0
         },
         duration: 1
       })
@@ -240,16 +238,20 @@ return mix(factor,mirror,0.0);
       viewer.scene.postProcessStages.add(bloomUser)
       contrastBias.selected = []
       setTimeout(() => {
-        var pickId = viewer.scene.primitives._primitives[0]._primitives[0]._primitives[1]._pickIds[0]
-        baseObject = {
-          pickId: pickId
-        }
+        var pickIdchecks = viewer.scene.primitives._primitives[0]._primitives[0]._primitives
+        pickIdchecks.forEach(item => {
+          if (item._pickIds && item._pickIds.length === 1) {
+            baseObject = {
+              pickId: item._pickIds[0]
+            }
+          }
+        })
         contrastBias.selected = [baseObject]
       }, 2000)
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
-        let positions = res.features[0].geometry.coordinates
+        let positions = res.features[0].geometry.coordinates[0][0]
         let linepositions = []
         positions.forEach(item => {
           linepositions.push(item[0])
@@ -295,6 +297,59 @@ return mix(factor,mirror,0.0);
           }
         })
       })
+      $.getJSON('./static/geojson/xzqh.json', (res) => {
+        console.log(res)
+        let positions = res.features
+        positions.forEach((item, index) => {
+          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+          if (item.properties.Name === '浆洗街街道') {
+            color = Cesium.Color.GOLD.withAlpha(0.6)
+          }
+          let linepositions = []
+          if (item.geometry.type === 'MultiPolygon') {
+            item.geometry.coordinates.forEach(item => {
+              item[0].forEach(child => {
+                linepositions.push(child[0])
+                linepositions.push(child[1])
+                linepositions.push(3)
+              })
+            })
+          } else {
+            item.geometry.coordinates[0].forEach(item => {
+              linepositions.push(item[0])
+              linepositions.push(item[1])
+              linepositions.push(3)
+            })
+          }
+          viewer.entities.add({
+            polygon: {
+              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              perPositionHeight: true,
+              material: color
+            },
+            name: item.properties.Name
+          })
+        })
+      })
+      $.getJSON('./static/geojson/bianjie_low.json', (res) => {
+        let positions = res.features[0].geometry.coordinates
+        positions.forEach((item, index) => {
+          let linepositions = []
+          item.forEach(item => {
+            linepositions.push(item[0])
+            linepositions.push(item[1])
+            linepositions.push(8)
+          })
+          viewer.entities.add({
+            polyline: {
+              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              material: Cesium.Color.AQUAMARINE,
+              depthFailMaterial: Cesium.Color.AQUAMARINE,
+              width: 2
+            }
+          })
+        })
+      })
     },
     initModels () {
       tileset = new Cesium.Cesium3DTileset({
@@ -304,10 +359,6 @@ return mix(factor,mirror,0.0);
       })
       viewer.scene.primitives.add(tileset)
       tileset.readyPromise.then(function (tileset) {
-        var boundingSphere = tileset.boundingSphere
-        viewer.camera.viewBoundingSphere(boundingSphere, new Cesium.HeadingPitchRange(0, -2.0, 0))
-        viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
-
         tileset.style = new Cesium.Cesium3DTileStyle({
           color: {
             conditions: [
@@ -374,6 +425,19 @@ return mix(factor,mirror,0.0);
         pitch: pitch,
         roll: roll
       }
+      let data = `
+      destination: Cesium.Cartesian3.fromDegrees(
+          ${obj.longitude},
+          ${obj.latitude},
+          ${obj.height}
+        ),
+        orientation: {
+          heading: ${obj.heading},
+          pitch: ${obj.pitch},
+          roll: ${obj.roll}
+        },
+      `
+      console.log(data)
       console.log(obj, viewer.scene.primitives)
     },
     init3D () {
@@ -394,22 +458,26 @@ return mix(factor,mirror,0.0);
         vrButton: false, // vr部件
         shouldAnimate: true,
         shadows: false,
-        imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
-        // 影像注记
-          url: 'http://t{s}.tianditu.com/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
-          subdomains: subdomains,
-          layer: 'tdtCiaLayer',
-          style: 'default',
-          format: 'image/jpeg',
-          tileMatrixSetID: 'GoogleMapsCompatible',
-          show: true,
-          maximumLevel: 17
+        imageryProvider: new Cesium.SingleTileImageryProvider({
+          url: './static/Cesium/back.png'
         })
+        // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+        // // 影像注记
+        //   url: 'http://t{s}.tianditu.com/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default.jpg&tk=1b0e6426f7883feec155d6f3e3c8f5e2',
+        //   subdomains: subdomains,
+        //   layer: 'tdtCiaLayer',
+        //   style: 'default',
+        //   format: 'image/jpeg',
+        //   tileMatrixSetID: 'GoogleMapsCompatible',
+        //   show: true,
+        //   maximumLevel: 17
+        // })
       })
       let d3kit = new Cesium.D3Kit(viewer)
       let layer = viewer.scene.imageryLayers.get(0)
-      layer.brightness = 0.4
+      layer.brightness = 0.2
       viewer.scene.skyAtmosphere.show = false
+      viewer.scene.globe.enableLighting = false
       viewer.scene.globe.baseColor = Cesium.Color.BLACK
       viewer.cesiumWidget.creditContainer.style.display = 'none' // 去水印
       viewer.scene.globe.depthTestAgainstTerrain = true
@@ -454,11 +522,11 @@ return mix(factor,mirror,0.0);
         this.popshow = false
         this.popshowBig = false
         contrastBias.selected = [baseObject]
-        if (picked && picked.primitive) {
+        if (picked && picked.primitive && picked.id && picked.id._billboard) {
           if (picked.id && picked.id._billboard) {
-            if(this.pageIsJXJ){
+            if (this.pageIsJXJ) {
               this.popshow = true
-            }else{
+            } else {
               this.popshowBig = true
             }
           }
@@ -474,7 +542,7 @@ return mix(factor,mirror,0.0);
           if (!pickId) {
             if (picked.id) {
               pickId = pickIds.find(pickId => {
-                return pickId.object == picked
+                return pickId.object === picked
               })
             } else if (pickIds) {
               pickId = pickIds[0]
@@ -488,6 +556,31 @@ return mix(factor,mirror,0.0);
           }
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+      handler.setInputAction(e => {
+        var mousePosition = e.endPosition
+        var picked = viewer.scene.pick(mousePosition)
+        if (picked && picked.id && picked.id._polygon) {
+          if (picked.id.name === '浆洗街街道') {
+            return
+          }
+          if (highLightPolygon) {
+            if (highLightPolygon === picked.id._polygon) {
+              return
+            }
+            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+            highLightPolygon = picked.id._polygon
+            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+          } else {
+            highLightPolygon = picked.id._polygon
+            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+          }
+        } else {
+          if (highLightPolygon) {
+            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+            highLightPolygon = undefined
+          }
+        }
+      }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     }
   }
 }
@@ -527,7 +620,7 @@ return mix(factor,mirror,0.0);
   font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
 }
-.content #pop .CloseBtn {    
+.content #pop .CloseBtn {
   position: absolute;
   cursor: pointer;
   top: 5px;
@@ -564,14 +657,14 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .poptitle {
   position: absolute;
-  top: 60px;
+  top: 45px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
   font-family: PangmenMainRoadTitleBody !important;
   font-weight: 400;
 }
-.content #popBig .CloseBtn {    
+.content #popBig .CloseBtn {
   position: absolute;
   cursor: pointer;
   top: 5px;
@@ -581,7 +674,7 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .lineContain {
   padding: 10px 60px;
-  top: 70px;
+  top: 50px;
   position: relative;
 }
 .content #popBig .lineContain .line {

@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -29,8 +26,7 @@ public class WuhouPatrolRecord {
 
     @Id
     @ApiModelProperty(value = "主键id")
-    @GeneratedValue(generator = "uuidGenerator")
-    @GenericGenerator(name = "uuidGenerator", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ApiModelProperty(value = "场所id")

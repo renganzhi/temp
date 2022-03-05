@@ -267,5 +267,9 @@ public class WuHouController {
         return new JsonModel(true,result);
     }
 
+    @GetMapping("/getHousingPersonnelTop")
+    public JsonModel getHousingPersonnelTop(){
+        return wuHouService.getHousingPersonnelTop();
+    }
 
 }

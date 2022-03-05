@@ -81,6 +81,7 @@
                     <div class="AhrefBox"><a href="">视频调度</a></div>
                     <div class="AhrefBox"><a href="">语音调度</a></div>
                     <div class="AhrefBox" @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false"><a href="">事件调度</a></div>
+                    <div class="AhrefBox"><a href="">队伍调度</a></div>
                     <div class="ChildrenBox" v-if="OpenChileBox"  @mousemove="OpenChileBox = true" @mouseout="OpenChileBox = false">
                       <a href="">社区</a>
                       <a href="">专版/指挥部</a>
@@ -1717,36 +1718,40 @@ html[data-theme='blueWhite'] {
 }
 .BoxArry{
   .SmallBox{
-    height: 1016px;
+    height: 1244px;
     width: 45px;
     position: fixed;
-    top: 600px;
+    top: 500px;
     left: 3790px;
+// left: 0px;
     position: absolute;
     z-index: 10000;
-    background: url(./boxClose.png);
+    background: url(./boxClose-r.png);
     background-size: 100%  100%;
   }
   .BigBox{
-    height: 1016px;
+    height: 1244px;
     width: 253px;
     position: fixed;
-    top: 600px;
+    top: 500px;
     left: 3580px;
+// left: 0px;
     background-color: rgb(12, 236, 206);
     position: absolute;
     z-index: 10000;
-    background: url(./boxTan.png);
+    background: url(./boxTan-r.png);
     background-size: 100%  100%;
     .CloseBox{
       height: 220px;
       width: 50px;
+      cursor: pointer;
+      // right: 0px;
       position: absolute;
-      top: 400px;
+      top: 510px;
       z-index: 10000;
     }
     .AhrefBox{
-      height: 260px;
+      height: 248px;
       padding: 30px;
       position: relative;
       width: 260px;
@@ -1783,6 +1788,7 @@ html[data-theme='blueWhite'] {
       height: 365px;
       width: 260px;
       left: -260px;
+      // left: 260px;
       top: 750px;
       background: url(./btBack.png);
       background-size: 100%  100%;
@@ -1840,11 +1846,11 @@ html[data-theme='blueWhite'] {
   }
   .Nmae {
     padding: 0px 10px;
-    width: 20%;
+    width: 30%;
     color: #415468;
   }
   .Data {
-    width: 80%;
+    width: 70%;
     color: #789fb0;
   }
 }
