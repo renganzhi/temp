@@ -707,14 +707,14 @@ public class WuHouService {
             checkInTopRows.add(item);
         }
         checkInTopObject.put("columns",checkInColumns);
-        checkInTopObject.put("unit","家");
+        checkInTopObject.put("unit","次数");
         checkInTopObject.put("rows",checkInTopRows);
         dataArray.add(checkInTopObject);
         //获取高流动性人群top10
         JSONObject flowTopObject = new JSONObject();
         JSONArray flowColumns = new JSONArray();
         flowColumns.add("姓名");
-        flowColumns.add("家数");
+        flowColumns.add("家");
         JSONArray flowTopRows = new JSONArray();
         List<String[]> flowTop = wuhouHotelRegisterDao.getFlowHousingPersonnelTop(10);
         for (int i = 0; i < flowTop.size(); i++) {
