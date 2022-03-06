@@ -64,12 +64,14 @@ export default {
       }
     },
     ShowXq(){
-      let boxData = {
-        title:'数据详情',
-        data:'arry',
-        dataArry:this.item.chartData.list
+      if(this.item.chartData.list){
+        let boxData = {
+          title:'数据详情',
+          data:'arry',
+          dataArry:this.item.chartData.list
+        }
+        this.$parent.$parent.ShowTableBox(boxData)
       }
-      this.$parent.$parent.ShowTableBox(boxData)
     }
   },
   mounted () {
