@@ -23,39 +23,39 @@ axios.interceptors.request.use(
   }
 )
 
-// axios.interceptors.response.use(
-//   res => {
-//     // loading结束
-//     // $('#lead-screen').removeClass('disShow')
-//     return Promise.resolve(res.data)
-//   },
-//   error => {
-//     // $('#lead-screen').removeClass('disShow')
-//     if (error.response && error.response.config.url.includes('findAlertLevelList')) {
-//       return Promise.reject(error)
-//     }
-//     if (gbs.inDev) {
-//       Notification({
-//         message: '连接错误！',
-//         position: 'bottom-right',
-//         customClass: 'toast toast-error'
-//       })
-//       if (error.toString().includes('776') || error.toString().includes('779')) {
-//         window.location.href = window.location.origin + '/#/login'
-//       }
-//     } else {
-//       if (error.toString().includes('776') || error.toString().includes('779')) {
-//         window.location.href = window.location.origin + '/loginPage'
-//       }
-//       Notification({
-//         message: '连接错误！',
-//         position: 'bottom-right',
-//         customClass: 'toast toast-error'
-//       })
-//     }
-//     return Promise.reject(error)
-//   }
-// )
+axios.interceptors.response.use(
+  res => {
+    // loading结束
+    // $('#lead-screen').removeClass('disShow')
+    return Promise.resolve(res.data)
+  },
+  error => {
+    // $('#lead-screen').removeClass('disShow')
+    if (error.response && error.response.config.url.includes('findAlertLevelList')) {
+      return Promise.reject(error)
+    }
+    if (gbs.inDev) {
+      Notification({
+        message: '连接错误！',
+        position: 'bottom-right',
+        customClass: 'toast toast-error'
+      })
+      if (error.toString().includes('776') || error.toString().includes('779')) {
+        window.location.href = window.location.origin + '/#/login'
+      }
+    } else {
+      if (error.toString().includes('776') || error.toString().includes('779')) {
+        window.location.href = window.location.origin + '/loginPage'
+      }
+      Notification({
+        message: '连接错误！',
+        position: 'bottom-right',
+        customClass: 'toast toast-error'
+      })
+    }
+    return Promise.reject(error)
+  }
+)
 
 // export default axios
 

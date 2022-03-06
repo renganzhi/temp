@@ -1,5 +1,5 @@
 <template>
-  <div class="WuhouTable">
+  <div class="WuhouTable"  @mousemove="pageMove = false" @mouseleave="pageMove = true">
     <div class="TableHead" :style="headStyle">
       <tr :style="headStyle">
         <th v-for="(data, index) in item.chartData.columns" :key="index" :style="{width:`calc(${100 / item.chartData.columns.length}%)`}">
@@ -210,6 +210,7 @@ export default {
     return {
       modal9: false,
       modal10: false,
+      pageMove: true,
       nowShowData: this.item.chartData.rows[0],
       iterview: null
     }
@@ -234,10 +235,12 @@ export default {
   },
   mounted () {
     this.iterview = setInterval(() => {
-      if (this.$refs.MyLunBoTbale.scrollTop + this.$refs.MyLunBoTbale.clientHeight === this.$refs.MyLunBoTbale.scrollHeight) {
-        this.$refs.MyLunBoTbale.scrollTop = 0
-      } else {
-        this.$refs.MyLunBoTbale.scrollTop = this.$refs.MyLunBoTbale.scrollTop + 10
+      if(this.pageMove){
+        if (this.$refs.MyLunBoTbale.scrollTop + this.$refs.MyLunBoTbale.clientHeight === this.$refs.MyLunBoTbale.scrollHeight) {
+          this.$refs.MyLunBoTbale.scrollTop = 0
+        } else {
+          this.$refs.MyLunBoTbale.scrollTop = this.$refs.MyLunBoTbale.scrollTop + 10
+        }
       }
     }, 500)
   },

@@ -1,5 +1,6 @@
 <template>
-  <div :style="wrapStyle">
+  <div :style="wrapStyle" 
+    @click="ShowXq()">
     <div v-if="item.ctDataSource !== 'static' && item.chartData && item.chartData.state"
          ref="titleBox"
          :style="titleStyle">
@@ -61,6 +62,14 @@ export default {
           this.stateCol = this.alertInfo[index].color
         }
       }
+    },
+    ShowXq(){
+      let boxData = {
+        title:'数据详情',
+        data:'arry',
+        dataArry:this.item.chartData.list
+      }
+      this.$parent.$parent.ShowTableBox(boxData)
     }
   },
   mounted () {
@@ -187,6 +196,7 @@ html[data-theme="blueWhite"] {
 .homeText {
   border: none !important;
   position: relative;
+  cursor: pointer;
   z-index: 1;
 }
 .hiddeLeft::-webkit-scrollbar { width: 0 !important }
