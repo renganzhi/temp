@@ -425,11 +425,15 @@ export default {
     },
     ShowTableBox(dataArry){
       this.showTableBox = true
-      this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
-        if (data.success) {
-          this.DataTkArry = data.obj
-        }
-      })
+      if(dataArry.data === 'arry'){
+        this.DataTkArry = dataArry.dataArry
+      }else{
+        this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+          if (data.success) {
+            this.DataTkArry = data.obj
+          }
+        })
+      }
     },
     closeTableTtn(){
       this.showTableBox = false
