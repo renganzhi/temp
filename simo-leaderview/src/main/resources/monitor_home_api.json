@@ -4464,5 +4464,103 @@
         "url": "/leaderview/WuHou/getHousingPersonnelTop",
         "method" : "get",
         "params": []
+    },
+    {
+        "key": "get_live_sort",
+        "name": "入住房Top5",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/QZF/getLiveSort",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_qzf_home_count",
+        "name": "小程序实时数据-群租房数量统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZFHomeCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "群租房类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "群租房",
+                        "value": "1"
+                    },
+                    {
+                        "name": "小旅馆",
+                        "value": "2"
+                    },
+                    {
+                        "name": "民宿旅社",
+                        "value": "3"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_today_live_count",
+        "name": "小程序实时数据-群租房入住情况统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getTodayLiveCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "统计类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "当日入住量",
+                        "value": "checkIn"
+                    },
+                    {
+                        "name": "当日离店量",
+                        "value": "checkOut"
+                    },
+                    {
+                        "name": "本月累计量",
+                        "value": "month"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_live_by_time",
+        "name": "小程序实时数据-入住人员时间分析",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/QZF/getLiveByTime",
+        "method" : "get",
+        "params": [
+            {
+                "key": "when",
+                "name": "统计时段",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "今日",
+                        "value": "today"
+                    },
+                    {
+                        "name": "昨日",
+                        "value": "yesterday"
+                    }
+                ]
+            }
+        ]
     }
 ]
