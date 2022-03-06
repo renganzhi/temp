@@ -51,7 +51,7 @@
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing :nowPageID="pageID"></beijing>
+                <beijing :nowPageName="pageName"></beijing>
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="showTableBox">
@@ -377,8 +377,10 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageID(){
-      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
+    pageName(){
+      if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
+        return this.pageList[(this.pageIndex - 1) % this.pageSize].name
+      }
     }
   },
   methods: {

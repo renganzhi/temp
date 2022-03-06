@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="fasle" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="true" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -52,7 +52,7 @@ var baseObject
 var highLightPolygon
 export default {
   name: 'pageShow',
-  props: ['nowPageID'],
+  props: ['nowPageName'],
   data () {
     return {
       popshow: false,
@@ -64,12 +64,18 @@ export default {
   },
   computed: {
     pageIsJXJ () {
-      let idArry = [118, 120, 119, 117, 127, 130, 133, 128]
-      return idArry.indexOf(this.nowPageID) > -1
+      let isjxj = this.nowPageName.indexOf('浆洗街')>=0
+      return isjxj
     }
   },
   watch: {
-
+    'pageIsJXJ':function(){
+      if(this.pageIsJXJ){
+        this.fly2()
+      }else{
+        this.fly()
+      }
+    }
   },
   mounted () {
     this.init3D()
@@ -136,6 +142,21 @@ export default {
           image: 'static/img/click.png',
           scale: 0.4
         }
+      })
+    },
+    fly2 () {
+      viewer.scene.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(
+          104.06964888905652,
+          30.637900785942776,
+          7350.084107934319
+        ),
+        orientation: {
+          heading: 6.283185307179586,
+          pitch: -1.5707848216219449,
+          roll: 0
+        },
+        duration: 1
       })
     },
     fly () {
@@ -247,7 +268,7 @@ return mix(factor,mirror,0.0);
           }
         })
         contrastBias.selected = [baseObject]
-      }, 2000)
+      }, 6000)
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
@@ -613,7 +634,7 @@ return mix(factor,mirror,0.0);
 }
 .content #pop .poptitle {
   position: absolute;
-  top: 60px;
+  top: 45px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -630,7 +651,7 @@ return mix(factor,mirror,0.0);
 }
 .content #pop .lineContain {
   padding: 10px 60px;
-  top: 70px;
+  top: 50px;
   position: relative;
 }
 .content #pop .lineContain .line {
