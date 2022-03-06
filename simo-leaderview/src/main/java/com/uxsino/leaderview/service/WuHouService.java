@@ -707,7 +707,7 @@ public class WuHouService {
             checkInTopRows.add(item);
         }
         checkInTopObject.put("columns",checkInColumns);
-        checkInTopObject.put("unit","家");
+        checkInTopObject.put("unit","次");
         checkInTopObject.put("rows",checkInTopRows);
         dataArray.add(checkInTopObject);
         //获取高流动性人群top10
