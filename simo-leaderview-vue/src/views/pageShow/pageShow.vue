@@ -1,23 +1,23 @@
 <template>
   <div class="content">
-    <button v-if="true" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
       </div>
       <div class="CloseBtn" @click="popshow = false"></div>
       <div class="lineContain">
-        <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
-        <div class="line">房间数:2</div>
-        <div class="line">床铺数:8</div>
-        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
-        <div class="line">网格员(电话):张敏(13194994003)</div>
+        <div class="line">名称: {{nowShowData['名称']}}</div>
+        <div class="line">标准地址:{{nowShowData['地址']}}</div>
+        <div class="line">房间数:{{nowShowData['房间数']}}</div>
+        <div class="line">床铺数:{{nowShowData['床铺数']}}</div>
+        <div class="line">社区民警(电话):{{nowShowData['社区民警（电话）']}}</div>
+        <div class="line">网格员(电话):{{nowShowData['网格员（电话）']}}</div>
         <div class="line">
-          微消站(电话):刘长城(15700573360)
+          微消站(电话):{{nowShowData['微消站（电话）']}}
         </div>
-        <button>入住记录</button>
-        <button>走访记录</button>
+        <button @click="ShowRuzhu(nowShowData.index)">入住记录</button>
+        <button @click="ShowZofang(nowShowData.index)">走访记录</button>
       </div>
     </div>
     <div id="popBig" v-show="popshowBig">
@@ -26,17 +26,17 @@
       </div>
       <div class="CloseBtn" @click="popshowBig = false"></div>
       <div class="lineContain">
-        <div class="line">名称: 小旅馆</div>
-        <div class="line">标准地址:武侯祠大街252号5-4-204</div>
-        <div class="line">房间数:2</div>
-        <div class="line">床铺数:8</div>
-        <div class="line">社区民警(电话):陈朝林(17708192501)</div>
-        <div class="line">网格员(电话):张敏(13194994003)</div>
+        <div class="line">名称: {{nowShowData['名称']}}</div>
+        <div class="line">标准地址:{{nowShowData['地址']}}</div>
+        <div class="line">房间数:{{nowShowData['房间数']}}</div>
+        <div class="line">床铺数:{{nowShowData['床铺数']}}</div>
+        <div class="line">社区民警(电话):{{nowShowData['社区民警（电话）']}}</div>
+        <div class="line">网格员(电话):{{nowShowData['网格员（电话）']}}</div>
         <div class="line">
-          微消站(电话):刘长城(15700573360)
+          微消站(电话):{{nowShowData['微消站（电话）']}}
         </div>
-        <button>入住记录</button>
-        <button>走访记录</button>
+        <button @click="ShowRuzhu(nowShowData.index)">入住记录</button>
+        <button @click="ShowZofang(nowShowData.index)">走访记录</button>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -59,7 +59,210 @@ export default {
       popshowBig: false,
       x: 0,
       y: 0,
-      z: 0
+      z: 0,
+      tableDataXunCha:[{
+          columns:[ 
+            '巡查人名称',
+            '巡查人手机号',
+            '巡查内容',
+            '巡查时间'
+          ],
+          rows:[{
+            '巡查人名称':'刘颖颖',
+            '巡查人手机号':'18782925774',
+            '巡查内容':'例行检查',
+            '巡查时间':'2022-1-9'
+          },{
+            '巡查人名称':'张敏',      
+            '巡查人手机号':'13980953446',
+            '巡查内容':'应急安全',
+            '巡查时间':'2022-1-19'
+          },{
+            '巡查人名称':'柴芝凤',
+            '巡查人手机号':'13881958111',
+            '巡查内容':'治安维稳',
+            '巡查时间':'2022-2-19'
+          }]
+      },{
+          columns:[ 
+            '巡查人名称',
+            '巡查人手机号',
+            '巡查内容',
+            '巡查时间'
+          ],
+          rows:[{
+            '巡查人名称':'刘颖颖',
+            '巡查人手机号':'18380447548',
+            '巡查内容':'治安维稳',
+            '巡查时间':'2022-1-22'
+          },{
+            '巡查人名称':'彭艺',
+            '巡查人手机号':'13980953446',
+            '巡查内容':'应急安全',
+            '巡查时间':'2022-1-11'
+          },{
+            '巡查人名称':'魏俊',
+            '巡查人手机号':'13980953446',
+            '巡查内容':'例行检查',
+            '巡查时间':'2022-1-19'
+          }]
+      },{
+          columns:[ 
+            '巡查人名称',
+            '巡查人手机号',
+            '巡查内容',
+            '巡查时间'
+          ],
+          rows:[{
+            '巡查人名称':'曾大勇',
+            '巡查人手机号':'17309876543',
+            '巡查内容':'应急安全',
+            '巡查时间':'2022-2-19'
+          },{
+            '巡查人名称':'刘颖颖',
+            '巡查人手机号':'13881958111',
+            '巡查内容':'治安维稳',
+            '巡查时间':'2022-2-13'
+          },{
+            '巡查人名称':'陈有光',
+            '巡查人手机号':'13980953446',
+            '巡查内容':'例行检查',
+            '巡查时间':'2022-1-22'
+          }]
+      }],
+      tableDataRuZhu:[{
+        columns:[
+          '姓名',
+          '身份证',
+          '电话',
+          '入住日期',
+          '场所ID',
+        ],
+        rows:[{
+          '姓名':' 杨东海',
+          '身份证':'510122199510702363',
+          '电话':'17708192161',
+          '入住日期':'2022-02-20 21:22:26',
+          '场所ID':'2',
+        },{
+          '姓名':' 陈斌',
+          '身份证':'510623199205044510',
+          '电话':'15700573360',
+          '入住日期':'2022-01-1 11:51:26',
+          '场所ID':'2',
+        },{
+          '姓名':' 刘长城 ',
+          '身份证':'510421199110101163',
+          '电话':'13880804350',
+          '入住日期':'2022-02-01 12:51:26',
+          '场所ID':'3',
+        },{
+          '姓名':' 阿曲',
+          '身份证':'510623199305064520',
+          '电话':'17708192161',
+          '入住日期':'2022-02-4 11:51:26',
+          '场所ID':'1',
+        }]
+      },{
+        columns:[
+          '姓名',
+          '身份证',
+          '电话',
+          '入住日期',
+          '场所ID',
+        ],
+        rows:[{
+          '姓名':' 谭晓凯',
+          '身份证':'510421199110101163',
+          '电话':'17708192161',
+          '入住日期':'2022-02-1 22:51:26',
+          '场所ID':'2',
+        },{
+          '姓名':' 李松',
+          '身份证':'510623199205044510',
+          '电话':'15700573360',
+          '入住日期':'2022-02-14 13:51:26',
+          '场所ID':'2',
+        },{
+          '姓名':' 梁利全 ',
+          '身份证':'510122198612251759',
+          '电话':'13880804350',
+          '入住日期':'2022-02-11 14:51:26',
+          '场所ID':'3',
+        },{
+          '姓名':' 陈斌',
+          '身份证':'510122199510702363',
+          '电话':'17708192161',
+          '入住日期':'2022-02-1 8:51:26',
+          '场所ID':'1',
+        }]
+      },{
+        columns:[
+          '姓名',
+          '身份证',
+          '电话',
+          '入住日期',
+          '场所ID',
+        ],
+        rows:[{
+          '姓名':' 侯刚',
+          '身份证':'510421199110101163',
+          '电话':'13980003218',
+          '入住日期':'2022-02-11 21:51:26',
+          '场所ID':'2',
+        },{
+          '姓名':'  颜蕾',
+          '身份证':'510623199205044510',
+          '电话':'13438321320',
+          '入住日期':'2022-02-4 11:51:26',
+          '场所ID':'2',
+        },{
+          '姓名':' 梁利全 ',
+          '身份证':'510122199510702363',
+          '电话':'13880804350',
+          '入住日期':'2022-02-4 9:51:26',
+          '场所ID':'3',
+        },{
+          '姓名':' 刘颖颖',
+          '身份证':'510623199305064520',
+          '电话':'17708192161',
+          '入住日期':'2022-02-11 13:51:26',
+          '场所ID':'1',
+        }]
+      }],
+      showBoxDate:[
+        {
+          '名称':'小旅馆',
+          '地址':'武侯祠东街8号1-5-407',
+          '房间数':'2',
+          '床铺数':'6',
+          '社区民警（电话）':'陈朝林 (17708192501)',
+          '网格员（电话）':'邹澄  (13388177089)',
+          '微消站（电话）':'刘长城 (15700573360)',
+          index:0
+        },
+        {
+          '名称':'小旅馆',
+          '地址':'武侯祠东街2号1-3-8',
+          '房间数':'2',
+          '床铺数':'5',
+          '社区民警（电话）':'陈朝林 (17708192501)',
+          '网格员（电话）':'邹澄 (13388177089)',
+          '微消站（电话）':'刘长城 (15700573360)',
+          index:0
+        },
+        {
+          '名称':'小旅馆',
+          '地址':'武侯祠东街4号3-1-7',
+          '房间数':'2',
+          '床铺数':'9',
+          '社区民警（电话）':'陈朝林 (17708192501)',
+          '网格员（电话）':'邹澄  (13388177089)',
+          '微消站（电话）':'刘长城 (15700573360)',
+          index:0
+        }
+      ],
+      nowShowData:[]
     }
   },
   computed: {
@@ -129,15 +332,32 @@ export default {
       }
       viewer.scene.preRender.addEventListener(pop)
     },
+    ShowRuzhu(index){
+      let boxData = {
+        title:'数据详情',
+        data:'arry',
+        dataArry:this.tableDataRuZhu[index]
+      }
+      this.$parent.$parent.ShowTableBox(boxData)
+    },
+    ShowZofang(index){
+      let boxData = {
+        title:'数据详情',
+        data:'arry',
+        dataArry:this.tableDataXunCha[index]
+      }
+      this.$parent.$parent.ShowTableBox(boxData)
+    },
     addPoints () {
       let height = 100
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.05225, 30.644971, height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04467606235154, 30.645521833155275, height))
-      this.addPointer(Cesium.Cartesian3.fromDegrees(104.044138, 30.645464, height))
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.05225, 30.644971, height),1)
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.04467606235154, 30.645521833155275, height),2)
+      this.addPointer(Cesium.Cartesian3.fromDegrees(104.044138, 30.645464, height),3)
     },
-    addPointer (position) {
+    addPointer (position,id) {
       viewer.entities.add({
         position,
+        id: id,
         billboard: {
           image: 'static/img/click.png',
           scale: 0.4
@@ -547,8 +767,12 @@ return mix(factor,mirror,0.0);
           if (picked.id && picked.id._billboard) {
             if (this.pageIsJXJ) {
               this.popshow = true
+              this.CheckEdId = picked.id.id
+              this.nowShowData  =  this.showBoxDate[this.CheckEdId-1]
             } else {
               this.popshowBig = true
+              this.CheckEdId = picked.id.id
+              this.nowShowData  =  this.showBoxDate[this.CheckEdId-1]
             }
           }
           let primitive = picked.primitive
@@ -629,7 +853,7 @@ return mix(factor,mirror,0.0);
   position: relative;
   padding: 40px 0px 0px;
   position: absolute;
-  z-index: 999;
+  z-index: 10;
   font-size: 14px;
 }
 .content #pop .poptitle {
@@ -673,7 +897,7 @@ return mix(factor,mirror,0.0);
   position: relative;
   padding: 40px 0px 0px;
   position: absolute;
-  z-index: 999;
+  z-index: 10;
   font-size: 14px;
 }
 .content #popBig .poptitle {

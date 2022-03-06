@@ -1596,6 +1596,8 @@ export default {
   -webkit-transform-origin: 0 0;
   -moz-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
+  position: absolute;
+  z-index: 10000;
 }
 .home_wrapBox {
   height: 100%;
