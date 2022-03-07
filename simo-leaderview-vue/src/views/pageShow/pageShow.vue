@@ -360,15 +360,15 @@ export default {
     },
     fly2 () {
       viewer.scene.camera.flyTo({
-         destination: Cesium.Cartesian3.fromDegrees(
-          104.05487712981251,
-          30.619882475952064,
-          1921.864761091548
+        destination: Cesium.Cartesian3.fromDegrees(
+          104.03208349023117,
+          30.636856399984204,
+          916.2483862005361
         ),
         orientation: {
-          heading: 0.017620574456960192,
-          pitch: -0.7112771703240339,
-          roll: 6.283001827119466
+          heading: 1.214190310841908,
+          pitch: -0.6803492409654472,
+          roll: 6.283061867683541
         },
         duration: 1
       })
@@ -538,7 +538,7 @@ return mix(factor,mirror,0.0);
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
           if (item.properties.Name === '浆洗街街道') {
-            color = Cesium.Color.GOLD.withAlpha(0.6)
+            color =  Cesium.Color.fromCssColorString('#f0f7886b')//Cesium.Color.GOLD.withAlpha(0.6)
           }
           let linepositions = []
           if (item.geometry.type === 'MultiPolygon') {
