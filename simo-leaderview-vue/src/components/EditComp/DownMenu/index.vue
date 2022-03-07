@@ -1,9 +1,9 @@
 <template>
   <div class="dropMenu">
     <div class="" :style="titleStyle" v-if="item.chartData.children">
-      <div class="dropMenuTitle" id="dropMenuTitle">
+      <div class="dropMenuTitle" id="dropMenuTitle" ref="dropMenuTitle">
         {{ item.chartData.title }}
-        <div class="contenter" id="contenter">
+        <div :style="contenterStyle" class="contenter" id="contenter" ref="contenter">
           <div v-for="(data, index) in item.chartData.children" :key="index" :class="item.chartData.nowCheckId === data.id?'checked':'onchecked'">
             <a v-if="data.url" target="_blank" :href="data.url">{{
               data.title
@@ -59,11 +59,21 @@ export default {
         backgroundSize: '100% 100%',
         overflow: 'hidden'
       }
+    },
+    contenterStyle:function(){
+      let style = {}
+      if(this.item.placement==='top'){
+        style = {
+          position:'relative',
+          bottom: this.item.chartData.children.length * 50 + 50 +'px'
+        }
+      }
+      return style
     }
   },
   mounted () {
-    var Moveout = document.getElementById('dropMenuTitle')
-    var content = document.getElementById('contenter')
+    var Moveout = this.$refs.dropMenuTitle
+    var content = this.$refs.contenter
     // 鼠标移入显示
     Moveout.onmouseover = function () {
       content.style.display = 'block'

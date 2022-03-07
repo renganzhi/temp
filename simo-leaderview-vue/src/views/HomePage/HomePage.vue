@@ -51,7 +51,7 @@
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
               <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
-                <beijing :nowPageID="pageID"></beijing>
+                <beijing :nowPageName="pageName"></beijing>
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="showTableBox">
@@ -65,12 +65,15 @@
                           </th>
                         </tr>
                     </div>
-                    <div class="TableBody">
+                    <div class="TableBody" v-if="DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
                         <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
+                    </div>
+                    <div class="NoData" v-else-if="DataTkArry.rows.length === 0">
+                      暂无数据！
                     </div>
                 </div>
               </div>
@@ -377,8 +380,10 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageID(){
-      return this.pageList[(this.pageIndex - 1) % this.pageSize].id
+    pageName(){
+      if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
+        return this.pageList[(this.pageIndex - 1) % this.pageSize].name
+      }
     }
   },
   methods: {
@@ -424,12 +429,21 @@ export default {
       }
     },
     ShowTableBox(dataArry){
-      this.showTableBox = true
-      this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
-        if (data.success) {
-          this.DataTkArry = data.obj
+      if(dataArry.data === 'arry'){
+        this.showTableBox = true
+        this.DataTkArry = dataArry.dataArry
+      }else{
+        if(dataArry.data['街道']){
+          this.showTableBox = true
+          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+            if (data.success) {
+              this.DataTkArry = data.obj
+            }
+          })
+        }else{
+          this.ShowTanKuangBox(dataArry)
         }
-      })
+      }
     },
     closeTableTtn(){
       this.showTableBox = false
@@ -1590,6 +1604,8 @@ export default {
   -webkit-transform-origin: 0 0;
   -moz-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
+  position: absolute;
+  z-index: 10000;
 }
 .home_wrapBox {
   height: 100%;
@@ -1971,6 +1987,14 @@ html[data-theme='blueWhite'] {
     color: #789fb0;
   }
 }
+.NoData{
+  width: 100%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+}
 .ModelBox {
   height: 886px;
   width: 1747px;
@@ -1987,14 +2011,6 @@ html[data-theme='blueWhite'] {
     position: absolute;
     top: 20px;
     right: 20px;
-  }
-  .NoData{
-    width: 100%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 40px;
   }
   .BoxTitle {
     font-size: 46px !important;
@@ -2031,5 +2047,9 @@ html[data-theme='blueWhite'] {
   width: 100%;
   font-size: 28px;
   text-indent:2em
+}
+#homeTips{
+  position: absolute;
+  z-index: 10000;
 }
 </style>
