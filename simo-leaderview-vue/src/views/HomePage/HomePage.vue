@@ -426,15 +426,20 @@ export default {
       }
     },
     ShowTableBox(dataArry){
-      this.showTableBox = true
       if(dataArry.data === 'arry'){
+        this.showTableBox = true
         this.DataTkArry = dataArry.dataArry
       }else{
-        this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
-          if (data.success) {
-            this.DataTkArry = data.obj
-          }
-        })
+        if(dataArry.data['街道']){
+          this.showTableBox = true
+          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+            if (data.success) {
+              this.DataTkArry = data.obj
+            }
+          })
+        }else{
+          this.ShowTanKuangBox(dataArry)
+        }
       }
     },
     closeTableTtn(){
@@ -2039,5 +2044,9 @@ html[data-theme='blueWhite'] {
   width: 100%;
   font-size: 28px;
   text-indent:2em
+}
+#homeTips{
+  position: absolute;
+  z-index: 10000;
 }
 </style>

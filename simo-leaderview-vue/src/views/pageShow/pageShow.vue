@@ -265,15 +265,9 @@ export default {
       nowShowData:[]
     }
   },
-  computed: {
-    pageIsJXJ () {
-      let isjxj = this.nowPageName.indexOf('浆洗街')>=0
-      return isjxj
-    }
-  },
   watch: {
-    'pageIsJXJ':function(){
-      if(this.pageIsJXJ){
+    'nowPageName':function(){
+      if(this.nowPageName.indexOf('浆洗街')>=0){
         this.fly2()
       }else{
         this.fly()
