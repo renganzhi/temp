@@ -64,12 +64,15 @@
                           </th>
                         </tr>
                     </div>
-                    <div class="TableBody">
+                    <div class="TableBody" v-if="DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
                         <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
+                    </div>
+                    <div class="NoData" v-else-if="DataTkArry.rows.length === 0">
+                      暂无数据！
                     </div>
                 </div>
               </div>
@@ -1987,6 +1990,14 @@ html[data-theme='blueWhite'] {
     color: #789fb0;
   }
 }
+.NoData{
+  width: 100%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+}
 .ModelBox {
   height: 886px;
   width: 1747px;
@@ -2003,14 +2014,6 @@ html[data-theme='blueWhite'] {
     position: absolute;
     top: 20px;
     right: 20px;
-  }
-  .NoData{
-    width: 100%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 40px;
   }
   .BoxTitle {
     font-size: 46px !important;

@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:0px;left:0px;">获取视角</button>
+    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:500px;left:600px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -281,7 +281,7 @@ export default {
     this.initPostrender()
     this.addPoints()
     this.addPopEvent()
-    this.fly()
+    // this.fly()
   },
   methods: {
     addPopEvent () {
@@ -360,15 +360,15 @@ export default {
     },
     fly2 () {
       viewer.scene.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(
-          104.06964888905652,
-          30.637900785942776,
-          7350.084107934319
+         destination: Cesium.Cartesian3.fromDegrees(
+          104.05487712981251,
+          30.619882475952064,
+          1921.864761091548
         ),
         orientation: {
-          heading: 6.283185307179586,
-          pitch: -1.5707848216219449,
-          roll: 0
+          heading: 0.017620574456960192,
+          pitch: -0.7112771703240339,
+          roll: 6.283001827119466
         },
         duration: 1
       })
