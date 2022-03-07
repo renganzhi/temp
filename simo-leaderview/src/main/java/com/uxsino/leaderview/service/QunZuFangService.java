@@ -37,7 +37,13 @@ public class QunZuFangService {
 
     public JsonModel getQZFHomeCount(Integer type){
 
-        List<WuhouHomestay> list = wuhouHomestayDao.findByPlaceType(type);
+        List<WuhouHomestay> list = new ArrayList<>();
+        if(type == 0){
+            list = wuhouHomestayDao.findAll();
+        }else {
+            list = wuhouHomestayDao.findByPlaceType(type);
+        }
+
         int count = list.size();
 
         JSONObject result = new JSONObject();

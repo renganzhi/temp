@@ -4490,6 +4490,10 @@
                 "dataType": "static",
                 "data": [
                     {
+                        "name": "总量",
+                        "value": "0"
+                    },
+                    {
                         "name": "群租房",
                         "value": "1"
                     },
