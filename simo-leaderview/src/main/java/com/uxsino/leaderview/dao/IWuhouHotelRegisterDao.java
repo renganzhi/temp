@@ -14,13 +14,14 @@ public interface IWuhouHotelRegisterDao extends ICustomRepository<WuhouHotelRegi
     @Query(value = "select guest_name,count(distinct (hotel_id)),guest_identity from wuhou_hotel_register where guest_identity is not null and is_deleted = 0 group by guest_identity,guest_name order by count(distinct(hotel_id)) desc LIMIT ?1",nativeQuery = true)
     List<String[]> getFlowHousingPersonnelTop(Integer top);
 
-    @Query( "from WuhouHotelRegister w where w.checkInDate > ?1 and w.checkInDate < ?2")
+    @Query( "from WuhouHotelRegister w where w.checkInDate >= ?1 and w.checkInDate < ?2")
     List<WuhouHotelRegister> findBycheckInDate(Date startTime, Date endTime);
 
-    @Query( "from WuhouHotelRegister w where w.checkOutDate > ?1 and w.checkOutDate < ?2")
+    @Query( "from WuhouHotelRegister w where w.checkOutDate >= ?1 and w.checkOutDate < ?2")
     List<WuhouHotelRegister> findByCheckOutDateDate(Date startTime, Date endTime);
 
-    @Query(value = "select w.hotelId,count(w.hotelId) from WuhouHotelRegister w where w.isDeleted = 0 and w.createTime >?1 " +
+    @Query(value = "select w.hotelId,count(w.hotelId) from WuhouHotelRegister w where w.isDeleted = 0 and w" +
+            ".createTime >=?1 " +
             "group by w.hotelId order by count(w.hotelId) desc")
     List<String[]> getLiveSortDesc(Date startTime);
 
