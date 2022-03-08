@@ -443,14 +443,14 @@ export default {
     fly2 () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.03208349023117,
-          30.636856399984204,
-          916.2483862005361
+          104.18199634654243,
+          30.5471951164135,
+          55783.84968843796
         ),
         orientation: {
-          heading: 1.214190310841908,
-          pitch: -0.6803492409654472,
-          roll: 6.283061867683541
+          heading: 6.283185307179586,
+          pitch: -1.5707859043726606,
+          roll: 0
         },
         duration: 1
       })
@@ -458,13 +458,13 @@ export default {
     fly () {
       viewer.scene.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(
-          104.08993840769945,
-          30.583815387362105,
-          32859.13617687835
+          104.18199634654243,
+          30.5471951164135,
+          55783.84968843796
         ),
         orientation: {
           heading: 6.283185307179586,
-          pitch: -1.570785738725554,
+          pitch: -1.5707859043726606,
           roll: 0
         },
         duration: 1
