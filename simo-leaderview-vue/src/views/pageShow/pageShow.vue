@@ -81,14 +81,14 @@ export default {
       x: 0,
       y: 0,
       z: 0,
-      TableTanData:{columns:[],rows:[]},
-      tableTanTitle:{
-        placeName:'名称',
-        address:'标准地址',
-        roomNum:'房间数',
-        bedNum:'床铺数'
+      TableTanData: {columns: [], rows: []},
+      tableTanTitle: {
+        placeName: '名称',
+        address: '标准地址',
+        roomNum: '房间数',
+        bedNum: '床铺数'
       },
-      billboardMarkers:[],
+      billboardMarkers: [],
       tableDataXunCha: [{
         columns: [
           '巡查人名称',
@@ -302,9 +302,9 @@ export default {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
           if (data.success) {
             let height = 100
-            data.obj.forEach((d,index) => {
-              this.addPointer(Cesium.Cartesian3.fromDegrees(d.longitude*1, d.latitude*1, height), 'xiaoqu'+index,'static/img/xiaoqu.png',{columns:[],rows: d.arr})
-            });
+            data.obj.forEach((d, index) => {
+              this.addPointer(Cesium.Cartesian3.fromDegrees(d.longitude * 1, d.latitude * 1, height), 'xiaoqu' + index, 'static/img/xiaoqu.png', {columns: [], rows: d.arr})
+            })
           }
         })
       } else {
@@ -365,21 +365,21 @@ export default {
       viewer.scene.preRender.addEventListener(pop)
     },
     ShowRuzhu (address) {
-      this.axios.get('/leaderview/QZF/getPatrolByAddress?address='+address).then(res => {
+      this.axios.get('/leaderview/QZF/getPatrolByAddress?address=' + address).then(res => {
         if (res.success) {
           let tableData = {
-            columns:['巡查人姓名','巡查人电话','巡查内容','巡查时间'],
-            rows:[]
+            columns: ['巡查人姓名', '巡查人电话', '巡查内容', '巡查时间'],
+            rows: []
           }
           res.obj.forEach(dataObj => {
             let newObjData = {
-              '巡查人姓名':dataObj.patrolName,
-              '巡查人电话':dataObj.patrolPhone,
-              '巡查内容':dataObj.patrolConent,
-              '巡查时间':dataObj.patrolTime,
+              '巡查人姓名': dataObj.patrolName,
+              '巡查人电话': dataObj.patrolPhone,
+              '巡查内容': dataObj.patrolConent,
+              '巡查时间': dataObj.patrolTime
             }
             tableData.rows.push(newObjData)
-          });
+          })
           let boxData = {
             title: '数据详情',
             data: 'arry',
@@ -390,22 +390,22 @@ export default {
       })
     },
     ShowZofang (address) {
-      this.axios.get('/leaderview/QZF/getRegisterByAddress?address='+address).then(res => {
+      this.axios.get('/leaderview/QZF/getRegisterByAddress?address=' + address).then(res => {
         if (res.success) {
           let tableData = {
-            columns:['姓名','身份证','电话','入住日期','场所ID'],
-            rows:[]
+            columns: ['姓名', '身份证', '电话', '入住日期', '场所ID'],
+            rows: []
           }
           res.obj.forEach(dataObj => {
             let newObjData = {
-              '姓名':dataObj.guestName,
-              '身份证':dataObj.guestIdentity,
-              '电话':dataObj.guestPhone,
-              '入住日期':dataObj.checkInDate,
-              '场所ID':dataObj.hotelId,
+              '姓名': dataObj.guestName,
+              '身份证': dataObj.guestIdentity,
+              '电话': dataObj.guestPhone,
+              '入住日期': dataObj.checkInDate,
+              '场所ID': dataObj.hotelId
             }
             tableData.rows.push(newObjData)
-          });
+          })
           let boxData = {
             title: '数据详情',
             data: 'arry',
@@ -429,7 +429,7 @@ export default {
         billboardMarkers = []
       }
     },
-    addPointer (position, id, img,dataArry) {
+    addPointer (position, id, img, dataArry) {
       billboardMarkers.push(viewer.entities.add({
         position,
         id: id,
@@ -576,7 +576,7 @@ return mix(factor,mirror,0.0);
         }
       })
     },
-    showXQBoxTan(nowShowData){
+    showXQBoxTan (nowShowData) {
       this.ShowTableTan = false
       this.nowShowData = nowShowData
     },
@@ -630,12 +630,17 @@ return mix(factor,mirror,0.0);
       })
       $.getJSON('./static/geojson/xzqh.json', (res) => {
         let positions = res.features
+        let okjx = true
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
           let extrend = false
           if (item.properties.Name === '浆洗街街道') {
             extrend = true
-            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.3)
+            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6)
+          }
+          if (item.properties.Name === '双楠街道') {
+            extrend = true
+            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6)
           }
           let linepositions = []
           let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
@@ -658,15 +663,30 @@ return mix(factor,mirror,0.0);
               linepositions.push(3)
             })
           }
-          viewer.entities.add({
-            polygon: {
-              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-              perPositionHeight: true,
-              material: color,
-              extrudedHeight: extrend ? 80 : 1
-            },
-            name: item.properties.Name
-          })
+          if (item.properties.Name === '浆洗街街道') {
+            if (okjx) {
+              okjx = false
+              viewer.entities.add({
+                polygon: {
+                  hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+                  perPositionHeight: true,
+                  material: color,
+                  extrudedHeight: extrend ? 80 : 1
+                },
+                name: item.properties.Name
+              })
+            }
+          } else {
+            viewer.entities.add({
+              polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+                perPositionHeight: true,
+                material: color,
+                extrudedHeight: extrend ? 80 : 1
+              },
+              name: item.properties.Name
+            })
+          }
         })
       })
       $.getJSON('./static/geojson/bianjie_low.json', (res) => {
@@ -871,8 +891,8 @@ return mix(factor,mirror,0.0);
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
               this.TableTanData = {
-                columns:['placeName','address','roomNum','bedNum'],
-                rows:picked.id.DataArry.rows
+                columns: ['placeName', 'address', 'roomNum', 'bedNum'],
+                rows: picked.id.DataArry.rows
               }
             }
           }
@@ -906,7 +926,7 @@ return mix(factor,mirror,0.0);
         var mousePosition = e.endPosition
         var picked = viewer.scene.pick(mousePosition)
         if (picked && picked.id && picked.id._polygon) {
-          if (picked.id.name === '浆洗街街道') {
+          if (picked.id.name === '浆洗街街道' || picked.id.name === '双楠街道') {
             return
           }
           if (highLightPolygon) {
