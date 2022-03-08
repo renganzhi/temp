@@ -45,6 +45,7 @@
 
 <script>
 import createBlurStage from './CesiumEdgeStage/createBlurStage.js'
+import * as turf from '@turf/turf'
 var viewer
 var tileset
 var contrastBias
@@ -281,7 +282,7 @@ export default {
     this.initPostrender()
     this.addPoints()
     this.addPopEvent()
-    // this.fly()
+    this.fly()
   },
   methods: {
     addPopEvent () {
@@ -484,6 +485,16 @@ return mix(factor,mirror,0.0);
         contrastBias.selected = [baseObject]
       }, 6000)
     },
+    addMarker (position, url) {
+      viewer.entities.add({
+        position,
+        billboard: {
+          image: url,
+          scale: 0.3,
+          disableDepthTestDistance: Number.MAX_VALUE
+        }
+      })
+    },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
         let positions = res.features[0].geometry.coordinates[0][0]
@@ -533,7 +544,6 @@ return mix(factor,mirror,0.0);
         })
       })
       $.getJSON('./static/geojson/xzqh.json', (res) => {
-        console.log(res)
         let positions = res.features
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
@@ -543,6 +553,11 @@ return mix(factor,mirror,0.0);
             color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.3)
           }
           let linepositions = []
+          let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
+          if (item.properties.Name === '金花桥街道') {
+            pointer = [103.97374548683935, 30.591885280709842]
+          }
+          this.addMarker(Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100), `./static/img/街道名称/${item.properties.Name}.png`)
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
               item[0].forEach(child => {
