@@ -21,22 +21,40 @@
       </div>
     </div>
     <div id="popBig" v-show="popshowBig">
-      <div class="poptitle">
-        小旅馆
-      </div>
-      <div class="CloseBtn" @click="popshowBig = false"></div>
-      <div class="lineContain">
-        <div class="line">名称: {{nowShowData['名称']}}</div>
-        <div class="line">标准地址:{{nowShowData['地址']}}</div>
-        <div class="line">房间数:{{nowShowData['房间数']}}</div>
-        <div class="line">床铺数:{{nowShowData['床铺数']}}</div>
-        <div class="line">社区民警(电话):{{nowShowData['社区民警（电话）']}}</div>
-        <div class="line">网格员(电话):{{nowShowData['网格员（电话）']}}</div>
-        <div class="line">
-          微消站(电话):{{nowShowData['微消站（电话）']}}
+      <div class="TbaleTan" v-if="ShowTableTan">
+        <div class="CloseBtn" @click="popshowBig = false"></div>
+        <div class="TableHead">
+            <tr>
+              <th v-for="(data, index) in TableTanData.columns" :key="index" :style="{width:`calc(${100 / TableTanData.columns.length}%)`}">
+                {{ tableTanTitle[data] }}
+              </th>
+            </tr>
         </div>
-        <button @click="ShowRuzhu(nowShowData.index)">入住记录</button>
-        <button @click="ShowZofang(nowShowData.index)">走访记录</button>
+        <div class="TableBody" v-if="TableTanData.rows.length > 0">
+          <tr  v-for="(rowsData, i) in TableTanData.rows" :key="i"  @click="showXQBoxTan(rowsData)">
+            <th v-for="(data, index) in TableTanData.columns" :key="index"  :style="{width:`calc(${100 / TableTanData.columns.length}%)`}">
+              {{  rowsData[data] }}
+            </th>
+          </tr>
+        </div>
+      </div>
+      <div class="XQBoxTan" v-else>
+        <div class="poptitle">
+          小旅馆
+        </div>
+        <div class="CloseBtn" @click="popshowBig = false"></div>
+        <div class="BackBtn" @click="ShowTableTan = true"> 返回</div>
+        <div class="lineContain">
+          <div class="line">名称: {{nowShowData.placeName}}</div>
+          <div class="line">标准地址:{{nowShowData.address}}</div>
+          <div class="line">房间数:{{nowShowData.roomNum}}</div>
+          <div class="line">床铺数:{{nowShowData.bedNum}}</div>
+          <div class="line">社区民警(电话):{{nowShowData.communityPolice}}:{{nowShowData.communityPolicePhone}}</div>
+          <div class="line">网格员(电话):{{nowShowData.gridMember}}:{{nowShowData.gridMemberPhone}}</div>
+          <div class="line">微消站(电话):{{nowShowData.fireStation}}:{{nowShowData.fireStationPhone}}</div>
+          <button @click="ShowRuzhu(nowShowData.address)">入住记录</button>
+          <button @click="ShowZofang(nowShowData.address)">走访记录</button>
+        </div>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -51,6 +69,7 @@ var tileset
 var contrastBias
 var baseObject
 var highLightPolygon
+var billboardMarkers = []
 export default {
   name: 'pageShow',
   props: ['nowPageName'],
@@ -58,9 +77,18 @@ export default {
     return {
       popshow: false,
       popshowBig: false,
+      ShowTableTan: true,
       x: 0,
       y: 0,
       z: 0,
+      TableTanData:{columns:[],rows:[]},
+      tableTanTitle:{
+        placeName:'名称',
+        address:'标准地址',
+        roomNum:'房间数',
+        bedNum:'床铺数'
+      },
+      billboardMarkers:[],
       tableDataXunCha: [{
         columns: [
           '巡查人名称',
@@ -268,10 +296,19 @@ export default {
   },
   watch: {
     'nowPageName': function () {
-      if (this.nowPageName.indexOf('浆洗街') >= 0) {
-        this.fly2()
+      this.fly()
+      this.clearPoint()
+      if (this.nowPageName.indexOf('群租') >= 0) {
+        this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
+          if (data.success) {
+            let height = 100
+            data.obj.forEach((d,index) => {
+              this.addPointer(Cesium.Cartesian3.fromDegrees(d.longitude*1, d.latitude*1, height), 'xiaoqu'+index,'static/img/xiaoqu.png',{columns:[],rows: d.arr})
+            });
+          }
+        })
       } else {
-        this.fly()
+        this.clearPoint()
       }
     }
   },
@@ -280,7 +317,7 @@ export default {
     this.initLine()
     this.initModels()
     this.initPostrender()
-    this.addPoints()
+    // this.addPoints()
     this.addPopEvent()
     this.fly()
   },
@@ -327,21 +364,56 @@ export default {
       }
       viewer.scene.preRender.addEventListener(pop)
     },
-    ShowRuzhu (index) {
-      let boxData = {
-        title: '数据详情',
-        data: 'arry',
-        dataArry: this.tableDataRuZhu[index]
-      }
-      this.$parent.$parent.ShowTableBox(boxData)
+    ShowRuzhu (address) {
+      this.axios.get('/leaderview/QZF/getPatrolByAddress?address='+address).then(res => {
+        if (res.success) {
+          let tableData = {
+            columns:['巡查人姓名','巡查人电话','巡查内容','巡查时间'],
+            rows:[]
+          }
+          res.obj.forEach(dataObj => {
+            let newObjData = {
+              '巡查人姓名':dataObj.patrolName,
+              '巡查人电话':dataObj.patrolPhone,
+              '巡查内容':dataObj.patrolConent,
+              '巡查时间':dataObj.patrolTime,
+            }
+            tableData.rows.push(newObjData)
+          });
+          let boxData = {
+            title: '数据详情',
+            data: 'arry',
+            dataArry: tableData
+          }
+          this.$parent.$parent.ShowTableBox(boxData)
+        }
+      })
     },
-    ShowZofang (index) {
-      let boxData = {
-        title: '数据详情',
-        data: 'arry',
-        dataArry: this.tableDataXunCha[index]
-      }
-      this.$parent.$parent.ShowTableBox(boxData)
+    ShowZofang (address) {
+      this.axios.get('/leaderview/QZF/getRegisterByAddress?address='+address).then(res => {
+        if (res.success) {
+          let tableData = {
+            columns:['姓名','身份证','电话','入住日期','场所ID'],
+            rows:[]
+          }
+          res.obj.forEach(dataObj => {
+            let newObjData = {
+              '姓名':dataObj.guestName,
+              '身份证':dataObj.guestIdentity,
+              '电话':dataObj.guestPhone,
+              '入住日期':dataObj.checkInDate,
+              '场所ID':dataObj.hotelId,
+            }
+            tableData.rows.push(newObjData)
+          });
+          let boxData = {
+            title: '数据详情',
+            data: 'arry',
+            dataArry: tableData
+          }
+          this.$parent.$parent.ShowTableBox(boxData)
+        }
+      })
     },
     addPoints () {
       let height = 100
@@ -349,15 +421,24 @@ export default {
       this.addPointer(Cesium.Cartesian3.fromDegrees(104.04467606235154, 30.645521833155275, height), 2)
       this.addPointer(Cesium.Cartesian3.fromDegrees(104.044138, 30.645464, height), 3)
     },
-    addPointer (position, id) {
-      viewer.entities.add({
+    clearPoint () {
+      if (billboardMarkers.length > 0) {
+        billboardMarkers.forEach(item => {
+          viewer.entities.remove(item)
+        })
+        billboardMarkers = []
+      }
+    },
+    addPointer (position, id, img,dataArry) {
+      billboardMarkers.push(viewer.entities.add({
         position,
         id: id,
+        DataArry: dataArry,
         billboard: {
-          image: 'static/img/click.png',
-          scale: 0.4
+          image: img || 'static/img/click.png',
+          scale: 0.2
         }
-      })
+      }))
     },
     fly2 () {
       viewer.scene.camera.flyTo({
@@ -494,6 +575,10 @@ return mix(factor,mirror,0.0);
           disableDepthTestDistance: Number.MAX_VALUE
         }
       })
+    },
+    showXQBoxTan(nowShowData){
+      this.ShowTableTan = false
+      this.nowShowData = nowShowData
     },
     initLine () {
       $.getJSON('./static/geojson/bianjie.json', (res) => {
@@ -783,8 +868,12 @@ return mix(factor,mirror,0.0);
               this.nowShowData = this.showBoxDate[this.CheckEdId - 1]
             } else {
               this.popshowBig = true
+              this.ShowTableTan = true
               this.CheckEdId = picked.id.id
-              this.nowShowData = this.showBoxDate[this.CheckEdId - 1]
+              this.TableTanData = {
+                columns:['placeName','address','roomNum','bedNum'],
+                rows:picked.id.DataArry.rows
+              }
             }
           }
           let primitive = picked.primitive
@@ -929,6 +1018,14 @@ return mix(factor,mirror,0.0);
   height: 50px;
   width: 50px;
 }
+.content #popBig .BackBtn {
+  cursor: pointer;
+  top: 55px;
+  right: 20px;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+}
 .content #popBig .lineContain {
   padding: 10px 60px;
   top: 50px;
@@ -944,4 +1041,41 @@ return mix(factor,mirror,0.0);
   text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
   box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
 }
+.TbaleTan{
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+  .TableHead {
+    width: 100%;
+  }
+  .TableHead  tr {
+      width: 100%;
+      height: 40px;
+      font-size: 16px !important;
+      display: flex;
+      color: #94cffa;
+    }
+  .TableHead  tr th {
+        height: 100%;
+        text-align: center;
+      }
+  .TableBody {
+    width: 100%;
+    height: 200px;
+    overflow: auto;
+  }
+  .TableBody tr {
+      width: 100%;
+      height: 40px;
+      margin: 10px 0;
+      font-size: 16px !important;
+      display: flex;
+      color: #5983b6;
+    }
+  .TableBody tr th {
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
+  }
 </style>
