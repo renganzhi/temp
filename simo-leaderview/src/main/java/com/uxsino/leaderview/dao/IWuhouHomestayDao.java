@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IWuhouHomestayDao extends ICustomRepository<WuhouHomestay, Long> {
     List<WuhouHomestay> findByPlaceType(Integer type);
+
+    List<WuhouHomestay> findByAddress(String address);
 }
