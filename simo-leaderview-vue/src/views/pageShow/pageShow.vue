@@ -16,8 +16,8 @@
         <div class="line">
           微消站(电话):{{nowShowData['微消站（电话）']}}
         </div>
-        <button @click="ShowRuzhu(nowShowData.index)">入住记录</button>
-        <button @click="ShowZofang(nowShowData.index)">走访记录</button>
+        <button @click="ShowZofang(nowShowData.index)">入住记录</button>
+        <button @click="ShowRuzhu(nowShowData.index)">走访记录</button>
       </div>
     </div>
     <div id="popBig" v-show="popshowBig">
@@ -52,8 +52,8 @@
           <div class="line">社区民警(电话):{{nowShowData.communityPolice}}:{{nowShowData.communityPolicePhone}}</div>
           <div class="line">网格员(电话):{{nowShowData.gridMember}}:{{nowShowData.gridMemberPhone}}</div>
           <div class="line">微消站(电话):{{nowShowData.fireStation}}:{{nowShowData.fireStationPhone}}</div>
-          <button @click="ShowRuzhu(nowShowData.address)">入住记录</button>
-          <button @click="ShowZofang(nowShowData.address)">走访记录</button>
+          <button @click="ShowZofang(nowShowData.address)">入住记录</button>
+          <button @click="ShowRuzhu(nowShowData.address)">走访记录</button>
         </div>
       </div>
     </div>
