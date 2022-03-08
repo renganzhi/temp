@@ -11,6 +11,7 @@ import com.uxsino.leaderview.dao.IWuhouHotelRegisterDao;
 import com.uxsino.leaderview.dao.IWuhouPatrolRecordDao;
 import com.uxsino.leaderview.entity.WuhouHomestay;
 import com.uxsino.leaderview.entity.WuhouHotelRegister;
+import com.uxsino.leaderview.entity.WuhouPatrolRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.jpedal.parser.shape.J;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,4 +274,25 @@ public class QunZuFangService {
         return new JsonModel(true,result);
     }
 
+    public JsonModel getRegisterByAddress(String address) {
+
+        List<WuhouHomestay> homestay = wuhouHomestayDao.findByAddress(address);
+        homestay = homestay.stream().filter(s -> s.getIsDeleted() == 0).collect(Collectors.toList());
+        Long hotelId = homestay.get(0).getId();
+        List<WuhouHotelRegister> list = wuhouHotelRegisterDao.findByHotelId(hotelId);
+
+        return new JsonModel(true,list);
+    }
+
+
+    public JsonModel getPatrolByAddress(String address) {
+
+        List<WuhouHomestay> homestay = wuhouHomestayDao.findByAddress(address);
+        homestay = homestay.stream().filter(s -> s.getIsDeleted() == 0).collect(Collectors.toList());
+        Long hotelId = homestay.get(0).getId();
+        List<WuhouPatrolRecord> list = wuhouPatrolRecordDao.findByHotelId(hotelId);
+
+        return new JsonModel(true,list);
+
+    }
 }

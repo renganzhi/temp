@@ -28,4 +28,6 @@ public interface IWuhouHotelRegisterDao extends ICustomRepository<WuhouHotelRegi
     @Query(value = "select w.hotelId,count(w.hotelId) from WuhouHotelRegister w where w.isDeleted = 0 and w.createTime >?1 " +
             "group by w.hotelId order by count(w.hotelId) asc")
     List<String[]> getLiveSortAsc(Date startTime);
+
+    List<WuhouHotelRegister> findByHotelId(Long hotelId);
 }

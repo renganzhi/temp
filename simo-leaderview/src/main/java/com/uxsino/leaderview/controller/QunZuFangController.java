@@ -62,4 +62,15 @@ public class QunZuFangController {
 
         return qunZuFangService.getLiveByTime(when);
     }
+
+    @GetMapping("/getRegisterByAddress")
+    public JsonModel getRegisterByAddress(String address){
+        return qunZuFangService.getRegisterByAddress(address);
+    }
+
+    @GetMapping("/getPatrolByAddress")
+    public JsonModel getPatrolByAddress(String address){
+        return qunZuFangService.getPatrolByAddress(address);
+    }
+
 }
