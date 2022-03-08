@@ -292,7 +292,7 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
-      DataTkArry:{},
+      DataTkArry: {},
       showImport: false,
       showModelBox: false,
       showTableBox: false,
@@ -380,8 +380,8 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageName(){
-      if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
+    pageName () {
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize]) {
         return this.pageList[(this.pageIndex - 1) % this.pageSize].name
       }
     }
@@ -394,32 +394,32 @@ export default {
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
-    exchangeisOpenTW(){
+    exchangeisOpenTW () {
       this.isOpenTW = !this.isOpenTW
       console.log(1111)
     },
-    consoleOUT(){
+    consoleOUT () {
       console.log(1111)
     },
-    showXQByUrl(DataTkArry,data){
-      if(DataTkArry.url){
-        this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
+    showXQByUrl (DataTkArry, data) {
+      if (DataTkArry.url) {
+        this.axios.get(DataTkArry.url + data['姓名']).then((res) => {
           let boxData = {
-            title:'走访详情',
-            data:res.obj.rows[0]
+            title: '走访详情',
+            data: res.obj.rows[0]
           }
           this.ShowTanKuangBox(boxData)
         })
       }
     },
-    showXQ(data){
+    showXQ (data) {
       let boxData = {
-        title:'数据详情',
-        data:data
+        title: '数据详情',
+        data: data
       }
       this.ShowTanKuangBox(boxData)
     },
-    onSure(){
+    onSure () {
       console.log(1111)
     },
     hideModal (data) {
@@ -428,27 +428,27 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    ShowTableBox(dataArry){
-      if(dataArry.data === 'arry'){
+    ShowTableBox (dataArry) {
+      if (dataArry.data === 'arry') {
         this.showTableBox = true
         this.DataTkArry = dataArry.dataArry
-      }else{
-        if(dataArry.data['街道']){
+      } else {
+        if (dataArry.data['街道']) {
           this.showTableBox = true
-          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=` + dataArry.data['街道']).then(data => {
             if (data.success) {
               this.DataTkArry = data.obj
             }
           })
-        }else{
+        } else {
           this.ShowTanKuangBox(dataArry)
         }
       }
     },
-    closeTableTtn(){
+    closeTableTtn () {
       this.showTableBox = false
     },
-    ShowTanKuangBox(dataArry){
+    ShowTanKuangBox (dataArry) {
       this.showModelBox = true
       this.showModelBoxtype = dataArry.type || 0
       let newData = []
@@ -1017,8 +1017,11 @@ export default {
             if (res.obj.colors) {
               d.ctColors = res.obj.colors
             }
-            if (d.chartType === 'marquee' || d.chartType === 'text') {
+            if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
               d.ctName = res.obj.info
+              if (d.list) {
+                d.chartData.list = d.list
+              }
             }
             if (d.chartType !== 'marquee') {
               if (d.chartType === 'v-map') {
@@ -1086,8 +1089,11 @@ export default {
                     if (res.obj.colors) {
                       d.ctColors = res.obj.colors
                     }
-                    if (d.chartType === 'marquee' || d.chartType === 'text') {
+                    if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
                       d.ctName = res.obj.info
+                      if (d.list) {
+                        d.chartData.list = d.list
+                      }
                     }
                     if (d.chartType !== 'marquee') {
                       if (d.chartType === 'v-map') {
@@ -1145,8 +1151,11 @@ export default {
               if (res.obj.colors) {
                 d.ctColors = res.obj.colors
               }
-              if (d.chartType === 'marquee' || d.chartType === 'text') {
+              if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
                 d.ctName = res.obj.info
+                if (d.list) {
+                  d.chartData.list = d.list
+                }
               }
               if (d.chartType !== 'marquee') {
                 if (d.chartType === 'v-map') {
