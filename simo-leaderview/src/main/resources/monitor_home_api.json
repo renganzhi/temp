@@ -4566,5 +4566,94 @@
                 ]
             }
         ]
+    },
+    {
+        "key": "get_today_weather",
+        "name": "天气——今日实时天气数据",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getTodayWeather",
+        "method" : "get",
+        "params": [
+            {
+                "key": "fieldName",
+                "name": "数据类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "天气",
+                        "value": "weather"
+                    },
+                    {
+                        "name": "当前温度",
+                        "value": "temperature_curr"
+                    },
+                    {
+                        "name": "风力等级",
+                        "value": "winp"
+                    },
+                    {
+                        "name": "湿度",
+                        "value": "humidity"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_future_weather",
+        "name": "天气——温度预报",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou/getFutureWeather",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_store_pie",
+        "name": "民族治理商铺性质、民族分析",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/WuHou/getStorePie",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "商铺性质分析",
+                        "value": "store_character"
+                    },
+                    {
+                        "name": "负责人民族分析",
+                        "value": "store_charge_user_nation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_jx_store_count",
+        "name": "浆洗街道藏族商铺社区分布",
+        "component": "monitor",
+        "type": "ELine,ve-line",
+        "url": "/leaderview/WuHou/getJXStoreCount",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_jx_tibet_source_count",
+        "name": "浆洗街道重点小区藏族来源地分析",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/WuHou/getJXTibetSourceCount",
+        "method" : "get",
+        "params": []
     }
 ]

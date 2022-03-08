@@ -257,6 +257,11 @@ public class WuHouController {
         return new JsonModel(true,result);
     }
 
+    /**
+     * 测试获取涉访类别详细分析数据
+     * @param name
+     * @return
+     */
     @GetMapping("/getPieDataTest")
     public JsonModel getPieDataTest(String name){
         TimeData data = timeDataDao.findByName("涉访类别详细分析");
@@ -267,9 +272,111 @@ public class WuHouController {
         return new JsonModel(true,result);
     }
 
+    /**
+     * 获取群租房高频入住、高频流动人员数据——柱状图
+     * @return
+     */
     @GetMapping("/getHousingPersonnelTop")
     public JsonModel getHousingPersonnelTop(){
         return wuHouService.getHousingPersonnelTop();
+    }
+
+    /**
+     * 获取今日天气接口
+     * @param fieldName
+     * @return
+     */
+    @GetMapping("/getTodayWeather")
+    public JsonModel getTodayWeather(String fieldName){
+        try {
+            return wuHouService.getTodayWeather(fieldName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new JsonModel(false,"天气api报错");
+        }
+    }
+
+    /**
+     * 获取温度预报数据
+     * @return
+     */
+    @GetMapping("/getFutureWeather")
+    public JsonModel getFutureWeather(){
+        try {
+            return wuHouService.getFutureWeather();
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new JsonModel(false,"天气api报错");
+        }
+    }
+
+    /**
+     * 获取所有驻藏机构的信息
+     * @return
+     */
+    @GetMapping("/getOrgaInfo")
+    public JsonModel getOrgaInfo(){ return wuHouService.getOrgaInfo();}
+
+    /**
+     * 获取所有小区的信息
+     * @return
+     */
+    @GetMapping("/getCommunityInfo")
+    public JsonModel getCommunityInfo(){return wuHouService.getCommunityInfo();}
+
+    /**
+     * 根据ID获取机构信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/getOrganById")
+    public JsonModel getOrganById(Long id){return wuHouService.getOrganById(id);}
+
+    /**
+     * 根据ID获取小区信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/getCommunityById")
+    public JsonModel getCommunityById(Long id){return wuHouService.getCommunityById(id);}
+
+    /**
+     * 民族区域自治模块获取商铺性质或负责人民族饼图
+     * @param type  商铺性质： store_character 或负责人民族： store_charge_user_nation
+     * @return
+     */
+    @GetMapping("/getStorePie")
+    public JsonModel getStorePie(String type){
+        return wuHouService.getStorePie(type);
+    }
+
+    /**
+     * 获取群租房重点场所打点信息
+     * @return
+     */
+    @GetMapping("/getOrgaDot")
+    public JsonModel getOrgaDot(){
+        return wuHouService.getOrgaDot();
+    }
+
+    /**
+     * 获取浆洗街道社区藏族商铺社区分布——柱状图
+     * @return
+     */
+    @GetMapping("/getJXStoreCount")
+    public JsonModel getJXStoreCount(){
+        return wuHouService.getJXStoreCount();
+    }
+
+    /**
+     * 获取浆洗街道重点小区藏族来源地分析——曲线图
+     * @return
+     */
+    @GetMapping("/getJXTibetSourceCount")
+    public JsonModel getJXTibetSourceCount(){
+        return wuHouService.getJXTibetSourceCount();
     }
 
 }

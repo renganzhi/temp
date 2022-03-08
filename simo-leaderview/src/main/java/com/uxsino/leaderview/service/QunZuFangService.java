@@ -44,6 +44,8 @@ public class QunZuFangService {
             list = wuhouHomestayDao.findByPlaceType(type);
         }
 
+        list = list.stream().filter(s -> s.getIsDeleted() == 0).collect(Collectors.toList());
+
         int count = list.size();
 
         JSONObject result = new JSONObject();
