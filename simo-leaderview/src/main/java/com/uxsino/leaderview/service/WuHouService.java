@@ -8,8 +8,12 @@ import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.commons.utils.DateUtils;
 import com.uxsino.commons.utils.UUIDUtils;
+import com.uxsino.leaderview.dao.ITibetCommunityTableDao;
+import com.uxsino.leaderview.dao.ITibetOrganizationTableDao;
 import com.uxsino.leaderview.dao.ITimeDataDao;
 import com.uxsino.leaderview.dao.IWuhouHotelRegisterDao;
+import com.uxsino.leaderview.entity.TibetCommunityTable;
+import com.uxsino.leaderview.entity.TibetOrganizationTable;
 import com.uxsino.leaderview.entity.TimeData;
 import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.utils.MonitorUtils;
@@ -23,16 +27,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jpedal.parser.shape.J;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import springfox.documentation.spring.web.json.Json;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 @Service
@@ -56,12 +63,27 @@ public class WuHouService {
     @Autowired
     private IWuhouHotelRegisterDao wuhouHotelRegisterDao;
 
+    @Autowired
+    private ITibetCommunityTableDao communityTableDao;
+
+    @Autowired
+    private ITibetOrganizationTableDao organizationTableDao;
+
     /**
      * 初始化文件名称
      */
     private static final String FILEPATH = "classpath*:sql/init_time_data.sql";
 
 
+    /**
+     * 获取中台数据的接口
+     * @param formId 表单ID
+     * @param pagination 分页参数
+     * @param query 查询参数
+     * @param ifFormInfo 是获取表头信息还是表单数据
+     * @return
+     * @throws IOException
+     */
     public String getData(String formId, String pagination, String query, Boolean ifFormInfo) throws IOException {
         //社会治理-重点人员管控-社区服刑人员	89   街道：query[622]
         //社会治理-重点人员管控-吸毒	90
@@ -71,12 +93,30 @@ public class WuHouService {
         //社会治理-重点事件管理-重点人员	94
         //社会治理-重点事件管理-重点事件	95
         //formId = "89";//社会治理-重点人员管控-社区服刑人员
+        //y07-01 商铺性质分析 √
+        //y09-01 场所打点    √
+        //y11-01 涉藏商铺数量
+        //y12-01 藏族来源地分析
+        //y13-01 群租房入住人员归属地分析
+        Boolean ifV3 = false;
         String prefix = "http://wunlzt.cdwh.gov.cn/api/v4/forms/";
+        String prefixV3 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/"+ formId +"/data" +
+                "=1";
+        String prefixV33 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/y07-01/data?per_page=10000&page=1";
+        if(formId.contains("y")){
+            prefix = prefixV3;
+            ifV3 = true;
+        }
         String url;
         if(ifFormInfo){
             url = prefix + formId;
         }else {
-            url = prefix + formId + "/responses/search.json";
+            if(ifV3) {
+                url = prefix + formId;
+
+            }else {
+                url = prefix + formId + "/responses/search.json";
+            }
             //在pagination或者query中自己添加?
             if(!Strings.isNullOrEmpty(pagination) || !Strings.isNullOrEmpty(query) ){
                 url += "?";
@@ -95,8 +135,14 @@ public class WuHouService {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("Authorization","1942fc6b7aab121b22c892c920af8b74b9349f2611ce71d79a8324ce83227279:" +
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lc3BhY2VfaWQiOjF9.dgGuGkLelFnT9ups0kUoBw-AAOFsvUW_fl7HN3KVUWE");
+        if(ifV3){
+            httpGet.setHeader("token",
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDY3MDgyMDMsImV4cCI6MTY0Njc5NDYwMywidGlkIjozLCJqdGkiOiI2MjczZmQxNDllOGIxMWVjODgzNzAyNDJhYzFhMDAwNyIsInAiOlszXX0.KkMrNEs4CaTNKaGB6jYW02hZd2taSytJvW1efs7OSbs");
+        }else {
+            httpGet.setHeader("Authorization","1942fc6b7aab121b22c892c920af8b74b9349f2611ce71d79a8324ce83227279:" +
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lc3BhY2VfaWQiOjF9" +
+                    ".dgGuGkLelFnT9ups0kUoBw-AAOFsvUW_fl7HN3KVUWE");
+        }
 
         String result = "";
 
@@ -119,6 +165,14 @@ public class WuHouService {
         return result;
     }
 
+    /**
+     * 通过header获取中台返回数据总条数的方法
+     * @param formId
+     * @param pagination
+     * @param query
+     * @param ifFormInfo
+     * @return
+     */
     public CloseableHttpResponse getResponse(String formId, String pagination, String query, Boolean ifFormInfo){
         //社会治理-重点人员管控-社区服刑人员	89   街道：query[622]
         //社会治理-重点人员管控-吸毒	90
@@ -732,5 +786,285 @@ public class WuHouService {
         res.put("dataArry",dataArry);
         return new JsonModel(true,res);
 
+    }
+
+    public JsonModel getTodayWeather(String fieldName) throws IOException {
+
+        //weather  天气，如多云转云
+        //temperature_curr 当前温度
+        //winp  风力等级
+        //humidity 湿度
+
+        String url = "http://api.k780.com/?app=weather" +
+                ".today&cityNm=成都&appkey=64621&sign=c02c030e1ee59910ce7a8762611935bc&format=json";
+        JSONObject obj = getWeatherData(url);
+        JSONObject data = (JSONObject) obj.get("result");
+        String value = (String) data.get(fieldName);
+        JSONObject result = new JSONObject();
+        result.put("name",fieldName);
+        result.put("value",value);
+        result.put("info",value);
+
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 从天气接口获取未来5-7天的温度预报
+     * @return
+     * @throws IOException
+     */
+    public JsonModel getFutureWeather() throws IOException{
+
+        String url = "http://api.k780.com/?app=weather.future&cityNm=成都&ag=today,futureDay,lifeIndex," +
+                "futureHour&appkey=64621&sign=c02c030e1ee59910ce7a8762611935bc&format=json";
+        JSONObject obj = getWeatherData(url);
+        JSONArray array = (JSONArray) obj.get("result");
+        JSONObject result = new JSONObject();
+        List<String> columns = Arrays.asList("日期","最高℃", "最低℃");
+        JSONArray rows = new JSONArray();
+        for (int i = 0 ; i < array.size(); i++){
+            JSONObject data = (JSONObject) array.get(i);
+            JSONObject row = new JSONObject();
+            String day = (String) data.get("days");
+            day = day.substring(5);
+            day = day.replace("0","");
+            day = day.replace("-",".");
+            row.put("日期",day);
+            String temperature = (String) data.get("temperature");
+            temperature = temperature.replace("℃","");
+            String[] temp = temperature.split("/");
+            row.put("最高℃",temp[0]);
+            row.put("最低℃",temp[1]);
+            rows.add(row);
+        }
+        result.put("rows",rows);
+        result.put("columns",columns);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 调用api获取天气数据
+     * @param url 不同的数据地址不同
+     * @return
+     * @throws IOException
+     */
+    public JSONObject getWeatherData(String url) throws IOException{
+
+        String urlZH = "http://api.k780.com/?app=weather.realtime&cityNm=成都&ag=today,futureDay,lifeIndex," +
+                "futureHour&appkey=64621&sign=c02c030e1ee59910ce7a8762611935bc&format=json";
+
+        String urlYUBAO = "http://api.k780.com/?app=weather.future&cityNm=成都&ag=today,futureDay,lifeIndex," +
+                "futureHour&appkey=64621&sign=c02c030e1ee59910ce7a8762611935bc&format=json";
+
+        URL u= new URL(url);
+
+        InputStream in=u.openStream();
+        ByteArrayOutputStream out=new ByteArrayOutputStream();
+        try {
+            byte buf[]=new byte[1024];
+            int read = 0;
+            while ((read = in.read(buf)) > 0) {
+                out.write(buf, 0, read);
+            }
+        }  finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+        byte b[]=out.toByteArray( );
+        String string = new String(b,"utf-8");
+        System.out.println(new String(b,"utf-8"));
+        System.out.println(new String(b,"utf-8"));
+
+        //实时天气的返回结果中的"result"是JONObject，天气预报的是JSONArray，所以统计返回外层的result，拿到后再解析
+        JSONObject result = JSONObject.parseObject(string);
+        return result;
+    }
+
+    public JsonModel getOrgaInfo(){
+        List<TibetOrganizationTable> list = organizationTableDao.findAll();
+        return new JsonModel(true,list);
+    }
+
+    public JsonModel getCommunityInfo(){
+        List<TibetCommunityTable> list = communityTableDao.findAll();
+        return new JsonModel(true,list);
+    }
+
+    public JsonModel getOrganById(Long id){
+
+        TibetOrganizationTable result = organizationTableDao.findOne(id);
+        return new JsonModel(true,result);
+
+    }
+
+    public JsonModel getCommunityById(Long id){
+        TibetCommunityTable result = communityTableDao.findOne(id);
+        return new JsonModel(true,result);
+    }
+
+    public JsonModel getStorePie(String type) {
+
+        String data = null;
+        try {
+            data = getData("y07-01", "per_page=10000&page=1", null, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+        JSONObject object = JSONObject.parseObject(data);
+        JSONArray jsonArray = object.getJSONArray("data");
+
+//        String type1 = "store_character";
+//        String type2 = "store_charge_user_nation";
+
+        //用来装商铺性质的set
+        HashSet<String> set = new HashSet<>();
+        //用来装商铺性质和数量的map
+        HashMap<String,Integer> countMap = new HashMap<>();
+        for (int i = 0;i < jsonArray.size();i++){
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            String fieldName = obj.getString(type);
+            if(set.contains(fieldName)){
+//                    Integer count = countMap.get(fieldName);
+                Integer count = countMap.get(fieldName);
+                count++;
+                countMap.put(fieldName,count);
+            }else {
+                set.add(fieldName);
+                countMap.put(fieldName,1);
+            }
+        }
+
+        JSONObject result = new JSONObject();
+        List<String> columns = Arrays.asList("商铺性质","数量");
+        JSONArray rows = new JSONArray();
+        for(Map.Entry<String,Integer> entry : countMap.entrySet()){
+            JSONObject row = new JSONObject();
+            row.put("商铺性质",entry.getKey());
+            row.put("数量",entry.getValue());
+            rows.add(row);
+        }
+        result.put("rows",rows);
+        result.put("columns",columns);
+        result.put("unit","家");
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    public JsonModel getOrgaDot() {
+
+        String data = null;
+        try {
+            data = getData("y09-01","per_page=10000&page=1",null,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+        JSONObject object = JSONObject.parseObject(data);
+        JSONArray jsonArray = object.getJSONArray("data");
+
+        //装经度的set
+        HashSet<String> longSet = new HashSet<>();
+        //经度和场所的map
+        HashMap<String,JSONArray> longMap = new HashMap<>();
+
+        for (int i = 0; i < jsonArray.size() ; i++){
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            String longitude = obj.getString("longitude");
+            if (longSet.contains(longitude)){
+                JSONArray array = longMap.get(longitude);
+                array.add(obj);
+            }else {
+                longSet.add(longitude);
+                JSONArray array = new JSONArray();
+                array.add(obj);
+                longMap.put(longitude,array);
+            }
+        }
+
+        JSONArray result = new JSONArray();
+        for (Map.Entry<String,JSONArray> entry : longMap.entrySet()){
+            JSONObject obj = new JSONObject();
+            JSONObject dataObj = (JSONObject) entry.getValue().get(0);
+            String longitude = (String) dataObj.get("longitude");
+            String latitude = (String) dataObj.get("latitude");
+            obj.put("longitude",longitude);
+            obj.put("latitude",latitude);
+            obj.put("arr",entry.getValue());
+            result.add(obj);
+        }
+
+        return new JsonModel(true,result);
+    }
+
+    public JsonModel getJXStoreCount(){
+        String data = null;
+        try {
+            data = getData("y11-01","per_page=10000&page=1",null,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+        JSONObject object = JSONObject.parseObject(data);
+        JSONArray jsonArray = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        List<String> columns = Arrays.asList("社区","数量");
+        JSONArray rows = new JSONArray();
+
+        for(int i = 0; i < jsonArray.size();i++){
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            JSONObject row = new JSONObject();
+            row.put("社区",obj.get("community_name"));
+            row.put("数量",obj.get("number"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+
+    }
+
+    public JsonModel getJXTibetSourceCount() {
+        String data = null;
+        try {
+            data = getData("y12-01","per_page=10000&page=1",null,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(data);
+        JSONArray jsonArray = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        List<String> columns = Arrays.asList("来源地","数量");
+        JSONArray rows = new JSONArray();
+
+        for(int i = 0; i < jsonArray.size();i++){
+            if(i >= 10) break;
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            JSONObject row = new JSONObject();
+            row.put("来源地",obj.get("district"));
+            row.put("数量",obj.get("cnt"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        result.put("unit","次");
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
     }
 }
