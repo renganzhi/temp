@@ -630,15 +630,10 @@ return mix(factor,mirror,0.0);
       })
       $.getJSON('./static/geojson/xzqh.json', (res) => {
         let positions = res.features
-        let okjx = true
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
           let extrend = false
           if (item.properties.Name === '浆洗街街道') {
-            extrend = true
-            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6)
-          }
-          if (item.properties.Name === '双楠街道') {
             extrend = true
             color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6)
           }
@@ -663,30 +658,15 @@ return mix(factor,mirror,0.0);
               linepositions.push(3)
             })
           }
-          if (item.properties.Name === '浆洗街街道') {
-            if (okjx) {
-              okjx = false
-              viewer.entities.add({
-                polygon: {
-                  hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-                  perPositionHeight: true,
-                  material: color,
-                  extrudedHeight: extrend ? 80 : 1
-                },
-                name: item.properties.Name
-              })
-            }
-          } else {
-            viewer.entities.add({
-              polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-                perPositionHeight: true,
-                material: color,
-                extrudedHeight: extrend ? 80 : 1
-              },
-              name: item.properties.Name
-            })
-          }
+          viewer.entities.add({
+            polygon: {
+              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              perPositionHeight: true,
+              material: color,
+              extrudedHeight: extrend ? 80 : 1
+            },
+            name: item.properties.Name
+          })
         })
       })
       $.getJSON('./static/geojson/bianjie_low.json', (res) => {
@@ -926,7 +906,7 @@ return mix(factor,mirror,0.0);
         var mousePosition = e.endPosition
         var picked = viewer.scene.pick(mousePosition)
         if (picked && picked.id && picked.id._polygon) {
-          if (picked.id.name === '浆洗街街道' || picked.id.name === '双楠街道') {
+          if (picked.id.name === '浆洗街街道') {
             return
           }
           if (highLightPolygon) {
