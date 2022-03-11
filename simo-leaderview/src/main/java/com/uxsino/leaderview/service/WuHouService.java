@@ -81,10 +81,11 @@ public class WuHouService {
      * @param pagination 分页参数
      * @param query 查询参数
      * @param ifFormInfo 是获取表头信息还是表单数据
+     * @param ifNew 是否是新版接口
      * @return
      * @throws IOException
      */
-    public String getData(String formId, String pagination, String query, Boolean ifFormInfo) throws IOException {
+    public String getData(String formId, String pagination, String query, Boolean ifFormInfo, Boolean ifNew) throws IOException {
         //社会治理-重点人员管控-社区服刑人员	89   街道：query[622]
         //社会治理-重点人员管控-吸毒	90
         //社会治理-重点人员管控-刑释	91
@@ -98,22 +99,20 @@ public class WuHouService {
         //y11-01 涉藏商铺数量
         //y12-01 藏族来源地分析
         //y13-01 群租房入住人员归属地分析
-        Boolean ifV3 = false;
+        //老版接口地址
         String prefix = "http://wunlzt.cdwh.gov.cn/api/v4/forms/";
-        String prefixV3 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/"+ formId +"/data" +
-                "=1";
+        //新版接口地址
+        String prefixV3 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/";
         String prefixV33 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/y07-01/data?per_page=10000&page=1";
-        if(formId.contains("y")){
+        if(formId.contains("-") || ifNew){
             prefix = prefixV3;
-            ifV3 = true;
         }
         String url;
         if(ifFormInfo){
             url = prefix + formId;
         }else {
-            if(ifV3) {
-                url = prefix + formId;
-
+            if(ifNew) {
+                url = prefix + formId +"/data";
             }else {
                 url = prefix + formId + "/responses/search.json";
             }
@@ -135,9 +134,13 @@ public class WuHouService {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
-        if(ifV3){
-            httpGet.setHeader("token",
-                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDY3MDgyMDMsImV4cCI6MTY0Njc5NDYwMywidGlkIjozLCJqdGkiOiI2MjczZmQxNDllOGIxMWVjODgzNzAyNDJhYzFhMDAwNyIsInAiOlszXX0.KkMrNEs4CaTNKaGB6jYW02hZd2taSytJvW1efs7OSbs");
+        //新版接口调用
+        if(ifNew){
+            String token = getToken();
+//            httpGet.setHeader("token",
+//                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDY3MDgyMDMsImV4cCI6MTY0Njc5NDYwMywidGlkIjozLCJqdGkiOiI2MjczZmQxNDllOGIxMWVjODgzNzAyNDJhYzFhMDAwNyIsInAiOlszXX0.KkMrNEs4CaTNKaGB6jYW02hZd2taSytJvW1efs7OSbs");
+            httpGet.setHeader("token", token);
+            httpGet.setHeader("Content-Type","multipart/form-data");
         }else {
             httpGet.setHeader("Authorization","1942fc6b7aab121b22c892c920af8b74b9349f2611ce71d79a8324ce83227279:" +
                     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lc3BhY2VfaWQiOjF9" +
@@ -160,9 +163,121 @@ public class WuHouService {
         /*Header[] headers = closeableHttpResponse.getHeaders("X-SLP-Total-Count");
         String value = headers[0].getValue();*/
 
+        return result;
+    }
 
+    /**
+     * 获取中台数据的接口,url为/pro/3的接口
+     * @param formId 表单ID
+     * @param pagination 分页参数
+     * @param query 查询参数
+     * @param ifFormInfo 是获取表头信息还是表单数据
+     * @param ifNew 是否是新版接口
+     * @return
+     * @throws IOException
+     */
+    public String getData1(String formId, String pagination, String query, Boolean ifFormInfo, Boolean ifNew) throws IOException {
+
+        //formId = "89";//社会治理-重点人员管控-社区服刑人员
+        //y07-01 商铺性质分析 √
+        //y09-01 场所打点    √
+        //y11-01 涉藏商铺数量
+        //y12-01 藏族来源地分析
+        //y13-01 群租房入住人员归属地分析
+
+        //老版接口地址
+        String prefix = "http://wunlzt.cdwh.gov.cn/api/v4/forms/";
+        //新版接口地址
+        String prefixV3 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/";
+        String prefixV33 = "http://wunlzt.cdwh.gov.cn/apis/daas/pro/3/components/y07-01/data?per_page=10000&page=1";
+        if(formId.contains("-") || ifNew){
+            prefix = prefixV3;
+        }
+        String url;
+        if(ifFormInfo){
+            url = prefix + formId;
+        }else {
+            if(ifNew) {
+                url = prefix + formId +"/data";
+            }else {
+                url = prefix + formId + "/responses/search.json";
+            }
+            //在pagination或者query中自己添加?
+            if(!Strings.isNullOrEmpty(pagination) || !Strings.isNullOrEmpty(query) ){
+                url += "?";
+            }
+            if(!ObjectUtils.isEmpty(pagination)){
+                url += pagination;
+            }
+            if(!ObjectUtils.isEmpty(query)){
+                if(!ObjectUtils.isEmpty(pagination)) {
+                    url += "&" + query;
+                }else {
+                    url += query;
+                }
+            }
+        }
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(url);
+        //新版接口调用
+        if(ifNew){
+            String token = getToken();
+//            httpGet.setHeader("token",
+//                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDY3MDgyMDMsImV4cCI6MTY0Njc5NDYwMywidGlkIjozLCJqdGkiOiI2MjczZmQxNDllOGIxMWVjODgzNzAyNDJhYzFhMDAwNyIsInAiOlszXX0.KkMrNEs4CaTNKaGB6jYW02hZd2taSytJvW1efs7OSbs");
+            httpGet.setHeader("token", token);
+            httpGet.setHeader("Content-Type","multipart/form-data");
+        }else {
+            httpGet.setHeader("Authorization","1942fc6b7aab121b22c892c920af8b74b9349f2611ce71d79a8324ce83227279:" +
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lc3BhY2VfaWQiOjF9" +
+                    ".dgGuGkLelFnT9ups0kUoBw-AAOFsvUW_fl7HN3KVUWE");
+        }
+
+        String result = "";
+
+        CloseableHttpResponse closeableHttpResponse = null;
+        try {
+            closeableHttpResponse = httpClient.execute(httpGet);
+        } catch (IOException e) {
+            log.error("中台接口请求表单{}失败{}",formId,e.getMessage());
+            e.printStackTrace();
+        }
+        HttpEntity httpEntity = closeableHttpResponse.getEntity();
+        result = EntityUtils.toString(httpEntity);//响应内容
+        System.out.println("请求结果是：" + result);
+
+        /*Header[] headers = closeableHttpResponse.getHeaders("X-SLP-Total-Count");
+        String value = headers[0].getValue();*/
 
         return result;
+    }
+
+    public String getToken(){
+
+        String token = null;
+
+        String tokenUrl2 = "http://wunlzt.cdwh.gov.cn/apis/daas/token?appID=819ee3726ceff963a5f6877de2d92c00&appSecret" +
+                "=4fd078c9fef8ee0f1311e2d1661619c5";
+        CloseableHttpClient httpClient  = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(tokenUrl2);
+        httpGet.setHeader("Content-Type","multipart/form-data");
+
+        try {
+            CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = closeableHttpResponse.getEntity();
+            String res = EntityUtils.toString(httpEntity);//响应内容
+            System.out.println("请求结果是：" + res);
+            JSONObject object = JSONObject.parseObject(res);
+            JSONObject data = (JSONObject) object.get("data");
+            token = (String) data.get("token");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("获取中台token失败");
+        }
+
+        return token;
     }
 
     /**
@@ -237,7 +352,7 @@ public class WuHouService {
     public JsonModel getFormDataForTable(String formId, String column, String query, String url){
         String formInfo;
         try {
-            formInfo = this.getData(formId,"",query,false);
+            formInfo = this.getData(formId,"",query,false,false);
         } catch (Exception e) {
             log.error("中台接口报错");
             e.printStackTrace();
@@ -380,7 +495,7 @@ public class WuHouService {
 
         //获取指定走访情况数据
         try {
-            formInfo = this.getData(formId,pagination,query,false);
+            formInfo = this.getData(formId,pagination,query,false,false);
         } catch (IOException e) {
             log.error("中台获取表单数据接口报错");
             e.printStackTrace();
@@ -429,7 +544,7 @@ public class WuHouService {
      * @return
      */
     public JSONArray getFormInfo(String formId) throws IOException {
-        String formInfo = this.getData(formId,"","",true);
+        String formInfo = this.getData(formId,"","",true,false);
         JSONObject jsonObject = JSONObject.parseObject(formInfo);
         JSONArray fields = jsonObject.getJSONArray("fields");
 
@@ -452,7 +567,7 @@ public class WuHouService {
      * @return
      */
     public HashMap<Integer,String> getFormIdNameMap(String formId) throws IOException {
-        String formInfo = this.getData(formId,"","",true);
+        String formInfo = this.getData(formId,"","",true,false);
         JSONObject jsonObject = JSONObject.parseObject(formInfo);
         JSONArray fields = jsonObject.getJSONArray("fields");
 
@@ -487,7 +602,7 @@ public class WuHouService {
      * @return
      */
     public HashMap<String,Integer> getFormNameIdMap(String formId) throws IOException {
-        String formInfo = this.getData(formId,"","",true);
+        String formInfo = this.getData(formId,"","",true,false);
         JSONObject jsonObject = JSONObject.parseObject(formInfo);
         JSONArray fields = jsonObject.getJSONArray("fields");
 
@@ -622,7 +737,7 @@ public class WuHouService {
      */
     public JSONObject getJXData(String formId,String query) throws IOException {
         String formInfo;
-        formInfo = this.getData(formId,null,query,false);
+        formInfo = this.getData(formId,null,query,false,false);
         HashMap<Integer,String> idNameMap = new HashMap<>();
         try {
             idNameMap = this.getFormIdNameMap(formId);
@@ -659,7 +774,7 @@ public class WuHouService {
     public JsonModel getPopulationRanking(String query){
         String formInfo;
         try {
-            formInfo = this.getData("110","?per_page=100",query,false);
+            formInfo = this.getData("110","?per_page=100",query,false,false);
         } catch (Exception e) {
             log.error("中台接口报错");
             e.printStackTrace();
@@ -909,7 +1024,7 @@ public class WuHouService {
 
         String data = null;
         try {
-            data = getData("y07-01", "per_page=10000&page=1", null, false);
+            data = getData("y07-01", "per_page=10000&page=1", null, false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -924,17 +1039,19 @@ public class WuHouService {
         HashSet<String> set = new HashSet<>();
         //用来装商铺性质和数量的map
         HashMap<String,Integer> countMap = new HashMap<>();
-        for (int i = 0;i < jsonArray.size();i++){
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            String fieldName = obj.getString(type);
-            if(set.contains(fieldName)){
+        if(!ObjectUtils.isEmpty(jsonArray)) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                String fieldName = obj.getString(type);
+                if (set.contains(fieldName)) {
 //                    Integer count = countMap.get(fieldName);
-                Integer count = countMap.get(fieldName);
-                count++;
-                countMap.put(fieldName,count);
-            }else {
-                set.add(fieldName);
-                countMap.put(fieldName,1);
+                    Integer count = countMap.get(fieldName);
+                    count++;
+                    countMap.put(fieldName, count);
+                } else {
+                    set.add(fieldName);
+                    countMap.put(fieldName, 1);
+                }
             }
         }
 
@@ -960,7 +1077,7 @@ public class WuHouService {
 
         String data = null;
         try {
-            data = getData("y09-01","per_page=10000&page=1",null,false);
+            data = getData("y09-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -973,17 +1090,19 @@ public class WuHouService {
         //经度和场所的map
         HashMap<String,JSONArray> longMap = new HashMap<>();
 
-        for (int i = 0; i < jsonArray.size() ; i++){
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            String longitude = obj.getString("longitude");
-            if (longSet.contains(longitude)){
-                JSONArray array = longMap.get(longitude);
-                array.add(obj);
-            }else {
-                longSet.add(longitude);
-                JSONArray array = new JSONArray();
-                array.add(obj);
-                longMap.put(longitude,array);
+        if(!ObjectUtils.isEmpty(jsonArray)) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                String longitude = obj.getString("longitude");
+                if (longSet.contains(longitude)) {
+                    JSONArray array = longMap.get(longitude);
+                    array.add(obj);
+                } else {
+                    longSet.add(longitude);
+                    JSONArray array = new JSONArray();
+                    array.add(obj);
+                    longMap.put(longitude, array);
+                }
             }
         }
 
@@ -1005,7 +1124,7 @@ public class WuHouService {
     public JsonModel getJXStoreCount(){
         String data = null;
         try {
-            data = getData("y11-01","per_page=10000&page=1",null,false);
+            data = getData("y11-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -1017,12 +1136,14 @@ public class WuHouService {
         List<String> columns = Arrays.asList("社区","数量");
         JSONArray rows = new JSONArray();
 
-        for(int i = 0; i < jsonArray.size();i++){
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            JSONObject row = new JSONObject();
-            row.put("社区",obj.get("community_name"));
-            row.put("数量",obj.get("number"));
-            rows.add(row);
+        if(!ObjectUtils.isEmpty(jsonArray)) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                JSONObject row = new JSONObject();
+                row.put("社区", obj.get("community_name"));
+                row.put("数量", obj.get("number"));
+                rows.add(row);
+            }
         }
 
         result.put("rows",rows);
@@ -1037,7 +1158,7 @@ public class WuHouService {
     public JsonModel getJXTibetSourceCount() {
         String data = null;
         try {
-            data = getData("y12-01","per_page=10000&page=1",null,false);
+            data = getData("y12-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -1050,13 +1171,15 @@ public class WuHouService {
         List<String> columns = Arrays.asList("来源地","数量");
         JSONArray rows = new JSONArray();
 
-        for(int i = 0; i < jsonArray.size();i++){
-            if(i >= 10) break;
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            JSONObject row = new JSONObject();
-            row.put("来源地",obj.get("district"));
-            row.put("数量",obj.get("cnt"));
-            rows.add(row);
+        if(!ObjectUtils.isEmpty(jsonArray)) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                if (i >= 10) break;
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                JSONObject row = new JSONObject();
+                row.put("来源地", obj.get("district"));
+                row.put("数量", obj.get("cnt"));
+                rows.add(row);
+            }
         }
 
         result.put("rows",rows);
@@ -1067,4 +1190,552 @@ public class WuHouService {
 
         return new JsonModel(true,result);
     }
+
+
+    //——————————————————————————————————————————————————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————————————————————————————————————————————————————————
+    //下面是智慧武侯16：3大屏的方法
+
+    /**
+     * 1、土地资源（待上市地块）总数
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-01-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicTDZS(){
+
+        String res = null;
+        try {
+            res = getData1("w01-01-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        Integer count = 0;
+        //中台接口是否调用成功
+        Boolean ifSuccess = false;
+        if(!ObjectUtils.isEmpty(data)) {
+            ifSuccess = true;
+            JSONObject total = (JSONObject) data.get(0);
+            count = (Integer) total.get("total");
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("name","土地资源总数");
+        result.put("info",ifSuccess ? count : "中台接口调用失败");
+        result.put("value",ifSuccess ? count : "中台接口调用失败");
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 2、土地资源（待上市地块）分类汇总
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-01-2/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicTDFLHZ(){
+
+        String res = null;
+        try {
+            res = getData1("w01-01-2","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("用地性质");
+        columns.add("数量");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("用地性质",dataObj.get("ydxz"));
+            row.put("数量",dataObj.get("num"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 3、土地资源（待上市地块）分类列表明细
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-01-3/data?ydxz=商业用地
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicTDFLMX(String param){
+
+        String query = "ydxz=" + param;
+        String res = null;
+        try {
+            res = getData1("w01-01-3","per_page=10000&page=1",query,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("功能区管委会");
+        columns.add("宗地位置");
+        columns.add("净地面积");
+        columns.add("容积率");
+        columns.add("业主单位");
+        columns.add("所属街道");
+        columns.add("用地性质");
+        //    "id": 371,
+        //    "gnqgwh": "悦湖科技城管委会", //功能区管委会
+        //    "zdwz": "簇桥街道双凤村5、6组", //宗地位置
+        //    "jdmj": "93.1", //净地面积
+        //    "rjl": "2-3", //容积率
+        //    "yzdw": "资本公司", //业主单位
+        //    "street": "簇桥街道", //所属街道
+        //    "ydxz": "商业用地" //用地性质
+
+        //一般饼图
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("功能区管委会",dataObj.get("gnqgwh"));
+            row.put("宗地位置",dataObj.get("zdwz"));
+            row.put("净地面积",dataObj.get("jdmj"));
+            row.put("容积率",dataObj.get("rjl"));
+            row.put("业主单位",dataObj.get("yzdw"));
+            row.put("所属街道",dataObj.get("street"));
+            row.put("用地性质",dataObj.get("ydxz"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+
+    /**
+     * 4、地图坐标 土地资源
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-01-4/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicTDDTZB(){
+
+        String res = null;
+        try {
+            res = getData1("w01-01-4","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("ID");
+        columns.add("宗地位置");
+        columns.add("坐标");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("ID",dataObj.get("id"));
+            row.put("宗地位置",dataObj.get("zdwz"));
+            row.put("坐标",dataObj.get("location"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+
+    /**
+     * 5、地图 土地资源-详情
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-01-5/data?id=371
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicTDXQ(String param){
+
+        String query = "id=" + param;
+        String res = null;
+        try {
+            res = getData1("w01-01-5","per_page=10000&page=1",query,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("用地性质");
+        columns.add("容积率");
+        columns.add("净地面积");
+        columns.add("宗地位置");
+        columns.add("所属街道");
+        columns.add("业主单位");
+        columns.add("功能区管委会");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("用地性质",dataObj.get("ydxz"));
+            row.put("容积率",dataObj.get("rjl"));
+            row.put("净地面积",dataObj.get("jdmj"));
+            row.put("宗地位置",dataObj.get("zdwz"));
+            row.put("所属街道",dataObj.get("street"));
+            row.put("业主单位",dataObj.get("yzdw"));
+            row.put("功能区管委会",dataObj.get("gnqgwh"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 6、重大项目情况-项目分类统计
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-02-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicXMFL(){
+
+        String res = null;
+        try {
+            res = getData1("w01-02-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("项目名称");
+        columns.add("数量");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("项目名称",dataObj.get("project_type"));
+            row.put("数量",dataObj.get("num"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 7、重大项目情况-项目分类明细
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-02-2/data?project_type=其它高能级项目
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicXMFLMX(String param){
+
+        String query = "project_type=" + param;
+
+        String res = null;
+        try {
+            res = getData1("w01-02-2","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("项目名称");
+        columns.add("投资额");
+        columns.add("功能区");
+        columns.add("街道");
+        columns.add("项目类型");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("项目名称",dataObj.get("project_type"));
+            row.put("投资额",dataObj.get("investment"));
+            row.put("功能区",dataObj.get("functional_area"));
+            row.put("街道",dataObj.get("street"));
+            row.put("项目类型",dataObj.get("project_type"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 8、内外资投资情况
+     * (中台开发中)
+     *接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-03-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicNWZQK(){
+
+        String res = null;
+        try {
+            res = getData1("w01-03-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("内资");
+        columns.add("外资");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("内资",dataObj.get("nz"));
+            row.put("外资",dataObj.get("wz"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 9、内外资投资情况 月度列表
+     * (中台开发中)
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-03-2/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicNWZYD(){
+
+        String res = null;
+        try {
+            res = getData1("w01-03-2","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("月份");
+        columns.add("内资月度认定数");
+        columns.add("外资月度认定数");
+        columns.add("内资同比增减情况（%）");
+        columns.add("外资同比增减情况（%）");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("月份",dataObj.get("month"));
+            row.put("内资月度认定数",dataObj.get("nzydrds"));
+            row.put("外资月度认定数",dataObj.get("wzydrds"));
+            row.put("内资同比增减情况（%）",dataObj.get("increase_or_decrease_rmb"));
+            row.put("外资同比增减情况（%）",dataObj.get("increase_or_decrease_dollar"));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 10、领导率队赴外开展投资促进活动情况
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w029/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicLDHD(){
+
+        String res = null;
+        try {
+            res = getData1("w029","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        columns.add("拜访时间");
+        columns.add("拜访地址");
+        columns.add("拜访企业名称");
+
+        for(int i = 0 ; i < data.size(); i++){
+            JSONObject row = new JSONObject();
+            JSONObject dataObj = (JSONObject) data.get(i);
+            row.put("拜访时间",dataObj.get("visit_time"));
+            row.put("拜访地址",dataObj.get("visit_address"));
+            row.put("拜访企业名称",dataObj.get("visit_company_name"));
+
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        String jsonString = result.toJSONString();
+        System.out.println(jsonString);
+
+        return null;
+    }
+
+    /**
+     * 11、企业发展情况(数据源未定)
+     * 接口URL： {{baseUrl}}/wuhouapi/proxyapi/publicapi/rest/project/detail
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicQYFZ(){
+
+        String res = null;
+        try {
+            res = getData1("w01-01-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        return null;
+    }
+
+    /**
+     * 12、经济板块--所有企业行业分类情况
+     * （中台修改中）
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w01-06-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicHYFL(){
+
+        String res = null;
+        try {
+            res = getData1("w01-06-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        return null;
+    }
+
+    /**
+     * 13、所有企业行业分类情况（未定）
+     * 中台修改中
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w004/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEconomicFYFLQK(){
+
+        String res = null;
+        try {
+            res = getData1("w004","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        return null;
+    }
+
 }
