@@ -1,8 +1,6 @@
 package com.uxsino.leaderview.controller;
 
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.QunZuFangService;
 import io.swagger.annotations.Api;
@@ -11,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.AssertFalse;
-import java.util.Arrays;
-import java.util.List;
 
 @Api(tags = {"武侯智慧城市-群租房小程序数据接口"})
 @RestController
