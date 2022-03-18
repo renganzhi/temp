@@ -3210,14 +3210,15 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getQQ1(){
+    public JSONObject getQQ1(){
 
         String res = null;
         try {
             res = getData1("w05-01-1","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+            log.error(e.getMessage());
+            //return new JsonModel(false,"优易中台调用失败",e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
@@ -3230,7 +3231,7 @@ public class WuHouService {
         String jsonString = result.toJSONString();
         System.out.println(jsonString);
 
-        return new JsonModel(true,result);
+        return result;
 
     }
 
@@ -3256,25 +3257,6 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         JSONObject result = getTextResult("name",data);
-
-        /*//name和相应obj的map,用于根据参数name获取对应的数据
-        HashMap<String,JSONObject> nameAndObjMap = new HashMap<>();
-        List<Map<String, String>> list = new ArrayList<>();
-        for(int i = 0 ;i < data.size(); i++){
-            JSONObject obj = data.getJSONObject(i);
-            String name = obj.getString("name");
-            nameAndObjMap.put(name,obj);
-
-            //有很多不同的数据，做数据条目的下拉列表
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put("name",name);
-            map.put("value",name);
-            list.add(map);
-        }
-
-        JSONObject result = new JSONObject();
-        result.put("list",list);
-        result.put("nameAndObjMap",nameAndObjMap);*/
 
         return new JsonModel(true,result);
 
@@ -3322,14 +3304,15 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getQQ4(){
+    public JSONObject getQQ4(){
 
         String res = null;
         try {
             res = getData1("w05-04-1","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+            log.error(e.getMessage());
+            //return new JsonModel(false,"优易中台调用失败",e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
@@ -3342,7 +3325,7 @@ public class WuHouService {
         String jsonString = result.toJSONString();
         System.out.println(jsonString);
 
-        return new JsonModel(true,result);
+        return result;
 
     }
 

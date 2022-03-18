@@ -678,6 +678,15 @@
         ]
     },
     {
+        "key": "get_QQ1",
+        "name": "社区实有人口、流动人口Top10",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar",
+        "url": "/leaderview/WuHou163/getQQ1",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_QQ2",
         "name": "数字武侯",
         "component": "monitor",
