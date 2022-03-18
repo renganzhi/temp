@@ -275,6 +275,7 @@ public class HomePageController {
             homePageService.moveAll(homePage, back);
         }
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        if(ObjectUtils.isEmpty(userId)) userId = 1L;
         HomePageUserConf homePageUserConf = homePageUserConfService.findOneByIndexAndUserId(pageIndex, userId);
         if (homePageUserConf == null) {
             return new JsonModel(false, "所移动的页面不存在！");
@@ -471,6 +472,7 @@ public class HomePageController {
             result = homePageService.getByAuthority(session);
         } else {
             Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+            if(ObjectUtils.isEmpty(userId)) userId = 1L;
             if (ObjectUtils.isEmpty(userId)) {
                 return new JsonModel(false, "获取用户信息失败", null);
             }
@@ -555,6 +557,7 @@ public class HomePageController {
         }
         try {
             Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+            if(ObjectUtils.isEmpty(userId)) userId = 1L;
             JSONArray roleIdArr = SessionUtils.getSessionUserRoleIdArr(session);
             JSONObject shareConf = JSONObject.parseObject(homePage.getShareConf());
             JSONObject newshareConf = new JSONObject();
@@ -602,6 +605,7 @@ public class HomePageController {
         List<HomePageVo> pageList = JSON.parseObject(pages, new TypeReference<List<HomePageVo>>() {
         });
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        if(ObjectUtils.isEmpty(userId)) userId = 1L;
         homeCarousel.setUserId(userId);
         return homeCarouselService.save(homeCarousel, pageList, userId);
     }
@@ -613,6 +617,7 @@ public class HomePageController {
     @RequestMapping(value = "/getCarouselTimeConf", method = RequestMethod.GET)
     public JsonModel getCarouselTimeConf(HttpSession session) {
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        if(ObjectUtils.isEmpty(userId)) userId = 1L;
         List<HomePageVo> list = homePageService.findNoViewByUserId(userId);
         HomeCarousel homeCarousel = homeCarouselService.getByUserId(userId);
         JSONObject json = new JSONObject();

@@ -1,0 +1,698 @@
+[
+    {
+        "key": "get_form_data",
+        "name": "武侯表单数据",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou/getFormData",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区矫正",
+                        "value": "89"
+                    },
+                    {
+                        "name": "重点人员管控-社区康复",
+                        "value": "90"
+                    },
+                    {
+                        "name": "重点人员管控-重症精神",
+                        "value": "93"
+                    },
+                    {
+                        "name": "重点人员管控-重点人员（信访维稳）",
+                        "value": "94"
+                    },
+                    {
+                        "name": "重点事件",
+                        "value": "95"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            }
+        ]
+    },
+    {
+        "key": "get_form_data_and_url",
+        "name": "走访情况弹窗表格",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou/getFormDataAndUrl",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区矫正",
+                        "value": "89,社区服刑人员"
+                    },
+                    {
+                        "name": "重点人员管控-社区康复",
+                        "value": "90,吸毒人员"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            }
+        ]
+    },
+    {
+        "key": "get_form_data_for_zf",
+        "name": "重点人员走访数据",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou/getFormDataForZF",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员走访表",
+                        "value": "106"
+                    }
+                ]
+            },
+            {
+                "key": "column",
+                "name": "展示项",
+                "notNull": false,
+                "type": "multi-select",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getFormInfo",
+                "params": ["formId"]
+            },
+            {
+                "key": "query",
+                "name": "人员类别",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "社区矫正",
+                        "value": "query[734]=社区服刑人员"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_people_total_count",
+        "name": "基础人员总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getPeopleTotalCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "formId",
+                "name": "表单",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "重点人员管控-社区服刑人员",
+                        "value": "89"
+                    },
+                    {
+                        "name": "重点人员管控-吸毒",
+                        "value": "90"
+                    },
+                    {
+                        "name": "重点人员管控-重症精神",
+                        "value": "93"
+                    },
+                    {
+                        "name": "重点人员管控-重点人员（信访维稳）",
+                        "value": "94"
+                    },
+                    {
+                        "name": "重点人员管控-重点事件",
+                        "value": "95"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_house_count",
+        "name": "浆洗街街道群租房各类别总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getHouseCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "category",
+                "name": "类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "群租房",
+                        "value": "群租房"
+                    },
+                    {
+                        "name": "小旅馆",
+                        "value": "小旅馆"
+                    },
+                    {
+                        "name": "民宿旅店",
+                        "value": "民宿旅店"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_pie_data",
+        "name": "社会治理大屏定时数据",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/WuHou/getPieData",
+        "method" : "get",
+        "params": [
+            {
+                "key": "name",
+                "name": "接口名称",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "涉访类别详细分析",
+                        "value": "涉访类别详细分析"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_economic_data_value",
+        "name": "浆洗街道重点经济指标数据",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getEconomicDataValue",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "2022",
+                        "value": "2022"
+                    }
+                ]
+            },
+            {
+                "key": "jieDao",
+                "name": "街道",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "浆洗街街道",
+                        "value": "浆洗街街道"
+                    }
+                ]
+            },
+            {
+                "key": "jiDu",
+                "name": "季度",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "一季度",
+                        "value": "一季度"
+                    }
+                ]
+            },
+            {
+                "key": "fieldId",
+                "name": "经济指标",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": "/leaderview/WuHou/getEconomicDataInfo",
+                "params": ["year","jieDao","jiDu"]
+            }
+        ]
+    },
+    {
+        "key": "get_population_ranking",
+        "name": "社区人口排行",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/WuHou/getPopulationRanking",
+        "method" : "get",
+        "params": [
+            {
+                "key": "street",
+                "name": "街道",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "浆洗街街道",
+                        "value": "浆洗街街道"
+                    },
+                    {
+                        "name": "玉林街道",
+                        "value": "玉林街道"
+                    },
+                    {
+                        "name": "簇桥街道",
+                        "value": "簇桥街道"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_economic_data_value",
+        "name": "区情板块-数字武侯",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getSZWH",
+        "method" : "get",
+        "params": [
+            {
+                "key": "name",
+                "name": "数据条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "科学技术投入",
+                        "value": "科学技术投入"
+                    },
+                    {
+                        "name": "医疗投入",
+                        "value": "医疗投入"
+                    },
+                    {
+                        "name": "教育投入",
+                        "value": "教育投入"
+                    },
+                    {
+                        "name": "居民人均消费支出",
+                        "value": "居民人均消费支出"
+                    },
+                    {
+                        "name": "城镇居民人均可支配收入",
+                        "value": "城镇居民人均可支配收入"
+                    },
+                    {
+                        "name": "一般公共预算支出",
+                        "value": "一般公共预算支出"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_housing_personnel_top",
+        "name": "入住人员Top10",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/WuHou/getHousingPersonnelTop",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_live_sort",
+        "name": "入住房Top5",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/QZF/getLiveSort",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_qzf_home_count",
+        "name": "小程序实时数据-群租房数量统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZFHomeCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "群租房类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "总量",
+                        "value": "0"
+                    },
+                    {
+                        "name": "群租房",
+                        "value": "1"
+                    },
+                    {
+                        "name": "小旅馆",
+                        "value": "2"
+                    },
+                    {
+                        "name": "民宿旅社",
+                        "value": "3"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_today_live_count",
+        "name": "小程序实时数据-群租房入住情况统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getTodayLiveCount",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "统计类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "当日入住量",
+                        "value": "checkIn"
+                    },
+                    {
+                        "name": "当日离店量",
+                        "value": "checkOut"
+                    },
+                    {
+                        "name": "本月累计量",
+                        "value": "month"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_live_by_time",
+        "name": "小程序实时数据-入住人员时间分析",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/QZF/getLiveByTime",
+        "method" : "get",
+        "params": [
+            {
+                "key": "when",
+                "name": "统计时段",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "今日",
+                        "value": "today"
+                    },
+                    {
+                        "name": "昨日",
+                        "value": "yesterday"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_QZF1",
+        "name": "群租房——敏感人员分类占比",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/QZF/getQZF1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_today_weather",
+        "name": "天气——今日实时天气数据",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou/getTodayWeather",
+        "method" : "get",
+        "params": [
+            {
+                "key": "fieldName",
+                "name": "数据类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "天气",
+                        "value": "weather"
+                    },
+                    {
+                        "name": "当前温度",
+                        "value": "temperature_curr"
+                    },
+                    {
+                        "name": "风力等级",
+                        "value": "winp"
+                    },
+                    {
+                        "name": "湿度",
+                        "value": "humidity"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_future_weather",
+        "name": "天气——温度预报",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou/getFutureWeather",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_store_pie",
+        "name": "民族治理商铺性质、民族分析",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/WuHou/getStorePie",
+        "method" : "get",
+        "params": [
+            {
+                "key": "type",
+                "name": "类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "商铺性质分析",
+                        "value": "store_character"
+                    },
+                    {
+                        "name": "负责人民族分析",
+                        "value": "store_charge_user_nation"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_jx_store_count",
+        "name": "浆洗街道藏族商铺社区分布",
+        "component": "monitor",
+        "type": "ELine,ve-line",
+        "url": "/leaderview/WuHou/getJXStoreCount",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_jx_tibet_source_count",
+        "name": "浆洗街道重点小区藏族来源地分析",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/WuHou/getJXTibetSourceCount",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JJ1",
+        "name": "土地资源（待上市地块）总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getJJ1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JJ2",
+        "name": "土地资源（待上市地块）分类汇总",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/WuHou163/getJJ2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JJ6",
+        "name": "重大项目情况-项目分类统计",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getJJ6",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "项目分类",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getJJ6"]
+            }
+        ]
+    },
+    {
+        "key": "get_JJ8",
+        "name": "内外资投资情况",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getJJ8",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "资金分类",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getJJ8"]
+            }
+        ]
+    },
+    {
+        "key": "get_JJ10",
+        "name": "领导率队赴外开展投资促进活动情况",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou163/getJJ10",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JJ11",
+        "name": "企业发展情况",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getJJ11",
+        "method" : "get",
+        "params": [
+            {
+                "key": "ifToday",
+                "name": "时间维度",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "今日",
+                        "value": "today"
+                    },
+                    {
+                        "name": "今年",
+                        "value": "thisyear"
+                    }
+                ]
+            },
+            {
+                "key": "fieldType",
+                "name": "发展情况",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "企业注册数量",
+                        "value": "slnum"
+                    },
+                    {
+                        "name": "企业注销数量",
+                        "value": "zxnum"
+                    },
+                    {
+                        "name": "个体注册数量",
+                        "value": "gtslnum"
+                    },
+                    {
+                        "name": "个体注销数量",
+                        "value": "gtzxnum"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_QQ2",
+        "name": "数字武侯",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getQQ2",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "数字条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getQQ2"]
+            }
+        ]
+    }
+]

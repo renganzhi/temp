@@ -87,10 +87,14 @@ public class LeaderViewInit implements InitializingBean {
 		if (homeTemplateService.count() == 0 || templateInit){
 			homeTemplateService.init();
 		}
+		//初始化涉藏机构打点信息
+		wuHouService.initOrgan();
+		//初始化涉藏小区打点信息
+		wuHouService.initCommunity();
 		//初始化定时任务信息
-		wuHouService.initTimeData();
+		//wuHouService.initTimeData();
 		//初始化定时任务
-		initDataTimeJob();
+		//initDataTimeJob();
 		// 订阅大屏展示API注册
 		try {
 			homeDataApiHandler.register();
