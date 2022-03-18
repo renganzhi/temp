@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.WuHouService;
@@ -149,17 +150,51 @@ public class WuHou163Controller {
         return wuHouService.getJJ13();
     }
 
+    //——————————————————————————————————————————————————区情版块—————————————————————————————————————————————————————————
+
     /**
-     * 获取企业发展情况数据
-     * @param ifToday
-     * @param fieldType
+     * 社区实有人口、流动人口切Top10  —— 可切换柱状图
+     * @param param
      * @return
      */
-    public JsonModel getEconomicQYFZ(String ifToday, String fieldType){
-        ifToday = "thisyear";
-        fieldType = "slnum";
-        return new JsonModel(true);
+    @GetMapping("/getQQ1")
+    public JsonModel getQQ1(@RequestParam(required = false) String param){
+        JSONObject obj1 = null;
+        try {
+            obj1 = wuHouService.getQQ1();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+        JSONObject obj2 = null;
+        try {
+            obj2 = wuHouService.getQQ4();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+        obj1.put("unit","人");
+        obj2.put("unit","人");
+
+        JSONObject result = new JSONObject();
+        //存放总数据的对象
+        JSONObject dataResult = new JSONObject();
+        //存放两组数据名称的集合
+        JSONArray nameAarry = new JSONArray();
+        nameAarry.add("社区实有人口TOP10");
+        nameAarry.add("社区流动人口TOP10");
+        dataResult.put("nameArray",nameAarry);
+        //存放两组数据的集合
+        JSONArray dataArray = new JSONArray();
+        dataArray.add(obj1);
+        dataArray.add(obj2);
+        dataResult.put("dataArray",dataArray);
+
+        result.put("dataArray",dataResult);
+
+        return new JsonModel(true,result);
     }
+
 
     @GetMapping("/getQQ2")
     public JsonModel getQQ2(@RequestParam(required = false) String param){
@@ -168,9 +203,9 @@ public class WuHou163Controller {
         return wuHouService.getTextJsonModel(param,"val",obj);
     }
 
-    //——————————————————————————————————————————————————区情版块—————————————————————————————————————————————————————————
-
-
-
+    @GetMapping("/getQQ3")
+    public JsonModel getQQ3(@RequestParam(required = false) String param){
+        return wuHouService.getQQ3();
+    }
 
 }
