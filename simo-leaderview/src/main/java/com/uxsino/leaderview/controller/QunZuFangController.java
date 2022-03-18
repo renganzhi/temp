@@ -3,6 +3,7 @@ package com.uxsino.leaderview.controller;
 
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.QunZuFangService;
+import com.uxsino.leaderview.service.WuHouService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class QunZuFangController {
 
     @Autowired
     QunZuFangService qunZuFangService;
+
+    @Autowired
+    WuHouService wuHouService;
 
     /**
      * 获取群租房不同类型的数量
@@ -65,6 +69,16 @@ public class QunZuFangController {
     @GetMapping("/getPatrolByAddress")
     public JsonModel getPatrolByAddress(String address){
         return qunZuFangService.getPatrolByAddress(address);
+    }
+
+    @GetMapping("/getQZF1")
+    public JsonModel getQZF1(){
+        return wuHouService.getQZF1();
+    }
+
+    @GetMapping("/getQZF2")
+    public JsonModel getQZF2(){
+        return wuHouService.getQZF2();
     }
 
 }

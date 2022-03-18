@@ -1,8 +1,10 @@
 package com.uxsino.leaderview.model;
 
 public enum ApiFileName {
-    MONITOR_FILE_NAME("monitor_home_api.json"),
-    BUSINESS_FILE_NAME("business_home_api.json");
+//    MONITOR_FILE_NAME("monitor_home_api.json"),
+//    BUSINESS_FILE_NAME("business_home_api.json"),
+    WUHOU_FILE_NAME("wuhou_home_api.json");
+
 
     private String value;
 
