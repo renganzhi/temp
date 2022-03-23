@@ -7,7 +7,3 @@ include ':simo-leaderview'
 project(':simo-leaderview').projectDir = new File(settingsDir, './simo-leaderview')
 include ':simo-leaderview-vue'
 project(':simo-leaderview-vue').projectDir = new File(settingsDir, './simo-leaderview-vue')
-
-
-include ':simo-commons-validator'
-project(':simo-commons-validator').projectDir = new File(settingsDir, '../simo-core/support/simo-commons-validator')
