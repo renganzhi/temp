@@ -30,7 +30,7 @@
       v-if="modal9"
       class="RZWHtable"
     >
-      <div class="ModelBox">
+      <div :class="IsCityType ? 'CityModelBox': 'ModelBox'">
         <div class="closeBtn" @click="closeBoxTtn()"></div>
         <div class="BoxTitle">入住人信息</div>
         <div class="BoxBody">
@@ -66,7 +66,7 @@
       v-if="modal10"
       class="LDWHtable"
     >
-      <div class="ModelBox">
+      <div :class="IsCityType ? 'CityModelBox': 'ModelBox'">
         <div class="closeBtn" @click="closeBoxTtn2()"></div>
         <div class="BoxTitle">联动情况</div>
         <div class="BoxBody">
@@ -205,7 +205,7 @@
 <script>
 export default {
   name: 'WuhouTable',
-  props: ['item'],
+  props: ['item','IsCityType'],
   data () {
     return {
       modal9: false,
@@ -348,54 +348,63 @@ export default {
     left: 1000px;
     position: relative;
     background: url(./modelBox.png);
-    .closeBtn{
-      height: 100px;
-      width: 100px;
-      cursor: pointer;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-    .BoxTitle {
-      font-size: 46px !important;
-      color: #bbeefe;
-      font-family: PangmenMainRoadTitleBody !important;
-    }
-    .BoxBody {
-      padding: 80px 40px;
-      display: flex;
-      font-size: 24px !important;
-      flex-wrap: wrap;
-    }
-    .userName {
-      width: 25%;
-    }
-    .userID {
-      width: 35%;
-    }
-    .userPhone {
-      width: 25%;
-    }
-    .userData {
-      width: 100%;
-    }
-    .userInData {
-      width: 100%;
-    }
-    .userLoca {
-      width: 100%;
-    }
-    .lineBox {
-      display: flex;
-      padding: 30px 0px;
-    }
-    .Nmae {
-      padding: 0px 10px;
-      color: #415468;
-    }
-    .Data {
-      color: #789fb0;
-    }
+  }
+  .CityModelBox{
+    height: 886px;
+    width: 1747px;
+    padding: 100px;
+    top: -400px;
+    left: 3350px;
+    position: relative;
+    background: url(./modelBox.png);
+  }
+  .closeBtn{
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .BoxTitle {
+    font-size: 46px !important;
+    color: #bbeefe;
+    font-family: PangmenMainRoadTitleBody !important;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 24px !important;
+    flex-wrap: wrap;
+  }
+  .userName {
+    width: 25%;
+  }
+  .userID {
+    width: 35%;
+  }
+  .userPhone {
+    width: 25%;
+  }
+  .userData {
+    width: 100%;
+  }
+  .userInData {
+    width: 100%;
+  }
+  .userLoca {
+    width: 100%;
+  }
+  .lineBox {
+    display: flex;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    color: #415468;
+  }
+  .Data {
+    color: #789fb0;
   }
 }
 .LDWHtable {
@@ -412,7 +421,17 @@ export default {
     top: -200px;
     left: 1000px;
     background: url(./modelBox.png);
-    .closeBtn{
+  }
+  .CityModelBox {
+    height: 886px;
+    width: 1747px;
+    padding: 100px;
+    position: relative;
+    top: -400px;
+    left: 3350px;
+    background: url(./modelBox.png);
+  }
+  .closeBtn{
       height: 100px;
       width: 100px;
       cursor: pointer;
@@ -455,7 +474,6 @@ export default {
     .Data {
       color: #789fb0;
     }
-  }
 }
 .selctXQ{
   cursor: pointer;

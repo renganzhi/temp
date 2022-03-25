@@ -49,12 +49,15 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-              <div class="back" style="height: 2160px;width: 3840px;position: absolute;">
+              <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
+                <beijing :nowPageName="pageName"></beijing>
+              </div>
+              <div v-else class="back" style="height: 1620px;width: 8640px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="showTableBox">
-                <div class="TableBox">
+                <div :class="IsCityType ? 'CityTableBox': 'TableBox'">
                   <div class="closeBtn" @click="closeTableTtn()"></div>
                     <div class="BoxTitle">{{TableData.title}}</div>
                     <div class="TableHead">
@@ -77,7 +80,7 @@
                 </div>
               </div>
               <div class="BoxMban"  v-if="showModelBox">
-                <div class="ModelBox">
+                <div :class="IsCityType ? 'CityModelBox': 'ModelBox'">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
@@ -110,7 +113,7 @@
                   </div>
                 </div>
               </div>
-              <div class="ParentBox">
+              <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
                 <div class="BoxArry">
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else @mouseleave="OpenBox = true">
@@ -133,6 +136,7 @@
                 v-for="(item, index) in nowPage"
                 :index="index"
                 :item="item"
+                :IsCityType='IsCityType'
                 :key="item.id"
               ></LookItem>
               <LookCompose
@@ -379,8 +383,21 @@ export default {
     },
     pageName(){
       if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
-        return this.pageList[(this.pageIndex - 1) % this.pageSize].name
+        let name = this.pageList[(this.pageIndex - 1) % this.pageSize].name
+        // if(name.indexOf('市级') >= 0 ){
+        //   this.IsCityType = true
+        // }else{
+        //   this.IsCityType = false
+        // }
+        return name
       }
+    },
+    IsCityType(){
+      if(this.pageName.indexOf('市级') >= 0 ){
+          return true
+        }else{
+          return false
+        }
     }
   },
   methods: {
@@ -1800,8 +1817,8 @@ html[data-theme='blueWhite'] {
   position: absolute;
   top: 0;
   left: 0;
-  width: 3840px;
-  height: 2160px;
+  width: 8640px;
+  height: 3160px;
   z-index: 5000;
   background-color: #15192a65;
 }
@@ -1848,98 +1865,198 @@ html[data-theme='blueWhite'] {
 }
 .ParentBox{
   position: relative;
-}
-.BoxArry{
-  .SmallBox{
-    height: 1244px;
-    width: 45px;
-    position: fixed;
-    top: 500px;
-    left: 3790px;
-    // left: 0px;
-    position: absolute;
-    z-index: 10000;
-    background: url(./boxClose-r.png);
-    background-size: 100%  100%;
-  }
-  .BigBox{
-    height: 1244px;
-    width: 253px;
-    position: fixed;
-    top: 500px;
-    left: 3580px;
-//    left: 0px;
-    background-color: rgb(12, 236, 206);
-    position: absolute;
-    z-index: 10000;
-    background: url(./boxTan-r.png);
-    background-size: 100%  100%;
-    .CloseBox{
-      height: 220px;
-      width: 50px;
-      // right: 0px;
-      cursor: pointer;
+  .BoxArry{
+    .SmallBox{
+      height: 1244px;
+      width: 45px;
+      position: fixed;
+      top: 500px;
+      left: 3790px;
+      // left: 0px;
       position: absolute;
-      top: 510px;
       z-index: 10000;
-    }
-    .AhrefBox{
-      height: 248px;
-      padding: 30px;
-      position: relative;
-      width: 260px;
-      cursor: pointer;
-      .openBox{
-        top: 50px;
-        left: 80px;
-        position: absolute;
-        height: 110px;
-        width: 110px;
-        background: url(./open.png);
-        background-size: 100% 100%;
-      }
-      .closeStyle{
-        top: 50px;
-        left: 80px;
-        position: absolute;
-        height: 110px;
-        width: 110px;
-        background: url(./close.png);
-        background-size: 100% 100%;
-      }
-      a{
-        font-size: 34px;
-        display: block;
-        top: 176px;
-        color: #CCE7FF;
-        width: 200px;
-        position: absolute;
-        text-align: center;
-      }
-    }
-    .AhrefBox:hover a{
-      color: #15ABFF;
-    }
-    .ChildrenBox{
-      height: 365px;
-      width: 260px;
-      left: -260px;
-      // left: 260px;
-      top: 750px;
-      background: url(./btBack.png);
+      background: url(./boxClose-r.png);
       background-size: 100%  100%;
+    }
+    .BigBox{
+      height: 1244px;
+      width: 253px;
+      position: fixed;
+      top: 500px;
+      left: 3580px;
+  //    left: 0px;
+      background-color: rgb(12, 236, 206);
       position: absolute;
-      a{
-        display: block;
-        width: 100%;
-        height: 25%;
-        text-align: center;
-        font-size: 34px;
-        line-height: 100px;
-        color: #CCE7FF;
+      z-index: 10000;
+      background: url(./boxTan-r.png);
+      background-size: 100%  100%;
+      .CloseBox{
+        height: 220px;
+        width: 50px;
+        // right: 0px;
+        cursor: pointer;
+        position: absolute;
+        top: 510px;
+        z-index: 10000;
       }
-      a:hover{
+      .AhrefBox{
+        height: 248px;
+        padding: 30px;
+        position: relative;
+        width: 260px;
+        cursor: pointer;
+        .openBox{
+          top: 50px;
+          left: 80px;
+          position: absolute;
+          height: 110px;
+          width: 110px;
+          background: url(./open.png);
+          background-size: 100% 100%;
+        }
+        .closeStyle{
+          top: 50px;
+          left: 80px;
+          position: absolute;
+          height: 110px;
+          width: 110px;
+          background: url(./close.png);
+          background-size: 100% 100%;
+        }
+        a{
+          font-size: 34px;
+          display: block;
+          top: 176px;
+          color: #CCE7FF;
+          width: 200px;
+          position: absolute;
+          text-align: center;
+        }
+      }
+      .AhrefBox:hover a{
         color: #15ABFF;
+      }
+      .ChildrenBox{
+        height: 365px;
+        width: 260px;
+        left: -260px;
+        // left: 260px;
+        top: 750px;
+        background: url(./btBack.png);
+        background-size: 100%  100%;
+        position: absolute;
+        a{
+          display: block;
+          width: 100%;
+          height: 25%;
+          text-align: center;
+          font-size: 34px;
+          line-height: 100px;
+          color: #CCE7FF;
+        }
+        a:hover{
+          color: #15ABFF;
+        }
+      }
+    }
+  }
+}
+.CityParentBox{
+  position: relative;
+  transform: scale(0.5);
+  z-index: 100000;
+  .BoxArry{
+    .SmallBox{
+      height: 1244px;
+      width: 45px;
+      position: fixed;
+      top: 1200px;
+      left: 17200px;
+      // left: 0px;
+      position: absolute;
+      z-index: 10000;
+      background: url(./boxClose-r.png);
+      background-size: 100%  100%;
+    }
+    .BigBox{
+      height: 1244px;
+      width: 253px;
+      position: fixed;
+      top: 1200px;
+      left: 17000px;
+  //    left: 0px;
+      background-color: rgb(12, 236, 206);
+      position: absolute;
+      z-index: 10000;
+      background: url(./boxTan-r.png);
+      background-size: 100%  100%;
+      .CloseBox{
+        height: 220px;
+        width: 50px;
+        // right: 0px;
+        cursor: pointer;
+        position: absolute;
+        top: 510px;
+        z-index: 10000;
+      }
+      .AhrefBox{
+        height: 248px;
+        padding: 30px;
+        position: relative;
+        width: 260px;
+        cursor: pointer;
+        .openBox{
+          top: 50px;
+          left: 80px;
+          position: absolute;
+          height: 110px;
+          width: 110px;
+          background: url(./open.png);
+          background-size: 100% 100%;
+        }
+        .closeStyle{
+          top: 50px;
+          left: 80px;
+          position: absolute;
+          height: 110px;
+          width: 110px;
+          background: url(./close.png);
+          background-size: 100% 100%;
+        }
+        a{
+          font-size: 34px;
+          display: block;
+          top: 176px;
+          color: #CCE7FF;
+          width: 200px;
+          position: absolute;
+          text-align: center;
+        }
+      }
+      .AhrefBox:hover a{
+        color: #15ABFF;
+      }
+      .ChildrenBox{
+        height: 365px;
+        width: 260px;
+        left: -260px;
+        // left: 260px;
+        top: 750px;
+        background: url(./btBack.png);
+        background-size: 100%  100%;
+        position: absolute;
+        a{
+          display: block;
+          width: 100%;
+          height: 25%;
+          text-align: center;
+          font-size: 34px;
+          line-height: 100px;
+          color: #CCE7FF;
+        }
+        a:hover{
+          color: #15ABFF;
+        }
       }
     }
   }
@@ -1990,6 +2107,52 @@ html[data-theme='blueWhite'] {
     color: #789fb0;
   }
 }
+.CityTableBox {
+  height: 886px;
+  width: 1747px;
+  padding: 100px;
+  top: 500px;
+  left: 3450px;
+  position: relative;
+  z-index: 5000;
+  background: url(./modelBox.png);
+  .closeBtn{
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .BoxTitle {
+    font-size: 46px !important;
+    color: #bbeefe;
+    font-family: PangmenMainRoadTitleBody !important;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 30px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 50%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    width: 30%;
+    color: #415468;
+  }
+  .Data {
+    width: 70%;
+    color: #789fb0;
+  }
+}
 .NoData{
   width: 100%;
   height: 80%;
@@ -1997,6 +2160,52 @@ html[data-theme='blueWhite'] {
   justify-content: center;
   align-items: center;
   font-size: 40px;
+}
+.CityModelBox{
+  height: 886px;
+  width: 1747px;
+  padding: 100px;
+  top: 500px;
+  left: 3450px;
+  position: relative;
+  z-index: 5000;
+  background: url(./modelBox.png);
+  .closeBtn{
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .BoxTitle {
+    font-size: 46px !important;
+    color: #bbeefe;
+    font-family: PangmenMainRoadTitleBody !important;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 30px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 50%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    width: 30%;
+    color: #415468;
+  }
+  .Data {
+    width: 70%;
+    color: #789fb0;
+  }
 }
 .ModelBox {
   height: 886px;
