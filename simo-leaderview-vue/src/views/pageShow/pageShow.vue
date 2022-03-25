@@ -440,35 +440,37 @@ export default {
         }
       }))
     },
-    fly2 () {
-      viewer.scene.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(
-          104.18199634654243,
-          30.5471951164135,
-          55783.84968843796
-        ),
-        orientation: {
-          heading: 6.283185307179586,
-          pitch: -1.5707859043726606,
-          roll: 0
-        },
-        duration: 1
-      })
-    },
     fly () {
-      viewer.scene.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(
-          104.18199634654243,
-          30.5471951164135,
-          55783.84968843796
-        ),
-        orientation: {
-          heading: 6.283185307179586,
-          pitch: -1.5707859043726606,
-          roll: 0
-        },
-        duration: 1
-      })
+      if(this.nowPageName.indexOf('市级') >= 0 ){
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            103.98779461237844,
+            30.54348003323195,
+            49440.66001430037
+          ),
+          orientation: {
+            heading: 0.006431840024734292,
+            pitch: -1.3864124472011876,
+            roll: 6.283184515631175
+          },
+          duration: 1
+        })
+        
+      }else{
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.18199634654243,
+            30.5471951164135,
+            55783.84968843796
+          ),
+          orientation: {
+            heading: 6.283185307179586,
+            pitch: -1.5707859043726606,
+            roll: 0
+          },
+          duration: 1
+        })
+      }
     },
     initPostrender () {
       var ContrastBias = `uniform sampler2D colorTexture;

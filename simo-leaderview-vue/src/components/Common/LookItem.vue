@@ -17,6 +17,7 @@
         :is="capitalize(item.chartType)"
         :item="item"
         :moving="true"
+        :IsCityType='IsCityType'
         :disabled="editable"
       ></component>
     </template>
@@ -99,7 +100,7 @@ import { capitalize } from '@/utils'
 
 export default {
   name: 'lookItem',
-  props: ['item', 'index'],
+  props: ['item', 'index','IsCityType'],
   components,
   data () {
     return {
