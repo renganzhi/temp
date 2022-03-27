@@ -444,14 +444,14 @@ export default {
       if(this.nowPageName.indexOf('市级') >= 0 ){
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
-            103.98779461237844,
-            30.54348003323195,
-            49440.66001430037
+            104.00599154958235,
+            30.510261451649743,
+            53341.83211915139
           ),
           orientation: {
-            heading: 0.006431840024734292,
-            pitch: -1.3864124472011876,
-            roll: 6.283184515631175
+            heading: 0.3266981002393159,
+            pitch: -1.3346504719170662,
+            roll: 6.283148236119645
           },
           duration: 1
         })
