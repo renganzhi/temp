@@ -87,7 +87,7 @@
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
                       <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
-                          color: data.value && data.value.color? data.value.color:'#5983b6'
+                          color: data.value && data.value.color? data.value.color:'#bfcbdb'
                         }">{{ data.value.value ? data.value.value : data.value}} </div>
                       <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
                         <Select v-model="data.value">
@@ -1890,7 +1890,7 @@ html[data-theme='blueWhite'] {
       margin: 10px 0;
       font-size: 30px !important;
       display: flex;
-      color: #5983b6;
+      color: #bfcbdb;
       th {
         height: 100%;
         text-align: center;
