@@ -393,7 +393,7 @@ export default {
       }
     },
     IsCityType(){
-      if(this.pageName.indexOf('市级') >= 0 ){
+      if(this.pageName && this.pageName.indexOf('市级') >= 0 ){
           return true
         }else{
           return false
@@ -968,7 +968,20 @@ export default {
                 if (d.chartType === 'v-map') {
                   d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
                 } else {
-                  d.chartData = res.obj // 会触发刷新
+                  
+                d.chartData = res.obj; // 会触发刷新
+                if (d.chartData1) {
+                  d.chartData1 = res.obj;
+                }
+                if (d.chartData2) {
+                  d.chartData2 = res.obj;
+                }
+                if (d.chartData3) {
+                  d.chartData3 = res.obj;
+                }
+                if (d.chartData4) {
+                  d.chartData4 = res.obj;
+                } // 会触发刷新
                 }
               }
             },
@@ -1042,7 +1055,19 @@ export default {
               if (d.chartType === 'v-map') {
                 d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
               } else {
-                d.chartData = res.obj // 会触发刷新
+                d.chartData = res.obj; // 会触发刷新
+                if (d.chartData1) {
+                  d.chartData1 = res.obj;
+                }
+                if (d.chartData2) {
+                  d.chartData2 = res.obj;
+                }
+                if (d.chartData3) {
+                  d.chartData3 = res.obj;
+                }
+                if (d.chartData4) {
+                  d.chartData4 = res.obj;
+                } // 会触发刷新
               }
             }
           },
@@ -1114,7 +1139,19 @@ export default {
                           d.chartData.rows
                         )
                       } else {
-                        d.chartData = res.obj // 会触发刷新
+                        d.chartData = res.obj; // 会触发刷新
+                        if (d.chartData1) {
+                          d.chartData1 = res.obj;
+                        }
+                        if (d.chartData2) {
+                          d.chartData2 = res.obj;
+                        }
+                        if (d.chartData3) {
+                          d.chartData3 = res.obj;
+                        }
+                        if (d.chartData4) {
+                          d.chartData4 = res.obj;
+                        } // 会触发刷新
                       }
                     }
                   },
@@ -1173,7 +1210,19 @@ export default {
                     d.chartData.rows
                   )
                 } else {
-                  d.chartData = res.obj // 会触发刷新
+                  d.chartData = res.obj; // 会触发刷新
+                  if (d.chartData1) {
+                    d.chartData1 = res.obj;
+                  }
+                  if (d.chartData2) {
+                    d.chartData2 = res.obj;
+                  }
+                  if (d.chartData3) {
+                    d.chartData3 = res.obj;
+                  }
+                  if (d.chartData4) {
+                    d.chartData4 = res.obj;
+                  } // 会触发刷新
                 }
               }
             },
@@ -1246,7 +1295,20 @@ export default {
                 if (d.chartType === 'v-map') {
                   d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
                 } else {
-                  d.chartData = res.obj
+                  
+                d.chartData = res.obj; // 会触发刷新
+                if (d.chartData1) {
+                  d.chartData1 = res.obj;
+                }
+                if (d.chartData2) {
+                  d.chartData2 = res.obj;
+                }
+                if (d.chartData3) {
+                  d.chartData3 = res.obj;
+                }
+                if (d.chartData4) {
+                  d.chartData4 = res.obj;
+                }
                 }
               }
             },

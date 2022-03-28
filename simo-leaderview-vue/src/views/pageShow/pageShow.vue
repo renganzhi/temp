@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button v-if="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:500px;left:600px;">获取视角</button>
+    <button v-show="false" @click="getCamera" style="position:absolute;z-index:999;width:100px;height:80px;top:500px;left:2600px;">获取视角</button>
     <div id="pop" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -444,14 +444,14 @@ export default {
       if(this.nowPageName.indexOf('市级') >= 0 ){
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
-            104.00599154958235,
-            30.510261451649743,
-            53341.83211915139
+            104.05108865779835,
+            30.49878960828541,
+            53338.10209924909
           ),
           orientation: {
-            heading: 0.3266981002393159,
-            pitch: -1.3346504719170662,
-            roll: 6.283148236119645
+            heading: 0.3266989726466054,
+            pitch: -1.33465109147736,
+            roll: 6.283147338809275
           },
           duration: 1
         })
