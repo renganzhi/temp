@@ -11,7 +11,7 @@
       <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i"  @click="showXQ(rowsData)">
         <th v-for="(data, index) in item.chartData.columns" :key="index"
           :style="{
-            color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#5983b6',
+            color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#bfcbdb',
             width:`calc(${100 / item.chartData.columns.length}%)`
           }">
           <div v-if="data === '操作'">
@@ -299,7 +299,7 @@ export default {
       height: 80px;
       display: flex;
       background: url(./head.png);
-      color: #94cffa;
+      color: #86b7dd;
       background-size: 100% 100%;
       th {
         height: 100%;
@@ -319,7 +319,7 @@ export default {
       background: url(./liBJ.png);
       background-size: 100% 100%;
       display: flex;
-      color: #5983b6;
+      color: #bfcbdb;
       th {
         height: 100%;
         display: flex;
@@ -335,7 +335,7 @@ export default {
     padding: 6px 10px;
     margin: 16px 0;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 26px;
     text-align: center;
   }
 }
