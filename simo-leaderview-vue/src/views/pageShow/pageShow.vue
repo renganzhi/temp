@@ -64,6 +64,8 @@
 <script>
 import createBlurStage from './CesiumEdgeStage/createBlurStage.js'
 import * as turf from '@turf/turf'
+import Imgpositions from './Imgpositions.js'
+import {gcj02_to_wgs84} from './transform.js'
 var viewer
 var tileset
 var contrastBias
@@ -298,7 +300,7 @@ export default {
     'nowPageName': function () {
       this.fly()
       this.clearPoint()
-      if (this.nowPageName.indexOf('群租') >= 0) {
+      if (this.nowPageName && this.nowPageName.indexOf('群租') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
           if (data.success) {
             let height = 100
@@ -441,7 +443,7 @@ export default {
       }))
     },
     fly () {
-      if(this.nowPageName.indexOf('市级') >= 0 ){
+      if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
             104.05108865779835,
@@ -455,8 +457,7 @@ export default {
           },
           duration: 1
         })
-        
-      }else{
+      } else {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
             104.18199634654243,
@@ -559,14 +560,19 @@ return mix(factor,mirror,0.0);
       setTimeout(() => {
         var pickIdchecks = viewer.scene.primitives._primitives[0]._primitives[0]._primitives
         pickIdchecks.forEach(item => {
-          if (item._pickIds && item._pickIds.length === 1) {
-            baseObject = {
-              pickId: item._pickIds[0]
+          if (item._pickIds) {
+            if (item._pickIds.length > 0) {
+              if (item.appearance.material) {
+                item._pickIds.forEach(pickId => {
+                  contrastBias.selected.push({
+                    pickId
+                  })
+                })
+              }
             }
           }
         })
-        contrastBias.selected = [baseObject]
-      }, 6000)
+      }, 2000)
     },
     addMarker (position, url) {
       viewer.entities.add({
@@ -582,113 +588,76 @@ return mix(factor,mirror,0.0);
       this.ShowTableTan = false
       this.nowShowData = nowShowData
     },
+    addLabelMarker (lon, lat, url, label, small) {
+      let size = small ? 24 : 40
+      let height = small ? 50 : 120
+      let backgroundColor = small ? Cesium.Color.fromCssColorString('#ffffff') : Cesium.Color.BLUE
+      let fillColor = small ? Cesium.Color.fromCssColorString('#000') : Cesium.Color.fromCssColorString('#ffffff')
+      let distanceDisplayCondition = small ? new Cesium.DistanceDisplayCondition(0.0, 1600.0) : new Cesium.DistanceDisplayCondition(1600.0, 10000.0)
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
+        billboard: {
+          image: url,
+          scale: 0.15,
+          distanceDisplayCondition
+        },
+        label: {
+          show: true,
+          showBackground: true,
+          backgroundColor,
+          scale: 0.5,
+          font: `normal ${size}px MicroSoft YaHei`,
+          text: label,
+          fillColor,
+          pixelOffset: new Cesium.Cartesian2(10, -30),
+          horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+          distanceDisplayCondition
+        }
+      })
+    },
     initLine () {
-      $.getJSON('./static/geojson/bianjie.json', (res) => {
-        let positions = res.features[0].geometry.coordinates[0][0]
-        let linepositions = []
-        positions.forEach(item => {
-          linepositions.push(item[0])
-          linepositions.push(item[1])
-          linepositions.push(10)
-        })
+      Imgpositions.pointBase.forEach(item => {
+        let positions = gcj02_to_wgs84(item.Lng, item.Lat)
+        this.addLabelMarker(positions[0], positions[1], item.img, item.name)
+      })
+      Imgpositions.markers.forEach(item => {
+        let positions = gcj02_to_wgs84(item.Lng, item.Lat)
+        this.addLabelMarker(positions[0], positions[1], item.img, item.name, 'small')
+      })
+      Imgpositions.polygon.forEach(item => {
+        let positions = []
+        let color = item.color.withAlpha(0.5)
+        for (var i = 0; i < item.positions.length; i += 2) {
+          let position = gcj02_to_wgs84(item.positions[i + 1], item.positions[i])
+          positions.push(position[0])
+          positions.push(position[1])
+          positions.push(5)
+        }
+        positions.push(positions[0])
+        positions.push(positions[1])
+        positions.push(5)
         viewer.entities.add({
           polyline: {
-            positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-            material: new Cesium.PolylineDashMaterialProperty({
-              color: Cesium.Color.DODGERBLUE,
-              dashLength: 10,
-              dashPattern: 255
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            depthFailMaterial: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
+            }),
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
             }),
             width: 1
           }
         })
-      })
-      $.getJSON('./static/geojson/line.json', (res) => {
-        let positions = res.features
-        positions.forEach((item, index) => {
-          if (item.geometry.type === 'LineString') {
-            let linepositions = []
-            item.geometry.coordinates.forEach(item => {
-              linepositions.push(item[0])
-              linepositions.push(item[1])
-              linepositions.push(2)
-            })
-            viewer.entities.add({
-              polyline: {
-                positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-                depthFailMaterial: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.fromCssColorString('#00df61'),
-                  duration: 200
-                }),
-                material: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.fromCssColorString('#00df61'),
-                  duration: 200
-                }),
-                width: 2
-              }
-            })
+        let poly = viewer.entities.add({
+          polygon: {
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            perPositionHeight: true,
+            material: color
           }
         })
-      })
-      $.getJSON('./static/geojson/xzqh.json', (res) => {
-        let positions = res.features
-        positions.forEach((item, index) => {
-          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
-          let extrend = false
-          if (item.properties.Name === '浆洗街街道') {
-            extrend = true
-            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6)
-          }
-          let linepositions = []
-          let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
-          if (item.properties.Name === '金花桥街道') {
-            pointer = [103.97374548683935, 30.591885280709842]
-          }
-          this.addMarker(Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100), `./static/img/街道名称/${item.properties.Name}.png`)
-          if (item.geometry.type === 'MultiPolygon') {
-            item.geometry.coordinates.forEach(item => {
-              item[0].forEach(child => {
-                linepositions.push(child[0])
-                linepositions.push(child[1])
-                linepositions.push(3)
-              })
-            })
-          } else {
-            item.geometry.coordinates[0].forEach(item => {
-              linepositions.push(item[0])
-              linepositions.push(item[1])
-              linepositions.push(3)
-            })
-          }
-          viewer.entities.add({
-            polygon: {
-              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-              perPositionHeight: true,
-              material: color,
-              extrudedHeight: extrend ? 80 : 1
-            },
-            name: item.properties.Name
-          })
-        })
-      })
-      $.getJSON('./static/geojson/bianjie_low.json', (res) => {
-        let positions = res.features[0].geometry.coordinates
-        positions.forEach((item, index) => {
-          let linepositions = []
-          item.forEach(item => {
-            linepositions.push(item[0])
-            linepositions.push(item[1])
-            linepositions.push(8)
-          })
-          viewer.entities.add({
-            polyline: {
-              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-              material: Cesium.Color.AQUAMARINE,
-              depthFailMaterial: Cesium.Color.AQUAMARINE,
-              width: 2
-            }
-          })
-        })
+        poly.origin = color
       })
     },
     initModels () {
@@ -861,9 +830,14 @@ return mix(factor,mirror,0.0);
           Cesium.Cartographic.fromCartesian(position).height + 3)
         this.popshow = false
         this.popshowBig = false
-        contrastBias.selected = [baseObject]
-        if (picked && picked.primitive && picked.id && picked.id._billboard) {
-          if (picked.id && picked.id._billboard) {
+        if (highLightPolygon) {
+          highLightPolygon._polygon.material = highLightPolygon.origin
+        }
+        if (picked && picked.id) {
+          if (picked.id._polygon) {
+            highLightPolygon = picked.id
+            picked.id._polygon.material = Cesium.Color.GREEN.withAlpha(0.3)
+          } else if (picked.id._billboard) {
             if (this.pageIsJXJ) {
               this.popshow = true
               this.CheckEdId = picked.id.id
@@ -878,57 +852,57 @@ return mix(factor,mirror,0.0);
               }
             }
           }
-          let primitive = picked.primitive
-          let pickIds = primitive._pickIds
-          let pickId = picked.pickId
-          if (picked.id) {
-            pickId = primitive.pickId
-          }
-          if (!pickId && !pickIds && picked.content) {
-            pickIds = picked.content._model._pickIds
-          }
-          if (!pickId) {
-            if (picked.id) {
-              pickId = pickIds.find(pickId => {
-                return pickId.object === picked
-              })
-            } else if (pickIds) {
-              pickId = pickIds[0]
-            }
-          }
-          if (pickId) {
-            let pickObject = {
-              pickId: pickId
-            }
-            contrastBias.selected.push(pickObject)
-          }
         }
+        //   let primitive = picked.primitive
+        //   let pickIds = primitive._pickIds
+        //   let pickId = picked.pickId
+        //   if (picked.id) {
+        //     pickId = primitive.pickId
+        //   }
+        //   if (!pickId && !pickIds && picked.content) {
+        //     pickIds = picked.content._model._pickIds
+        //   }
+        //   if (!pickId) {
+        //     if (picked.id) {
+        //       pickId = pickIds.find(pickId => {
+        //         return pickId.object === picked
+        //       })
+        //     } else if (pickIds) {
+        //       pickId = pickIds[0]
+        //     }
+        //   }
+        //   if (pickId) {
+        //     let pickObject = {
+        //       pickId: pickId
+        //     }
+        //     contrastBias.selected.push(pickObject)
+        //   }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-      handler.setInputAction(e => {
-        var mousePosition = e.endPosition
-        var picked = viewer.scene.pick(mousePosition)
-        if (picked && picked.id && picked.id._polygon) {
-          if (picked.id.name === '浆洗街街道') {
-            return
-          }
-          if (highLightPolygon) {
-            if (highLightPolygon === picked.id._polygon) {
-              return
-            }
-            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
-            highLightPolygon = picked.id._polygon
-            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
-          } else {
-            highLightPolygon = picked.id._polygon
-            highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
-          }
-        } else {
-          if (highLightPolygon) {
-            highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
-            highLightPolygon = undefined
-          }
-        }
-      }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+    //   handler.setInputAction(e => {
+    //     var mousePosition = e.endPosition
+    //     var picked = viewer.scene.pick(mousePosition)
+    //     if (picked && picked.id && picked.id._polygon) {
+    //       if (picked.id.name === '浆洗街街道') {
+    //         return
+    //       }
+    //       if (highLightPolygon) {
+    //         if (highLightPolygon === picked.id._polygon) {
+    //           return
+    //         }
+    //         highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+    //         highLightPolygon = picked.id._polygon
+    //         highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+    //       } else {
+    //         highLightPolygon = picked.id._polygon
+    //         highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.9)
+    //       }
+    //     } else {
+    //       if (highLightPolygon) {
+    //         highLightPolygon.material = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+    //         highLightPolygon = undefined
+    //       }
+    //     }
+    //   }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     }
   }
 }
