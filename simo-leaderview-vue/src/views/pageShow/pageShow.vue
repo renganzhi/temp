@@ -590,10 +590,10 @@ return mix(factor,mirror,0.0);
     },
     addLabelMarker (lon, lat, url, label, small) {
       let size = small ? 24 : 40
-      let height = small ? 50 : 120
+      let height = small ? 50 : 80
       let backgroundColor = small ? Cesium.Color.fromCssColorString('#ffffff') : Cesium.Color.BLUE
       let fillColor = small ? Cesium.Color.fromCssColorString('#000') : Cesium.Color.fromCssColorString('#ffffff')
-      let distanceDisplayCondition = small ? new Cesium.DistanceDisplayCondition(0.0, 5200.0) : new Cesium.DistanceDisplayCondition(5200.0, 10000.0)
+      let distanceDisplayCondition = small ? new Cesium.DistanceDisplayCondition(0.0, 5200.0) : new Cesium.DistanceDisplayCondition(5200.0, 50000.0)
       viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         billboard: {
@@ -615,10 +615,34 @@ return mix(factor,mirror,0.0);
         }
       })
     },
+    addDoubleMarker (lon, lat, img) {
+      let distanceDisplayCondition = new Cesium.DistanceDisplayCondition(5200.0, 50000.0)
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(lon, lat, 80),
+        billboard: {
+          image: img[0],
+          scale: 0.15,
+          distanceDisplayCondition
+        }
+      })
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(lon, lat, 80),
+        billboard: {
+          image: img[1],
+          pixelOffset: new Cesium.Cartesian2(80, -30),
+          scale: 0.5,
+          distanceDisplayCondition
+        }
+      })
+    },
     initLine () {
       Imgpositions.pointBase.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
-        this.addLabelMarker(positions[0], positions[1], item.img, item.name)
+        if (item.name.includes('管控区')) {
+          this.addDoubleMarker(positions[0], positions[1], item.img)
+        } else {
+          this.addLabelMarker(positions[0], positions[1], item.img, item.name)
+        }
       })
       Imgpositions.markers.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
