@@ -593,7 +593,7 @@ return mix(factor,mirror,0.0);
       let height = small ? 50 : 120
       let backgroundColor = small ? Cesium.Color.fromCssColorString('#ffffff') : Cesium.Color.BLUE
       let fillColor = small ? Cesium.Color.fromCssColorString('#000') : Cesium.Color.fromCssColorString('#ffffff')
-      let distanceDisplayCondition = small ? new Cesium.DistanceDisplayCondition(0.0, 1600.0) : new Cesium.DistanceDisplayCondition(1600.0, 10000.0)
+      let distanceDisplayCondition = small ? new Cesium.DistanceDisplayCondition(0.0, 5200.0) : new Cesium.DistanceDisplayCondition(5200.0, 10000.0)
       viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         billboard: {
