@@ -133,9 +133,10 @@ export default {
           }
         },
         legend: {
-          x: 'center',
+          x: this.item.legendX + '%',
           y: this.item.legendY + '%',
           show: this.item.ctLegendShow,
+          width:this.item.legendwidth ,
           textStyle: {
             fontSize: this.item.ctLegendSize,
             color: this.item.ctLegendColor
@@ -148,6 +149,7 @@ export default {
             roseType:
               this.item.pieType === '南丁格尔图' ? 'radius' : false,
             // roseType: this.item.roseType || false,
+            center: [ this.item.gridLeft? this.item.gridLeft+"%":'50%', this.item.gridTop?this.item.gridTop+"%":'50%'],
             label: {
               normal: {
                 show: this.item.showword,

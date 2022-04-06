@@ -15,6 +15,10 @@ export default {
     'borderRadius': 0,
     'ringWidth': 50,
     'isRing': false,
+    'legendwidth': 100,
+    'legendX': 75,
+    'gridTop': 50,
+    'gridLeft': 50,
     'showline': true,
     'showword': true,
     'showwordSize': 12,
@@ -98,6 +102,16 @@ export default {
                 'value': '环形图'
               }
             ]
+          },
+          {
+            'name': '图元上边距',
+            'key': 'gridTop',
+            'tag': 'input'
+          },
+          {
+            'name': '图元左边距',
+            'key': 'gridLeft',
+            'tag': 'input'
           }
         ]
       },
@@ -155,13 +169,37 @@ export default {
             ]
           },
           {
-            'name': '图例高度',
+            'name': '图例宽度',
+            'parentKey': {
+              'ctLegendShow': true
+            },
+            'key': 'legendwidth',
+            'tag': 'input'
+          },
+          {
+            'name': '图例左距离',
+            'parentKey': {
+              'ctLegendShow': true
+            },
+            'key': 'legendX',
+            'tag': 'input'
+          },
+          {
+            'name': '图例上距离',
             'parentKey': {
               'ctLegendShow': true
             },
             'key': 'legendY',
             'tag': 'input'
           },
+          // {
+          //   'name': '图例高度',
+          //   'parentKey': {
+          //     'ctLegendShow': true
+          //   },
+          //   'key': 'legendY',
+          //   'tag': 'input'
+          // },
           {
             'name': '图例字颜色',
             'key': 'ctLegendColor',
