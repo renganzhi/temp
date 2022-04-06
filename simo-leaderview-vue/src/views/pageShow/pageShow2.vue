@@ -298,7 +298,7 @@ export default {
     'nowPageName': function () {
       this.fly()
       this.clearPoint()
-      if (this.nowPageName.indexOf('群租') >= 0) {
+      if (this.nowPageName && this.nowPageName.indexOf('群租') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
           if (data.success) {
             let height = 100
@@ -441,7 +441,7 @@ export default {
       }))
     },
     fly () {
-      if(this.nowPageName.indexOf('市级') >= 0 ){
+      if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
             104.1691971213243,
@@ -455,7 +455,7 @@ export default {
           },
           duration: 1
         })
-      }else{
+      } else {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
             104.18199634654243,
@@ -615,14 +615,8 @@ return mix(factor,mirror,0.0);
             viewer.entities.add({
               polyline: {
                 positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-                depthFailMaterial: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.fromCssColorString('#00df61'),
-                  duration: 200
-                }),
-                material: new Cesium.PolylineFlowMaterialProperty({
-                  color: Cesium.Color.fromCssColorString('#00df61'),
-                  duration: 200
-                }),
+                depthFailMaterial: Cesium.Color.fromCssColorString('#00df61'),
+                material: Cesium.Color.fromCssColorString('#00df61'),
                 width: 2
               }
             })
