@@ -43,6 +43,7 @@ let config = {
   DownMenu: require('@/components/EditComp/DownMenu/config.js'),
   WuhoIfream: require('@/components/EditComp/WuhoIfream/config.js'),
   WuhoMaoBL: require('@/components/EditComp/WuhoMaoBL/config.js'),
+  WoHoNumber: require('@/components/EditComp/WoHoNumber/config.js'),
   WuhouTable: require('@/components/EditComp/WuhouTable/config.js'),
   XiaLaShu: require('@/components/EditComp/XiaLaShu/config.js'),
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),

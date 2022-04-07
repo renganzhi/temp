@@ -5,6 +5,7 @@ import TDModel from '@/components/EditComp/TDModel/config.js'
 import VmVareTopo from '@/components/EditComp/VmVareTopo/config.js'
 import XiaLaShu from '@/components/EditComp/XiaLaShu/config.js'
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL/config.js'
+import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 
 const others = {
   name: '其他',
@@ -32,6 +33,7 @@ const others = {
     TDModel.item,
     VmVareTopo.item,
     XiaLaShu.item,
+    WoHoNumber.item,
     WuhoMaoBL.item
   ]
 }
