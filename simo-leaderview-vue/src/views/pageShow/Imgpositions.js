@@ -184,51 +184,61 @@ let Imgpositions =
   }],
   'pointBase': [{
     'name': '第六管控区',
+    'id':6,
     'img': [header + 'location.png', header + '第六管控区.png'],
     'Lat': 30.646654,
     'Lng': 104.057157
   }, {
     'name': '第七管控区',
+    'id':7,
     'img': [header + 'location.png', header + '第七管控区.png'],
     'Lat': 30.644060,
     'Lng': 104.055762
   }, {
     'name': '第二管控区',
+    'id':2,
     'img': [header + 'location.png', header + '第二管控区.png'],
     'Lat': 30.642107,
     'Lng': 104.051718
   }, {
     'name': '第四管控区',
+    'id':4,
     'img': [header + 'location.png', header + '第四管控区.png'],
     'Lat': 30.643547,
     'Lng': 104.047898
   }, {
-    'name': '第四管控区',
-    'img': [header + 'location.png', header + '第四管控区.png'],
-    'Lat': 30.644415,
-    'Lng': 104.051787
-  }, {
+  //   'name': '第四管控区',
+  //   'id':4,
+  //   'img': [header + 'location.png', header + '第四管控区.png'],
+  //   'Lat': 30.644415,
+  //   'Lng': 104.051787
+  // }, {
     'name': '第一管控区',
+    'id':1,
     'img': [header + 'location.png', header + '第一管控区.png'],
     'Lat': 30.641226,
     'Lng': 104.045849
   }, {
     'name': '第八管控区',
+    'id':8,
     'img': [header + 'location.png', header + '第八管控区.png'],
     'Lat': 30.637247,
     'Lng': 104.052908
   }, {
     'name': '第五管控区',
+    'id':5,
     'img': [header + 'location.png', header + '第五管控区.png'],
     'Lat': 30.639204,
     'Lng': 104.049840
   }, {
     'name': '第三管控区',
+    'id':3,
     'img': [header + 'location.png', header + '第三管控区.png'],
     'Lat': 30.638374,
     'Lng': 104.040849
   }, {
     'name': '第九管控区',
+    'id':9,
     'img': [header + 'location.png', header + '第九管控区.png'],
     'Lat': 30.637234,
     'Lng': 104.037480

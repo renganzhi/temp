@@ -1047,7 +1047,7 @@ return mix(factor,mirror,0.0);
   .TableHead  tr {
       width: 100%;
       height: 40px;
-      font-size: 36px !important;
+      font-size: 30px !important;
       display: flex;
       color: #86b7dd;
     }
@@ -1064,7 +1064,7 @@ return mix(factor,mirror,0.0);
       width: 100%;
       height: 40px;
       margin: 10px 0;
-      font-size: 36px !important;
+      font-size: 30px !important;
       display: flex;
       color: #bfcbdb;
     }
