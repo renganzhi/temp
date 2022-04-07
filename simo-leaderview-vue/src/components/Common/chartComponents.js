@@ -46,6 +46,7 @@ import KLine from '@/components/EditComp/KLine' // 散点图
 import DownMenu from '@/components/EditComp/DownMenu' // 散点图
 import WuhoIfream from '@/components/EditComp/WuhoIfream' // 散点图
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL' // 散点图
+import WoHoNumber from '@/components/EditComp/WoHoNumber' // 散点图
 import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
 import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
 import ELine from '@/components/EditComp/ELine' // 散点图
@@ -117,6 +118,7 @@ export default {
   DownMenu,
   WuhoIfream,
   WuhoMaoBL,
+  WoHoNumber,
   WuhouTable,
   XiaLaShu,
   ELine,
