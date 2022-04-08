@@ -18,7 +18,7 @@ export default new Router({
     // {
     //   path: '/',
     //   name: 'pageShow',
-    //   component: (resolve) => require(['@/views/pageShow/pageShow2'], resolve)
+    //   component: (resolve) => require(['@/views/pageShow/pageShow'], resolve)
     // },
     {
       path: '/lookPage/:id',
