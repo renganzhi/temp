@@ -1,16 +1,22 @@
 package com.uxsino.leaderview;
 
-import javax.jms.JMSException;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.uxsino.leaderview.dao.ITimeDataDao;
 import com.uxsino.leaderview.entity.TimeData;
+import com.uxsino.leaderview.handler.HomeDataApiHandler;
 import com.uxsino.leaderview.handler.LeaderViewAuthorityHandler;
 import com.uxsino.leaderview.handler.UserDataHandler;
 import com.uxsino.leaderview.model.DataJob;
 import com.uxsino.leaderview.service.AuthorityService;
-import com.uxsino.leaderview.service.WuHouService;
+import com.uxsino.leaderview.service.HomeTemplateService;
+import com.uxsino.leaderview.service.wuhou.WuHouService;
+import com.uxsino.reactorq.commons.JMSFlux;
+import com.uxsino.reactorq.commons.ReactorQFactory;
+import com.uxsino.reactorq.constant.EventTopicConstants;
+import com.uxsino.reactorq.event.HeartbeatEvent;
+import com.uxsino.reactorq.event.ModuleOnLineEvent;
+import com.uxsino.reactorq.subscriber.EventSubscriber;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +29,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.uxsino.leaderview.handler.HomeDataApiHandler;
-import com.uxsino.leaderview.service.HomeTemplateService;
-import com.uxsino.reactorq.commons.JMSFlux;
-import com.uxsino.reactorq.commons.ReactorQFactory;
-import com.uxsino.reactorq.constant.EventTopicConstants;
-import com.uxsino.reactorq.event.HeartbeatEvent;
-import com.uxsino.reactorq.event.ModuleOnLineEvent;
-import com.uxsino.reactorq.subscriber.EventSubscriber;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
+import javax.jms.JMSException;
 import java.util.List;
 
 @Component
@@ -95,6 +90,10 @@ public class LeaderViewInit implements InitializingBean {
 		//wuHouService.initTimeData();
 		//初始化定时任务
 		//initDataTimeJob();
+		//初始化浆洗街道天网打点
+		wuHouService.initHcnet();
+
+
 		// 订阅大屏展示API注册
 		try {
 			homeDataApiHandler.register();

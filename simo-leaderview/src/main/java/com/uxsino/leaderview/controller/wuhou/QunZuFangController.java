@@ -1,9 +1,9 @@
-package com.uxsino.leaderview.controller;
+package com.uxsino.leaderview.controller.wuhou;
 
 
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.QunZuFangService;
-import com.uxsino.leaderview.service.WuHouService;
+import com.uxsino.leaderview.service.wuhou.WuHouService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class QunZuFangController {
     WuHouService wuHouService;
 
     /**
-     * 获取群租房不同类型的数量
+     * 1、获取群租房不同类型的数量
      * @param type 群租房类型
      * @return
      */
@@ -36,7 +36,7 @@ public class QunZuFangController {
     }
 
     /**
-     * 获取群租房当日登记量和当日入住量以及当月累计量
+     * 2、获取群租房当日登记量和当日入住量以及当月累计量
      * @param type
      * @return
      */
@@ -46,7 +46,7 @@ public class QunZuFangController {
     }
 
     /**
-     * 房屋住房率、空置率排行
+     * 3、房屋住房率、空置率排行
      * @return
      */
     @GetMapping("/getLiveSort")
@@ -55,17 +55,32 @@ public class QunZuFangController {
         return qunZuFangService.getLiveSort();
     }
 
+    /**
+     * 4、入住人员时间分析
+     * @param when
+     * @return
+     */
     @GetMapping("/getLiveByTime")
     public JsonModel getLiveByTime(String when){
 
         return qunZuFangService.getLiveByTime(when);
     }
 
+    /**
+     * 5、通过地址查询入住记录
+     * @param address
+     * @return
+     */
     @GetMapping("/getRegisterByAddress")
     public JsonModel getRegisterByAddress(String address){
         return qunZuFangService.getRegisterByAddress(address);
     }
 
+    /**
+     * 6、通过地址查询走访记录
+     * @param address
+     * @return
+     */
     @GetMapping("/getPatrolByAddress")
     public JsonModel getPatrolByAddress(String address){
         return qunZuFangService.getPatrolByAddress(address);
@@ -81,4 +96,12 @@ public class QunZuFangController {
         return wuHouService.getQZF2();
     }
 
+    /**
+     * 3、群租房入住人员来源地(归属地)分析
+     * @return
+     */
+    @GetMapping("/getQZF3")
+    public JsonModel getQZF3(){
+        return wuHouService.getQZF3();
+    }
 }

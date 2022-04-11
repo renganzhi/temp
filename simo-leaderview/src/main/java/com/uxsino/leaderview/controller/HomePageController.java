@@ -424,6 +424,7 @@ public class HomePageController {
     @RequestMapping(value = "/homePage", method = RequestMethod.GET)
     public JsonModel homePage(HttpSession session) {
         Long userId = SessionUtils.getCurrentUserIdFromSession(session);
+        if(ObjectUtils.isEmpty(userId)) userId = 1L;
         JSONObject result = new JSONObject();
         HomeCarousel homeCarousel = homeCarouselService.getByUserId(userId);
         if (!ObjectUtils.isEmpty(homeCarousel)) {
