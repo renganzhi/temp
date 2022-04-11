@@ -429,7 +429,7 @@ export default {
   },
   mounted () {
     this.init3D()
-    this.initBase()
+    this.initSheZang2()
     this.initModels()
     this.initPostrender()
     this.addPopEvent()
