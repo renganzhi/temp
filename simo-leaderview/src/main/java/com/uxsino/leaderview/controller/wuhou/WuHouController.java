@@ -1,4 +1,4 @@
-package com.uxsino.leaderview.controller;
+package com.uxsino.leaderview.controller.wuhou;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -6,7 +6,7 @@ import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.dao.ITimeDataDao;
 import com.uxsino.leaderview.entity.TimeData;
 import com.uxsino.leaderview.model.DataJob;
-import com.uxsino.leaderview.service.WuHouService;
+import com.uxsino.leaderview.service.wuhou.WuHouService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.uxsino.leaderview.service.wuhou.WuHouService.HcnetNationList;
+import static com.uxsino.leaderview.service.wuhou.WuHouService.HcnetTotalList;
 
 @Api(tags = {"武侯智慧城市-大屏展示数据接口"})
 @RestController
@@ -192,11 +195,20 @@ public class WuHouController {
         return new JsonModel(true,res);
     }
 
+    @GetMapping("/getHcnetPoints")
+    public JsonModel getHcnetPoints(){
+        return new JsonModel(true,HcnetTotalList);
+    }
+
+    @GetMapping("/getHcnetNationPoints")
+    public JsonModel getHcnetNationPoints(){
+        return new JsonModel(true,HcnetNationList);
+    }
+
     /**
      * 区情板块-数字武侯
-     * @param name 展示的具体条目名称，如：科学技术投入
      * @return
-     */
+     *//*
     @GetMapping("/getSZWH")
     public JsonModel getSZWH(String name){
         String query = "query[595]=" + name;
@@ -217,7 +229,7 @@ public class WuHouController {
         res.put("info",value);
         res.put("value",value);
         return new JsonModel(true,res);
-    }
+    }*/
 
     @GetMapping("/startTask")
     public void startTask(){

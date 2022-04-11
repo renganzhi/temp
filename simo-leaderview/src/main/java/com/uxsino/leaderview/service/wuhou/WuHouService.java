@@ -1,9 +1,11 @@
-package com.uxsino.leaderview.service;
+package com.uxsino.leaderview.service.wuhou;
 
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
+import com.hikvision.artemis.sdk.ArtemisHttpUtil;
+import com.hikvision.artemis.sdk.config.ArtemisConfig;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.commons.utils.ClassPathResourceWalker;
 import com.uxsino.commons.utils.DateUtils;
@@ -15,6 +17,7 @@ import com.uxsino.leaderview.entity.TibetCommunityTable;
 import com.uxsino.leaderview.entity.TibetOrganizationTable;
 import com.uxsino.leaderview.entity.TimeData;
 import com.uxsino.leaderview.model.DataJob;
+import com.uxsino.leaderview.model.HcnetPoint;
 import com.uxsino.leaderview.utils.MonitorUtils;
 import com.uxsino.quartz.lib.Job;
 import com.uxsino.quartz.lib.ScheduleManager;
@@ -39,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -82,6 +86,18 @@ public class WuHouService {
     private static final String XIAOQUPATH = "classpath*:sql/jx_orga_table1.sql";
     //涉藏机构初始化sql
     private static final String JIGOUPATH = "classpath*:sql/jx_orga_table2.sql";
+
+    //浆洗街道地图天网打点需要的点位名称
+    public static List<String> HcnetTotalNames = new ArrayList<>();
+
+    //民族区域治理6个点位的名称
+    public static List<String> HcnetNationNames = new ArrayList<>();
+
+    //浆洗街道天网打点
+    public static List<HcnetPoint> HcnetTotalList = new ArrayList<>();
+
+    //民族区域治理6个点位
+    public static List<HcnetPoint> HcnetNationList = new ArrayList<>();
 
     private Logger logger = LoggerFactory.getLogger(WuHouService.class);
 
@@ -169,7 +185,6 @@ public class WuHouService {
         }
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
         result = EntityUtils.toString(httpEntity);//响应内容
-        System.out.println("请求结果是：" + result);
 
         /*Header[] headers = closeableHttpResponse.getHeaders("X-SLP-Total-Count");
         String value = headers[0].getValue();*/
@@ -255,7 +270,6 @@ public class WuHouService {
         }
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
         result = EntityUtils.toString(httpEntity);//响应内容
-        System.out.println("请求结果是：" + result);
 
         /*Header[] headers = closeableHttpResponse.getHeaders("X-SLP-Total-Count");
         String value = headers[0].getValue();*/
@@ -305,7 +319,7 @@ public class WuHouService {
         }
         HttpEntity httpEntity = closeableHttpResponse.getEntity();
         result = EntityUtils.toString(httpEntity);//响应内容
-        System.out.println("请求结果是：" + result);
+        
 
         return result;
     }
@@ -324,7 +338,6 @@ public class WuHouService {
             CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = closeableHttpResponse.getEntity();
             String res = EntityUtils.toString(httpEntity);//响应内容
-            System.out.println("请求结果是：" + res);
             JSONObject object = JSONObject.parseObject(res);
             JSONObject data = (JSONObject) object.get("data");
             token = (String) data.get("token");
@@ -388,7 +401,7 @@ public class WuHouService {
             closeableHttpResponse = httpClient.execute(httpGet);
             /*HttpEntity httpEntity = closeableHttpResponse.getEntity();
             result = EntityUtils.toString(httpEntity);//响应内容
-            System.out.println("请求结果是：" + result);
+            
 
             Header[] headers = closeableHttpResponse.getHeaders("X-SLP-Total-Count");
             String value = headers[0].getValue();*/
@@ -403,23 +416,37 @@ public class WuHouService {
 
     /**
      * 将中台返回的数据封装成柱状图、条形图、饼图形式的result
-     * @param map 数据名称和对应field的map
+     * @param nameAndKeyMap 数据名称和对应field的map
      * @param data 中台返回的data集合
      * @return
      */
-    public static JSONObject getPieResult(HashMap<String,String> map, JSONArray data){
+    public static JSONObject getPieResult(HashMap<String,String> nameAndKeyMap, JSONArray data){
         JSONObject result = new JSONObject();
+        if(ObjectUtils.isEmpty(data)){
+            log.error("中台接口返回为空");
+            return result;
+        }
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
-        for(Map.Entry<String,String> entry : map.entrySet()){
+        for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
+            if("id".equals(entry.getKey()))continue;
             columns.add(entry.getKey());
         }
 
         for(int i = 0; i < data.size() ; i++){
             JSONObject dataObj = (JSONObject) data.get(i);
             JSONObject row = new JSONObject();
-            for(Map.Entry<String,String> entry : map.entrySet()){
-                row.put(entry.getKey(),dataObj.get(entry.getValue()));
+            for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
+                if("详情".equals(entry.getKey()) || "走访详情".equals(entry.getKey())){
+                    row.put(entry.getKey(),entry.getKey());
+                }
+                else {
+                    if("上报时间".equals(entry.getKey())){
+                        row.put(entry.getKey(), new SimpleDateFormat("yyyy-MM-dd").format((DateUtils.convertStringToDate((String) dataObj.get(entry.getValue())))));
+                    }else {
+                        row.put(entry.getKey(), dataObj.get(entry.getValue()));
+                    }
+                }
             }
             rows.add(row);
         }
@@ -430,13 +457,67 @@ public class WuHouService {
     }
 
     /**
+     * 将只有一行的数据转换为饼图类型的数据
+     * @param columns  行
+     * @param data  中台接口返回的只有一行的JSONArray
+     * @param needList  需要的枚举key值集合
+     * @param keyAndNameMap key和中文name转换需要的map
+     * @return
+     */
+    public static JSONObject getOneToPie(JSONArray columns, JSONArray data, List<String> needList, HashMap<String,String> keyAndNameMap){
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        if(ObjectUtils.isEmpty(data)){
+            log.error("中台接口返回为空");
+            return result;
+        }
+
+        JSONObject dataObj = data.getJSONObject(0);
+        for(Map.Entry<String, Object> entry : dataObj.entrySet()){
+            if(!needList.contains(entry.getKey())) continue;
+            JSONObject row = new JSONObject();
+            row.put(columns.getString(0),keyAndNameMap.get(entry.getKey()));
+            row.put(columns.getString(1),entry.getValue());
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        return result;
+    }
+
+    public static JSONObject getOneToPie(JSONArray columns, JSONArray data, HashMap<String,String> nameAndKeyMap){
+        JSONObject result = new JSONObject();
+        JSONArray rows = new JSONArray();
+        if(ObjectUtils.isEmpty(data)){
+            log.error("中台接口返回为空");
+            return result;
+        }
+        JSONObject dataObj = data.getJSONObject(0);
+        for(Map.Entry<String, String> entry : nameAndKeyMap.entrySet()){
+            JSONObject row = new JSONObject();
+            row.put(columns.getString(0),entry.getKey());
+            row.put(columns.getString(1),dataObj.get(entry.getValue()));
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        return result;
+    }
+
+    /**
      * 将中台给的数据封装为下拉项式文本框接口需要的数据，result内含一个用于下拉列表的List和用于获取fieldName相应结果的Map
-     * @param fieldName
+     * @param fieldName  属性字段，通过它获取属性中文名
      * @param data
      * @return
      */
     public JSONObject getTextResult(String fieldName, JSONArray data){
-
+        JSONObject result = new JSONObject();
+        if(ObjectUtils.isEmpty(data)){
+            log.error("中台接口返回为空");
+            return result;
+        }
         HashMap<String,JSONObject> nameAndObjMap = new HashMap<>();
         List<Map<String, String>> list = new ArrayList<>();
         for(int i = 0 ;i < data.size(); i++){
@@ -451,13 +532,19 @@ public class WuHouService {
             list.add(map);
         }
 
-        JSONObject result = new JSONObject();
         result.put("list",list);
         result.put("nameAndObjMap",nameAndObjMap);
 
         return result;
     }
 
+    /**
+     * 将getTextResult()方法处理成text形式需要的数据封装为JsonModel
+     * @param param  传入的参数
+     * @param valueName  数据结果的字段
+     * @param obj
+     * @return
+     */
     public JsonModel getTextJsonModel(String param, String valueName, JSONObject obj){
 
         List<String> list = (List<String>) obj.get("list");
@@ -480,9 +567,24 @@ public class WuHouService {
 
     }
 
+    /**
+     * 将没有列名，只有一行数据的表格转化为可选文本框
+     * 如：data": [
+     *     {
+     *         "nz": 1814300,
+     *         "wz": 47500
+     *     }
+     * ]
+     * @param param
+     * @param object
+     * @return
+     */
     public JsonModel getPieToText(String param, JSONObject object){
 
 
+        if(ObjectUtils.isEmpty(object)){
+            return new JsonModel(true, "中台接口返回数据为空", new JSONObject());
+        }
         JSONArray columns = object.getJSONArray("columns");
         JSONArray rows = object.getJSONArray("rows");
         JSONObject row = rows.getJSONObject(0);
@@ -503,6 +605,9 @@ public class WuHouService {
 
             JSONObject resultObj = new JSONObject();
             resultObj.put("name",param);
+            if("武侯区介绍文案".equals(param)){
+                value = "      " + value;
+            }
             resultObj.put("info",value);
             resultObj.put("unit","");
 
@@ -801,7 +906,6 @@ public class WuHouService {
         } catch (Exception e) {
             log.error("开启计划定时任务异常：{}", e.getMessage());
         }
-
     }
 
     /**
@@ -868,7 +972,6 @@ public class WuHouService {
 
         json.put("rows",rows);
         String value = json.toString();
-        System.out.println(value);
 
         confObj.put("value",value);
         job.setConf(confObj.toString());
@@ -879,7 +982,6 @@ public class WuHouService {
         data.setValue(value);
         //将结果存入库中
         timeDataDao.save(data);
-        System.out.println("数据库中的value是:" + data.getValue());
 
         return json;
     }
@@ -1026,6 +1128,170 @@ public class WuHouService {
         }
     }
 
+    public static String GetCameraPreviewURL(Integer pageNo, Integer pageSize) {
+
+        // ////////////////////////////////// 请自行修改以下变量值  ////////////////////////////////////
+        //          var appkey = "24183731";                           //综合安防管理平台提供的appkey，必填
+        //          var secret = setEncrypt("babYTegRFvTRymoWubNS");   //综合安防管理平台提供的secret，必填
+        //          var ip = "172.16.152.136";                           //综合安防管理平台IP地址，必填
+        //          var playMode = 0;                                  //初始播放模式：0-预览，1-回放
+        //          var port = 443;                                    //综合安防管理平台端口，若启用HTTPS协议，默认443
+        //          var snapDir = "D:\\SnapDir";                       //抓图存储路径
+        //          var videoDir = "D:\\VideoDir";                     //紧急录像或录像剪辑存储路径
+        //          var layout = "1x1";                                //playMode指定模式的布局
+        //          var enableHTTPS = 1;                               //是否启用HTTPS协议与综合安防管理平台交互，这里总是填1
+        //          var encryptedFields = 'secret';             //加密字段，默认加密领域为secret
+        //          var showToolbar = 0;                               //是否显示工具栏，0-不显示，非0-显示
+        //          var showSmart = 0;                                 //是否显示智能信息（如配置移动侦测后画面上的线框），0-不显示，非0-显示
+        //          var buttonIDs = "0,16,256,257,258,259,260,512,513,514,515,516,517,768,769";  //自定义工具条按钮
+        //          ////////////////////////////////// 请自行修改以上变量值  ////////////////////////////////////
+
+        /**
+         * STEP1：设置平台参数，根据实际情况,设置host appkey appsecret 三个参数.
+         */
+        ArtemisConfig.host = "172.16.152.136:443"; // 平台的ip端口
+        ArtemisConfig.appKey = "24183731";  // 密钥appkey
+        ArtemisConfig.appSecret = "babYTegRFvTRymoWubNS";// 密钥appSecret
+
+        /**
+         * STEP2：设置OpenAPI接口的上下文
+         */
+        final String ARTEMIS_PATH = "/artemis";
+
+        /**
+         * STEP3：设置接口的URI地址
+         */
+        final String previewURLsApi = ARTEMIS_PATH + "/api/resource/v1/cameras";
+//        final String previewURLsApi = ARTEMIS_PATH + "/api/resource/v1/regions";
+        Map<String, String> path = new HashMap<String, String>(2) {
+            {
+                put("https://", previewURLsApi);//根据现场环境部署确认是http还是https
+            }
+        };
+
+        /**
+         * STEP4：设置参数提交方式
+         */
+        String contentType = "application/json";
+
+        /**
+         * STEP5：组装请求参数
+         */
+        JSONObject jsonBody = new JSONObject();
+        /*jsonBody.put("cameraIndexCode", "748d84750e3a4a5bbad3cd4af9ed5101");
+        jsonBody.put("streamType", 0);
+        jsonBody.put("protocol", "rtsp");
+        jsonBody.put("transmode", 1);
+        jsonBody.put("expand", "streamform=ps");*/
+        //{
+        //    "pageNo": 1,
+        //    "pageSize": 20,
+        //    "treeCode": "0"
+        //}
+        //{"indexCode":"2aeb2e2f19dc4270a68159f08b9e7ca5","treeCode":"0","name":"天网接入点位","parentIndexCode":"9499dc10a3d34cb3a16131cc5ed3a0a7"},
+        jsonBody.put("pageNo", pageNo);
+        jsonBody.put("pageSize", pageSize);
+        jsonBody.put("treeCode", "0");
+        String body = jsonBody.toJSONString();
+        /**
+         * STEP6：调用接口
+         */
+        String result = ArtemisHttpUtil.doPostStringArtemis(path, body, null, null, contentType , null);// post请求application/json类型参数
+        return result;
+    }
+
+    public void initHcnet(){
+
+        Integer pageSize = 200;
+        String result = GetCameraPreviewURL(1,pageSize);
+        JSONObject object = JSONObject.parseObject(result);
+        if(ObjectUtils.isEmpty(object)){
+            return;
+        }
+
+        JSONObject data = object.getJSONObject("data");
+
+        if(ObjectUtils.isEmpty(data)){
+            log.error("海康摄像头code获取接口500");
+            return;
+        }
+        Integer total = data.getInteger("total");
+        JSONArray list = new JSONArray();
+
+        //浆洗街道地图天网打点需要的点位名称
+        HcnetTotalNames.add("D-07071061-ZX-(球)体育路四川电视台");
+        HcnetTotalNames.add("Y-07071646-YA-(球)武侯祠大街245号2");
+        HcnetTotalNames.add("D-07071033-ZX-(球)老房子酒楼门口");
+        HcnetTotalNames.add("D-07071032-ZX-(球)体院学院附属医院");
+        HcnetTotalNames.add("D-07071001-ZX-(球)永记面馆");
+        HcnetTotalNames.add("D-07071075-ZX-(球)锦南春酒家门前");
+        HcnetTotalNames.add("D-07071014-ZX-(球)南郊公园大门右侧");
+        HcnetTotalNames.add("D-07070003-ZX-(球)成都市龙江路小学分校");
+        HcnetTotalNames.add("D-07071223-ZX-(球)武侯祠东街8号门口");
+        HcnetTotalNames.add("Y-07071664-YA-(球)武侯祠大街238号附1号外2");
+        HcnetTotalNames.add("D-07071089-ZX-(球)武侯祠正门右边");
+        HcnetTotalNames.add("D-07071012-ZX-(球)东城根街南延线武侯祠大门旁");
+        HcnetTotalNames.add("D-07071003-ZX-(球)锦里门口");
+        HcnetTotalNames.add("D-07071120-ZX-(球)武侯祠大街与武侯祠横街路口");
+        HcnetTotalNames.add("D-07071027-ZX-(球)蜀峰花园对面路口");
+        HcnetTotalNames.add("D-07071121-ZX-(球)武侯祠横街2号附10号");
+        HcnetTotalNames.add("D-07071091-ZX-(球)武侯祠横街3号(对面)");
+        HcnetTotalNames.add("D-07071238-ZX-(球)武侯祠横街1号门口");
+        HcnetTotalNames.add("D-07071065-ZX-(球)武侯祠东街1号门口");
+        HcnetTotalNames.add("D-07071004-ZX-(球)洗横路口");
+        HcnetTotalNames.add("D-07071064-ZX-(人)武侯祠横街4号附2号R");
+        HcnetTotalNames.add("D-07071149-ZX-(球)浆洗街-武侯祠横街4号附2号");
+        HcnetTotalNames.add("D-07071044-ZX-(球)锦尚酒店门口旁");
+        HcnetTotalNames.add("D-07071043-ZX-(球)金色柠檬酒店");
+        HcnetTotalNames.add("D-07072003-ZX-(球)蜀汉街8号");
+        HcnetTotalNames.add("D-07072002-ZX-(球)荣园餐馆");
+        HcnetTotalNames.add("D-07071194-ZX-(人)蜀汉东街8号2#");
+        HcnetTotalNames.add("D-07071215-XW-(球)武侯祠横街12号");
+        HcnetTotalNames.add("D-07071018-ZX-(球)蜀汉东街8号");
+        HcnetTotalNames.add("D-07071026-ZX-(球)武侯祠横街7号");
+        HcnetTotalNames.add("D-07071038-ZX-(球)山珍老鸭汤门口");
+
+        //浆洗街道大屏民族区域自治和城市之眼
+        //耍都
+        HcnetNationNames.add("D-07071025-ZX-(球)春江花园中心广场");
+        HcnetNationNames.add("D-07071071-ZX-(球)武侯祠大街耍都门口");
+        //金科双楠
+        HcnetNationNames.add("D-07121157-ZX-(球)广福路寿安堂中医院对面");
+        HcnetNationNames.add("D-07121093-ZX-(球)广福路与置信南街交叉口");
+        //罗马假日
+        HcnetNationNames.add("D-07121038-ZX-(球)罗马假日肯德基");
+        HcnetNationNames.add("D-07121026-ZX-(球)罗马广场A1B1之间");
+        //另外四个
+        HcnetNationNames.add("D-07121014-ZX-(球)四川统计局门口");
+        HcnetNationNames.add("D-07121109-ZX-(球)红牌楼商业城");
+        HcnetNationNames.add("D-07071003-ZX-(球)锦里门口");
+        HcnetNationNames.add("D-07088008-ZX-(球)高升桥路口");
+
+        //无法获取
+//        HcnetNationNames.add("D-07121111-ZX-(球)广福路二环路口");
+//        HcnetNationNames.add("D-07121170-ZX-(球)罗马假日广场中央大道十字路口");
+
+        for(int i = 0 ;i < total/pageSize + 1; i++){
+            String result2 = GetCameraPreviewURL(i+1,pageSize);
+            object = JSONObject.parseObject(result2);
+            data = object.getJSONObject("data");
+            list = data.getJSONArray("list");
+            doConvert(HcnetTotalNames,list, HcnetTotalList);
+            doConvert(HcnetNationNames,list, HcnetNationList);
+        }
+
+    }
+
+    public static void doConvert(List<String> names, JSONArray list, List<HcnetPoint> totalList){
+
+        for (int i = 0; i < list.size(); i++){
+            JSONObject obj = list.getJSONObject(i);
+            if(names.contains(obj.getString("name"))){
+                totalList.add(HcnetPoint.JsonObjectToPoint(obj));
+            }
+        }
+    }
+
     public void initFile(String filePath) throws IOException {
         new ClassPathResourceWalker(filePath).forEach(file -> {
             InputStream in;
@@ -1042,9 +1308,7 @@ public class WuHouService {
                     out.write(cache, 0, size);
                 }
                 String sql = out.toString("UTF-8");
-                System.out.println(sql);
                 template.execute(sql);
-                System.out.println(filePath + "文件已导入数据库");
             } catch (IOException e) {
                 log.error("", e);
             } finally {
@@ -1193,8 +1457,6 @@ public class WuHouService {
         }
         byte b[]=out.toByteArray( );
         String string = new String(b,"utf-8");
-        System.out.println(new String(b,"utf-8"));
-        System.out.println(new String(b,"utf-8"));
 
         //实时天气的返回结果中的"result"是JONObject，天气预报的是JSONArray，所以统计返回外层的result，拿到后再解析
         JSONObject result = JSONObject.parseObject(string);
@@ -1212,10 +1474,8 @@ public class WuHouService {
     }
 
     public JsonModel getOrganById(Long id){
-
         TibetOrganizationTable result = organizationTableDao.findOne(id);
         return new JsonModel(true,result);
-
     }
 
     public JsonModel getCommunityById(Long id){
@@ -1270,8 +1530,6 @@ public class WuHouService {
         result.put("rows",rows);
         result.put("columns",columns);
         result.put("unit","家");
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
     }
@@ -1351,8 +1609,8 @@ public class WuHouService {
 
         result.put("rows",rows);
         result.put("columns",columns);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -1388,14 +1646,12 @@ public class WuHouService {
         result.put("rows",rows);
         result.put("columns",columns);
         result.put("unit","次");
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
     }
 
     /**
-     * 群租房：入住人员对比
+     * 1、群租房：入住人员对比
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/y08-01/data
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -1420,15 +1676,13 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
     }
 
     /**
-     * 群租房：群租房入住人员归属地分析
+     * 2、群租房：群租房入住人员归属地分析
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -1450,13 +1704,40 @@ public class WuHouService {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("省","province");
         map.put("市","city");
+        map.put("经度","longitude");
+        map.put("维度","latitude");
         map.put("区县","district");
         map.put("数量","cnt");
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 3、群租房：群租房入住人员归属地分析
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF3(){
+
+        String res = null;
+        try {
+            res = getData("y13-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        result.put("rowsArray", data);
 
         return new JsonModel(true,result);
 
@@ -1530,10 +1811,13 @@ public class WuHouService {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("用地性质","ydxz");
         map.put("数量","num");
-        JSONObject result = result = getPieResult(map,data);
+        JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        String url = "/leaderview/WuHou163/getJJ3?param=用地性质:";
+
+        result.put("url",url);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -1548,7 +1832,7 @@ public class WuHouService {
      */
     public JsonModel getJJ3(String param){
 
-        String query = "ydxz=" + param;
+        String query = "ydxz=" + param.split(":")[1];
         String res = null;
         try {
             res = getData1("w01-01-3","per_page=10000&page=1",query,false,true);
@@ -1572,8 +1856,8 @@ public class WuHouService {
 
         result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1606,8 +1890,8 @@ public class WuHouService {
 
         JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1644,8 +1928,8 @@ public class WuHouService {
         map.put("功能区管委会","gnqgwh");
         JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1671,8 +1955,8 @@ public class WuHouService {
 
         JSONObject result = getTextResult("project_type",data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1707,8 +1991,8 @@ public class WuHouService {
         map.put("项目类型","project_type");
         JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1739,8 +2023,8 @@ public class WuHouService {
         map.put("外资","wz");
         JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1777,8 +2061,8 @@ public class WuHouService {
         }
         JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
     }
@@ -1803,15 +2087,11 @@ public class WuHouService {
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
 
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("拜访时间","visit_time");
-        map.put("拜访地址","visit_address");
-        map.put("拜访企业名称","visit_company_name");
         JSONObject result = new JSONObject();
 
-        result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        result.put("dataArray", data);
+
+        
 
         return new JsonModel(true,result);
 
@@ -1849,8 +2129,8 @@ public class WuHouService {
         result.put("value",value);
         result.put("info",value);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -1932,14 +2212,20 @@ public class WuHouService {
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("名称","name");
-        map.put("地点","address");
-        map.put("事件","time");
+        map.put("来源","address");
+        map.put("时间","time");
         map.put("明细","details");
+        //详情需要替换的行
+        map.put("详情","明细");
+
+        List<String> removeList = Arrays.asList("明细");
+
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+
+        JSONArray columns = result.getJSONArray("columns");
+        columns.removeAll(removeList);
 
         return new JsonModel(true,result);
 
@@ -1966,13 +2252,17 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("警综管辖","policing");
-        map.put("数量","num");
+//        map.put("警综管辖","policing");
+//        map.put("数量","num");
+        map.put("name","policing");
+        map.put("value","num");
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+
+        String url = "/leaderview/WuHou163/getSJ3?param=name:";
+        result.put("url",url);
+
 
         return new JsonModel(true,result);
 
@@ -1986,7 +2276,7 @@ public class WuHouService {
      * @return
      */
     public JsonModel getEvent3(String param){
-        String query = "policing=" + param;
+        String query = "policing=" + param.split(":")[1];
         String res = null;
         try {
             res = getData1("w02-02-2","per_page=10000&page=1",query,false,true);
@@ -2014,8 +2304,8 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2047,8 +2337,6 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
@@ -2077,13 +2365,15 @@ public class WuHouService {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         //    "term": "肺炎", //高频词
         //    "num": 4335 //高频词出现次数
-        map.put("高频词","term");
-        map.put("高频词出现次数","num");
+//        map.put("高频词","term");
+//        map.put("高频词出现次数","num");
+        map.put("name","term");
+        map.put("value","num");
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2117,8 +2407,8 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2144,17 +2434,12 @@ public class WuHouService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
+        JSONObject obj = new JSONObject();
+        data.add(obj);
 
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("来源","source");
-        map.put("数量","num");
-        JSONObject result = new JSONObject();
+//        JSONObject result = getTextResult("source",data);
 
-        result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
-
-        return new JsonModel(true,result);
+        return new JsonModel(true,data);
 
     }
 
@@ -2177,16 +2462,7 @@ public class WuHouService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
-
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("事件类型","event_type");
-        map.put("数量","num");
-        map.put("占比（%）","percentage");
-        JSONObject result = new JSONObject();
-
-        result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        JSONObject result = getTextResult("event_type",data);
 
         return new JsonModel(true,result);
 
@@ -2199,11 +2475,11 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getEvent9(){
-
+    public JsonModel getEvent9(String param, Integer pageSize){
+        String query = "source=" + param;
         String res = null;
         try {
-            res = getData1("w02-06-3","per_page=10000&page=1",null,false,true);
+            res = getData1("w02-06-3","per_page=" + pageSize + "&page=1",query,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -2221,8 +2497,6 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
@@ -2236,11 +2510,15 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getEvent10(){
-
+    public JsonModel getEvent10(String param){
+        if(param.contains("大联动微治理")){
+            String[] split = param.split(":");
+            param = split[0] + "&" + split[1];
+        }
+        String query = "id=" + param ;
         String res = null;
         try {
-            res = getData1("w02-06-4","per_page=10000&page=1",null,false,true);
+            res = getData1("w02-06-4","per_page=10000&page=1",query,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -2252,23 +2530,23 @@ public class WuHouService {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("id","id");
         map.put("来源","source");
-        map.put("handle_reply","handle_reply");
+//        map.put("handle_reply","handle_reply");
         map.put("责任单位","responsible_unit");
         map.put("事件内容","event_content");
         map.put("上报时间","event_time");
         map.put("事件类型","event_type");
         map.put("街道","street");
         map.put("社区","community");
-        map.put("place_of_complaint","place_of_complaint");
+//        map.put("place_of_complaint","place_of_complaint");
         map.put("办理状态","handle_state");
         map.put("办理详情","handle_detail");
-        map.put("event_sub_type","event_sub_type");
+//        map.put("event_sub_type","event_sub_type");
         map.put("办理时间","handle_time");
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2301,8 +2579,8 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2334,8 +2612,8 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2368,8 +2646,39 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 14、110非警推送-数据分析（左）
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w02-09-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getEvent14(){
+
+        String res = null;
+        try {
+            res = getData1("w02-11-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("月份","date");
+        map.put("数量","sum");
+        JSONObject result = new JSONObject();
+
+        result = getPieResult(map,data);
 
         return new JsonModel(true,result);
 
@@ -2381,14 +2690,14 @@ public class WuHouService {
     //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
     /**
-     * 1、天气-天气预报
+     * 1、天气
      * 返回内容过多，根据实际需求来确定需要的数据
      * 接口URL： {{baseUrl}}/apis/weather/v1/weather?cityNm=成都
      * 请求方式： GET
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST1(){
+    public JsonModel getHB11(){
 
         String res = null;
         try {
@@ -2400,16 +2709,80 @@ public class WuHouService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONObject data = object.getJSONObject("data");
+        JSONObject realTime = data.getJSONObject("realTime");
+        JSONArray array = new JSONArray();
+        array.add(realTime);
 
-        /*LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("id","id");
-        map.put("名称","name");
-        map.put("坐标","location");
-        JSONObject result = getResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);*/
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //    "week": "星期五",
+        //    "wtId": "2",
+        //    "wtNm": "多云", //天气
+        //    "wtIcon": "01",
+        //    "wtTemp": "4", //温度℃
+        //    "wtHumi": "83", //湿度%
+        //    "wtWindId": "8",
+        //    "wtWindNm": "北风", //风向
+        //    "wtWinp": "0", //风力 单位:级
+        //    "wtWins": "0", //风速 单位:km/h
+        //    "wtAqi": "35", //pm2.5 aqi
+        //    "wtVisibility": "4.00", //能见度km
+        //    "wtRainfall": "0.00", //降雨量mm
+        //    "wtPressurel": "966" //气压hpa
+        map.put("今日天气","wtNm");
+        map.put("温度℃","wtTemp");
+        map.put("湿度%","wtHumi");
+        map.put("风力","wtWinp");
+        map.put("aqi","wtAqi");
+        JSONObject result = getPieResult(map,array);
 
-        return new JsonModel(true);
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 1.2、天气预报
+     * 返回内容过多，根据实际需求来确定需要的数据
+     * 接口URL： {{baseUrl}}/apis/weather/v1/weather?cityNm=成都
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getHB12(){
+
+        String res = null;
+        try {
+            res = getData2("http://wunlzt.cdwh.gov.cn/apis/weather/v1/weather?cityNm=成都",true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONObject data = object.getJSONObject("data");
+        JSONArray array = data.getJSONArray("futureDay");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //"futureDay": [
+        //
+        //    {
+        //        "dateYmd": "2022-01-29",
+        //        "week": "星期六",
+        //        "wtBlueSkyId": "0",
+        //        "wtId1": "2",
+        //        "wtId2": "3",
+        //        "wtNm1": "多云", //天气(白天)
+        //        "wtNm2": "阴", //天气(夜间)
+        //        "wtIcon1": "01",
+        //        "wtIcon2": "02",
+        //        "wtTemp1": "10", //温度(白天)
+        //        "wtTemp2": "3", //温度(夜间)
+        map.put("时间","dateYmd");
+        map.put("最高℃","wtTemp1");
+        map.put("最低℃","wtTemp2");
+        JSONObject result = getPieResult(map,array);
+        
+        
+
+        return new JsonModel(true,result);
 
     }
 
@@ -2420,7 +2793,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST2(){
+    public JsonModel getHB2(){
 
         String query = "monitoring_type";
         String res = null;
@@ -2437,15 +2810,14 @@ public class WuHouService {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("监测类型","monitoring_type");
         map.put("数量","num");
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        JSONObject result = getTextResult("monitoring_type",data);
 
         return new JsonModel(true,result);
 
     }
 
     /**
+     * 需求中不需要了
      * 3、域内河流-监测点-类型-列表
      * 返回内容过多，根据实际需求来确定需要的数据
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w03-02-2/data
@@ -2453,7 +2825,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST3(){
+    public JsonModel getHB3(){
 
         String res = null;
         try {
@@ -2467,30 +2839,26 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        /*map.put("id","id");
-        map.put("名称","name");
-        map.put("坐标","location");*/
+
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
     }
 
     /**
-     * 4、地图-监测点
+     * 4、浆洗街街道五项绿地面积
      * 返回内容过多，根据实际需求来确定需要的数据
-     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w03-02-3/data
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w03-03-3/data
      * 请求方式： GET
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST4(){
+    public JsonModel getHB4(){
 
         String res = null;
         try {
-            res = getData1("w03-02-3","per_page=10000&page=1",null,false,true);
+            res = getData1("w03-03-3","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -2500,25 +2868,22 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        /*map.put("id","id");
-        map.put("名称","name");
-        map.put("坐标","location");*/
+        map.put("绿地类型","green_type");
+        map.put("绿地面积","sum");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        result.put("unit","平方米");
 
         return new JsonModel(true,result);
-
     }
 
     /**
-     * 5、环境/绿地（统计街道面积）
+     * 5、环境/绿地（五项绿地）
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w03-03-1/data
      * 请求方式： GET
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST5(){
+    public JsonModel getHB5(){
 
         String res = null;
         try {
@@ -2532,11 +2897,10 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("所属街道","street");
-        map.put("绿地面积（平方公里）","green_space_area");
+        map.put("绿地类型","green_type");
+        map.put("绿地面积","sum");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        result.put("unit","平方米");
 
         return new JsonModel(true,result);
 
@@ -2549,7 +2913,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST6(){
+    public JsonModel getHB6(){
 
         String res = null;
         try {
@@ -2563,16 +2927,16 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("id","id");
+//        map.put("id","id");
         map.put("月份","sdate");
-        map.put("垃圾处理总量（吨）","total_processing");
+//        map.put("垃圾处理总量（吨）","total_processing");
         map.put("可回收垃圾处理量（吨）","recyclable_trash");
         map.put("厨余垃圾处理量（吨）","kitchen_waste");
         map.put("其他垃圾处理量（吨）","other_garbage");
-        map.put("有害垃圾处理量（吨）","hazardous_waste");
+//        map.put("有害垃圾处理量（吨）","hazardous_waste");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2585,7 +2949,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST7(String param){
+    public JsonModel getHB7(){
 
         String res = null;
         try {
@@ -2596,7 +2960,9 @@ public class WuHouService {
         }
 
         JSONObject object = JSONObject.parseObject(res);
-        JSONObject data = object.getJSONObject("data");
+        JSONObject dataObj = object.getJSONObject("data");
+        JSONArray data = new JSONArray();
+        data.add(dataObj);
 
         //该接口的所有数据
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
@@ -2605,26 +2971,18 @@ public class WuHouService {
         map.put("二氧化氮","F_NO2IAQI");
         map.put("可吸入颗粒物（PM10）","F_PM10IAQI");
         map.put("一氧化碳","F_CO1IAQI");
-        map.put("其他垃圾处理量（吨）","other_garbage");
+//        map.put("其他垃圾处理量（吨）","other_garbage");
         map.put("臭氧","F_O3IAQI");
         map.put("细颗粒物（PM2.5）","F_PM25IAQI");
-        map.put("—","F_FIRSTPOLLUTANTNAME");
+//        map.put("—","F_FIRSTPOLLUTANTNAME");
         map.put("时间","F_DATATIME");
-        map.put("F_MONITORSTATIONID","F_MONITORSTATIONID");
-        map.put("color","color");
+//        map.put("F_MONITORSTATIONID","F_MONITORSTATIONID");
+//        map.put("color","color");
         map.put("等级","Level");
-        map.put("str","str");
-        map.put("经纬度","Point");
-        JSONObject allData = new JSONObject();
-        JSONObject result = new JSONObject();
-        for (Map.Entry<String,String> entry : map.entrySet()){
-            allData.put(entry.getKey(),data.get(entry.getValue()));
-        }
-        result.put("name",param);
-        result.put("info",data.get(param));
+        map.put("空气质量（优/良）","str");
+//        map.put("经纬度","Point");
+        JSONObject result = getPieResult(map,data);
 
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
@@ -2637,7 +2995,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST8(){
+    public JsonModel getHB8(){
 
         String res = null;
         try {
@@ -2652,22 +3010,21 @@ public class WuHouService {
         JSONArray aqi = data.getJSONArray("aqi");
         JSONArray day = data.getJSONArray("day");
 
-        List<String> columns = Arrays.asList("数值","颜色","日期");
+        List<String> columns = Arrays.asList("日期","数值");
         JSONArray rows = new JSONArray();
         for (int i = 0; i<aqi.size();i++){
             JSONObject row = new JSONObject();
             JSONObject aqiDay = aqi.getJSONObject(i);
             Object date = day.get(i);
-            row.put("数值",aqiDay.get("y"));
-            row.put("颜色",aqiDay.get("color"));
             row.put("日期",date);
+            //如果没有获取到当天的aqi,则跳过
+            if (ObjectUtils.isEmpty(aqiDay.get("y")))continue;
+            row.put("数值",aqiDay.get("y"));
             rows.add(row);
         }
         JSONObject result = new JSONObject();
         result.put("rows",rows);
         result.put("columns",columns);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
@@ -2680,7 +3037,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getST9(){
+    public JsonModel getHB9(){
 
         String res = null;
         try {
@@ -2697,8 +3054,9 @@ public class WuHouService {
         map.put("街道办","street");
         map.put("道路绿地","road_green");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        result.put("unit","平方米");
+
+
 
         return new JsonModel(true,result);
 
@@ -2731,12 +3089,15 @@ public class WuHouService {
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("id","id");
-        map.put("单位名称","company_name");
+        map.put("公司","company_name");
         map.put("警报类型","alarm_type");
         map.put("警报时间","alarm_time");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        String url = "/leaderview/WuHou163/getAQ2?param=id:";
+        result.put("url",url);
+
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2774,8 +3135,8 @@ public class WuHouService {
         map.put("状态","status");
         map.put("响应处置时间","handle_time");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2801,12 +3162,7 @@ public class WuHouService {
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
 
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("警报类型","alarm_type");
-        map.put("数量","num" );
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        JSONObject result = getTextResult("alarm_type",data);
 
         return new JsonModel(true,result);
 
@@ -2834,11 +3190,30 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("数量","num" );
         map.put("单位名称","company_name");
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+//        map.put("数量","num" );
+        JSONObject result = new JSONObject();
+
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        for(Map.Entry<String,String> entry : map.entrySet()){
+            if("id".equals(entry.getKey()))continue;
+            columns.add(entry.getKey());
+        }
+
+        for(int i = 0; i < data.size() ; i++){
+            if(rows.size() == 5) break;
+            JSONObject dataObj = (JSONObject) data.get(i);
+            if(ObjectUtils.isEmpty(dataObj.get("company_name"))) continue;
+            JSONObject row = new JSONObject();
+            for(Map.Entry<String,String> entry : map.entrySet()){
+                row.put(entry.getKey(),dataObj.get(entry.getValue()));
+            }
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
 
         return new JsonModel(true,result);
 
@@ -2868,8 +3243,8 @@ public class WuHouService {
         map.put("时间","time");
         map.put("数量","num" );
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2899,8 +3274,8 @@ public class WuHouService {
         map.put("警报类型","alarm_type");
         map.put("数量","num" );
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -2913,7 +3288,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getAQ7(){
+    public JsonModel getAQ7(Boolean ifNew){
 
         String res = null;
         try {
@@ -2927,12 +3302,25 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("已完成","finished");
-        map.put("进行中","processing" );
-        map.put("总数","total" );
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        map.put("已处理","finished");
+        map.put("处理中","processing" );
+        //如果是武侯柱状图新组件，则不需要总量字段
+
+        map.put("总数", "total");
+
+
+        JSONObject result = new JSONObject();
+
+        //如果是true，则封装为武侯柱状图
+        if(!ifNew) {
+            result = getPieResult(map, data);
+        }else {
+            JSONArray columns = new JSONArray();
+            columns.add("排查情况");
+            columns.add("数量");
+
+            result = getOneToPie(columns, data, map);
+        }
 
         return new JsonModel(true,result);
 
@@ -2945,7 +3333,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getAQ8(){
+    public JsonModel getAQ8(Boolean ifNew){
 
         String res = null;
         try {
@@ -2959,12 +3347,25 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("已完成","finished");
-        map.put("进行中","processing" );
-        map.put("总数","total" );
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        map.put("已处理","finished");
+        map.put("处理中","processing" );
+        //如果是武侯柱状图新组件，则不需要总量字段
+
+        map.put("总数", "total");
+
+
+        JSONObject result = new JSONObject();
+
+        //如果是true，则封装为武侯柱状图
+        if(!ifNew) {
+            result = getPieResult(map, data);
+        }else {
+            JSONArray columns = new JSONArray();
+            columns.add("排查情况");
+            columns.add("数量");
+
+            result = getOneToPie(columns, data, map);
+        }
 
         return new JsonModel(true,result);
 
@@ -2995,8 +3396,12 @@ public class WuHouService {
         map.put("单位名称","unit_name");
         map.put("整改情况","governance_status");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+
+        String url = "/leaderview/WuHou163/getAQ10?param=id:";
+
+        result.put("url",url);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -3011,7 +3416,7 @@ public class WuHouService {
      */
     public JsonModel getAQ10(String param){
 
-        String query = "id=" + param;
+        String query = "id=" + param.split(":")[1];
         String res = null;
         try {
             res = getData1("w04-02-4","per_page=10000&page=1",query,false,true);
@@ -3035,8 +3440,6 @@ public class WuHouService {
         map.put("inspection_date","inspection_date");
         map.put("closing_date","closing_date");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
 
@@ -3049,14 +3452,14 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getAQ11(){
+    public JSONObject getAQ11(){
 
         String res = null;
         try {
             res = getData1("w04-02-5","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+            log.error(e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
@@ -3066,10 +3469,8 @@ public class WuHouService {
         map.put("时间","time");
         map.put("数量","num");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
-        return new JsonModel(true,result);
+        return result;
 
     }
 
@@ -3080,14 +3481,14 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getAQ12(){
+    public JSONObject getAQ12(){
 
         String res = null;
         try {
             res = getData1("w04-02-6","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+            log.error(e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
@@ -3097,10 +3498,10 @@ public class WuHouService {
         map.put("时间","time");
         map.put("数量","num");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
-        return new JsonModel(true,result);
+        return result;
 
     }
 
@@ -3111,14 +3512,14 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getAQ13(){
+    public JSONObject getAQ13(){
 
         String res = null;
         try {
             res = getData1("w04-02-6-1","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+            log.error(e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
@@ -3128,10 +3529,8 @@ public class WuHouService {
         map.put("时间","time");
         map.put("数量","num");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
-        return new JsonModel(true,result);
+        return result;
 
     }
 
@@ -3157,10 +3556,30 @@ public class WuHouService {
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("单位名称","unit_name");
-        map.put("数量","num");
-        JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+//        map.put("数量","num");
+        JSONObject result = new JSONObject();
+
+        JSONArray rows = new JSONArray();
+        JSONArray columns = new JSONArray();
+        for(Map.Entry<String,String> entry : map.entrySet()){
+            if("id".equals(entry.getKey()))continue;
+            columns.add(entry.getKey());
+        }
+
+        for(int i = 0; i < data.size() ; i++){
+            if(rows.size() == 5) break;
+            JSONObject dataObj = (JSONObject) data.get(i);
+            if(ObjectUtils.isEmpty(dataObj.get("unit_name"))) continue;
+            JSONObject row = new JSONObject();
+            for(Map.Entry<String,String> entry : map.entrySet()){
+                row.put(entry.getKey(),dataObj.get(entry.getValue()));
+            }
+            rows.add(row);
+        }
+
+        result.put("rows",rows);
+        result.put("columns",columns);
+        
 
         return new JsonModel(true,result);
 
@@ -3190,8 +3609,8 @@ public class WuHouService {
         map.put("街道","street");
         map.put("数量","val");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -3228,8 +3647,8 @@ public class WuHouService {
         map.put("社区","community");
         map.put("常住人口","population");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return result;
 
@@ -3263,6 +3682,34 @@ public class WuHouService {
     }
 
     /**
+     * 2.2、数字武侯
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w05-02-1/data?id=6826
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQQ22(){
+
+        String res = null;
+        try {
+            res = getData1("w05-02-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        result.put("dataArray",data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
      * 3、行政区划-地图数据
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w05-03-1/data
      * 请求方式： GET
@@ -3290,8 +3737,8 @@ public class WuHouService {
         map.put("责任人","person_liable");
         map.put("联系电话","contact_number");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return new JsonModel(true,result);
 
@@ -3322,15 +3769,56 @@ public class WuHouService {
         map.put("社区","community");
         map.put("流动人口数量","inflow");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
+        
+        
 
         return result;
 
     }
 
     /**
-     * 5、可视化-百度链接
+     * 5、区情板块-经济人口介绍文案
+     * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w05-04-1/data
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQQ5(){
+
+        String res = null;
+        try {
+            res = getData1("w05-07-1","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            //return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+        map.put("街道","street");
+        map.put("社区","community");
+        map.put("常住人口（万）","czrk");
+        map.put("生产总值（亿）","sczz");
+        map.put("服务业增加值（亿）","fwyzjz");
+        map.put("固定资产投资增长（%）","gdzctzzz");
+        map.put("一般公共预算收入（亿）","ybggyssr");
+        map.put("人均可支配收入增长（%）","rjkzpsrzz");
+        map.put("武侯区介绍文案","whqjswa");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+
+
+    /**
+     * 可视化-百度链接
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/w111/data
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -3358,10 +3846,11 @@ public class WuHouService {
         map.put("user_name","user_name");
         map.put("user_identifier","user_identifier");
         JSONObject result = getPieResult(map,data);
-        String jsonString = result.toJSONString();
-        System.out.println(jsonString);
 
         return new JsonModel(true,result);
     }
+
+
+
 
 }
