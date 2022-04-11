@@ -347,6 +347,7 @@ export default {
         subType: 'progress',
         url: '',
         width: 200,
+        nowShowPageID: 0,
         x: 66,
         y: 43,
         ctColors: [

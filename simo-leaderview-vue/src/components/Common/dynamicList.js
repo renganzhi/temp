@@ -19,6 +19,7 @@ export default [
   'DownMenu',
   'WuhoIfream',
   'WuhoMaoBL',
+  'WuhoOpenBox',
   'WoHoNumber',
   'WuhouTable',
   'XiaLaShu',
