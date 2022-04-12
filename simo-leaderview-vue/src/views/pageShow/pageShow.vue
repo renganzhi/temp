@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <!-- <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角</button>
-    <button v-show="true" @click="initSheZang2" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="initBase" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角1</button>-->
+    <button v-show="false" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角</button>
+    <button v-show="false" @click="initSheZang2" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
+    <button v-show="false" @click="initBase" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角1</button>-->
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -480,7 +480,8 @@ export default {
   },
   mounted() {
     this.init3D();
-    this.initSheZang2();
+    // this.initSheZang2();
+    this.initBase()
     this.initModels();
     this.initPostrender();
     this.addPopEvent();
@@ -729,12 +730,12 @@ return mix(factor,mirror,0.0);
  lerpBloomFactor(bloomFators[4]) * bloomColor * texture2D(bloomTexture4,v_textureCoordinates)
  );
             gl_FragColor =color+bloom ;
-            }`;
-      var blur1 = createBlurStage("Blur1", 3, 3, 1);
-      var blur2 = createBlurStage("Blur2", 5, 5, 0.5);
-      var blur3 = createBlurStage("Blur3", 7, 7, 0.25);
-      var blur4 = createBlurStage("Blur4", 9, 9, 0.125);
-      var blur5 = createBlurStage("Blur5", 11, 11, 0.0625);
+            }`
+      var blur1 = createBlurStage('Blur1', 3, 3, 1 / 2)
+      var blur2 = createBlurStage('Blur2', 5, 5, 0.5 / 2)
+      var blur3 = createBlurStage('Blur3', 7, 7, 0.25 / 2)
+      var blur4 = createBlurStage('Blur4', 9, 9, 0.125 / 2)
+      var blur5 = createBlurStage('Blur5', 11, 11, 0.0625 / 2)
       contrastBias = new Cesium.PostProcessStage({
         name: "contrastBiasUser",
         fragmentShader: ContrastBias,
@@ -752,7 +753,7 @@ return mix(factor,mirror,0.0);
           bloomTexture2: blur3.name,
           bloomTexture3: blur4.name,
           bloomTexture4: blur5.name,
-          bloomFators: [1.0, 0.5, 0.25, 0.125, 0.0625],
+          bloomFators: [1.0 / 3, 0.5 / 3, 0.25 / 3, 0.125 / 3, 0.0625 / 3],
           bloomColor: new Cesium.Color(85 / 255, 1, 1, 0.3)
         }
       });
@@ -841,8 +842,62 @@ return mix(factor,mirror,0.0);
         }
       });
     },
-    initSheZang2() {
-      viewer.entities.removeAll();
+    initSheZang2 () {
+      viewer.entities.removeAll()
+      $.getJSON('./static/geojson/bianjie_low.json', (res) => {
+        let positions = res.features[0].geometry.coordinates
+        positions.forEach((item, index) => {
+          let linepositions = []
+          item.forEach(item => {
+            linepositions.push(item[0])
+            linepositions.push(item[1])
+            linepositions.push(8)
+          })
+          viewer.entities.add({
+            polyline: {
+              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              material: Cesium.Color.AQUAMARINE,
+              depthFailMaterial: Cesium.Color.AQUAMARINE,
+              width: 2
+            }
+          })
+        })
+      })
+      $.getJSON('./static/geojson/xzqh.json', (res) => {
+        let positions = res.features
+        positions.forEach((item, index) => {
+          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+          let linepositions = []
+          let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
+          if (item.properties.Name === '金花桥街道') {
+            pointer = [103.97374548683935, 30.591885280709842]
+          }
+          this.addMarker(Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100), `./static/img/街道名称/${item.properties.Name}.png`)
+          if (item.geometry.type === 'MultiPolygon') {
+            item.geometry.coordinates.forEach(item => {
+              item[0].forEach(child => {
+                linepositions.push(child[0])
+                linepositions.push(child[1])
+                linepositions.push(3)
+              })
+            })
+          } else {
+            item.geometry.coordinates[0].forEach(item => {
+              linepositions.push(item[0])
+              linepositions.push(item[1])
+              linepositions.push(3)
+            })
+          }
+          viewer.entities.add({
+            polygon: {
+              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              perPositionHeight: true,
+              material: color
+            },
+            name: item.properties.Name
+          })
+        })
+      })
       wanggepositions.forEach(item => {
         item.wangges.forEach(child => {
           if (child.positions.length > 0) {
@@ -970,7 +1025,7 @@ return mix(factor,mirror,0.0);
                   glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
                   color: Cesium.Color.GOLD
                 }),
-                width: 3
+                width: 1
               }
             });
           }
@@ -1015,17 +1070,9 @@ return mix(factor,mirror,0.0);
           });
           viewer.entities.add({
             polyline: {
-              positions: Cesium.Cartesian3.fromDegreesArrayHeights(
-                linepositions
-              ),
-              depthFailMaterial: new Cesium.PolylineFlowMaterialProperty({
-                color: Cesium.Color.fromCssColorString("#00ef67"),
-                duration: 100
-              }),
-              material: new Cesium.PolylineFlowMaterialProperty({
-                color: Cesium.Color.fromCssColorString("#00ef67"),
-                duration: 100
-              }),
+              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              depthFailMaterial: Cesium.Color.fromCssColorString('#00ef67'),
+              material: Cesium.Color.fromCssColorString('#00ef67'),
               width: 3
             },
             name: item.properties.na
@@ -1050,8 +1097,62 @@ return mix(factor,mirror,0.0);
         });
       }, 2000);
     },
-    initSheZang1() {
-      viewer.entities.removeAll();
+    initSheZang1 () {
+      viewer.entities.removeAll()
+      $.getJSON('./static/geojson/bianjie_low.json', (res) => {
+        let positions = res.features[0].geometry.coordinates
+        positions.forEach((item, index) => {
+          let linepositions = []
+          item.forEach(item => {
+            linepositions.push(item[0])
+            linepositions.push(item[1])
+            linepositions.push(8)
+          })
+          viewer.entities.add({
+            polyline: {
+              positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              material: Cesium.Color.AQUAMARINE,
+              depthFailMaterial: Cesium.Color.AQUAMARINE,
+              width: 2
+            }
+          })
+        })
+      })
+      $.getJSON('./static/geojson/xzqh.json', (res) => {
+        let positions = res.features
+        positions.forEach((item, index) => {
+          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+          let linepositions = []
+          let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
+          if (item.properties.Name === '金花桥街道') {
+            pointer = [103.97374548683935, 30.591885280709842]
+          }
+          this.addMarker(Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100), `./static/img/街道名称/${item.properties.Name}.png`)
+          if (item.geometry.type === 'MultiPolygon') {
+            item.geometry.coordinates.forEach(item => {
+              item[0].forEach(child => {
+                linepositions.push(child[0])
+                linepositions.push(child[1])
+                linepositions.push(3)
+              })
+            })
+          } else {
+            item.geometry.coordinates[0].forEach(item => {
+              linepositions.push(item[0])
+              linepositions.push(item[1])
+              linepositions.push(3)
+            })
+          }
+          viewer.entities.add({
+            polygon: {
+              hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
+              perPositionHeight: true,
+              material: color
+            },
+            name: item.properties.Name
+          })
+        })
+      })
       Imgpositions.pointBase.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat);
         if (item.name.includes("管控区")) {
@@ -1089,11 +1190,11 @@ return mix(factor,mirror,0.0);
           polyline: {
             positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
             depthFailMaterial: new Cesium.PolylineGlowMaterialProperty({
-              glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
               color: Cesium.Color.GOLD
             }),
             material: new Cesium.PolylineGlowMaterialProperty({
-              glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
               color: Cesium.Color.GOLD
             }),
             width: 1
@@ -1604,6 +1705,8 @@ return mix(factor,mirror,0.0);
 .content #cesiumContainer {
   width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0;
   padding: 0px;
   margin: 0px;
 }

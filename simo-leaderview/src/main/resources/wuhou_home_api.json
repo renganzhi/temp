@@ -281,9 +281,9 @@
     },
     {
         "key": "get_population_ranking",
-        "name": "社区人口排行",
+        "name": "浆洗街-社区人口排行",
         "component": "monitor",
-        "type": "NewBar",
+        "type": "NewBar,NewHistogram",
         "url": "/leaderview/WuHou/getPopulationRanking",
         "method" : "get",
         "params": [
@@ -311,51 +311,8 @@
         ]
     },
     {
-        "key": "get_economic_data_value",
-        "name": "区情板块-数字武侯",
-        "component": "monitor",
-        "type": "NEWtextArea",
-        "url": "/leaderview/WuHou/getSZWH",
-        "method" : "get",
-        "params": [
-            {
-                "key": "name",
-                "name": "数据条目",
-                "notNull": true,
-                "type": "drop-down",
-                "dataType": "static",
-                "data": [
-                    {
-                        "name": "科学技术投入",
-                        "value": "科学技术投入"
-                    },
-                    {
-                        "name": "医疗投入",
-                        "value": "医疗投入"
-                    },
-                    {
-                        "name": "教育投入",
-                        "value": "教育投入"
-                    },
-                    {
-                        "name": "居民人均消费支出",
-                        "value": "居民人均消费支出"
-                    },
-                    {
-                        "name": "城镇居民人均可支配收入",
-                        "value": "城镇居民人均可支配收入"
-                    },
-                    {
-                        "name": "一般公共预算支出",
-                        "value": "一般公共预算支出"
-                    }
-                ]
-            }
-        ]
-    },
-    {
         "key": "get_housing_personnel_top",
-        "name": "入住人员Top10",
+        "name": "群租房-入住人员Top10",
         "component": "monitor",
         "type": "NewBar",
         "url": "/leaderview/WuHou/getHousingPersonnelTop",
@@ -364,7 +321,7 @@
     },
     {
         "key": "get_live_sort",
-        "name": "入住房Top5",
+        "name": "群租房-入住房Top5",
         "component": "monitor",
         "type": "NewHistogram",
         "url": "/leaderview/QZF/getLiveSort",
@@ -408,7 +365,7 @@
     },
     {
         "key": "get_today_live_count",
-        "name": "小程序实时数据-群租房入住情况统计",
+        "name": "群租房-入住情况统计",
         "component": "monitor",
         "type": "NEWtextArea",
         "url": "/leaderview/QZF/getTodayLiveCount",
@@ -439,7 +396,7 @@
     },
     {
         "key": "get_live_by_time",
-        "name": "小程序实时数据-入住人员时间分析",
+        "name": "群租房-入住人员时间分析",
         "component": "monitor",
         "type": "ELine",
         "url": "/leaderview/QZF/getLiveByTime",
@@ -466,10 +423,19 @@
     },
     {
         "key": "get_QZF1",
-        "name": "群租房——敏感人员分类占比",
+        "name": "群租房—敏感人员分类占比",
         "component": "monitor",
         "type": "NewPie",
         "url": "/leaderview/QZF/getQZF1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF3",
+        "name": "群租房-入住人员来源地(归属地)分析",
+        "component": "monitor",
+        "type": "DataFlow",
+        "url": "/leaderview/QZF/getQZF3",
         "method" : "get",
         "params": []
     },
@@ -575,7 +541,7 @@
         "key": "get_JJ2",
         "name": "土地资源（待上市地块）分类汇总",
         "component": "monitor",
-        "type": "NewBar",
+        "type": "WuhoZhuZT",
         "url": "/leaderview/WuHou163/getJJ2",
         "method" : "get",
         "params": []
@@ -620,7 +586,7 @@
         "key": "get_JJ10",
         "name": "领导率队赴外开展投资促进活动情况",
         "component": "monitor",
-        "type": "WuhouTable",
+        "type": "DataFlow",
         "url": "/leaderview/WuHou163/getJJ10",
         "method" : "get",
         "params": []
@@ -679,7 +645,7 @@
     },
     {
         "key": "get_QQ1",
-        "name": "社区实有人口、流动人口Top10",
+        "name": "社区实有/流动人口Top10",
         "component": "monitor",
         "type": "NewHistogram,NewBar",
         "url": "/leaderview/WuHou163/getQQ1",
@@ -703,5 +669,724 @@
                 "dataUrl": ["/leaderview/WuHou163/getQQ2"]
             }
         ]
+    },
+    {
+        "key": "get_QQ22",
+        "name": "数字武侯-轮播组件",
+        "component": "monitor",
+        "type": "WoHoNumber",
+        "url": "/leaderview/WuHou163/getQQ22",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QQ4",
+        "name": "区情板块-社区常住人口排行",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar",
+        "url": "/leaderview/WuHou163/getQQ4",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QQ5",
+        "name": "区情板块-社区流动人口排行",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar",
+        "url": "/leaderview/WuHou163/getQQ5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QQ6",
+        "name": "区情板块-经济人口介绍文案",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getQQ6",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "数据条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getQQ6"]
+            }
+        ]
+    },
+    {
+        "key": "get_SJ1",
+        "name": "今日重大活动信息",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou163/getSJ1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ2",
+        "name": "110非警推送",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/WuHou163/getSJ2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ14",
+        "name": "110非警推送-数据分析（左）",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou163/getSJ14",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ4",
+        "name": "网络舆情分类分析",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/WuHou163/getSJ4",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ5",
+        "name": "网络舆情高频词",
+        "component": "monitor",
+        "type": "WuhoZMDSX",
+        "url": "/leaderview/WuHou163/getSJ5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ8",
+        "name": "事件类型分类-事件类型占比",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getSJ8",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "事件类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getSJ8"]
+            }
+        ]
+    },
+    {
+        "key": "get_SJ9",
+        "name": "事件类型分类-事件列表",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou163/getSJ9",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SJ11",
+        "name": "事件类型分类-数据分析(右)",
+        "component": "monitor",
+        "type": "ELine,NewHistogram",
+        "url": "/leaderview/WuHou163/getSJ11",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ1",
+        "name": "危险源情况",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou163/getAQ1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ3",
+        "name": "报警类型数量",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getAQ3",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "报警类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getAQ3"]
+            }
+        ]
+    },
+    {
+        "key": "get_AQ4",
+        "name": "企业危险源情况top10",
+        "component": "monitor",
+        "type": "NewTable,WuhouTable",
+        "url": "/leaderview/WuHou163/getAQ4",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ5",
+        "name": "报警变化趋势-时间",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou163/getAQ5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ6",
+        "name": "报警变化趋势-分类",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar,ELine",
+        "url": "/leaderview/WuHou163/getAQ6",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ7",
+        "name": "隐患排查情况-年（当年）",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getAQ7",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "排查情况",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getAQ7"]
+            }
+        ]
+    },
+    {
+        "key": "get_AQ72",
+        "name": "隐患排查情况-年（当年）",
+        "component": "monitor",
+        "type": "WuhoZhuZT",
+        "url": "/leaderview/WuHou163/getAQ72",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ8",
+        "name": "隐患排查情况-月（当月）",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getAQ8",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "排查情况",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getAQ8"]
+            }
+        ]
+    },
+    {
+        "key": "get_AQ82",
+        "name": "隐患排查情况-月（当月）",
+        "component": "monitor",
+        "type": "WuhoZhuZT",
+        "url": "/leaderview/WuHou163/getAQ82",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ9",
+        "name": "隐患报警列表",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/WuHou163/getAQ9",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ11",
+        "name": "隐患趋势变化-年/月/日",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar,ELine",
+        "url": "/leaderview/WuHou163/getAQ11",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_AQ14",
+        "name": "隐患企业统计排行TOP榜单",
+        "component": "monitor",
+        "type": "NewTable,WuhouTable",
+        "url": "/leaderview/WuHou163/getAQ14",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB1",
+        "name": "天气",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getHB1",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getHB1"]
+            }
+        ]
+    },
+    {
+        "key": "get_HB2",
+        "name": "天气预报",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou163/getHB2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB3",
+        "name": "域内河流",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getHB3",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "监测类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getHB3"]
+            }
+        ]
+    },
+    {
+        "key": "get_HB4",
+        "name": "浆洗街街道五项绿地面积",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar",
+        "url": "/leaderview/WuHou163/getHB4",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB5",
+        "name": "环境/绿地（五项绿地）",
+        "component": "monitor",
+        "type": "NewHistogram,NewBar",
+        "url": "/leaderview/WuHou163/getHB5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB6",
+        "name": "环保-垃圾",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou163/getHB6",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB7",
+        "name": "成都市aqi(含pm2.5)",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getHB7",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getHB7"]
+            }
+        ]
+    },
+    {
+        "key": "get_HB8",
+        "name": "大气-成都近30天aqi",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/WuHou163/getHB8",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_HB9",
+        "name": "环境-道路绿化面积",
+        "component": "monitor",
+        "type": "ELine,NewHistogram",
+        "url": "/leaderview/WuHou163/getHB9",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_RC1",
+        "name": "日常管理-一网通办",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getRC1",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "资金分类",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getRC1"]
+            }
+        ]
+    },
+    {
+        "key": "get_RC2",
+        "name": "日常管理-区领导值班情况",
+        "component": "monitor",
+        "type": "WuHozhiban",
+        "url": "/leaderview/WuHou163/getRC2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_RC22",
+        "name": "日常管理-区值班领导姓名",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getRC22",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "资金分类",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getRC22"]
+            }
+        ]
+    },
+    {
+        "key": "get_RC3",
+        "name": "日常管理-疫情监控",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getRC3",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "疫苗剂数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getRC3"]
+            }
+        ]
+    },
+    {
+        "key": "get_RC4",
+        "name": "日常管理-两地四区指数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getRC4",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "指数",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/WuHou163/getRC4"]
+            }
+        ]
+    },
+    {
+        "key": "get_RC5",
+        "name": "日常管理—城区事件",
+        "component": "monitor",
+        "type": "ZhwhLunBo",
+        "url": "/leaderview/WuHou163/getRC5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_RC6",
+        "name": "日常管理—城区人口",
+        "component": "monitor",
+        "type": "ZhwhLunBo",
+        "url": "/leaderview/WuHou163/getRC6",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_RH3",
+        "name": "融合指挥—领导班子通讯录",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/WuHou163/getRH3",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JX1",
+        "name": "浆洗街—区情—数字浆洗街",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/JX/getJX1",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX1"]
+            },
+            {
+                "key": "param",
+                "name": "数据条目",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX1"],
+                "params": ["year"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX2",
+        "name": "浆洗街—经济—领导走访情况",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/JX/getJX2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JX3",
+        "name": "浆洗街—经济—3种税收历史",
+        "component": "monitor",
+        "type": "ELine",
+        "url": "/leaderview/JX/getJX3",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_JX4",
+        "name": "浆洗街—经济—3种税收全年总和",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/JX/getJX4",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX4"]
+            },
+            {
+                "key": "param",
+                "name": "税收种类",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX4"],
+                "params": ["year"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX7",
+        "name": "浆洗街—经济—纳税行业分布",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/JX/getJX7",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX7"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX8",
+        "name": "浆洗街—经济—内外资投资",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/JX/getJX8",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX8"]
+            },
+            {
+                "key": "param",
+                "name": "投资类别",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX8"],
+                "params": ["year"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX9",
+        "name": "浆洗街—经济—辖区“四上”企业数量",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/JX/getJX9",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX9"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX10",
+        "name": "浆洗街—经济—企业纳税规模分布",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/JX/getJX10",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX10"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX11",
+        "name": "浆洗街—经济—重大项目情况",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/JX/getJX11",
+        "method" : "get",
+        "params": [
+            {
+                "key": "year",
+                "name": "年份",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX11"]
+            },
+            {
+                "key": "param",
+                "name": "项目分类",
+                "notNull": false,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/JX/getJX11"],
+                "params": ["year"]
+            }
+        ]
+    },
+    {
+        "key": "get_JX12",
+        "name": "浆洗街—经济—辖区企业总纳税额（万元）",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/JX/getJX12",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_ZHSQ1",
+        "name": "智慧社区-各类人员总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getZHSQ1",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "人员类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "社区矫正",
+                        "value": "y01-01"
+                    },
+                    {
+                        "name": "社区康复",
+                        "value": "y02-01"
+                    },
+                    {
+                        "name": "重症精神",
+                        "value": "y05-01"
+                    },
+                    {
+                        "name": "重点人员（信访维稳）",
+                        "value": "y06-01"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_SQJZ1",
+        "name": "智慧社区-社区矫正-街道管控数据",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/ZHSQ/getSQJZ1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SQKF1",
+        "name": "智慧社区-社区康复-吸毒人员分布",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/ZHSQ/getSQKF1",
+        "method" : "get",
+        "params": []
     }
 ]

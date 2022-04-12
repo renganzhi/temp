@@ -285,7 +285,12 @@ public class HomePageService {
             }
             String shareConf = (String) obj[10];
             HomePage homePage = new HomePage(id,composeObj,lastUpdateTime,name,pageIndex,paintObj,viewConf,visible,createUserId,handoverId,shareConf);
-            JSONArray userRole = SessionUtils.getSessionUserRoleIdArr(session);
+            JSONArray userRole = new JSONArray();
+            if(ObjectUtils.isEmpty(session.getAttribute("SITE_USER_ROLES"))){
+                userRole.add("1");
+            }else {
+                userRole = SessionUtils.getSessionUserRoleIdArr(session);
+            }
 //            if (SessionUtils.isSuperAdmin(session) ||
             if (validSharedorAuthor(homePage, String.valueOf(userId), userRole) == (ShareState.IS_BELONGS_CURRENT.getValue())){
                 homePage.setBelongCurrentUser("true");
