@@ -29,6 +29,7 @@ export default {
     return {
       stateCol: '',
       titleHeight: 0,
+      iterview: null,
       textHeight: 50
     }
   },
@@ -74,9 +75,21 @@ export default {
       }
     }
   },
+  beforeDestroy () {
+    if (this.iterview) {
+      clearInterval(this.iterview)
+    }
+  },
   mounted () {
     this.updateHeight()
     this.updateColor()
+    this.iterview = setInterval(() => {
+      if (this.$refs.NEWtextArea.scrollTop + this.$refs.NEWtextArea.clientHeight === this.$refs.NEWtextArea.scrollHeight) {
+        this.$refs.NEWtextArea.scrollTop = 0
+      } else {
+        this.$refs.NEWtextArea.scrollTop = this.$refs.NEWtextArea.scrollTop + 10
+      }
+    }, 500)
   },
   computed: {
     ...mapGetters([

@@ -132,6 +132,15 @@
                   </div>
                 </div>
               </div>
+              <div class="VideoBox" v-if="showVideoBox">
+                <div class="videoTable">
+                  <div class="closeBtn" @click="closeVideotn()"></div>
+                    <div class="BoxTitle">实时视频</div>
+                    <div class="videoDiv">
+                      <WuhoIfream :item = 'VideoIfream'></WuhoIfream>
+                    </div>
+                </div>
+              </div>
               <LookItem
                 v-for="(item, index) in nowPage"
                 :index="index"
@@ -272,6 +281,7 @@ import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
 import ImportPage from './../EditPage/ImportPage'
+import WuhoIfream from '@/components/EditComp/WuhoIfream'
 import { Public, titleShowFn } from '#/js/public'
 import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
@@ -283,6 +293,7 @@ export default {
     Notification,
     LookItem,
     LookCompose,
+    WuhoIfream,
     AddPage,
     ImportPage,
     beijing
@@ -299,6 +310,14 @@ export default {
       showTableBox: false,
       boxData: {},
       TableData: {},
+      showVideoBox: false,
+      VideoIfream: {
+        height: 610,
+        width: 1560,
+        chartData: {
+          hkwsid: ''
+        }
+      },
       isSuperAdmin: false,
       OpenBox: true,
       isOpenTW: false,
@@ -1036,7 +1055,7 @@ export default {
             if (res.obj.colors) {
               d.ctColors = res.obj.colors
             }
-            if (d.chartType === 'marquee' || d.chartType === 'text') {
+            if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
               d.ctName = res.obj.info
             }
             if (d.chartType !== 'marquee') {
@@ -1117,7 +1136,7 @@ export default {
                     if (res.obj.colors) {
                       d.ctColors = res.obj.colors
                     }
-                    if (d.chartType === 'marquee' || d.chartType === 'text') {
+                    if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
                       d.ctName = res.obj.info
                     }
                     if (d.chartType !== 'marquee') {
@@ -1188,7 +1207,7 @@ export default {
               if (res.obj.colors) {
                 d.ctColors = res.obj.colors
               }
-              if (d.chartType === 'marquee' || d.chartType === 'text') {
+              if (d.chartType === 'marquee' || d.chartType === 'text' || d.chartType === 'NEWtextArea') {
                 d.ctName = res.obj.info
               }
               if (d.chartType !== 'marquee') {
@@ -1397,6 +1416,13 @@ export default {
       this.stopTimer()
       this.stopRefreshTimer()
       this.$destroy()
+    },
+    closeVideotn () {
+      this.showVideoBox = false
+    },
+    ShowVideoBox (vidoeId) {
+      this.showVideoBox = true
+      this.VideoIfream.CheckedVideoId = vidoeId
     },
     getAccess () {
       let permission = 'r'
@@ -2288,6 +2314,42 @@ html[data-theme='blueWhite'] {
   .Data {
     width: 70%;
     color: #789fb0;
+  }
+}
+.VideoBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .videoTable{
+    height: 886px;
+    width: 1747px;
+    padding: 100px;
+    top: 400px;
+    left: 3400px;
+    position: relative;
+    z-index: 5000;
+    background: url(./modelBox.png);
+    .closeBtn{
+      height: 100px;
+      width: 100px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .BoxTitle {
+      font-size: 46px !important;
+      color: #bbeefe;
+      font-family: PangmenMainRoadTitleBody !important;
+    }
+    .videoDiv{
+      height: 90%;
+      widows: 100%;
+    }
   }
 }
 .DataValue{

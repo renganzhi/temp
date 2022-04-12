@@ -6,8 +6,8 @@
        <div class="btnBox ronghe"><div class="titleName"><a target="_blank" href="https://10.29.118.15/smc/Login.aspx?ReturnUrl=%2F">视频调度</a></div></div>
        <div class="btnBox yuyin"><div class="titleName"><a target="_blank" href=""> 语音调度</a></div></div>
        <div class="btnBox duiwu" ><div class="titleName">队伍调度</div></div>
-       <div class="btnBox baige" ><div class="titleName">白鸽</div></div>
-       <div class="btnBox weiwen" ><div class="titleName">维稳</div></div>
+       <div class="btnBox baige" ><div class="titleName"><a target="_blank" href="https://bg.reefun.com/">白鸽</a></div></div>
+       <div class="btnBox weiwen" ><div class="titleName"><a target="_blank" href="https://10.0.169.231/#/login">维稳</a></div></div>
       </div>
     </div>
    </div>
@@ -78,11 +78,11 @@ export default {
   position: relative;
   cursor: pointer;
   a{
-    height: 200px;
-    width: 130px;
     color: #cad6dd;
     display: flex;
+    height: 180px;
     align-items: flex-end;
+    justify-content: center;
   }
 }
 .ronghe{
