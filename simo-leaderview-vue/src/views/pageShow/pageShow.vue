@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <!-- <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角</button>
+    <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角</button>
     <button v-show="true" @click="initSheZang2" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="initBase" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角1</button> -->
+    <button v-show="true" @click="initBase" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角1</button>
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -915,7 +915,7 @@ return mix(factor,mirror,0.0);
                   glowPower: 2, // 一个数字属性，指定发光强度，占总线宽的百分比。
                   color: Cesium.Color.GOLD
                 }),
-                width: 3
+                width: 1
               }
             })
           }
@@ -955,14 +955,8 @@ return mix(factor,mirror,0.0);
           viewer.entities.add({
             polyline: {
               positions: Cesium.Cartesian3.fromDegreesArrayHeights(linepositions),
-              depthFailMaterial: new Cesium.PolylineFlowMaterialProperty({
-                color: Cesium.Color.fromCssColorString('#00ef67'),
-                duration: 100
-              }),
-              material: new Cesium.PolylineFlowMaterialProperty({
-                color: Cesium.Color.fromCssColorString('#00ef67'),
-                duration: 100
-              }),
+              depthFailMaterial: Cesium.Color.fromCssColorString('#00ef67'),
+              material: Cesium.Color.fromCssColorString('#00ef67'),
               width: 3
             },
             name: item.properties.na
