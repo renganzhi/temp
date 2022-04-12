@@ -486,7 +486,6 @@ export default {
     this.initPostrender()
     this.addPopEvent()
     this.fly()
-    // this.addDynamicCircle([104.02520989841649, 30.621982209390065, 100], 'test', 100)
   },
   methods: {
     addDynamicCircle (pos, id, rad) {
@@ -1505,6 +1504,7 @@ return mix(factor,mirror,0.0);
           scale: 0.4
         }
       });
+      this.addDynamicCircle([104.04696719736683,30.644423523687326, 40], 'test', 100)
     },
     addVideoPoint() {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
