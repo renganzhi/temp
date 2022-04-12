@@ -5,9 +5,7 @@ export default{
     'chartType': 'WuhoIfream',
     'width': 200,
     'height': 200,
-    'chartData': {
-      'hkwsid':''
-    }
+    'CheckedVideoId': 'b50011eda27c4322b8093d1d3fa1ee46'
   },
   'styles': {
     'base': [

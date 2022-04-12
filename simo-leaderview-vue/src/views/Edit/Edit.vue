@@ -951,6 +951,15 @@
                   </select>
                 </div>
               </div>
+              <div v-if="['WuhoIfream'].includes(selectedItem.chartType)">
+                <div class="m-gap form-group">视频选择</div>
+                <div class="form-group cols2">
+                  <label>视频名称</label>
+                  <select v-model="selectedItem.CheckedVideoId">
+                    <option v-for="(item,i) in VideoIdsArry" :key="i" :value="item.deviceIndexCode">{{item.name}}</option>
+                  </select>
+                </div>
+              </div>
               <!-- 图片元件 -->
               <div v-if="['image', 'decorator'].includes(selectedItem.chartType)">
                 <div class="m-gap form-group">图表样式</div>

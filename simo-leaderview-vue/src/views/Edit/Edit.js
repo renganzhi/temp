@@ -105,6 +105,7 @@ export default {
       presetLine: [{ type: 'h', site: 200 }, { type: 'v', site: 100 }],
       allPageList: [],
       canChangeId: [],
+      VideoIdsArry: [],
       gltfNameArry: [],
       iputneIdArry: [],
       activeNames: [0],
@@ -3508,6 +3509,11 @@ export default {
         }
       }
     },
+    getVideoIdsArry(){
+      this.axios.get('/leaderview/WuHou/getHcnetNationPoints').then((res) => {
+        this.VideoIdsArry = res.obj
+      })
+    },
     videoChange: function () {
       if (this.selectedItem.videoType === 'url') {
         this.selectedItem.videoSrc = this.tempVideoUrl
@@ -5257,6 +5263,7 @@ export default {
     // window.onmousewheel = document.onmousewheel = this.scrollFunc // IE/Opera/Chrome/Safari
     // $(document).on('mousewheel DOMMouseScroll', this.onMouseScroll)
     this.getAllPage()
+    this.getVideoIdsArry()
     if (!gbs.inDev) {
       titleShowFn('bottom', $('.e-legend'))
     }
