@@ -434,8 +434,46 @@ export default {
     this.initPostrender()
     this.addPopEvent()
     this.fly()
+    // this.addDynamicCircle([104.02520989841649, 30.621982209390065, 100], 'test', 100)
   },
   methods: {
+    addDynamicCircle (pos, id, rad) {
+      var longitude = pos[0]
+      var latitude = pos[1]
+      var rad = rad || 70
+      var x = 1
+      var y = 1
+      viewer.entities.add({
+        id: id,
+        position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+        ellipse: {
+          height: pos[2],
+          semiMajorAxis: new Cesium.CallbackProperty(function () {
+            y += 1
+            if (y > rad) {
+              y = 1
+            }
+            return y
+          }, false),
+          semiMinorAxis: new Cesium.CallbackProperty(function () {
+            x += 1
+            if (x > rad) {
+              x = 1
+            }
+            return x
+          }, false),
+          material: new Cesium.ImageMaterialProperty({
+            image: this.header + 'img/circle.png',
+            repeat: new Cesium.Cartesian2(1.0, 1.0),
+            transparent: true,
+            color: new Cesium.CallbackProperty(function () {
+              var alp = 1.5 - x / rad
+              return Cesium.Color.RED.withAlpha(alp) // entity的颜色透明 并不影响材质，并且 entity也会透明哦
+            }, false)
+          })
+        }
+      })
+    },
     addPopEvent () {
       var that = this
       function SZpopBig () {
