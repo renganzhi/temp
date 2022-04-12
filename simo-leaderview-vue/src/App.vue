@@ -90,7 +90,7 @@ body {
   top: 0;
   left: 0px;
   bottom: 0;
-  z-index: 20100;
+  z-index: 20120;
   background: rgba(0, 0, 0, 0.5);
   display: none;
 }

@@ -455,11 +455,11 @@ export default {
       } else {
         this.initBase();
       }
-      if (this.nowPageName && this.nowPageName.indexOf("群租") >= 0) {
-        this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
+      if (this.nowPageName && this.nowPageName.indexOf("未办证住所") >= 0) {
+        this.axios.get(`/leaderview/QZF/getQZF4`).then(data => {
           if (data.success) {
             let height = 100;
-            data.obj.forEach((d, index) => {
+            data.obj.rowsArray.forEach((d, index) => {
               this.addPointer(
                 Cesium.Cartesian3.fromDegrees(
                   d.longitude * 1,
@@ -468,7 +468,7 @@ export default {
                 ),
                 "xiaoqu" + index,
                 "static/img/xiaoqu.png",
-                { columns: [], rows: d.arr }
+                // { columns: [], rows: d.arr }
               );
             });
           }
@@ -686,7 +686,7 @@ export default {
           DataArry: dataArry,
           billboard: {
             image: img || "static/img/click.png",
-            scale: 0.4
+            scale: 0.2
           }
         })
       );
@@ -1651,7 +1651,7 @@ return mix(factor,mirror,0.0);
             } else if (picked.id.type === "camera") {
               let cameraData = picked.id.cameraId;
               this.$parent.$parent.ShowVideoBox(cameraData);
-            } else if (picked.id.name.indexOf("管控区") >= 0) {
+            } else if (picked.id.name && picked.id.name.indexOf("管控区") >= 0) {
               this.SZDataShowBig = true;
               this.CheckEdId = picked.id.name.split("管控区")[0] * 1;
               this.SZData = this.AllData[this.CheckEdId - 1];
@@ -1943,7 +1943,7 @@ return mix(factor,mirror,0.0);
 .TableHead tr {
   width: 100%;
   height: 40px;
-  font-size: 30px !important;
+  font-size: 24px !important;
   display: flex;
   color: #86b7dd;
 }
@@ -1960,7 +1960,7 @@ return mix(factor,mirror,0.0);
   width: 100%;
   height: 40px;
   margin: 10px 0;
-  font-size: 30px !important;
+  font-size: 24px !important;
   display: flex;
   color: #bfcbdb;
 }
