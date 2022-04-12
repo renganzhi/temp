@@ -1889,8 +1889,8 @@ html[data-theme='blueWhite'] {
   position: absolute;
   top: 0;
   left: 0;
-  width: 3840px;
-  height: 2160px;
+  width: 8640px;
+  height: 1620px;
   z-index: 5000;
   background-color: #15192a65;
   .TableHead {

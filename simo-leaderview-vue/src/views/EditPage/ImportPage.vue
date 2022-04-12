@@ -177,6 +177,7 @@ export default {
       // 校验名称
       this.changeName()
       if (this.showErr) return
+      $('#lead-screen').addClass('disShow')
       this.getAdminUsers().then(() => {
         var formdata = new FormData()
         formdata.append('file', this.file)
@@ -186,6 +187,7 @@ export default {
           data: formdata,
           headers: { 'content-type': 'application/x-www-form-urlencoded' }
         }).then(res => {
+          $('#lead-screen').removeClass('disShow')
           $('#importPage-modal').modal('hide')
           if (res.success) {
             //   this.addOne = true
@@ -199,6 +201,7 @@ export default {
             // reset
             this.$refs.file.value = ''
           } else {
+            $('#lead-screen').removeClass('disShow')
             Notification({
               message: res.msg,
               position: 'bottom-right',
