@@ -104,4 +104,23 @@ public class QunZuFangController {
     public JsonModel getQZF3(){
         return wuHouService.getQZF3();
     }
+
+    /**
+     * 4、未办证住所：全区网约房地图打点
+     * @return
+     */
+    @GetMapping("/getQZF4")
+    public JsonModel getQZF4(){
+        return wuHouService.getQZF4();
+    }
+
+    /**
+     * 5、未办证住所：街道网约房分布
+     * @return
+     */
+    @GetMapping("/getQZF5")
+    public JsonModel getQZF5(){
+        return wuHouService.getQZF5();
+    }
+
 }
