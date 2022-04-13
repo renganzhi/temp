@@ -113,7 +113,7 @@
                   </div>
                 </div>
               </div>
-              <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
+              <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
                 <div class="BoxArry">
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
                   <div class="BigBox" v-else @mouseleave="OpenBox = true">
@@ -131,7 +131,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <div class="VideoBox" v-if="showVideoBox">
                 <div class="videoTable">
                   <div class="closeBtn" @click="closeVideotn()"></div>
@@ -1926,204 +1926,204 @@ html[data-theme='blueWhite'] {
     }
   }
 }
-.ParentBox{
-  position: relative;
-  .BoxArry{
-    .SmallBox{
-      height: 1244px;
-      width: 45px;
-      position: fixed;
-      top: 500px;
-      left: 3790px;
-      // left: 0px;
-      position: absolute;
-      z-index: 10000;
-      background: url(./boxClose-r.png);
-      background-size: 100%  100%;
-    }
-    .BigBox{
-      height: 1244px;
-      width: 253px;
-      position: fixed;
-      top: 500px;
-      left: 3580px;
-  //    left: 0px;
-      background-color: rgb(12, 236, 206);
-      position: absolute;
-      z-index: 10000;
-      background: url(./boxTan-r.png);
-      background-size: 100%  100%;
-      .CloseBox{
-        height: 220px;
-        width: 50px;
-        // right: 0px;
-        cursor: pointer;
-        position: absolute;
-        top: 510px;
-        z-index: 10000;
-      }
-      .AhrefBox{
-        height: 248px;
-        padding: 30px;
-        position: relative;
-        width: 260px;
-        cursor: pointer;
-        .openBox{
-          top: 50px;
-          left: 80px;
-          position: absolute;
-          height: 110px;
-          width: 110px;
-          background: url(./open.png);
-          background-size: 100% 100%;
-        }
-        .closeStyle{
-          top: 50px;
-          left: 80px;
-          position: absolute;
-          height: 110px;
-          width: 110px;
-          background: url(./close.png);
-          background-size: 100% 100%;
-        }
-        a{
-          font-size: 34px;
-          display: block;
-          top: 176px;
-          color: #CCE7FF;
-          width: 200px;
-          position: absolute;
-          text-align: center;
-        }
-      }
-      .AhrefBox:hover a{
-        color: #15ABFF;
-      }
-      .ChildrenBox{
-        height: 365px;
-        width: 260px;
-        left: -260px;
-        // left: 260px;
-        top: 750px;
-        background: url(./btBack.png);
-        background-size: 100%  100%;
-        position: absolute;
-        a{
-          display: block;
-          width: 100%;
-          height: 25%;
-          text-align: center;
-          font-size: 34px;
-          line-height: 100px;
-          color: #CCE7FF;
-        }
-        a:hover{
-          color: #15ABFF;
-        }
-      }
-    }
-  }
-}
-.CityParentBox{
-  position: relative;
-  transform: scale(0.5);
-  z-index: 100000;
-  .BoxArry{
-    .SmallBox{
-      height: 1244px;
-      width: 45px;
-      position: fixed;
-      top: 1200px;
-      left: 17200px;
-      // left: 0px;
-      position: absolute;
-      z-index: 10000;
-      background: url(./boxClose-r.png);
-      background-size: 100%  100%;
-    }
-    .BigBox{
-      height: 1244px;
-      width: 253px;
-      position: fixed;
-      top: 1200px;
-      left: 17000px;
-  //    left: 0px;
-      background-color: rgb(12, 236, 206);
-      position: absolute;
-      z-index: 10000;
-      background: url(./boxTan-r.png);
-      background-size: 100%  100%;
-      .CloseBox{
-        height: 220px;
-        width: 50px;
-        // right: 0px;
-        cursor: pointer;
-        position: absolute;
-        top: 510px;
-        z-index: 10000;
-      }
-      .AhrefBox{
-        height: 248px;
-        padding: 30px;
-        position: relative;
-        width: 260px;
-        cursor: pointer;
-        .openBox{
-          top: 50px;
-          left: 80px;
-          position: absolute;
-          height: 110px;
-          width: 110px;
-          background: url(./open.png);
-          background-size: 100% 100%;
-        }
-        .closeStyle{
-          top: 50px;
-          left: 80px;
-          position: absolute;
-          height: 110px;
-          width: 110px;
-          background: url(./close.png);
-          background-size: 100% 100%;
-        }
-        a{
-          font-size: 34px;
-          display: block;
-          top: 176px;
-          color: #CCE7FF;
-          width: 200px;
-          position: absolute;
-          text-align: center;
-        }
-      }
-      .AhrefBox:hover a{
-        color: #15ABFF;
-      }
-      .ChildrenBox{
-        height: 365px;
-        width: 260px;
-        left: -260px;
-        // left: 260px;
-        top: 750px;
-        background: url(./btBack.png);
-        background-size: 100%  100%;
-        position: absolute;
-        a{
-          display: block;
-          width: 100%;
-          height: 25%;
-          text-align: center;
-          font-size: 34px;
-          line-height: 100px;
-          color: #CCE7FF;
-        }
-        a:hover{
-          color: #15ABFF;
-        }
-      }
-    }
-  }
-}
+// .ParentBox{
+//   position: relative;
+//   .BoxArry{
+//     .SmallBox{
+//       height: 1244px;
+//       width: 45px;
+//       position: fixed;
+//       top: 500px;
+//       left: 3790px;
+//       // left: 0px;
+//       position: absolute;
+//       z-index: 10000;
+//       background: url(./boxClose-r.png);
+//       background-size: 100%  100%;
+//     }
+//     .BigBox{
+//       height: 1244px;
+//       width: 253px;
+//       position: fixed;
+//       top: 500px;
+//       left: 3580px;
+//   //    left: 0px;
+//       background-color: rgb(12, 236, 206);
+//       position: absolute;
+//       z-index: 10000;
+//       background: url(./boxTan-r.png);
+//       background-size: 100%  100%;
+//       .CloseBox{
+//         height: 220px;
+//         width: 50px;
+//         // right: 0px;
+//         cursor: pointer;
+//         position: absolute;
+//         top: 510px;
+//         z-index: 10000;
+//       }
+//       .AhrefBox{
+//         height: 248px;
+//         padding: 30px;
+//         position: relative;
+//         width: 260px;
+//         cursor: pointer;
+//         .openBox{
+//           top: 50px;
+//           left: 80px;
+//           position: absolute;
+//           height: 110px;
+//           width: 110px;
+//           background: url(./open.png);
+//           background-size: 100% 100%;
+//         }
+//         .closeStyle{
+//           top: 50px;
+//           left: 80px;
+//           position: absolute;
+//           height: 110px;
+//           width: 110px;
+//           background: url(./close.png);
+//           background-size: 100% 100%;
+//         }
+//         a{
+//           font-size: 34px;
+//           display: block;
+//           top: 176px;
+//           color: #CCE7FF;
+//           width: 200px;
+//           position: absolute;
+//           text-align: center;
+//         }
+//       }
+//       .AhrefBox:hover a{
+//         color: #15ABFF;
+//       }
+//       .ChildrenBox{
+//         height: 365px;
+//         width: 260px;
+//         left: -260px;
+//         // left: 260px;
+//         top: 750px;
+//         background: url(./btBack.png);
+//         background-size: 100%  100%;
+//         position: absolute;
+//         a{
+//           display: block;
+//           width: 100%;
+//           height: 25%;
+//           text-align: center;
+//           font-size: 34px;
+//           line-height: 100px;
+//           color: #CCE7FF;
+//         }
+//         a:hover{
+//           color: #15ABFF;
+//         }
+//       }
+//     }
+//   }
+// }
+// .CityParentBox{
+//   position: relative;
+//   transform: scale(0.5);
+//   z-index: 100000;
+//   .BoxArry{
+//     .SmallBox{
+//       height: 1244px;
+//       width: 45px;
+//       position: fixed;
+//       top: 1200px;
+//       left: 17200px;
+//       // left: 0px;
+//       position: absolute;
+//       z-index: 10000;
+//       background: url(./boxClose-r.png);
+//       background-size: 100%  100%;
+//     }
+//     .BigBox{
+//       height: 1244px;
+//       width: 253px;
+//       position: fixed;
+//       top: 1200px;
+//       left: 17000px;
+//   //    left: 0px;
+//       background-color: rgb(12, 236, 206);
+//       position: absolute;
+//       z-index: 10000;
+//       background: url(./boxTan-r.png);
+//       background-size: 100%  100%;
+//       .CloseBox{
+//         height: 220px;
+//         width: 50px;
+//         // right: 0px;
+//         cursor: pointer;
+//         position: absolute;
+//         top: 510px;
+//         z-index: 10000;
+//       }
+//       .AhrefBox{
+//         height: 248px;
+//         padding: 30px;
+//         position: relative;
+//         width: 260px;
+//         cursor: pointer;
+//         .openBox{
+//           top: 50px;
+//           left: 80px;
+//           position: absolute;
+//           height: 110px;
+//           width: 110px;
+//           background: url(./open.png);
+//           background-size: 100% 100%;
+//         }
+//         .closeStyle{
+//           top: 50px;
+//           left: 80px;
+//           position: absolute;
+//           height: 110px;
+//           width: 110px;
+//           background: url(./close.png);
+//           background-size: 100% 100%;
+//         }
+//         a{
+//           font-size: 34px;
+//           display: block;
+//           top: 176px;
+//           color: #CCE7FF;
+//           width: 200px;
+//           position: absolute;
+//           text-align: center;
+//         }
+//       }
+//       .AhrefBox:hover a{
+//         color: #15ABFF;
+//       }
+//       .ChildrenBox{
+//         height: 365px;
+//         width: 260px;
+//         left: -260px;
+//         // left: 260px;
+//         top: 750px;
+//         background: url(./btBack.png);
+//         background-size: 100%  100%;
+//         position: absolute;
+//         a{
+//           display: block;
+//           width: 100%;
+//           height: 25%;
+//           text-align: center;
+//           font-size: 34px;
+//           line-height: 100px;
+//           color: #CCE7FF;
+//         }
+//         a:hover{
+//           color: #15ABFF;
+//         }
+//       }
+//     }
+//   }
+// }
 .TableBox {
   height: 886px;
   width: 1747px;

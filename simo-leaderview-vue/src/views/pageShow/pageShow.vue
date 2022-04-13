@@ -86,10 +86,10 @@
         </div>
       </div>
       <div class="XQBoxTan" v-else>
-        <div class="poptitle">小旅馆</div>
+        <div class="poptitle">{{ iswbzzs? nowShowData.room_name:'小旅馆'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
         <div class="BackBtn" @click="ShowTableTan = true">返回</div>
-        <div class="lineContain">
+        <div class="lineContain" v-if='!iswbzzs'>
           <div class="line">名称: {{nowShowData.placeName}}</div>
           <div class="line">标准地址:{{nowShowData.address}}</div>
           <div class="line">房间数:{{nowShowData.roomNum}}</div>
@@ -101,6 +101,22 @@
           <div class="line">微消站(电话):{{nowShowData.fireStation}}:{{nowShowData.fireStationPhone}}</div>
           <button @click="ShowZofang(nowShowData.address)">入住记录</button>
           <button @click="ShowRuzhu(nowShowData.address)">走访记录</button>
+        </div>
+        <div class="lineContain" v-else>
+          <div class="line">所属街道: {{nowShowData.street || '无'}}</div>
+          <div class="line">地址:{{nowShowData.address || '无'}}</div>
+          <div class="line">业主（房东）姓名:{{nowShowData.owner_name || '无'}}</div>
+          <div class="line">业主（房东）联系电话:{{nowShowData.owner_phone || '无'}}</div>
+          <div class="line">经营者姓名:{{nowShowData.manager_name || '无'}}</div>
+          <div class="line">经营者联系电话:{{nowShowData.maager_phone || '无'}}</div>
+          <div class="line">房间数:{{nowShowData.room_number || '无'}}</div>
+          <div class="line">床铺数:{{nowShowData.bed_number || '无'}}</div>
+          <div class="line">网格员姓名:{{nowShowData.gridman_name || '无'}}</div>
+          <div class="line">网格员联系电话:{{nowShowData.gridman_phone || '无'}}</div>
+          <div class="line">社区民警姓名:{{nowShowData.police_name || '无'}}</div>
+          <div class="line">社区民警联系电话:{{nowShowData.police_phone || '无'}}</div>
+          <div class="line">区域微型消防站联络员姓名:{{nowShowData.liaison_name || '无'}}</div>
+          <div class="line">区域微型消防站联络电话:{{nowShowData.liaison_phone || '无'}}</div>
         </div>
       </div>
     </div>
@@ -142,7 +158,11 @@ export default {
         placeName: "名称",
         address: "标准地址",
         roomNum: "房间数",
-        bedNum: "床铺数"
+        bedNum: "床铺数",
+        room_name: "名称",
+        street: "所属街道",
+        room_number: "房间数",
+        bed_number: "床铺数",
       },
       billboardMarkers: [],
       tableDataXunCha: [
@@ -455,11 +475,11 @@ export default {
       } else {
         this.initBase();
       }
-      if (this.nowPageName && this.nowPageName.indexOf("未办证住所") >= 0) {
-        this.axios.get(`/leaderview/QZF/getQZF4`).then(data => {
+      if (this.nowPageName && this.nowPageName.indexOf("群租房") >= 0) {
+        this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
           if (data.success) {
             let height = 100;
-            data.obj.rowsArray.forEach((d, index) => {
+            data.obj.forEach((d, index) => {
               this.addPointer(
                 Cesium.Cartesian3.fromDegrees(
                   d.longitude * 1,
@@ -468,13 +488,33 @@ export default {
                 ),
                 "xiaoqu" + index,
                 "static/img/xiaoqu.png",
-                // { columns: [], rows: d.arr }
+                { columns: [], rows: d.arr }
               );
             });
           }
         });
-      } else {
-        this.clearPoint();
+      } else if(this.nowPageName && this.nowPageName.indexOf("未办证住所") >= 0){
+        this.axios.get(`/leaderview/QZF/getQZF4`).then(data => {
+          if (data.success) {
+            let height = 100;
+            data.obj.dataArray.forEach((d, index) => {
+              if(d.street === '望江路街道' || d.street === '金花桥街道'){
+                d.items.forEach((ele,ind) => {
+                  this.addPointer(
+                    Cesium.Cartesian3.fromDegrees(
+                      ele.longitude * 1,
+                      ele.latitude * 1,
+                      height
+                    ),
+                    "wbzzs" + d.street + ind,
+                    "static/img/xiaoqu.png",
+                    { columns: [], rows: ele.items[0].items }
+                  );
+                });
+              }
+            });
+          }
+        });
       }
     }
   },
@@ -819,6 +859,7 @@ return mix(factor,mirror,0.0);
     },
     showXQBoxTan(nowShowData) {
       this.ShowTableTan = false;
+      console.log(nowShowData)
       this.nowShowData = nowShowData;
     },
     addLabelMarker(lon, lat, url, label, small) {
@@ -1315,9 +1356,20 @@ return mix(factor,mirror,0.0);
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3);
           let extrend = false;
-          if (item.properties.Name === "浆洗街街道") {
-            extrend = true;
-            color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6);
+          if(this.nowPageName && this.nowPageName.indexOf("未办证住所") >= 0){
+            if (item.properties.Name === "金花桥街道") {
+              extrend = true;
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6);
+            }
+            if (item.properties.Name === "望江路街道") {
+              extrend = true;
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6);
+            }
+          }else{
+            if (item.properties.Name === "浆洗街街道") {
+              extrend = true;
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.6);
+            }
           }
           let linepositions = [];
           let pointer = turf.centerOfMass(item.geometry).geometry.coordinates;
@@ -1631,6 +1683,8 @@ return mix(factor,mirror,0.0);
         this.popshowWGQ = false;
         this.popshowXMQ = false;
         this.SZDataShowBig = false;
+
+        this.iswbzzs = false;
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf("网格区") > 0) {
           this.popshowWGQ = true;
           this.WGQData = {
@@ -1645,7 +1699,6 @@ return mix(factor,mirror,0.0);
         }
         if (picked && picked.primitive && picked.id && picked.id._billboard) {
           if (picked.id && picked.id._billboard) {
-            console.log(picked)
             if (picked.id.name === "XMQ") {
               this.popshowXMQ = true;
             } else if (picked.id.type === "camera") {
@@ -1655,6 +1708,15 @@ return mix(factor,mirror,0.0);
               this.SZDataShowBig = true;
               this.CheckEdId = picked.id.name.split("管控区")[0] * 1;
               this.SZData = this.AllData[this.CheckEdId - 1];
+            } else if(picked.id.id && picked.id.id.indexOf("wbzzs") >= 0){
+              this.popshowBig = true;
+              this.ShowTableTan = true;
+              this.iswbzzs = true;
+              this.CheckEdId = picked.id.id;
+              this.TableTanData = {
+                columns: ["address", "street", "room_number", "bed_number"],
+                rows: picked.id.DataArry.rows
+              };
             } else {
               this.popshowBig = true;
               this.ShowTableTan = true;
@@ -1740,6 +1802,9 @@ return mix(factor,mirror,0.0);
   overflow: hidden;
   position: relative;
 }
+.XQBoxTan{
+  height: 100%;
+}
 .content #cesiumContainer {
   width: 100%;
   height: 100%;
@@ -1779,8 +1844,10 @@ return mix(factor,mirror,0.0);
 }
 .content #popWGQ .lineContain {
   padding: 30px 60px;
-  top: 50px;
+  top: 70px;
+  height: 70%;
   position: relative;
+  overflow: auto;
 }
 .content #popWGQ .lineContain .line {
   margin-bottom: 15px;
@@ -1823,8 +1890,10 @@ return mix(factor,mirror,0.0);
 }
 .content #popXMQ .lineContain {
   padding: 40px 60px;
-  top: 50px;
+  top: 70px;
+  height: 70%;
   position: relative;
+  overflow: auto;
 }
 .content #popXMQ .lineContain .line {
   margin-bottom: 10px;
@@ -1867,8 +1936,10 @@ return mix(factor,mirror,0.0);
 }
 .content #SZpopBig .lineContain {
   padding: 10px 60px;
-  top: 50px;
+  top: 70px;
+  height: 70%;
   position: relative;
+  overflow: auto;
 }
 .content #SZpopBig .lineContain .line {
   margin-bottom: 5px;
@@ -1919,8 +1990,10 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .lineContain {
   padding: 10px 60px;
-  top: 50px;
+  top: 70px;
+  height: 70%;
   position: relative;
+  overflow: auto;
 }
 .content #popBig .lineContain .line {
   margin-bottom: 5px;
@@ -1943,7 +2016,7 @@ return mix(factor,mirror,0.0);
 .TableHead tr {
   width: 100%;
   height: 40px;
-  font-size: 24px !important;
+  font-size: 14px !important;
   display: flex;
   color: #86b7dd;
 }
@@ -1960,7 +2033,7 @@ return mix(factor,mirror,0.0);
   width: 100%;
   height: 40px;
   margin: 10px 0;
-  font-size: 24px !important;
+  font-size: 14px !important;
   display: flex;
   color: #bfcbdb;
 }
