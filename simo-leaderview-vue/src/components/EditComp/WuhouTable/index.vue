@@ -218,7 +218,8 @@ export default {
   computed: {
     headStyle () {
       return {
-        height: this.item.headHeight + 'px !important'
+        height: this.item.headHeight + 'px !important',
+        fontSize: this.item.Fontsize + 'px !important'
       }
     },
     bodyStyle () {
@@ -229,7 +230,8 @@ export default {
     bodyAllStyle () {
       return {
         height: `calc(100% - ${this.item.headHeight}px)` + '!important',
-        overflow: 'auto'
+        overflow: 'auto',
+        fontSize: this.item.Fontsize + 'px !important'
       }
     }
   },
@@ -335,7 +337,6 @@ export default {
     padding: 6px 10px;
     margin: 16px 0;
     cursor: pointer;
-    font-size: 26px;
     text-align: center;
   }
 }

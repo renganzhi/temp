@@ -1795,7 +1795,7 @@ return mix(factor,mirror,0.0);
 };
 </script>
 
-<style>
+<style scoped>
 .content {
   width: 100%;
   height: 100%;
@@ -1982,7 +1982,7 @@ return mix(factor,mirror,0.0);
 }
 .content #popBig .BackBtn {
   cursor: pointer;
-  top: 55px;
+  bottom: 0px;
   right: 20px;
   position: absolute;
   height: 50px;
