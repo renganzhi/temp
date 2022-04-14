@@ -88,7 +88,6 @@
       <div class="XQBoxTan" v-else>
         <div class="poptitle">{{ iswbzzs? nowShowData.room_name:'小旅馆'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
-        <div class="BackBtn" @click="ShowTableTan = true">返回</div>
         <div class="lineContain" v-if='!iswbzzs'>
           <div class="line">名称: {{nowShowData.placeName}}</div>
           <div class="line">标准地址:{{nowShowData.address}}</div>
@@ -118,6 +117,7 @@
           <div class="line">区域微型消防站联络员姓名:{{nowShowData.liaison_name || '无'}}</div>
           <div class="line">区域微型消防站联络电话:{{nowShowData.liaison_phone || '无'}}</div>
         </div>
+        <div class="BackBtn" @click="ShowTableTan = true">返回</div>
       </div>
     </div>
     <div id="cesiumContainer" />
@@ -520,8 +520,7 @@ export default {
   },
   mounted() {
     this.init3D();
-    // this.initSheZang2();
-    this.initBase()
+    // this.initBase()
     this.initModels()
     this.initPostrender()
     this.addPopEvent()
@@ -1161,7 +1160,7 @@ return mix(factor,mirror,0.0);
         var pickIdchecks =
           viewer.scene.primitives._primitives[0]._primitives[0]._primitives;
         pickIdchecks.forEach(item => {
-          if (item._pickIds) {
+          if (item && item._pickIds) {
             if (item._pickIds.length === 12 || item._pickIds.length < 9) {
               if (item.appearance.material) {
                 item._pickIds.forEach(pickId => {
@@ -1935,7 +1934,8 @@ return mix(factor,mirror,0.0);
   width: 50px;
 }
 .content #SZpopBig .lineContain {
-  padding: 10px 60px;
+  padding: 10px 40px;
+  margin: 0 20px;
   top: 70px;
   height: 70%;
   position: relative;
@@ -1989,7 +1989,8 @@ return mix(factor,mirror,0.0);
   width: 50px;
 }
 .content #popBig .lineContain {
-  padding: 10px 60px;
+  padding: 10px 40px;
+  margin: 0 20px;
   top: 70px;
   height: 70%;
   position: relative;
