@@ -185,8 +185,9 @@ export default {
       this.mychart = echarts.init(this.$refs.NewHistogram)
       if (this.item.barType === 'NewHistogram') {
         if (this.item.dataTypeSet === 1) {
+          console.log(this.item.chartData1.dataArry)
           this.item.chartData1.columns = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].columns
-          this.item.chartData1.unit = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].unit
+          this.item.chartData1.unit = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].unit || ''
           this.item.chartData1.rows = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].rows
         }
         let myseries = []
@@ -406,7 +407,7 @@ export default {
           },
           yAxis: {
             type: 'value',
-            name: this.item.chartData1.unit,
+            name: this.item.chartData1.unit || '',
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
