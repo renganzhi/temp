@@ -95,369 +95,424 @@ let Imgpositions =
     color: Cesium.Color.GREEN,
     positions: [30.63816588, 104.04414833, 30.63758432, 104.04375672, 30.63709507, 104.04342413, 30.63707199, 104.04340267, 30.63633349, 104.04293060, 30.63678582, 104.04196501, 30.63695198, 104.04161096, 30.63846590, 104.04267848, 30.63853051, 104.04271066, 30.63854898, 104.04273748, 30.63852705, 104.04277906, 30.63841051, 104.04307947, 30.63887091, 104.04331952]
   }],
-  'markers': [{
-    'name': '武侯名苑',
-    'img': header + 'hongqi.png',
-    'label': '武侯名苑',
-    'Lat': 30.639311,
-    'Lng': 104.045897
-  }, {
-    'name': '锅庄舞场',
-    'img': header + 'hongqi.png',
-    'label': '锅庄舞场',
-    'Lat': 30.639608,
-    'Lng': 104.043361
-  }, {
-    'name': '锦江苑',
-    'img': header + 'hongqi.png',
-    'label': '锦江苑',
-    'Lat': 30.638002,
-    'Lng': 104.046503
-  }, {
-    'name': '锦宏阁',
-    'img': header + 'hongqi.png',
-    'label': '锦宏阁',
-    'Lat': 30.637744,
-    'Lng': 104.046206
-  }, {
-    'name': '洗面桥横街22号院',
-    'img': header + 'hongqi.png',
-    'label': '洗面桥横街22号院',
-    'Lat': 30.640732,
-    'Lng': 104.052570
-  }, {
-    'name': '成都A区',
-    'img': header + 'hongqi.png',
-    'label': '成都A区',
-    'Lat': 30.638411,
-    'Lng': 104.040366
-  }, {
-    'name': '风尚国际',
-    'img': header + 'hongqi.png',
-    'label': '风尚国际',
-    'Lat': 30.634201,
-    'Lng': 104.040077
-  }, {
-    'name': '罗孚世家',
-    'img': header + 'hongqi.png',
-    'label': '罗孚世家',
-    'Lat': 30.636943,
-    'Lng': 104.039240
-  }, {
-    'name': '锦和名邸',
-    'img': header + 'hongqi.png',
-    'label': '锦和名邸',
-    'Lat': 30.645541,
-    'Lng': 104.055328
-  }, {
-    'name': '天亿大厦',
-    'img': header + 'hongqi.png',
-    'label': '天亿大厦',
-    'Lat': 30.645068,
-    'Lng': 104.058391
-  }, {
-    'name': '罗马假日广场',
-    'img': header + 'hongqi.png',
-    'label': '罗马假日广场',
-    'Lat': 30.637990,
-    'Lng': 104.043853
-  }, {
-    'name': '武侯祠横街',
-    'img': header + 'hongqi.png',
-    'label': '武侯祠横街',
-    'Lat': 30.640603,
-    'Lng': 104.047319
-  }, {
-    'name': '耍都',
-    'img': header + 'hongqi.png',
-    'label': '耍都',
-    'Lat': 30.646229,
-    'Lng': 104.057581
-  }, {
-    'name': '洗面桥横街',
-    'img': header + 'hongqi.png',
-    'label': '洗面桥横街',
-    'Lat': 30.641687,
-    'Lng': 104.049797
-  }, {
-    'name': '西南民族大学',
-    'img': header + 'hongqi.png',
-    'label': '西南民族大学',
-    'Lat': 30.638263,
-    'Lng': 104.049647
-  }, {
-    'name': '东华电脑城',
-    'img': header + 'hongqi.png',
-    'label': '东华电脑城',
-    'Lat': 30.633763,
-    'Lng': 104.068015
-  }, {
-    'name': '来福士广场',
-    'img': header + 'hongqi.png',
-    'label': '来福士广场',
-    'Lat': 30.632946,
-    'Lng': 104.067242
-  }, {
-    'name': '第一备勤点',
-    'img': header + 'beiqing.png',
-    'label': '第一备勤点',
-    'Lat': 30.645401,
-    'Lng': 104.059737
-  }, {
-    'name': '第二备勤点',
-    'img': header + 'beiqing.png',
-    'label': '第二备勤点',
-    'Lat': 30.642710,
-    'Lng': 104.047206
-  }, {
-    'name': '现场指挥车',
-    'img': header + '现场指挥车.png',
-    'label': '现场指挥车',
-    'Lat': 30.642320,
-    'Lng': 104.048397
-  }, {
-    'name': '封控点',
-    'img': header + '封控点.png',
-    'label': '封控点',
-    'Lat': 30.643655,
-    'Lng': 104.045767
-  }, {
-    'name': '封控点',
-    'img': header + '封控点.png',
-    'label': '封控点',
-    'Lat': 30.639253,
-    'Lng': 104.055108
-  }, {
-    'name': '巡大快反1组',
-    'img': header + '巡大快反1组.png',
-    'label': '巡大快反1组',
-    'Lat': 30.639509,
-    'Lng': 104.054789
-  }, {
-    'name': '华西快反1组',
-    'img': header + '华西快反1组.png',
-    'label': '华西快反1组',
-    'Lat': 30.639214,
-    'Lng': 104.055400
-  }, {
-    'name': '华西坝派出所巡控组',
-    'img': header + '现场指挥车.png',
-    'label': '华西坝派出所巡控组',
-    'Lat': 30.639474,
-    'Lng': 104.055288
-  }, {
-    'name': '摩巡组',
-    'img': header + '巡大快反1组.png',
-    'label': '摩巡组',
-    'Lat': 30.641241,
-    'Lng': 104.050968
-  }, {
-    'name': '摩巡组',
-    'img': header + '巡大快反1组.png',
-    'label': '摩巡组',
-    'Lat': 30.640335,
-    'Lng': 104.047265
-  }, {
-    'name': '封控点',
-    'img': header + '封控点.png',
-    'label': '封控点',
-    'Lat': 30.638079,
-    'Lng': 104.045746
-  }, {
-    'name': '消防战车',
-    'img': header + '消防战车.png',
-    'label': '消防战车',
-    'Lat': 30.644281,
-    'Lng': 104.049749
-  }, {
-    'name': '巡大快反1组',
-    'img': header + '巡大快反1组.png',
-    'label': '巡大快反1组',
-    'Lat': 30.644459,
-    'Lng': 104.049473
-  }, {
-    'name': '浆洗所巡控组',
-    'img': header + '现场指挥车.png',
-    'label': '浆洗所巡控组',
-    'Lat': 30.643169,
-    'Lng': 104.044304
-  }, {
-    'name': '现场指挥部',
-    'img': header + 'location.png',
-    'label': '现场指挥部',
-    'Lat': 30.635833,
-    'Lng': 104.050755
-  }, {
-    'name': '巡逻组',
-    'img': header + '封控点.png',
-    'label': '巡逻组',
-    'Lat': 30.637912,
-    'Lng': 104.042963
-  }, {
-    'name': '第三备勤点',
-    'img': header + '封控点.png',
-    'label': '第三备勤点',
-    'Lat': 30.637134,
-    'Lng': 104.042979
-  }, {
-    'name': '外围巡逻组',
-    'img': header + '封控点.png',
-    'label': '外围巡逻组',
-    'Lat': 30.636710,
-    'Lng': 104.042072
-  }, {
-    'name': '固定卡点',
-    'img': header + '华西快反1组.png',
-    'label': '固定卡点',
-    'Lat': 30.636262,
-    'Lng': 104.042906
-  }, {
-    'name': '固定卡点',
-    'img': header + '华西快反1组.png',
-    'label': '固定卡点',
-    'Lat': 30.637467,
-    'Lng': 104.040149
-  }, {
-    'name': '封控组',
-    'img': header + '封控点.png',
-    'label': '封控组',
-    'Lat': 30.643986,
-    'Lng': 104.049443
-  }, {
-    'name': '德国驻成都领事馆',
-    'img': header + 'hongqi.png',
-    'label': '德国驻成都领事馆',
-    'Lat': 30.624623,
-    'Lng': 104.067559
-  }, {
-    'name': '泰国驻成都领事馆',
-    'img': header + 'hongqi.png',
-    'label': '泰国驻成都领事馆',
-    'Lat': 30.618719,
-    'Lng': 104.068514
-  }, {
-    'name': '公安第一网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第一网格',
-    'Lat': 30.643619,
-    'Lng': 104.049218
-  }, {
-    'name': '公安第二网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第二网格',
-    'Lat': 30.641685,
-    'Lng': 104.049923
-  }, {
-    'name': '公安第三网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第三网格',
-    'Lat': 30.639754,
-    'Lng': 104.054038
-  }, {
-    'name': '公安第四网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第四网格',
-    'Lat': 30.641535,
-    'Lng': 104.047944
-  }, {
-    'name': '公安第五网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第五网格',
-    'Lat': 30.639518,
-    'Lng': 104.046654
-  }, {
-    'name': '公安第六网格',
-    'img': header + 'hongqi.png',
-    'label': '公安第六网格',
-    'Lat': 30.643061,
-    'Lng': 104.046890
-  }],
-  'pointBase': [{
-    'name': '第六管控区',
-    'id': 6,
-    'img': [header + 'location.png', header + '第六管控区.png'],
-    'Lat': 30.646654,
-    'Lng': 104.057157
-  }, {
-    'name': '第七管控区',
-    'id': 7,
-    'img': [header + 'location.png', header + '第七管控区.png'],
-    'Lat': 30.644060,
-    'Lng': 104.055762
-  }, {
-    'name': '第二管控区',
-    'id': 2,
-    'img': [header + 'location.png', header + '第二管控区.png'],
-    'Lat': 30.642107,
-    'Lng': 104.051718
-  }, {
-    'name': '第四管控区',
-    'id': 4,
-    'img': [header + 'location.png', header + '第四管控区.png'],
-    'Lat': 30.643547,
-    'Lng': 104.047898
-  }, {
-  //   'name': '第四管控区',
-  //   'id':4,
-  //   'img': [header + 'location.png', header + '第四管控区.png'],
-  //   'Lat': 30.644415,
-  //   'Lng': 104.051787
-  // }, {
-    'name': '第一管控区',
-    'id': 1,
-    'img': [header + 'location.png', header + '第一管控区.png'],
-    'Lat': 30.641226,
-    'Lng': 104.045849
-  }, {
-    'name': '第八管控区',
-    'id': 8,
-    'img': [header + 'location.png', header + '第八管控区.png'],
-    'Lat': 30.637247,
-    'Lng': 104.052908
-  }, {
-    'name': '第五管控区',
-    'id': 5,
-    'img': [header + 'location.png', header + '第五管控区.png'],
-    'Lat': 30.639204,
-    'Lng': 104.049840
-  }, {
-    'name': '第三管控区',
-    'id': 3,
-    'img': [header + 'location.png', header + '第三管控区.png'],
-    'Lat': 30.638374,
-    'Lng': 104.040849
-  }, {
-    'name': '第九管控区',
-    'id': 9,
-    'img': [header + 'location.png', header + '第九管控区.png'],
-    'Lat': 30.637234,
-    'Lng': 104.037480
-  }, {
-    'name': '美领馆守护区',
-    'img': header + 'location.png',
-    'Lat': 30.624498,
-    'Lng': 104.068583
-  }, {
-    'name': '数码广场守护区',
-    'img': header + 'location.png',
-    'Lat': 30.633947,
-    'Lng': 104.067569
-  }, {
-    'name': '三六三医院重点区域',
-    'img': header + 'location.png',
-    'Lat': 30.649450,
-    'Lng': 104.054834
-  }, {
-    'name': '天朗锦邸重点区域',
-    'img': header + 'location.png',
-    'Lat': 30.649196,
-    'Lng': 104.042126
-  }, {
-    'name': '金科双楠重点区域',
-    'img': header + 'location.png',
-    'Lat': 30.640718,
-    'Lng': 104.027722
-  }]
+  'markers': {
+    // 常规地点
+    'didian': [
+      {
+        'name': '武侯名苑',
+        'img': header + 'hongqi.png',
+        'label': '武侯名苑',
+        'Lat': 30.639311,
+        'Lng': 104.045897
+      },
+      {
+        'name': '锅庄舞场',
+        'img': header + 'hongqi.png',
+        'label': '锅庄舞场',
+        'Lat': 30.639608,
+        'Lng': 104.043361
+      },
+      {
+        'name': '锦江苑',
+        'img': header + 'hongqi.png',
+        'label': '锦江苑',
+        'Lat': 30.638002,
+        'Lng': 104.046503
+      },
+      {
+        'name': '锦宏阁',
+        'img': header + 'hongqi.png',
+        'label': '锦宏阁',
+        'Lat': 30.637744,
+        'Lng': 104.046206
+      },
+      {
+        'name': '洗面桥横街22号院',
+        'img': header + 'hongqi.png',
+        'label': '洗面桥横街22号院',
+        'Lat': 30.640732,
+        'Lng': 104.052570
+      },
+      {
+        'name': '成都A区',
+        'img': header + 'hongqi.png',
+        'label': '成都A区',
+        'Lat': 30.638411,
+        'Lng': 104.040366
+      },
+      {
+        'name': '风尚国际',
+        'img': header + 'hongqi.png',
+        'label': '风尚国际',
+        'Lat': 30.634201,
+        'Lng': 104.040077
+      },
+      {
+        'name': '罗孚世家',
+        'img': header + 'hongqi.png',
+        'label': '罗孚世家',
+        'Lat': 30.636943,
+        'Lng': 104.039240
+      },
+      {
+        'name': '锦和名邸',
+        'img': header + 'hongqi.png',
+        'label': '锦和名邸',
+        'Lat': 30.645541,
+        'Lng': 104.055328
+      },
+      {
+        'name': '天亿大厦',
+        'img': header + 'hongqi.png',
+        'label': '天亿大厦',
+        'Lat': 30.645068,
+        'Lng': 104.058391
+      },
+      {
+        'name': '罗马假日广场',
+        'img': header + 'hongqi.png',
+        'label': '罗马假日广场',
+        'Lat': 30.637990,
+        'Lng': 104.043853
+      },
+      {
+        'name': '武侯祠横街',
+        'img': header + 'hongqi.png',
+        'label': '武侯祠横街',
+        'Lat': 30.640603,
+        'Lng': 104.047319
+      },
+      {
+        'name': '耍都',
+        'img': header + 'hongqi.png',
+        'label': '耍都',
+        'Lat': 30.646229,
+        'Lng': 104.057581
+      },
+      {
+        'name': '洗面桥横街',
+        'img': header + 'hongqi.png',
+        'label': '洗面桥横街',
+        'Lat': 30.641687,
+        'Lng': 104.049797
+      },
+      {
+        'name': '西南民族大学',
+        'img': header + 'hongqi.png',
+        'label': '西南民族大学',
+        'Lat': 30.638263,
+        'Lng': 104.049647
+      },
+      {
+        'name': '东华电脑城',
+        'img': header + 'hongqi.png',
+        'label': '东华电脑城',
+        'Lat': 30.633763,
+        'Lng': 104.068015
+      },
+      {
+        'name': '来福士广场',
+        'img': header + 'hongqi.png',
+        'label': '来福士广场',
+        'Lat': 30.632946,
+        'Lng': 104.067242
+      },
+      {
+        'name': '德国驻成都领事馆',
+        'img': header + 'hongqi.png',
+        'label': '德国驻成都领事馆',
+        'Lat': 30.624623,
+        'Lng': 104.067559
+      },
+      {
+        'name': '泰国驻成都领事馆',
+        'img': header + 'hongqi.png',
+        'label': '泰国驻成都领事馆',
+        'Lat': 30.618719,
+        'Lng': 104.068514
+      }],
+    // 备勤
+    'beiqing': [
+      {
+        'name': '第一备勤点',
+        'img': header + 'beiqing.png',
+        'label': '第一备勤点',
+        'Lat': 30.645401,
+        'Lng': 104.059737
+      },
+      {
+        'name': '第二备勤点',
+        'img': header + 'beiqing.png',
+        'label': '第二备勤点',
+        'Lat': 30.642710,
+        'Lng': 104.047206
+      }],
+    // 封控
+    'fengkong': [
+      {
+        'name': '封控点',
+        'img': header + '封控点.png',
+        'label': '封控点',
+        'Lat': 30.643655,
+        'Lng': 104.045767
+      },
+      {
+        'name': '封控点',
+        'img': header + '封控点.png',
+        'label': '封控点',
+        'Lat': 30.639253,
+        'Lng': 104.055108
+      },
+      {
+        'name': '封控点',
+        'img': header + '封控点.png',
+        'label': '封控点',
+        'Lat': 30.638079,
+        'Lng': 104.045746
+      },
+      {
+        'name': '巡逻组',
+        'img': header + '封控点.png',
+        'label': '巡逻组',
+        'Lat': 30.637912,
+        'Lng': 104.042963
+      },
+      {
+        'name': '第三备勤点',
+        'img': header + '封控点.png',
+        'label': '第三备勤点',
+        'Lat': 30.637134,
+        'Lng': 104.042979
+      },
+      {
+        'name': '外围巡逻组',
+        'img': header + '封控点.png',
+        'label': '外围巡逻组',
+        'Lat': 30.636710,
+        'Lng': 104.042072
+      },
+      {
+        'name': '封控组',
+        'img': header + '封控点.png',
+        'label': '封控组',
+        'Lat': 30.643986,
+        'Lng': 104.049443
+      }],
+    // 现场指挥车
+    'xianchangzhihui': [
+      {
+        'name': '现场指挥部',
+        'img': header + '现场指挥车.png',
+        'label': '现场指挥部',
+        'Lat': 30.635833,
+        'Lng': 104.050755
+      },
+      {
+        'name': '现场指挥车',
+        'img': header + '现场指挥车.png',
+        'label': '现场指挥车',
+        'Lat': 30.642320,
+        'Lng': 104.048397
+      },
+      {
+        'name': '华西坝派出所巡控组',
+        'img': header + '现场指挥车.png',
+        'label': '华西坝派出所巡控组',
+        'Lat': 30.639474,
+        'Lng': 104.055288
+      },
+      {
+        'name': '浆洗所巡控组',
+        'img': header + '现场指挥车.png',
+        'label': '浆洗所巡控组',
+        'Lat': 30.643169,
+        'Lng': 104.044304
+      }],
+    // 巡大快反
+    'xundakuaifan': [
+      {
+        'name': '巡大快反1组',
+        'img': header + '巡大快反1组.png',
+        'label': '巡大快反1组',
+        'Lat': 30.639509,
+        'Lng': 104.054789
+      },
+      {
+        'name': '摩巡组',
+        'img': header + '巡大快反1组.png',
+        'label': '摩巡组',
+        'Lat': 30.641241,
+        'Lng': 104.050968
+      },
+      {
+        'name': '摩巡组',
+        'img': header + '巡大快反1组.png',
+        'label': '摩巡组',
+        'Lat': 30.640335,
+        'Lng': 104.047265
+      }, {
+        'name': '巡大快反1组',
+        'img': header + '巡大快反1组.png',
+        'label': '巡大快反1组',
+        'Lat': 30.644459,
+        'Lng': 104.049473
+      } ],
+    // 华西快反
+    'huaxikuaifan': [
+      {
+        'name': '华西快反1组',
+        'img': header + '华西快反1组.png',
+        'label': '华西快反1组',
+        'Lat': 30.639214,
+        'Lng': 104.055400
+      },
+      {
+        'name': '固定卡点',
+        'img': header + '华西快反1组.png',
+        'label': '固定卡点',
+        'Lat': 30.636262,
+        'Lng': 104.042906
+      },
+      {
+        'name': '固定卡点',
+        'img': header + '华西快反1组.png',
+        'label': '固定卡点',
+        'Lat': 30.637467,
+        'Lng': 104.040149
+      }],
+    // 消防战车
+    'xiaofangzhanche': [{
+      'name': '消防战车',
+      'img': header + '消防战车.png',
+      'label': '消防战车',
+      'Lat': 30.644281,
+      'Lng': 104.049749
+    }]
+  },
+  'pointBase': [
+    {
+      'name': '公安第一网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第一网格',
+      'Lat': 30.643619,
+      'Lng': 104.049218
+    }, {
+      'name': '公安第二网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第二网格',
+      'Lat': 30.641685,
+      'Lng': 104.049923
+    }, {
+      'name': '公安第三网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第三网格',
+      'Lat': 30.639754,
+      'Lng': 104.054038
+    }, {
+      'name': '公安第四网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第四网格',
+      'Lat': 30.641535,
+      'Lng': 104.047944
+    }, {
+      'name': '公安第五网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第五网格',
+      'Lat': 30.639518,
+      'Lng': 104.046654
+    }, {
+      'name': '公安第六网格',
+      'img': header + 'hongqi.png',
+      'id': '公安第六网格',
+      'Lat': 30.643061,
+      'Lng': 104.046890
+    },
+    {
+      'name': '第六管控区',
+      'id': 6,
+      'img': [header + 'location.png', header + '第六管控区.png'],
+      'Lat': 30.646654,
+      'Lng': 104.057157
+    }, {
+      'name': '第七管控区',
+      'id': 7,
+      'img': [header + 'location.png', header + '第七管控区.png'],
+      'Lat': 30.644060,
+      'Lng': 104.055762
+    }, {
+      'name': '第二管控区',
+      'id': 2,
+      'img': [header + 'location.png', header + '第二管控区.png'],
+      'Lat': 30.642107,
+      'Lng': 104.051718
+    }, {
+      'name': '第四管控区',
+      'id': 4,
+      'img': [header + 'location.png', header + '第四管控区.png'],
+      'Lat': 30.643547,
+      'Lng': 104.047898
+    }, {
+      //   'name': '第四管控区',
+      //   'id':4,
+      //   'img': [header + 'location.png', header + '第四管控区.png'],
+      //   'Lat': 30.644415,
+      //   'Lng': 104.051787
+      // }, {
+      'name': '第一管控区',
+      'id': 1,
+      'img': [header + 'location.png', header + '第一管控区.png'],
+      'Lat': 30.641226,
+      'Lng': 104.045849
+    }, {
+      'name': '第八管控区',
+      'id': 8,
+      'img': [header + 'location.png', header + '第八管控区.png'],
+      'Lat': 30.637247,
+      'Lng': 104.052908
+    }, {
+      'name': '第五管控区',
+      'id': 5,
+      'img': [header + 'location.png', header + '第五管控区.png'],
+      'Lat': 30.639204,
+      'Lng': 104.049840
+    }, {
+      'name': '第三管控区',
+      'id': 3,
+      'img': [header + 'location.png', header + '第三管控区.png'],
+      'Lat': 30.638374,
+      'Lng': 104.040849
+    }, {
+      'name': '第九管控区',
+      'id': 9,
+      'img': [header + 'location.png', header + '第九管控区.png'],
+      'Lat': 30.637234,
+      'Lng': 104.037480
+    }, {
+      'name': '美领馆守护区',
+      'img': header + 'location.png',
+      'Lat': 30.624498,
+      'Lng': 104.068583
+    }, {
+      'name': '数码广场守护区',
+      'img': header + 'location.png',
+      'Lat': 30.633947,
+      'Lng': 104.067569
+    }, {
+      'name': '三六三医院重点区域',
+      'img': header + 'location.png',
+      'Lat': 30.649450,
+      'Lng': 104.054834
+    }, {
+      'name': '天朗锦邸重点区域',
+      'img': header + 'location.png',
+      'Lat': 30.649196,
+      'Lng': 104.042126
+    }, {
+      'name': '金科双楠重点区域',
+      'img': header + 'location.png',
+      'Lat': 30.640718,
+      'Lng': 104.027722
+    }]
 }
 
 export default Imgpositions
