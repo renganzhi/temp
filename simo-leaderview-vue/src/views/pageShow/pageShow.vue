@@ -514,7 +514,7 @@ export default {
               }
             });
           }
-        });
+        });//getWBZ1
       }
     }
   },
@@ -997,7 +997,7 @@ return mix(factor,mirror,0.0);
               label: {
                 show: true,
                 showBackground: true,
-                backgroundColor: Cesium.Color.BLUE,
+                backgroundColor: Cesium.Color.fromCssColorString("#003153"),
                 scale: 0.5,
                 font: `normal 38px MicroSoft YaHei`,
                 text: child.name,
@@ -1560,7 +1560,6 @@ return mix(factor,mirror,0.0);
     addVideoPoint() {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
         if (data.success) {
-          console.log(data)
           data.obj.forEach(item => {
             viewer.entities.add({
               position: Cesium.Cartesian3.fromDegrees(
@@ -1579,7 +1578,7 @@ return mix(factor,mirror,0.0);
                 backgroundColor: Cesium.Color.fromCssColorString("#000"),
                 scale: 0.4,
                 font: "normal 36px MicroSoft YaHei",
-                text: item.name,
+                text: item.name.split(')')[1] || item.name,
                 pixelOffset: new Cesium.Cartesian2(10, -30),
                 horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
                 distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
