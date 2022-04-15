@@ -440,6 +440,15 @@
         "params": []
     },
     {
+        "key": "get_QZF5",
+        "name": "未办证住所：街道网约房分布",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/QZF/getQZF5",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_today_weather",
         "name": "天气——今日实时天气数据",
         "component": "monitor",
