@@ -53,7 +53,7 @@ export default {
   methods: {
     drawFlow () {
       this.mychart = echarts.init(this.$refs.myTDHistogram)
-      let mydata = this.item.chartData.dataArry
+      let mydata = this.item.chartData.dataArray
       var valMin = Infinity
       var valMax = -Infinity
       mydata.forEach(d => {
@@ -152,7 +152,7 @@ export default {
         series: [{
           name: this.item.chartData.name,
           type: 'bar3D',
-          data: this.item.chartData.dataArry,
+          data: this.item.chartData.dataArray,
           shading: 'lambert',
           barSize: this.item.barSize,
           label: {

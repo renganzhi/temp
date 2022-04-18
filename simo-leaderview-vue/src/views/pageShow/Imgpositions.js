@@ -231,22 +231,6 @@ let Imgpositions =
         'Lat': 30.618719,
         'Lng': 104.068514
       }],
-    // 备勤
-    'beiqing': [
-      {
-        'name': '第一备勤点',
-        'img': header + 'beiqing.png',
-        'label': '第一备勤点',
-        'Lat': 30.645401,
-        'Lng': 104.059737
-      },
-      {
-        'name': '第二备勤点',
-        'img': header + 'beiqing.png',
-        'label': '第二备勤点',
-        'Lat': 30.642710,
-        'Lng': 104.047206
-      }],
     // 封控
     'fengkong': [
       {
@@ -297,6 +281,22 @@ let Imgpositions =
         'label': '封控组',
         'Lat': 30.643986,
         'Lng': 104.049443
+      }],
+    // 备勤
+    'beiqing': [
+      {
+        'name': '第一备勤点',
+        'img': header + 'beiqing.png',
+        'label': '第一备勤点',
+        'Lat': 30.645401,
+        'Lng': 104.059737
+      },
+      {
+        'name': '第二备勤点',
+        'img': header + 'beiqing.png',
+        'label': '第二备勤点',
+        'Lat': 30.642710,
+        'Lng': 104.047206
       }],
     // 现场指挥车
     'xianchangzhihui': [

@@ -63,7 +63,7 @@ export default {
         series: {
           type: 'sunburst',
           // highlightPolicy: 'ancestor',
-          data: this.item.chartData.dataArry,
+          data: this.item.chartData.dataArray,
           radius: [this.item.isHollow + '%', '90%'],
           itemStyle: {
             borderColor: this.item.LineColor,

@@ -69,7 +69,7 @@ export default {
         let boxData = {
           title:'数据详情',
           data:'arry',
-          dataArry:this.item.chartData.list
+          dataArray:this.item.chartData.list
         }
         this.$parent.$parent.ShowTableBox(boxData)
       }

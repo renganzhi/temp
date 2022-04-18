@@ -44,6 +44,7 @@ let config = {
   WuhoIfream: require('@/components/EditComp/WuhoIfream/config.js'),
   WuhoMaoBL: require('@/components/EditComp/WuhoMaoBL/config.js'),
   WuhoOpenBox: require('@/components/EditComp/WuhoOpenBox/config.js'),
+  WuhoPointBox: require('@/components/EditComp/WuhoPointBox/config.js'),
   WoHoNumber: require('@/components/EditComp/WoHoNumber/config.js'),
   WuhouTable: require('@/components/EditComp/WuhouTable/config.js'),
   XiaLaShu: require('@/components/EditComp/XiaLaShu/config.js'),
@@ -106,7 +107,7 @@ export default {
       allPageList: [],
       canChangeId: [],
       VideoIdsArry: [],
-      gltfNameArry: [],
+      gltfnameArray: [],
       iputneIdArry: [],
       activeNames: [0],
       TDmodelFormData: new FormData(),
@@ -2997,7 +2998,7 @@ export default {
     },
     getModelFun () {
       this.axios.get('/leaderview/home/findAllModles').then((data) => {
-        this.gltfNameArry = data.obj || []
+        this.gltfnameArray = data.obj || []
       })
     },
     sureUpload: function () {

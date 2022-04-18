@@ -51,9 +51,9 @@ export default {
       [0, 0, 0, this.item.height],
       [this.item.width, 0, 0, this.item.height]
     ]
-    let dataArry = []
+    let dataArray = []
     this.item.chartData.rows.forEach(d => {
-      dataArry.push({
+      dataArray.push({
         name: d[this.item.chartData.columns[0]],
         value: d[this.item.chartData.columns[2]]
       })
@@ -176,7 +176,7 @@ export default {
         series: {
           type: 'map',
           geoIndex: 0,
-          data: dataArry
+          data: dataArray
         }
       }
     }
@@ -423,14 +423,14 @@ export default {
 
     'item.chartData': {
       handler (newVal, oldVal) {
-        let dataArry = []
+        let dataArray = []
         this.item.chartData.rows.forEach(d => {
-          dataArry.push({
+          dataArray.push({
             name: d[this.item.chartData.columns[0]],
             value: d[this.item.chartData.columns[2]]
           })
         })
-        this.extend.series.data = dataArry
+        this.extend.series.data = dataArray
       },
       deep: true
     }

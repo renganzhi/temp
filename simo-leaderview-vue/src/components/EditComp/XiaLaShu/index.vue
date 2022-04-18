@@ -3,7 +3,7 @@
       <div class="headBox">
         <Select v-model="nowSelect">
             <Option
-                v-for="(option, optIndex) in item.chartData.dataArry"
+                v-for="(option, optIndex) in item.chartData.dataArray"
                 :key="optIndex"
                 :value="optIndex"
             >{{ option.title }}
@@ -12,7 +12,7 @@
       </div>
       <div class="treeBox">
           <div class='treeCenter'>
-            <div class="lineBox" v-for="(data,index) in item.chartData.dataArry[nowSelect].treeData" :key="index">
+            <div class="lineBox" v-for="(data,index) in item.chartData.dataArray[nowSelect].treeData" :key="index">
                 <div :class="index%2===1?'leftBox':'rightBox'">
                     <div class="Title">{{data.time}}</div>
                     <div class="Value">

@@ -47,6 +47,7 @@ import DownMenu from '@/components/EditComp/DownMenu' // 散点图
 import WuhoIfream from '@/components/EditComp/WuhoIfream' // 散点图
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL' // 散点图
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox' // 散点图
+import WuhoPointBox from '@/components/EditComp/WuhoPointBox' // 散点图
 import WoHoNumber from '@/components/EditComp/WoHoNumber' // 散点图
 import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
 import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
@@ -119,6 +120,7 @@ export default {
   DownMenu,
   WuhoIfream,
   WuhoOpenBox,
+  WuhoPointBox,
   WuhoMaoBL,
   WoHoNumber,
   WuhouTable,

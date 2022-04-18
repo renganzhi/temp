@@ -51,7 +51,7 @@ export default Vue.component('polarBar', {
     rerender () {
       let chartData = this.item.chartData
       var newbarHeight = this.item.newbarHeight
-      let dataArry = []
+      let dataArray = []
       chartData.columns.forEach(name => {
         let Onedata = {
           name: name,
@@ -60,10 +60,10 @@ export default Vue.component('polarBar', {
         chartData.rows.forEach(d => {
           Onedata.value.push(d[name])
         })
-        dataArry.push(Onedata)
+        dataArray.push(Onedata)
       })
       var myseries = []
-      dataArry.forEach((element, index) => {
+      dataArray.forEach((element, index) => {
         if (index > 0) {
           myseries.push({
             type: 'bar',
@@ -123,7 +123,7 @@ export default Vue.component('polarBar', {
         },
         angleAxis: {
           type: 'category',
-          data: dataArry[0].value,
+          data: dataArray[0].value,
           axisLine: {
             show: true,
             lineStyle: {
@@ -145,7 +145,7 @@ export default Vue.component('polarBar', {
           formatter: function (params) {
             var id = params.dataIndex
             let stringData = ''
-            dataArry.forEach(data => {
+            dataArray.forEach(data => {
               let mydata = data.value[id]
               let value = typeof (mydata) === 'string' ? mydata : data.value[id].join('-')
               stringData = stringData + data.name + ':' + value + '<br>'

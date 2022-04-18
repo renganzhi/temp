@@ -1824,7 +1824,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuhoPointBox','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"
@@ -1917,8 +1917,8 @@
                 <div class="form-group cols2">
                   <label>选择模型</label>
                   <select v-model="selectedItem.gltfName">
-                    <!-- gltfNameArry -->
-                    <option :value="item.gltf" v-for="(item,index) in gltfNameArry" :key="index">{{item.name}}</option>
+                    <!-- gltfnameArray -->
+                    <option :value="item.gltf" v-for="(item,index) in gltfnameArray" :key="index">{{item.name}}</option>
                   </select>
                 </div>
                 <div class="form-group cols2">

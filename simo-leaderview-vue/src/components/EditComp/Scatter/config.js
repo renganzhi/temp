@@ -44,7 +44,7 @@ export default {
     'chartData': {
       'unit': '次',
       'unitX': '日期',
-      'dataArry': [{
+      'dataArray': [{
         'name': '正常',
         'points': [
           [1, 3, 5],

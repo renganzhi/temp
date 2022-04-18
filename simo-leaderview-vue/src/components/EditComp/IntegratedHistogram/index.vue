@@ -1,7 +1,7 @@
 <template>
   <div class="NewHistogram">
     <div class="DataChangBtn" v-if="item.dataTypeSet === 1">
-      <div v-for="(item,index) in nameArry" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
+      <div v-for="(item,index) in nameArray" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
         {{item}}
       </div>
     </div>
@@ -81,20 +81,20 @@ export default {
       }
       return true
     },
-    nameArry: function () {
+    nameArray: function () {
       let arr = []
       if (this.item.dataTypeSet === 1) {
-        if (this.item.barType === 'NewHistogram' && this.item.chartData1.dataArry) {
-          arr = this.item.chartData1.dataArry.nameArry
+        if (this.item.barType === 'NewHistogram' && this.item.chartData1.dataArray) {
+          arr = this.item.chartData1.dataArray.nameArray
         }
-        if (this.item.barType === 'NewGroupHistogram' && this.item.chartData2.dataArry) {
-          arr = this.item.chartData2.dataArry.nameArry
+        if (this.item.barType === 'NewGroupHistogram' && this.item.chartData2.dataArray) {
+          arr = this.item.chartData2.dataArray.nameArray
         }
-        if (this.item.barType === 'NewGroupLeftHistogram' && this.item.chartData3.dataArry) {
-          arr = this.item.chartData3.dataArry.nameArry
+        if (this.item.barType === 'NewGroupLeftHistogram' && this.item.chartData3.dataArray) {
+          arr = this.item.chartData3.dataArray.nameArray
         }
-        if (this.item.barType === 'NewBar' && this.item.chartData4.dataArry) {
-          arr = this.item.chartData4.dataArry.nameArry
+        if (this.item.barType === 'NewBar' && this.item.chartData4.dataArray) {
+          arr = this.item.chartData4.dataArray.nameArray
         }
       }
       return arr
@@ -185,10 +185,9 @@ export default {
       this.mychart = echarts.init(this.$refs.NewHistogram)
       if (this.item.barType === 'NewHistogram') {
         if (this.item.dataTypeSet === 1) {
-          console.log(this.item.chartData1.dataArry)
-          this.item.chartData1.columns = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].columns
-          this.item.chartData1.unit = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].unit || ''
-          this.item.chartData1.rows = this.item.chartData1.dataArry.dataArry[this.nowdataShowIndex].rows
+          this.item.chartData1.columns = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].columns
+          this.item.chartData1.unit = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].unit || ''
+          this.item.chartData1.rows = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].rows
         }
         let myseries = []
         let myXAxisData = []
@@ -522,9 +521,9 @@ export default {
       }
       if (this.item.barType === 'NewGroupHistogram') {
         if (this.item.dataTypeSet === 1) {
-          this.item.chartData2.columns = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].columns
-          this.item.chartData2.unit = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].unit
-          this.item.chartData2.rows = this.item.chartData2.dataArry.dataArry[this.nowdataShowIndex].rows
+          this.item.chartData2.columns = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].columns
+          this.item.chartData2.unit = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].unit
+          this.item.chartData2.rows = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].rows
         }
         let myseries = []
         let myXAxisData = []
@@ -723,9 +722,9 @@ export default {
       }
       if (this.item.barType === 'NewGroupLeftHistogram') {
         if (this.item.dataTypeSet === 1) {
-          this.item.chartData3.columns = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].columns
-          this.item.chartData3.unit = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].unit
-          this.item.chartData3.rows = this.item.chartData3.dataArry.dataArry[this.nowdataShowIndex].rows
+          this.item.chartData3.columns = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].columns
+          this.item.chartData3.unit = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].unit
+          this.item.chartData3.rows = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].rows
         }
         let myseries = []
         let myXAxisData = []
@@ -990,9 +989,9 @@ export default {
       }
       if (this.item.barType === 'NewBar') {
         if (this.item.dataTypeSet === 1) {
-          this.item.chartData4.columns = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].columns
-          this.item.chartData4.unit = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].unit
-          this.item.chartData4.rows = this.item.chartData4.dataArry.dataArry[this.nowdataShowIndex].rows
+          this.item.chartData4.columns = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].columns
+          this.item.chartData4.unit = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].unit
+          this.item.chartData4.rows = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].rows
         }
         let myData = this.item.chartData4
         let myseries = []
