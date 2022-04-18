@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <!-- <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>-->
+    <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="addJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button>
+    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -142,6 +142,9 @@ var billboardMarkers = []
 let wangges = []// 网格数据
 let jxjdatas = []// 浆洗街行政区划数据
 let videoPoint = []// 摄像头数据
+let GongAnPoint = []// 公安数据
+let keyPlacesPoint = []// 重点数据
+let GuanKongquPoint = []// 管控区
 let shezangmarkers = {} // 涉藏点位
 let xingzhengquhuaPolygons = {
   '簇锦街道': [],
@@ -388,6 +391,7 @@ export default {
         }
       ],
       nowShowData: [],
+      newSZCheckEdData: [],
       SZData: {},
       WGQData: {},
       AllData: [
@@ -480,16 +484,18 @@ export default {
       this.fly()
       this.clearPoint()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
-        this.initSheZang1()
+        if(window.changeCheckedArry){
+          window.changeCheckedArry(this.newSZCheckEdData)
+        }
+        this.addPontXMQ()
       } else if (
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
       ) {
-        // this.initSheZang2()
+        if(window.changeCheckedArry){
+          window.changeCheckedArry(this.newSZCheckEdData)
+        }
         this.addPontXMQ()
-        // setTimeout(() => {
-        //   this.addVideoPoint()
-        // }, 1000)
       } else {
         this.initBase()
       }
@@ -547,34 +553,70 @@ export default {
   },
   methods: {
     changeSZChecked(data){
-      // dataArray:['天网','常规地点','封控','应急','公安网格','网格员','重点区域','社区区划'],
-      // console.log(data)
+      this.newSZCheckEdData = data
       if(data.indexOf('社区区划')>=0){
         this.addJxJ()
       }else{
         this.removeJxJ()
       }
+
+      if(data.indexOf('管控区')>=0){
+        if(GuanKongquPoint.length === 0){
+          this.initSheZang1()
+        }
+      }else{
+        this.removeSheZang1()
+      }
+      if(data.indexOf('网格员')>=0){
+        if(wangges.length === 0){
+          this.addWangge()
+        }
+      }else{
+        this.removeWangge()
+      }
+      if(data.indexOf('公安网格')>=0){
+        if(GongAnPoint.length === 0){
+          this.initGongAn()
+        }
+      }else{
+        this.removeGongAn()
+      }
+      if(data.indexOf('重点区域')>=0){
+        if(keyPlacesPoint.length === 0){
+          this.initkeyPlaces()
+        }
+      }else{
+        this.removekeyPlaces()
+      }
       if(data.indexOf('天网')>=0){
-        this.addVideoPoint()
+        if(videoPoint.length === 0){
+          this.addVideoPoint()
+        }
       }else{
         this.removeVideoPoint()
       }
       if(data.indexOf('常规地点')>=0){
-        this.addshezangmarkers('didian')
+        if(shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0){
+          this.addshezangmarkers('didian')
+        }
       }else{
         this.removeshezangmarkers('didian')
       }
       if(data.indexOf('封控')>=0){
-        this.addshezangmarkers('fengkong')
+        if(shezangmarkers['fengkong'] === undefined || shezangmarkers['fengkong'].length === 0){
+          this.addshezangmarkers('fengkong')
+        }
       }else{
         this.removeshezangmarkers('fengkong')
       }
       if(data.indexOf('应急')>=0){
-        this.addshezangmarkers('beiqing')
-        this.addshezangmarkers('xianchangzhihui')
-        this.addshezangmarkers('xundakuaifan')
-        this.addshezangmarkers('huaxikuaifan')
-        this.addshezangmarkers('xiaofangzhanche')
+        if(shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0){
+          this.addshezangmarkers('beiqing')
+          this.addshezangmarkers('xianchangzhihui')
+          this.addshezangmarkers('xundakuaifan')
+          this.addshezangmarkers('huaxikuaifan')
+          this.addshezangmarkers('xiaofangzhanche')
+        }
       }else{
         this.removeshezangmarkers('beiqing')
         this.removeshezangmarkers('xianchangzhihui')
@@ -819,49 +861,49 @@ export default {
     },
     initPostrender () {
       var ContrastBias = `uniform sampler2D colorTexture;
-uniform float smoothWidth;
-uniform float threshold;
-varying vec2 v_textureCoordinates;
-void main(void)
-{
-vec4 sceneColor = texture2D(colorTexture, v_textureCoordinates);
-#ifdef CZM_SELECTED_FEATURE
-if (!czm_selected()) {
-sceneColor = vec4(0.0);
-}
-#endif
-vec3 luma=vec3(0.299,0.587,0.114);
-float v=dot(sceneColor.xyz,luma);
-vec4 outputColor=vec4(0.0,0.0,0.0,1.0);
-float alpha=smoothstep(threshold,threshold+smoothWidth,v);
-gl_FragColor=mix(outputColor,sceneColor,alpha);
-}`
+      uniform float smoothWidth;
+      uniform float threshold;
+      varying vec2 v_textureCoordinates;
+      void main(void)
+      {
+      vec4 sceneColor = texture2D(colorTexture, v_textureCoordinates);
+      #ifdef CZM_SELECTED_FEATURE
+      if (!czm_selected()) {
+      sceneColor = vec4(0.0);
+      }
+      #endif
+      vec3 luma=vec3(0.299,0.587,0.114);
+      float v=dot(sceneColor.xyz,luma);
+      vec4 outputColor=vec4(0.0,0.0,0.0,1.0);
+      float alpha=smoothstep(threshold,threshold+smoothWidth,v);
+      gl_FragColor=mix(outputColor,sceneColor,alpha);
+      }`
 
-      // 最终合并
-      var BloomComposite = `uniform sampler2D colorTexture;
-            uniform sampler2D bloomTexture;
-uniform sampler2D bloomTexture1;
-uniform sampler2D bloomTexture2;
-uniform sampler2D bloomTexture3;
-uniform sampler2D bloomTexture4;
-uniform float bloomFators[5];
-uniform vec4 bloomColor;
-            varying vec2 v_textureCoordinates;
-float lerpBloomFactor(const in float factor){
-float mirror=1.2-factor;
-return mix(factor,mirror,0.0);
-}
-            void main(void)
-            {
-            vec4 color = texture2D(colorTexture, v_textureCoordinates);
-            vec4 bloom = 5.0*(
-     lerpBloomFactor(bloomFators[0]) * bloomColor * texture2D(bloomTexture,v_textureCoordinates)+
- lerpBloomFactor(bloomFators[1]) * bloomColor * texture2D(bloomTexture1,v_textureCoordinates)+
- lerpBloomFactor(bloomFators[2]) * bloomColor * texture2D(bloomTexture2,v_textureCoordinates)+
- lerpBloomFactor(bloomFators[3]) * bloomColor * texture2D(bloomTexture3,v_textureCoordinates)+
- lerpBloomFactor(bloomFators[4]) * bloomColor * texture2D(bloomTexture4,v_textureCoordinates)
- );
-            gl_FragColor =color+bloom ;
+            // 最终合并
+            var BloomComposite = `uniform sampler2D colorTexture;
+                  uniform sampler2D bloomTexture;
+      uniform sampler2D bloomTexture1;
+      uniform sampler2D bloomTexture2;
+      uniform sampler2D bloomTexture3;
+      uniform sampler2D bloomTexture4;
+      uniform float bloomFators[5];
+      uniform vec4 bloomColor;
+                  varying vec2 v_textureCoordinates;
+      float lerpBloomFactor(const in float factor){
+      float mirror=1.2-factor;
+      return mix(factor,mirror,0.0);
+      }
+                  void main(void)
+                  {
+                  vec4 color = texture2D(colorTexture, v_textureCoordinates);
+                  vec4 bloom = 5.0*(
+          lerpBloomFactor(bloomFators[0]) * bloomColor * texture2D(bloomTexture,v_textureCoordinates)+
+      lerpBloomFactor(bloomFators[1]) * bloomColor * texture2D(bloomTexture1,v_textureCoordinates)+
+      lerpBloomFactor(bloomFators[2]) * bloomColor * texture2D(bloomTexture2,v_textureCoordinates)+
+      lerpBloomFactor(bloomFators[3]) * bloomColor * texture2D(bloomTexture3,v_textureCoordinates)+
+      lerpBloomFactor(bloomFators[4]) * bloomColor * texture2D(bloomTexture4,v_textureCoordinates)
+      );
+                  gl_FragColor =color+bloom ;
             }`
       var blur1 = createBlurStage('Blur1', 3, 3, 1 / 2)
       var blur2 = createBlurStage('Blur2', 5, 5, 0.5 / 2)
@@ -915,7 +957,6 @@ return mix(factor,mirror,0.0);
     },
     showXQBoxTan (nowShowData) {
       this.ShowTableTan = false
-      console.log(nowShowData)
       this.nowShowData = nowShowData
     },
     addLabelMarker (lon, lat, url, label, small) {
@@ -948,7 +989,7 @@ return mix(factor,mirror,0.0);
       return en
     },
     addDoubleMarker (lon, lat, img, id) {
-      viewer.entities.add({
+      let en = viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, 70),
         name: id + '管控区',
         billboard: {
@@ -956,15 +997,16 @@ return mix(factor,mirror,0.0);
           scale: 0.15
         }
       })
-      viewer.entities.add({
+      let en2 = viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, 70),
         name: id + '管控区',
         billboard: {
           image: img[1],
-          pixelOffset: new Cesium.Cartesian2(80, -30),
-          scale: 0.5
+          pixelOffset: new Cesium.Cartesian2(60, -10),
+          scale: 0.3
         }
       })
+      return [en,en2]
     },
     addWangge () {
       this.removeWangge()
@@ -1150,16 +1192,14 @@ return mix(factor,mirror,0.0);
         shezangmarkers[type] = []
       }
     },
-    initSheZang1 () {
-      Imgpositions.pointBase.forEach(item => {
+    initGongAn(){
+      GongAnPoint = []
+      Imgpositions.policePoint.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
-        if (item.name.includes('管控区')) {
-          this.addDoubleMarker(positions[0], positions[1], item.img, item.id)
-        } else {
-          this.addLabelMarker(positions[0], positions[1], item.img, item.name)
-        }
+        let GongAn = this.addLabelMarker(positions[0], positions[1], item.img, item.name)
+        GongAnPoint.push(GongAn)
       })
-      Imgpositions.polygon.forEach(item => {
+      Imgpositions.police.forEach(item => {
         let positions = []
         let color = item.color.withAlpha(0.5)
         for (var i = 0; i < item.positions.length; i += 2) {
@@ -1174,7 +1214,7 @@ return mix(factor,mirror,0.0);
         positions.push(positions[0])
         positions.push(positions[1])
         positions.push(5)
-        viewer.entities.add({
+        let point = viewer.entities.add({
           polyline: {
             positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
             depthFailMaterial: new Cesium.PolylineGlowMaterialProperty({
@@ -1195,6 +1235,119 @@ return mix(factor,mirror,0.0);
             material: color
           }
         })
+        GongAnPoint.push(point)
+        GongAnPoint.push(poly)
+      })
+    },
+    removeGongAn(){
+      GongAnPoint.forEach(item => {
+        viewer.entities.remove(item)
+      })
+      GongAnPoint = []
+    },
+    initkeyPlaces(){
+      keyPlacesPoint = []
+      Imgpositions.keyPlacesPoint.forEach(item => {
+        let positions = gcj02_to_wgs84(item.Lng, item.Lat)
+        let GongAn = this.addLabelMarker(positions[0], positions[1], item.img, item.name)
+        keyPlacesPoint.push(GongAn)
+      })
+      Imgpositions.keyPlaces.forEach(item => {
+        let positions = []
+        let color = item.color.withAlpha(0.5)
+        for (var i = 0; i < item.positions.length; i += 2) {
+          let position = gcj02_to_wgs84(
+            item.positions[i + 1],
+            item.positions[i]
+          )
+          positions.push(position[0])
+          positions.push(position[1])
+          positions.push(5)
+        }
+        positions.push(positions[0])
+        positions.push(positions[1])
+        positions.push(5)
+        let point = viewer.entities.add({
+          polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            depthFailMaterial: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
+            }),
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
+            }),
+            width: 1
+          }
+        })
+        let poly = viewer.entities.add({
+          polygon: {
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            perPositionHeight: true,
+            material: color
+          }
+        })
+        keyPlacesPoint.push(point)
+        keyPlacesPoint.push(poly)
+      })
+    },
+    removekeyPlaces(){
+      keyPlacesPoint.forEach(item => {
+        viewer.entities.remove(item)
+      })
+      keyPlacesPoint = []
+    },
+    removeSheZang1(){
+      GuanKongquPoint.forEach(item => {
+        viewer.entities.remove(item)
+      })
+      GuanKongquPoint = []
+    },
+    initSheZang1 () {
+      Imgpositions.pointBase.forEach(item => {
+        let positions = gcj02_to_wgs84(item.Lng, item.Lat)
+        let GuanKongqu = this.addDoubleMarker(positions[0], positions[1], item.img, item.id)
+        GuanKongquPoint.push(GuanKongqu[0],GuanKongqu[1])
+      })
+      Imgpositions.polygon.forEach(item => {
+        let positions = []
+        let color = item.color.withAlpha(0.5)
+        for (var i = 0; i < item.positions.length; i += 2) {
+          let position = gcj02_to_wgs84(
+            item.positions[i + 1],
+            item.positions[i]
+          )
+          positions.push(position[0])
+          positions.push(position[1])
+          positions.push(5)
+        }
+        positions.push(positions[0])
+        positions.push(positions[1])
+        positions.push(5)
+        let gkPoint = viewer.entities.add({
+          polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            depthFailMaterial: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
+            }),
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 1, // 一个数字属性，指定发光强度，占总线宽的百分比。
+              color: Cesium.Color.GOLD
+            }),
+            width: 1
+          }
+        })
+        let poly = viewer.entities.add({
+          polygon: {
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+            perPositionHeight: true,
+            material: color
+          }
+        })
+        GuanKongquPoint.push(gkPoint)
+        GuanKongquPoint.push(poly)
       })
     },
     initBase () {
@@ -1258,7 +1411,6 @@ return mix(factor,mirror,0.0);
         })
       })
       $.getJSON(this.header + 'geojson/xzqhLine.json', res => {
-        console.log(res)
         let features = res.features
         features.forEach((item, index) => {
           let positions = item.geometry.coordinates
@@ -1398,6 +1550,7 @@ return mix(factor,mirror,0.0);
     addVideoPoint () {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
         if (data.success) {
+          videoPoint = []
           data.obj.forEach(item => {
             let VidoePont = viewer.entities.add({
               position: Cesium.Cartesian3.fromDegrees(
@@ -1431,9 +1584,10 @@ return mix(factor,mirror,0.0);
       })
     },
     removeVideoPoint(){
-        videoPoint.forEach(item => {
-          viewer.entities.remove(item)
-        })
+      videoPoint.forEach(item => {
+        viewer.entities.remove(item)
+      })
+      videoPoint = []
     },
     // 取消行政区划隐藏
     backBase () {

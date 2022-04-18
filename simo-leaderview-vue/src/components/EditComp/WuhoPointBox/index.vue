@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['天网','常规地点','封控','应急','公安网格','网格员','重点区域','社区区划'],
+      dataArray:['天网','管控区','常规地点','封控','应急','公安网格','网格员','重点区域','社区区划'],
       CheckedArry:[]
     };
   },
@@ -32,7 +32,14 @@ export default {
       window.changeSZChecked(_this.CheckedArry)
     }
   },
+  mounted () {
+    window.changeCheckedArry = this.changeCheckedArry
+  },
   methods: {
+    changeCheckedArry(data){
+      console.log(data)
+      this.CheckedArry = data
+    },
     ChangeState(d){
       if(this.CheckedArry.indexOf(d)>=0){
         this.CheckedArry.splice(this.CheckedArry.indexOf(d),1)
@@ -53,7 +60,7 @@ export default {
 }
 .CheckedBox{
   width: 240px;
-  margin: 0 0 60px 0px;
+  margin: 0 0 45px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -70,7 +77,7 @@ export default {
 }
 .NoChecked{
   width: 240px;
-  margin: 0 0 60px 0px;
+  margin: 0 0 45px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
