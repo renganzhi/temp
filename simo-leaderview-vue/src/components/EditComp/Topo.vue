@@ -105,14 +105,14 @@ export default {
         this.item.tptype === 'maptp' &&
         _this.item.chartData.userId
       ) {
-        let dataArry = {
+        let dataArray = {
           userId: _this.item.chartData.userId,
           pLocationCode: `${_this.item.chartData.mapCode};${_this.item.chartData.mpId}`,
           mapLocationId: ''
         }
         $.ajax({
           url: gbs.host + '/monitor/mapTopo/getMapTopoParams', // 第三方的ur已经拼接好host
-          data: dataArry,
+          data: dataArray,
           type: 'get',
           cache: false,
           ascyn: false,

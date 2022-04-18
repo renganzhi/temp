@@ -105,7 +105,7 @@ export default {
             borderColor: this.item.gapWidthColor,
             gapWidth: this.item.gapWidth
           },
-          data: this.item.chartData.dataArry
+          data: this.item.chartData.dataArray
         }]
       }
       this.mychart.clear()

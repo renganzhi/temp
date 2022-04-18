@@ -9,7 +9,7 @@ export default{
       'boduHeight': '',
       'Fontsize': '',
       'chartData': {
-          'dataArry':[{
+          'dataArray':[{
             'title':'东华0000000000',
             'treeData':[{
               'time':'2019年7月11111',

@@ -461,41 +461,41 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    ShowTableBox(dataArry){
-      if(dataArry.data === 'arry'){
+    ShowTableBox(dataArray){
+      if(dataArray.data === 'arry'){
         this.showTableBox = true
-        this.DataTkArry = dataArry.dataArry
+        this.DataTkArry = dataArray.dataArray
       }else{
-        if(dataArry.data['街道']){
+        if(dataArray.data['街道']){
           this.showTableBox = true
-          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArry.data['街道']).then(data => {
+          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArray.data['街道']).then(data => {
             if (data.success) {
               this.DataTkArry = data.obj
             }
           })
         }else{
-          this.ShowTanKuangBox(dataArry)
+          this.ShowTanKuangBox(dataArray)
         }
       }
     },
     closeTableTtn(){
       this.showTableBox = false
     },
-    ShowTanKuangBox(dataArry){
+    ShowTanKuangBox(dataArray){
       this.showModelBox = true
-      this.showModelBoxtype = dataArry.type || 0
+      this.showModelBoxtype = dataArray.type || 0
       let newData = []
-      for (const key in dataArry.data) {
-        if (Object.hasOwnProperty.call(dataArry.data, key)) {
+      for (const key in dataArray.data) {
+        if (Object.hasOwnProperty.call(dataArray.data, key)) {
           let data = {
             title: key,
-            value: dataArry.data[key]
+            value: dataArray.data[key]
           }
           newData.push(data)
         }
       }
-      dataArry.data = newData
-      this.boxData = dataArry
+      dataArray.data = newData
+      this.boxData = dataArray
     },
     closeBoxTtn () {
       this.showModelBox = false

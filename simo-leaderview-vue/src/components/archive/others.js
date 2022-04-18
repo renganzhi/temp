@@ -6,6 +6,7 @@ import VmVareTopo from '@/components/EditComp/VmVareTopo/config.js'
 import XiaLaShu from '@/components/EditComp/XiaLaShu/config.js'
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL/config.js'
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox/config.js'
+import WuhoPointBox from '@/components/EditComp/WuhoPointBox/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 
 const others = {
@@ -36,6 +37,7 @@ const others = {
     XiaLaShu.item,
     WoHoNumber.item,
     WuhoOpenBox.item,
+    WuhoPointBox.item,
     WuhoMaoBL.item
   ]
 }

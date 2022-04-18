@@ -1,5 +1,5 @@
 {
-    "dataArry":[
+    "dataArray":[
       {
         "title": "东华电脑城",
         "treeData": [

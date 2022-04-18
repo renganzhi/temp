@@ -40,7 +40,7 @@ export default {
     ],
     'chartData': {
       'name': '告警',
-      'dataArry': [{
+      'dataArray': [{
         'name': '主机',
         'value': 10,
         'children': [{

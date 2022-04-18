@@ -54,7 +54,7 @@ export default {
   methods: {
     drawFlow () {
       this.mychart = echarts.init(this.$refs.myKline)
-      var rawData = JSON.parse(JSON.stringify(this.item.chartData.dataArry.data))
+      var rawData = JSON.parse(JSON.stringify(this.item.chartData.dataArray.data))
       var data = this.splitData(rawData)
       let myoption = {
         animation: false,

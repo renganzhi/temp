@@ -47,7 +47,7 @@ export default {
   methods: {
     drawFlow () {
       this.mychart = echarts.init(this.$refs.Scatter)
-      var data = this.item.chartData.dataArry
+      var data = this.item.chartData.dataArray
       let myseries = []
       data.forEach((d, index) => {
         myseries.push({

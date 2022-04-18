@@ -22,7 +22,7 @@ export default {
       '#9fe6b8',
       '#ffdb5c'],
     'chartData': {
-      'dataArry': [{
+      'dataArray': [{
         'name': '主机',
         'children': [{
           'name': 'Linux',
