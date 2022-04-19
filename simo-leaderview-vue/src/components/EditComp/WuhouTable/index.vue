@@ -328,6 +328,10 @@ export default {
         justify-content: center;
         align-items: center;
         overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
       }
     }
   }
