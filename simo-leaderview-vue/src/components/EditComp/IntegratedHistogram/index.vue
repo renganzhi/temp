@@ -247,8 +247,17 @@ export default {
                     show: this.item.HistogramType === 2,
                     position: 'top',
                     distance: 10,
-                    fontSize: 16,
-                    color: '#01fff4'
+                    textStyle: {
+                      fontSize: this.item.axisLabelSize1,
+                      color: this.item.topTextColor
+                    },
+                    formatter: (params, index) => {
+                      console.log(params)
+                      if(params.value !== 0){
+                        return params.value
+                      }
+                      return ''
+                    },
                   },
                   itemStyle: {
                     normal: {
@@ -284,8 +293,10 @@ export default {
                   show: this.item.HistogramType === 2 || this.item.HistogramType === 3,
                   position: 'top',
                   distance: 10,
-                  fontSize: 16,
-                  color: this.item.topTextColor
+                  textStyle: {
+                    fontSize: this.item.axisLabelSize1,
+                    color: this.item.topTextColor
+                  },
                 },
                 itemStyle: {
                   normal: {
