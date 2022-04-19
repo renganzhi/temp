@@ -21,6 +21,7 @@ export default {
       oldOption: '',
       oldeffecttrail: null,
       oldsymbolSize: '',
+      MyChartData:{},
       stationArry: [
         ['50%', '50%'],
         ['49.5%', '51%'],
@@ -64,8 +65,85 @@ export default {
   },
   methods: {
     drawFlow () {
+      if(this.item.chartData.dataArray ){
+        let max = 0
+        let myStationData = []
+        let myLineData = []
+        this.MyChartData = {}
+        this.item.chartData.dataArray.forEach(d => {
+          let NodataArray = true
+          myStationData.forEach(data => {
+            if(d.visit_address === data.name){
+              data.value[2] = data.value[2]+1
+              if( data.value[2]>max){
+                max = data.value[2]
+              }
+              NodataArray = false
+            }
+          });
+          if(NodataArray){
+            myStationData.push({
+              'name': d.visit_address,
+              'value': [
+                d.longitude,
+                d.latitude,
+                1
+              ]
+            })
+          }
+        });
+        myStationData.forEach(data => {
+          myLineData.push([
+              {
+                'name': '成都市',
+              },
+              {
+                'coord': [
+                  data.value[0],
+                  data.value[1],
+                ],
+                'name': data.name,
+                'value': data.value[2]
+              }
+            ])
+        });
+        myStationData.push({'name': '成都市',
+          'value': [
+            1
+          ]})
+        this.MyChartData.stationData = myStationData
+        this.MyChartData.lineData = myLineData
+        this.MyChartData.Statistical = []
+        this.MyChartData.minValue = 0
+        this.MyChartData.maxValue = max
+      } else if(this.item.chartData.rowsArray) {
+        let max = 0
+        let myStationData = []
+        this.MyChartData = {}
+        this.item.chartData.rowsArray.forEach(d => {
+          if( d.cnt > max){
+            max = d.cnt
+          }
+          myStationData.push({
+            'name': d.city + d.district,
+            'value': [
+              d.longitude,
+              d.latitude,
+              d.cnt
+            ]
+          })
+        });
+        this.MyChartData.stationData = myStationData
+        this.MyChartData.lineData = []
+        this.MyChartData.Statistical = []
+        this.MyChartData.minValue = 0
+        this.MyChartData.maxValue = max
+      } else {
+        this.MyChartData = this.item.chartData
+      }
+
       let _this = this
-      let ChartData = JSON.parse(JSON.stringify(_this.item.chartData))
+      let ChartData = JSON.parse(JSON.stringify(_this.MyChartData))
       ChartData.stationData.forEach(data => {
         if (data.value.length < 3 && data.name) {
           let oldData = data.value
@@ -162,7 +240,7 @@ export default {
           },
           symbol: 'circle',
           symbolSize: function (val) {
-            return _this.item.symbolSize + val[2] / (_this.item.chartData.maxValue ? _this.item.chartData.maxValue : 20) * _this.item.symbolSize // 圆环大小
+            return _this.item.symbolSize + val[2] / (_this.MyChartData.maxValue ? _this.MyChartData.maxValue : 20) * _this.item.symbolSize // 圆环大小
           },
           itemStyle: {
             normal: {
@@ -328,8 +406,8 @@ export default {
         },
         backgroundColor: '',
         visualMap: { // 图例值控制
-          min: _this.item.chartData.minValue || 0,
-          max: _this.item.chartData.maxValue || 10,
+          min: _this.MyChartData.minValue || 0,
+          max: _this.MyChartData.maxValue || 10,
           calculable: _this.item.calculable === 'true',
           show: _this.item.visualMapShow === 'true',
           color: _this.item.myctColors,

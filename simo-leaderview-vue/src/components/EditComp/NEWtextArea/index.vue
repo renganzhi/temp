@@ -14,7 +14,7 @@
               :id="!item.ColorType ? 'jianBian':''"
               :class="item.overflow ? 'getTextArea homeText':'getTextArea homeText hiddeLeft'"
               v-model="item.ctName"
-              placeholder="请输入文本框内容"
+              placeholder="无"
               ref="NEWtextArea"
               :disabled="dis"></textarea>
   </div>
@@ -29,7 +29,6 @@ export default {
     return {
       stateCol: '',
       titleHeight: 0,
-      iterview: null,
       textHeight: 50
     }
   },
@@ -72,24 +71,19 @@ export default {
           dataArray:this.item.chartData.list
         }
         this.$parent.$parent.ShowTableBox(boxData)
+      }else if(this.item.chartData.url){
+        let boxData = {
+          title:'数据详情',
+          data:{name:this.item.chartData.name},
+          dataUrl:this.item.chartData.url
+        }
+        this.$parent.$parent.ShowTableBox(boxData)
       }
-    }
-  },
-  beforeDestroy () {
-    if (this.iterview) {
-      clearInterval(this.iterview)
     }
   },
   mounted () {
     this.updateHeight()
     this.updateColor()
-    this.iterview = setInterval(() => {
-      if (this.$refs.NEWtextArea.scrollTop + this.$refs.NEWtextArea.clientHeight === this.$refs.NEWtextArea.scrollHeight) {
-        this.$refs.NEWtextArea.scrollTop = 0
-      } else {
-        this.$refs.NEWtextArea.scrollTop = this.$refs.NEWtextArea.scrollTop + 10
-      }
-    }, 500)
   },
   computed: {
     ...mapGetters([
@@ -183,7 +177,7 @@ export default {
     },
     'item.ctName': function () {
       if(this.item.ctName === null){
-        this.item.ctName = 0
+        this.item.ctName = '暂无数据'
       }
     },
     'item.fontSize': function () {
