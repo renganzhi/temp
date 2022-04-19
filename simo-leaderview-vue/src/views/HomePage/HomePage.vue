@@ -469,7 +469,6 @@ export default {
       if(dataArray.dataUrl){
         this.DataTkArry = []
         let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
-        console.log(dataArray,keyWord)
         let keyValue = dataArray.data[keyWord]
         this.showTableBox = true;
         this.axios

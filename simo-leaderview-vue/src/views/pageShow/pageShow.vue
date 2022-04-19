@@ -1734,7 +1734,7 @@ export default {
                 columns: ['address', 'street', 'room_number', 'bed_number'],
                 rows: picked.id.dataArray.rows
               }
-            } else {
+            } else if(picked.id.dataArray.rows){
               this.popshowBig = true
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
@@ -1838,20 +1838,20 @@ export default {
   margin: 0px;
 }
 .content #popWGQ {
-  width: 650px;
-  height: 329px;
+  width: 850px;
+  height: 429px;
   background: url(./tipBig.png);
   background-size: 100% 100%;
   color: rgb(255, 255, 255);
   position: relative;
-  padding: 40px 0px 0px;
+  padding: 70px 0px 0px;
   position: absolute;
   z-index: 10;
-  font-size: 14px;
+  font-size: 18px;
 }
 .content #popWGQ .poptitle {
   position: absolute;
-  top: 45px;
+  top: 70px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -1893,11 +1893,11 @@ export default {
   padding: 40px 0px 0px;
   position: absolute;
   z-index: 10;
-  font-size: 14px;
+  font-size: 18px;
 }
 .content #popXMQ .poptitle {
   position: absolute;
-  top: 45px;
+  top: 70px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -1907,7 +1907,7 @@ export default {
 .content #popXMQ .CloseBtn {
   position: absolute;
   cursor: pointer;
-  top: 5px;
+  top: 13px;
   right: 0px;
   height: 50px;
   width: 50px;
@@ -1930,20 +1930,20 @@ export default {
   box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
 }
 .content #SZpopBig {
-  width: 650px;
-  height: 329px;
+  width: 850px;
+  height: 429px;
   background: url(./tipBig.png);
   background-size: 100% 100%;
   color: rgb(255, 255, 255);
   position: relative;
-  padding: 40px 0px 0px;
+  padding: 70px 0px 0px;
   position: absolute;
   z-index: 10;
-  font-size: 14px;
+  font-size: 18px;
 }
 .content #SZpopBig .poptitle {
   position: absolute;
-  top: 45px;
+  top: 70px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -1953,7 +1953,7 @@ export default {
 .content #SZpopBig .CloseBtn {
   position: absolute;
   cursor: pointer;
-  top: 5px;
+  top: 13px;
   right: 0px;
   height: 50px;
   width: 50px;
@@ -1977,20 +1977,20 @@ export default {
   box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
 }
 .content #popBig {
-  width: 650px;
-  height: 329px;
+  width: 850px;
+  height: 429px;
   background: url(./tipBig.png);
   background-size: 100% 100%;
   color: rgb(255, 255, 255);
   position: relative;
-  padding: 40px 0px 0px;
+  padding: 70px 0px 0px;
   position: absolute;
   z-index: 10;
-  font-size: 14px;
+  font-size: 18px;
 }
 .content #popBig .poptitle {
   position: absolute;
-  top: 45px;
+  top: 70px;
   left: 50px;
   font-size: 46px !important;
   color: #bbeefe;
@@ -2000,7 +2000,7 @@ export default {
 .content #popBig .CloseBtn {
   position: absolute;
   cursor: pointer;
-  top: 5px;
+  top: 13px;
   right: 0px;
   height: 50px;
   width: 50px;
@@ -2042,7 +2042,7 @@ export default {
 .TableHead tr {
   width: 100%;
   height: 40px;
-  font-size: 14px !important;
+  font-size: 20px !important;
   display: flex;
   color: #86b7dd;
 }
@@ -2052,14 +2052,14 @@ export default {
 }
 .TableBody {
   width: 100%;
-  height: 200px;
+  height: 260px;
   overflow: auto;
 }
 .TableBody tr {
   width: 100%;
-  height: 40px;
+  height: 60px;
   margin: 10px 0;
-  font-size: 14px !important;
+  font-size: 20px !important;
   display: flex;
   color: #bfcbdb;
 }
