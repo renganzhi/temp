@@ -461,20 +461,38 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    ShowTableBox(dataArray){
-      if(dataArray.data === 'arry'){
-        this.showTableBox = true
-        this.DataTkArry = dataArray.dataArray
-      }else{
-        if(dataArray.data['街道']){
-          this.showTableBox = true
-          this.axios.get(`/leaderview/WuHou/getFormDataAndUrlForHistogram?street=`+dataArray.data['街道']).then(data => {
+    ShowTableBox(dataArray) {
+      if(dataArray.dataUrl){
+        this.DataTkArry = []
+        let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
+        let keyValue = dataArray.data[keyWord]
+        this.showTableBox = true;
+        this.axios
+          .get(dataArray.dataUrl + keyValue)
+          .then((data) => {
             if (data.success) {
-              this.DataTkArry = data.obj
+              this.DataTkArry = data.obj;
             }
-          })
-        }else{
-          this.ShowTanKuangBox(dataArray)
+          });
+      } else if (dataArray.data === "arry") {
+        this.showTableBox = true;
+        this.nowType = dataArray.nowType || ''
+        this.DataTkArry = dataArray.dataArray;
+      } else {
+        if (dataArray.data["街道"]) {
+          this.showTableBox = true;
+          this.axios
+            .get(
+              `/leaderview/WuHou/getFormDataAndUrlForHistogram?street=` +
+                dataArray.data["街道"]
+            )
+            .then((data) => {
+              if (data.success) {
+                this.DataTkArry = data.obj;
+              }
+            });
+        } else {
+          this.ShowTanKuangBox(dataArray);
         }
       }
     },

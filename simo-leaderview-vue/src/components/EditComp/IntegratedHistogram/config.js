@@ -14,6 +14,7 @@ var NewHistogram = {
   'chartType1': 'NewHistogram',
   'intervieData': 5,
   'ctLegendShow1': true,
+  'dataSetType': false,
   'colorful1': false,
   'ifGradual1': 'false',
   'legendColor1': '',
@@ -50,6 +51,7 @@ var NewHistogram = {
   'gridRight1': 10,
   'formatterType1': '0',
   'tooltipShow1': true,
+  'dataTypeStation': false,
   'tooltipBackColor1': '#57625d',
   'tooltipTextColor1': '#fff',
   'tooltipfontSize1': 14,
@@ -389,7 +391,55 @@ export default {
                 'value': 'NewBar'
               }
             ]
-          }
+          },
+          {
+            'name': '数据类型',
+            'key': 'dataTypeSet',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '武侯定制',
+                'value': 1
+              },
+              {
+                'name': '普通',
+                'value': 2
+              }
+            ]
+          },
+          {
+            'name': '选择器类型',
+            'key': 'dataSetType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '下拉框',
+                'value': true
+              },
+              {
+                'name': '点击框',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '选择器位置',
+            'key': 'dataTypeStation',
+            'parentKey': {
+              'dataTypeSet': 1
+            },
+            'tag': 'select',
+            'options': [
+              {
+                'name': '顶部居中',
+                'value': false
+              },
+              {
+                'name': '顶部居右',
+                'value': true
+              }
+            ]
+          },
         ]
       },
       {
@@ -412,21 +462,6 @@ export default {
               {
                 'name': '类型三',
                 'value': 3
-              }
-            ]
-          },
-          {
-            'name': '数据类型',
-            'key': 'dataTypeSet',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '武侯定制',
-                'value': 1
-              },
-              {
-                'name': '普通',
-                'value': 2
               }
             ]
           },
