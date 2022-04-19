@@ -2286,11 +2286,11 @@ html[data-theme='blueWhite'] {
   .Nmae {
     padding: 0px 10px;
     width: 30%;
-    color: #415468;
+    color: #b5c2cf;
   }
   .Data {
     width: 70%;
-    color: #789fb0;
+    color: #d3f2ff;
   }
 }
 .ModelBox {
