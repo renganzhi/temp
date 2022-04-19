@@ -85,11 +85,9 @@
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
-                      <div class="Nmae" v-if="data.title !== '详情'">{{data.title}} : </div>
-                      <div class="Data" v-if="data.title !== '详情' && data.title !== '失控状态'" :style="{
-                          color: data.value && data.value.color? data.value.color:'#bfcbdb'
-                        }">{{ data.value.value ? data.value.value : data.value}} </div>
-                      <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
+                      <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value }} </div>
+                      <!-- <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
                         <Select v-model="data.value">
                             <Option value="1">1级 </Option>
                             <Option value="2">2级 </Option>
@@ -100,7 +98,7 @@
                             确定
                           </Button>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
@@ -438,11 +436,17 @@ export default {
       if(DataTkArry.url){
         this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
           let boxData = {
-            title:'走访详情',
+            title:'数据详情',
             data:res.obj.rows[0]
           }
           this.ShowTanKuangBox(boxData)
         })
+      }else{
+        let boxData = {
+          title:'数据详情',
+          data:data
+        }
+        this.ShowTanKuangBox(boxData)
       }
     },
     showXQ(data){
@@ -2282,11 +2286,11 @@ html[data-theme='blueWhite'] {
   .Nmae {
     padding: 0px 10px;
     width: 30%;
-    color: #415468;
+    color: #b5c2cf;
   }
   .Data {
     width: 70%;
-    color: #789fb0;
+    color: #d3f2ff;
   }
 }
 .ModelBox {
