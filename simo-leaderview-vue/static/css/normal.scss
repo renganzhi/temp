@@ -200,7 +200,87 @@ body {
   line-height: 28px;
 }
 .XiaLaShu{
-  
+  .ivu-select{
+    .ivu-select-selected-value{
+        font-size: 29px !important;
+    }
+    .ivu-icon{
+      font-size: 29px !important;
+    }
+    .ivu-select-dropdown{
+      top: 60px !important;
+      left: 0px !important;
+      max-height: 10000px;
+      background-color: rgba(46, 73, 87, 0.288);
+    }
+    .ivu-select-item{
+      font-size: 29px !important;
+      color: rgb(255, 255, 255) !important;
+    }
+    .ivu-select-item.ivu-select-item-selected{
+      background-color: rgba(0, 136, 204, 0.733);
+      color: rgb(247, 247, 247) !important;
+    }
+    .ivu-select-item:hover{
+      background-color: rgba(55, 163, 218, 0.288);
+    }
+  }
+}
+.NewHistogram{
+  .ivu-select{
+    .ivu-select-selected-value{
+        font-size: 29px !important;
+    }
+    .ivu-icon{
+      font-size: 29px !important;
+    }
+    .ivu-select-dropdown{
+      top: 60px !important;
+      left: 0px !important;
+      max-height: 10000px;
+      background-color: rgba(46, 73, 87, 0.288);
+    }
+    .ivu-select-item{
+      font-size: 29px !important;
+      color: rgb(255, 255, 255) !important;
+    }
+    .ivu-select-item.ivu-select-item-selected{
+      background-color: rgba(0, 136, 204, 0.733);
+      color: rgb(247, 247, 247) !important;
+    }
+    .ivu-select-item:hover{
+      background-color: rgba(55, 163, 218, 0.288);
+    }
+  }
+}
+.ELine{
+  .ivu-select{
+    .ivu-select-selected-value{
+        font-size: 29px !important;
+    }
+    .ivu-icon{
+      font-size: 29px !important;
+    }
+    .ivu-select-dropdown{
+      top: 60px !important;
+      left: 0px !important;
+      max-height: 10000px;
+      background-color: rgba(46, 73, 87, 0.288);
+    }
+    .ivu-select-item{
+      font-size: 29px !important;
+      color: rgb(255, 255, 255) !important;
+    }
+    .ivu-select-item.ivu-select-item-selected{
+      background-color: rgba(0, 136, 204, 0.733);
+      color: rgb(247, 247, 247) !important;
+    }
+    .ivu-select-item:hover{
+      background-color: rgba(55, 163, 218, 0.288);
+    }
+  }
+}
+.WuhoZhuZT{
   .ivu-select{
     .ivu-select-selected-value{
         font-size: 29px !important;
@@ -255,6 +335,31 @@ body {
     }
     .ivu-select-item:hover{
       background-color: rgba(55, 163, 218, 0.288);
+    }
+  }
+}
+.ivu-timeline-item-tail{
+  left: 12px;
+  border-left: 5px solid #e8eaec;
+}
+.ivu-timeline-item-head{
+  width: 30px;
+  height: 30px;
+}
+.ivu-timeline-item-content{
+  padding: 1px 1px 10px 86px;
+}
+.WuHoVideoPlayer {
+  .SaveBox{
+    .InputValue{
+      input{
+        height: 100% !important;
+        width: 100% !important;
+        border-radius: 30px !important;
+        font-size: 25px !important;
+        padding-left: 33px;
+        color: #e9e4e4 !important;
+      }
     }
   }
 }

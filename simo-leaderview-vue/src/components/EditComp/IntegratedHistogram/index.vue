@@ -1,8 +1,20 @@
 <template>
   <div class="NewHistogram">
-    <div class="DataChangBtn" v-if="item.dataTypeSet === 1">
-      <div v-for="(item,index) in nameArray" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
-        {{item}}
+    <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="item.dataTypeSet === 1">
+      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="!item.dataSetType">
+        <div v-for="(item,index) in nameArray" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
+          {{item}}
+        </div>
+      </div>
+      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-else>
+        <Select v-model="optIndex">
+            <Option
+                v-for="(option, optIndex) in nameArray"
+                :key="optIndex"
+                :value="optIndex"
+            >{{ option }}
+            </Option>
+        </Select>
       </div>
     </div>
     <div
@@ -53,6 +65,7 @@ export default {
       Oldcolorful4: '',
       //   Linesubsection: '',
       oldformatterType4: '',
+      optIndex: 0,
       //   oldchartData: ''
       nowdataShowIndex: 0
     }
@@ -117,6 +130,9 @@ export default {
       this.$nextTick(() => {
         this.mychart.resize()
       })
+    },
+    'optIndex':function(){
+      this.changeDataIndex(this.optIndex)
     },
     'item.height': function () {
       this.$nextTick(() => {
@@ -186,8 +202,9 @@ export default {
       if (this.item.barType === 'NewHistogram') {
         if (this.item.dataTypeSet === 1) {
           this.item.chartData1.columns = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].columns
-          this.item.chartData1.unit = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].unit || ''
+          this.item.chartData1.unit = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].unit
           this.item.chartData1.rows = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].rows
+          this.item.chartData1.url = this.item.chartData1.dataArray.dataArray[this.nowdataShowIndex].url
         }
         let myseries = []
         let myXAxisData = []
@@ -209,12 +226,12 @@ export default {
         mySeriesData.forEach((data, index) => {
           if (data) {
             if (this.item.colorful1) {
-              var arry = []
+              var array = []
               data.forEach((d, i) => {
-                arry.push(0)
+                array.push(0)
               })
               data.forEach((d, i) => {
-                let newArry = JSON.parse(JSON.stringify(arry))
+                let newArry = JSON.parse(JSON.stringify(array))
                 newArry[i] = d
                 myseries.push({
                   name: myData.columns[index],
@@ -406,7 +423,7 @@ export default {
           },
           yAxis: {
             type: 'value',
-            name: this.item.chartData1.unit || '',
+            name: this.item.chartData1.unit,
             nameTextStyle: {
               color: this.item.DanweiColor1 || '#828bac',
               fontSize: this.item.DanweiSize1 || 16
@@ -439,13 +456,13 @@ export default {
                 color: this.item.legendColor1 || '#828bac',
                 fontSize: this.item.axisLabelSize1 || '14'
               },
-              formatter: function (value) {
-                if (value >= 1000) {
-                  return (value / 1000 + 'k')
-                } else {
-                  return value
-                }
-              }
+              // formatter: function (value) {
+              //   if (value >= 1000) {
+              //     return (value / 1000 + 'k')
+              //   } else {
+              //     return value
+              //   }
+              // }
             }
           },
           legend: {
@@ -472,6 +489,12 @@ export default {
             textStyle: {
               color: this.item.tooltipTextColor1,
               fontSize: this.item.tooltipfontSize1
+            },
+            formatter: (params, index) => {
+              var value = ''
+              console.log(params)
+              value =  params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData1.unit || '')
+              return value
             }
           // formatter: (params, index) => {
           //   var value = ''
@@ -524,6 +547,7 @@ export default {
           this.item.chartData2.columns = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].columns
           this.item.chartData2.unit = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].unit
           this.item.chartData2.rows = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].rows
+          this.item.chartData2.url = this.item.chartData2.dataArray.dataArray[this.nowdataShowIndex].url
         }
         let myseries = []
         let myXAxisData = []
@@ -654,13 +678,13 @@ export default {
                 color: this.item.legendColor2 || '#828bac',
                 fontSize: this.item.axisLabelSize2 || '14'
               },
-              formatter: function (value) {
-                if (value >= 1000) {
-                  return (value / 1000 + 'k')
-                } else {
-                  return value
-                }
-              }
+              // formatter: function (value) {
+              //   if (value >= 1000) {
+              //     return (value / 1000 + 'k')
+              //   } else {
+              //     return value
+              //   }
+              // }
             }
           },
           legend: {
@@ -687,6 +711,11 @@ export default {
             textStyle: {
               color: this.item.tooltipTextColor2,
               fontSize: this.item.tooltipfontSize2
+            },
+            formatter: (params, index) => {
+              var value = ''
+              value =  params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData2.unit || '')
+              return value
             }
           },
           series: myseries
@@ -725,6 +754,7 @@ export default {
           this.item.chartData3.columns = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].columns
           this.item.chartData3.unit = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].unit
           this.item.chartData3.rows = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].rows
+          this.item.chartData3.url = this.item.chartData3.dataArray.dataArray[this.nowdataShowIndex].url
         }
         let myseries = []
         let myXAxisData = []
@@ -921,13 +951,13 @@ export default {
                 color: this.item.legendColor3 || '#828bac',
                 fontSize: this.item.axisLabelSize3 || '14'
               },
-              formatter: function (value) {
-                if (value >= 1000) {
-                  return (value / 1000 + 'k')
-                } else {
-                  return value
-                }
-              }
+              // formatter: function (value) {
+              //   if (value >= 1000) {
+              //     return (value / 1000 + 'k')
+              //   } else {
+              //     return value
+              //   }
+              // }
             }
           },
           legend: {
@@ -954,6 +984,11 @@ export default {
             textStyle: {
               color: this.item.tooltipTextColor3,
               fontSize: this.item.tooltipfontSize3
+            },
+            formatter: (params, index) => {
+              var value = ''
+              value = params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData3.unit || '')
+              return value
             }
           },
           series: myseries
@@ -992,6 +1027,7 @@ export default {
           this.item.chartData4.columns = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].columns
           this.item.chartData4.unit = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].unit
           this.item.chartData4.rows = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].rows
+          this.item.chartData4.url = this.item.chartData4.dataArray.dataArray[this.nowdataShowIndex].url
         }
         let myData = this.item.chartData4
         let myseries = []
@@ -1013,12 +1049,12 @@ export default {
         mySeriesData.forEach((data, index) => {
           if (data) {
             if (this.item.colorful4) {
-              var arry = []
+              var array = []
               data.forEach((d, i) => {
-                arry.push(0)
+                array.push(0)
               })
               data.forEach((d, i) => {
-                let newArry = JSON.parse(JSON.stringify(arry))
+                let newArry = JSON.parse(JSON.stringify(array))
                 newArry[i] = d
                 myseries.push({
                   name: myData.columns[index],
@@ -1184,13 +1220,13 @@ export default {
                 color: this.item.legendColor4 || '#828bac',
                 fontSize: this.item.axisLabelSize4 || '14'
               },
-              formatter: function (value) {
-                if (value >= 1000) {
-                  return (value / 1000 + 'k')
-                } else {
-                  return value
-                }
-              }
+              // formatter: function (value) {
+              //   if (value >= 1000) {
+              //     return (value / 1000 + 'k')
+              //   } else {
+              //     return value
+              //   }
+              // }
             }
           },
           legend: {
@@ -1222,7 +1258,7 @@ export default {
               var value = ''
               params.forEach(element => {
                 if (element.value !== 0) {
-                  value = element.axisValue + '<br>' + element.seriesName + ':' + element.value
+                  value = element.axisValue + '<br>' + element.seriesName + ':' + element.value + (this.item.chartData4.unit || '')
                 }
               })
               return value
@@ -1264,6 +1300,7 @@ export default {
 
   },
   mounted () {
+    this.changeDataIndex(0)
     this.drawFlow()
     if (this.item.moreUrlArry && this.item.moreUrlArry.length > 1 && this.item.intervieData > 0) {
       this.myNewInterVal = setInterval(() => {
@@ -1274,18 +1311,24 @@ export default {
     var _this = this
     this.mychart.on('click', function (params) {
       let dataOut = []
+      let dataUrl = ''
       if(_this.item.barType === 'NewHistogram'){
           dataOut = _this.item.chartData1.rows[params.dataIndex]
+          dataUrl = _this.item.chartData1.url
       }else if(_this.item.barType === 'NewGroupHistogram'){
           dataOut = _this.item.chartData2.rows[params.dataIndex]
+          dataUrl = _this.item.chartData2.url
       }else if(_this.item.barType === 'NewGroupLeftHistogram'){
           dataOut = _this.item.chartData3.rows[params.dataIndex]
+          dataUrl = _this.item.chartData3.url
       }else if(_this.item.barType === 'NewBar'){
-          dataOut = _this.item.chartData4.rows[params.dataIndex]
+          dataOut = _this.item.chartData4.rows[_this.item.chartData4.rows.length - params.dataIndex - 1]
+          dataUrl = _this.item.chartData4.url
       }
       let boxData = {
         title:'数据详情',
-        data:dataOut
+        data:dataOut,
+        dataUrl:dataUrl
       }
       _this.$parent.$parent.ShowTableBox(boxData)
     });
@@ -1300,11 +1343,19 @@ export default {
 
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .DataChangBtn{
   display: flex;
   position: absolute;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 10000;
+}
+.DataChangBtnRight{
+  display: flex;
+  position: absolute;
+  justify-content: end;
   align-items: center;
   width: 100%;
   z-index: 10000;
@@ -1325,5 +1376,13 @@ export default {
   color: #7d8692;
   background: url(./nochecked.png);
   background-size: 100% 100%;
+}
+.ivu-select{
+    height: 60px !important;
+    border: 1px solid;
+    line-height: 60px;
+    padding: 15px 0 0 0;
+    right: 50px;
+    position: absolute;
 }
 </style>

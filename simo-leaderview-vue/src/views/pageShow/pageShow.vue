@@ -1867,7 +1867,7 @@ export default {
   width: 50px;
 }
 .content #popWGQ .lineContain {
-  padding: 30px 60px;
+  padding: 20px 60px;
   top: 70px;
   height: 70%;
   position: relative;
