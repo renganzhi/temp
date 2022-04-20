@@ -483,6 +483,7 @@ export default {
     nowPageName: function () {
       this.fly()
       this.clearPoint()
+      this.initBase()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
         if(window.changeCheckedArry){
           window.changeCheckedArry(this.newSZCheckEdData)
@@ -496,8 +497,6 @@ export default {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
         this.addPontXMQ()
-      } else {
-        this.initBase()
       }
       if (this.nowPageName && this.nowPageName.indexOf('群租房') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
@@ -960,7 +959,7 @@ export default {
       this.nowShowData = nowShowData
     },
     addLabelMarker (lon, lat, url, label, small) {
-      let size = small ? 24 : 40
+      let size = small ? 30 : 40
       let height = small ? 50 : 70
       let backgroundColor = small
         ? Cesium.Color.fromCssColorString('#ffffff')
@@ -972,7 +971,7 @@ export default {
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         billboard: {
           image: url,
-          scale: 0.15
+          scale: 0.3
         },
         label: {
           show: true,
@@ -994,7 +993,7 @@ export default {
         name: id + '管控区',
         billboard: {
           image: img[0],
-          scale: 0.15
+          scale: 0.3
         }
       })
       let en2 = viewer.entities.add({
@@ -1118,7 +1117,7 @@ export default {
           let label = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
             `${this.header}img/浆洗街区划/${item.properties.na}.png`,
-            0.5
+            0.6
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1366,7 +1365,9 @@ export default {
               extrend = true
               color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
             }
-          } else {
+          } else if(this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0 )){
+
+          }else {
             if (item.properties.Name === '浆洗街街道') {
               extrend = true
               color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
@@ -1379,7 +1380,7 @@ export default {
           }
           this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
-            `./static/img/街道名称/${item.properties.Name}.png`, 0.3, item.properties.Name
+            `./static/img/街道名称/${item.properties.Name}.png`, 0.4, item.properties.Name
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1447,6 +1448,7 @@ export default {
             color: {
               conditions: [
                 ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
+                // ['true', 'rgba(0, 234, 187 ,1)'] // 'rgb(127, 59, 8)']
               ]
             }
           })
@@ -1560,14 +1562,14 @@ export default {
               ),
               billboard: {
                 image: this.header + 'img/camera.png',
-                scale: 0.2,
+                scale: 0.3,
                 // distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
               },
               label: {
                 show: true,
                 showBackground: true,
                 backgroundColor: Cesium.Color.fromCssColorString('#000'),
-                scale: 0.4,
+                scale: 0.6,
                 font: "normal 36px MicroSoft YaHei",
                 text: item.name.split(')')[1] || item.name,
                 pixelOffset: new Cesium.Cartesian2(10, -30),
