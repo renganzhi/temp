@@ -431,6 +431,37 @@
         "params": []
     },
     {
+        "key": "get_QZF2",
+        "name": "群租房-各类别场所数量",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZF2",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "总量",
+                        "value": "总量"
+                    },
+                    {
+                        "name": "小旅馆",
+                        "value": "小旅馆"
+                    },
+                    {
+                        "name": "群租房",
+                        "value": "群租房"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "key": "get_QZF3",
         "name": "群租房-入住人员来源地(归属地)分析",
         "component": "monitor",
@@ -440,11 +471,74 @@
         "params": []
     },
     {
+        "key": "get_QZF4",
+        "name": "群租房-入住异常预警",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getQZF4",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_QZF5",
+        "name": "群租房-入住人员Top10-中台",
+        "component": "monitor",
+        "type": "NewBar",
+        "url": "/leaderview/QZF/getQZF5",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF6",
+        "name": "群租房-入住房Top5-中台",
+        "component": "monitor",
+        "type": "NewHistogram",
+        "url": "/leaderview/QZF/getQZF6",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF7",
+        "name": "群租房-敏感人员人类占比",
+        "component": "monitor",
+        "type": "NewPie",
+        "url": "/leaderview/QZF/getQZF7",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF8",
+        "name": "群租房-入住时间分析",
+        "component": "monitor",
+        "type": "ELine,ve-line",
+        "url": "/leaderview/QZF/getQZF8",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF9",
+        "name": "群租房-当日登记/离店/当月累计量",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZF9",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "数据条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/QZF/getQZF9"]
+            }
+        ]
+    },
+    {
+        "key": "get_WBZ2",
         "name": "未办证住所：街道网约房分布",
         "component": "monitor",
         "type": "NewHistogram",
-        "url": "/leaderview/QZF/getQZF5",
+        "url": "/leaderview/QZF/getWBZ2",
         "method" : "get",
         "params": []
     },

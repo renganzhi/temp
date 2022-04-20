@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <!-- <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="initSheZang1" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="addJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
+    <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
+    <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
+    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button>
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -134,6 +134,7 @@ import wanggepositions from './wanggepositions.js'
 import { gcj02_to_wgs84 } from './transform.js'
 var viewer
 var tileset
+var tilesetJxJ
 var contrastBias
 var baseObject
 var highLightPolygon
@@ -485,7 +486,7 @@ export default {
       this.clearPoint()
       this.initBase()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
-        if(window.changeCheckedArry){
+        if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
         this.addPontXMQ()
@@ -493,7 +494,7 @@ export default {
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
       ) {
-        if(window.changeCheckedArry){
+        if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
         this.addPontXMQ()
@@ -537,7 +538,7 @@ export default {
               }
             })
           }
-        });//  getQZF4
+        })//  getQZF4
       }
     }
   },
@@ -551,72 +552,72 @@ export default {
     window.changeSZChecked = this.changeSZChecked
   },
   methods: {
-    changeSZChecked(data){
+    changeSZChecked (data) {
       this.newSZCheckEdData = data
-      if(data.indexOf('社区区划')>=0){
+      if (data.indexOf('社区区划') >= 0) {
         this.addJxJ()
-      }else{
+      } else {
         this.removeJxJ()
       }
 
-      if(data.indexOf('管控区')>=0){
-        if(GuanKongquPoint.length === 0){
+      if (data.indexOf('管控区') >= 0) {
+        if (GuanKongquPoint.length === 0) {
           this.initSheZang1()
         }
-      }else{
+      } else {
         this.removeSheZang1()
       }
-      if(data.indexOf('网格员')>=0){
-        if(wangges.length === 0){
+      if (data.indexOf('网格员') >= 0) {
+        if (wangges.length === 0) {
           this.addWangge()
         }
-      }else{
+      } else {
         this.removeWangge()
       }
-      if(data.indexOf('公安网格')>=0){
-        if(GongAnPoint.length === 0){
+      if (data.indexOf('公安网格') >= 0) {
+        if (GongAnPoint.length === 0) {
           this.initGongAn()
         }
-      }else{
+      } else {
         this.removeGongAn()
       }
-      if(data.indexOf('重点区域')>=0){
-        if(keyPlacesPoint.length === 0){
+      if (data.indexOf('重点区域') >= 0) {
+        if (keyPlacesPoint.length === 0) {
           this.initkeyPlaces()
         }
-      }else{
+      } else {
         this.removekeyPlaces()
       }
-      if(data.indexOf('天网')>=0){
-        if(videoPoint.length === 0){
+      if (data.indexOf('天网') >= 0) {
+        if (videoPoint.length === 0) {
           this.addVideoPoint()
         }
-      }else{
+      } else {
         this.removeVideoPoint()
       }
-      if(data.indexOf('常规地点')>=0){
-        if(shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0){
+      if (data.indexOf('常规地点') >= 0) {
+        if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
           this.addshezangmarkers('didian')
         }
-      }else{
+      } else {
         this.removeshezangmarkers('didian')
       }
-      if(data.indexOf('封控')>=0){
-        if(shezangmarkers['fengkong'] === undefined || shezangmarkers['fengkong'].length === 0){
+      if (data.indexOf('封控') >= 0) {
+        if (shezangmarkers['fengkong'] === undefined || shezangmarkers['fengkong'].length === 0) {
           this.addshezangmarkers('fengkong')
         }
-      }else{
+      } else {
         this.removeshezangmarkers('fengkong')
       }
-      if(data.indexOf('应急')>=0){
-        if(shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0){
+      if (data.indexOf('应急') >= 0) {
+        if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
           this.addshezangmarkers('xianchangzhihui')
           this.addshezangmarkers('xundakuaifan')
           this.addshezangmarkers('huaxikuaifan')
           this.addshezangmarkers('xiaofangzhanche')
         }
-      }else{
+      } else {
         this.removeshezangmarkers('beiqing')
         this.removeshezangmarkers('xianchangzhihui')
         this.removeshezangmarkers('xundakuaifan')
@@ -878,8 +879,8 @@ export default {
       gl_FragColor=mix(outputColor,sceneColor,alpha);
       }`
 
-            // 最终合并
-            var BloomComposite = `uniform sampler2D colorTexture;
+      // 最终合并
+      var BloomComposite = `uniform sampler2D colorTexture;
                   uniform sampler2D bloomTexture;
       uniform sampler2D bloomTexture1;
       uniform sampler2D bloomTexture2;
@@ -1005,7 +1006,7 @@ export default {
           scale: 0.3
         }
       })
-      return [en,en2]
+      return [en, en2]
     },
     addWangge () {
       this.removeWangge()
@@ -1031,7 +1032,7 @@ export default {
               label: {
                 show: true,
                 showBackground: true,
-                backgroundColor: Cesium.Color.fromCssColorString("#003153"),
+                backgroundColor: Cesium.Color.fromCssColorString('#003153'),
                 scale: 0.5,
                 font: `normal 38px MicroSoft YaHei`,
                 text: child.name,
@@ -1191,7 +1192,7 @@ export default {
         shezangmarkers[type] = []
       }
     },
-    initGongAn(){
+    initGongAn () {
       GongAnPoint = []
       Imgpositions.policePoint.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
@@ -1238,13 +1239,13 @@ export default {
         GongAnPoint.push(poly)
       })
     },
-    removeGongAn(){
+    removeGongAn () {
       GongAnPoint.forEach(item => {
         viewer.entities.remove(item)
       })
       GongAnPoint = []
     },
-    initkeyPlaces(){
+    initkeyPlaces () {
       keyPlacesPoint = []
       Imgpositions.keyPlacesPoint.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
@@ -1291,13 +1292,13 @@ export default {
         keyPlacesPoint.push(poly)
       })
     },
-    removekeyPlaces(){
+    removekeyPlaces () {
       keyPlacesPoint.forEach(item => {
         viewer.entities.remove(item)
       })
       keyPlacesPoint = []
     },
-    removeSheZang1(){
+    removeSheZang1 () {
       GuanKongquPoint.forEach(item => {
         viewer.entities.remove(item)
       })
@@ -1307,7 +1308,7 @@ export default {
       Imgpositions.pointBase.forEach(item => {
         let positions = gcj02_to_wgs84(item.Lng, item.Lat)
         let GuanKongqu = this.addDoubleMarker(positions[0], positions[1], item.img, item.id)
-        GuanKongquPoint.push(GuanKongqu[0],GuanKongqu[1])
+        GuanKongquPoint.push(GuanKongqu[0], GuanKongqu[1])
       })
       Imgpositions.polygon.forEach(item => {
         let positions = []
@@ -1349,8 +1350,31 @@ export default {
         GuanKongquPoint.push(poly)
       })
     },
+    initJXJ () {
+      if (tileset) {
+        tileset.show = false
+      }
+      if (tilesetJxJ) {
+        tilesetJxJ.show = true
+      }
+      this.addJxJ()
+      for (var key in xingzhengquhuaPolygons) {
+        if (key !== '浆洗街街道') {
+          xingzhengquhuaPolygons[key].forEach(item => {
+            item.show = false
+          })
+        }
+      }
+    },
     initBase () {
       viewer.entities.removeAll()
+      this.backBase()
+      if (tileset) {
+        tileset.show = true
+      }
+      if (tilesetJxJ) {
+        tilesetJxJ.show = false
+      }
       $.getJSON('./static/geojson/xzqh.json', res => {
         let positions = res.features
         positions.forEach((item, index) => {
@@ -1378,7 +1402,7 @@ export default {
           if (item.properties.Name === '金花桥街道') {
             pointer = [103.97374548683935, 30.591885280709842]
           }
-          this.addMarker(
+          let marker = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
             `./static/img/街道名称/${item.properties.Name}.png`, 0.4, item.properties.Name
           )
@@ -1409,6 +1433,7 @@ export default {
             name: item.properties.Name
           })
           xingzhengquhuaPolygons[item.properties.Name].push(en)
+          xingzhengquhuaPolygons[item.properties.Name].push(marker)
         })
       })
       $.getJSON(this.header + 'geojson/xzqhLine.json', res => {
@@ -1437,74 +1462,35 @@ export default {
     },
     initModels () {
       tileset = new Cesium.Cesium3DTileset({
-        url: './static/wuhou/tileset.json',
+        url: this.header + 'wuhou/tileset.json',
+        lightColor: new Cesium.Cartesian3(20, 20, 20),
+        showOutline: false
+      })
+      tilesetJxJ = new Cesium.Cesium3DTileset({
+        url: this.header + 'JXJ/tileset.json',
         lightColor: new Cesium.Cartesian3(20, 20, 20),
         showOutline: false
       })
       viewer.scene.primitives.add(tileset)
-      tileset.readyPromise
-        .then(function (tileset) {
-          tileset.style = new Cesium.Cesium3DTileStyle({
-            color: {
-              conditions: [
-                ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
-                // ['true', 'rgba(0, 234, 187 ,1)'] // 'rgb(127, 59, 8)']
-              ]
-            }
-          })
-
-          tileset.tileVisible.addEventListener(function (tile) {
-            var content = tile.content
-            var featuresLength = content.featuresLength
-            for (var i = 0; i < featuresLength; i += 2) {
-              let feature = content.getFeature(i)
-              let model = feature.content._model
-
-              if (model && model._sourcePrograms && model._rendererResources) {
-                Object.keys(model._sourcePrograms).forEach(key => {
-                  let program = model._sourcePrograms[key]
-                  let fragmentShader =
-                    model._rendererResources.sourceShaders[
-                      program.fragmentShader
-                    ]
-                  let v_position = ''
-                  if (fragmentShader.indexOf(' v_positionEC;') != -1) {
-                    v_position = 'v_positionEC'
-                  } else if (fragmentShader.indexOf(' v_pos;') != -1) {
-                    v_position = 'v_pos'
-                  }
-                  const color = `vec4(${feature.color.toString()})`
-
-                  model._rendererResources.sourceShaders[
-                    program.fragmentShader
-                  ] =
-                    'varying vec3 ' +
-                    v_position +
-                    ';\n' +
-                    'void main(void){\n' +
-                    '    vec4 position = czm_inverseModelView * vec4(' +
-                    v_position +
-                    ',1);\n' +
-                    '    float glowRange = 105.0;\n' +
-                    '    gl_FragColor = ' +
-                    color +
-                    ';\n' +
-                    '    gl_FragColor = vec4(0.0,  205.0/255.0, 243.0/255.0, 1.0);\n' +
-                    // '    gl_FragColor *= vec4(vec3(position.y / 40.0), 1.0);\n' +
-                    // '    float time = fract(czm_frameNumber / 360.0);\n' +
-                    // '    time = abs(time - 0.5) * 2.0;\n' +
-                    // '    float diff = step(0.005, abs( clamp(position.y / glowRange, 0.0, 1.0) - time));\n' +
-                    // '    gl_FragColor.rgb += gl_FragColor.rgb * (1.0 - diff);\n' +
-                    '}\n'
-                })
-                model._shouldRegenerateShaders = true
-              }
-            }
-          })
+      viewer.scene.primitives.add(tilesetJxJ)
+      tilesetJxJ.readyPromise.then(function (tileset3D) {
+        tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
+          color: {
+            conditions: [
+              ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
+            ]
+          }
         })
-        .otherwise(function (error) {
-          console.error(error)
+      })
+      tileset.readyPromise.then(function (tileset3D) {
+        tileset.style = new Cesium.Cesium3DTileStyle({
+          color: {
+            conditions: [
+              ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
+            ]
+          }
         })
+      })
     },
     getCamera () {
       var camera = viewer.camera
@@ -1573,7 +1559,7 @@ export default {
                 font: "normal 36px MicroSoft YaHei",
                 text: item.name.split(')')[1] || item.name,
                 pixelOffset: new Cesium.Cartesian2(10, -30),
-                horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                horizontalOrigin: Cesium.HorizontalOrigin.LEFT
                 // distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
               },
               cameraId: item.deviceIndexCode,
@@ -1585,7 +1571,7 @@ export default {
         }
       })
     },
-    removeVideoPoint(){
+    removeVideoPoint () {
       videoPoint.forEach(item => {
         viewer.entities.remove(item)
       })
@@ -1736,7 +1722,7 @@ export default {
                 columns: ['address', 'street', 'room_number', 'bed_number'],
                 rows: picked.id.dataArray.rows
               }
-            } else if(picked.id.dataArray.rows){
+            } else if (picked.id.dataArray.rows) {
               this.popshowBig = true
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
