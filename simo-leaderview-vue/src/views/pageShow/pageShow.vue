@@ -1480,6 +1480,11 @@ export default {
             ]
           }
         })
+        var cartographic = Cesium.Cartographic.fromCartesian(tilesetJxJ.boundingSphere.center)
+        var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height)
+        var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0)
+        var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3())
+        tilesetJxJ.modelMatrix = Cesium.Matrix4.fromTranslation(translation)
       })
       tileset.readyPromise.then(function (tileset3D) {
         tileset.style = new Cesium.Cesium3DTileStyle({
@@ -1489,6 +1494,11 @@ export default {
             ]
           }
         })
+        var cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center)
+        var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height)
+        var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0)
+        var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3())
+        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation)
       })
     },
     getCamera () {
