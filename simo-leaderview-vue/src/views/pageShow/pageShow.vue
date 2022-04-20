@@ -518,7 +518,7 @@ export default {
           }
         })
       } else if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
-        this.axios.get(`/leaderview/QZF/getQZF4`).then(data => {
+        this.axios.get(`/leaderview/QZF/getWBZ1`).then(data => {
           if (data.success) {
             let height = 100
             data.obj.dataArray.forEach((d, index) => {
@@ -538,7 +538,7 @@ export default {
               }
             })
           }
-        });//getWBZ1
+        });//  getQZF4
       }
     }
   },
