@@ -1,6 +1,7 @@
 package com.uxsino.leaderview.controller.wuhou;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.service.QunZuFangService;
 import com.uxsino.leaderview.service.wuhou.WuHouService;
@@ -9,9 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = {"武侯智慧城市-群租房小程序数据接口"})
+import java.util.Arrays;
+import java.util.List;
+
+@Api(tags = {"智慧社区-群租房和未办证住所大屏接口"})
 @RestController
 @RequestMapping("/QZF")
 @Slf4j
@@ -86,41 +91,179 @@ public class QunZuFangController {
         return qunZuFangService.getPatrolByAddress(address);
     }
 
+    /**
+     * 1、群租房-敏感人员分析
+     * @return
+     */
     @GetMapping("/getQZF1")
     public JsonModel getQZF1(){
-        return wuHouService.getQZF1();
-    }
-
-    @GetMapping("/getQZF2")
-    public JsonModel getQZF2(){
-        return wuHouService.getQZF2();
+        return qunZuFangService.getQZF1();
     }
 
     /**
-     * 3、群租房入住人员来源地(归属地)分析
+     * 2、群租房-各类别场所数量
+     * @return
+     */
+    @GetMapping("/getQZF2")
+    public JsonModel getQZF2(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF2(param);
+    }
+
+    /**
+     * 3、群租房-入住人员来源地(归属地)分析
      * @return
      */
     @GetMapping("/getQZF3")
     public JsonModel getQZF3(){
-        return wuHouService.getQZF3();
+        return qunZuFangService.getQZF3();
     }
 
     /**
-     * 4、未办证住所：全区网约房地图打点
+     * 4、群租房-入住异常预警
      * @return
      */
     @GetMapping("/getQZF4")
     public JsonModel getQZF4(){
-        return wuHouService.getQZF4();
+        return qunZuFangService.getQZF4();
     }
 
     /**
-     * 5、未办证住所：街道网约房分布
+     * 5、群租房-入住人员top10:高频入住、高流动性
      * @return
      */
     @GetMapping("/getQZF5")
     public JsonModel getQZF5(){
-        return wuHouService.getQZF5();
+        return qunZuFangService.getQZF5();
     }
+
+    /**
+     * 6、群租房-入住房率top5:高入住房、高空置房
+     * @return
+     */
+    @GetMapping("/getQZF6")
+    public JsonModel getQZF6(){
+        return qunZuFangService.getQZF6();
+    }
+
+    /**
+     * 7、群租房-敏感人员人类占比
+     * @return
+     */
+    @GetMapping("/getQZF7")
+    public JsonModel getQZF7(){
+        return qunZuFangService.getQZF7();
+    }
+
+    /**
+     * 8、群租房-入住时间分析
+     * @return
+     */
+    @GetMapping("/getQZF8")
+    public JsonModel getQZF8(){
+        return qunZuFangService.getQZF8();
+    }
+
+    /**
+     * 9、群租房-入住情况统计-当日登记/离店/当月累计量
+     * @return
+     */
+    @GetMapping("/getQZF9")
+    public JsonModel getQZF9(@RequestParam(required = false) String param){
+
+        JsonModel jsonModel = qunZuFangService.getQZF9();
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        JsonModel jsonModel2 = wuHouService.getPieToText(param,obj);
+
+        Object obj1 = jsonModel2.getObj();
+        //如果返回的是结果，则返回弹窗url
+        if(obj1 instanceof JSONObject){
+            String url = "/leaderview/QZF/getQZF12?param=name:";
+            ((JSONObject) obj1).put("url",url);
+        }
+
+        return jsonModel2;
+
+    }
+
+    /**
+     * 10、群租房-入住信息查询接口
+     * @return
+     */
+    @GetMapping("/getQZF10")
+    public JsonModel getQZF10(@RequestParam(required = false) String query, @RequestParam(required = false) String param){
+
+        return qunZuFangService.getQZF10(query, param);
+    }
+
+    /**
+     * 11、群租房-场所信息查询接口
+     * @return
+     */
+    @GetMapping("/getQZF11")
+    public JsonModel getQZF11(@RequestParam(required = false) String query, @RequestParam(required = false) String param){
+        JsonModel jsonModel = qunZuFangService.getQZF11(query, param.split(":")[1]);
+        JSONObject result = (JSONObject) jsonModel.getObj();
+        List<String> columns = Arrays.asList("名称","地址","房间数","床铺数");
+        result.put("columns",columns);
+        return new JsonModel(true,result);
+    }
+
+    /**
+     * 12、群租房-入住人员明细信息
+     * @return
+     */
+    @GetMapping("/getQZF12")
+    public JsonModel getQZF12(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF12(param);
+    }
+
+    /**
+     * 、
+     * @return
+     */
+    @GetMapping("/getQZF13")
+    public JsonModel getQZF13(){
+        return qunZuFangService.getQZF3();
+    }
+
+    /**
+     * 、
+     * @return
+     */
+    @GetMapping("/getQZF14")
+    public JsonModel getQZF14(){
+        return qunZuFangService.getQZF3();
+    }
+
+    /**
+     * 、
+     * @return
+     */
+    @GetMapping("/getQZF15")
+    public JsonModel getQZF15(){
+        return qunZuFangService.getQZF3();
+    }
+
+    //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
+    /**
+     * 1、未办证住所：全区网约房地图打点
+     * @return
+     */
+    @GetMapping("/getWBZ1")
+    public JsonModel getWBZ1(){
+        return qunZuFangService.getWBZ1();
+    }
+
+    /**
+     * 2、未办证住所：街道网约房分布
+     * @return
+     */
+    @GetMapping("/getWBZ2")
+    public JsonModel getWBZ2(){
+        return qunZuFangService.getWBZ2();
+    }
+
 
 }

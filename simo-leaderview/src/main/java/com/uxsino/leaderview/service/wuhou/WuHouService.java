@@ -424,16 +424,17 @@ public class WuHouService {
      */
     public static JSONObject getPieResult(HashMap<String,String> nameAndKeyMap, JSONArray data){
         JSONObject result = new JSONObject();
-        if(ObjectUtils.isEmpty(data)){
+        /*if(ObjectUtils.isEmpty(data)){
             log.error("中台接口返回为空");
             return result;
-        }
+        }*/
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
             if("id".equals(entry.getKey()))continue;
             columns.add(entry.getKey());
         }
+        if(!ObjectUtils.isEmpty(data)){
 
         for(int i = 0; i < data.size() ; i++){
             JSONObject dataObj = (JSONObject) data.get(i);
@@ -451,6 +452,10 @@ public class WuHouService {
                 }
             }
             rows.add(row);
+        }
+
+        }else {
+            log.error("中台接口返回为空");
         }
 
         result.put("rows",rows);
@@ -1329,7 +1334,7 @@ public class WuHouService {
         JSONArray nameArry = new JSONArray();
         nameArry.add("高频入住人员TOP10");
         nameArry.add("高流动性人员TOP10");
-        dataArry.put("nameArry",nameArry);
+        dataArry.put("nameArray",nameArry);
         JSONArray dataArray = new JSONArray();
         //获取高频入住top10
         JSONObject checkInTopObject = new JSONObject();
@@ -1366,8 +1371,8 @@ public class WuHouService {
         flowTopObject.put("rows",flowTopRows);
         dataArray.add(flowTopObject);
         //封装返回值
-        dataArry.put("dataArry",dataArray);
-        res.put("dataArry",dataArry);
+        dataArry.put("dataArray",dataArray);
+        res.put("dataArray",dataArry);
         return new JsonModel(true,res);
 
     }
@@ -1652,6 +1657,10 @@ public class WuHouService {
         return new JsonModel(true,result);
     }
 
+    //——————————————————————————————————————————————————智慧社区-群租房版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————智慧社区-群租房版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————智慧社区-群租房版块—————————————————————————————————————————————————————————
+
     /**
      * 1、群租房：入住人员对比
      * 接口URL： {{baseUrl}}/apis/daas/pro/1/components/y08-01/data
@@ -1684,7 +1693,7 @@ public class WuHouService {
     }
 
     /**
-     * 2、群租房：群租房入住人员归属地分析
+     * 2、群租房：
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -1704,12 +1713,8 @@ public class WuHouService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("省","province");
-        map.put("市","city");
-        map.put("经度","longitude");
-        map.put("维度","latitude");
-        map.put("区县","district");
-        map.put("数量","cnt");
+        map.put("","");
+
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
@@ -1744,15 +1749,18 @@ public class WuHouService {
         return new JsonModel(true,result);
 
     }
+    //——————————————————————————————————————————————————智慧社区-未办证住所版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————智慧社区-未办证住所版块—————————————————————————————————————————————————————————
+    //——————————————————————————————————————————————————智慧社区-未办证住所版块—————————————————————————————————————————————————————————
 
     /**
-     * 4、群租房：全区群租房地图打点
+     * 1、群租房：全区群租房地图打点
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getQZF4(){
+    public JsonModel getWBZ1(){
 
         String res = null;
         try {
@@ -1800,7 +1808,7 @@ public class WuHouService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getQZF5(){
+    public JsonModel getWBZ2(){
 
         String res = null;
         try {
