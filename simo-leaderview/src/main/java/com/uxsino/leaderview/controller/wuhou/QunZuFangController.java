@@ -248,7 +248,7 @@ public class QunZuFangController {
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
     /**
-     * 1、未办证住所：全区网约房地图打点
+     * 1、未办证住所-全区网约房地图打点
      * @return
      */
     @GetMapping("/getWBZ1")
@@ -257,7 +257,7 @@ public class QunZuFangController {
     }
 
     /**
-     * 2、未办证住所：街道网约房分布
+     * 2、未办证住所-街道网约房分布
      * @return
      */
     @GetMapping("/getWBZ2")
@@ -265,5 +265,67 @@ public class QunZuFangController {
         return qunZuFangService.getWBZ2();
     }
 
+    /**
+     * 3、未办证住所-入住街道top5接口
+     * @return
+     */
+    @GetMapping("/getWBZ3")
+    public JsonModel getWBZ3(){
+        return qunZuFangService.getWBZ3();
+    }
 
+    /**
+     * 4、未办证住所-入住人员户籍地TOP10
+     * @return
+     */
+    @GetMapping("/getWBZ4")
+    public JsonModel getWBZ4(){
+        return qunZuFangService.getWBZ4();
+    }
+
+    /**
+     * 5、未办证住所-入住情况统计
+     * @return
+     */
+    @GetMapping("/getWBZ5")
+    public JsonModel getWBZ5(@RequestParam(required = false) String param){
+        JsonModel jsonModel = qunZuFangService.getWBZ5();
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        JsonModel jsonModel2 = wuHouService.getPieToText(param,obj);
+        Object obj1 = jsonModel2.getObj();
+        //如果返回的是结果，则返回弹窗url
+        if(obj1 instanceof JSONObject){
+            //今日登记房间详情和今日登记人详情接口待提供，对接好后配置在下面url中 -类似内外资投资详情
+//            ((JSONObject) obj1).put("url","/leaderview/WuHou163/getJJ9?param=name:");
+        }
+
+        return jsonModel2;
+    }
+
+    /**
+     * 6、未办证住所-一月内空置排名
+     * @return
+     */
+    @GetMapping("/getWBZ6")
+    public JsonModel getWBZ6(){
+        return qunZuFangService.getWBZ6();
+    }
+
+    /**
+     * 7、未办证住所-一月内入住排名
+     * @return
+     */
+    @GetMapping("/getWBZ7")
+    public JsonModel getWBZ7(){
+        return qunZuFangService.getWBZ7();
+    }
+
+    /**
+     * 8、未办证住所-
+     * @return
+     */
+    @GetMapping("/getWBZ8")
+    public JsonModel getWBZ8(){
+        return qunZuFangService.getWBZ2();
+    }
 }

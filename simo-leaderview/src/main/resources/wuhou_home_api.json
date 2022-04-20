@@ -535,10 +535,64 @@
     },
     {
         "key": "get_WBZ2",
-        "name": "未办证住所：街道网约房分布",
+        "name": "未办证住所-街道网约房分布",
         "component": "monitor",
-        "type": "NewHistogram",
+        "type": "NewBar,NewHistogram",
         "url": "/leaderview/QZF/getWBZ2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ3",
+        "name": "未办证住所-入住街道top5接口",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/QZF/getWBZ3",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ4",
+        "name": "未办证住所-入住人员户籍地TOP10",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/QZF/getWBZ4",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ5",
+        "name": "未办证住所-入住情况统计-当日登记房间数/人数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getWBZ5",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "数据条目",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/QZF/getWBZ5"]
+            }
+        ]
+    },
+    {
+        "key": "get_WBZ6",
+        "name": "未办证住所-一月内空置排名",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getWBZ6",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ7",
+        "name": "未办证住所-一月内入住排名",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getWBZ7",
         "method" : "get",
         "params": []
     },
