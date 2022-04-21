@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <!-- <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button>
+    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -484,8 +484,8 @@ export default {
     nowPageName: function () {
       this.fly()
       this.clearPoint()
-      this.initBase()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
+        this.initJXJ()
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
@@ -494,10 +494,13 @@ export default {
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
       ) {
+        this.initJXJ()
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
         this.addPontXMQ()
+      }else{
+        this.initBase()
       }
       if (this.nowPageName && this.nowPageName.indexOf('群租房') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
@@ -1357,7 +1360,7 @@ export default {
       if (tilesetJxJ) {
         tilesetJxJ.show = true
       }
-      this.addJxJ()
+      // this.addJxJ()
       for (var key in xingzhengquhuaPolygons) {
         if (key !== '浆洗街街道') {
           xingzhengquhuaPolygons[key].forEach(item => {
