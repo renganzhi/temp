@@ -321,11 +321,56 @@ public class QunZuFangController {
     }
 
     /**
-     * 8、未办证住所-
+     * 8、未办证住所-入住异常预警
      * @return
      */
     @GetMapping("/getWBZ8")
     public JsonModel getWBZ8(){
+        return qunZuFangService.getWBZ8();
+    }
+
+    /**
+     * 9、未办证住所-入住时间分析
+     * @return
+     */
+    @GetMapping("/getWBZ9")
+    public JsonModel getWBZ9(){
+        return qunZuFangService.getWBZ9();
+    }
+
+    /**
+     * 10、未办证住所-
+     * @return
+     */
+    @GetMapping("/getWBZ10")
+    public JsonModel getWBZ10(){
+        return qunZuFangService.getWBZ2();
+    }
+
+    /**
+     * 8、未办证住所-
+     * @return
+     */
+    @GetMapping("/getWBZ11")
+    public JsonModel getWBZ11(){
+        return qunZuFangService.getWBZ2();
+    }
+
+    /**
+     * 8、未办证住所-
+     * @return
+     */
+    @GetMapping("/getWBZ12")
+    public JsonModel getWBZ12(){
+        return qunZuFangService.getWBZ2();
+    }
+
+    /**
+     * 8、未办证住所-
+     * @return
+     */
+    @GetMapping("/getWBZ13")
+    public JsonModel getWBZ13(){
         return qunZuFangService.getWBZ2();
     }
 }

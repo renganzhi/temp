@@ -422,15 +422,6 @@
         ]
     },
     {
-        "key": "get_QZF1",
-        "name": "群租房—敏感人员分类占比",
-        "component": "monitor",
-        "type": "NewPie",
-        "url": "/leaderview/QZF/getQZF1",
-        "method" : "get",
-        "params": []
-    },
-    {
         "key": "get_QZF2",
         "name": "群租房-各类别场所数量",
         "component": "monitor",
@@ -593,6 +584,24 @@
         "component": "monitor",
         "type": "WuhouTable",
         "url": "/leaderview/QZF/getWBZ7",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ8",
+        "name": "未办证住所-入住异常预警",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getWBZ8",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_WBZ9",
+        "name": "未办证住所-入住时间分析",
+        "component": "monitor",
+        "type": "ELine,ve-line",
+        "url": "/leaderview/QZF/getWBZ8",
         "method" : "get",
         "params": []
     },
@@ -1545,5 +1554,23 @@
         "url": "/leaderview/ZHSQ/getSQKF1",
         "method" : "get",
         "params": []
+    },
+    {
+        "key": "get_SZCT2",
+        "name": "涉藏处突-涉藏商店企业概况",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getSZCT2",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "类别",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "remote",
+                "dataUrl": ["/leaderview/ZHSQ/getSZCT2"]
+            }
+        ]
     }
 ]
