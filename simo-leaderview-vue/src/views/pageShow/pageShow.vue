@@ -482,7 +482,6 @@ export default {
   },
   watch: {
     nowPageName: function () {
-      this.fly()
       this.clearPoint()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
         this.initJXJ()
@@ -490,6 +489,7 @@ export default {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
         this.addPontXMQ()
+        this.flyJXJ()
       } else if (
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
@@ -501,6 +501,7 @@ export default {
         this.addPontXMQ()
       }else{
         this.initBase()
+        this.fly()
       }
       if (this.nowPageName && this.nowPageName.indexOf('群租房') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
@@ -831,6 +832,37 @@ export default {
         })
       )
     },
+    flyJXJ(){
+      if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.1691971213243,
+            30.39283057151572,
+            76433.67482117772
+          ),
+          orientation: {
+            heading: 0.07691962850668421,
+            pitch: -1.2997082125881327,
+            roll: 0.0000065869953988016882
+          },
+          duration: 1
+        })
+      } else {
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.18199634654243,
+            30.5471951164135,
+            55783.84968843796
+          ),
+          orientation: {
+            heading: 6.283185307179586,
+            pitch: -1.5707859043726606,
+            roll: 0
+          },
+          duration: 1
+        })
+      }
+    },
     fly () {
       if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
         viewer.scene.camera.flyTo({
@@ -1121,7 +1153,7 @@ export default {
           let label = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
             `${this.header}img/浆洗街区划/${item.properties.na}.png`,
-            0.6
+            0.6,item.properties.na
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1735,13 +1767,26 @@ export default {
                 columns: ['address', 'street', 'room_number', 'bed_number'],
                 rows: picked.id.dataArray.rows
               }
-            } else if (picked.id.dataArray.rows) {
+            } else if (picked.id && picked.id.dataArray && picked.id.dataArray.rows) {
               this.popshowBig = true
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
               this.TableTanData = {
                 columns: ['placeName', 'address', 'roomNum', 'bedNum'],
                 rows: picked.id.dataArray.rows
+              }
+            } else if(picked.id.name.indexOf('社区')>=0){
+              this.popshowBig = true
+              this.ShowTableTan = true
+              this.CheckEdId = picked.id.id
+              this.TableTanData = {
+                columns: ['placeName', 'address', 'roomNum', 'bedNum'],
+                rows: [{
+                  placeName:'1',
+                  address:'1',
+                  roomNum:'1',
+                  bedNum:'1',
+                }]
               }
             }
           }

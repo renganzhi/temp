@@ -14,7 +14,7 @@
             color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#bfcbdb',
             width:`calc(${100 / item.chartData.columns.length}%)`
           }">
-          <div v-if="data === '操作'">
+          <div style="width: 100%;height: 100%;display: flex;position: absolute;justify-content: center;align-items: center;flex-wrap: wrap;" v-if="data === '操作'">
             <div class="btnBox" @click.stop="showRZ(rowsData)">入住人信息</div>
             <div class="btnBox" @click.stop="showLD(rowsData)">联动处置情况</div>
           </div>
@@ -224,7 +224,8 @@ export default {
     },
     bodyStyle () {
       return {
-        height: this.item.boduHeight + 'px !important'
+        height: this.item.boduHeight + 'px !important',
+        padding: Math.floor(this.item.boduHeight / 5) + 'px !important',
       }
     },
     bodyAllStyle () {
@@ -324,24 +325,26 @@ export default {
       color: #bfcbdb;
       th {
         height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow: hidden;
+        text-align: center;
+        position: relative;
       }
     }
   }
   .btnBox {
     background: url(./button.png);
     background-size: 100% 100%;
-    padding: 6px 10px;
-    margin: 16px 0;
     cursor: pointer;
-    text-align: center;
+    text-align: center; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40%;
+    width: 70%;
   }
 }
 .RZWHtable {
