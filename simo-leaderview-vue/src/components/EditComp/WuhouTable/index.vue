@@ -225,7 +225,7 @@ export default {
     bodyStyle () {
       return {
         height: this.item.boduHeight + 'px !important',
-        padding: Math.floor(this.item.boduHeight / 5) + 'px !important',
+        padding: Math.floor(this.item.boduHeight / 6) + 'px !important',
       }
     },
     bodyAllStyle () {

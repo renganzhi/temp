@@ -1,7 +1,12 @@
 <template>
   <div class="WuhoPointBox" :style="maoBlstyle" >
     <div class="OpenPointBtn">
+      <div class="SmallName">社治力量</div>
       <div v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
+        {{d}}
+      </div>
+      <div class="SmallName">涉藏概况</div>
+      <div v-for="(d,i) in dataArray2" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}}
       </div>
     </div>
@@ -14,7 +19,8 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['天网','管控区','常规地点','封控','应急','公安网格','网格员','重点区域','社区区划'],
+      dataArray:['天网','管控区','公安日常勤务','公安网格','网格区','重点区域','重点点位','社区区划'],
+      dataArray2:['涉藏商店','名宿旅馆','藏餐茶吧','娱乐场所','涉藏机构','小区院落','锅庄舞场'],
       CheckedArry:[]
     };
   },
@@ -53,14 +59,21 @@ export default {
 <style lang="scss" scoped>
 
 .OpenPointBtn{
-  height: 1136px;
+  height: 1540px;
   width: 490px;
-  padding: 30px 0 0 180px;
+  padding: 20px 0 0 180px;
   background: url(./backbox.png);
+  background-size: 100% 100%;
+}
+.SmallName{
+  font-size: 30px;
+  color: #9b9b9b;
+  left: -20px;
+  position: relative;
 }
 .CheckedBox{
   width: 240px;
-  margin: 0 0 45px 0px;
+  margin: 0 0 20px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -72,12 +85,12 @@ export default {
   justify-content: center;
   color: #DCFBFF;
   text-shadow: 0px 4px 10px rgba(31, 174, 255, 0.72);
-  height: 80px;
+  height: 74px;
   background: url(./checkedbox.png);
 }
 .NoChecked{
   width: 240px;
-  margin: 0 0 45px 0px;
+  margin: 0 0 20px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -88,7 +101,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: #97C4D8;
-  height: 80px;
+  height: 74px;
   background: url(./nocheckedbox.png);
 }
 </style>

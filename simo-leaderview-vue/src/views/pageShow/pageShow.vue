@@ -1,7 +1,7 @@
 <template>
   <div class="content">
-    <!-- <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
+    <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <!-- <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
@@ -74,7 +74,7 @@
               v-for="(data, index) in TableTanData.columns"
               :key="index"
               :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
-            >{{ tableTanTitle[data] }}</th>
+            >{{ tableTanTitle[data] || data }}</th>
           </tr>
         </div>
         <div class="TableBody" v-if="TableTanData.rows.length > 0">
@@ -88,9 +88,18 @@
         </div>
       </div>
       <div class="XQBoxTan" v-else>
-        <div class="poptitle">{{ iswbzzs? nowShowData.room_name:'小旅馆'}}</div>
+        <div class="poptitle">{{ !sqjcfb ? iswbzzs? nowShowData.room_name:'小旅馆' :'警员详情'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
-        <div class="lineContain" v-if='!iswbzzs'>
+        <div class="lineContain" v-if='sqjcfb'>
+          <div class="line">民警:{{nowShowData['民警']}}</div>
+          <div class="line">民警Id:{{nowShowData['民警Id']}}</div>
+          <div class="line">手机:{{nowShowData['手机']}}</div>
+          <div class="line">区域Id: {{nowShowData['区域Id']}}</div>
+          <div class="line">社区:{{nowShowData['社区']}}</div>
+          <div class="line">管控区:{{nowShowData['管控区']}}</div>
+          <div class="line">责任区:{{nowShowData['责任区']}}</div>
+        </div>
+        <div class="lineContain" v-else-if='!iswbzzs'>
           <div class="line">名称: {{nowShowData.placeName}}</div>
           <div class="line">标准地址:{{nowShowData.address}}</div>
           <div class="line">房间数:{{nowShowData.roomNum}}</div>
@@ -143,6 +152,7 @@ var billboardMarkers = []
 let wangges = []// 网格数据
 let jxjdatas = []// 浆洗街行政区划数据
 let videoPoint = []// 摄像头数据
+let ZdDWarray = []// 摄像头数据
 let GongAnPoint = []// 公安数据
 let keyPlacesPoint = []// 重点数据
 let GuanKongquPoint = []// 管控区
@@ -169,6 +179,8 @@ export default {
       popshowBig: false,
       popshowWGQ: false,
       popshowXMQ: false,
+      iswbzzs: false,
+      sqjcfb: false,
       SZDataShowBig: false,
       ShowTableTan: true,
       CheckEdId: 0,
@@ -485,11 +497,10 @@ export default {
       this.clearPoint()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
         this.initJXJ()
+        this.flyJXJ()
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
-        this.addPontXMQ()
-        this.flyJXJ()
       } else if (
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
@@ -498,7 +509,6 @@ export default {
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
-        this.addPontXMQ()
       }else{
         this.initBase()
         this.fly()
@@ -571,7 +581,7 @@ export default {
       } else {
         this.removeSheZang1()
       }
-      if (data.indexOf('网格员') >= 0) {
+      if (data.indexOf('网格区') >= 0) {
         if (wangges.length === 0) {
           this.addWangge()
         }
@@ -599,30 +609,32 @@ export default {
       } else {
         this.removeVideoPoint()
       }
-      if (data.indexOf('常规地点') >= 0) {
-        if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
-          this.addshezangmarkers('didian')
+      if (data.indexOf('重点点位') >= 0) {
+        if (ZdDWarray.length === 0) {
+          this.addPontXMQ()
         }
       } else {
-        this.removeshezangmarkers('didian')
+        this.removePontXMQ()
       }
-      if (data.indexOf('封控') >= 0) {
-        if (shezangmarkers['fengkong'] === undefined || shezangmarkers['fengkong'].length === 0) {
-          this.addshezangmarkers('fengkong')
-        }
-      } else {
-        this.removeshezangmarkers('fengkong')
-      }
-      if (data.indexOf('应急') >= 0) {
+      // if (data.indexOf('常规地点') >= 0) {
+      //   if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
+      //     this.addshezangmarkers('didian')
+      //   }
+      // } else {
+      //   this.removeshezangmarkers('didian')
+      // }
+      if (data.indexOf('公安日常勤务') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
           this.addshezangmarkers('xianchangzhihui')
+          this.addshezangmarkers('fengkong')
           this.addshezangmarkers('xundakuaifan')
           this.addshezangmarkers('huaxikuaifan')
           this.addshezangmarkers('xiaofangzhanche')
         }
       } else {
         this.removeshezangmarkers('beiqing')
+        this.removeshezangmarkers('fengkong')
         this.removeshezangmarkers('xianchangzhihui')
         this.removeshezangmarkers('xundakuaifan')
         this.removeshezangmarkers('huaxikuaifan')
@@ -635,7 +647,7 @@ export default {
       var rad = rad || 70
       var x = 1
       var y = 1
-      viewer.entities.add({
+      let data =  viewer.entities.add({
         id: id,
         position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
         ellipse: {
@@ -665,6 +677,7 @@ export default {
           })
         }
       })
+      return data
     },
     addPopEvent () {
       var that = this
@@ -836,28 +849,28 @@ export default {
       if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
-            104.1691971213243,
-            30.39283057151572,
-            76433.67482117772
+            104.07571587587084,
+            30.585662107448858,
+            19802.151055716295
           ),
           orientation: {
-            heading: 0.07691962850668421,
-            pitch: -1.2997082125881327,
-            roll: 0.0000065869953988016882
+            heading: 0.07691929777463358,
+            pitch: -1.2997070199225433,
+            roll: 0.000006930263633186939
           },
           duration: 1
         })
       } else {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
-            104.18199634654243,
-            30.5471951164135,
-            55783.84968843796
+            104.07571587587084,
+            30.585662107448858,
+            19802.151055716295
           ),
           orientation: {
-            heading: 6.283185307179586,
-            pitch: -1.5707859043726606,
-            roll: 0
+            heading: 0.07691929777463358,
+            pitch: -1.2997070199225433,
+            roll: 0.000006930263633186939
           },
           duration: 1
         })
@@ -1569,8 +1582,15 @@ export default {
       console.log(data)
       console.log(obj, viewer.scene.primitives)
     },
+    removePontXMQ () {
+      ZdDWarray.forEach(item => {
+        viewer.entities.remove(item)
+      })
+      ZdDWarray = []
+    },
     addPontXMQ () {
-      viewer.entities.add({
+      ZdDWarray = []
+      let data = viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(104.04696719736683, 30.644423523687326, 40),
         name: 'XMQ',
         billboard: {
@@ -1578,7 +1598,9 @@ export default {
           scale: 0.4
         }
       })
-      this.addDynamicCircle([104.04696719736683, 30.644423523687326, 40], 'test', 100)
+      let dd = this.addDynamicCircle([104.04696719736683, 30.644423523687326, 40], 'test', 100)
+      ZdDWarray.push(data)
+      ZdDWarray.push(dd)
     },
     addVideoPoint () {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
@@ -1708,6 +1730,7 @@ export default {
         this.SZDataShowBig = false
 
         this.iswbzzs = false
+        this.sqjcfb = false
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf('网格区') > 0) {
           this.popshowWGQ = true
           this.WGQData = {
@@ -1776,18 +1799,19 @@ export default {
                 rows: picked.id.dataArray.rows
               }
             } else if(picked.id.name.indexOf('社区')>=0){
-              this.popshowBig = true
-              this.ShowTableTan = true
-              this.CheckEdId = picked.id.id
-              this.TableTanData = {
-                columns: ['placeName', 'address', 'roomNum', 'bedNum'],
-                rows: [{
-                  placeName:'1',
-                  address:'1',
-                  roomNum:'1',
-                  bedNum:'1',
-                }]
-              }
+              // /leaderview/ZHSQ/getSZCT1
+              this.sqjcfb = true
+              this.axios.get('/leaderview/ZHSQ/getSZCT1?param=' + picked.id.name).then(data => {
+                if (data.success) {
+                  this.popshowBig = true
+                  this.ShowTableTan = true
+                  this.CheckEdId = picked.id.id
+                  this.TableTanData = {
+                    columns: data.obj.columns,
+                    rows: data.obj.rows
+                  }
+                }
+              })
             }
           }
           //   let primitive = picked.primitive
