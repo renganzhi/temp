@@ -54,14 +54,30 @@
       </div>
     </div>
     <div id="popXMQ" v-show="popshowXMQ">
-      <div class="XQBoxTan">
-        <div class="poptitle">藏族人组织纪念法应急预案</div>
+      <div class="XQBoxTan" v-if="IsXiuGaiState">
+        <div class="poptitle"> 
+          <Input v-model="sureChangeData.name" placeholder="请输入标题" />
+          </div>
         <div class="CloseBtn" @click="popshowXMQ = false"></div>
         <div class="lineContain">
-          <div class="line">预案概述: 在浆洗街街道发现5名藏族喇嘛坐诵经和举像</div>
-          <div class="line">预案等级: 高</div>
-          <div class="line">启动条件: 各部门资源充足</div>
-          <div class="line">预案内容: xxxx年xx月xx日xx时xx分，区公安局网安大队民警xx在微信群发现，一名交xxx藏族人在微信群邀约群内藏族人员预xxx月xxx日前往武侯区xxx藏餐馆给xxxx组件纪念发挥，</div>
+          <div class="line"> 
+            <Input v-model="sureChangeData.details" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入内容" />
+          </div>
+        </div>
+        <div class="btnArry">
+          <button @click="saveXiugai">保存</button>
+          <button @click="giveUpXiuGai">取消</button>
+        </div>
+      </div>
+      <div class="XQBoxTan" v-else>
+        <div class="poptitle">{{changeDataArry.name}}</div>
+        <div class="CloseBtn" @click="popshowXMQ = false"></div>
+        <div class="lineContain">
+          <div class="line"> {{changeDataArry.details}}</div>
+        </div>
+        <div class="btnArry">
+          <button @click="suerChange">修改</button>
+          <button @click="sureDelet=true">删除</button>
         </div>
       </div>
     </div>
@@ -131,7 +147,22 @@
         <div class="BackBtn" @click="ShowTableTan = true">返回</div>
       </div>
     </div>
-    <div id="cesiumContainer" />
+    <Modal
+      v-model="sureDelet"
+      title="请确认"
+      @on-ok="deletZDDW"
+      @on-cancel="sureDelet = false">
+      <p>确认删除该点位?删除后不可恢复！</p>
+    </Modal>
+    <Modal
+      v-model="sureAddPoint"
+      title="请输入点位信息"
+      @on-ok="AddZDDW"
+      @on-cancel="sureAddPoint = false">
+      <p> 标题: <Input v-model="AddDataArry.name" placeholder="请输入标题" /> </p>
+      <p> 内容: <Input v-model="AddDataArry.details" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入内容" /> </p>
+    </Modal>
+    <div id="cesiumContainer" :style="CesiumStyle"/>
   </div>
 </template>
 
@@ -141,6 +172,7 @@ import * as turf from '@turf/turf'
 import Imgpositions from './Imgpositions.js'
 import wanggepositions from './wanggepositions.js'
 import { gcj02_to_wgs84 } from './transform.js'
+import { Slider, Notification } from 'element-ui'
 var viewer
 var tileset
 var tilesetJxJ
@@ -177,6 +209,18 @@ export default {
     return {
       popshow: false,
       popshowBig: false,
+      AddPointState: false,
+      IsXiuGaiState: false,
+      sureDelet: false,
+      sureAddPoint: false,
+      changeDataArry: {},
+      sureChangeData: {},
+      AddDataArry: {
+        longitude:"",
+        latitude:'',
+        name:"",
+        details:''
+      },
       popshowWGQ: false,
       popshowXMQ: false,
       iswbzzs: false,
@@ -492,6 +536,19 @@ export default {
       ]
     }
   },
+  computed: {
+    CesiumStyle(){
+      if(this.AddPointState){
+        return {
+          cursor:'crosshair'
+        }
+      }else{
+        return {
+          cursor:'auto'
+        }
+      }
+    }
+  },
   watch: {
     nowPageName: function () {
       this.clearPoint()
@@ -564,8 +621,20 @@ export default {
     this.addPopEvent()
     this.fly()
     window.changeSZChecked = this.changeSZChecked
+    window.addPointTrue = this.addPointTrue
   },
   methods: {
+    addPointTrue(){
+      if(this.newSZCheckEdData.indexOf('重点点位') >= 0){
+        this.AddPointState = true
+      }else{
+        Notification({
+          message: '请先开启重点点位！',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+      }
+    },
     changeSZChecked (data) {
       this.newSZCheckEdData = data
       if (data.indexOf('社区区划') >= 0) {
@@ -610,9 +679,7 @@ export default {
         this.removeVideoPoint()
       }
       if (data.indexOf('重点点位') >= 0) {
-        if (ZdDWarray.length === 0) {
-          this.addPontXMQ()
-        }
+        this.addPontXMQ()
       } else {
         this.removePontXMQ()
       }
@@ -648,7 +715,6 @@ export default {
       var x = 1
       var y = 1
       let data =  viewer.entities.add({
-        id: id,
         position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
         ellipse: {
           height: pos[2],
@@ -749,6 +815,84 @@ export default {
         }
       }
       viewer.scene.preRender.addEventListener(SZpopBig)
+    },
+    suerChange(){
+      this.IsXiuGaiState = true
+      this.sureChangeData = JSON.parse(JSON.stringify(this.changeDataArry))
+    },
+    giveUpXiuGai(){
+      this.IsXiuGaiState = false
+    },
+    saveXiugai(){
+      let newData = JSON.parse(JSON.stringify(this.sureChangeData))
+      if(newData.name !== '' && newData.details!==''){
+        let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        if(newData.id!==''){
+          url = `/leaderview/ZHSQ/saveCustomDot?id=${newData.id}&latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        }
+        this.axios
+          .get(url)
+          .then(res => {
+            if(res.success){
+              this.changeDataArry = JSON.parse(JSON.stringify(this.sureChangeData))
+              Notification({
+                message: '修改成功',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.IsXiuGaiState = false
+              this.addPontXMQ()
+            }
+          })
+      } else {
+        Notification({
+          message: '标题及内容不能为空',
+          position: 'bottom-right',
+          customClass: 'toast toast-success'
+        })
+      }
+    },
+    AddZDDW(){
+      let newData = JSON.parse(JSON.stringify(this.AddDataArry))
+      if(newData.name !== '' && newData.details!==''){
+        let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        this.axios
+          .get(url)
+          .then(res => {
+            if(res.success){
+              Notification({
+                message: '新增成功！',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.sureAddPoint = false
+              this.addPontXMQ()
+            }
+          })
+      } else {
+        Notification({
+          message: '标题及内容不能为空',
+          position: 'bottom-right',
+          customClass: 'toast toast-success'
+        })
+      }
+    },
+    deletZDDW(){
+      if(this.changeDataArry.id){
+        this.axios
+          .get('/leaderview/ZHSQ/deleteCustomDot?id='+this.changeDataArry.id)
+          .then(res => {
+            if(res.success){
+              Notification({
+                message: '删除成功',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.popshowXMQ = false
+              this.addPontXMQ()
+            }
+          })
+      }
     },
     ShowRuzhu (address) {
       this.axios
@@ -1589,18 +1733,24 @@ export default {
       ZdDWarray = []
     },
     addPontXMQ () {
+      this.removePontXMQ()
       ZdDWarray = []
-      let data = viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(104.04696719736683, 30.644423523687326, 40),
-        name: 'XMQ',
-        billboard: {
-          image: 'static/img/click.png',
-          scale: 0.4
-        }
+      this.axios.get(`/leaderview/ZHSQ/getCustomDot`).then(data => {
+        data.obj.forEach(ele => {
+          let data = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(ele.longitude*1, ele.latitude*1, 40),
+            name: 'XMQ',
+            billboard: {
+              image: 'static/img/importantData.png',
+              scale: 0.3
+            },
+            dataArry:ele
+          })
+          let dd = this.addDynamicCircle([ele.longitude*1, ele.latitude*1, 40], 'test', 100)
+          ZdDWarray.push(data)
+          ZdDWarray.push(dd)
+        });
       })
-      let dd = this.addDynamicCircle([104.04696719736683, 30.644423523687326, 40], 'test', 100)
-      ZdDWarray.push(data)
-      ZdDWarray.push(dd)
     },
     addVideoPoint () {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
@@ -1742,8 +1892,16 @@ export default {
             对应街道负责人姓名: 'xxxxxxxx',
             对应街道负责人电话: 'xxxxxxxx'
           }
-        }
-        if (picked && picked.primitive && picked.id && picked.id._billboard) {
+        }else if(this.AddPointState){
+          this.AddPointState = false
+          this.AddDataArry = {
+            longitude: lng,
+            latitude: lat,
+            name:"",
+            details:''
+          },
+          this.sureAddPoint = true
+        } else if (picked && picked.primitive && picked.id && picked.id._billboard) {
           if (picked.id && picked.id._billboard) {
             if (picked.id.name && picked.id.name.includes('街道')) {
               this.backBase()
@@ -1774,6 +1932,8 @@ export default {
 
             if (picked.id.name === 'XMQ') {
               this.popshowXMQ = true
+              this.IsXiuGaiState = false
+              this.changeDataArry = picked.id.dataArry
             } else if (picked.id.type === 'camera') {
               let cameraData = picked.id.cameraId
               this.$parent.$parent.ShowVideoBox(cameraData)
@@ -2137,5 +2297,11 @@ export default {
   height: 100%;
   text-align: center;
   overflow: hidden;
+}
+.btnArry{
+  position: relative;
+  top: 35px;
+  text-align: right;
+  padding: 0 50px;
 }
 </style>

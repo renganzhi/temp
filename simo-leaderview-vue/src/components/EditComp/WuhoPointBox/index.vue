@@ -5,8 +5,9 @@
       <div v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}}
       </div>
+      <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
       <div class="SmallName">涉藏概况</div>
-      <div v-for="(d,i) in dataArray2" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
+      <div v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}}
       </div>
     </div>
@@ -42,6 +43,11 @@ export default {
     window.changeCheckedArry = this.changeCheckedArry
   },
   methods: {
+    AddZDDW(){
+      if(window.addPointTrue){
+          window.addPointTrue()
+      }
+    },
     changeCheckedArry(data){
       console.log(data)
       this.CheckedArry = data
@@ -103,5 +109,15 @@ export default {
   color: #97C4D8;
   height: 74px;
   background: url(./nocheckedbox.png);
+}
+.AddPonit{
+  position: absolute;
+  height: 50px;
+  cursor: pointer;
+  width: 50px;
+  background: url(./AddPonit.png);
+  background-size: 100% 100%;
+  right: 12px;
+  top: 645px;
 }
 </style>
