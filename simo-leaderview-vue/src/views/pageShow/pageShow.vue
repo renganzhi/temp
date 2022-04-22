@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <button v-show="true" @click="addshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
+    <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <!-- <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button>
+    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -54,14 +54,30 @@
       </div>
     </div>
     <div id="popXMQ" v-show="popshowXMQ">
-      <div class="XQBoxTan">
-        <div class="poptitle">藏族人组织纪念法应急预案</div>
+      <div class="XQBoxTan" v-if="IsXiuGaiState">
+        <div class="poptitle"> 
+          <Input v-model="sureChangeData.name" placeholder="请输入标题" />
+          </div>
         <div class="CloseBtn" @click="popshowXMQ = false"></div>
         <div class="lineContain">
-          <div class="line">预案概述: 在浆洗街街道发现5名藏族喇嘛坐诵经和举像</div>
-          <div class="line">预案等级: 高</div>
-          <div class="line">启动条件: 各部门资源充足</div>
-          <div class="line">预案内容: xxxx年xx月xx日xx时xx分，区公安局网安大队民警xx在微信群发现，一名交xxx藏族人在微信群邀约群内藏族人员预xxx月xxx日前往武侯区xxx藏餐馆给xxxx组件纪念发挥，</div>
+          <div class="line"> 
+            <Input v-model="sureChangeData.details" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入内容" />
+          </div>
+        </div>
+        <div class="btnArry">
+          <button @click="saveXiugai">保存</button>
+          <button @click="giveUpXiuGai">取消</button>
+        </div>
+      </div>
+      <div class="XQBoxTan" v-else>
+        <div class="poptitle">{{changeDataArry.name}}</div>
+        <div class="CloseBtn" @click="popshowXMQ = false"></div>
+        <div class="lineContain">
+          <div class="line"> {{changeDataArry.details}}</div>
+        </div>
+        <div class="btnArry">
+          <button @click="suerChange">修改</button>
+          <button @click="sureDelet=true">删除</button>
         </div>
       </div>
     </div>
@@ -74,7 +90,7 @@
               v-for="(data, index) in TableTanData.columns"
               :key="index"
               :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
-            >{{ tableTanTitle[data] }}</th>
+            >{{ tableTanTitle[data] || data }}</th>
           </tr>
         </div>
         <div class="TableBody" v-if="TableTanData.rows.length > 0">
@@ -88,9 +104,18 @@
         </div>
       </div>
       <div class="XQBoxTan" v-else>
-        <div class="poptitle">{{ iswbzzs? nowShowData.room_name:'小旅馆'}}</div>
+        <div class="poptitle">{{ !sqjcfb ? iswbzzs? nowShowData.room_name:'小旅馆' :'警员详情'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
-        <div class="lineContain" v-if='!iswbzzs'>
+        <div class="lineContain" v-if='sqjcfb'>
+          <div class="line">民警:{{nowShowData['民警']}}</div>
+          <div class="line">民警Id:{{nowShowData['民警Id']}}</div>
+          <div class="line">手机:{{nowShowData['手机']}}</div>
+          <div class="line">区域Id: {{nowShowData['区域Id']}}</div>
+          <div class="line">社区:{{nowShowData['社区']}}</div>
+          <div class="line">管控区:{{nowShowData['管控区']}}</div>
+          <div class="line">责任区:{{nowShowData['责任区']}}</div>
+        </div>
+        <div class="lineContain" v-else-if='!iswbzzs'>
           <div class="line">名称: {{nowShowData.placeName}}</div>
           <div class="line">标准地址:{{nowShowData.address}}</div>
           <div class="line">房间数:{{nowShowData.roomNum}}</div>
@@ -122,7 +147,22 @@
         <div class="BackBtn" @click="ShowTableTan = true">返回</div>
       </div>
     </div>
-    <div id="cesiumContainer" />
+    <Modal
+      v-model="sureDelet"
+      title="请确认"
+      @on-ok="deletZDDW"
+      @on-cancel="sureDelet = false">
+      <p>确认删除该点位?删除后不可恢复！</p>
+    </Modal>
+    <Modal
+      v-model="sureAddPoint"
+      title="请输入点位信息"
+      @on-ok="AddZDDW"
+      @on-cancel="sureAddPoint = false">
+      <p> 标题: <Input v-model="AddDataArry.name" placeholder="请输入标题" /> </p>
+      <p> 内容: <Input v-model="AddDataArry.details" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入内容" /> </p>
+    </Modal>
+    <div id="cesiumContainer" :style="CesiumStyle"/>
   </div>
 </template>
 
@@ -132,6 +172,7 @@ import * as turf from '@turf/turf'
 import Imgpositions from './Imgpositions.js'
 import wanggepositions from './wanggepositions.js'
 import { gcj02_to_wgs84 } from './transform.js'
+import { Slider, Notification } from 'element-ui'
 var viewer
 var tileset
 var tilesetJxJ
@@ -143,6 +184,7 @@ var billboardMarkers = []
 let wangges = []// 网格数据
 let jxjdatas = []// 浆洗街行政区划数据
 let videoPoint = []// 摄像头数据
+let ZdDWarray = []// 摄像头数据
 let GongAnPoint = []// 公安数据
 let keyPlacesPoint = []// 重点数据
 let GuanKongquPoint = []// 管控区
@@ -167,8 +209,22 @@ export default {
     return {
       popshow: false,
       popshowBig: false,
+      AddPointState: false,
+      IsXiuGaiState: false,
+      sureDelet: false,
+      sureAddPoint: false,
+      changeDataArry: {},
+      sureChangeData: {},
+      AddDataArry: {
+        longitude:"",
+        latitude:'',
+        name:"",
+        details:''
+      },
       popshowWGQ: false,
       popshowXMQ: false,
+      iswbzzs: false,
+      sqjcfb: false,
       SZDataShowBig: false,
       ShowTableTan: true,
       CheckEdId: 0,
@@ -480,25 +536,39 @@ export default {
       ]
     }
   },
+  computed: {
+    CesiumStyle(){
+      if(this.AddPointState){
+        return {
+          cursor:'crosshair'
+        }
+      }else{
+        return {
+          cursor:'auto'
+        }
+      }
+    }
+  },
   watch: {
     nowPageName: function () {
-      this.fly()
       this.clearPoint()
       if (this.nowPageName && this.nowPageName.indexOf('涉藏概况') >= 0) {
+        this.initJXJ()
+        this.flyJXJ()
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
-        this.addPontXMQ()
       } else if (
         this.nowPageName &&
         this.nowPageName.indexOf('应急处突') >= 0
       ) {
+        this.initJXJ()
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
-        this.addPontXMQ()
-      } else {
+      }else{
         this.initBase()
+        this.fly()
       }
       if (this.nowPageName && this.nowPageName.indexOf('群租房') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
@@ -551,8 +621,20 @@ export default {
     this.addPopEvent()
     this.fly()
     window.changeSZChecked = this.changeSZChecked
+    window.addPointTrue = this.addPointTrue
   },
   methods: {
+    addPointTrue(){
+      if(this.newSZCheckEdData.indexOf('重点点位') >= 0){
+        this.AddPointState = true
+      }else{
+        Notification({
+          message: '请先开启重点点位！',
+          position: 'bottom-right',
+          customClass: 'toast toast-info'
+        })
+      }
+    },
     changeSZChecked (data) {
       this.newSZCheckEdData = data
       if (data.indexOf('社区区划') >= 0) {
@@ -568,7 +650,7 @@ export default {
       } else {
         this.removeSheZang1()
       }
-      if (data.indexOf('网格员') >= 0) {
+      if (data.indexOf('网格区') >= 0) {
         if (wangges.length === 0) {
           this.addWangge()
         }
@@ -596,30 +678,30 @@ export default {
       } else {
         this.removeVideoPoint()
       }
-      if (data.indexOf('常规地点') >= 0) {
-        if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
-          this.addshezangmarkers('didian')
-        }
+      if (data.indexOf('重点点位') >= 0) {
+        this.addPontXMQ()
       } else {
-        this.removeshezangmarkers('didian')
+        this.removePontXMQ()
       }
-      if (data.indexOf('封控') >= 0) {
-        if (shezangmarkers['fengkong'] === undefined || shezangmarkers['fengkong'].length === 0) {
-          this.addshezangmarkers('fengkong')
-        }
-      } else {
-        this.removeshezangmarkers('fengkong')
-      }
-      if (data.indexOf('应急') >= 0) {
+      // if (data.indexOf('常规地点') >= 0) {
+      //   if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
+      //     this.addshezangmarkers('didian')
+      //   }
+      // } else {
+      //   this.removeshezangmarkers('didian')
+      // }
+      if (data.indexOf('公安日常勤务') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
           this.addshezangmarkers('xianchangzhihui')
+          this.addshezangmarkers('fengkong')
           this.addshezangmarkers('xundakuaifan')
           this.addshezangmarkers('huaxikuaifan')
           this.addshezangmarkers('xiaofangzhanche')
         }
       } else {
         this.removeshezangmarkers('beiqing')
+        this.removeshezangmarkers('fengkong')
         this.removeshezangmarkers('xianchangzhihui')
         this.removeshezangmarkers('xundakuaifan')
         this.removeshezangmarkers('huaxikuaifan')
@@ -632,8 +714,7 @@ export default {
       var rad = rad || 70
       var x = 1
       var y = 1
-      viewer.entities.add({
-        id: id,
+      let data =  viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
         ellipse: {
           height: pos[2],
@@ -662,6 +743,7 @@ export default {
           })
         }
       })
+      return data
     },
     addPopEvent () {
       var that = this
@@ -733,6 +815,84 @@ export default {
         }
       }
       viewer.scene.preRender.addEventListener(SZpopBig)
+    },
+    suerChange(){
+      this.IsXiuGaiState = true
+      this.sureChangeData = JSON.parse(JSON.stringify(this.changeDataArry))
+    },
+    giveUpXiuGai(){
+      this.IsXiuGaiState = false
+    },
+    saveXiugai(){
+      let newData = JSON.parse(JSON.stringify(this.sureChangeData))
+      if(newData.name !== '' && newData.details!==''){
+        let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        if(newData.id!==''){
+          url = `/leaderview/ZHSQ/saveCustomDot?id=${newData.id}&latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        }
+        this.axios
+          .get(url)
+          .then(res => {
+            if(res.success){
+              this.changeDataArry = JSON.parse(JSON.stringify(this.sureChangeData))
+              Notification({
+                message: '修改成功',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.IsXiuGaiState = false
+              this.addPontXMQ()
+            }
+          })
+      } else {
+        Notification({
+          message: '标题及内容不能为空',
+          position: 'bottom-right',
+          customClass: 'toast toast-success'
+        })
+      }
+    },
+    AddZDDW(){
+      let newData = JSON.parse(JSON.stringify(this.AddDataArry))
+      if(newData.name !== '' && newData.details!==''){
+        let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
+        this.axios
+          .get(url)
+          .then(res => {
+            if(res.success){
+              Notification({
+                message: '新增成功！',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.sureAddPoint = false
+              this.addPontXMQ()
+            }
+          })
+      } else {
+        Notification({
+          message: '标题及内容不能为空',
+          position: 'bottom-right',
+          customClass: 'toast toast-success'
+        })
+      }
+    },
+    deletZDDW(){
+      if(this.changeDataArry.id){
+        this.axios
+          .get('/leaderview/ZHSQ/deleteCustomDot?id='+this.changeDataArry.id)
+          .then(res => {
+            if(res.success){
+              Notification({
+                message: '删除成功',
+                position: 'bottom-right',
+                customClass: 'toast toast-success'
+              })
+              this.popshowXMQ = false
+              this.addPontXMQ()
+            }
+          })
+      }
     },
     ShowRuzhu (address) {
       this.axios
@@ -828,6 +988,37 @@ export default {
           }
         })
       )
+    },
+    flyJXJ(){
+      if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.07571587587084,
+            30.585662107448858,
+            19802.151055716295
+          ),
+          orientation: {
+            heading: 0.07691929777463358,
+            pitch: -1.2997070199225433,
+            roll: 0.000006930263633186939
+          },
+          duration: 1
+        })
+      } else {
+        viewer.scene.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(
+            104.07571587587084,
+            30.585662107448858,
+            19802.151055716295
+          ),
+          orientation: {
+            heading: 0.07691929777463358,
+            pitch: -1.2997070199225433,
+            roll: 0.000006930263633186939
+          },
+          duration: 1
+        })
+      }
     },
     fly () {
       if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
@@ -961,7 +1152,7 @@ export default {
       this.nowShowData = nowShowData
     },
     addLabelMarker (lon, lat, url, label, small) {
-      let size = small ? 24 : 40
+      let size = small ? 30 : 40
       let height = small ? 50 : 70
       let backgroundColor = small
         ? Cesium.Color.fromCssColorString('#ffffff')
@@ -973,7 +1164,7 @@ export default {
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         billboard: {
           image: url,
-          scale: 0.15
+          scale: 0.3
         },
         label: {
           show: true,
@@ -995,7 +1186,7 @@ export default {
         name: id + '管控区',
         billboard: {
           image: img[0],
-          scale: 0.15
+          scale: 0.3
         }
       })
       let en2 = viewer.entities.add({
@@ -1119,7 +1310,7 @@ export default {
           let label = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
             `${this.header}img/浆洗街区划/${item.properties.na}.png`,
-            0.5
+            0.6,item.properties.na
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1358,7 +1549,7 @@ export default {
       if (tilesetJxJ) {
         tilesetJxJ.show = true
       }
-      this.addJxJ()
+      // this.addJxJ()
       for (var key in xingzhengquhuaPolygons) {
         if (key !== '浆洗街街道') {
           xingzhengquhuaPolygons[key].forEach(item => {
@@ -1390,7 +1581,9 @@ export default {
               extrend = true
               color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
             }
-          } else {
+          } else if(this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0 )){
+
+          }else {
             if (item.properties.Name === '浆洗街街道') {
               extrend = true
               color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
@@ -1403,7 +1596,7 @@ export default {
           }
           let marker = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
-            `./static/img/街道名称/${item.properties.Name}.png`, 0.3, item.properties.Name
+            `./static/img/街道名称/${item.properties.Name}.png`, 0.4, item.properties.Name
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1533,16 +1726,31 @@ export default {
       console.log(data)
       console.log(obj, viewer.scene.primitives)
     },
-    addPontXMQ () {
-      viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(104.04696719736683, 30.644423523687326, 40),
-        name: 'XMQ',
-        billboard: {
-          image: 'static/img/click.png',
-          scale: 0.4
-        }
+    removePontXMQ () {
+      ZdDWarray.forEach(item => {
+        viewer.entities.remove(item)
       })
-      this.addDynamicCircle([104.04696719736683, 30.644423523687326, 40], 'test', 100)
+      ZdDWarray = []
+    },
+    addPontXMQ () {
+      this.removePontXMQ()
+      ZdDWarray = []
+      this.axios.get(`/leaderview/ZHSQ/getCustomDot`).then(data => {
+        data.obj.forEach(ele => {
+          let data = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(ele.longitude*1, ele.latitude*1, 40),
+            name: 'XMQ',
+            billboard: {
+              image: 'static/img/importantData.png',
+              scale: 0.3
+            },
+            dataArry:ele
+          })
+          let dd = this.addDynamicCircle([ele.longitude*1, ele.latitude*1, 40], 'test', 100)
+          ZdDWarray.push(data)
+          ZdDWarray.push(dd)
+        });
+      })
     },
     addVideoPoint () {
       this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
@@ -1557,15 +1765,15 @@ export default {
               ),
               billboard: {
                 image: this.header + 'img/camera.png',
-                scale: 0.2
+                scale: 0.3,
                 // distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
               },
               label: {
                 show: true,
                 showBackground: true,
                 backgroundColor: Cesium.Color.fromCssColorString('#000'),
-                scale: 0.4,
-                font: 'normal 36px MicroSoft YaHei',
+                scale: 0.6,
+                font: "normal 36px MicroSoft YaHei",
                 text: item.name.split(')')[1] || item.name,
                 pixelOffset: new Cesium.Cartesian2(10, -30),
                 horizontalOrigin: Cesium.HorizontalOrigin.LEFT
@@ -1672,6 +1880,7 @@ export default {
         this.SZDataShowBig = false
 
         this.iswbzzs = false
+        this.sqjcfb = false
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf('网格区') > 0) {
           this.popshowWGQ = true
           this.WGQData = {
@@ -1683,8 +1892,16 @@ export default {
             对应街道负责人姓名: 'xxxxxxxx',
             对应街道负责人电话: 'xxxxxxxx'
           }
-        }
-        if (picked && picked.primitive && picked.id && picked.id._billboard) {
+        }else if(this.AddPointState){
+          this.AddPointState = false
+          this.AddDataArry = {
+            longitude: lng,
+            latitude: lat,
+            name:"",
+            details:''
+          },
+          this.sureAddPoint = true
+        } else if (picked && picked.primitive && picked.id && picked.id._billboard) {
           if (picked.id && picked.id._billboard) {
             if (picked.id.name && picked.id.name.includes('街道')) {
               this.backBase()
@@ -1715,6 +1932,8 @@ export default {
 
             if (picked.id.name === 'XMQ') {
               this.popshowXMQ = true
+              this.IsXiuGaiState = false
+              this.changeDataArry = picked.id.dataArry
             } else if (picked.id.type === 'camera') {
               let cameraData = picked.id.cameraId
               this.$parent.$parent.ShowVideoBox(cameraData)
@@ -1731,7 +1950,7 @@ export default {
                 columns: ['address', 'street', 'room_number', 'bed_number'],
                 rows: picked.id.dataArray.rows
               }
-            } else if (picked.id.dataArray.rows) {
+            } else if (picked.id && picked.id.dataArray && picked.id.dataArray.rows) {
               this.popshowBig = true
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
@@ -1739,6 +1958,20 @@ export default {
                 columns: ['placeName', 'address', 'roomNum', 'bedNum'],
                 rows: picked.id.dataArray.rows
               }
+            } else if(picked.id.name.indexOf('社区')>=0){
+              // /leaderview/ZHSQ/getSZCT1
+              this.sqjcfb = true
+              this.axios.get('/leaderview/ZHSQ/getSZCT1?param=' + picked.id.name).then(data => {
+                if (data.success) {
+                  this.popshowBig = true
+                  this.ShowTableTan = true
+                  this.CheckEdId = picked.id.id
+                  this.TableTanData = {
+                    columns: data.obj.columns,
+                    rows: data.obj.rows
+                  }
+                }
+              })
             }
           }
           //   let primitive = picked.primitive
@@ -2064,5 +2297,11 @@ export default {
   height: 100%;
   text-align: center;
   overflow: hidden;
+}
+.btnArry{
+  position: relative;
+  top: 35px;
+  text-align: right;
+  padding: 0 50px;
 }
 </style>
