@@ -1625,7 +1625,7 @@ export default {
           } else {
             if (item.properties.Name === '浆洗街街道') {
               extrend = true
-              color = new Cesium.Color(47 / 255, 95 / 255, 0 / 255, 0.6)
+              color = new Cesium.Color(0 / 255, 65 / 255, 0 / 255, 0.6)
             }
           }
           let polygonpositions = []
@@ -1659,7 +1659,7 @@ export default {
               ),
               perPositionHeight: true,
               material: color,
-              extrudedHeight: extrend ? 30 : 1
+              extrudedHeight: extrend ? 5 : 1
             },
             name: item.properties.Name
           })
