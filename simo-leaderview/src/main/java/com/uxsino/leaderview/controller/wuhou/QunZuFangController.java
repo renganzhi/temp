@@ -296,10 +296,19 @@ public class QunZuFangController {
         //如果返回的是结果，则返回弹窗url
         if(obj1 instanceof JSONObject){
             //今日登记房间详情和今日登记人详情接口待提供，对接好后配置在下面url中 -类似内外资投资详情
-//            ((JSONObject) obj1).put("url","/leaderview/WuHou163/getJJ9?param=name:");
+            ((JSONObject) obj1).put("url","/leaderview/QZF/getWBZ5_2?param=name:");
         }
 
         return jsonModel2;
+    }
+
+    /**
+     * 5_2、未办证住所-入住情况明细
+     * @return
+     */
+    @GetMapping("/getWBZ5_2")
+    public JsonModel getWBZ5_2(@RequestParam(required = false) String param){
+        return qunZuFangService.getWBZ5_2(param.split(":")[1]);
     }
 
     /**
@@ -339,30 +348,33 @@ public class QunZuFangController {
     }
 
     /**
-     * 10、未办证住所-
+     * 10、未办证住所-网约房、房间总数
      * @return
      */
     @GetMapping("/getWBZ10")
-    public JsonModel getWBZ10(){
-        return qunZuFangService.getWBZ2();
+    public JsonModel getWBZ10(@RequestParam(required = false) String param){
+        JsonModel jsonModel = qunZuFangService.getWBZ10();
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        JsonModel jsonModel2 = wuHouService.getPieToText(param,obj);
+        return jsonModel2;
     }
 
     /**
-     * 8、未办证住所-
+     * 8、未办证住所-走访问题排行
      * @return
      */
     @GetMapping("/getWBZ11")
     public JsonModel getWBZ11(){
-        return qunZuFangService.getWBZ2();
+        return qunZuFangService.getWBZ11();
     }
 
     /**
-     * 8、未办证住所-
+     * 12、未办证住所-走访次数排名
      * @return
      */
     @GetMapping("/getWBZ12")
     public JsonModel getWBZ12(){
-        return qunZuFangService.getWBZ2();
+        return qunZuFangService.getWBZ12();
     }
 
     /**
