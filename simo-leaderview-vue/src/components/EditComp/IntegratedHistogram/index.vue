@@ -252,7 +252,6 @@ export default {
                       color: this.item.topTextColor
                     },
                     formatter: (params, index) => {
-                      console.log(params)
                       if(params.value !== 0){
                         return params.value
                       }
@@ -503,7 +502,6 @@ export default {
             },
             formatter: (params, index) => {
               var value = ''
-              console.log(params)
               value =  params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData1.unit || '')
               return value
             }
