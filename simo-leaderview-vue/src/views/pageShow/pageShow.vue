@@ -2064,9 +2064,9 @@ export default {
               let cameraData = picked.id.cameraId
               this.$parent.$parent.ShowVideoBox(cameraData)
             } else if (picked.id.name && picked.id.name.indexOf('管控区') >= 0) {
-              this.SZDataShowBig = true
-              this.CheckEdId = picked.id.name.split('管控区')[0] * 1
-              this.SZData = this.AllData[this.CheckEdId - 1]
+              // this.SZDataShowBig = true
+              // this.CheckEdId = picked.id.name.split('管控区')[0] * 1
+              // this.SZData = this.AllData[this.CheckEdId - 1]
             } else if (picked.id.id && picked.id.id.indexOf('wbzzs') >= 0) {
               this.popshowBig = true
               this.ShowTableTan = true
