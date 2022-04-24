@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.uxsino.leaderview.service.wuhou.WuHouService.HcnetNationList;
-import static com.uxsino.leaderview.service.wuhou.WuHouService.HcnetTotalList;
+import static com.uxsino.leaderview.service.wuhou.WuHouService.*;
 
 @Api(tags = {"武侯智慧城市-大屏展示数据接口"})
 @RestController
@@ -203,6 +202,11 @@ public class WuHouController {
     @GetMapping("/getHcnetNationPoints")
     public JsonModel getHcnetNationPoints(){
         return new JsonModel(true,HcnetNationList);
+    }
+
+    @GetMapping("/getSZCTPoints")
+    public JsonModel getSZCTPoints(){
+        return new JsonModel(true,SZCTList);
     }
 
     /**
