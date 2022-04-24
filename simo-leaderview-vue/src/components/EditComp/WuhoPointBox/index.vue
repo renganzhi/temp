@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['天网','管控区','公安日常勤务','公安网格','网格区','重点区域','重点点位','社区区划'],
+      dataArray:['天网','管控区','公安日常勤务','公安网格','网格区','重点点位','社区区划'],
       dataArray2:['涉藏商店','民宿旅馆','藏餐茶吧','娱乐场所','涉藏机构','小区院落','锅庄舞场'],
       CheckedArry:[]
     };
@@ -79,7 +79,7 @@ export default {
 }
 .CheckedBox{
   width: 240px;
-  margin: 0 0 20px 0px;
+  margin: 0 0 28px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -96,7 +96,7 @@ export default {
 }
 .NoChecked{
   width: 240px;
-  margin: 0 0 20px 0px;
+  margin: 0 0 28px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -118,6 +118,6 @@ export default {
   background: url(./AddPonit.png);
   background-size: 100% 100%;
   right: 12px;
-  top: 645px;
+  top: 590px;
 }
 </style>

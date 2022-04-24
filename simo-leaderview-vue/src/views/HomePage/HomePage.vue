@@ -310,8 +310,8 @@ export default {
       TableData: {},
       showVideoBox: false,
       VideoIfream: {
-        height: 610,
-        width: 1560,
+        height: 1230,
+        width: 2940,
         chartData: {
           hkwsid: ''
         }
@@ -466,6 +466,7 @@ export default {
       }
     },
     ShowTableBox(dataArray) {
+      console.log(dataArray)
       if(dataArray.dataUrl){
         this.DataTkArry = []
         let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
@@ -483,21 +484,7 @@ export default {
         this.nowType = dataArray.nowType || ''
         this.DataTkArry = dataArray.dataArray;
       } else {
-        if (dataArray.data["街道"]) {
-          this.showTableBox = true;
-          this.axios
-            .get(
-              `/leaderview/WuHou/getFormDataAndUrlForHistogram?street=` +
-                dataArray.data["街道"]
-            )
-            .then((data) => {
-              if (data.success) {
-                this.DataTkArry = data.obj;
-              }
-            });
-        } else {
-          this.ShowTanKuangBox(dataArray);
-        }
+        this.ShowTanKuangBox(dataArray);
       }
     },
     closeTableTtn(){
@@ -2347,17 +2334,18 @@ html[data-theme='blueWhite'] {
   z-index: 5000;
   background-color: #15192a65;
   .videoTable{
-    height: 886px;
-    width: 1747px;
+    height: 1520px;
+    width: 3147px;
     padding: 100px;
-    top: 400px;
-    left: 3400px;
+    top: 50px;
+    left: 2800px;
     position: relative;
     z-index: 5000;
     background: url(./modelBox.png);
+    background-size: 100% 100%;
     .closeBtn{
-      height: 100px;
-      width: 100px;
+      height: 200px;
+      width: 200px;
       cursor: pointer;
       position: absolute;
       top: 20px;
@@ -2370,7 +2358,7 @@ html[data-theme='blueWhite'] {
     }
     .videoDiv{
       height: 90%;
-      widows: 100%;
+      width: 100%;
     }
   }
 }

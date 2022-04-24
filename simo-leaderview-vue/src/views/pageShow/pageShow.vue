@@ -38,6 +38,19 @@
         </div>
       </div>
     </div>
+    <div id="SZCTpopBig" v-show="SZCTDataXQ">
+      <div class="XQBoxTan">
+        <div class="poptitle">点位详情</div>
+        <div class="CloseBtn" @click="SZCTDataXQ = false"></div>
+        <div class="lineContain">
+          <div class="line" v-for="(item,index) in SZCTDataArray" :key="index">
+            {{ SZCTDataNameArray[item.name]}}   
+              <div style="padding: 0px 10px;display: inline-block;">:</div>
+            {{item.value || '暂无数据'}}
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="popWGQ" v-show="popshowWGQ">
       <div class="XQBoxTan">
         <div class="poptitle">{{WGQData['网格区']}}</div>
@@ -225,6 +238,7 @@ export default {
       sureAddPoint: false,
       changeDataArry: {},
       sureChangeData: {},
+      SZCTDataArray: [],
       AddDataArry: {
         longitude: '',
         latitude: '',
@@ -236,6 +250,7 @@ export default {
       iswbzzs: false,
       sqjcfb: false,
       SZDataShowBig: false,
+      SZCTDataXQ: false,
       ShowTableTan: true,
       CheckEdId: 0,
       x: 0,
@@ -457,6 +472,34 @@ export default {
           index: 0
         }
       ],
+      SZCTDataNameArray:{
+        "type": "场所类别",
+        "name": "场所名称",
+        "license": '有无证照',
+        "address": "场所地址",
+        "longitude": "经度",
+        "latitude": "纬度",
+        "area": "面积",
+        "manage_time": '经营时间',
+        "manager_name": "负责人姓名",
+        "manager_phone": "负责人联系方式", 
+        "passenger_flow": '客流量',
+        "member_number": '从业人员数',
+        "event": '有无案件相关事件',
+        "community": "所属社区",
+        "company_name": "单位名称", 
+        "company_address": "单位地址", 
+        "job_title": "职务", 
+        "company_manager_phone": "联系电话", 
+        "office_manager": "联系人", 
+        "office_manager_phone": "联系电话", 
+        "remark": '备注', 
+        "household_population": "涉藏户籍人数", 
+        "rental_population": "涉藏租住人口数", 
+        "street": "所属街道", 
+        "person_number": "参与人数", 
+        "time": "活动起止时间", 
+      },
       nowShowData: [],
       newSZCheckEdData: [],
       SZData: {},
@@ -592,7 +635,7 @@ export default {
                   height
                 ),
                 'xiaoqu' + index,
-                'static/img/xiaoqu.png',
+                this.header +'img/xiaoqu.png',
                 { columns: [], rows: d.arr }
               )
             })
@@ -612,7 +655,7 @@ export default {
                       height
                     ),
                     'wbzzs' + d.street + ind,
-                    'static/img/xiaoqu.png',
+                    this.header + 'img/xiaoqu.png',
                     { columns: [], rows: ele.items[0].items }
                   )
                 })
@@ -657,8 +700,12 @@ export default {
         if (GuanKongquPoint.length === 0) {
           this.initSheZang1()
         }
+        if (keyPlacesPoint.length === 0) {
+          this.initkeyPlaces()
+        }
       } else {
         this.removeSheZang1()
+        this.removekeyPlaces()
       }
       if (data.indexOf('网格区') >= 0) {
         if (wangges.length === 0) {
@@ -673,13 +720,6 @@ export default {
         }
       } else {
         this.removeGongAn()
-      }
-      if (data.indexOf('重点区域') >= 0) {
-        if (keyPlacesPoint.length === 0) {
-          this.initkeyPlaces()
-        }
-      } else {
-        this.removekeyPlaces()
       }
       if (data.indexOf('天网') >= 0) {
         if (videoPoint.length === 0) {
@@ -787,6 +827,20 @@ export default {
     addPopEvent () {
       var that = this
       function SZpopBig () {
+        let SZCTpopBig = document.getElementById('SZCTpopBig')
+        if (SZCTpopBig) {
+          var windowPosition = new Cesium.Cartesian2()
+          var canvasHeight = viewer.scene.canvas.height
+          var canvasWidth = viewer.scene.canvas.width
+          Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            viewer.scene,
+            Cesium.Cartesian3.fromDegrees(that.x, that.y, that.z + 100),
+            windowPosition
+          )
+          SZCTpopBig.style.bottom = canvasHeight - windowPosition.y + 'px'
+          SZCTpopBig.style.right =
+            canvasWidth - windowPosition.x - SZCTpopBig.offsetWidth * 0.5 + 'px'
+        }
         let container = document.getElementById('SZpopBig')
         if (container) {
           var windowPosition = new Cesium.Cartesian2()
@@ -1022,7 +1076,7 @@ export default {
           id: id,
           dataArray: dataArray,
           billboard: {
-            image: img || 'static/img/click.png',
+            image: img || this.header + 'img/click.png',
             scale: 0.2
           }
         })
@@ -1190,9 +1244,9 @@ export default {
       this.ShowTableTan = false
       this.nowShowData = nowShowData
     },
-    addLabelMarker (lon, lat, url, label, small) {
-      let size = small ? 30 : 40
-      let height = small ? 50 : 70
+    addLabelMarker (lon, lat, url, name, small,data) {
+      let size = small ? 20 : 40
+      let height = small ? 40 : 60
       let backgroundColor = small
         ? Cesium.Color.fromCssColorString('#ffffff')
         : Cesium.Color.BLUE
@@ -1203,15 +1257,17 @@ export default {
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         billboard: {
           image: url,
-          scale: 0.3
+          scale: 0.25
         },
+        name: name,
+        DataArry:data || [],
         label: {
           show: true,
           showBackground: true,
           backgroundColor,
           scale: 0.5,
           font: `normal ${size}px MicroSoft YaHei`,
-          text: label,
+          text: name.split('SZGK')[0],
           fillColor,
           pixelOffset: new Cesium.Cartesian2(10, -30),
           horizontalOrigin: Cesium.HorizontalOrigin.LEFT
@@ -1606,7 +1662,7 @@ export default {
       if (tilesetJxJ) {
         tilesetJxJ.show = false
       }
-      $.getJSON('./static/geojson/xzqh.json', res => {
+      $.getJSON(this.header + 'geojson/xzqh.json', res => {
         let positions = res.features
         positions.forEach((item, index) => {
           let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
@@ -1635,7 +1691,7 @@ export default {
           }
           let marker = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
-            `./static/img/街道名称/${item.properties.Name}.png`, 0.4, item.properties.Name
+            this.header + `img/街道名称/${item.properties.Name}.png`, 0.4, item.properties.Name
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1780,16 +1836,19 @@ export default {
     addSZGKPoint (i) {
       this.removeSZGKPoint(i)
       SZGKPoint[i] = []
-      this.axios.get(`/leaderview/ZHSQ/getSZCT2?param=${i}`).then(data => {
-        data.obj.dotArray.forEach(ele => {
-          let en = this.addLabelMarker(
-            ele.longitude * 1,
-            ele.latitude * 1,
-            `static/img/imgs/${i}.png`,
-            ele.company_name,
-            'small'
-          )
-          SZGKPoint[i].push(en)
+      this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
+        data.obj.dotArray.forEach((ele,index) => {
+          if(index<=40){
+            let en = this.addLabelMarker(
+              ele.longitude * 1,
+              ele.latitude * 1,
+              this.header + `img/imgs/${i}.png`,
+              ele.name + 'SZGK' + i,
+              'small',
+              ele
+            )
+            SZGKPoint[i].push(en)
+          }
         })
       })
     },
@@ -1802,7 +1861,7 @@ export default {
             position: Cesium.Cartesian3.fromDegrees(ele.longitude * 1, ele.latitude * 1, 40),
             name: 'XMQ',
             billboard: {
-              image: 'static/img/importantData.png',
+              image:  this.header + 'img/importantData.png',
               scale: 0.3
             },
             dataArry: ele
@@ -1881,7 +1940,7 @@ export default {
         shouldAnimate: true,
         shadows: false,
         imageryProvider: new Cesium.SingleTileImageryProvider({
-          url: './static/Cesium/back.png'
+          url: this.header + 'Cesium/back.png'
         })
       })
       viewer.scene.skyAtmosphere.show = false
@@ -1939,6 +1998,7 @@ export default {
         this.popshowWGQ = false
         this.popshowXMQ = false
         this.SZDataShowBig = false
+        this.SZCTDataXQ = false
 
         this.iswbzzs = false
         this.sqjcfb = false
@@ -1990,6 +2050,7 @@ export default {
                 duration: 1
               })
             }
+              console.log(picked.id)
 
             if (picked.id.name === 'XMQ') {
               this.popshowXMQ = true
@@ -2033,6 +2094,22 @@ export default {
                   }
                 }
               })
+            }else if(picked.id.name.indexOf('SZGK') >= 0){
+              if(picked.id.DataArry !== []){
+                this.SZCTDataXQ = true
+                this.SZCTDataArray = []
+                for (const key in picked.id.DataArry) {
+                  if (Object.hasOwnProperty.call(picked.id.DataArry, key)) {
+                    if(key!=='created_at' && key!=='user_id' && key!=='user_name' && key!=='id' && key!=='user_identifier' && key!=='response_id'){
+                      this.SZCTDataArray.push({
+                        name:key,
+                        value:picked.id.DataArry[key]
+                      })
+                    }
+                  }
+                }
+                
+              }
             }
           }
           //   let primitive = picked.primitive
@@ -2261,6 +2338,53 @@ export default {
   margin-bottom: 5px;
 }
 .content #SZpopBig .lineContain button {
+  color: #fff;
+  background: #1890ff;
+  border-color: #1890ff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+}
+.content #SZCTpopBig {
+  width: 850px;
+  height: 429px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
+  color: rgb(255, 255, 255);
+  position: relative;
+  padding: 70px 0px 0px;
+  position: absolute;
+  z-index: 10;
+  font-size: 18px;
+}
+.content #SZCTpopBig .poptitle {
+  position: absolute;
+  top: 70px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
+  font-weight: 400;
+}
+.content #SZCTpopBig .CloseBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 13px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
+}
+.content #SZCTpopBig .lineContain {
+  padding: 10px 40px;
+  margin: 0 20px;
+  top: 70px;
+  height: 70%;
+  position: relative;
+  overflow: auto;
+}
+.content #SZCTpopBig .lineContain .line {
+  margin-bottom: 5px;
+}
+.content #SZCTpopBig .lineContain button {
   color: #fff;
   background: #1890ff;
   border-color: #1890ff;
