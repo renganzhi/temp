@@ -1226,6 +1226,7 @@ public class WuHouService {
         JSONArray list = new JSONArray();
 
         //浆洗街道地图天网打点需要的点位名称
+        //武侯祠横街2号附10号、武侯祠正门右边、蜀峰花园对面路口、东城根街南延线武侯祠大门旁、永记面馆、蜀汉街8号、武侯祠横街7号、金色柠檬酒店、洗横路口
         HcnetTotalNames.add("D-07071061-ZX-(球)体育路四川电视台");
         HcnetTotalNames.add("Y-07071646-YA-(球)武侯祠大街245号2");
         HcnetTotalNames.add("D-07071033-ZX-(球)老房子酒楼门口");
@@ -1273,6 +1274,17 @@ public class WuHouService {
         HcnetNationNames.add("D-07121109-ZX-(球)红牌楼商业城");
         HcnetNationNames.add("D-07071003-ZX-(球)锦里门口");
         HcnetNationNames.add("D-07088008-ZX-(球)高升桥路口");
+        //涉藏处突大屏
+        HcnetNationNames.add("D-07071121-ZX-(球)武侯祠横街2号附10号");
+        HcnetNationNames.add("D-07071089-ZX-(球)武侯祠正门右边");
+        HcnetNationNames.add("D-07071027-ZX-(球)蜀峰花园对面路口");
+        HcnetNationNames.add("D-07071012-ZX-(球)东城根街南延线武侯祠大门旁");
+        HcnetNationNames.add("D-07071001-ZX-(球)永记面馆");
+        HcnetNationNames.add("D-07072003-ZX-(球)蜀汉街8号");
+        HcnetNationNames.add("D-07071026-ZX-(球)武侯祠横街7号");
+        HcnetNationNames.add("D-07071043-ZX-(球)金色柠檬酒店");
+        HcnetNationNames.add("D-07071004-ZX-(球)洗横路口");
+
 
         //无法获取
 //        HcnetNationNames.add("D-07121111-ZX-(球)广福路二环路口");
@@ -2393,11 +2405,7 @@ public class WuHouService {
         JSONObject result = new JSONObject();
 
         result = getPieResult(map,data);
-        
-        
-
         return new JsonModel(true,result);
-
     }
 
     /**

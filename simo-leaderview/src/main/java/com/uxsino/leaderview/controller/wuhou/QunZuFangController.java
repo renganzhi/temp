@@ -261,8 +261,8 @@ public class QunZuFangController {
      * @return
      */
     @GetMapping("/getWBZ2")
-    public JsonModel getWBZ2(){
-        return qunZuFangService.getWBZ2();
+    public JsonModel getWBZ2(@RequestParam(required = false) String param){
+        return qunZuFangService.getWBZ2(param);
     }
 
     /**
@@ -270,8 +270,8 @@ public class QunZuFangController {
      * @return
      */
     @GetMapping("/getWBZ3")
-    public JsonModel getWBZ3(){
-        return qunZuFangService.getWBZ3();
+    public JsonModel getWBZ3(@RequestParam(required = false) String param){
+        return qunZuFangService.getWBZ3(param);
     }
 
     /**
@@ -279,8 +279,8 @@ public class QunZuFangController {
      * @return
      */
     @GetMapping("/getWBZ4")
-    public JsonModel getWBZ4(){
-        return qunZuFangService.getWBZ4();
+    public JsonModel getWBZ4(@RequestParam(required = false) String param){
+        return qunZuFangService.getWBZ4(param);
     }
 
     /**
@@ -382,7 +382,8 @@ public class QunZuFangController {
      * @return
      */
     @GetMapping("/getWBZ13")
-    public JsonModel getWBZ13(){
-        return qunZuFangService.getWBZ2();
+    public JsonModel getWBZ13(@RequestParam(required = false) String param){
+        return qunZuFangService.getWBZ13(param);
     }
+
 }
