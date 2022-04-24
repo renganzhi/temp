@@ -188,6 +188,16 @@ let ZdDWarray = []// 摄像头数据
 let GongAnPoint = []// 公安数据
 let keyPlacesPoint = []// 重点数据
 let GuanKongquPoint = []// 管控区
+let SZGKPoint = [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+]// 管控区
 let shezangmarkers = {} // 涉藏点位
 let xingzhengquhuaPolygons = {
   '簇锦街道': [],
@@ -683,13 +693,42 @@ export default {
       } else {
         this.removePontXMQ()
       }
-      // if (data.indexOf('常规地点') >= 0) {
-      //   if (shezangmarkers['didian'] === undefined || shezangmarkers['didian'].length === 0) {
-      //     this.addshezangmarkers('didian')
-      //   }
-      // } else {
-      //   this.removeshezangmarkers('didian')
-      // }
+      // ['涉藏商店','民宿旅馆','藏餐茶吧','娱乐场所','涉藏机构','小区院落','锅庄舞场']
+      if (data.indexOf('涉藏商店') >= 0) { 
+        this.addSZGKPoint(1)
+      } else {
+        this.removeSZGKPoint(1)
+      }
+      if (data.indexOf('民宿旅馆') >= 0) { 
+        this.addSZGKPoint(2)
+      } else {
+        this.removeSZGKPoint(2)
+      }
+      if (data.indexOf('藏餐茶吧') >= 0) { 
+        this.addSZGKPoint(3)
+      } else {
+        this.removeSZGKPoint(3)
+      }
+      if (data.indexOf('娱乐场所') >= 0) { 
+        this.addSZGKPoint(4)
+      } else {
+        this.removeSZGKPoint(4)
+      }
+      if (data.indexOf('涉藏机构') >= 0) { 
+        this.addSZGKPoint(5)
+      } else {
+        this.removeSZGKPoint(5)
+      }
+      if (data.indexOf('小区院落') >= 0) { 
+        this.addSZGKPoint(6)
+      } else {
+        this.removeSZGKPoint(6)
+      }
+      if (data.indexOf('锅庄舞场') >= 0) { 
+        this.addSZGKPoint(7)
+      } else {
+        this.removeSZGKPoint(7)
+      }
       if (data.indexOf('公安日常勤务') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
@@ -1731,6 +1770,28 @@ export default {
         viewer.entities.remove(item)
       })
       ZdDWarray = []
+    },
+    removeSZGKPoint(i){
+      SZGKPoint[i].forEach(item => {
+        viewer.entities.remove(item)
+      })
+      SZGKPoint[i] = []
+    },
+    addSZGKPoint(i){
+      this.removeSZGKPoint(i)
+      SZGKPoint[i] = []
+      this.axios.get(`/leaderview/ZHSQ/getSZCT2?param=${i}`).then(data => {
+        data.obj.dotArray.forEach(ele => {
+          let en = this.addLabelMarker(
+            ele.longitude*1,
+            ele.latitude*1,
+            `static/img/imgs/${i}.png`,
+            ele.company_name,
+            'small'
+          )
+          SZGKPoint[i].push(en)
+        });
+      })
     },
     addPontXMQ () {
       this.removePontXMQ()
