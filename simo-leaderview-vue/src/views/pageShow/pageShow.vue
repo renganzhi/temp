@@ -1,7 +1,7 @@
 <template>
   <div class="content">
-    <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
-    <!-- <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
+    <!-- <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
@@ -55,12 +55,12 @@
     </div>
     <div id="popXMQ" v-show="popshowXMQ">
       <div class="XQBoxTan" v-if="IsXiuGaiState">
-        <div class="poptitle"> 
+        <div class="poptitle">
           <Input v-model="sureChangeData.name" placeholder="请输入标题" />
           </div>
         <div class="CloseBtn" @click="popshowXMQ = false"></div>
         <div class="lineContain">
-          <div class="line"> 
+          <div class="line">
             <Input v-model="sureChangeData.details" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入内容" />
           </div>
         </div>
@@ -196,7 +196,7 @@ let SZGKPoint = [
   [],
   [],
   [],
-  [],
+  []
 ]// 管控区
 let shezangmarkers = {} // 涉藏点位
 let xingzhengquhuaPolygons = {
@@ -226,10 +226,10 @@ export default {
       changeDataArry: {},
       sureChangeData: {},
       AddDataArry: {
-        longitude:"",
-        latitude:'',
-        name:"",
-        details:''
+        longitude: '',
+        latitude: '',
+        name: '',
+        details: ''
       },
       popshowWGQ: false,
       popshowXMQ: false,
@@ -547,14 +547,14 @@ export default {
     }
   },
   computed: {
-    CesiumStyle(){
-      if(this.AddPointState){
+    CesiumStyle () {
+      if (this.AddPointState) {
         return {
-          cursor:'crosshair'
+          cursor: 'crosshair'
         }
-      }else{
+      } else {
         return {
-          cursor:'auto'
+          cursor: 'auto'
         }
       }
     }
@@ -576,7 +576,7 @@ export default {
         if (window.changeCheckedArry) {
           window.changeCheckedArry(this.newSZCheckEdData)
         }
-      }else{
+      } else {
         this.initBase()
         this.fly()
       }
@@ -634,10 +634,10 @@ export default {
     window.addPointTrue = this.addPointTrue
   },
   methods: {
-    addPointTrue(){
-      if(this.newSZCheckEdData.indexOf('重点点位') >= 0){
+    addPointTrue () {
+      if (this.newSZCheckEdData.indexOf('重点点位') >= 0) {
         this.AddPointState = true
-      }else{
+      } else {
         Notification({
           message: '请先开启重点点位！',
           position: 'bottom-right',
@@ -694,37 +694,37 @@ export default {
         this.removePontXMQ()
       }
       // ['涉藏商店','民宿旅馆','藏餐茶吧','娱乐场所','涉藏机构','小区院落','锅庄舞场']
-      if (data.indexOf('涉藏商店') >= 0) { 
+      if (data.indexOf('涉藏商店') >= 0) {
         this.addSZGKPoint(1)
       } else {
         this.removeSZGKPoint(1)
       }
-      if (data.indexOf('民宿旅馆') >= 0) { 
+      if (data.indexOf('民宿旅馆') >= 0) {
         this.addSZGKPoint(2)
       } else {
         this.removeSZGKPoint(2)
       }
-      if (data.indexOf('藏餐茶吧') >= 0) { 
+      if (data.indexOf('藏餐茶吧') >= 0) {
         this.addSZGKPoint(3)
       } else {
         this.removeSZGKPoint(3)
       }
-      if (data.indexOf('娱乐场所') >= 0) { 
+      if (data.indexOf('娱乐场所') >= 0) {
         this.addSZGKPoint(4)
       } else {
         this.removeSZGKPoint(4)
       }
-      if (data.indexOf('涉藏机构') >= 0) { 
+      if (data.indexOf('涉藏机构') >= 0) {
         this.addSZGKPoint(5)
       } else {
         this.removeSZGKPoint(5)
       }
-      if (data.indexOf('小区院落') >= 0) { 
+      if (data.indexOf('小区院落') >= 0) {
         this.addSZGKPoint(6)
       } else {
         this.removeSZGKPoint(6)
       }
-      if (data.indexOf('锅庄舞场') >= 0) { 
+      if (data.indexOf('锅庄舞场') >= 0) {
         this.addSZGKPoint(7)
       } else {
         this.removeSZGKPoint(7)
@@ -753,7 +753,7 @@ export default {
       var rad = rad || 70
       var x = 1
       var y = 1
-      let data =  viewer.entities.add({
+      let data = viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
         ellipse: {
           height: pos[2],
@@ -855,24 +855,24 @@ export default {
       }
       viewer.scene.preRender.addEventListener(SZpopBig)
     },
-    suerChange(){
+    suerChange () {
       this.IsXiuGaiState = true
       this.sureChangeData = JSON.parse(JSON.stringify(this.changeDataArry))
     },
-    giveUpXiuGai(){
+    giveUpXiuGai () {
       this.IsXiuGaiState = false
     },
-    saveXiugai(){
+    saveXiugai () {
       let newData = JSON.parse(JSON.stringify(this.sureChangeData))
-      if(newData.name !== '' && newData.details!==''){
+      if (newData.name !== '' && newData.details !== '') {
         let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
-        if(newData.id!==''){
+        if (newData.id !== '') {
           url = `/leaderview/ZHSQ/saveCustomDot?id=${newData.id}&latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
         }
         this.axios
           .get(url)
           .then(res => {
-            if(res.success){
+            if (res.success) {
               this.changeDataArry = JSON.parse(JSON.stringify(this.sureChangeData))
               Notification({
                 message: '修改成功',
@@ -891,14 +891,14 @@ export default {
         })
       }
     },
-    AddZDDW(){
+    AddZDDW () {
       let newData = JSON.parse(JSON.stringify(this.AddDataArry))
-      if(newData.name !== '' && newData.details!==''){
+      if (newData.name !== '' && newData.details !== '') {
         let url = `/leaderview/ZHSQ/saveCustomDot?latitude=${newData.latitude}&longitude=${newData.longitude}&name=${newData.name}&details=${newData.details}`
         this.axios
           .get(url)
           .then(res => {
-            if(res.success){
+            if (res.success) {
               Notification({
                 message: '新增成功！',
                 position: 'bottom-right',
@@ -916,12 +916,12 @@ export default {
         })
       }
     },
-    deletZDDW(){
-      if(this.changeDataArry.id){
+    deletZDDW () {
+      if (this.changeDataArry.id) {
         this.axios
-          .get('/leaderview/ZHSQ/deleteCustomDot?id='+this.changeDataArry.id)
+          .get('/leaderview/ZHSQ/deleteCustomDot?id=' + this.changeDataArry.id)
           .then(res => {
-            if(res.success){
+            if (res.success) {
               Notification({
                 message: '删除成功',
                 position: 'bottom-right',
@@ -1028,7 +1028,7 @@ export default {
         })
       )
     },
-    flyJXJ(){
+    flyJXJ () {
       if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
         viewer.scene.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(
@@ -1349,7 +1349,7 @@ export default {
           let label = this.addMarker(
             Cesium.Cartesian3.fromDegrees(pointer[0], pointer[1], 100),
             `${this.header}img/浆洗街区划/${item.properties.na}.png`,
-            0.6,item.properties.na
+            0.6, item.properties.na
           )
           if (item.geometry.type === 'MultiPolygon') {
             item.geometry.coordinates.forEach(item => {
@@ -1620,12 +1620,12 @@ export default {
               extrend = true
               color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
             }
-          } else if(this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0 )){
+          } else if (this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0)) {
 
-          }else {
+          } else {
             if (item.properties.Name === '浆洗街街道') {
               extrend = true
-              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
+              color = new Cesium.Color(47 / 255, 95 / 255, 0 / 255, 0.6)
             }
           }
           let polygonpositions = []
@@ -1771,26 +1771,26 @@ export default {
       })
       ZdDWarray = []
     },
-    removeSZGKPoint(i){
+    removeSZGKPoint (i) {
       SZGKPoint[i].forEach(item => {
         viewer.entities.remove(item)
       })
       SZGKPoint[i] = []
     },
-    addSZGKPoint(i){
+    addSZGKPoint (i) {
       this.removeSZGKPoint(i)
       SZGKPoint[i] = []
       this.axios.get(`/leaderview/ZHSQ/getSZCT2?param=${i}`).then(data => {
         data.obj.dotArray.forEach(ele => {
           let en = this.addLabelMarker(
-            ele.longitude*1,
-            ele.latitude*1,
+            ele.longitude * 1,
+            ele.latitude * 1,
             `static/img/imgs/${i}.png`,
             ele.company_name,
             'small'
           )
           SZGKPoint[i].push(en)
-        });
+        })
       })
     },
     addPontXMQ () {
@@ -1799,18 +1799,18 @@ export default {
       this.axios.get(`/leaderview/ZHSQ/getCustomDot`).then(data => {
         data.obj.forEach(ele => {
           let data = viewer.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(ele.longitude*1, ele.latitude*1, 40),
+            position: Cesium.Cartesian3.fromDegrees(ele.longitude * 1, ele.latitude * 1, 40),
             name: 'XMQ',
             billboard: {
               image: 'static/img/importantData.png',
               scale: 0.3
             },
-            dataArry:ele
+            dataArry: ele
           })
-          let dd = this.addDynamicCircle([ele.longitude*1, ele.latitude*1, 40], 'test', 100)
+          let dd = this.addDynamicCircle([ele.longitude * 1, ele.latitude * 1, 40], 'test', 100)
           ZdDWarray.push(data)
           ZdDWarray.push(dd)
-        });
+        })
       })
     },
     addVideoPoint () {
@@ -1826,7 +1826,7 @@ export default {
               ),
               billboard: {
                 image: this.header + 'img/camera.png',
-                scale: 0.3,
+                scale: 0.3
                 // distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
               },
               label: {
@@ -1834,7 +1834,7 @@ export default {
                 showBackground: true,
                 backgroundColor: Cesium.Color.fromCssColorString('#000'),
                 scale: 0.6,
-                font: "normal 36px MicroSoft YaHei",
+                font: 'normal 36px MicroSoft YaHei',
                 text: item.name.split(')')[1] || item.name,
                 pixelOffset: new Cesium.Cartesian2(10, -30),
                 horizontalOrigin: Cesium.HorizontalOrigin.LEFT
@@ -1953,13 +1953,13 @@ export default {
             对应街道负责人姓名: 'xxxxxxxx',
             对应街道负责人电话: 'xxxxxxxx'
           }
-        }else if(this.AddPointState){
+        } else if (this.AddPointState) {
           this.AddPointState = false
           this.AddDataArry = {
             longitude: lng,
             latitude: lat,
-            name:"",
-            details:''
+            name: '',
+            details: ''
           },
           this.sureAddPoint = true
         } else if (picked && picked.primitive && picked.id && picked.id._billboard) {
@@ -2019,7 +2019,7 @@ export default {
                 columns: ['placeName', 'address', 'roomNum', 'bedNum'],
                 rows: picked.id.dataArray.rows
               }
-            } else if(picked.id.name.indexOf('社区')>=0){
+            } else if (picked.id.name.indexOf('社区') >= 0) {
               // /leaderview/ZHSQ/getSZCT1
               this.sqjcfb = true
               this.axios.get('/leaderview/ZHSQ/getSZCT1?param=' + picked.id.name).then(data => {
