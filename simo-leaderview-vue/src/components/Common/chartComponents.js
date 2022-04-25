@@ -49,6 +49,7 @@ import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL' // 散点图
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox' // 散点图
 import WuhoPointBox from '@/components/EditComp/WuhoPointBox' // 散点图
 import WuhoYXHL from '@/components/EditComp/WuhoYXHL' // 散点图
+import WuHolunboTab from '@/components/EditComp/WuHolunboTab' // 散点图
 import WoHoNumber from '@/components/EditComp/WoHoNumber' // 散点图
 import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
 import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
@@ -123,6 +124,7 @@ export default {
   WuhoOpenBox,
   WuhoPointBox,
   WuhoYXHL,
+  WuHolunboTab,
   WuhoMaoBL,
   WoHoNumber,
   WuhouTable,

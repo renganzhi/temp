@@ -5,31 +5,35 @@ export default{
       'chartType': 'WuHolunboTab',
       'width': 1060,
       'height': 150,
-      'LunBoType': 0,
-      'fontSize': 20,
-      'barWidth': 20,
+      'fontSize': 28,
+      'textfontSize': 28,
       'chartData': {
-        'dataArray':[
-          {
-            name:'户籍人口',
-            val:445.6,
-            unit:'万人'
-          },
-          {
-            name:'户籍人口',
-            val:445.6,
-            unit:'万人'
-          },
-          {
-            name:'户籍人口',
-            val:445.6,
-            unit:'万人'
-          }
-        ]
       }
     },
     'styles': {
       'base': [
+        {
+          'name': '翻牌器设置',
+          'tag': 'Hint',
+          'childoption': [
+            {
+              'name': '文字大小',
+              'key': 'fontSize',
+              'tag': 'input'
+            },
+          ]
+        },
+        {
+          'name': '文本设置',
+          'tag': 'Hint',
+          'childoption': [
+            {
+              'name': '文字大小',
+              'key': 'textfontSize',
+              'tag': 'input'
+            }
+          ]
+        }
       ]
     }
   }
