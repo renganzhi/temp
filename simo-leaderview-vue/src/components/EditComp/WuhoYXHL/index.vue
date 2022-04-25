@@ -28,15 +28,16 @@ export default {
   methods: {
     PontSplitFun(){
       if(this.timeOut){
-
+        this.nowPick = 0
       }else{
         this.timeOut = setInterval(() => {
-          if(this.nowPick < 30){
+          if(this.nowPick < 10){
             this.nowPick = this.nowPick+1
             this.isShanShuo = !this.isShanShuo
           }else{
             clearInterval(this.timeOut)
-            this.isShanShuo = true
+            this.isShanShuo = false
+            this.nowPick = 0
           }
         }, 1000);
       }
