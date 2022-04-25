@@ -378,6 +378,15 @@
         "params": []
     },
     {
+        "key": "get_WBZ3",
+        "name": "未办证住所-入住街道top5接口",
+        "component": "monitor",
+        "type": "WuHolunboTab",
+        "url": "/leaderview/QZF/getWBZ3",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_WBZ4",
         "name": "未办证住所-入住人员户籍地TOP10",
         "component": "monitor",
