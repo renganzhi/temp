@@ -20,6 +20,7 @@ export default [
   'WuhoIfream',
   'WuhoMaoBL',
   'WuhoOpenBox',
+  'WuhoYXHL',
   'WuhoPointBox',
   'WoHoNumber',
   'WuhouTable',

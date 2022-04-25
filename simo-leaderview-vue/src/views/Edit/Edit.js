@@ -45,6 +45,7 @@ let config = {
   WuhoMaoBL: require('@/components/EditComp/WuhoMaoBL/config.js'),
   WuhoOpenBox: require('@/components/EditComp/WuhoOpenBox/config.js'),
   WuhoPointBox: require('@/components/EditComp/WuhoPointBox/config.js'),
+  WuhoYXHL: require('@/components/EditComp/WuhoYXHL/config.js'),
   WoHoNumber: require('@/components/EditComp/WoHoNumber/config.js'),
   WuhouTable: require('@/components/EditComp/WuhouTable/config.js'),
   XiaLaShu: require('@/components/EditComp/XiaLaShu/config.js'),
