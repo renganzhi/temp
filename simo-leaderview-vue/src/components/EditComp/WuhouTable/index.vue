@@ -239,9 +239,7 @@ export default {
   mounted () {
     this.iterview = setInterval(() => {
       if(this.pageMove){
-        console.log(this.$refs.MyLunBoTbale.scrollTop + this.$refs.MyLunBoTbale.clientHeight)
-        console.log(this.$refs.MyLunBoTbale.scrollHeight)
-        if (this.$refs.MyLunBoTbale.scrollTop + this.$refs.MyLunBoTbale.clientHeight === this.$refs.MyLunBoTbale.scrollHeight) {
+        if (this.$refs.MyLunBoTbale.scrollTop + this.$refs.MyLunBoTbale.clientHeight >= this.$refs.MyLunBoTbale.scrollHeight - 10) {
           this.$refs.MyLunBoTbale.scrollTop = 0
         } else {
           this.$refs.MyLunBoTbale.scrollTop = this.$refs.MyLunBoTbale.scrollTop + 10

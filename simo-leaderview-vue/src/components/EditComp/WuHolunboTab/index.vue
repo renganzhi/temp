@@ -1,50 +1,12 @@
 <template>
   <div class="WuHolunboTab" :style="BodyStyle">
-    <div class="FanPaiTab0" @click="getTableData(0)" v-if="NowData[0]">
-      <NewDoubler :item='getliqiudfill(0)'></NewDoubler>
-      {{NowData[0]['所属街道']}}
-    </div>
-    <div class="NoData" v-else>
-        <div>
-          暂无数据！
-        </div>
-    </div>
-    <div class="leftBody">
-      <div class="FanPaiTab FanPaiTab1" @click="getTableData(1)" v-if="NowData[1]">
-        <NewDoubler :item='getliqiudfill(1)'></NewDoubler>
-        {{NowData[1]['所属街道']}}
+    <img src="./top.png" alt="">
+    <div class="FanPaiTab" @click="getTableData(index)" v-for="(item,index) in NowData" :key="index">
+      <div class="FanPaiName">
+         {{NowData[index]['所属街道']}}
       </div>
-      <div class="NoData" v-else>
-        <div>
-          暂无数据！
-        </div>
-      </div>
-      <div class="FanPaiTab FanPaiTab2" @click="getTableData(2)" v-if="NowData[2]">
-        <NewDoubler :item='getliqiudfill(2)'></NewDoubler>
-        {{NowData[2]['所属街道']}}
-      </div>
-      <div class="NoData" v-else>
-        <div>
-          暂无数据！
-        </div>
-      </div>
-      <div class="FanPaiTab FanPaiTab3" @click="getTableData(3)" v-if="NowData[3]">
-        <NewDoubler :item='getliqiudfill(3)'></NewDoubler>
-        {{NowData[3]['所属街道']}}
-      </div>
-      <div class="NoData" v-else>
-        <div>
-          暂无数据！
-        </div>
-      </div>
-      <div class="FanPaiTab FanPaiTab4" @click="getTableData(4)" v-if="NowData[4]">
-        <NewDoubler :item='getliqiudfill(4)'></NewDoubler>
-        {{NowData[4]['所属街道']}}
-      </div>
-      <div class="NoData" v-else>
-        <div>
-          暂无数据！
-        </div>
+      <div class="FanPaiValue">
+        <NewDoubler :item='getliqiudfill(index)'></NewDoubler>
       </div>
     </div>
   </div>
@@ -85,9 +47,10 @@ export default {
         'bgClr': '#152b5f',
         'bdClr': '', // #0c527c
         'clr': '#15fbff',
-        'width': this.item.width/3,
-        'height': this.item.height/2,
+        'width': this.item.width/5,
+        'height': 52,
         'ctLegendShow': 'false',
+        'minLength': 16,
         'chartData': {
           'name': '繁忙度',
           'unit': '%',
@@ -110,53 +73,36 @@ export default {
 </script>
 <style scoped lang="scss">
 .WuHolunboTab{
-  display: flex;
-  flex-wrap: wrap;
-}
-.FanPaiTab0{
-  width: 33%;
-  cursor: pointer;
-  height: 100% !important;
-  text-align: center;
-  padding: 129px 0px;
-  .v-doubler{
-    height: 85%;
+  img{
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
   }
+  padding: 10px 0;
 }
-.leftBody{
-  height: 100%;
+.FanPaiTab{
+  width: 100%;
+  display: inline-block;
+  cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
-  width: 66%;
-  .NoData{
-    cursor: pointer;
-    height: 50%;
-    width: 50%;
+  height: 20% !important;
+  .FanPaiName{
+    height: 100%;
+    width: 30%;
     display: flex;
     justify-content: center;
-    color: #8d8b8b;
-    align-content: center;
-    div{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    align-items: center;
+    padding: 0 0 0 60px;
   }
-  .FanPaiTab{
-    cursor: pointer;
-    height: 50%;
-    width: 50%;
-    text-align: center;
-    padding: 30px 0px;
-    .v-doubler{
-      height: 85%;
-    }
+  .FanPaiValue{
+    height: 100%;
+    width: 70%;
   }
-}
-.NoData{
-  cursor: pointer;
-  height: 50%;
-  font-size: 28px !important;
-  width: 33%;
+  .v-doubler{
+    padding: 14px 10px 10px 0;
+  }
 }
 </style>

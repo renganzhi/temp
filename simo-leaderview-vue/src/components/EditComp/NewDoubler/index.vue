@@ -62,7 +62,14 @@ export default {
           return '--'
         }
         var str = this.item.chartData.value.toString().trim()
-        return str.split('')
+        let data = str.split('')
+        console.log(this.item.minLength)
+        if(this.item.minLength){
+          for(var i=data.length;i<this.item.minLength;i++){
+            data.unshift(0)
+          }
+        }
+        return data
       }else{
         return '0'
       }
