@@ -1877,7 +1877,7 @@ export default {
       })
     },
     addVideoPoint () {
-      this.axios.get(`/leaderview/WuHou/getHcnetPoints`).then(data => {
+      this.axios.get(`/leaderview/WuHou/getSZCTPoints`).then(data => {
         if (data.success) {
           videoPoint = []
           data.obj.forEach(item => {

@@ -7,6 +7,7 @@ import XiaLaShu from '@/components/EditComp/XiaLaShu/config.js'
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL/config.js'
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox/config.js'
 import WuhoPointBox from '@/components/EditComp/WuhoPointBox/config.js'
+import WuhoYXHL from '@/components/EditComp/WuhoYXHL/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 
 const others = {
@@ -38,6 +39,7 @@ const others = {
     WoHoNumber.item,
     WuhoOpenBox.item,
     WuhoPointBox.item,
+    WuhoYXHL.item,
     WuhoMaoBL.item
   ]
 }
