@@ -1,6 +1,6 @@
 <template>
   <div :class="isShanShuo ? 'WuhoYXHLPoint':'WuhoYXHL'" :style="BodyStyle" @click="PontSplitFun">
-
+    <img src="./yjcz.png" alt="">
   </div>
 </template>
 <script>
@@ -31,7 +31,7 @@ export default {
         this.nowPick = 0
       }else{
         this.timeOut = setInterval(() => {
-          if(this.nowPick < 10){
+          if(this.nowPick < 30){
             this.nowPick = this.nowPick+1
             this.isShanShuo = !this.isShanShuo
           }else{
@@ -48,9 +48,11 @@ export default {
 </script>
 <style scoped lang="scss">
 .WuhoYXHL{
-    background-image: url(./yjcz.png);
-    background-size: 100% 100%;
-    cursor: pointer;
+  cursor: pointer;
+  img{
+    height: 100%;
+    width: 100%;
+  }
 }
 .WuhoYXHLPoint{
     display: none;
