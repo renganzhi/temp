@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.uxsino.leaderview.service.wuhou.WuHouService.getPieResult;
@@ -274,7 +271,7 @@ public class ZHSQService {
 
         JSONObject result = getPieResult(map,targetData);
 
-        List<String> columns = Arrays.asList("民警","手机","管控区","责任区");
+        List<String> columns = Arrays.asList("民警","手机","责任区");
         result.put("columns",columns);
         return new JsonModel(true,result);
 
@@ -299,14 +296,21 @@ public class ZHSQService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
-        //企业类型和对应的打点信息映射
-        LinkedHashMap<String,JSONArray> typeAndDotMap = new LinkedHashMap<>();
+        JSONArray targetData = new JSONArray();
         for(int i = 0;i < data.size();i++){
             JSONObject obj = data.getJSONObject(i);
+            if("浆洗街街道".equals(obj.getString("street"))){
+                targetData = obj.getJSONArray("items");
+            }
+        }
+        //企业类型和对应的打点信息映射
+        LinkedHashMap<String,JSONArray> typeAndDotMap = new LinkedHashMap<>();
+        for(int i = 0;i < targetData.size();i++){
+            JSONObject obj = targetData.getJSONObject(i);
             typeAndDotMap.put(obj.getString("company_type"),obj.getJSONArray("items"));
         }
 
-        JSONObject result = wuHouService.getTextResult("company_type",data);
+        JSONObject result = wuHouService.getTextResult("company_type",targetData);
         result.put("typeAndDotMap",typeAndDotMap);
         return new JsonModel(true,result);
 
@@ -323,7 +327,7 @@ public class ZHSQService {
 
         String res = null;
         try {
-            res = wuHouService.getData("y21-01","per_page=10000&page=1",null,false,true);
+            res = wuHouService.getData("y102-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -331,15 +335,24 @@ public class ZHSQService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
+        /*JSONArray targetData = new JSONArray();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            if("浆洗街街道".equals(obj.getString("street"))){
+                targetData = obj.getJSONArray("items");
+            }
+        }*/
+        //企业类型和对应的打点信息映射
+        LinkedHashMap<String,JSONArray> typeAndDotMap = new LinkedHashMap<>();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            JSONArray array = obj.getJSONArray("items");
+            Collections.shuffle(array);
+            typeAndDotMap.put(obj.getString("type"), array);
+        }
 
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-
-
-        JSONObject result = getPieResult(map,data);
+        JSONObject result = wuHouService.getTextResult("type",data);
+        result.put("typeAndDotMap",typeAndDotMap);
         return new JsonModel(true,result);
 
     }

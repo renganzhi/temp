@@ -130,7 +130,24 @@ public class ZHSQController {
      */
     @GetMapping("/getSZCT3")
     public JsonModel getSZCT3(@RequestParam(required = false) String param){
-        return zhsqService.getSZCT1(param);
+        JsonModel jsonModel = zhsqService.getSZCT3();
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+//        List<String> dotParam = Arrays.asList("1","2","3","4","5","6","7");
+        HashMap<String, String> idAndNameMap = new HashMap<>();
+        idAndNameMap.put("1", "涉藏商铺");
+        idAndNameMap.put("2", "民宿旅馆");
+        idAndNameMap.put("3", "藏餐茶吧");
+        idAndNameMap.put("4", "娱乐场所");
+        idAndNameMap.put("5", "涉藏机构");
+        idAndNameMap.put("6", "小区院落");
+        idAndNameMap.put("7", "锅庄舞场");
+        param = idAndNameMap.get(param);
+        LinkedHashMap<String, JSONArray> typeAndDotMap = (LinkedHashMap<String, JSONArray>) obj.get("typeAndDotMap");
+        JSONArray dotArray = typeAndDotMap.get(param);
+        JSONObject result = new JSONObject();
+        result.put("dotArray", dotArray);
+        return new JsonModel(true,result);
+
     }
 
     /**
