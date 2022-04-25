@@ -1,10 +1,10 @@
 <template>
   <div class="content">
     <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
-    <!-- <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
+    <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
-    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button> -->
+    <button v-show="true" @click="removeJxJ()" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">获取视角1</button>
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -44,7 +44,7 @@
         <div class="CloseBtn" @click="SZCTDataXQ = false"></div>
         <div class="lineContain">
           <div class="line" v-for="(item,index) in SZCTDataArray" :key="index">
-            {{ SZCTDataNameArray[item.name]}}   
+            {{ SZCTDataNameArray[item.name]}}
               <div style="padding: 0px 10px;display: inline-block;">:</div>
             {{item.value || '暂无数据'}}
           </div>
@@ -472,37 +472,37 @@ export default {
           index: 0
         }
       ],
-      SZCTDataNameArray:{
-        "type": "场所类别",
-        "name": "场所名称",
-        "license": '有无证照',
-        "address": "场所地址",
-        "longitude": "经度",
-        "latitude": "纬度",
-        "area": "面积",
-        "manage_time": '经营时间',
-        "manager_name": "负责人姓名",
-        "manager_phone": "负责人联系方式", 
-        "passenger_flow": '客流量',
-        "member_number": '从业人员数',
-        "event": '有无案件相关事件',
-        "community": "所属社区",
-        "company_name": "单位名称", 
-        "company_address": "单位地址", 
-        "job_title": "职务", 
-        "company_manager_phone": "联系电话", 
-        "office_manager": "联系人", 
-        "office_manager_phone": "联系电话", 
-        "owner_name":'业主姓名',
-        "owner_phone":'业主联系方式',
-        "room_number":"房间数",
-        "bed_number":'床铺数',
-        "remark": '备注', 
-        "household_population": "涉藏户籍人数", 
-        "rental_population": "涉藏租住人口数", 
-        "street": "所属街道", 
-        "person_number": "人数", 
-        "time": "活动起止时间", 
+      SZCTDataNameArray: {
+        'type': '场所类别',
+        'name': '场所名称',
+        'license': '有无证照',
+        'address': '场所地址',
+        'longitude': '经度',
+        'latitude': '纬度',
+        'area': '面积',
+        'manage_time': '经营时间',
+        'manager_name': '负责人姓名',
+        'manager_phone': '负责人联系方式',
+        'passenger_flow': '客流量',
+        'member_number': '从业人员数',
+        'event': '有无案件相关事件',
+        'community': '所属社区',
+        'company_name': '单位名称',
+        'company_address': '单位地址',
+        'job_title': '职务',
+        'company_manager_phone': '联系电话',
+        'office_manager': '联系人',
+        'office_manager_phone': '联系电话',
+        'owner_name': '业主姓名',
+        'owner_phone': '业主联系方式',
+        'room_number': '房间数',
+        'bed_number': '床铺数',
+        'remark': '备注',
+        'household_population': '涉藏户籍人数',
+        'rental_population': '涉藏租住人口数',
+        'street': '所属街道',
+        'person_number': '人数',
+        'time': '活动起止时间'
       },
       nowShowData: [],
       newSZCheckEdData: [],
@@ -639,7 +639,7 @@ export default {
                   height
                 ),
                 'xiaoqu' + index,
-                this.header +'img/xiaoqu.png',
+                this.header + 'img/xiaoqu.png',
                 { columns: [], rows: d.arr }
               )
             })
@@ -1248,7 +1248,7 @@ export default {
       this.ShowTableTan = false
       this.nowShowData = nowShowData
     },
-    addLabelMarker (lon, lat, url, name, small,data) {
+    addLabelMarker (lon, lat, url, name, small, data) {
       let size = small ? 20 : 40
       let height = small ? 40 : 60
       let backgroundColor = small
@@ -1264,7 +1264,7 @@ export default {
           scale: 0.25
         },
         name: name,
-        DataArry:data || [],
+        DataArry: data || [],
         label: {
           show: true,
           showBackground: true,
@@ -1647,20 +1647,38 @@ export default {
       }
       if (tilesetJxJ) {
         tilesetJxJ.show = true
+      } else {
+        tilesetJxJ = new Cesium.Cesium3DTileset({
+          url: this.header + 'JXJ/tileset.json',
+          lightColor: new Cesium.Cartesian3(20, 20, 20),
+          showOutline: false
+        })
+        viewer.scene.primitives.add(tilesetJxJ)
+        tilesetJxJ.readyPromise.then(function (tileset3D) {
+          tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
+            color: {
+              conditions: [
+                ['true', 'rgba(21, 36, 75 ,1)'] // 'rgb(127, 59, 8)']
+              ]
+            }
+          })
+        })
       }
       // this.addJxJ()
       for (var key in xingzhengquhuaPolygons) {
         if (key !== '浆洗街街道') {
           xingzhengquhuaPolygons[key].forEach(item => {
             item.show = false
-          })        
+          })
         } else {
           xingzhengquhuaPolygons[key].forEach(polygon => {
             if (polygon.polygon) {
-              polygon.polygon.material = new Cesium.Color(0 / 255, 65 / 255, 0 / 255, 0.6)
+              console.log(1)
+              polygon.polygon.material = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
+            } else if (polygon.polyline) {
+              polygon.polyline.material = Cesium.Color.YELLOW
             }
           })
-
         }
       }
     },
@@ -1690,10 +1708,6 @@ export default {
           } else if (this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0)) {
 
           } else {
-            if (item.properties.Name === '浆洗街街道') {
-              extrend = true
-              color = new Cesium.Color(0 / 255, 65 / 255, 0 / 255, 0.6)
-            }
           }
           let polygonpositions = []
           let pointer = turf.centerOfMass(item.geometry).geometry.coordinates
@@ -1764,27 +1778,7 @@ export default {
         lightColor: new Cesium.Cartesian3(20, 20, 20),
         showOutline: false
       })
-      tilesetJxJ = new Cesium.Cesium3DTileset({
-        url: this.header + 'JXJ/tileset.json',
-        lightColor: new Cesium.Cartesian3(20, 20, 20),
-        showOutline: false
-      })
       viewer.scene.primitives.add(tileset)
-      viewer.scene.primitives.add(tilesetJxJ)
-      tilesetJxJ.readyPromise.then(function (tileset3D) {
-        tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
-          color: {
-            conditions: [
-              ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
-            ]
-          }
-        })
-        var cartographic = Cesium.Cartographic.fromCartesian(tilesetJxJ.boundingSphere.center)
-        var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height)
-        var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0)
-        var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3())
-        tilesetJxJ.modelMatrix = Cesium.Matrix4.fromTranslation(translation)
-      })
       tileset.readyPromise.then(function (tileset3D) {
         tileset.style = new Cesium.Cesium3DTileStyle({
           color: {
@@ -1793,11 +1787,6 @@ export default {
             ]
           }
         })
-        var cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center)
-        var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height)
-        var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0)
-        var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3())
-        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation)
       })
     },
     getCamera () {
@@ -1848,9 +1837,9 @@ export default {
       this.removeSZGKPoint(i)
       SZGKPoint[i] = []
       this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
-        data.obj.dotArray.forEach((ele,index) => {
+        data.obj.dotArray.forEach((ele, index) => {
           let name = ele.name || ele.company_name
-          if(index<=40){
+          if (index <= 40) {
             let en = this.addLabelMarker(
               ele.longitude * 1,
               ele.latitude * 1,
@@ -1873,7 +1862,7 @@ export default {
             position: Cesium.Cartesian3.fromDegrees(ele.longitude * 1, ele.latitude * 1, 40),
             name: 'XMQ',
             billboard: {
-              image:  this.header + 'img/importantData.png',
+              image: this.header + 'img/importantData.png',
               scale: 0.3
             },
             dataArry: ele
@@ -2062,7 +2051,7 @@ export default {
                 duration: 1
               })
             }
-              console.log(picked.id)
+            console.log(picked.id)
 
             if (picked.id.name === 'XMQ') {
               this.popshowXMQ = true
@@ -2106,21 +2095,20 @@ export default {
                   }
                 }
               })
-            }else if(picked.id.name.indexOf('SZGK') >= 0){
-              if(picked.id.DataArry !== []){
+            } else if (picked.id.name.indexOf('SZGK') >= 0) {
+              if (picked.id.DataArry !== []) {
                 this.SZCTDataXQ = true
                 this.SZCTDataArray = []
                 for (const key in picked.id.DataArry) {
                   if (Object.hasOwnProperty.call(picked.id.DataArry, key)) {
-                    if(key!=='created_at' && key!=='user_id' && key!=='user_name' && key!=='id' && key!=='user_identifier' && key!=='response_id'){
+                    if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id') {
                       this.SZCTDataArray.push({
-                        name:key,
-                        value:picked.id.DataArry[key]
+                        name: key,
+                        value: picked.id.DataArry[key]
                       })
                     }
                   }
                 }
-                
               }
             }
           }
