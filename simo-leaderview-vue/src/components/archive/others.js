@@ -8,6 +8,7 @@ import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL/config.js'
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox/config.js'
 import WuhoPointBox from '@/components/EditComp/WuhoPointBox/config.js'
 import WuhoYXHL from '@/components/EditComp/WuhoYXHL/config.js'
+import WuHolunboTab from '@/components/EditComp/WuHolunboTab/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 
 const others = {
@@ -40,6 +41,7 @@ const others = {
     WuhoOpenBox.item,
     WuhoPointBox.item,
     WuhoYXHL.item,
+    WuHolunboTab.item,
     WuhoMaoBL.item
   ]
 }

@@ -1653,7 +1653,14 @@ export default {
         if (key !== '浆洗街街道') {
           xingzhengquhuaPolygons[key].forEach(item => {
             item.show = false
+          })        
+        } else {
+          xingzhengquhuaPolygons[key].forEach(polygon => {
+            if (polygon.polygon) {
+              polygon.polygon.material = new Cesium.Color(0 / 255, 65 / 255, 0 / 255, 0.6)
+            }
           })
+
         }
       }
     },
@@ -1842,12 +1849,13 @@ export default {
       SZGKPoint[i] = []
       this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
         data.obj.dotArray.forEach((ele,index) => {
+          let name = ele.name || ele.company_name
           if(index<=40){
             let en = this.addLabelMarker(
               ele.longitude * 1,
               ele.latitude * 1,
               this.header + `img/imgs/${i}.png`,
-              ele.name + 'SZGK' + i,
+              name + 'SZGK' + i,
               'small',
               ele
             )

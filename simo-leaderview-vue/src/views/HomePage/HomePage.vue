@@ -86,7 +86,7 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
-                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value }} </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value.value?data.value.value:data.value }} </div>
                       <!-- <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
                         <Select v-model="data.value">
                             <Option value="1">1级 </Option>
