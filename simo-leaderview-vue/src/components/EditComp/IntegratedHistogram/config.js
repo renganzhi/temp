@@ -20,6 +20,7 @@ var NewHistogram = {
   'legendColor1': '',
   'splitShow1': false,
   'ctLegendSize1': '16',
+  'TabFontSize': '20',
   'colorType1': 'custom',
   'ScatterColor1': [
     '#6fcaf7',
@@ -440,6 +441,15 @@ export default {
               }
             ]
           },
+          {
+            'name': '图例字大小',
+            'parentKey': {
+              'dataTypeSet': 1
+            },
+            'key': 'TabFontSize',
+            'tag': 'input'
+          },
+          // 
         ]
       },
       {
