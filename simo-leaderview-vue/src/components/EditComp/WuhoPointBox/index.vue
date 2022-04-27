@@ -37,10 +37,22 @@ export default {
     CheckedArry:function(){
       var _this = this
       window.changeSZChecked(_this.CheckedArry)
+    },
+    'item.size': function () {
+      if (this.item.size === 'small') {
+        document.getElementsByClassName('OpenPointBtn')[0].classList.add('small')
+      } else {
+        document.getElementsByClassName('OpenPointBtn')[0].classList.remove('small')
+      }
     }
   },
   mounted () {
     window.changeCheckedArry = this.changeCheckedArry
+    if (this.item.size === 'small') {
+      document.getElementsByClassName('OpenPointBtn')[0].classList.add('small')
+    } else {
+      document.getElementsByClassName('OpenPointBtn')[0].classList.remove('small')
+    }
   },
   methods: {
     AddZDDW(){
@@ -119,5 +131,33 @@ export default {
   background-size: 100% 100%;
   right: 12px;
   top: 590px;
+}
+
+.small {
+  height: 900px;
+  width: 400px;
+  padding: 25px 0 0 145px;
+  font-size: 24px;
+  .NoChecked{
+    width:220px;
+    margin: 0 0 14px 0px;
+    height: 40px;
+    background-size: 100% 100%;
+    font-size: 28px;
+  }
+  .CheckedBox{
+    width:220px;
+    margin: 0 0 14px 0px;
+    height: 40px;
+    background-size: 100% 100%;
+    font-size: 28px;
+  }
+  .AddPonit{
+    top: 346px;
+    height: 27px;
+    width: 27px;
+    right: 92px;
+
+  }
 }
 </style>
