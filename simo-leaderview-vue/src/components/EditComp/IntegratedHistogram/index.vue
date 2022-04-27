@@ -1,17 +1,19 @@
 <template>
   <div class="NewHistogram">
     <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="item.dataTypeSet === 1">
-      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="!item.dataSetType">
+      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="!item.dataSetType" :style="FontSizeStyle">
         <div v-for="(item,index) in nameArray" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
           {{item}}
         </div>
       </div>
-      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-else>
-        <Select v-model="optIndex">
+      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-else 
+                :style="FontSizeStyle">
+        <Select v-model="optIndex" >
             <Option
                 v-for="(option, optIndex) in nameArray"
                 :key="optIndex"
                 :value="optIndex"
+                :style="FontSizeStyle"
             >{{ option }}
             </Option>
         </Select>
@@ -111,6 +113,11 @@ export default {
         }
       }
       return arr
+    },
+    FontSizeStyle: function () {
+      return {
+        fontSize: (this.item.TabFontSize || 32) + 'px !important'
+      }
     },
     boxStyle: function () {
       return {
@@ -1372,7 +1379,7 @@ export default {
 .checkBox{
   padding: 4px 20px;
   margin: 0 6px;
-  font-size: 32px;
+  // font-size: 32px;
   font-family: PangmenMainRoadTitleBody !important;
   cursor: pointer;
 }

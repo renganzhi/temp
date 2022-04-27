@@ -27,9 +27,9 @@ export default {
   computed: {
     countStyle: function () {
       return {
-        height: this.numHeight + 'px !important',
-        lineHeight: this.numHeight + 'px !important',
-        width: this.numWidth + 'px !important'
+        // height: this.numHeight - 5 + 'px !important',
+        // lineHeight: this.numHeight -5 + 'px !important',
+        // width: this.numWidth - 5 + 'px !important'
       }
     },
     spanStyle: function () {
@@ -75,6 +75,10 @@ $bRadius: 7px;
   box-shadow: 0 10px 5px -5px rgba(0, 0, 0, 0.15);
   height: 100px;
   line-height: 100px;
+  margin-right: 3px !important;
+  height: 52px !important;
+  line-height: 52px !important;
+  width: 36px !important;
   /* -moz-perspective: 500px;
   -webkit-perspective: 500px;
   perspective: 500px; */
