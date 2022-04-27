@@ -1670,16 +1670,17 @@ export default {
           xingzhengquhuaPolygons[key].forEach(item => {
             item.show = false
           })
-        } else {
-          xingzhengquhuaPolygons[key].forEach(polygon => {
-            if (polygon.polygon) {
-              console.log(1)
-              polygon.polygon.material = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
-            } else if (polygon.polyline) {
-              polygon.polyline.material = Cesium.Color.YELLOW
-            }
-          })
         }
+        // else {
+        //   xingzhengquhuaPolygons[key].forEach(polygon => {
+        //     if (polygon.polygon) {
+        //       console.log(1)
+        //       polygon.polygon.material = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
+        //     } else if (polygon.polyline) {
+        //       polygon.polyline.material = Cesium.Color.YELLOW
+        //     }
+        //   })
+        // }
       }
     },
     initBase () {
@@ -1694,7 +1695,7 @@ export default {
       $.getJSON(this.header + 'geojson/xzqh.json', res => {
         let positions = res.features
         positions.forEach((item, index) => {
-          let color = Cesium.Color.DODGERBLUE.withAlpha(0.3)
+          let color = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
           let extrend = false
           if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
             if (item.properties.Name === '金花桥街道') {
@@ -1763,8 +1764,8 @@ export default {
               positions: Cesium.Cartesian3.fromDegreesArrayHeights(
                 linepositions
               ),
-              material: Cesium.Color.AQUAMARINE,
-              depthFailMaterial: Cesium.Color.AQUAMARINE,
+              material: Cesium.Color.YELLOW,
+              depthFailMaterial: Cesium.Color.YELLOW,
               width: 2
             }
           })
@@ -1783,7 +1784,7 @@ export default {
         tileset.style = new Cesium.Cesium3DTileStyle({
           color: {
             conditions: [
-              ['true', 'rgba(0, 205, 243 ,1)'] // 'rgb(127, 59, 8)']
+              ['true', 'rgba(21, 36, 75 ,1)'] // 'rgb(127, 59, 8)']
             ]
           }
         })
@@ -2151,9 +2152,10 @@ export default {
           var mousePosition = e.endPosition
           var picked = viewer.scene.pick(mousePosition)
           if (picked && picked.id && picked.id._polygon) {
-            if (picked.id.name === '浆洗街街道') {
-              return
-            } else if (picked.id.name === '边界') {
+            // if (picked.id.name === '浆洗街街道') {
+            //   return
+            // } else
+            if (picked.id.name === '边界') {
               if (highLightPolygon && hightLightMat) {
                 highLightPolygon.material = hightLightMat
                 highLightPolygon = null
