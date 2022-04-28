@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <!-- <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <!-- <button v-show="true" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="true" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initBase()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">获取视角</button>
@@ -180,6 +180,7 @@
 </template>
 
 <script>
+import BaiduImageryProvider from './baiduTransForm/BaiduImageryProvider.js'
 import createBlurStage from './CesiumEdgeStage/createBlurStage.js'
 import * as turf from '@turf/turf'
 import Imgpositions from './Imgpositions.js'
@@ -673,7 +674,7 @@ export default {
   mounted () {
     this.init3D()
     this.initBase()
-    this.initModels()
+    // this.initModels()
     this.initPostrender()
     this.addPopEvent()
     this.fly()
@@ -1647,23 +1648,24 @@ export default {
       }
       if (tilesetJxJ) {
         tilesetJxJ.show = true
-      } else {
-        tilesetJxJ = new Cesium.Cesium3DTileset({
-          url: this.header + 'JXJ/tileset.json',
-          lightColor: new Cesium.Cartesian3(20, 20, 20),
-          showOutline: false
-        })
-        viewer.scene.primitives.add(tilesetJxJ)
-        tilesetJxJ.readyPromise.then(function (tileset3D) {
-          tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
-            color: {
-              conditions: [
-                ['true', 'rgba(21, 36, 75 ,1)'] // 'rgb(127, 59, 8)']
-              ]
-            }
-          })
-        })
       }
+      // else {
+      //   tilesetJxJ = new Cesium.Cesium3DTileset({
+      //     url: this.header + 'JXJ/tileset.json',
+      //     lightColor: new Cesium.Cartesian3(20, 20, 20),
+      //     showOutline: false
+      //   })
+      //   viewer.scene.primitives.add(tilesetJxJ)
+      //   tilesetJxJ.readyPromise.then(function (tileset3D) {
+      //     tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
+      //       color: {
+      //         conditions: [
+      //           ['true', 'rgba(21, 36, 75 ,1)'] // 'rgb(127, 59, 8)']
+      //         ]
+      //       }
+      //     })
+      //   })
+      // }
       // this.addJxJ()
       for (var key in xingzhengquhuaPolygons) {
         if (key !== '浆洗街街道') {
@@ -1695,16 +1697,16 @@ export default {
       $.getJSON(this.header + 'geojson/xzqh.json', res => {
         let positions = res.features
         positions.forEach((item, index) => {
-          let color = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
+          let color = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.1)
           let extrend = false
           if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
             if (item.properties.Name === '金花桥街道') {
               extrend = true
-              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.1)
             }
             if (item.properties.Name === '望江路街道') {
               extrend = true
-              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.4)
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.1)
             }
           } else if (this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0)) {
 
@@ -1764,8 +1766,8 @@ export default {
               positions: Cesium.Cartesian3.fromDegreesArrayHeights(
                 linepositions
               ),
-              material: Cesium.Color.YELLOW,
-              depthFailMaterial: Cesium.Color.YELLOW,
+              material: Cesium.Color.CYAN,
+              depthFailMaterial: Cesium.Color.CYAN,
               width: 2
             }
           })
@@ -1820,7 +1822,6 @@ export default {
         },
       `
       console.log(data)
-      console.log(obj, viewer.scene.primitives)
     },
     removePontXMQ () {
       ZdDWarray.forEach(item => {
@@ -1941,8 +1942,9 @@ export default {
         vrButton: false, // vr部件
         shouldAnimate: true,
         shadows: false,
-        imageryProvider: new Cesium.SingleTileImageryProvider({
-          url: this.header + 'Cesium/back.png'
+        imageryProvider: new BaiduImageryProvider({
+          url: this.header + `地图瓦片/{x}_{y}_{z}.jpg`,
+          crs: 'WGS84'
         })
       })
       viewer.scene.skyAtmosphere.show = false
@@ -1950,8 +1952,14 @@ export default {
       viewer.scene.globe.baseColor = Cesium.Color.BLACK
       viewer.cesiumWidget.creditContainer.style.display = 'none' // 去水印
       viewer.scene.globe.depthTestAgainstTerrain = true
-      viewer.scene.fxaa = true
-      viewer.scene.postProcessStages.fxaa.enabled = true
+      viewer.scene.fxaa = false
+      viewer.scene.postProcessStages.fxaa.enabled = false
+      viewer.scene.globe.maximumScreenSpaceError = 4 / 3
+      var layer = viewer.imageryLayers.get(0)
+      layer.gamma = 0.66
+      layer.magnificationFilter = Cesium.TextureMagnificationFilter.NEAREST_MIPMAP_LINEAR
+      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10// 相机的高度的最小值
+      viewer.scene.screenSpaceCameraController.maximumZoomDistance = 36754.32231647567
       // 关闭鼠标双击事件
       viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
         Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
@@ -2173,7 +2181,7 @@ export default {
             } else {
               hightLightMat = picked.id._polygon.material
               highLightPolygon = picked.id._polygon
-              highLightPolygon.material = Cesium.Color.AQUA.withAlpha(0.2)
+              highLightPolygon.material = new Cesium.Color(15 / 255, 100 / 255, 100 / 255, 0.2)
             }
           } else {
             if (highLightPolygon) {
