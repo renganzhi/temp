@@ -82,6 +82,7 @@ export default {
   padding: 20px 0 0 180px;
   background: url(./backbox.png);
   background-size: 100% 100%;
+  position: relative;
 }
 .SmallName{
   font-size: 30px;
@@ -134,29 +135,36 @@ export default {
 }
 
 .small {
-  height: 900px;
-  width: 400px;
-  padding: 25px 0 0 145px;
+  height: 834px;
+  width: 289px;
+  padding: 20px 0 0 100px;
   font-size: 24px;
+  background: url(./左侧.png);
   .NoChecked{
-    width:220px;
-    margin: 0 0 14px 0px;
+    width:150px;
+    margin: 0 0 12px 0px;
     height: 40px;
     background-size: 100% 100%;
-    font-size: 28px;
+    font-size: 20px;
+  }
+  .SmallName{
+  font-size: 25px;
+  color: #9b9b9b;
+  left: -5px;
+  position: relative;
   }
   .CheckedBox{
-    width:220px;
-    margin: 0 0 14px 0px;
+    width:150px;
+    margin: 0 0 12px 0px;
     height: 40px;
     background-size: 100% 100%;
-    font-size: 28px;
+    font-size: 20px;
   }
   .AddPonit{
-    top: 346px;
+    top: 325px;
     height: 27px;
     width: 27px;
-    right: 92px;
+    right: 6px;
 
   }
 }
