@@ -224,7 +224,8 @@ let xingzhengquhuaPolygons = {
   '望江路街道': [],
   '簇桥街道': [],
   '浆洗街街道': [],
-  '玉林街道': []
+  '玉林街道': [],
+  '武侯': []
 }// 记录行政区划面
 export default {
   name: 'pageShow',
@@ -1649,6 +1650,36 @@ export default {
       if (tilesetJxJ) {
         tilesetJxJ.show = true
       }
+      $.getJSON(this.header + 'geojson/cachuJXJ.json', res => {
+        let featrue = res.features[0]
+        let color = new Cesium.Color(0, 0, 0, 1)
+        let polygonpositions = []
+        let polygonpositions1 = []
+        let geometry1 = featrue.geometry.coordinates[0]
+        let geometry2 = featrue.geometry.coordinates[1]
+        geometry1.forEach(item => {
+          polygonpositions.push(item[0])
+          polygonpositions.push(item[1])
+        })
+        geometry2.forEach(item => {
+          polygonpositions1.push(item[0])
+          polygonpositions1.push(item[1])
+        })
+        let hole1 = {
+          positions: Cesium.Cartesian3.fromDegreesArray(polygonpositions1)
+        }
+        let en = viewer.entities.add({
+          polygon: {
+            hierarchy: {
+              positions: Cesium.Cartesian3.fromDegreesArray(polygonpositions),
+              holes: [hole1]
+            },
+            material: color
+          },
+          name: '边界'
+        })
+        xingzhengquhuaPolygons['武侯'].push(en)
+      })
       // else {
       //   tilesetJxJ = new Cesium.Cesium3DTileset({
       //     url: this.header + 'JXJ/tileset.json',
@@ -1687,26 +1718,69 @@ export default {
     },
     initBase () {
       viewer.entities.removeAll()
-      this.backBase()
+      xingzhengquhuaPolygons = {
+        '簇锦街道': [],
+        '红牌楼街道': [],
+        '华兴街道': [],
+        '火车南站街道': [],
+        '金花桥街道': [],
+        '晋阳街道': [],
+        '机投桥街道': [],
+        '望江路街道': [],
+        '簇桥街道': [],
+        '浆洗街街道': [],
+        '玉林街道': [],
+        '武侯': []
+      }
       if (tileset) {
         tileset.show = true
       }
       if (tilesetJxJ) {
         tilesetJxJ.show = false
       }
+      $.getJSON(this.header + 'geojson/cachuWuhou.json', res => {
+        let featrue = res.features[0]
+        let color = new Cesium.Color(0, 0, 0, 1)
+        let polygonpositions = []
+        let polygonpositions1 = []
+        let geometry1 = featrue.geometry.coordinates[0]
+        let geometry2 = featrue.geometry.coordinates[1]
+        geometry1.forEach(item => {
+          polygonpositions.push(item[0])
+          polygonpositions.push(item[1])
+        })
+        geometry2.forEach(item => {
+          polygonpositions1.push(item[0])
+          polygonpositions1.push(item[1])
+        })
+        let hole1 = {
+          positions: Cesium.Cartesian3.fromDegreesArray(polygonpositions1)
+        }
+        let en = viewer.entities.add({
+          polygon: {
+            hierarchy: {
+              positions: Cesium.Cartesian3.fromDegreesArray(polygonpositions),
+              holes: [hole1]
+            },
+            material: color
+          },
+          name: '边界'
+        })
+        xingzhengquhuaPolygons['武侯'].push(en)
+      })
       $.getJSON(this.header + 'geojson/xzqh.json', res => {
         let positions = res.features
         positions.forEach((item, index) => {
-          let color = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.1)
+          let color = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.01)
           let extrend = false
           if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
             if (item.properties.Name === '金花桥街道') {
               extrend = true
-              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.1)
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.01)
             }
             if (item.properties.Name === '望江路街道') {
               extrend = true
-              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.1)
+              color = new Cesium.Color(116 / 255, 151 / 255, 232 / 255, 0.01)
             }
           } else if (this.nowPageName && (this.nowPageName.indexOf('涉藏概况') >= 0 || this.nowPageName.indexOf('应急处突') >= 0)) {
 
@@ -2181,7 +2255,7 @@ export default {
             } else {
               hightLightMat = picked.id._polygon.material
               highLightPolygon = picked.id._polygon
-              highLightPolygon.material = new Cesium.Color(15 / 255, 100 / 255, 100 / 255, 0.2)
+              highLightPolygon.material = new Cesium.Color(15 / 255, 100 / 255, 100 / 255, 0.1)
             }
           } else {
             if (highLightPolygon) {
