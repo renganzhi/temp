@@ -1251,7 +1251,7 @@ export default {
       this.nowShowData = nowShowData
     },
     addLabelMarker (lon, lat, url, name, small, data) {
-      let size = small ? 20 : 40
+      let size = small ? 34 : 54
       let height = small ? 40 : 60
       let backgroundColor = small
         ? Cesium.Color.fromCssColorString('#ffffff')
@@ -1840,8 +1840,8 @@ export default {
               positions: Cesium.Cartesian3.fromDegreesArrayHeights(
                 linepositions
               ),
-              material: Cesium.Color.CYAN,
-              depthFailMaterial: Cesium.Color.CYAN,
+              material: Cesium.Color.fromCssColorString('#374da7'),
+              depthFailMaterial: Cesium.Color.fromCssColorString('#374da7'),
               width: 2
             }
           })
@@ -2255,7 +2255,7 @@ export default {
             } else {
               hightLightMat = picked.id._polygon.material
               highLightPolygon = picked.id._polygon
-              highLightPolygon.material = new Cesium.Color(15 / 255, 100 / 255, 100 / 255, 0.1)
+              highLightPolygon.material = new Cesium.Color(15 / 255, 100 / 255, 100 / 255, 0.05)
             }
           } else {
             if (highLightPolygon) {
