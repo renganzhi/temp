@@ -86,7 +86,7 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
-                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value }} </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value.value?data.value.value:data.value }} </div>
                       <!-- <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
                         <Select v-model="data.value">
                             <Option value="1">1级 </Option>
@@ -136,6 +136,15 @@
                     <div class="BoxTitle">实时视频</div>
                     <div class="videoDiv">
                       <WuhoIfream :item = 'VideoIfream'></WuhoIfream>
+                    </div>
+                </div>
+              </div>
+              <div :class="IfreamBoxSize === 'small'?'SmallifreamBox':'ifreamBox'" v-if="showIfreamBox">
+                <div class="videoTable">
+                  <div class="closeBtn" @click="showIfreamBox = false"></div>
+                    <div class="BoxTitle">{{OnwIfreamName}}</div>
+                    <div class="videoDiv">
+
                     </div>
                 </div>
               </div>
@@ -306,6 +315,9 @@ export default {
       showImport: false,
       showModelBox: false,
       showTableBox: false,
+      showIfreamBox: false,
+      IfreamBoxSize: 'big',
+      OnwIfreamName: '',
       boxData: {},
       TableData: {},
       showVideoBox: false,
@@ -465,7 +477,13 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
+    ShowIfreamBoxFun(data,size){
+      this.OnwIfreamName = data
+      this.IfreamBoxSize = size
+      this.showIfreamBox = true
+    },
     ShowTableBox(dataArray) {
+      console.log(dataArray)
       if(dataArray.dataUrl){
         this.DataTkArry = []
         let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
@@ -2325,6 +2343,80 @@ html[data-theme='blueWhite'] {
   }
 }
 .VideoBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .videoTable{
+    height: 1520px;
+    width: 3147px;
+    padding: 100px;
+    top: 50px;
+    left: 2800px;
+    position: relative;
+    z-index: 5000;
+    background: url(./modelBox.png);
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 200px;
+      width: 200px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .BoxTitle {
+      font-size: 46px !important;
+      color: #bbeefe;
+      font-family: PangmenMainRoadTitleBody !important;
+    }
+    .videoDiv{
+      height: 90%;
+      width: 100%;
+    }
+  }
+}
+.SmallifreamBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3840px;
+  height: 1080px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .videoTable{
+    height: 900px;
+    width: 1700px;
+    padding: 100px;
+    top: 100px;
+    left: 1080px;
+    position: relative;
+    z-index: 5000;
+    background: url(./modelBox.png);
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 100px;
+      width: 100px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .BoxTitle {
+      font-size: 46px !important;
+      color: #bbeefe;
+      font-family: PangmenMainRoadTitleBody !important;
+    }
+    .videoDiv{
+      height: 90%;
+      width: 100%;
+    }
+  }
+}
+.ifreamBox{
   position: absolute;
   top: 0;
   left: 0;

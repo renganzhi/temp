@@ -1,9 +1,17 @@
 <template>
   <div class="v-doubler">
-    <div>
+    <div style="font-size: 0;">
       <!-- <span class="autoSize"
             ref="hideNum"
             :style="numCardValue">8</span> -->
+      <TurnOver v-for="(num,index) in numArrZero"
+                :key="index"
+                :nextNum="num"
+                :numWidth="numWidth"
+                :numHeight="numHeight"
+                :bgClr="bgdColor"
+                :style="numCardZeroValue">
+      </TurnOver>
       <TurnOver v-for="(num,index) in numArr"
                 :key="index"
                 :nextNum="num"
@@ -31,6 +39,7 @@ export default {
       scaleY: 1,
       numHeight: 100,
       numWidth: 80,
+      numArrZero: [],
       defConf: {
         'f12': [22, 23],
         'f13': [25, 24],
@@ -62,16 +71,28 @@ export default {
           return '--'
         }
         var str = this.item.chartData.value.toString().trim()
+        this.numArrZero = []
         let data = str.split('')
-        console.log(this.item.minLength)
         if(this.item.minLength){
           for(var i=data.length;i<this.item.minLength;i++){
-            data.unshift(0)
+            this.numArrZero.unshift(0)
           }
         }
         return data
       }else{
         return '0'
+      }
+    },
+    numCardZeroValue: function () {
+      return {
+        padding: '3px 8px',
+        fontSize: this.item.fontSize + 'px',
+        fontFamily: 'asn !important',
+        border: this.item.bdClr ? '1px solid ' + this.item.bdClr : '',
+        borderRadius: '8px',
+        // backgroundColor: this.item.bgClr,
+        marginRight: '6px',
+        color: this.item.Zeroclr
       }
     },
     numCardValue: function () {

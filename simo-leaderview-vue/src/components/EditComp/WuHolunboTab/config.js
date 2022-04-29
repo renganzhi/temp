@@ -6,6 +6,8 @@ export default{
       'width': 1060,
       'height': 150,
       'fontSize': 28,
+      'textfontColor': 'white',
+      'Zeroclr': 'white',
       'textfontSize': 28,
       'chartData': {
       }
@@ -31,6 +33,16 @@ export default{
               'name': '文字大小',
               'key': 'textfontSize',
               'tag': 'input'
+            },
+            {
+              'name': '前缀颜色',
+              'key': 'Zeroclr',
+              'tag': 'Color'
+            },
+            {
+              'name': '文字颜色',
+              'key': 'textfontColor',
+              'tag': 'Color'
             }
           ]
         }

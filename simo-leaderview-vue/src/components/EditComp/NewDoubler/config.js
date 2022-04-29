@@ -7,6 +7,7 @@ export default{
     'bgClr': '#1d2e6e',
     'bdClr': '', // #0c527c
     'clr': '#42b3eb',
+    'Zeroclr': '#42b3eb',
     'width': 300,
     'height': 90,
     'ctLegendShow': 'true',

@@ -46,7 +46,8 @@ export default {
         'fontSize': this.item.fontSize,
         'bgClr': '#152b5f',
         'bdClr': '', // #0c527c
-        'clr': '#15fbff',
+        'clr': this.item.textfontColor,
+        'Zeroclr': this.item.Zeroclr,
         'width': this.item.width/5,
         'height': 52,
         'ctLegendShow': 'false',
