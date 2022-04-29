@@ -6,9 +6,9 @@
         {{d}}
       </div>
       <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
-      <div class="SmallName">涉藏概况</div>
+      <div class="SmallName">工作重点</div>
       <div v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
-        {{d}}
+        {{d}} <div class="SanJiaoTab" v-if="d === '娱乐场所' || d === '锅庄舞场'" @click="ShowXQByUrl(d)"></div>
       </div>
     </div>
    </div>
@@ -63,6 +63,9 @@ export default {
     changeCheckedArry(data){
       console.log(data)
       this.CheckedArry = data
+    },
+    ShowXQByUrl(data){
+      this.$parent.$parent.ShowIfreamBoxFun(data,this.item.size)
     },
     ChangeState(d){
       if(this.CheckedArry.indexOf(d)>=0){
@@ -167,5 +170,21 @@ export default {
     right: 6px;
 
   }
+}
+.SanJiaoTab{
+  height: 30px;
+  width: 30px;
+  background: url(./icon.png);
+  background-size: 100% 100%;
+  position: absolute;
+  left: 440px;
+}
+.small .SanJiaoTab{
+  height: 30px;
+  width: 30px;
+  background: url(./icon.png);
+  background-size: 100% 100%;
+  position: absolute;
+  left: 250px;
 }
 </style>

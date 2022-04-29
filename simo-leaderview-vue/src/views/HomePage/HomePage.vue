@@ -139,6 +139,15 @@
                     </div>
                 </div>
               </div>
+              <div class="ifreamBox" v-if="showIfreamBox">
+                <div class="videoTable">
+                  <div class="closeBtn" @click="showIfreamBox = false"></div>
+                    <div class="BoxTitle">{{OnwIfreamName}}</div>
+                    <div class="videoDiv">
+
+                    </div>
+                </div>
+              </div>
               <LookItem
                 v-for="(item, index) in nowPage"
                 :index="index"
@@ -306,6 +315,8 @@ export default {
       showImport: false,
       showModelBox: false,
       showTableBox: false,
+      showIfreamBox: false,
+      OnwIfreamName: '',
       boxData: {},
       TableData: {},
       showVideoBox: false,
@@ -464,6 +475,10 @@ export default {
       if (data.ifAdd) {
         this.$router.push('/edit/' + data.addId)
       }
+    },
+    ShowIfreamBox(data){
+      this.OnwIfreamName = data
+      this.showIfreamBox = true
     },
     ShowTableBox(dataArray) {
       console.log(dataArray)
@@ -2326,6 +2341,43 @@ html[data-theme='blueWhite'] {
   }
 }
 .VideoBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .videoTable{
+    height: 1520px;
+    width: 3147px;
+    padding: 100px;
+    top: 50px;
+    left: 2800px;
+    position: relative;
+    z-index: 5000;
+    background: url(./modelBox.png);
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 200px;
+      width: 200px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .BoxTitle {
+      font-size: 46px !important;
+      color: #bbeefe;
+      font-family: PangmenMainRoadTitleBody !important;
+    }
+    .videoDiv{
+      height: 90%;
+      width: 100%;
+    }
+  }
+}
+.ifreamBox{
   position: absolute;
   top: 0;
   left: 0;
