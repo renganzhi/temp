@@ -138,8 +138,8 @@
           >社区民警(电话):{{nowShowData.communityPolice}}:{{nowShowData.communityPolicePhone}}</div>
           <div class="line">网格员(电话):{{nowShowData.gridMember}}:{{nowShowData.gridMemberPhone}}</div>
           <div class="line">微消站(电话):{{nowShowData.fireStation}}:{{nowShowData.fireStationPhone}}</div>
-          <button @click="ShowZofang(nowShowData.address)">入住记录</button>
-          <button @click="ShowRuzhu(nowShowData.address)">走访记录</button>
+          <button @click="WBZShowRuzhu(nowShowData.id)">入住记录</button>
+          <button @click="WBZShowZofang(nowShowData.id)">走访记录</button>
         </div>
         <div class="lineContain" v-else>
           <div class="line">名称: {{nowShowData.placeName || '无'}}</div>
@@ -636,23 +636,38 @@ export default {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
           if (data.success) {
             let height = 100
-            data.obj.forEach((d, index) => {
-              this.addPointer(
-                Cesium.Cartesian3.fromDegrees(
-                  d.longitude * 1,
-                  d.latitude * 1,
-                  height
-                ),
-                'xiaoqu' + index,
-                this.header + 'img/xiaoqu.png',
-                { columns: [], rows: d.arr }
-              )
+            data.obj.dataArray.forEach((d, index) => {
+              d.items.forEach((ele, ind) => {
+                this.addPointer(
+                  Cesium.Cartesian3.fromDegrees(
+                    ele.longitude * 1,
+                    ele.latitude * 1,
+                    height
+                  ),
+                  'xiaoqu' + d.street + ind,
+                  this.header + 'img/xiaoqu.png',
+                  { columns: [], rows: ele.items[0].items }
+                )
+              })
             })
+            // data.obj.dataArray[0].items.forEach((d, index) => {
+            //   this.addPointer(
+            //     Cesium.Cartesian3.fromDegrees(
+            //       d.longitude * 1,
+            //       d.latitude * 1,
+            //       height
+            //     ),
+            //     'xiaoqu' + index,
+            //     this.header + 'img/xiaoqu.png',
+            //     { columns: [], rows: d.arr }
+            //   )
+            // })
           }
         })
       } else if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
         this.axios.get(`/leaderview/QZF/getWBZ1`).then(data => {
           if (data.success) {
+            console.log('getWBZ1', data)
             let height = 100
             data.obj.dataArray.forEach((d, index) => {
               // if (d.street === '望江路街道办事处' || d.street === '金花桥街道办事处') {
@@ -1053,10 +1068,9 @@ export default {
     },
     WBZShowRuzhu (id) {
       this.axios
-        .get('/leaderview/QZF/getQZF10?query=hotelId&param=场所ID:' + 81)
+        .get('/leaderview/QZF/getQZF10?query=hotelId&param=场所ID:' + id)
         .then(res => {
           if (res.success) {
-            console.log('res', res)
             let boxData = {
               title: '数据详情',
               data: 'arry',
@@ -1068,9 +1082,8 @@ export default {
     },
     WBZShowZofang (id) {
       this.axios
-        .get('/leaderview/QZF/getQZF13?query=hotelId&param=场所ID:' + 1)
+        .get('/leaderview/QZF/getQZF13?query=hotelId&param=场所ID:' + id)
         .then(res => {
-          console.log('res2', res)
           if (res.success) {
             let boxData = {
               title: '数据详情',
