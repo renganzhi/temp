@@ -142,6 +142,7 @@
           <button @click="ShowRuzhu(nowShowData.address)">走访记录</button>
         </div>
         <div class="lineContain" v-else>
+          <div class="line">名称: {{nowShowData.placeName || '无'}}</div>
           <div class="line">所属街道: {{nowShowData.street || '无'}}</div>
           <div class="line">地址:{{nowShowData.address || '无'}}</div>
           <div class="line">业主（房东）姓名:{{nowShowData.owner_name || '无'}}</div>
@@ -156,6 +157,8 @@
           <div class="line">社区民警联系电话:{{nowShowData.police_phone || '无'}}</div>
           <div class="line">区域微型消防站联络员姓名:{{nowShowData.liaison_name || '无'}}</div>
           <div class="line">区域微型消防站联络电话:{{nowShowData.liaison_phone || '无'}}</div>
+          <button @click="WBZShowRuzhu(nowShowData.id)">入住记录</button>
+          <button @click="WBZShowZofang(nowShowData.id)">走访记录</button>
         </div>
         <div class="BackBtn" @click="ShowTableTan = true">返回</div>
       </div>
@@ -652,7 +655,7 @@ export default {
           if (data.success) {
             let height = 100
             data.obj.dataArray.forEach((d, index) => {
-              if (d.street === '望江路街道' || d.street === '金花桥街道') {
+              // if (d.street === '望江路街道办事处' || d.street === '金花桥街道办事处') {
                 d.items.forEach((ele, ind) => {
                   this.addPointer(
                     Cesium.Cartesian3.fromDegrees(
@@ -665,7 +668,7 @@ export default {
                     { columns: [], rows: ele.items[0].items }
                   )
                 })
-              }
+              // }
             })
           }
         })//  getQZF4
@@ -1043,6 +1046,36 @@ export default {
               title: '数据详情',
               data: 'arry',
               dataArray: tableData
+            }
+            this.$parent.$parent.ShowTableBox(boxData)
+          }
+        })
+    },
+    WBZShowRuzhu (id) {
+      this.axios
+        .get('/leaderview/QZF/getQZF10?query=hotelId&param=场所ID:' + 81)
+        .then(res => {
+          if (res.success) {
+            console.log('res', res)
+            let boxData = {
+              title: '数据详情',
+              data: 'arry',
+              dataArray: res.obj
+            }
+            this.$parent.$parent.ShowTableBox(boxData)
+          }
+        })
+    },
+    WBZShowZofang (id) {
+      this.axios
+        .get('/leaderview/QZF/getQZF13?query=hotelId&param=场所ID:' + 1)
+        .then(res => {
+          console.log('res2', res)
+          if (res.success) {
+            let boxData = {
+              title: '数据详情',
+              data: 'arry',
+              dataArray: res.obj
             }
             this.$parent.$parent.ShowTableBox(boxData)
           }
