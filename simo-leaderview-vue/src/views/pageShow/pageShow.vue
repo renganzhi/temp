@@ -43,7 +43,7 @@
         <div class="poptitle">点位详情</div>
         <div class="CloseBtn" @click="SZCTDataXQ = false"></div>
         <div class="lineContain">
-          <div class="line" v-for="(item,index) in SZCTDataArray" :key="index">
+          <div class="line" v-for="(item,index) in SZCTDataArray" v-show="item.value !== null" :key="index">
             {{ SZCTDataNameArray[item.name]}}
               <div style="padding: 0px 10px;display: inline-block;">:</div>
             {{item.value || '暂无数据'}}
@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="XQBoxTan" v-else>
-        <div class="poptitle">{{ !sqjcfb ? iswbzzs? nowShowData.room_name:'小旅馆' :'警员详情'}}</div>
+        <div class="poptitle">{{ !sqjcfb ? iswbzzs? nowShowData.placeName:'小旅馆' :'警员详情'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
         <div class="lineContain" v-if='sqjcfb'>
           <div class="line">民警:{{nowShowData['民警']}}</div>
@@ -513,26 +513,25 @@ export default {
         'time': '活动起止时间',
         'mjxm': '民警姓名',
         'company_manager': '单位负责人',
-        'sqwg': '社区网格', // 社区网格
-        'xjnd': '修建年代', // 修建年代
-        'ylmc': "院落名称", //院落名称
-        "ylxz": "院落性质", // 院落性质
+        "sqwg": "社区网格", //社区网格
+        "xjnd": "修建年代", //修建年代
+        "ylmc": "院落名称", //院落名称
+        "ylxz": "院落性质", //院落性质
         "wgyxm": "网格员姓名", //网格员姓名
         "yldys": "院落单元数", //院落单元数
         "ylfws": "院落房屋数", //院落房屋数
         "yllds": "院落楼栋数", //院落楼栋数
         "mjlxdh": "民警联系电话", //民警联系电话
-        "remark": '备注', //备注
-        "street": "街道名称", //街道名称
+        "wygsmc": '物业公司名称', //物业公司名称
         "ylglms": "院落管理模式", //院落管理模式
-        "address": "院落地址", //院落地址
+        "szhjrks": '涉藏户籍人口数', //涉藏户籍人口数
+        "szzzrks": '涉藏租住人口数', //涉藏租住人口数
         "wgylxdh": "网格员联系电话", //网格员联系电话
-        "latitude": "纬度", //纬度
         "sfszzdyl": "是否涉藏重点院落", //是否涉藏重点院落
         "zhzfdyxm": "综治、执法队员姓名", //综治、执法队员姓名
-        "community": "社区名称", //社区名称
-        "longitude": '经度', // 经度
-        'zhzfdylxdh': '综治、执法队员联系电话' // 综治、执法队员联系电话
+        "wygslxrdh": '物业公司联系人电话', //物业公司联系人电话
+        "wygslxrxm": '物业公司联系人姓名', //物业公司联系人姓名
+        "zhzfdylxdh": "综治、执法队员联系电话" //综治、执法队员联系电话
       },
       nowShowData: [],
       newSZCheckEdData: [],
