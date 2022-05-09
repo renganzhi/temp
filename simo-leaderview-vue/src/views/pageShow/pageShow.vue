@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <!-- <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
+    <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="false" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
     <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">浆洗街</button>
-    <button v-show="true" @click="initSheZang1()" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">网格员</button>
-    <button v-show="true" @click="initBase" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">武侯大屏</button> -->
+    <button v-show="true" @click="addSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">网格员</button>
+    <button v-show="true" @click="removeSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">武侯大屏</button>
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆
@@ -188,6 +188,7 @@ import createBlurStage from './CesiumEdgeStage/createBlurStage.js'
 import * as turf from '@turf/turf'
 import Imgpositions from './Imgpositions.js'
 import wanggepositions from './wanggepositions.js'
+import shequwanggepositions from './shequwanggepositions.js'
 import { gcj02_to_wgs84 } from './transform.js'
 import { Slider, Notification } from 'element-ui'
 var viewer
@@ -198,6 +199,7 @@ var baseObject
 var highLightPolygon
 var hightLightMat
 var billboardMarkers = []
+let shequwangges = []// 社区网格
 let wangges = []// 网格数据
 let jxjdatas = []// 浆洗街行政区划数据
 let videoPoint = []// 摄像头数据
@@ -671,18 +673,18 @@ export default {
             let height = 100
             data.obj.dataArray.forEach((d, index) => {
               // if (d.street === '望江路街道办事处' || d.street === '金花桥街道办事处') {
-                d.items.forEach((ele, ind) => {
-                  this.addPointer(
-                    Cesium.Cartesian3.fromDegrees(
-                      ele.longitude * 1,
-                      ele.latitude * 1,
-                      height
-                    ),
-                    'wbzzs' + d.street + ind,
-                    this.header + 'img/xiaoqu.png',
-                    { columns: [], rows: ele.items[0].items }
-                  )
-                })
+              d.items.forEach((ele, ind) => {
+                this.addPointer(
+                  Cesium.Cartesian3.fromDegrees(
+                    ele.longitude * 1,
+                    ele.latitude * 1,
+                    height
+                  ),
+                  'wbzzs' + d.street + ind,
+                  this.header + 'img/xiaoqu.png',
+                  { columns: [], rows: ele.items[0].items }
+                )
+              })
               // }
             })
           }
@@ -1347,6 +1349,63 @@ export default {
       })
       return [en, en2]
     },
+    addSheQuWangge () {
+      this.removeSheQuWangge()
+      shequwanggepositions.forEach(item => {
+        item.wangges.forEach(child => {
+          if (child.positions.length > 0) {
+            let poly = viewer.entities.add({
+              polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(
+                  child.positions
+                ),
+                perPositionHeight: true,
+                material: child.color.withAlpha(0.3)
+              },
+              name: item.name + '-' + child.name
+            })
+            let polyLine = viewer.entities.add({
+              polyline: {
+                positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+                  child.positions
+                ),
+                material: Cesium.Color.RED,
+                width: 2
+              }
+            })
+            let label = viewer.entities.add({
+              position: Cesium.Cartesian3.fromDegrees(
+                child.center[0],
+                child.center[1],
+                30
+              ),
+              label: {
+                show: true,
+                showBackground: true,
+                backgroundColor: Cesium.Color.fromCssColorString('#003153'),
+                scale: 0.5,
+                font: `normal 28px MicroSoft YaHei`,
+                text: child.name,
+                fillColor: Cesium.Color.fromCssColorString('#ffffff'),
+                horizontalOrigin: Cesium.HorizontalOrigin.LEFT
+              },
+              name: item.name + '-' + child.name
+            })
+            shequwangges.push(poly)
+            shequwangges.push(label)
+            shequwangges.push(polyLine)
+          }
+        })
+      })
+    },
+    removeSheQuWangge () {
+      if (shequwangges.length > 0) {
+        shequwangges.forEach(item => {
+          viewer.entities.remove(item)
+        })
+        shequwangges = []
+      }
+    },
     addWangge () {
       this.removeWangge()
       wanggepositions.forEach(item => {
@@ -1362,6 +1421,15 @@ export default {
               },
               name: item.name + '-' + child.name
             })
+            let polyLine = viewer.entities.add({
+              polyline: {
+                positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+                  child.positions
+                ),
+                material: Cesium.Color.RED,
+                width: 2
+              }
+            })
             let label = viewer.entities.add({
               position: Cesium.Cartesian3.fromDegrees(
                 child.center[0],
@@ -1373,16 +1441,16 @@ export default {
                 showBackground: true,
                 backgroundColor: Cesium.Color.fromCssColorString('#003153'),
                 scale: 0.5,
-                font: `normal 38px MicroSoft YaHei`,
+                font: `normal 28px MicroSoft YaHei`,
                 text: child.name,
                 fillColor: Cesium.Color.fromCssColorString('#ffffff'),
-                pixelOffset: new Cesium.Cartesian2(10, -30),
                 horizontalOrigin: Cesium.HorizontalOrigin.LEFT
               },
               name: item.name + '-' + child.name
             })
             wangges.push(poly)
             wangges.push(label)
+            wangges.push(polyLine)
           }
         })
       })
@@ -1690,12 +1758,6 @@ export default {
       })
     },
     initJXJ () {
-      if (tileset) {
-        tileset.show = false
-      }
-      if (tilesetJxJ) {
-        tilesetJxJ.show = true
-      }
       $.getJSON(this.header + 'geojson/cachuJXJ.json', res => {
         let featrue = res.features[0]
         let color = new Cesium.Color(0, 0, 0, 1)
@@ -1726,40 +1788,12 @@ export default {
         })
         xingzhengquhuaPolygons['武侯'].push(en)
       })
-      // else {
-      //   tilesetJxJ = new Cesium.Cesium3DTileset({
-      //     url: this.header + 'JXJ/tileset.json',
-      //     lightColor: new Cesium.Cartesian3(20, 20, 20),
-      //     showOutline: false
-      //   })
-      //   viewer.scene.primitives.add(tilesetJxJ)
-      //   tilesetJxJ.readyPromise.then(function (tileset3D) {
-      //     tilesetJxJ.style = new Cesium.Cesium3DTileStyle({
-      //       color: {
-      //         conditions: [
-      //           ['true', 'rgba(21, 36, 75 ,1)'] // 'rgb(127, 59, 8)']
-      //         ]
-      //       }
-      //     })
-      //   })
-      // }
-      // this.addJxJ()
       for (var key in xingzhengquhuaPolygons) {
         if (key !== '浆洗街街道') {
           xingzhengquhuaPolygons[key].forEach(item => {
             item.show = false
           })
         }
-        // else {
-        //   xingzhengquhuaPolygons[key].forEach(polygon => {
-        //     if (polygon.polygon) {
-        //       console.log(1)
-        //       polygon.polygon.material = new Cesium.Color(15 / 255, 19 / 255, 57 / 255, 0.9)
-        //     } else if (polygon.polyline) {
-        //       polygon.polyline.material = Cesium.Color.YELLOW
-        //     }
-        //   })
-        // }
       }
     },
     initBase () {
@@ -2119,8 +2153,7 @@ export default {
             ',' +
             lat +
             ',' +
-            Cesium.Cartographic.fromCartesian(position).height +
-            3 +
+            6 +
             ','
         )
         this.popshow = false
