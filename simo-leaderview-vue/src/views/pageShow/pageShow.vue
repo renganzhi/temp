@@ -53,16 +53,17 @@
     </div>
     <div id="popWGQ" v-show="popshowWGQ">
       <div class="XQBoxTan">
-        <div class="poptitle">{{WGQData['网格区']}}</div>
+        <div class="poptitle">{{WGQData.sssq}}-第{{WGQData.sswg}}区</div>
         <div class="CloseBtn" @click="popshowWGQ = false"></div>
         <div class="lineContain">
-          <div class="line">网格员姓名: 胡德琴</div>
+          <div class="line">网格员姓名: {{WGQData.name || '暂无数据'}}</div>
           <!-- {{WGQData['网格员姓名']}} -->
-          <div class="line">性别: 女</div>
-          <div class="line">电话: 13880315693</div>
+          <!-- <div class="line">性别: 女</div> -->
+          <div class="line">电话: {{WGQData.lxdh || '暂无数据'}}</div>
+          <div class="line">身份证信息: {{WGQData.sfzh || '暂无数据'}}</div>
           <!-- <div class="line">职务: {{WGQData['职务']}}</div> -->
-          <div class="line">对应社区民警姓名: 罗恩祥</div>
-          <div class="line">对应社区民警电话: 13281004566</div>
+          <!-- <div class="line">对应社区民警姓名: 罗恩祥</div>
+          <div class="line">对应社区民警电话: 13281004566</div> -->
         </div>
       </div>
     </div>
@@ -97,23 +98,54 @@
     <div id="popBig" v-show="popshowBig">
       <div class="TbaleTan" v-if="ShowTableTan">
         <div class="CloseBtn" @click="popshowBig = false"></div>
-        <div class="TableHead">
-          <tr>
-            <th
-              v-for="(data, index) in TableTanData.columns"
-              :key="index"
-              :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
-            >{{ tableTanTitle[data] || data }}</th>
-          </tr>
+        <div v-if="ifWangGe" class="lineContain" style="height:80%; top:40px">
+          <div>
+            <div style="font-size: 30px !important;color: #bbeefe;font-family: PangmenMainRoadTitleBody !important;">网格信息</div>
+            <div style="display:flex;flex-wrap:wrap;margin-bottom:10px">
+              <div  style="width:50%;">网格员姓名: {{currentWangGe.wg_name || '暂无数据'}}</div>
+              <div style="width:50%;">电话: {{currentWangGe.wg_phone || '暂无数据'}}</div>
+            </div>
+            <div style="height:1px;border:1px solid white;margin:5px 0 5px 0;"></div>
+            <div style="font-size: 30px !important;color: #bbeefe;font-family: PangmenMainRoadTitleBody !important;">民警信息</div>
+          </div>
+            <div class="TableHead">
+            <tr>
+              <th
+                v-for="(data, index) in TableTanData.columns"
+                :key="index"
+                :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
+              >{{ tableTanTitle[data] || data }}</th>
+            </tr>
+          </div>
+          <div class="TableBody" v-if="TableTanData.rows.length > 0">
+            <tr v-for="(rowsData, i) in TableTanData.rows" :key="i" @click="showXQBoxTan(rowsData)">
+              <th
+                v-for="(data, index) in TableTanData.columns"
+                :key="index"
+                :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
+              >{{ rowsData[data] }}</th>
+            </tr>
+          </div>
         </div>
-        <div class="TableBody" v-if="TableTanData.rows.length > 0">
-          <tr v-for="(rowsData, i) in TableTanData.rows" :key="i" @click="showXQBoxTan(rowsData)">
-            <th
-              v-for="(data, index) in TableTanData.columns"
-              :key="index"
-              :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
-            >{{ rowsData[data] }}</th>
-          </tr>
+        <div v-else>
+            <div class="TableHead">
+            <tr>
+              <th
+                v-for="(data, index) in TableTanData.columns"
+                :key="index"
+                :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
+              >{{ tableTanTitle[data] || data }}</th>
+            </tr>
+          </div>
+          <div class="TableBody" v-if="TableTanData.rows.length > 0">
+            <tr v-for="(rowsData, i) in TableTanData.rows" :key="i" @click="showXQBoxTan(rowsData)">
+              <th
+                v-for="(data, index) in TableTanData.columns"
+                :key="index"
+                :style="{width:`calc(${100 / TableTanData.columns.length}%)`}"
+              >{{ rowsData[data] }}</th>
+            </tr>
+          </div>
         </div>
       </div>
       <div class="XQBoxTan" v-else>
@@ -261,6 +293,8 @@ export default {
       SZCTDataXQ: false,
       ShowTableTan: true,
       CheckEdId: 0,
+      ifWangGe: false,
+      currentWangGe: {},
       x: 0,
       y: 0,
       z: 0,
@@ -741,8 +775,10 @@ export default {
       this.newSZCheckEdData = data
       if (data.indexOf('社区区划') >= 0) {
         this.addJxJ()
+        this.addSheQuWangge()
       } else {
         this.removeJxJ()
+        this.removeSheQuWangge()
       }
 
       if (data.indexOf('管控区') >= 0) {
@@ -1393,50 +1429,74 @@ export default {
     },
     addSheQuWangge () {
       this.removeSheQuWangge()
-      shequwanggepositions.forEach(item => {
-        item.wangges.forEach(child => {
-          if (child.positions.length > 0) {
-            let poly = viewer.entities.add({
-              polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(
-                  child.positions
+      let wangGeList = []
+      this.axios.get('/leaderview/ZHSQ/getGridDot').then((res) => {
+        wangGeList = res.obj.dataArray[0].items
+        shequwanggepositions.forEach(item => {
+          item.wangges.forEach(child => {
+            if (child.positions.length > 0) {
+              let wangGeInfo = {}
+              wangGeList.forEach(el => {
+                if (el.community === item.name) {
+                  el.items.forEach(n => {
+                    if (child.name.indexOf(n.sswg) !== -1) {
+                      wangGeInfo = n
+                    }
+                  })
+                } else if (el.community === '少陵路社区' && item.name === '少陵社区') {
+                  el.items.forEach(n => {
+                    if (child.name.indexOf(n.sswg) !== -1) {
+                      wangGeInfo = n
+                    }
+                  })
+                }
+              }) // 获取网格具体信息
+              let poly = viewer.entities.add({
+                polygon: {
+                  hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(
+                    child.positions
+                  ),
+                  perPositionHeight: true,
+                  material: child.color.withAlpha(0.3)
+                },
+                name: item.name + '-' + child.name,
+                community: item.name,
+                wangGeInfo: wangGeInfo
+              })
+              let polyLine = viewer.entities.add({
+                polyline: {
+                  positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+                    child.positions
+                  ),
+                  material: Cesium.Color.YELLOW,
+                  width: 2
+                }
+              })
+              let label = viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(
+                  child.center[0],
+                  child.center[1],
+                  30
                 ),
-                perPositionHeight: true,
-                material: child.color.withAlpha(0.3)
-              },
-              name: item.name + '-' + child.name
-            })
-            let polyLine = viewer.entities.add({
-              polyline: {
-                positions: Cesium.Cartesian3.fromDegreesArrayHeights(
-                  child.positions
-                ),
-                material: Cesium.Color.RED,
-                width: 2
-              }
-            })
-            let label = viewer.entities.add({
-              position: Cesium.Cartesian3.fromDegrees(
-                child.center[0],
-                child.center[1],
-                30
-              ),
-              label: {
-                show: true,
-                showBackground: true,
-                backgroundColor: Cesium.Color.fromCssColorString('#003153'),
-                scale: 0.5,
-                font: `normal 28px MicroSoft YaHei`,
-                text: child.name,
-                fillColor: Cesium.Color.fromCssColorString('#ffffff'),
-                horizontalOrigin: Cesium.HorizontalOrigin.LEFT
-              },
-              name: item.name + '-' + child.name
-            })
-            shequwangges.push(poly)
-            shequwangges.push(label)
-            shequwangges.push(polyLine)
-          }
+                label: {
+                  show: true,
+                  showBackground: true,
+                  backgroundColor: Cesium.Color.fromCssColorString('#003153'),
+                  scale: 0.5,
+                  font: `normal 28px MicroSoft YaHei`,
+                  text: child.name,
+                  fillColor: Cesium.Color.fromCssColorString('#ffffff'),
+                  horizontalOrigin: Cesium.HorizontalOrigin.LEFT
+                },
+                name: item.name + '-' + child.name,
+                community: item.name,
+                wangGeInfo: wangGeInfo
+              })
+              shequwangges.push(poly)
+              shequwangges.push(label)
+              shequwangges.push(polyLine)
+            }
+          })
         })
       })
     },
@@ -1450,50 +1510,71 @@ export default {
     },
     addWangge () {
       this.removeWangge()
-      wanggepositions.forEach(item => {
-        item.wangges.forEach(child => {
-          if (child.positions.length > 0) {
-            let poly = viewer.entities.add({
-              polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(
-                  child.positions
+      this.axios.get('/leaderview/ZHSQ/getSZCT4').then((res) => {
+        let wangGeList = res.obj.dataArray[0].items
+        let wangGeInfo = {}
+        wanggepositions.forEach(item => {
+          item.wangges.forEach(child => {
+            if (child.positions.length > 0) {
+              wangGeList.forEach(el => {
+                if (el.sssq === item.name) {
+                  el.items.forEach(n => {
+                    if (child.name.indexOf(n.sswg) !== -1) {
+                      wangGeInfo = n.items[0]
+                    }
+                  })
+                } else if (el.sssq === '少陵路社区' && item.name === '少陵社区') {
+                  el.items.forEach(n => {
+                    if (child.name.indexOf(n.sswg) !== -1) {
+                      wangGeInfo = n.items[0]
+                    }
+                  })
+                }
+              }) // 获取网格具体信息
+              let poly = viewer.entities.add({
+                polygon: {
+                  hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(
+                    child.positions
+                  ),
+                  perPositionHeight: true,
+                  material: child.color.withAlpha(0.3)
+                },
+                name: item.name + '-' + child.name,
+                wangGeInfo: wangGeInfo
+              })
+              let polyLine = viewer.entities.add({
+                polyline: {
+                  positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+                    child.positions
+                  ),
+                  material: Cesium.Color.YELLOW,
+                  width: 2
+                }
+              })
+              let label = viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(
+                  child.center[0],
+                  child.center[1],
+                  30
                 ),
-                perPositionHeight: true,
-                material: child.color.withAlpha(0.3)
-              },
-              name: item.name + '-' + child.name
-            })
-            let polyLine = viewer.entities.add({
-              polyline: {
-                positions: Cesium.Cartesian3.fromDegreesArrayHeights(
-                  child.positions
-                ),
-                material: Cesium.Color.RED,
-                width: 2
-              }
-            })
-            let label = viewer.entities.add({
-              position: Cesium.Cartesian3.fromDegrees(
-                child.center[0],
-                child.center[1],
-                30
-              ),
-              label: {
-                show: true,
-                showBackground: true,
-                backgroundColor: Cesium.Color.fromCssColorString('#003153'),
-                scale: 0.5,
-                font: `normal 28px MicroSoft YaHei`,
-                text: child.name,
-                fillColor: Cesium.Color.fromCssColorString('#ffffff'),
-                horizontalOrigin: Cesium.HorizontalOrigin.LEFT
-              },
-              name: item.name + '-' + child.name
-            })
-            wangges.push(poly)
-            wangges.push(label)
-            wangges.push(polyLine)
-          }
+                label: {
+                  show: true,
+                  showBackground: true,
+                  backgroundColor: Cesium.Color.fromCssColorString('#003153'),
+                  scale: 0.5,
+                  font: `normal 28px MicroSoft YaHei`,
+                  text: child.name,
+                  fillColor: Cesium.Color.fromCssColorString('#ffffff'),
+                  horizontalOrigin: Cesium.HorizontalOrigin.LEFT
+                },
+                name: item.name + '-' + child.name,
+                wangGeInfo: wangGeInfo
+              })
+              wangges.push(poly)
+              wangges.push(label)
+              wangges.push(polyLine)
+            }
+          })
         })
       })
     },
@@ -2238,19 +2319,30 @@ export default {
         this.SZDataShowBig = false
         this.SZCTDataXQ = false
         this.isYL = false
-
+        this.ifWangGe = false
+        this.currentWangGe = {}
         this.iswbzzs = false
         this.sqjcfb = false
+        console.log('pick', picked.id.id, picked.id.name, picked.id.dataArray, picked.id.community, picked.id.wangGeInfo)
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf('网格区') > 0) {
-          this.popshowWGQ = true
-          this.WGQData = {
-            网格区: picked.id.name,
-            网格员姓名: '李四',
-            性别: '男',
-            电话: '18484848844',
-            职务: 'xxx',
-            对应街道负责人姓名: 'xxxxxxxx',
-            对应街道负责人电话: 'xxxxxxxx'
+          if (picked.id.community) {
+            this.currentWangGe = picked.id.wangGeInfo
+            this.axios.get('/leaderview/ZHSQ/getSZCT1?param=' + picked.id.community).then(data => {
+              if (data.success) {
+                this.sqjcfb = true
+                this.ifWangGe = true
+                this.popshowBig = true
+                this.ShowTableTan = true
+                this.CheckEdId = picked.id.id
+                this.TableTanData = {
+                  columns: data.obj.columns,
+                  rows: data.obj.rows
+                }
+              }
+            })
+          } else {
+            this.popshowWGQ = true
+            this.WGQData = picked.id.wangGeInfo
           }
         } else if (this.AddPointState) {
           this.AddPointState = false
@@ -2262,7 +2354,6 @@ export default {
           },
           this.sureAddPoint = true
         } else if (picked && picked.primitive && picked.id && picked.id._billboard) {
-          console.log('pick', picked.id.id, picked.id.name, picked.id.dataArray)
           if (picked.id && picked.id._billboard) {
             if (picked.id.name && picked.id.name.includes('街道')) {
               this.backBase()
@@ -2696,6 +2787,7 @@ export default {
 .TbaleTan {
   height: 100%;
   width: 100%;
+  overflow: auto;
   padding: 20px;
 }
 .TableHead {
