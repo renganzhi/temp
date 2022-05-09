@@ -155,6 +155,21 @@ public class QunZuFangController {
     }
 
     /**
+     * 7、群租房-敏感人员人类占比
+     * @return
+     */
+    @GetMapping("/getQZF7_2")
+    public JsonModel getQZF7_2(){
+        JsonModel jsonModel = qunZuFangService.getQZF7();
+        JSONObject obj = (JSONObject) jsonModel.getObj();
+        Integer total = obj.getInteger("total");
+        JSONObject result = new JSONObject();
+        result.put("name","敏感人员总数");
+        result.put("info",total);
+        return new JsonModel(true,result);
+    }
+
+    /**
      * 8、群租房-入住时间分析
      * @return
      */
@@ -218,12 +233,13 @@ public class QunZuFangController {
     }
 
     /**
-     * 、
+     * 13、群租房-地图打点巡查记录明细信息
      * @return
      */
     @GetMapping("/getQZF13")
-    public JsonModel getQZF13(){
-        return qunZuFangService.getQZF3();
+    public JsonModel getQZF13(@RequestParam(required = false) String query, @RequestParam(required = false) String param){
+
+        return qunZuFangService.getQZF13(query, param);
     }
 
     /**
@@ -308,7 +324,16 @@ public class QunZuFangController {
      */
     @GetMapping("/getWBZ5_2")
     public JsonModel getWBZ5_2(@RequestParam(required = false) String param){
-        return qunZuFangService.getWBZ5_2(param.split(":")[1]);
+        String type = param.split(":")[1];
+        //map.put("今日登记人数","num");
+        //        map.put("今日登记房间数","jrdjfjs");
+        if("今日登记人数".equals(type)){
+            return qunZuFangService.getWBZ5_3();
+        }
+        if("今日登记房间数".equals(type)){
+            return qunZuFangService.getWBZ5_2();
+        }
+        return qunZuFangService.getWBZ5_2();
     }
 
     /**

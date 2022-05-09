@@ -189,4 +189,34 @@ public class ZHSQController {
         return zhsqService.deleteCustomDot(customDotScheme);
     }
 
+    /**
+     *4、涉藏处突-小区院落打点（返回数据包括涉藏小区和普通小区）
+     * @return
+     */
+    @Transactional
+    @GetMapping("/getCommunityDot")
+    public JsonModel getCommunityDot(){
+        return zhsqService.getCommunityDot();
+    }
+
+    /**
+     *5、涉藏处突-社区网格打点
+     * @return
+     */
+    @Transactional
+    @GetMapping("/getGridDot")
+    public JsonModel getGridDot(){
+        return zhsqService.getGridDot();
+    }
+
+    /**
+     *6、涉藏处突-网格区打点信息
+     * @return
+     */
+    @Transactional
+    @GetMapping("/getSZCT4")
+    public JsonModel getSZCT4(){
+        return zhsqService.getSZCT4();
+    }
+
 }

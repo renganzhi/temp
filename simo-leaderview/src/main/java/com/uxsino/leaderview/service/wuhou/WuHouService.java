@@ -430,10 +430,10 @@ public class WuHouService {
      */
     public static JSONObject getPieResult(HashMap<String,String> nameAndKeyMap, JSONArray data){
         JSONObject result = new JSONObject();
-        /*if(ObjectUtils.isEmpty(data)){
+        if(ObjectUtils.isEmpty(data)){
             log.error("中台接口返回为空");
             return result;
-        }*/
+        }
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
@@ -2164,7 +2164,7 @@ public class WuHouService {
 
         String data = null;
         try {
-            data = getData("y09-01","per_page=10000&page=1",null,false,true);
+            data = getData("y132-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -2172,7 +2172,8 @@ public class WuHouService {
         JSONObject object = JSONObject.parseObject(data);
         JSONArray jsonArray = object.getJSONArray("data");
 
-        //装经度的set
+        //群租房打点和网约房打点同步
+        /*//装经度的set
         HashSet<String> longSet = new HashSet<>();
         //经度和场所的map
         HashMap<String,JSONArray> longMap = new HashMap<>();
@@ -2203,7 +2204,9 @@ public class WuHouService {
             obj.put("latitude",latitude);
             obj.put("arr",entry.getValue());
             result.add(obj);
-        }
+        }*/
+        JSONObject result = new JSONObject();
+        result.put("dataArray", jsonArray);
 
         return new JsonModel(true,result);
     }

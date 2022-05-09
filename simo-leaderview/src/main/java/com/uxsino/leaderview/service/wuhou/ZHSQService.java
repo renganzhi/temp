@@ -248,7 +248,7 @@ public class ZHSQService {
             if("浆洗街街道".equals(streetObj.getString("ssjd"))){
                 JSONArray streetArray = streetObj.getJSONArray("items");
                 for(int j = 0;j < streetArray.size();j++){
-                    if("七道堰社区".equals(streetArray.getJSONObject(j).getString("sssq"))){
+                    if(param.equals(streetArray.getJSONObject(j).getString("sssq"))){
                         targetData = streetArray.getJSONObject(j).getJSONArray("items");
                     }
                 }
@@ -364,71 +364,7 @@ public class ZHSQService {
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getSZCT4(){
-
-        String res = null;
-        try {
-            res = wuHouService.getData("y21-01","per_page=10000&page=1",null,false,true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
-        }
-
-        JSONObject object = JSONObject.parseObject(res);
-        JSONArray data = object.getJSONArray("data");
-
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-
-
-        JSONObject result = getPieResult(map,data);
-        return new JsonModel(true,result);
-
-    }
-
-    /**
-     *、涉藏处突-
-     *接口URL： /apis/daas/pro/3/components/y56-01/data?per_page=100&page=1
-     * 请求方式： GET
-     * Content-Type： multipart/form-data
-     * @return
-     */
     public JsonModel getSZCT5(){
-
-        String res = null;
-        try {
-            res = wuHouService.getData("y21-01","per_page=10000&page=1",null,false,true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new JsonModel(false,"优易中台调用失败",e.getMessage());
-        }
-
-        JSONObject object = JSONObject.parseObject(res);
-        JSONArray data = object.getJSONArray("data");
-
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-
-
-        JSONObject result = getPieResult(map,data);
-        return new JsonModel(true,result);
-
-    }
-
-    /**
-     *、涉藏处突-
-     *接口URL： /apis/daas/pro/3/components/y56-01/data?per_page=100&page=1
-     * 请求方式： GET
-     * Content-Type： multipart/form-data
-     * @return
-     */
-    public JsonModel getSZCT6(){
 
         String res = null;
         try {
@@ -471,6 +407,94 @@ public class ZHSQService {
     public JsonModel deleteCustomDot(CustomDotScheme customDotScheme){
         customDotSchemeDao.delete(customDotScheme);
         return new JsonModel(true);
+    }
+
+    /**
+     * 4、涉藏处突-小区院落打点
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y141-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getCommunityDot(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y141-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        result.put("dataArray", data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 5、涉藏处突-社区网格打点
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y142-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getGridDot(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y142-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        JSONObject result = new JSONObject();
+        result.put("dataArray", data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 6、涉藏处突-网格区打点信息
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y142-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT4(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y55-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+
+        for(int i = 0;i < data.size(); i++){
+            JSONObject obj = data.getJSONObject(i);
+            if("浆洗街街道".equals(obj.getString("ssjd"))){
+                targetData.add(obj);
+            }
+        }
+        JSONObject result = new JSONObject();
+        result.put("dataArray", targetData);
+
+        return new JsonModel(true,result);
+
     }
 
 }
