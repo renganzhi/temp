@@ -280,8 +280,8 @@
                         "value": "小旅馆"
                     },
                     {
-                        "name": "群租房",
-                        "value": "群租房"
+                        "name": "民宿旅社",
+                        "value": "民宿旅社"
                     }
                 ]
             }
@@ -325,10 +325,19 @@
     },
     {
         "key": "get_QZF7",
-        "name": "群租房-敏感人员人类占比",
+        "name": "群租房-敏感人员分类占比",
         "component": "monitor",
         "type": "NewPie",
         "url": "/leaderview/QZF/getQZF7",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF7_2",
+        "name": "群租房-敏感人员总数",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZF7_2",
         "method" : "get",
         "params": []
     },
