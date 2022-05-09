@@ -236,6 +236,7 @@ export default {
   data () {
     return {
       popshow: false,
+      isYL: false,
       popshowBig: false,
       AddPointState: false,
       IsXiuGaiState: false,
@@ -271,7 +272,9 @@ export default {
         room_name: '名称',
         street: '所属街道',
         room_number: '房间数',
-        bed_number: '床铺数'
+        bed_number: '床铺数',
+        ylmc: '院落名称',
+        ylxz: '院落性质'
       },
       tableDataXunCha: [
         {
@@ -507,7 +510,29 @@ export default {
         'rental_population': '涉藏租住人口数',
         'street': '所属街道',
         'person_number': '人数',
-        'time': '活动起止时间'
+        'time': '活动起止时间',
+        'mjxm': '民警姓名',
+        'company_manager': '单位负责人',
+        'sqwg': '社区网格', // 社区网格
+        'xjnd': '修建年代', // 修建年代
+        'ylmc': "院落名称", //院落名称
+        "ylxz": "院落性质", // 院落性质
+        "wgyxm": "网格员姓名", //网格员姓名
+        "yldys": "院落单元数", //院落单元数
+        "ylfws": "院落房屋数", //院落房屋数
+        "yllds": "院落楼栋数", //院落楼栋数
+        "mjlxdh": "民警联系电话", //民警联系电话
+        "remark": '备注', //备注
+        "street": "街道名称", //街道名称
+        "ylglms": "院落管理模式", //院落管理模式
+        "address": "院落地址", //院落地址
+        "wgylxdh": "网格员联系电话", //网格员联系电话
+        "latitude": "纬度", //纬度
+        "sfszzdyl": "是否涉藏重点院落", //是否涉藏重点院落
+        "zhzfdyxm": "综治、执法队员姓名", //综治、执法队员姓名
+        "community": "社区名称", //社区名称
+        "longitude": '经度', // 经度
+        'zhzfdylxdh': '综治、执法队员联系电话' // 综治、执法队员联系电话
       },
       nowShowData: [],
       newSZCheckEdData: [],
@@ -667,7 +692,6 @@ export default {
       } else if (this.nowPageName && this.nowPageName.indexOf('未办证住所') >= 0) {
         this.axios.get(`/leaderview/QZF/getWBZ1`).then(data => {
           if (data.success) {
-            console.log('getWBZ1', data)
             let height = 100
             data.obj.dataArray.forEach((d, index) => {
               // if (d.street === '望江路街道办事处' || d.street === '金花桥街道办事处') {
@@ -1122,17 +1146,19 @@ export default {
       }
     },
     addPointer (position, id, img, dataArray) {
+      let en = viewer.entities.add({
+        position,
+        id: id,
+        dataArray: dataArray,
+        billboard: {
+          image: img || this.header + 'img/click.png',
+          scale: 0.2
+        }
+      })
       billboardMarkers.push(
-        viewer.entities.add({
-          position,
-          id: id,
-          dataArray: dataArray,
-          billboard: {
-            image: img || this.header + 'img/click.png',
-            scale: 0.2
-          }
-        })
+        en
       )
+      return en
     },
     flyJXJ () {
       if (this.nowPageName && this.nowPageName.indexOf('市级') >= 0) {
@@ -1293,8 +1319,25 @@ export default {
       return en
     },
     showXQBoxTan (nowShowData) {
-      this.ShowTableTan = false
-      this.nowShowData = nowShowData
+      if (this.isYL) {
+        this.popshowBig = false
+        this.SZCTDataXQ = true
+        this.SZCTDataArray = []
+        for (const key in nowShowData) {
+          if (Object.hasOwnProperty.call(nowShowData, key)) {
+            if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id') {
+              this.SZCTDataArray.push({
+                name: key,
+                value: nowShowData[key]
+              })
+            }
+          }
+        }
+      } else {
+        this.ShowTableTan = false
+        this.nowShowData = nowShowData
+      }
+      console.log('nowShowData', nowShowData)
     },
     addLabelMarker (lon, lat, url, name, small, data) {
       let size = small ? 34 : 54
@@ -1941,7 +1984,6 @@ export default {
           roll: ${obj.roll}
         },
       `
-      console.log(data)
     },
     removePontXMQ () {
       ZdDWarray.forEach(item => {
@@ -1958,22 +2000,56 @@ export default {
     addSZGKPoint (i) {
       this.removeSZGKPoint(i)
       SZGKPoint[i] = []
-      this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
-        data.obj.dotArray.forEach((ele, index) => {
-          let name = ele.name || ele.company_name
-          if (index <= 40) {
-            let en = this.addLabelMarker(
-              ele.longitude * 1,
-              ele.latitude * 1,
-              this.header + `img/imgs/${i}.png`,
-              name + 'SZGK' + i,
-              'small',
-              ele
-            )
-            SZGKPoint[i].push(en)
-          }
+      if (i !== 6) {
+        this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
+          data.obj.dotArray.forEach((ele, index) => {
+            let name = ele.name || ele.company_name
+            if (index <= 40) {
+              let en = this.addLabelMarker(
+                ele.longitude * 1,
+                ele.latitude * 1,
+                this.header + `img/imgs/${i}.png`,
+                name + 'SZGK' + i,
+                'small',
+                ele
+              )
+              SZGKPoint[i].push(en)
+            }
+          })
         })
-      })
+      } else {
+        this.axios.get('/leaderview/ZHSQ/getCommunityDot').then(data => {
+          data.obj.dataArray.forEach((d, index) => {
+            d.items.forEach((ele, ind) => {
+              if (d.sfszzdyl === '是') {
+                let en = this.addPointer(
+                  Cesium.Cartesian3.fromDegrees(
+                    ele.longitude * 1,
+                    ele.latitude * 1,
+                    100
+                  ),
+                  'yuanluo' + d.sfszzdyl + ind,
+                  this.header + 'img/imgs/6_sz.png',
+                  { columns: [], rows: ele.items }
+                )
+                SZGKPoint[i].push(en)
+              } else {
+                let en = this.addPointer(
+                  Cesium.Cartesian3.fromDegrees(
+                    ele.longitude * 1,
+                    ele.latitude * 1,
+                    100
+                  ),
+                  'yuanluo' + d.sfszzdyl + ind,
+                  this.header + 'img/imgs/6.png',
+                  { columns: [], rows: ele.items }
+                )
+                SZGKPoint[i].push(en)
+              }
+            })
+          })
+        })
+      }
     },
     addPontXMQ () {
       this.removePontXMQ()
@@ -2129,6 +2205,7 @@ export default {
         this.popshowXMQ = false
         this.SZDataShowBig = false
         this.SZCTDataXQ = false
+        this.isYL = false
 
         this.iswbzzs = false
         this.sqjcfb = false
@@ -2153,6 +2230,7 @@ export default {
           },
           this.sureAddPoint = true
         } else if (picked && picked.primitive && picked.id && picked.id._billboard) {
+          console.log('pick', picked.id.id, picked.id.name, picked.id.dataArray)
           if (picked.id && picked.id._billboard) {
             if (picked.id.name && picked.id.name.includes('街道')) {
               this.backBase()
@@ -2180,7 +2258,6 @@ export default {
                 duration: 1
               })
             }
-            console.log(picked.id)
 
             if (picked.id.name === 'XMQ') {
               this.popshowXMQ = true
@@ -2199,17 +2276,25 @@ export default {
               this.iswbzzs = true
               this.CheckEdId = picked.id.id
               this.TableTanData = {
-                columns: ['address', 'street', 'room_number', 'bed_number'],
+                columns: ['address', 'street', 'roomNum', 'bedNum'],
                 rows: picked.id.dataArray.rows
               }
             } else if (picked.id && picked.id.dataArray && picked.id.dataArray.rows) {
+              if (picked.id.id.indexOf('yuanluo') >= 0) {
+                this.isYL = true
+                this.TableTanData = {
+                  columns: ['ylmc', 'ylxz', 'address'], // 需要修改
+                  rows: picked.id.dataArray.rows
+                }
+              } else {
+                this.TableTanData = {
+                  columns: ['placeName', 'address', 'roomNum', 'bedNum'],
+                  rows: picked.id.dataArray.rows
+                }
+              }
               this.popshowBig = true
               this.ShowTableTan = true
               this.CheckEdId = picked.id.id
-              this.TableTanData = {
-                columns: ['placeName', 'address', 'roomNum', 'bedNum'],
-                rows: picked.id.dataArray.rows
-              }
             } else if (picked.id.name.indexOf('社区') >= 0) {
               // /leaderview/ZHSQ/getSZCT1
               this.sqjcfb = true

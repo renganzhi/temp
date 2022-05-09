@@ -1,12 +1,12 @@
 <template>
   <div class="WuhoPointBox" :style="maoBlstyle" >
     <div class="OpenPointBtn">
-      <div class="SmallName">社治力量</div>
+      <div class="SmallName">重点时期管控</div>
       <div v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}}
       </div>
       <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
-      <div class="SmallName">工作重点</div>
+      <div class="SmallName">日常工作重点</div>
       <div v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}} <div class="SanJiaoTab" v-if="d === '娱乐场所' || d === '锅庄舞场'" @click="ShowXQByUrl(d)"></div>
       </div>
