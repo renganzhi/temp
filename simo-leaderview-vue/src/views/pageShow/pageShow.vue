@@ -2,9 +2,9 @@
   <div class="content">
     <button v-show="false" @click="getCamera('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:400px;left:200px;">获取视角</button>
     <button v-show="false" @click="removeshezangmarkers('didian')" style="position:absolute;z-index:9999;width:100px;height:80px;top:500px;left:200px;">获取视角1</button>
-    <button v-show="true" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">浆洗街</button>
-    <button v-show="true" @click="addSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">网格员</button>
-    <button v-show="true" @click="removeSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">武侯大屏</button>
+    <button v-show="false" @click="initJXJ" style="position:absolute;z-index:9999;width:100px;height:80px;top:600px;left:200px;">浆洗街</button>
+    <button v-show="false" @click="addSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:700px;left:200px;">网格员</button>
+    <button v-show="false" @click="removeSheQuWangge" style="position:absolute;z-index:9999;width:100px;height:80px;top:800px;left:200px;">武侯大屏</button>
     <!-- <div id="SZpopBig" v-show="popshow">
       <div class="poptitle">
         小旅馆

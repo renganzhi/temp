@@ -67,14 +67,14 @@
                           </th>
                         </tr>
                     </div>
-                    <div class="TableBody" v-if="DataTkArry.rows.length > 0">
+                    <div class="TableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
                         <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
                     </div>
-                    <div class="NoData" v-else-if="DataTkArry.rows.length === 0">
+                    <div class="NoData" v-else-if="!DataTkArry.rows || DataTkArry.rows.length === 0">
                       暂无数据！
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
-                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value.value?data.value.value:data.value }} </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
                       <!-- <div class="selectData" style="position: relative;" v-if="data.title === '失控状态'">
                         <Select v-model="data.value">
                             <Option value="1">1级 </Option>
