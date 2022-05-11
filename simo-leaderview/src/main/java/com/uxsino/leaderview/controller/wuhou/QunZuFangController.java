@@ -206,7 +206,6 @@ public class QunZuFangController {
      */
     @GetMapping("/getQZF10")
     public JsonModel getQZF10(@RequestParam(required = false) String query, @RequestParam(required = false) String param){
-
         return qunZuFangService.getQZF10(query, param);
     }
 
@@ -243,21 +242,21 @@ public class QunZuFangController {
     }
 
     /**
-     * 、
+     * 14、群租房-群租房总量明细数据
      * @return
      */
     @GetMapping("/getQZF14")
-    public JsonModel getQZF14(){
-        return qunZuFangService.getQZF3();
+    public JsonModel getQZF14(String param){
+        return qunZuFangService.getQZF14();
     }
 
     /**
-     * 、
+     * 15、群租房-走访数据明细
      * @return
      */
     @GetMapping("/getQZF15")
     public JsonModel getQZF15(){
-        return qunZuFangService.getQZF3();
+        return qunZuFangService.getQZF15();
     }
 
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
