@@ -280,8 +280,8 @@
                         "value": "小旅馆"
                     },
                     {
-                        "name": "民宿旅社",
-                        "value": "民宿旅社"
+                        "name": "群租房",
+                        "value": "群租房"
                     }
                 ]
             }
@@ -352,7 +352,7 @@
     },
     {
         "key": "get_QZF9",
-        "name": "群租房-当日登记/离店/当月累计量",
+        "name": "群租房-当月/当季/当年登记",
         "component": "monitor",
         "type": "NEWtextArea",
         "url": "/leaderview/QZF/getQZF9",
@@ -367,6 +367,15 @@
                 "dataUrl": ["/leaderview/QZF/getQZF9"]
             }
         ]
+    },
+    {
+        "key": "get_QZF15",
+        "name": "群租房-走访数据明细",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getQZF15",
+        "method" : "get",
+        "params": []
     },
     {
         "key": "get_WBZ2",

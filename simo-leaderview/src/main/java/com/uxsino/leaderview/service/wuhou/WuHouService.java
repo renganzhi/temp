@@ -445,9 +445,19 @@ public class WuHouService {
         for(int i = 0; i < data.size() ; i++){
             JSONObject dataObj = (JSONObject) data.get(i);
             JSONObject row = new JSONObject();
+            Boolean abnormal = false;
+            //对异常数据做整行数据标红处理
+            if("异常".equals(dataObj.getString("checkStatus"))){
+                abnormal = true;
+            }
             for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
                 if("详情".equals(entry.getKey()) || "走访详情".equals(entry.getKey())){
                     row.put(entry.getKey(),entry.getKey());
+                }else if(abnormal){
+                    JSONObject abnormalData = new JSONObject();
+                    abnormalData.put("color","red");
+                    abnormalData.put("value",dataObj.get(entry.getValue()));
+                    row.put(entry.getKey(), abnormalData);
                 }
                 else {
                     if("上报时间".equals(entry.getKey())){
@@ -459,7 +469,6 @@ public class WuHouService {
             }
             rows.add(row);
         }
-
         }else {
             log.error("中台接口返回为空");
         }
