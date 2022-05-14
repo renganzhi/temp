@@ -430,10 +430,10 @@ public class WuHouService {
      */
     public static JSONObject getPieResult(HashMap<String,String> nameAndKeyMap, JSONArray data){
         JSONObject result = new JSONObject();
-        if(ObjectUtils.isEmpty(data)){
+        /*if(ObjectUtils.isEmpty(data)){
             log.error("中台接口返回为空");
             return result;
-        }
+        }*/
         JSONArray rows = new JSONArray();
         JSONArray columns = new JSONArray();
         for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
@@ -444,6 +444,7 @@ public class WuHouService {
 
         for(int i = 0; i < data.size() ; i++){
             JSONObject dataObj = (JSONObject) data.get(i);
+            LinkedHashMap<Object,Object> rowMap = new LinkedHashMap<>();
             JSONObject row = new JSONObject();
             Boolean abnormal = false;
             //对异常数据做整行数据标红处理
@@ -453,21 +454,27 @@ public class WuHouService {
             for(Map.Entry<String,String> entry : nameAndKeyMap.entrySet()){
                 if("详情".equals(entry.getKey()) || "走访详情".equals(entry.getKey())){
                     row.put(entry.getKey(),entry.getKey());
+                    rowMap.put(entry.getKey(),entry.getKey());
                 }else if(abnormal){
                     JSONObject abnormalData = new JSONObject();
                     abnormalData.put("color","red");
                     abnormalData.put("value",dataObj.get(entry.getValue()));
                     row.put(entry.getKey(), abnormalData);
+                    rowMap.put(entry.getKey(), abnormalData);
                 }
                 else {
                     if("上报时间".equals(entry.getKey())){
                         row.put(entry.getKey(), new SimpleDateFormat("yyyy-MM-dd").format((DateUtils.convertStringToDate((String) dataObj.get(entry.getValue())))));
+                        rowMap.put(entry.getKey(), new SimpleDateFormat("yyyy-MM-dd").format((DateUtils.convertStringToDate((String) dataObj.get(entry.getValue())))));
                     }else {
                         row.put(entry.getKey(), dataObj.get(entry.getValue()));
+                        rowMap.put(entry.getKey(), dataObj.get(entry.getValue()));
                     }
                 }
             }
-            rows.add(row);
+//            rows.add(row);
+            //为了保证弹窗数据的顺序，将row改成map
+            rows.add(rowMap);
         }
         }else {
             log.error("中台接口返回为空");

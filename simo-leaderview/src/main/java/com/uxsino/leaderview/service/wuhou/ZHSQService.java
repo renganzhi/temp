@@ -278,7 +278,7 @@ public class ZHSQService {
     }
 
     /**
-     *、涉藏处突-
+     *2、涉藏处突-涉藏概况-文本下钻
      *接口URL： /apis/daas/pro/3/components/y56-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -288,13 +288,29 @@ public class ZHSQService {
 
         String res = null;
         try {
-            res = wuHouService.getData("y99-01","per_page=10000&page=1",null,false,true);
+            res = wuHouService.getData("y102-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
         }
 
         JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+
+        //企业类型和对应的打点信息映射
+        LinkedHashMap<String,JSONArray> typeAndDotMap = new LinkedHashMap<>();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            JSONArray array = obj.getJSONArray("items");
+            Collections.shuffle(array);
+            typeAndDotMap.put(obj.getString("type"), array);
+        }
+
+        JSONObject result = wuHouService.getTextResult("type",data);
+        result.put("typeAndDotMap",typeAndDotMap);
+        return new JsonModel(true,result);
+
+        /*JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
         JSONArray targetData = new JSONArray();
         for(int i = 0;i < data.size();i++){
@@ -312,7 +328,7 @@ public class ZHSQService {
 
         JSONObject result = wuHouService.getTextResult("company_type",targetData);
         result.put("typeAndDotMap",typeAndDotMap);
-        return new JsonModel(true,result);
+        return new JsonModel(true,result);*/
 
     }
 
@@ -335,13 +351,7 @@ public class ZHSQService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
-        /*JSONArray targetData = new JSONArray();
-        for(int i = 0;i < data.size();i++){
-            JSONObject obj = data.getJSONObject(i);
-            if("浆洗街街道".equals(obj.getString("street"))){
-                targetData = obj.getJSONArray("items");
-            }
-        }*/
+
         //企业类型和对应的打点信息映射
         LinkedHashMap<String,JSONArray> typeAndDotMap = new LinkedHashMap<>();
         for(int i = 0;i < data.size();i++){
@@ -358,17 +368,17 @@ public class ZHSQService {
     }
 
     /**
-     *、涉藏处突-
+     *5、涉藏处突-涉藏概况下钻列表
      *接口URL： /apis/daas/pro/3/components/y56-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
      * @return
      */
-    public JsonModel getSZCT5(){
+    public JsonModel getSZCT5(String param){
 
         String res = null;
         try {
-            res = wuHouService.getData("y21-01","per_page=10000&page=1",null,false,true);
+            res = wuHouService.getData("y102-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -376,15 +386,180 @@ public class ZHSQService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
+        //需要展示的数据
+        JSONArray targetData = new JSONArray();
+
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            if(param.equals(obj.getString("type"))) {
+                targetData = obj.getJSONArray("items");
+                Collections.shuffle(targetData);
+            }
+        }
+
+        JSONObject obj= getMapfromType(param);
+        LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) obj.get("map");
+        JSONObject result = getPieResult(map,targetData);
+
+        List<String> columns = new ArrayList<>();
+        List<String> columns1 = Arrays.asList("名称","地址","负责人");
+        List<String> columns2 = Arrays.asList("名称","地址","所在社区");
+        List<String> columns3 = Arrays.asList("场所名称","地址","时段");
+        LinkedHashMap<String, List<String>> typeMap = new LinkedHashMap<>();
+        typeMap.put("涉藏机构",columns1);
+        typeMap.put("小区院落",columns2);
+        typeMap.put("锅庄舞场",columns3);
+
+//        columns = typeMap.get(param);
+        columns = (List<String>) obj.get("columns");
+        result.put("columns",columns);
+        return new JsonModel(true,result);
+
+    }
+
+    //涉藏概况文本框下钻列表接口的参数param和对应的map
+//    public LinkedHashMap<String, String> getMapfromType(String param){
+    public JSONObject getMapfromType(String param){
+//        LinkedHashMap<String, String> targetMap = new LinkedHashMap<>();
+        LinkedHashMap<String, String> targetMap = new LinkedHashMap<>();
+
+        JSONObject result = new JSONObject();
+        //涉藏机构
+        LinkedHashMap<String, String> map1 = new LinkedHashMap<>();
+        //小区院落
+        LinkedHashMap<String, String> map2 = new LinkedHashMap<>();
+        //锅庄舞场
+        LinkedHashMap<String, String> map3 = new LinkedHashMap<>();
+        //娱乐场所
+        LinkedHashMap<String, String> map4 = new LinkedHashMap<>();
+        //涉藏商铺
+        LinkedHashMap<String, String> map5 = new LinkedHashMap<>();
+        //藏餐茶吧
+        LinkedHashMap<String, String> map6 = new LinkedHashMap<>();
+        //民宿旅社
+        LinkedHashMap<String, String> map7 = new LinkedHashMap<>();
+        //"company_name": "西南民族大学",
+        //"company_address": "洗面桥横街21号",
+        //"company_manager": "李燎原",
+        map1.put("名称","company_name");
+        map1.put("地址","company_address");
+        map1.put("负责人","company_manager");
+        //"name": "甘孜干休所", //场所名称
+        //"address": "成都市武侯区广福桥20号", //场所地址
+        //"community": "广福桥社区", //所属社区
+        map2.put("名称","name");
+        map2.put("地址","address");
+        map2.put("所在社区","community");
+        //"name": "成都A区·锦外", //场所名称
+        //"address": "成都市武侯区一环路南四段17号", //场所地址
+        //"time": "7.30----9.30",
+        map3.put("场所名称","name");
+        map3.put("地址","address");
+        map3.put("时段","time");
+
+        //"name": "GOON酒吧", //场所名称
+        //"license": null, //有无证照
+        //"address": "成都市武侯区高升桥东路6号罗马假日广场16-301", //场所地址
+        //"community": "广福桥社区", //所属社区
+        map4.put("场所名称","name");
+        map4.put("地址","address");
+        map4.put("所属社区","community");
+
+        //
+        map5.put("名称","name");
+        map5.put("地址","address");
+        map5.put("所属社区","community");
+
+        map6.put("名称","name");
+        map6.put("地址","address");
+        map6.put("所属社区","community");
+
+        map7.put("名称","name");
+        map7.put("地址","address");
+
+
+        LinkedHashMap<String, LinkedHashMap<String, String>> typeMap = new LinkedHashMap<>();
+        typeMap.put("涉藏机构",map1);
+        typeMap.put("小区院落",map2);
+        typeMap.put("锅庄舞场",map3);
+        typeMap.put("娱乐场所",map4);
+        typeMap.put("涉藏商铺",map5);
+        typeMap.put("藏餐茶吧",map6);
+        typeMap.put("民宿旅馆",map7);
+
+        targetMap = typeMap.get(param);
+
+        //columns
+        List<String> columns = new ArrayList<>();
+        List<String> columns1 = Arrays.asList("名称","地址","负责人");
+        List<String> columns2 = Arrays.asList("名称","地址","所在社区");
+        List<String> columns3 = Arrays.asList("场所名称","地址","时段");
+        List<String> columns4 = Arrays.asList("场所名称","地址","所属社区");
+        List<String> columns5 = Arrays.asList("名称","地址","所属社区");
+        List<String> columns6 = Arrays.asList("名称","地址","所属社区");
+        List<String> columns7 = Arrays.asList("名称","地址");
+        LinkedHashMap<String, List<String>> columnsTypeMap = new LinkedHashMap<>();
+        columnsTypeMap.put("涉藏机构",columns1);
+        columnsTypeMap.put("小区院落",columns2);
+        columnsTypeMap.put("锅庄舞场",columns3);
+        columnsTypeMap.put("娱乐场所",columns4);
+        columnsTypeMap.put("涉藏商铺",columns5);
+        columnsTypeMap.put("藏餐茶吧",columns6);
+        columnsTypeMap.put("民宿旅馆",columns7);
+
+        columns = columnsTypeMap.get(param);
+
+        result.put("map",targetMap);
+        result.put("columns",columns);
+
+//        return typeMap.get(param);
+        return result;
+    }
+
+    /**
+     *6、涉藏处突-涉藏概况下钻列表
+     *接口URL： /apis/daas/pro/3/components/y56-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT6(String param){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y102-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        //需要展示的数据
+        JSONArray targetData = new JSONArray();
+
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            if(param.equals(obj.getString("type"))) {
+                targetData = obj.getJSONArray("items");
+                Collections.shuffle(targetData);
+            }
+        }
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
+        JSONObject result = getPieResult(map,targetData);
 
+        List<String> columns = new ArrayList<>();
+        List<String> columns1 = Arrays.asList("名称","地址","负责人");
+        List<String> columns2 = Arrays.asList("名称","地址","所在社区");
+        List<String> columns3 = Arrays.asList("场所名称","地址","时段");
+        LinkedHashMap<String, List<String>> typeMap = new LinkedHashMap<>();
+        typeMap.put("涉藏机构",columns1);
+        typeMap.put("小区院落",columns2);
+        typeMap.put("锅庄舞场",columns3);
 
-        JSONObject result = getPieResult(map,data);
+        columns = typeMap.get(param);
+        result.put("columns",columns);
         return new JsonModel(true,result);
 
     }

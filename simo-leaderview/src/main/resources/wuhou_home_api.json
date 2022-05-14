@@ -378,6 +378,15 @@
         "params": []
     },
     {
+        "key": "get_QZF16",
+        "name": "群租房-中高风险人员比对数据",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getQZF16",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_WBZ2",
         "name": "未办证住所-街道网约房分布",
         "component": "monitor",
@@ -1455,7 +1464,7 @@
     },
     {
         "key": "get_SZCT2",
-        "name": "涉藏处突-涉藏商店企业概况",
+        "name": "涉藏处突-涉藏概况",
         "component": "monitor",
         "type": "NEWtextArea",
         "url": "/leaderview/ZHSQ/getSZCT2",
@@ -1470,5 +1479,41 @@
                 "dataUrl": ["/leaderview/ZHSQ/getSZCT2"]
             }
         ]
+    },
+    {
+        "key": "get_Population1",
+        "name": "区级弹窗-城区人口-街道实有、流入人口分组柱图",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/Window/GetPopulation1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_Education1",
+        "name": "区级弹窗-教育资源-街道教师分布柱状图",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/Window/GetEducation1",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_Education2",
+        "name": "区级弹窗-教育资源-街道学生分布柱状图",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/Window/GetEducation2",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_Education3",
+        "name": "区级弹窗-教育资源-街道学校分布柱状图",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/Window/GetEducation3",
+        "method" : "get",
+        "params": []
     }
 ]

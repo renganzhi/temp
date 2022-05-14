@@ -89,65 +89,109 @@ public class ZHSQController {
     }
 
     /**
-     *2、涉藏处突-涉藏商店企业概况
+     *2、涉藏处突-涉藏概况-文本下钻
      * @return
      */
     @GetMapping("/getSZCT2")
     public JsonModel getSZCT2(@RequestParam(required = false) String param){
         JsonModel jsonModel = zhsqService.getSZCT2();
         JSONObject obj = (JSONObject) jsonModel.getObj();
-        List<String> dotParam = Arrays.asList("1","2","3","4","5","6","7");
         JsonModel jsonModel2 = new JsonModel();
         //当param不是打点参数时,走文本框处理方法，否则返回打点信息
-        if(!dotParam.contains(param)) {
-            jsonModel2 = wuHouService.getTextJsonModel(param, "cnt", obj);
-        }else {
-
-            HashMap<String, String> idAndNameMap = new HashMap<>();
-            idAndNameMap.put("1", "涉藏商店");
-            idAndNameMap.put("2", "民宿旅馆");
-            idAndNameMap.put("3", "藏餐茶吧");
-            idAndNameMap.put("4", "娱乐场所");
-            idAndNameMap.put("5", "涉藏机构");
-            idAndNameMap.put("6", "小区院落");
-            idAndNameMap.put("7", "演出场所");
-            param = idAndNameMap.get(param);
-            LinkedHashMap<String, JSONArray> typeAndDotMap = (LinkedHashMap<String, JSONArray>) obj.get("typeAndDotMap");
-            JSONArray dotArray = typeAndDotMap.get(param);
-//            JSONObject result = (JSONObject) jsonModel2.getObj();
-            JSONObject result = new JSONObject();
-            result.put("dotArray", dotArray);
-            return new JsonModel(true,result);
-
+        jsonModel2 = wuHouService.getTextJsonModel(param, "cnt", obj);
+        Object obj2 = jsonModel2.getObj();
+        //如果返回的是结果，则返回弹窗url
+        if(obj2 instanceof JSONObject){
+            //文本下钻列表的字段
+            JSONArray ListArray = new JSONArray();
+            ListArray.add("涉藏机构");
+            ListArray.add("小区院落");
+            ListArray.add("锅庄舞场");
+            ListArray.add("娱乐场所");
+            ListArray.add("涉藏商铺");
+            ListArray.add("藏餐茶吧");
+            ListArray.add("民宿旅馆");
+            if (ListArray.contains(param)) {
+                ((JSONObject) obj2).put("url", "/leaderview/ZHSQ/getSZCT5?param=name:");
+            }
         }
-
         return jsonModel2;
     }
 
     /**
-     *3、涉藏处突-涉藏商店企业概况
+     *3、涉藏处突-涉藏概况打点
      * @return
      */
     @GetMapping("/getSZCT3")
     public JsonModel getSZCT3(@RequestParam(required = false) String param){
         JsonModel jsonModel = zhsqService.getSZCT3();
         JSONObject obj = (JSONObject) jsonModel.getObj();
-//        List<String> dotParam = Arrays.asList("1","2","3","4","5","6","7");
-        HashMap<String, String> idAndNameMap = new HashMap<>();
-        idAndNameMap.put("1", "涉藏商铺");
-        idAndNameMap.put("2", "民宿旅馆");
-        idAndNameMap.put("3", "藏餐茶吧");
-        idAndNameMap.put("4", "娱乐场所");
-        idAndNameMap.put("5", "涉藏机构");
-        idAndNameMap.put("6", "小区院落");
-        idAndNameMap.put("7", "锅庄舞场");
-        param = idAndNameMap.get(param);
-        LinkedHashMap<String, JSONArray> typeAndDotMap = (LinkedHashMap<String, JSONArray>) obj.get("typeAndDotMap");
-        JSONArray dotArray = typeAndDotMap.get(param);
-        JSONObject result = new JSONObject();
-        result.put("dotArray", dotArray);
-        return new JsonModel(true,result);
+        List<String> dotParam = Arrays.asList("1","2","3","4","5","6","7");
+        JsonModel jsonModel2 = new JsonModel();
 
+        //将文本框下钻放到 getSZCT2接口
+
+        //当param不是打点参数时,走文本框处理方法，否则返回打点信息
+        /*if(!dotParam.contains(param)) {
+            jsonModel2 = wuHouService.getTextJsonModel(param, "cnt", obj);
+            Object obj2 = jsonModel2.getObj();
+            //如果返回的是结果，则返回弹窗url
+            if(obj2 instanceof JSONObject){
+                JSONArray array = new JSONArray();
+                array.add("涉藏机构");
+                array.add("小区院落");
+                array.add("锅庄舞场");
+                if (array.contains(param)) {
+                    ((JSONObject) obj2).put("url", "/leaderview/ZHSQ/getSZCT5?param=name:");
+                }
+            }
+            return jsonModel2;
+        }else {*/
+            HashMap<String, String> idAndNameMap = new HashMap<>();
+            idAndNameMap.put("1", "涉藏商铺");
+            idAndNameMap.put("2", "民宿旅馆");
+            idAndNameMap.put("3", "藏餐茶吧");
+            idAndNameMap.put("4", "娱乐场所");
+            idAndNameMap.put("5", "涉藏机构");
+            idAndNameMap.put("6", "小区院落");
+            idAndNameMap.put("7", "锅庄舞场");
+            param = idAndNameMap.get(param);
+            LinkedHashMap<String, JSONArray> typeAndDotMap = (LinkedHashMap<String, JSONArray>) obj.get("typeAndDotMap");
+            JSONArray dotArray = typeAndDotMap.get(param);
+            JSONObject result = new JSONObject();
+            result.put("dotArray", dotArray);
+            return new JsonModel(true, result);
+//        }
+    }
+
+    /**
+     *4、涉藏处突-网格区打点信息
+     * @return
+     */
+    @Transactional
+    @GetMapping("/getSZCT4")
+    public JsonModel getSZCT4(){
+        return zhsqService.getSZCT4();
+    }
+
+    /**
+     *5、涉藏处突-涉藏概况下钻列表
+     * @return
+     */
+    @GetMapping("/getSZCT5")
+    public JsonModel getSZCT5(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        return zhsqService.getSZCT5(param.split(":")[1]);
+    }
+
+    /**
+     *5、涉藏处突-涉藏概况下钻列表
+     * @return
+     */
+    @GetMapping("/getSZCT6")
+    public JsonModel getSZCT6(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        return zhsqService.getSZCT6(param.split(":")[1]);
     }
 
     /**
@@ -207,16 +251,6 @@ public class ZHSQController {
     @GetMapping("/getGridDot")
     public JsonModel getGridDot(){
         return zhsqService.getGridDot();
-    }
-
-    /**
-     *6、涉藏处突-网格区打点信息
-     * @return
-     */
-    @Transactional
-    @GetMapping("/getSZCT4")
-    public JsonModel getSZCT4(){
-        return zhsqService.getSZCT4();
     }
 
 }

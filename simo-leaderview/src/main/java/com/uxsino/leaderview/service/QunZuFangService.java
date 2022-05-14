@@ -14,6 +14,12 @@ import com.uxsino.leaderview.entity.WuhouHotelRegister;
 import com.uxsino.leaderview.entity.WuhouPatrolRecord;
 import com.uxsino.leaderview.service.wuhou.WuHouService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -548,8 +554,8 @@ public class QunZuFangService {
         JSONArray dataArry = new JSONArray();
         JSONObject dataArray = new JSONObject();
         JSONArray nameArry = new JSONArray();
-        nameArry.add("高入住房TOP5");
-        nameArry.add("高空置房TOP5");
+        nameArry.add("高入住房TOP10");
+        nameArry.add("高空置房TOP10");
 //        result.put("dataArry",dataArry);
         dataArray.put("nameArray",nameArry);
 
@@ -925,13 +931,6 @@ public class QunZuFangService {
         JSONArray data = object.getJSONArray("data");
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        //    "checkStatus": "正常", //检查状态
-        //    "hotelId": "1",
-        //    "patrolName": "姚胜峰",
-        //    "patrolPhone": "18980631570", //巡查人手机号
-        //    "patrolRoleName": "网格员",
-        //    "patrolProject": "应急安全",
-        //    "time": "2022-04-29 05:51:13" //巡查时间
         map.put("巡查人","patrolName");
         map.put("巡查人手机号","patrolPhone");
         map.put("巡查角色","patrolRoleName");
@@ -1024,18 +1023,6 @@ public class QunZuFangService {
             }
         }
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        //    "patrolName": "姚胜峰", //巡查人名称
-        //    "patrolPhone": "18980631570", //巡查人手机号
-        //    "patrolRoleName": "网格员" //巡查角色名称
-        //    "patrolProject": "应急安全", //巡查项目
-        //    "checkStatus": "正常", //检查状态
-        //    "time": "2022-04-29 05:51:17", //巡查时间
-        //    "street": "浆洗街街道办事处", //街道
-        //    "address": "成都市武侯区南浦西路1号4栋1单元2楼2号", //标准地址
-        //    "placeName": "小旅馆111", //名称
-        //    "patrolConent": " ", //巡查内容
-        //    "placeType": "2", //房屋类型
-        //    "hotelId": "1", //场所id
         map.put("巡查人","patrolName");
         map.put("巡查角色","patrolRoleName");
         map.put("巡查人手机号","patrolPhone");
@@ -1060,6 +1047,64 @@ public class QunZuFangService {
 
     }
 
+    /**
+     * 16、群租房-中高风险人员比对数据
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF16(){
+
+        String res = null;
+        try {
+            CloseableHttpClient httpClient  = HttpClients.createDefault();
+            CloseableHttpResponse closeableHttpResponse = httpClient.execute(new HttpGet("http://wunlzt.cdwh.gov.cn/hotel/checkin/analysis"));
+            HttpEntity httpEntity = closeableHttpResponse.getEntity();
+            res = EntityUtils.toString(httpEntity);//响应内容
+//            res = wuHouService.getData("y143-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONObject data = object.getJSONObject("data");
+        JSONArray targetData = new JSONArray();
+        targetData = data.getJSONArray("exist");
+        /*for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("cwt");
+            if("群租房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }*/
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //    "placeType": "3",
+        //    "guestIdentity": "510131198502176417",
+        //    "checkOutDate": "2022-05-13",
+        //    "guestPhone": "15108481174",
+        //    "hotelId": "1103",
+        //    "checkInDate": "2022-05-12",
+        //    "hotelName": " ",
+        //    "placeName": "印主题城市别墅",
+        //    "isExist": 0,
+        //    "placeType_remark": "民宿网约房",
+        //    "guestName": "刘坤"
+        map.put("姓名","guestName");
+        map.put("手机","guestPhone");
+        map.put("入住日期","checkInDate");
+        map.put("离店日期","checkOutDate");
+        map.put("场所名称","placeName");
+        map.put("风险等级","level");
+
+        JSONObject result = new JSONObject();
+        result = wuHouService.getPieResult(map,targetData);
+//        List<String> columns = Arrays.asList("巡查人","巡查角色","巡查人手机号","巡查项目","检查状态","巡查时间");
+//        result.put("columns",columns);
+
+        return new JsonModel(true,result);
+    }
 
     /**
      * 1、未办证住所-全区网约房地图打点
@@ -1159,26 +1204,6 @@ public class QunZuFangService {
             }
 
             LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            //"manager_name": "李英", //负责人姓名
-            //"maager_phone": "13679077287",
-            //"room_name": "星悦客栈",
-            //"owner_name": "白美贵",
-            //"owner_phone": "13668298425",
-            //"address": "成都市武侯区星狮路900号高碑瑞苑A区4-2-1306", //场所地址
-            //"gridman_name": "肖利",
-            //"gridman_phone": "15882290117",
-            //"police_name": "赵立新",
-            //"police_phone": "17708192037",
-            //"liaison_name": "李安福",
-            //"liaison_phone": "17380580377",
-            //"street": "簇锦街道",
-            //"longitude": "104.00396085946", //经度
-            //"latitude": "30.6301264348846", //纬度
-
-
-            //"room_number": "1",
-            //"bed_number": "2",
-
             map.put("场所名称","placeName");
             map.put("场所地址","address");
             map.put("业主（房东）姓名","landlordName");
@@ -1498,7 +1523,7 @@ public class QunZuFangService {
         //"placeName": "来宾旅馆" //名称
         map.put("住客名称","uname");
         map.put("住客手机","replace");
-        map.put("未脱敏身份证","aid");
+//        map.put("未脱敏身份证","aid");
         map.put("住客身份证号","idcard_number");
         map.put("入住日期","checkInDate");
         map.put("离店日期","checkOutDate");
