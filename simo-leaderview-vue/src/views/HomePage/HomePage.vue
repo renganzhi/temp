@@ -111,6 +111,30 @@
                   </div>
                 </div>
               </div>
+              <div class="BoxMban" v-show="showElineBox">
+                <div class="CityModelBox">
+                  <div class="closeBtn" @click="closeElineBox()"></div>
+                  <div class="BoxTitle">藏区人口详情</div>
+                  <div class="BoxBody" v-show="barData.rows && barData.rows.length"  style="display:flex;justify-content: center;align-items: center;">
+                    <div class="ElineBox" style="width:900px;height:480px;" ref="ElineBox"></div>
+                  </div>
+                  <div class="NoData" v-show="!barData.rows || barData.rows.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
+              <div class="BoxMban" v-show="showPieBox">
+                <div class="CityModelBox">
+                  <div class="closeBtn" @click="closePieBox()"></div>
+                  <div class="BoxTitle">藏区人口详情</div>
+                  <div class="BoxBody" v-show="pieData.rows && pieData.rows.length"  style="display:flex;justify-content: center;align-items: center;">
+                    <div class="PieBox" style="width:900px;height:480px;" ref="PieBox"></div>
+                  </div>
+                  <div class="NoData" v-show="!barData.rows || barData.rows.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
               <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
                 <div class="BoxArry">
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
@@ -294,6 +318,7 @@ import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { checkLogin } from '@/config/thirdLoginMix'
+import echarts from 'echarts'
 export default {
   name: 'lookPage',
   components: {
@@ -311,13 +336,17 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
-      DataTkArry:{},
+      DataTkArry: {},
       showImport: false,
       showModelBox: false,
       showTableBox: false,
+      showElineBox: false,
+      showPieBox: false,
       showIfreamBox: false,
       OnwIfreamName: '',
       boxData: {},
+      barData: {},
+      pieData: {},
       TableData: {},
       showVideoBox: false,
       VideoIfream: {
@@ -410,8 +439,8 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageName(){
-      if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
+    pageName () {
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize]) {
         let name = this.pageList[(this.pageIndex - 1) % this.pageSize].name
         // if(name.indexOf('市级') >= 0 ){
         //   this.IsCityType = true
@@ -421,12 +450,12 @@ export default {
         return name
       }
     },
-    IsCityType(){
-      if(this.pageName && this.pageName.indexOf('市级') >= 0 ){
-          return true
-        }else{
-          return false
-        }
+    IsCityType () {
+      if (this.pageName && this.pageName.indexOf('市级') >= 0) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -437,37 +466,37 @@ export default {
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
-    exchangeisOpenTW(){
+    exchangeisOpenTW () {
       this.isOpenTW = !this.isOpenTW
     },
-    consoleOUT(){
+    consoleOUT () {
       console.log(1111)
     },
-    showXQByUrl(DataTkArry,data){
-      if(DataTkArry.url){
-        this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
+    showXQByUrl (DataTkArry, data) {
+      if (DataTkArry.url) {
+        this.axios.get(DataTkArry.url + data['姓名']).then((res) => {
           let boxData = {
-            title:'数据详情',
-            data:res.obj.rows[0]
+            title: '数据详情',
+            data: res.obj.rows[0]
           }
           this.ShowTanKuangBox(boxData)
         })
-      }else{
+      } else {
         let boxData = {
-          title:'数据详情',
-          data:data
+          title: '数据详情',
+          data: data
         }
         this.ShowTanKuangBox(boxData)
       }
     },
-    showXQ(data){
+    showXQ (data) {
       let boxData = {
-        title:'数据详情',
-        data:data
+        title: '数据详情',
+        data: data
       }
       this.ShowTanKuangBox(boxData)
     },
-    onSure(){
+    onSure () {
       console.log(1111)
     },
     hideModal (data) {
@@ -476,36 +505,176 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    ShowIfreamBox(data){
+    ShowIfreamBox (data) {
       this.OnwIfreamName = data
       this.showIfreamBox = true
     },
-    ShowTableBox(dataArray) {
+    ShowTableBox (dataArray) {
       console.log(dataArray)
-      if(dataArray.dataUrl){
+      if (dataArray.dataUrl) {
         this.DataTkArry = []
         let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
         let keyValue = dataArray.data[keyWord]
-        this.showTableBox = true;
+        this.showTableBox = true
         this.axios
           .get(dataArray.dataUrl + keyValue)
           .then((data) => {
             if (data.success) {
-              this.DataTkArry = data.obj;
+              this.DataTkArry = data.obj
             }
-          });
-      } else if (dataArray.data === "arry") {
-        this.showTableBox = true;
+          })
+      } else if (dataArray.data === 'arry') {
+        this.showTableBox = true
         this.nowType = dataArray.nowType || ''
-        this.DataTkArry = dataArray.dataArray;
+        this.DataTkArry = dataArray.dataArray
       } else {
-        this.ShowTanKuangBox(dataArray);
+        this.ShowTanKuangBox(dataArray)
       }
     },
-    closeTableTtn(){
+    ShowElineBox (dataArray) {
+      // if (dataArray.data) {
+      this.showElineBox = true
+      let eline = echarts.init(this.$refs.ElineBox)
+      let myData = {
+        'columns': ['告警级别', '数量'],
+        'unit': '次',
+        'rows': [{
+          '告警级别': '致命',
+          '数量': 233
+        },
+        {
+          '告警级别': '严重',
+          '数量': 123
+        },
+        {
+          '告警级别': '警告',
+          '数量': 23
+        },
+        {
+          '告警级别': '一般',
+          '数量': 155
+        },
+        {
+          '告警级别': '次要',
+          '数量': 103
+        },
+        {
+          '告警级别': '通知',
+          '数量': 123
+        }
+        ]
+      }
+      this.barData = myData
+      var myseries = []
+      var myXAxisData = []
+      var mySeriesData = []
+      myData.rows.forEach(element => {
+        myData.columns.forEach((e, d) => {
+          if (d === 0) {
+            myXAxisData.push(element[e])
+          } else {
+            if (mySeriesData[d]) {
+              mySeriesData[d].push(element[e])
+            } else {
+              mySeriesData[d] = [element[e]]
+            }
+          }
+        })
+      })
+      mySeriesData.forEach((data, index) => {
+        if (data) {
+          myseries.push({
+            data: data,
+            type: 'bar'
+          })
+        }
+      })
+      var option = {
+        xAxis: {
+          type: 'category',
+          data: myXAxisData,
+          label: {
+            textStyle: {
+              fontSize: 30,
+              color: '#fff'
+            }
+          }
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: myseries
+      }
+      eline.setOption(option)
+    },
+    closeElineBox () {
+      this.showElineBox = false
+    },
+    ShowPieBox (dataArray) {
+      this.showPieBox = true
+      let eline = echarts.init(this.$refs.ElineBox)
+      let myData = {
+        'columns': ['告警级别', '数量'],
+        'unit': '次',
+        'rows': [{
+          '告警级别': '致命',
+          '数量': 233
+        },
+        {
+          '告警级别': '严重',
+          '数量': 123
+        },
+        {
+          '告警级别': '警告',
+          '数量': 23
+        },
+        {
+          '告警级别': '一般',
+          '数量': 155
+        },
+        {
+          '告警级别': '次要',
+          '数量': 103
+        },
+        {
+          '告警级别': '通知',
+          '数量': 123
+        }
+        ]
+      }
+      this.pieData = myData
+      var SericeData = []
+      myData.rows.forEach((element, index) => {
+        SericeData.push({
+          name: element[myData.columns[0]],
+          value: element[myData.columns[1]] * 1,
+          label: { color: '' }
+        })
+      })
+      let myoption = {
+        tooltip: {
+          trigger: 'item',
+          show: true
+        },
+        series: [
+          {
+            type: 'pie',
+            // radius:,
+            // radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            data: SericeData
+          }
+        ]
+      }
+      eline.setOption(myoption)
+    },
+    closePieBox () {
+      this.showPieBox = false
+      this.pieData = {}
+    },
+    closeTableTtn () {
       this.showTableBox = false
     },
-    ShowTanKuangBox(dataArray){
+    ShowTanKuangBox (dataArray) {
       this.showModelBox = true
       this.showModelBoxtype = dataArray.type || 0
       let newData = []
@@ -779,11 +948,11 @@ export default {
     },
     // 加载第一页大屏
     loadFirstPage: function () {
-      this.pageList.forEach((d,i) => {
-        if(d.id*1 === this.nowShowPageID*1){
+      this.pageList.forEach((d, i) => {
+        if (d.id * 1 === this.nowShowPageID * 1) {
           this.pageIndex = i
         }
-      });
+      })
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
@@ -1086,18 +1255,18 @@ export default {
               if (d.chartType === 'v-map') {
                 d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
               } else {
-                d.chartData = res.obj; // 会触发刷新
+                d.chartData = res.obj // 会触发刷新
                 if (d.chartData1) {
-                  d.chartData1 = res.obj;
+                  d.chartData1 = res.obj
                 }
                 if (d.chartData2) {
-                  d.chartData2 = res.obj;
+                  d.chartData2 = res.obj
                 }
                 if (d.chartData3) {
-                  d.chartData3 = res.obj;
+                  d.chartData3 = res.obj
                 }
                 if (d.chartData4) {
-                  d.chartData4 = res.obj;
+                  d.chartData4 = res.obj
                 } // 会触发刷新
               }
             }
@@ -1170,18 +1339,18 @@ export default {
                           d.chartData.rows
                         )
                       } else {
-                        d.chartData = res.obj; // 会触发刷新
+                        d.chartData = res.obj // 会触发刷新
                         if (d.chartData1) {
-                          d.chartData1 = res.obj;
+                          d.chartData1 = res.obj
                         }
                         if (d.chartData2) {
-                          d.chartData2 = res.obj;
+                          d.chartData2 = res.obj
                         }
                         if (d.chartData3) {
-                          d.chartData3 = res.obj;
+                          d.chartData3 = res.obj
                         }
                         if (d.chartData4) {
-                          d.chartData4 = res.obj;
+                          d.chartData4 = res.obj
                         } // 会触发刷新
                       }
                     }
@@ -1241,18 +1410,18 @@ export default {
                     d.chartData.rows
                   )
                 } else {
-                  d.chartData = res.obj; // 会触发刷新
+                  d.chartData = res.obj // 会触发刷新
                   if (d.chartData1) {
-                    d.chartData1 = res.obj;
+                    d.chartData1 = res.obj
                   }
                   if (d.chartData2) {
-                    d.chartData2 = res.obj;
+                    d.chartData2 = res.obj
                   }
                   if (d.chartData3) {
-                    d.chartData3 = res.obj;
+                    d.chartData3 = res.obj
                   }
                   if (d.chartData4) {
-                    d.chartData4 = res.obj;
+                    d.chartData4 = res.obj
                   } // 会触发刷新
                 }
               }

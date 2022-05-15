@@ -40,13 +40,13 @@
     </div>
     <div id="SZCTpopBig" v-show="SZCTDataXQ">
       <div class="XQBoxTan">
-        <div class="poptitle">点位详情</div>
+        <div class="poptitle">{{SZGKName?SZGKName:'点位详情'}}</div>
         <div class="CloseBtn" @click="SZCTDataXQ = false"></div>
         <div class="lineContain">
-          <div class="line" v-for="(item,index) in SZCTDataArray" v-show="item.value !== null" :key="index">
+          <div class="line" v-for="(item,index) in SZCTDataArray" v-show="SZCTDataNameArray.hasOwnProperty(item.name)" :key="index">
             {{ SZCTDataNameArray[item.name]}}
               <div style="padding: 0px 10px;display: inline-block;">:</div>
-            {{item.value || '暂无数据'}}
+            {{item.value !== null?item.value : '暂无数据'}}
           </div>
         </div>
       </div>
@@ -279,6 +279,7 @@ export default {
       changeDataArry: {},
       sureChangeData: {},
       SZCTDataArray: [],
+      SZGKName: '',
       AddDataArry: {
         longitude: '',
         latitude: '',
@@ -549,25 +550,25 @@ export default {
         'time': '活动起止时间',
         'mjxm': '民警姓名',
         'company_manager': '单位负责人',
-        "sqwg": "社区网格", //社区网格
-        "xjnd": "修建年代", //修建年代
-        "ylmc": "院落名称", //院落名称
-        "ylxz": "院落性质", //院落性质
-        "wgyxm": "网格员姓名", //网格员姓名
-        "yldys": "院落单元数", //院落单元数
-        "ylfws": "院落房屋数", //院落房屋数
-        "yllds": "院落楼栋数", //院落楼栋数
-        "mjlxdh": "民警联系电话", //民警联系电话
-        "wygsmc": '物业公司名称', //物业公司名称
-        "ylglms": "院落管理模式", //院落管理模式
-        "szhjrks": '涉藏户籍人口数', //涉藏户籍人口数
-        "szzzrks": '涉藏租住人口数', //涉藏租住人口数
-        "wgylxdh": "网格员联系电话", //网格员联系电话
-        "sfszzdyl": "是否涉藏重点院落", //是否涉藏重点院落
-        "zhzfdyxm": "综治、执法队员姓名", //综治、执法队员姓名
-        "wygslxrdh": '物业公司联系人电话', //物业公司联系人电话
-        "wygslxrxm": '物业公司联系人姓名', //物业公司联系人姓名
-        "zhzfdylxdh": "综治、执法队员联系电话" //综治、执法队员联系电话
+        'sqwg': '社区网格', // 社区网格
+        'xjnd': '修建年代', // 修建年代
+        'ylmc': '院落名称', // 院落名称
+        'ylxz': '院落性质', // 院落性质
+        'wgyxm': '网格员姓名', // 网格员姓名
+        'yldys': '院落单元数', // 院落单元数
+        'ylfws': '院落房屋数', // 院落房屋数
+        'yllds': '院落楼栋数', // 院落楼栋数
+        'mjlxdh': '民警联系电话', // 民警联系电话
+        'wygsmc': '物业公司名称', // 物业公司名称
+        'ylglms': '院落管理模式', // 院落管理模式
+        'szhjrks': '涉藏户籍人口数', // 涉藏户籍人口数
+        'szzzrks': '涉藏租住人口数', // 涉藏租住人口数
+        'wgylxdh': '网格员联系电话', // 网格员联系电话
+        'sfszzdyl': '是否涉藏重点院落', // 是否涉藏重点院落
+        'zhzfdyxm': '综治、执法队员姓名', // 综治、执法队员姓名
+        'wygslxrdh': '物业公司联系人电话', // 物业公司联系人电话
+        'wygslxrxm': '物业公司联系人姓名', // 物业公司联系人姓名
+        'zhzfdylxdh': '综治、执法队员联系电话' // 综治、执法队员联系电话
       },
       nowShowData: [],
       newSZCheckEdData: [],
@@ -806,7 +807,7 @@ export default {
       } else {
         this.removeGongAn()
       }
-      if (data.indexOf('天网') >= 0) {
+      if (data.indexOf('视频巡控') >= 0) {
         if (videoPoint.length === 0) {
           this.addVideoPoint()
         }
@@ -844,7 +845,7 @@ export default {
       } else {
         this.removeSZGKPoint(5)
       }
-      if (data.indexOf('小区院落') >= 0) {
+      if (data.indexOf('涉藏院落') >= 0) {
         this.addSZGKPoint(6)
       } else {
         this.removeSZGKPoint(6)
@@ -1393,8 +1394,9 @@ export default {
         },
         name: name,
         DataArry: data || [],
+        SZlabelName: name.split('SZGK')[0],
         label: {
-          show: true,
+          show: false,
           showBackground: true,
           backgroundColor,
           scale: 0.5,
@@ -2134,31 +2136,43 @@ export default {
       } else {
         this.axios.get('/leaderview/ZHSQ/getCommunityDot').then(data => {
           data.obj.dataArray.forEach((d, index) => {
-            d.items.forEach((ele, ind) => {
+            d.items.forEach((element, ind) => {
               if (d.sfszzdyl === '是') {
-                let en = this.addPointer(
-                  Cesium.Cartesian3.fromDegrees(
+                element.items.forEach(ele => {
+                  let name = ele.ylmc || ''
+                  let en = this.addLabelMarker(
                     ele.longitude * 1,
                     ele.latitude * 1,
-                    100
-                  ),
-                  'yuanluo' + d.sfszzdyl + ind,
-                  this.header + 'img/imgs/6_sz.png',
-                  { columns: [], rows: ele.items }
-                )
-                SZGKPoint[i].push(en)
+                    this.header + `img/imgs/6_sz.png`,
+                    name + 'SZGK' + i,
+                    'small',
+                    ele
+                  )
+                  SZGKPoint[i].push(en)
+                })
+
+                // let en = this.addPointer(
+                //   Cesium.Cartesian3.fromDegrees(
+                //     ele.longitude * 1,
+                //     ele.latitude * 1,
+                //     100
+                //   ),
+                //   'yuanluo' + d.sfszzdyl + ind,
+                //   this.header + 'img/imgs/6_sz.png',
+                //   { columns: [], rows: ele.items }
+                // )
               } else {
-                let en = this.addPointer(
-                  Cesium.Cartesian3.fromDegrees(
-                    ele.longitude * 1,
-                    ele.latitude * 1,
-                    100
-                  ),
-                  'yuanluo' + d.sfszzdyl + ind,
-                  this.header + 'img/imgs/6.png',
-                  { columns: [], rows: ele.items }
-                )
-                SZGKPoint[i].push(en)
+                // let en = this.addPointer(
+                //   Cesium.Cartesian3.fromDegrees(
+                //     ele.longitude * 1,
+                //     ele.latitude * 1,
+                //     100
+                //   ),
+                //   'yuanluo' + d.sfszzdyl + ind,
+                //   this.header + 'img/imgs/6.png',
+                //   { columns: [], rows: ele.items }
+                // )
+                // SZGKPoint[i].push(en)
               }
             })
           })
@@ -2202,7 +2216,7 @@ export default {
                 // distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 6200.0)
               },
               label: {
-                show: true,
+                show: false,
                 showBackground: true,
                 backgroundColor: Cesium.Color.fromCssColorString('#000'),
                 scale: 0.6,
@@ -2214,7 +2228,8 @@ export default {
               },
               cameraId: item.deviceIndexCode,
               name: item.name,
-              type: 'camera'
+              type: 'camera',
+              labelName: item.name.split(')')[1] || item.name
             })
             videoPoint.push(VidoePont)
           })
@@ -2323,6 +2338,7 @@ export default {
         this.currentWangGe = {}
         this.iswbzzs = false
         this.sqjcfb = false
+        this.SZGKName = ''
         console.log('pick', picked.id.id, picked.id.name, picked.id.dataArray, picked.id.community, picked.id.wangGeInfo)
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf('网格区') > 0) {
           if (picked.id.community) {
@@ -2434,11 +2450,88 @@ export default {
               })
             } else if (picked.id.name.indexOf('SZGK') >= 0) {
               if (picked.id.DataArry !== []) {
+                if (picked.id.name.indexOf('SZGK6') >= 0) { // 涉藏院落
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    community: '所属社区',
+                    sqwg: '社区网格',
+                    wgyxm: '网格员姓名',
+                    wgylxdh: '网格员联系方式',
+                    mjxm: '民警姓名',
+                    mjlxdh: '民警联系方式',
+                    ylglms: '院落管理模式',
+                    yllds: '院落楼栋数',
+                    yldys: '院落单元数',
+                    ylfws: '院落房屋数',
+                    wygsmc: '物业公司名称',
+                    wygslxrxm: '物业公司联系人姓名',
+                    wygslxrdh: '物业公司联系人电话',
+                    xjnd: '修建年代',
+                    type: '场所类别',
+                    area: '面积',
+                    manager_name: '负责人姓名',
+                    manager_phone: '负责人联系方式',
+                    member_number: '员工数量'
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK6'))
+                }
+                if (picked.id.name.indexOf('SZGK1') >= 0) { // 涉藏商店
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    community: '所属社区',
+                    type: '场所类别',
+                    area: '面积',
+                    manager_name: '负责人姓名',
+                    manager_phone: '负责人联系方式',
+                    member_number: '员工数量'
+
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK1'))
+                }
+                if (picked.id.name.indexOf('SZGK3') >= 0) { // 藏餐茶吧
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    community: '所属社区',
+                    type: '场所类别',
+                    area: '面积',
+                    manager_name: '负责人姓名',
+                    manager_phone: '负责人联系方式',
+                    member_number: '员工数量'
+
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK3'))
+                }
+                if (picked.id.name.indexOf('SZGK4') >= 0) { // 娱乐场所
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    community: '所属社区',
+                    type: '场所类别',
+                    area: '面积',
+                    manager_name: '负责人姓名',
+                    manager_phone: '负责人联系方式',
+                    member_number: '员工数量'
+
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK4'))
+                }
+                if (picked.id.name.indexOf('SZGK5') >= 0) { // 涉藏机构
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    community: '所属社区',
+                    type: '场所类别',
+                    company_manager: '单位负责人姓名',
+                    manager_phone: '单位负责人联系方式',
+                    office_manager: '联系人姓名',
+                    office_manager_phone: '联系人联系方式'
+
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK5'))
+                }
                 this.SZCTDataXQ = true
                 this.SZCTDataArray = []
                 for (const key in picked.id.DataArry) {
                   if (Object.hasOwnProperty.call(picked.id.DataArry, key)) {
-                    if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id') {
+                    if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id' && key !== 'longitude' && key !== 'latitude') {
                       this.SZCTDataArray.push({
                         name: key,
                         value: picked.id.DataArry[key]
@@ -2517,6 +2610,44 @@ export default {
               highLightPolygon = null
               hightLightMat = null
             }
+          }
+          if (picked && picked.id && picked.id.labelName) {
+            videoPoint.forEach(element => {
+              if (element.labelName === picked.id.labelName && element.label) {
+                element.label.show = true
+              } else {
+                element.label.show = false
+              }
+            })
+          } else {
+            videoPoint.forEach(element => {
+              if (element.label) {
+                element.label.show = false
+              }
+            })
+          }
+          if (picked && picked.id && picked.id.SZlabelName) {
+            SZGKPoint.forEach(element => {
+              if (element.length) {
+                element.forEach(data => {
+                  if (data.SZlabelName === picked.id.SZlabelName && data.label) {
+                    data.label.show = true
+                  } else {
+                    data.label.show = false
+                  }
+                })
+              }
+            })
+          } else {
+            SZGKPoint.forEach(element => {
+              if (element.length) {
+                element.forEach(data => {
+                  if (data.label) {
+                    data.label.show = false
+                  }
+                })
+              }
+            })
           }
         }, 300)
       }

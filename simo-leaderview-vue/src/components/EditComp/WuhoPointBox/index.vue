@@ -1,13 +1,13 @@
 <template>
   <div class="WuhoPointBox" :style="maoBlstyle" >
     <div class="OpenPointBtn">
-      <div class="SmallName">重点时期管控</div>
-      <div v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
+      <div v-show="!ifGK" class="SmallName">重点时期管控</div>
+      <div v-show="!ifGK" v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}}
       </div>
       <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
-      <div class="SmallName">日常工作重点</div>
-      <div v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
+      <div v-show="ifGK" class="SmallName">日常工作重点</div>
+      <div v-show="ifGK" v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}} <div class="SanJiaoTab" v-if="d === '娱乐场所' || d === '锅庄舞场'" @click="ShowXQByUrl(d)"></div>
       </div>
     </div>
@@ -20,8 +20,9 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['天网','管控区','公安日常勤务','公安网格','网格区','重点点位','社区区划'],
-      dataArray2:['涉藏商店','民宿旅馆','藏餐茶吧','娱乐场所','涉藏机构','小区院落','锅庄舞场'],
+      dataArray:['视频巡控','管控区','公安日常勤务','网格区','重点点位','社区区划'],
+      dataArray2:['涉藏商店','藏餐茶吧','娱乐场所','涉藏机构','涉藏院落','锅庄舞场'],
+      ifGK: false,
       CheckedArry:[]
     };
   },
@@ -47,6 +48,12 @@ export default {
     }
   },
   mounted () {
+    console.log('parent', this.$parent.$parent.pageName)
+    if (this.$parent.$parent.pageName.indexOf('涉藏概况') >= 0) {
+      this.ifGK = true
+    } else if (this.$parent.$parent.pageName.indexOf('应急处突') >= 0) {
+      this.ifGK = false
+    }
     window.changeCheckedArry = this.changeCheckedArry
     if (this.item.size === 'small') {
       document.getElementsByClassName('OpenPointBtn')[0].classList.add('small')
@@ -95,7 +102,7 @@ export default {
 }
 .CheckedBox{
   width: 240px;
-  margin: 0 0 28px 0px;
+  margin: 0 0 130px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -112,7 +119,7 @@ export default {
 }
 .NoChecked{
   width: 240px;
-  margin: 0 0 28px 0px;
+  margin: 0 0 130px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
