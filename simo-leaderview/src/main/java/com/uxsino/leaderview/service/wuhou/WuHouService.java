@@ -1306,6 +1306,12 @@ public class WuHouService {
         HcnetNationNames.add("D-07071026-ZX-(球)武侯祠横街7号");
         HcnetNationNames.add("D-07071043-ZX-(球)金色柠檬酒店");
         HcnetNationNames.add("D-07071004-ZX-(球)洗横路口");
+        HcnetNationNames.add("D-07071111-ZX-(球)武侯祠大街19号附142号3楼");
+        HcnetNationNames.add("D-07071030-ZX-(球)363医院大门左侧");
+        HcnetNationNames.add("D-07071008-ZX-(球)一环路西南民族学院大门");
+        HcnetNationNames.add("D-07121859-ZX-(球)一环路高升桥地铁站A出口2#");
+        HcnetNationNames.add("D-07121174-ZX-(球)环路高升桥东路路口");
+        HcnetNationNames.add("D-07071310-ZX-(球)双楠路口高点");
 
         //SZCTNames
         //D-07071150-ZX-(球)浆洗街公厕
