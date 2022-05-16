@@ -108,7 +108,7 @@ public class ZHSQController {
             ListArray.add("小区院落");
             ListArray.add("锅庄舞场");
             ListArray.add("娱乐场所");
-            ListArray.add("涉藏商铺");
+            ListArray.add("涉藏商店");
             ListArray.add("藏餐茶吧");
             ListArray.add("民宿旅馆");
             if (ListArray.contains(param)) {
@@ -148,7 +148,7 @@ public class ZHSQController {
             return jsonModel2;
         }else {*/
             HashMap<String, String> idAndNameMap = new HashMap<>();
-            idAndNameMap.put("1", "涉藏商铺");
+            idAndNameMap.put("1", "涉藏商店");
             idAndNameMap.put("2", "民宿旅馆");
             idAndNameMap.put("3", "藏餐茶吧");
             idAndNameMap.put("4", "娱乐场所");
@@ -185,13 +185,13 @@ public class ZHSQController {
     }
 
     /**
-     *5、涉藏处突-涉藏概况下钻列表
+     *5、涉藏处突-涉藏概况重合点位打点
      * @return
      */
     @GetMapping("/getSZCT6")
     public JsonModel getSZCT6(@RequestParam(required = false) String param){
         //前端传回的param是name: 加上param,所以需要取:后的param
-        return zhsqService.getSZCT6(param.split(":")[1]);
+        return zhsqService.getSZCT6(param);
     }
 
     /**
