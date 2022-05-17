@@ -58,7 +58,7 @@
         <div class="lineContain">
           <div class="line">网格员姓名: {{WGQData.name || '暂无数据'}}</div>
           <!-- {{WGQData['网格员姓名']}} -->
-          <!-- <div class="line">性别: 女</div> -->
+          <div class="line">性别: {{WGQData.xb || '暂无数据'}}</div>
           <div class="line">电话: {{WGQData.lxdh || '暂无数据'}}</div>
           <div class="line">身份证信息: {{WGQData.sfzh || '暂无数据'}}</div>
           <!-- <div class="line">职务: {{WGQData['职务']}}</div> -->
@@ -223,6 +223,7 @@ import wanggepositions from './wanggepositions.js'
 import shequwanggepositions from './shequwanggepositions.js'
 import { gcj02_to_wgs84 } from './transform.js'
 import { Slider, Notification } from 'element-ui'
+import element from '@/element/index.js'
 var viewer
 var tileset
 var tilesetJxJ
@@ -271,6 +272,7 @@ export default {
     return {
       popshow: false,
       isYL: false,
+      isChongHe: false,
       popshowBig: false,
       AddPointState: false,
       IsXiuGaiState: false,
@@ -303,7 +305,7 @@ export default {
       TableTanData: { columns: [], rows: [] },
       tableTanTitle: {
         placeName: '名称',
-        address: '标准地址',
+        address: '场所地址',
         roomNum: '房间数',
         bedNum: '床铺数',
         room_name: '名称',
@@ -311,7 +313,10 @@ export default {
         room_number: '房间数',
         bed_number: '床铺数',
         ylmc: '院落名称',
-        ylxz: '院落性质'
+        ylxz: '院落性质',
+        csmc: '场所名称',
+        type: '场所类别',
+        community: '所属社区'
       },
       tableDataXunCha: [
         {
@@ -855,7 +860,7 @@ export default {
       } else {
         this.removeSZGKPoint(7)
       }
-      if (data.indexOf('公安日常勤务') >= 0) {
+      if (data.indexOf('重点区域勤务') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
           this.addshezangmarkers('xianchangzhihui')
@@ -1361,6 +1366,61 @@ export default {
         this.popshowBig = false
         this.SZCTDataXQ = true
         this.SZCTDataArray = []
+        for (const key in nowShowData) {
+          if (Object.hasOwnProperty.call(nowShowData, key)) {
+            if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id') {
+              this.SZCTDataArray.push({
+                name: key,
+                value: nowShowData[key]
+              })
+            }
+          }
+        }
+      } else if (this.isChongHe) {
+        this.popshowBig = false
+        this.SZCTDataXQ = true
+        this.SZCTDataArray = []
+        this.SZGKName = nowShowData.csmc
+        if (nowShowData.type === '娱乐场所') {
+          this.SZCTDataNameArray = {
+            address: '地址',
+            community: '所属社区',
+            type: '场所类别',
+            area: '面积',
+            fzrxm: '负责人姓名',
+            fzrlxdh: '负责人联系电话',
+            ygsl: '员工数量',
+            aqfxdj: '安全风险等级',
+            pqmjxm: '片区民警姓名',
+            pqmjlxdh: '片区民警联系电话'
+          }
+        } else if (nowShowData.type === '涉藏商店') {
+          this.SZCTDataNameArray = {
+            address: '地址',
+            community: '所属社区',
+            type: '场所类别',
+            area: '面积',
+            fzrxm: '负责人姓名',
+            fzrlxdh: '负责人联系电话',
+            ygsl: '员工数量',
+            aqfxdj: '安全风险等级',
+            pqmjxm: '片区民警姓名',
+            pqmjlxdh: '片区民警联系电话'
+          }
+        } else if (nowShowData.type === '藏餐茶吧') {
+          this.SZCTDataNameArray = {
+            address: '地址',
+            community: '所属社区',
+            type: '场所类别',
+            area: '面积',
+            fzrxm: '负责人姓名',
+            fzrlxdh: '负责人联系电话',
+            ygsl: '员工数量',
+            aqfxdj: '安全风险等级',
+            pqmjxm: '片区民警姓名',
+            pqmjlxdh: '片区民警联系电话'
+          }
+        }
         for (const key in nowShowData) {
           if (Object.hasOwnProperty.call(nowShowData, key)) {
             if (key !== 'created_at' && key !== 'user_id' && key !== 'user_name' && key !== 'id' && key !== 'user_identifier' && key !== 'response_id') {
@@ -2116,24 +2176,53 @@ export default {
     addSZGKPoint (i) {
       this.removeSZGKPoint(i)
       SZGKPoint[i] = []
-      if (i !== 6) {
-        this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
-          data.obj.dotArray.forEach((ele, index) => {
-            let name = ele.name || ele.company_name
-            if (index <= 40) {
-              let en = this.addLabelMarker(
-                ele.longitude * 1,
-                ele.latitude * 1,
-                this.header + `img/imgs/${i}.png`,
-                name + 'SZGK' + i,
-                'small',
-                ele
+      if (i === 1 || i === 3 || i === 4) {
+        this.axios.get('/leaderview/ZHSQ/getSZCT6').then(data => {
+          if (i === 1) { // 涉藏商店
+            data.obj.dataArray[1].items.forEach((element, ind) => {
+              let en = this.addPointer(
+                Cesium.Cartesian3.fromDegrees(
+                  element.longitude * 1,
+                  element.latitude * 1,
+                  100
+                ),
+                'chonghe' + '涉藏商店' + ind,
+                this.header + 'img/imgs/1.png',
+                { columns: [], rows: element.items }
               )
               SZGKPoint[i].push(en)
-            }
-          })
+            })
+          } else if (i === 3) {
+            data.obj.dataArray[2].items.forEach((element, ind) => {
+              let en = this.addPointer(
+                Cesium.Cartesian3.fromDegrees(
+                  element.longitude * 1,
+                  element.latitude * 1,
+                  100
+                ),
+                'chonghe' + '藏餐茶吧' + ind,
+                this.header + 'img/imgs/3.png',
+                { columns: [], rows: element.items }
+              )
+              SZGKPoint[i].push(en)
+            })
+          } else if (i === 4) {
+            data.obj.dataArray[0].items.forEach((element, ind) => {
+              let en = this.addPointer(
+                Cesium.Cartesian3.fromDegrees(
+                  element.longitude * 1,
+                  element.latitude * 1,
+                  100
+                ),
+                'chonghe' + '娱乐场所' + ind,
+                this.header + 'img/imgs/4.png',
+                { columns: [], rows: element.items }
+              )
+              SZGKPoint[i].push(en)
+            })
+          }
         })
-      } else {
+      } else if (i === 6) {
         this.axios.get('/leaderview/ZHSQ/getCommunityDot').then(data => {
           data.obj.dataArray.forEach((d, index) => {
             d.items.forEach((element, ind) => {
@@ -2175,6 +2264,23 @@ export default {
                 // SZGKPoint[i].push(en)
               }
             })
+          })
+        })
+      } else {
+        this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
+          data.obj.dotArray.forEach((ele, index) => {
+            let name = ele.csmc || ele.company_name || ele.name
+            // if (index <= 40) {
+            let en = this.addLabelMarker(
+              ele.longitude * 1,
+              ele.latitude * 1,
+              this.header + `img/imgs/${i}.png`,
+              name + 'SZGK' + i,
+              'small',
+              ele
+            )
+            SZGKPoint[i].push(en)
+            // }
           })
         })
       }
@@ -2334,6 +2440,7 @@ export default {
         this.SZDataShowBig = false
         this.SZCTDataXQ = false
         this.isYL = false
+        this.isChongHe = false
         this.ifWangGe = false
         this.currentWangGe = {}
         this.iswbzzs = false
@@ -2425,6 +2532,12 @@ export default {
                   columns: ['ylmc', 'ylxz', 'address'], // 需要修改
                   rows: picked.id.dataArray.rows
                 }
+              } if (picked.id.id.indexOf('chonghe') >= 0) {
+                this.isChongHe = true
+                this.TableTanData = {
+                  columns: ['csmc', 'type', 'community', 'address'],
+                  rows: picked.id.dataArray.rows
+                }
               } else {
                 this.TableTanData = {
                   columns: ['placeName', 'address', 'roomNum', 'bedNum'],
@@ -2475,48 +2588,48 @@ export default {
                   }
                   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK6'))
                 }
-                if (picked.id.name.indexOf('SZGK1') >= 0) { // 涉藏商店
-                  this.SZCTDataNameArray = {
-                    address: '地址',
-                    community: '所属社区',
-                    type: '场所类别',
-                    area: '面积',
-                    manager_name: '负责人姓名',
-                    manager_phone: '负责人联系方式',
-                    member_number: '员工数量'
+                // if (picked.id.name.indexOf('SZGK1') >= 0) { // 涉藏商店
+                //   this.SZCTDataNameArray = {
+                //     address: '地址',
+                //     community: '所属社区',
+                //     type: '场所类别',
+                //     area: '面积',
+                //     manager_name: '负责人姓名',
+                //     manager_phone: '负责人联系方式',
+                //     member_number: '员工数量'
 
-                  }
-                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK1'))
-                }
-                if (picked.id.name.indexOf('SZGK3') >= 0) { // 藏餐茶吧
-                  this.SZCTDataNameArray = {
-                    address: '地址',
-                    community: '所属社区',
-                    type: '场所类别',
-                    area: '面积',
-                    manager_name: '负责人姓名',
-                    manager_phone: '负责人联系方式',
-                    member_number: '员工数量'
+                //   }
+                //   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK1'))
+                // }
+                // if (picked.id.name.indexOf('SZGK3') >= 0) { // 藏餐茶吧
+                //   this.SZCTDataNameArray = {
+                //     address: '地址',
+                //     community: '所属社区',
+                //     type: '场所类别',
+                //     area: '面积',
+                //     manager_name: '负责人姓名',
+                //     manager_phone: '负责人联系方式',
+                //     member_number: '员工数量'
 
-                  }
-                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK3'))
-                }
-                if (picked.id.name.indexOf('SZGK4') >= 0) { // 娱乐场所
-                  this.SZCTDataNameArray = {
-                    address: '地址',
-                    community: '所属社区',
-                    type: '场所类别',
-                    area: '面积',
-                    manager_name: '负责人姓名',
-                    manager_phone: '负责人联系方式',
-                    member_number: '员工数量'
+                //   }
+                //   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK3'))
+                // }
+                // if (picked.id.name.indexOf('SZGK4') >= 0) { // 娱乐场所
+                //   this.SZCTDataNameArray = {
+                //     address: '地址',
+                //     community: '所属社区',
+                //     type: '场所类别',
+                //     area: '面积',
+                //     manager_name: '负责人姓名',
+                //     manager_phone: '负责人联系方式',
+                //     member_number: '员工数量'
 
-                  }
-                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK4'))
-                }
+                //   }
+                //   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK4'))
+                // }
                 if (picked.id.name.indexOf('SZGK5') >= 0) { // 涉藏机构
                   this.SZCTDataNameArray = {
-                    address: '地址',
+                    company_address: '地址',
                     community: '所属社区',
                     type: '场所类别',
                     company_manager: '单位负责人姓名',
@@ -2526,6 +2639,24 @@ export default {
 
                   }
                   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK5'))
+                }
+                if (picked.id.name.indexOf('SZGK7') >= 0) { // 锅庄舞场
+                  this.SZCTDataNameArray = {
+                    address: '地址',
+                    rnrs: '容纳人数',
+                    gzs: '观众数',
+                    community: '所属社区',
+                    type: '场所类别',
+                    manager_name: '负责人姓名',
+                    time: '活动时段',
+                    pqmjxm: '片区民警姓名',
+                    pqmjlxdh: '片区民警联系电话',
+                    pqwgyxm: '片区网格员姓名',
+                    pqwgylxdh: '片区网格员联系电话',
+                    zyfx: '主要风险',
+                    ydcs: '应对措施'
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK7')) + '锅庄舞场'
                 }
                 this.SZCTDataXQ = true
                 this.SZCTDataArray = []

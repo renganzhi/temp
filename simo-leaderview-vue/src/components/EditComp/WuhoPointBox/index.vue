@@ -1,12 +1,12 @@
 <template>
   <div class="WuhoPointBox" :style="maoBlstyle" >
     <div class="OpenPointBtn">
-      <div v-show="!ifGK" class="SmallName">重点时期管控</div>
+      <!-- <div v-show="!ifGK" class="SmallName">重点时期管控</div> -->
       <div v-show="!ifGK" v-for="(d,i) in dataArray" :key="i" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
-        {{d}}
+        {{d}}<div class="AddPonit" v-if="d === '重点点位' && CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
       </div>
-      <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div>
-      <div v-show="ifGK" class="SmallName">日常工作重点</div>
+      <!-- <div class="AddPonit" v-if="CheckedArry.indexOf('重点点位') >= 0" @click="AddZDDW()"></div> -->
+      <!-- <div v-show="ifGK" class="SmallName">日常工作重点</div> -->
       <div v-show="ifGK" v-for="(d,i) in dataArray2" :key="i+'ss'" :class="CheckedArry.indexOf(d) >= 0? 'CheckedBox':'NoChecked'" @click="ChangeState(d)">
         {{d}} <div class="SanJiaoTab" v-if="d === '娱乐场所' || d === '锅庄舞场'" @click="ShowXQByUrl(d)"></div>
       </div>
@@ -20,8 +20,8 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['视频巡控','管控区','公安日常勤务','网格区','重点点位','社区区划'],
-      dataArray2:['涉藏商店','藏餐茶吧','娱乐场所','涉藏机构','涉藏院落','锅庄舞场'],
+      dataArray:['视频巡控','管控区','重点区域勤务','网格区','重点点位','社区区划'],
+      dataArray2:['涉藏商店','藏餐茶吧','娱乐场所','涉藏机构','涉藏院落','锅庄舞场', '涉藏医院', '涉藏高校'],
       ifGK: false,
       CheckedArry:[]
     };
@@ -93,6 +93,9 @@ export default {
   background: url(./backbox.png);
   background-size: 100% 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .SmallName{
   font-size: 30px;
@@ -102,7 +105,7 @@ export default {
 }
 .CheckedBox{
   width: 240px;
-  margin: 0 0 130px 0px;
+  // margin: 0 0 130px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -119,7 +122,7 @@ export default {
 }
 .NoChecked{
   width: 240px;
-  margin: 0 0 130px 0px;
+  // margin: 0 0 130px 0px;
   cursor: pointer;
   font-family: 'PangMenZhengDao';
   font-style: normal;
@@ -141,7 +144,7 @@ export default {
   background: url(./AddPonit.png);
   background-size: 100% 100%;
   right: 12px;
-  top: 590px;
+  // top: 590px;
 }
 
 .small {
@@ -184,7 +187,7 @@ export default {
   background: url(./icon.png);
   background-size: 100% 100%;
   position: absolute;
-  left: 440px;
+  left: 445px;
 }
 .small .SanJiaoTab{
   height: 30px;
