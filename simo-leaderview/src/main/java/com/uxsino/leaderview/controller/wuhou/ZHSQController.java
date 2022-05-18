@@ -2,6 +2,7 @@ package com.uxsino.leaderview.controller.wuhou;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import com.uxsino.commons.model.JsonModel;
 import com.uxsino.leaderview.entity.CustomDotScheme;
 import com.uxsino.leaderview.service.wuhou.WuHouService;
@@ -9,6 +10,7 @@ import com.uxsino.leaderview.service.wuhou.ZHSQService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -185,7 +187,7 @@ public class ZHSQController {
     }
 
     /**
-     *5、涉藏处突-涉藏概况重合点位打点
+     *6、涉藏处突-涉藏概况重合点位打点
      * @return
      */
     @GetMapping("/getSZCT6")
@@ -251,6 +253,106 @@ public class ZHSQController {
     @GetMapping("/getGridDot")
     public JsonModel getGridDot(){
         return zhsqService.getGridDot();
+    }
+
+    /**
+     *7、涉藏处突-涉藏人口数
+     * @return
+     */
+    @GetMapping("/getSZCT7")
+    public JsonModel getSZCT7(@RequestParam(required = false) String param){
+
+        if(ObjectUtils.isEmpty(param)){
+            JSONObject result = new JSONObject();
+            result.put("name","藏区人口");
+            result.put("info","1.4");
+            result.put("url","/leaderview/ZHSQ/getSZCT7?param=name:");
+            result.put("type","藏区人口");
+            return new JsonModel(true,result);
+        }else {
+
+            //前端传回的param是name: 加上param,所以需要取:后的param
+            /*JsonModel jsonModel1 = zhsqService.getSZCT7();
+            JSONObject obj = (JSONObject) jsonModel1.getObj();
+            JsonModel jsonModel2 = wuHouService.getPieToText(param, obj);
+            Object obj1 = jsonModel2.getObj();
+            //如果返回的是结果，则返回弹窗url
+            if (obj1 instanceof JSONObject) {
+                ((JSONObject) obj1).put("url", "");
+            }*/
+
+            return zhsqService.getSZCT7();
+        }
+    }
+
+    /**
+     *8、涉藏处突-实时预警
+     * @return
+     */
+    @GetMapping("/getSZCT8")
+    public JsonModel getSZCT8(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        return zhsqService.getSZCT8();
+    }
+
+    /**
+     *9、涉藏处突-涉藏高校
+     * @return
+     */
+    @GetMapping("/getSZCT9")
+    public JsonModel getSZCT9(@RequestParam(required = false) String param){
+        if(ObjectUtils.isEmpty(param)){
+            JSONObject result = new JSONObject();
+            result.put("name","涉藏高校");
+            result.put("info","1");
+            result.put("url","/leaderview/ZHSQ/getSZCT9?param=name:");
+            result.put("type","涉藏高校");
+            return new JsonModel(true,result);
+        }else {
+
+            //前端传回的param是name: 加上param,所以需要取:后的param
+            /*JsonModel jsonModel1 = zhsqService.getSZCT9();
+            JSONObject obj = (JSONObject) jsonModel1.getObj();
+            JsonModel jsonModel2 = wuHouService.getPieToText(param, obj);
+            Object obj1 = jsonModel2.getObj();
+            //如果返回的是结果，则返回弹窗url
+            if (obj1 instanceof JSONObject) {
+                ((JSONObject) obj1).put("url", "");
+            }*/
+
+            return zhsqService.getSZCT9();
+        }
+    }
+
+    /**
+     *10、涉藏处突-指挥体系-表格模块
+     * @return
+     */
+    @GetMapping("/getSZCT10")
+    public JsonModel getSZCT10(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        JSONObject obj = zhsqService.getSZCT10();
+        JSONObject result = new JSONObject();
+        //包含name的是弹窗的
+        if(!Strings.isNullOrEmpty(param) && param.contains("name")){
+            param = param.split(":")[1];
+            result = obj.getJSONObject(param);
+        }else {
+            result = obj.getJSONObject(param);
+            result.put("url","/leaderview/ZHSQ/getSZCT10?param=name:");
+        }
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     *9、涉藏处突-
+     * @return
+     */
+    @GetMapping("/getSZCT11")
+    public JsonModel getSZCT11(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        return zhsqService.getSZCT6(param);
     }
 
 }
