@@ -2,16 +2,16 @@
   <div class="WuhouTable"  @mousemove="pageMove = false" @mouseleave="pageMove = true">
     <div class="TableHead" :style="headStyle">
       <tr :style="headStyle">
-        <th v-for="(data, index) in item.chartData.columns" :key="index" :style="{width:`calc(${100 / item.chartData.columns.length}%)`}">
+        <th v-for="(data, index) in item.chartData.columns" :key="index + 'a'" :style="{width:`calc(${100 / item.chartData.columns.length}%)`}">
           {{ data }}
         </th>
       </tr>
     </div>
     <div class="TableBody"  :style="bodyAllStyle" ref="MyLunBoTbale">
-      <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i"  @click="showXQ(rowsData)">
-        <th v-for="(data, index) in item.chartData.columns" :key="index"
+      <tr :style="bodyStyle" v-for="(rowsData, i) in item.chartData.rows" :key="i  + 'b'"  @click="showXQ(rowsData)">
+        <th v-for="(data, index) in item.chartData.columns" :key="index  + 'c'"
           :style="{
-            color: rowsData[data] && rowsData[data].color? rowsData[data].color:'#bfcbdb',
+            color: textColor(data, rowsData),
             width:`calc(${100 / item.chartData.columns.length}%)`
           }">
           <div style="width: 100%;height: 100%;display: flex;position: absolute;justify-content: center;align-items: center;flex-wrap: wrap;" v-if="data === '操作'">
@@ -220,6 +220,17 @@ export default {
       return {
         height: this.item.headHeight + 'px !important',
         fontSize: this.item.Fontsize + 'px !important'
+      }
+    },
+    textColor () {
+      return (data, rowsData) => {
+        if (rowsData[data] && rowsData[data].color) {
+          return rowsData[data].color
+        } else if (rowsData[data] && data === '人员类型' && rowsData[data] === '吸毒') {
+          return 'red'
+        } else {
+          return '#bfcbdb'
+        }
       }
     },
     bodyStyle () {

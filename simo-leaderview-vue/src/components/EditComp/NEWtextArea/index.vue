@@ -1,5 +1,5 @@
 <template>
-  <div :style="wrapStyle" 
+  <div :style="wrapStyle"
     @click="ShowXq()">
     <div v-if="item.ctDataSource !== 'static' && item.chartData && item.chartData.state"
          ref="titleBox"
@@ -63,21 +63,53 @@ export default {
         }
       }
     },
-    ShowXq(){
-      if(this.item.chartData.list){
+    ShowXq () {
+      if (this.item.chartData.list) {
         let boxData = {
-          title:'数据详情',
-          data:'arry',
-          dataArray:this.item.chartData.list
+          title: '数据详情',
+          data: 'arry',
+          dataArray: this.item.chartData.list
         }
         this.$parent.$parent.ShowTableBox(boxData)
-      }else if(this.item.chartData.url){
-        let boxData = {
-          title:'数据详情',
-          data:{name:this.item.chartData.name},
-          dataUrl:this.item.chartData.url
+      } else if (this.item.chartData.url) {
+        if (this.item.chartData.type) {
+          if (this.item.chartData.type === '藏区人口') {
+            let boxData = {
+              title: '藏区人口详情',
+              data: {}
+            }
+            this.axios
+              .get(this.item.chartData.url)
+              .then((data) => {
+                if (data.success) {
+                  // this.DataTkArry = data.obj
+                  boxData.data = data.obj.rows[0]
+                  this.$parent.$parent.ShowTanKuangBox(boxData)
+                }
+              })
+          } else if (this.item.chartData.type === '涉藏高校') {
+            let boxData = {
+              title: '涉藏高校详情',
+              data: {}
+            }
+            this.axios
+              .get(this.item.chartData.url)
+              .then((data) => {
+                if (data.success) {
+                  // this.DataTkArry = data.obj
+                  boxData.data = data.obj
+                  this.$parent.$parent.ShowElineBox(boxData)
+                }
+              })
+          }
+        } else {
+          let boxData = {
+            title: '数据详情',
+            data: {name: this.item.chartData.name},
+            dataUrl: this.item.chartData.url
+          }
+          this.$parent.$parent.ShowTableBox(boxData)
         }
-        this.$parent.$parent.ShowTableBox(boxData)
       }
     }
   },
@@ -176,7 +208,7 @@ export default {
       }
     },
     'item.ctName': function () {
-      if(this.item.ctName === null){
+      if (this.item.ctName === null) {
         this.item.ctName = '暂无数据'
       }
     },
