@@ -901,7 +901,7 @@ public class QunZuFangService {
         JSONObject result = new JSONObject();
         result = wuHouService.getPieResult(map,targetData);
 //        List<String> columns = Arrays.asList("住客名称","住客手机","住客身份证号");
-        List<String> columns = Arrays.asList("住客名称","住客手机","入住日期","离店日期","住客身份证号");
+        List<String> columns = Arrays.asList("住客名称","住客手机","入住日期","离店日期","场所名称");
         result.put("columns",columns);
 
         return new JsonModel(true,result);
@@ -1104,6 +1104,72 @@ public class QunZuFangService {
 //        result.put("columns",columns);
 
         return new JsonModel(true,result);
+    }
+
+    /**
+     * 17、群租房-当日入住
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y75-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF17(String param){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y157-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject result = new JSONObject();
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONObject obj = data.getJSONObject(0);
+        JSONArray targetData = new JSONArray();
+        //如果参数为空，则返回文本框数据，否则返回当日明细表格数据
+        if(ObjectUtils.isEmpty(param)){
+            Integer total = obj.getInteger("total");
+            result.put("name","当日入住数");
+            result.put("info",total);
+            result.put("value",total);
+            result.put("url","/leaderview/QZF/getQZF17?param=name:");
+            return new JsonModel(true,result);
+        }else {
+            targetData = obj.getJSONArray("items");
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+//            "idcard_number": "510107********2671",
+//    "uname": "刘*豪",
+//    "replace": "166****6206",
+//    "aid": "510107199104052671",
+//    "province": "四川省",
+//    "city": "成都市",
+//    "district": "武侯区",
+//    "checkInDate": "2022-05-16",
+//    "checkOutDate": "2022-05-17",
+//    "placeName": "小旅馆 " //名称
+
+            map.put("住客名称","uname");
+            map.put("住客手机","replace");
+//            map.put("未脱敏身份证","aid");
+            map.put("住客身份证号","idcard_number");
+            map.put("入住日期","checkInDate");
+            map.put("离店日期","checkOutDate");
+            map.put("场所名称","placeName");
+            map.put("户籍省","province");
+            map.put("户籍市","city");
+            map.put("户籍县","district");
+
+            result = wuHouService.getPieResult(map,targetData);
+//        List<String> columns = Arrays.asList("住客名称","住客手机","住客身份证号");
+            List<String> columns = Arrays.asList("住客名称","住客手机","入住日期","离店日期","场所名称");
+            result.put("columns",columns);
+
+            return new JsonModel(true,result);
+        }
+
     }
 
     /**

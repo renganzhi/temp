@@ -369,6 +369,15 @@
         ]
     },
     {
+        "key": "get_QZF17",
+        "name": "群租房-当日登记",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZF17",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_QZF15",
         "name": "群租房-走访数据明细",
         "component": "monitor",
@@ -1479,6 +1488,33 @@
                 "dataUrl": ["/leaderview/ZHSQ/getSZCT2"]
             }
         ]
+    },
+    {
+        "key": "get_SZCT7",
+        "name": "涉藏处突-藏区人口",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getSZCT7",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SZCT8",
+        "name": "涉藏处突-实时预警",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/ZHSQ/getSZCT8",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SZCT9",
+        "name": "涉藏处突-涉藏高校",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getSZCT9",
+        "method" : "get",
+        "params": []
     },
     {
         "key": "get_Population1",

@@ -681,4 +681,379 @@ public class ZHSQService {
 
     }
 
+    /**
+     *7、涉藏处突-涉藏人口数
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y142-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT7(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y168-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //    "whq_rks": "14670", //武侯区涉藏人口数
+        //    "jxj_rks": "7134", //浆洗街街道涉藏人口数
+        //    "jxj_czrks": "1105", //浆洗街街道常住涉藏人口数
+        //    "jxj_ldrks": "6029" //浆洗街街道流动涉藏人口数
+        map.put("武侯区涉藏人口数","whq_rks");
+        map.put("浆洗街街道涉藏人口数","jxj_rks");
+        map.put("浆洗街街道常住涉藏人口数","jxj_czrks");
+        map.put("浆洗街街道流动涉藏人口数","jxj_ldrks");
+        JSONObject result = getPieResult(map,data);
+//        result.put("type","getSZCT7");
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 8、涉藏处突-实时预警
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y142-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT8(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y167-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //    "time": "2022-04-19 17:25:14.053", //时间
+        //    "address": "xxx地址", //地址
+        //    "type": "xxx类别", //类别
+        //    "content": "修改xx内容", //内容
+        //    "事件来源": "智能感知源"
+        map.put("时间","time");
+        map.put("地址","address");
+        map.put("类别","type");
+        map.put("内容","content");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 9、涉藏处突-涉藏高校
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y142-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT9(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y161-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        //两个top柱状图需要的数据
+        JSONArray histogramArray = new JSONArray();
+        JSONArray targetData = new JSONArray();
+        LinkedHashMap<String,JSONArray> xqAndDataMap = new LinkedHashMap<>();
+        JSONArray targetData2 = new JSONArray();
+
+        //西南民族大学情况对象
+        JSONObject dataObj = data.getJSONObject(0);
+        JSONArray items1 = dataObj.getJSONArray("items");
+        for(int i = 0; i < items1.size(); i++){
+            JSONObject obj = items1.getJSONObject(i);
+            JSONArray items2 = obj.getJSONArray("items");
+//            targetData.add(items2);
+            xqAndDataMap.put(obj.getString("xq_name"),items2);
+        }
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //    "ssmz": "土家族", //少数民族
+        //    "ssrs": "74" //学生人数
+        map.put("少数民族","ssmz");
+        map.put("学生人数","ssrs");
+
+        for (Map.Entry<String,JSONArray> entry : xqAndDataMap.entrySet()){
+            JSONArray neededData = entry.getValue();
+            JSONObject neededObj = getPieResult(map,neededData);
+            neededObj.put("校区",entry.getKey());
+            histogramArray.add(neededObj);
+        }
+
+        /*for (int i = 0; i < targetData.size(); i++){
+            JSONArray neededData = targetData.getJSONArray(i);
+            JSONObject neededObj = getPieResult(map,neededData);
+//            neededObj.put("校区",);
+            histogramArray.add(neededObj);
+        }*/
+        //"zcjzgsl": "2123", //在册教职工数量
+        //"zcwzjzgsl": "8", //在册维族教职工数量
+        //"wjrs": "8" //外教人数
+        //"txjzgsl": "877", //退休教职工数量
+        //外层文本框
+        LinkedHashMap<String, String> map2 = new LinkedHashMap<>();
+        map2.put("在册教职工数量","zcjzgsl");
+        map2.put("在册维族教职工数量","zcwzjzgsl");
+        map2.put("外教人数","wjrs");
+        map2.put("退休教职工数量","txjzgsl");
+
+        JSONObject textData = getPieResult(map2,data);
+        JSONObject result = new JSONObject();
+        result.put("histogramData",histogramArray);
+        result.put("textData",textData);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 10、涉藏处突-指挥体系-涉藏指挥部
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JSONObject getSZCT10(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+//            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        //需要处理的数据
+        JSONArray targetData = new JSONArray();
+        //指挥长数据
+        JSONArray zhzArray = new JSONArray();
+        JSONObject zhzObj = new JSONObject();
+        JSONObject zhz2Obj = new JSONObject();
+        //副指挥长数据
+        JSONArray fzhzArray = new JSONArray();
+        JSONObject fzhzObj = new JSONObject();
+        JSONObject fzhz2Obj = new JSONObject();
+
+        for (int i = 0 ;i < data.size(); i ++){
+            JSONObject obj = data.getJSONObject(i);
+            if("涉藏指挥部".equals(obj.getString("type"))){
+                targetData = obj.getJSONArray("items");
+                for (int j = 0; j < targetData.size();j++){
+                    JSONObject obj2 = targetData.getJSONObject(j);
+                    if("指挥长".equals(obj2.getString("zhbzw"))){
+                        zhzArray = obj2.getJSONArray("items");
+                    }
+                    if("副总指挥长".equals(obj2.getString("zhbzw"))){
+                        fzhzArray = obj2.getJSONArray("items");
+                    }
+                }
+            }
+        }
+
+        //指挥长、副指挥长 所有字段的map,用于获取弹窗所需字段
+        LinkedHashMap<String, String> zhzMap = new LinkedHashMap<>();
+        //指挥长、副指挥长 名称、职务字段的map,用于首页表格
+        LinkedHashMap<String, String> zhz2Map = new LinkedHashMap<>();
+        //副指挥长所有字段的map,用于获取弹窗所需字段
+//        LinkedHashMap<String, String> fzhzMap = new LinkedHashMap<>();
+        //副指挥长名称、职务字段的map,用于首页表格
+//        LinkedHashMap<String, String> fzhz2Map = new LinkedHashMap<>();
+        //    "zhbzw": "指挥长", //指挥部职务
+        //    "name": "王亚滨", //姓名
+        //    "zw": "区委常委、政法委书记", //职务
+        //    "photo_link": "https://zhwh.cdyoue.com/FsXYA9tnQJi8dbJJdUGwr-96C7Yv", //照片
+        //    "mobilephone": "13881838181" //手机
+        zhzMap.put("指挥部职务","zhbzw");
+        zhzMap.put("姓名","name");
+        zhzMap.put("职务","zw");
+        zhzMap.put("照片","photo_link");
+        zhzMap.put("手机","mobilephone");
+
+        zhz2Map.put("姓名","name");
+        zhz2Map.put("职务","zw");
+        //指挥长所有字段结果
+        zhzObj = getPieResult(zhzMap,data);
+        //指挥长姓名、职务字段结果
+        zhz2Obj = getPieResult(zhzMap,data);
+        //副指挥长所有字段结果
+        fzhzObj = getPieResult(zhzMap,data);
+        //副指挥长姓名、职务字段结果
+        fzhz2Obj = getPieResult(zhzMap,data);
+
+        JSONObject result = new JSONObject();
+        result.put("指挥长",zhzObj);
+        result.put("指挥长姓名职务",zhz2Obj);
+        result.put("副总指挥长",fzhzObj);
+        result.put("副总指挥长姓名职务",fzhz2Obj);
+        return result;
+
+    }
+
+    /**
+     * 、涉藏处突-
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT11(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("","");
+        map.put("","");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 、涉藏处突-
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT12(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("","");
+        map.put("","");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 、涉藏处突-
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT13(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("","");
+        map.put("","");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 、涉藏处突-
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT14(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("","");
+        map.put("","");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 、涉藏处突-
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getSZCT15(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("","");
+        map.put("","");
+
+        JSONObject result = getPieResult(map,data);
+
+        return new JsonModel(true,result);
+
+    }
+
 }
