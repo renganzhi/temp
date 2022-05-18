@@ -111,6 +111,58 @@
                   </div>
                 </div>
               </div>
+              <div class="BoxMban" v-show="showElineBox">
+                <div class="CityModelBox">
+                  <div class="closeBtn" @click="closeElineBox()"></div>
+                  <div class="BoxTitle">涉藏高校详情</div>
+                  <div class="BoxBody" v-show="barData.length"  style="display:flex;justify-content: center;align-items: center;">
+                    <div class="ElineBox">
+                      <div style="width:450px;height:450px;" ref="ElineBox0"></div>
+                      <div style="width:450px;height:450px;" ref="ElineBox1"></div>
+                    </div>
+                    <div class="textBox" v-if="barData[2]">
+                      <div v-for="(v, i) in barData[2].data" :key="i">
+                        <span>{{v.title}}:</span>
+                        <span>{{v.value}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="NoData" v-show="!barData.length">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
+              <div class="BoxMban" v-show="showPieBox">
+                <div class="CityModelBox">
+                  <div class="closeBtn" @click="closePieBox()"></div>
+                  <div class="BoxTitle">藏区人口详情</div>
+                  <div class="BoxBody" v-show="pieData.rows && pieData.rows.length"  style="display:flex;justify-content: center;align-items: center;">
+                    <div class="PieBox" style="width:900px;height:480px;" ref="PieBox"></div>
+                  </div>
+                  <div class="NoData" v-show="!pieData.rows || pieData.rows.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
+              <div class="BoxMban" v-show="showInformation">
+                <div class="CityModelBox">
+                  <div class="closeBtn" @click="closeInformation()"></div>
+                  <div class="BoxTitle">{{infoData.title}}</div>
+                  <div class="BoxBody" v-show="infoData.dataArray&& infoData.dataArray.length"  style="display:flex;justify-content: center;align-items: center;">
+                    <div class="infoBox" v-for="(data,index) in infoData.dataArray" :key="index">
+                      <img :src="data.img" alt="">
+                      <div>
+                        <div><span>姓名：</span><span>{{data.name}}</span></div>
+                        <div><span>职位：</span><span>{{data.position}}</span></div>
+                        <div v-show="data.phone"><span>电话：</span><span>{{data.phone}}</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="NoData" v-show="!infoData.dataArray || infoData.dataArray.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
               <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
                 <div class="BoxArry">
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
@@ -316,6 +368,12 @@ export default {
       showModelBox: false,
       showTableBox: false,
       showIfreamBox: false,
+      showElineBox: false, // 柱状图弹窗
+      showInformation: false, // 指挥长信息弹窗
+      showPieBox: false, // 饼图弹窗
+      barData: [], // 柱状图数据
+      pieData: {}, // 饼图数据
+      infoData: {},
       IfreamBoxSize: 'big',
       OnwIfreamName: '',
       boxData: {},
@@ -1446,6 +1504,181 @@ export default {
     closeVideotn () {
       this.showVideoBox = false
     },
+    ShowElineBox (dataArray) {
+      // if (dataArray.data) {
+      if (dataArray.data.histogramData && dataArray.data.histogramData[0]) {
+        this.showElineBox = true
+        let eline = echarts.init(this.$refs.ElineBox0)
+        let myData = dataArray.data.histogramData[0]
+        this.barData[0] = myData
+        let myseries = []
+        let myXAxisData = []
+        let mySeriesData = []
+        myData.rows.forEach(element => {
+          myData.columns.forEach((e, d) => {
+            if (d === 0) {
+              myXAxisData.push(element[e])
+            } else {
+              if (mySeriesData[d]) {
+                mySeriesData[d].push(element[e])
+              } else {
+                mySeriesData[d] = [element[e]]
+              }
+            }
+          })
+        })
+        mySeriesData.forEach((data, index) => {
+          if (data) {
+            myseries.push({
+              data: data,
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  color: '#6fcaf7'
+                }
+              }
+            })
+          }
+        })
+        let option = {
+          title: {
+            text: dataArray.data.histogramData[0]['校区'] + '少数民族人数TOP5',
+            textStyle: {
+              color: '#fff',
+              fontSize: '40'
+            }
+          },
+          xAxis: {
+            type: 'category',
+            data: myXAxisData,
+            label: {
+              textStyle: {
+                fontSize: 30,
+                color: '#fff'
+              }
+            },
+            axisLabel: {
+              interval: 0, // 采用不重叠的方式展示
+              textStyle: {
+                color: '#fff',
+                fontSize: '30'
+              }
+            }
+          },
+          yAxis: {
+            type: 'value',
+            axisLabel: {
+              interval: 0, // 采用不重叠的方式展示
+              textStyle: {
+                color: '#fff',
+                fontSize: '30'
+              }
+            }
+          },
+          series: myseries
+        }
+        eline.setOption(option)
+      }
+      if (dataArray.data.histogramData && dataArray.data.histogramData[1]) {
+        this.showElineBox = true
+        let eline = echarts.init(this.$refs.ElineBox1)
+        let myData = dataArray.data.histogramData[1]
+        this.barData[1] = myData
+        let myseries = []
+        let myXAxisData = []
+        let mySeriesData = []
+        myData.rows.forEach(element => {
+          myData.columns.forEach((e, d) => {
+            if (d === 0) {
+              myXAxisData.push(element[e])
+            } else {
+              if (mySeriesData[d]) {
+                mySeriesData[d].push(element[e])
+              } else {
+                mySeriesData[d] = [element[e]]
+              }
+            }
+          })
+        })
+        mySeriesData.forEach((data, index) => {
+          if (data) {
+            myseries.push({
+              data: data,
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  color: '#5c84e7'
+                }
+              }
+            })
+          }
+        })
+        let option = {
+          title: {
+            text: dataArray.data.histogramData[0]['校区'] + '少数民族人数TOP5',
+            textStyle: {
+              color: '#fff',
+              fontSize: '40'
+            }
+          },
+          xAxis: {
+            type: 'category',
+            data: myXAxisData,
+            label: {
+              textStyle: {
+                fontSize: 30,
+                color: '#fff'
+              }
+            },
+            axisLabel: {
+              interval: 0, // 采用不重叠的方式展示
+              textStyle: {
+                color: '#fff',
+                fontSize: '30'
+              }
+            }
+          },
+          yAxis: {
+            type: 'value',
+            axisLabel: {
+              interval: 0, // 采用不重叠的方式展示
+              textStyle: {
+                color: '#fff',
+                fontSize: '30'
+              }
+            }
+          },
+          series: myseries
+        }
+        eline.setOption(option)
+      }
+      if (dataArray.data.textData && dataArray.data.textData.rows) {
+        this.barData[2] = {
+          data: []
+        }
+        let textData = dataArray.data.textData.rows[0]
+        for (const key in textData) {
+          if (Object.hasOwnProperty.call(textData, key)) {
+            let data = {
+              title: key,
+              value: textData[key]
+            }
+            this.barData[2].data.push(data)
+          }
+        }
+        console.log('barData', this.barData)
+      }
+    },
+    closeElineBox () {
+      this.showElineBox = false
+    },
+    ShowInformation (dataArray) {
+      this.showInformation = true
+      this.infoData = dataArray
+    },
+    closeInformation () {
+      this.showInformation = false
+    },
     ShowVideoBox (vidoeId) {
       this.showVideoBox = true
       this.VideoIfream.CheckedVideoId = vidoeId
@@ -1924,7 +2157,7 @@ html[data-theme='blueWhite'] {
     tr {
       width: 100%;
       height: 60px;
-      font-size: 30px !important;
+      font-size: 35px !important;
       display: flex;
       color: #94cffa;
       th {
@@ -1941,7 +2174,7 @@ html[data-theme='blueWhite'] {
       width: 100%;
       height: 90px;
       margin: 10px 0;
-      font-size: 30px !important;
+      font-size: 35px !important;
       display: flex;
       color: #bfcbdb;
       th {
@@ -2175,7 +2408,7 @@ html[data-theme='blueWhite'] {
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 30px !important;
+    font-size: 35px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;
@@ -2221,7 +2454,7 @@ html[data-theme='blueWhite'] {
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 30px !important;
+    font-size: 35px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;
@@ -2248,7 +2481,7 @@ html[data-theme='blueWhite'] {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 40px;
+  font-size: 45px;
 }
 .CityModelBox{
   height: 886px;
@@ -2275,7 +2508,7 @@ html[data-theme='blueWhite'] {
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 30px !important;
+    font-size: 35px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;
@@ -2288,11 +2521,11 @@ html[data-theme='blueWhite'] {
   }
   .Nmae {
     padding: 0px 10px;
-    width: 30%;
+    // width: 30%;
     color: #b5c2cf;
   }
   .Data {
-    width: 70%;
+    // width: 70%;
     color: #d3f2ff;
   }
 }
@@ -2321,7 +2554,7 @@ html[data-theme='blueWhite'] {
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 30px !important;
+    font-size: 35px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;
@@ -2463,5 +2696,36 @@ html[data-theme='blueWhite'] {
 #homeTips{
   position: absolute;
   z-index: 10000;
+}
+.ElineBox{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.textBox{
+
+}
+.infoBox{
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  font-size: 35px !important;
+  border-bottom: 1px solid white ;
+  >img{
+    width: 40%;
+    height: 100%;
+  }
+  >div{
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
 }
 </style>

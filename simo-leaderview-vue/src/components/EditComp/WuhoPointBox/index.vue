@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       BaiDuState:false,
-      dataArray:['视频巡控','管控区','重点区域勤务','网格区','重点点位','社区区划'],
+      dataArray:['视频巡控','管控区','重点区域警情','网格区','重点点位','社区区划'],
       dataArray2:['涉藏商店','藏餐茶吧','娱乐场所','涉藏机构','涉藏院落','锅庄舞场', '涉藏医院', '涉藏高校'],
       ifGK: false,
       CheckedArry:[]

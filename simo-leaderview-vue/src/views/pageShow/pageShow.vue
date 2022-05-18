@@ -864,7 +864,7 @@ export default {
       } else {
         this.removeSZGKPoint(7)
       }
-      if (data.indexOf('重点区域勤务') >= 0) {
+      if (data.indexOf('重点区域警情') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
           this.addshezangmarkers('beiqing')
           this.addshezangmarkers('xianchangzhihui')
@@ -1499,17 +1499,17 @@ export default {
       this.axios.get('/leaderview/ZHSQ/getGridDot').then((res) => {
         wangGeList = res.obj.dataArray[0].items
         shequwanggepositions.forEach(item => {
-          let lineBianJie = viewer.entities.add({
-            polyline: {
-              positions: Cesium.Cartesian3.fromDegreesArrayHeights(
-                item.linePositions
-              ),
-              material: item.lineColor,
-              depthFailMaterial: item.lineColor,
-              width: 5
-            }
-          })
-          shequwangges.push(lineBianJie)
+          // let lineBianJie = viewer.entities.add({
+          //   polyline: {
+          //     positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+          //       item.linePositions
+          //     ),
+          //     material: item.lineColor,
+          //     depthFailMaterial: item.lineColor,
+          //     width: 5
+          //   }
+          // })
+          // shequwangges.push(lineBianJie)
           item.wangges.forEach(child => {
             if (child.positions.length > 0) {
               let wangGeInfo = {}
