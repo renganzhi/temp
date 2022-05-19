@@ -704,7 +704,7 @@ public class QunZuFangService {
     }
 
     /**
-     * 9、群租房-入住情况统计-当日登记/离店/当月累计量
+     * 9、群租房-入住情况统计-当月/当季/当年登记量
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -732,9 +732,6 @@ public class QunZuFangService {
         }
 
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        //    "aa": 3, //今日离店量
-        //    "bb": 0, //当日登记量
-        //    "cc": 53 //本月累积量
         map.put("当月登记量","aa");
         map.put("当季登记量","bb");
         map.put("当年登记量","cc");
@@ -893,7 +890,7 @@ public class QunZuFangService {
         map.put("住客身份证号","idcard_number");
         map.put("入住日期","checkInDate");
         map.put("离店日期","checkOutDate");
-        map.put("场所名称","hotelName");
+        map.put("场所名称","placeName");
         map.put("户籍省","province");
         map.put("户籍市","city");
         map.put("户籍县","district");
@@ -1173,6 +1170,296 @@ public class QunZuFangService {
     }
 
     /**
+     * 18、群租房-社区群租房分布
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y50-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF18(String param){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y176-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+//        data = JSON.parseArray(JSON.toJSONString(data.stream().filter(obj -> !((JSONObject) obj).getString("street").equals("全区数量")).collect(Collectors.toList())));
+
+        JSONObject result = new JSONObject();
+        if(ObjectUtils.isEmpty(param)) {
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+            map.put("社区", "community");
+            map.put("群租房数量", "num");
+            result = wuHouService.getPieResult(map, data);
+            String url = "/leaderview/QZF/getQZF18?param=社区:";
+            result.put("url",url);
+
+        }else {
+            JSONArray targetData = new JSONArray();
+            for(int i = 0; i < data.size(); i++){
+                JSONObject obj = data.getJSONObject(i);
+                if(param.split(":")[1].equals(obj.getString("community"))){
+                    targetData = obj.getJSONArray("items");
+                }
+            }
+
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+            map.put("场所名称","placeName");
+            map.put("场所地址","address");
+            map.put("业主（房东）姓名","landlordName");
+            map.put("业主（房东）联系电话","landlordPhone");
+            map.put("经营者姓名","operatorName");
+            map.put("经营者联系电话","operatorPhone");
+            map.put("房间数","roomNum");
+            map.put("床铺数","bedNum");
+            map.put("所属街道","street");
+            map.put("所属社区","community");
+            map.put("网格员姓名","gridMember");
+            map.put("网格员联系电话","gridMemberPhone");
+            map.put("社区民警姓名","communityPolice");
+            map.put("社区民警联系电话","communityPolicePhone");
+            map.put("区域微型消防站联络员姓名","fireStation");
+            map.put("区域微型消防站联络电话","fireStationPhone");
+            result = wuHouService.getPieResult(map,targetData);
+            List<String> columns = Arrays.asList("场所名称","场所地址","经营者姓名","经营者联系电话");
+            result.put("columns",columns);
+        }
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 19、群租房-入住社区top5
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF19(String param) {
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y177-01", "per_page=10000&page=1", null, false, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false, "优易中台调用失败", e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        /*data = JSON.parseArray(JSON.toJSONString(data.stream().filter(obj -> !((JSONObject) obj).getString("street").equals("总店铺数")).collect(Collectors.toList())));
+
+        JSONObject result = new JSONObject();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("所属街道","street");
+        map.put("数量","num");
+        result = wuHouService.getPieResult(map,data);*/
+
+        JSONObject result = new JSONObject();
+        if (ObjectUtils.isEmpty(param)) {
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+            map.put("所属社区", "community");
+            map.put("数量", "num");
+            result = wuHouService.getPieResult(map, data);
+            String url = "/leaderview/QZF/getQZF19?param=所属社区:";
+            result.put("url", url);
+
+        } else {
+            JSONArray targetData = new JSONArray();
+            for (int i = 0; i < data.size(); i++) {
+                JSONObject obj = data.getJSONObject(i);
+                if (param.split(":")[1].equals(obj.getString("community"))) {
+                    targetData = obj.getJSONArray("items");
+                }
+            }
+
+            //    "guestName": "高*",
+            //    "guestPhone": "139****8936",
+            //    "guestIdentity": "510302********1513"
+            //    "hotelName": " ",
+            //    "address": "成都市武侯区凉井社区7组81号", //场所地址
+            //    "street": "金花桥街道",
+            //    "checkInDate": "2022-04-20",
+            //    "checkOutDate": "2022-04-21",
+            //    "id": 127,
+            //    "card": "510302",
+
+            //    "hotelId": "332",
+            //    "placeType": "3",
+
+
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+            map.put("住户姓名", "guestName");
+            map.put("住户手机", "guestPhone");
+            map.put("入住日期", "checkInDate");
+            map.put("离店日期", "checkOutDate");
+            map.put("场所名称", "hotelName");
+            map.put("场所地址", "address");
+            map.put("所属街道", "street");
+            map.put("所属社区", "community");
+            map.put("用户身份证", "guestIdentity");
+            map.put("场所ID", "hotelId");
+
+            result = wuHouService.getPieResult(map, targetData);
+            List<String> columns = Arrays.asList("住户姓名", "场所名称", "场所地址", "入住日期", "离店日期", "所属社区");
+            result.put("columns", columns);
+        }
+
+        return new JsonModel(true, result);
+    }
+
+    /**
+     * 20、群租房-当日登记房间
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF20(String param){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y133-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+//        JSONObject obj = data.getJSONObject(0);
+        JSONObject result = new JSONObject();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        List<String> columns = new ArrayList<>();
+
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("cwt");
+            if("群租房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }
+        //如果参数为空，则直接返回当日入住房间数，否则返回明细
+        if(ObjectUtils.isEmpty(param)){
+            result.put("name","今日登记房间数");
+            result.put("info",ObjectUtils.isEmpty(targetData)? 0 : targetData.size());
+            result.put("url","/leaderview/QZF/getQZF20?param=name:");
+            return new JsonModel(true,result);
+        }
+
+        //今日入住房间明细
+        map.put("场所名称","placeName");
+        map.put("场所地址","address");
+        map.put("详细地址","detailAddress");
+        map.put("业主（房东）姓名","landlordName");
+        map.put("业主（房东）联系电话","landlordPhone");
+        map.put("经营者姓名","operatorName");
+        map.put("经营者联系电话","operatorPhone");
+        map.put("房间数","roomNum");
+        map.put("床铺数","bedNum");
+        map.put("营业状态","status");
+        map.put("民宿介绍","introduce");
+        map.put("网格员姓名","gridMember");
+        map.put("网格员联系电话","gridMemberPhone");
+        map.put("社区民警姓名","communityPolice");
+        map.put("社区民警联系电话","communityPolicePhone");
+        map.put("微消站","fireStation");
+        map.put("微消站电话","fireStationPhone");
+        result = wuHouService.getPieResult(map,targetData);
+        columns = Arrays.asList("场所名称","场所地址","经营者姓名","经营者联系电话","房间数","床铺数");
+        result.put("columns",columns);
+//        }
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 21、群租房-一月内空置排名
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF21(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y96-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("type");
+            if("群租房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }
+
+        JSONObject result = new JSONObject();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("场所名称","placeName");
+        map.put("场所地址","address");
+        map.put("入住次数","num");
+        result = wuHouService.getPieResult(map,targetData);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
+     * 22、群租房-一月内入住排名
+     * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y13-01/data?per_page=100&page=1
+     * 请求方式： GET
+     * Content-Type： multipart/form-data
+     * @return
+     */
+    public JsonModel getQZF22(){
+
+        String res = null;
+        try {
+            res = wuHouService.getData("y97-01","per_page=10000&page=1",null,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JsonModel(false,"优易中台调用失败",e.getMessage());
+        }
+
+        JSONObject object = JSONObject.parseObject(res);
+        JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("type");
+            if("群租房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }
+
+        JSONObject result = new JSONObject();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("场所名称","placeName");
+        map.put("场所地址","address");
+        map.put("入住次数","num");
+        result = wuHouService.getPieResult(map,targetData);
+
+        return new JsonModel(true,result);
+
+    }
+
+    /**
      * 1、未办证住所-全区网约房地图打点
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y49-02/data?per_page=100&page=1
      * 请求方式： GET
@@ -1240,16 +1527,6 @@ public class QunZuFangService {
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
         data = JSON.parseArray(JSON.toJSONString(data.stream().filter(obj -> !((JSONObject) obj).getString("street").equals("全区数量")).collect(Collectors.toList())));
-
-        /*JSONObject result = new JSONObject();
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        //    "street": "簇锦街道", //所属街道
-        //    "num": 44, //网约房数量
-        //    "fjzs": 709 //房间总数
-        map.put("街道","street");
-        map.put("网约房数量","num");
-//        map.put("房间总数","fjzs");
-        result = wuHouService.getPieResult(map,data);*/
 
         JSONObject result = new JSONObject();
         if(ObjectUtils.isEmpty(param)) {
@@ -1593,7 +1870,7 @@ public class QunZuFangService {
         map.put("住客身份证号","idcard_number");
         map.put("入住日期","checkInDate");
         map.put("离店日期","checkOutDate");
-        map.put("场所名称","hotelName");
+        map.put("场所名称","placeName");
         map.put("户籍省","province");
         map.put("户籍市","city");
         map.put("户籍县","district");
@@ -1627,13 +1904,21 @@ public class QunZuFangService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("type");
+            if("民宿网约房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }
 
         JSONObject result = new JSONObject();
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("场所名称","placeName");
         map.put("场所地址","address");
         map.put("入住次数","num");
-        result = wuHouService.getPieResult(map,data);
+        result = wuHouService.getPieResult(map,targetData);
 
         return new JsonModel(true,result);
 
@@ -1658,13 +1943,21 @@ public class QunZuFangService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
+        JSONArray targetData = new JSONArray();
+        for(int i = 0;i < data.size();i++){
+            JSONObject obj = data.getJSONObject(i);
+            String type = obj.getString("type");
+            if("民宿网约房".equals(type)){
+                targetData = obj.getJSONArray("items");
+            }
+        }
 
         JSONObject result = new JSONObject();
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         map.put("场所名称","placeName");
         map.put("场所地址","address");
         map.put("入住次数","num");
-        result = wuHouService.getPieResult(map,data);
+        result = wuHouService.getPieResult(map,targetData);
 
         return new JsonModel(true,result);
 

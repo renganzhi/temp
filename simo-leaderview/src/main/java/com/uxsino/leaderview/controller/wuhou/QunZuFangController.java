@@ -277,6 +277,51 @@ public class QunZuFangController {
         return qunZuFangService.getQZF17(param);
     }
 
+    /**
+     * 18、群租房-社区群租房分布
+     * @return
+     */
+    @GetMapping("/getQZF18")
+    public JsonModel getQZF18(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF18(param);
+    }
+
+    /**
+     * 19、群租房-入住社区top5
+     * @return
+     */
+    @GetMapping("/getQZF19")
+    public JsonModel getQZF19(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF19(param);
+    }
+
+    /**
+     * 20、群租房-当日入住房间
+     * @return
+     */
+    @GetMapping("/getQZF20")
+    public JsonModel getQZF20(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF20(param);
+    }
+
+    /**
+     * 21、群租房-一月内空置排名
+     * @return
+     */
+    @GetMapping("/getQZF21")
+    public JsonModel getQZF21(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF21();
+    }
+
+    /**
+     * 22、群租房-一月内入住排名
+     * @return
+     */
+    @GetMapping("/getQZF22")
+    public JsonModel getQZF22(@RequestParam(required = false) String param){
+        return qunZuFangService.getQZF22();
+    }
+
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————
     //——————————————————————————————————————————————————未办证住所版块—————————————————————————————————————————————————————————

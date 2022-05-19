@@ -415,23 +415,24 @@ public class ZHSQService {
         LinkedHashMap<String, String> targetMap = new LinkedHashMap<>();
 
         JSONObject result = new JSONObject();
-        //涉藏机构
+        //涉藏机构 都没有 //小区院落 都没有  //涉藏商铺 只有民警，没有网格员 //藏餐茶吧 只有民警，没有网格员
         LinkedHashMap<String, String> map1 = new LinkedHashMap<>();
-        //小区院落
+        //小区院落 都没有
         LinkedHashMap<String, String> map2 = new LinkedHashMap<>();
-        //锅庄舞场
+        //锅庄舞场 1
         LinkedHashMap<String, String> map3 = new LinkedHashMap<>();
-        //娱乐场所
+        //娱乐场所 1
         LinkedHashMap<String, String> map4 = new LinkedHashMap<>();
-        //涉藏商铺
+        //涉藏商铺 只有民警，没有网格员
         LinkedHashMap<String, String> map5 = new LinkedHashMap<>();
-        //藏餐茶吧
+        //藏餐茶吧 只有民警，没有网格员
         LinkedHashMap<String, String> map6 = new LinkedHashMap<>();
         //民宿旅社
         LinkedHashMap<String, String> map7 = new LinkedHashMap<>();
         //"company_name": "西南民族大学",
         //"company_address": "洗面桥横街21号",
         //"company_manager": "李燎原",
+        //涉藏机构
         map1.put("名称","company_name");
         map1.put("地址","company_address");
         map1.put("负责人","company_manager");
@@ -439,16 +440,26 @@ public class ZHSQService {
         map1.put("负责人电话","manager_phone");
         map1.put("办公室主任","office_manager");
         map1.put("主任电话","office_manager_phone");
+        map1.put("片区民警姓名","pqmjxm");
+        map1.put("片区民警联系电话","pqmjlxdh");
+        map1.put("片区网格员姓名","pqwgyxm");
+        map1.put("片区网格员联系电话","pqmjlxdh");
         //"name": "甘孜干休所", //场所名称
         //"address": "成都市武侯区广福桥20号", //场所地址
         //"community": "广福桥社区", //所属社区
+        //小区院落
         map2.put("名称","name");
         map2.put("地址","address");
         map2.put("所在社区","community");
         map2.put("涉藏租住人口数","household_population");
         map2.put("物业","company_name");
         map2.put("物业联系方式","company_phone");
+        map2.put("片区民警姓名","pqmjxm");
+        map2.put("片区民警联系电话","pqmjlxdh");
+        map2.put("片区网格员姓名","pqwgyxm");
+        map2.put("片区网格员联系电话","pqmjlxdh");
 
+        //锅庄舞场
         map3.put("场所名称","name");
         map3.put("地址","address");
         map3.put("容纳人数","rnrs");
@@ -457,12 +468,13 @@ public class ZHSQService {
         map3.put("组织者","manager_name");
         map3.put("活动时段","time");
         map3.put("所属社区","community");
-        map4.put("片区民警姓名","pqmjxm");
-        map4.put("片区民警联系电话","pqmjlxdh");
-        map4.put("片区网格员姓名","pqwgyxm");
-        map4.put("片区网格员联系电话","pqmjlxdh");
+        map3.put("片区民警姓名","pqmjxm");
+        map3.put("片区民警联系电话","pqmjlxdh");
+        map3.put("片区网格员姓名","pqwgyxm");
+        map3.put("片区网格员联系电话","pqmjlxdh");
         map3.put("主要风险","zyfx");
 
+        //娱乐场所
         map4.put("场所名称","csmc");
         map4.put("地址","address");
         map4.put("面积","area");
@@ -474,8 +486,11 @@ public class ZHSQService {
         map4.put("安全风险等级","aqfxdj");
         map4.put("片区民警姓名","pqmjxm");
         map4.put("片区民警联系电话","pqmjlxdh");
+        map4.put("片区网格员姓名","pqwgyxm");
+        map4.put("片区网格员联系电话","pqmjlxdh");
         map4.put("燃气使用","rqsy");
 
+        //涉藏商铺
         map5.put("名称","csmc");
         map5.put("地址","address");
         map5.put("所属社区","community");
@@ -487,9 +502,12 @@ public class ZHSQService {
         map5.put("联系方式","fzrlxdh");
         map5.put("员工数量","ygsl");
         map5.put("安全风险等级","aqfxdj");
-        map6.put("片区民警姓名","pqmjxm");
-        map6.put("片区民警联系电话","pqmjlxdh");
+        map5.put("片区民警姓名","pqmjxm");
+        map5.put("片区民警联系电话","pqmjlxdh");
+        map5.put("片区网格员姓名","pqwgyxm");
+        map5.put("片区网格员联系电话","pqmjlxdh");
 
+        //藏餐茶吧
         map6.put("场所名称","csmc");
         map6.put("地址","address");
         map6.put("面积","area");
@@ -501,6 +519,8 @@ public class ZHSQService {
         map6.put("安全风险等级","aqfxdj");
         map6.put("片区民警姓名","pqmjxm");
         map6.put("片区民警联系电话","pqmjlxdh");
+        map6.put("片区网格员姓名","pqwgyxm");
+        map6.put("片区网格员联系电话","pqmjlxdh");
         map6.put("燃气使用","rqsy");
 
         map7.put("名称","name");
@@ -894,13 +914,13 @@ public class ZHSQService {
         zhz2Map.put("姓名","name");
         zhz2Map.put("职务","zw");
         //指挥长所有字段结果
-        zhzObj = getPieResult(zhzMap,data);
+        zhzObj = getPieResult(zhzMap,zhzArray);
         //指挥长姓名、职务字段结果
-        zhz2Obj = getPieResult(zhzMap,data);
+        zhz2Obj = getPieResult(zhz2Map,zhzArray);
         //副指挥长所有字段结果
-        fzhzObj = getPieResult(zhzMap,data);
+        fzhzObj = getPieResult(zhzMap,fzhzArray);
         //副指挥长姓名、职务字段结果
-        fzhz2Obj = getPieResult(zhzMap,data);
+        fzhz2Obj = getPieResult(zhz2Map,fzhzArray);
 
         JSONObject result = new JSONObject();
         result.put("指挥长",zhzObj);
@@ -941,7 +961,7 @@ public class ZHSQService {
     }
 
     /**
-     * 、涉藏处突-
+     * 12、涉藏处突-藏区医院
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -951,7 +971,7 @@ public class ZHSQService {
 
         String res = null;
         try {
-            res = wuHouService.getData("y169-01","per_page=10000&page=1",null,false,true);
+            res = wuHouService.getData("y174-01","per_page=10000&page=1",null,false,true);
         } catch (IOException e) {
             e.printStackTrace();
             return new JsonModel(false,"优易中台调用失败",e.getMessage());
@@ -960,8 +980,23 @@ public class ZHSQService {
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
+        //"sjjzsj": "2022-05-17", //数据截止时间
+        //"hotel_name": "三六三医院", //医院名称
+        //"hotel_address": "成都市武侯区倒桑树街108号", //医院地址
+        //"cws": "500", //床位数
+        //"bwkkzxm": "廖育蕾", //保卫科科长姓名
+        //"bwkkzlxdh": "18980798377", //保卫科科长联系电话
+        //"zybrs": null, //在院病人数
+        //"zyszbrs": "193", //在院涉藏病人数
+        //"bwbzrs": "5", //病危病重人数
+        map.put("医院名称","hotel_name");
+        map.put("医院地址","hotel_address");
+        map.put("床位数","cws");
+        map.put("保卫科科长姓名","bwkkzxm");
+        map.put("保卫科科长联系电话","bwkkzlxdh");
+        map.put("在院病人数","zybrs");
+        map.put("在院涉藏病人数","zyszbrs");
+        map.put("病危病重人数","bwbzrs");
 
         JSONObject result = getPieResult(map,data);
 

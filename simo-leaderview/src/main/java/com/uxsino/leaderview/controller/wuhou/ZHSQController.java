@@ -336,21 +336,64 @@ public class ZHSQController {
         //包含name的是弹窗的
         if(!Strings.isNullOrEmpty(param) && param.contains("name")){
             param = param.split(":")[1];
-            result = obj.getJSONObject(param);
-        }else {
-            result = obj.getJSONObject(param);
-            result.put("url","/leaderview/ZHSQ/getSZCT10?param=name:");
         }
+        result = obj.getJSONObject(param);
 
         return new JsonModel(true,result);
+    }
+
+    /**
+     *10、涉藏处突-指挥体系-文本模块
+     * @return
+     */
+    @GetMapping("/getSZCT11")
+    public JsonModel getSZCT11(@RequestParam(required = false) String param){
+        //前端传回的param是name: 加上param,所以需要取:后的param
+        JSONObject obj = zhsqService.getSZCT10();
+        JSONObject result = new JSONObject();
+        result.put("name",param);
+        result.put("info",param);
+        result.put("url","/leaderview/ZHSQ/getSZCT10?param=name:");
+
+        return new JsonModel(true,result);
+    }
+
+    /**
+     *12、涉藏处突-涉藏医院
+     * @return
+     */
+    @GetMapping("/getSZCT12")
+    public JsonModel getSZCT12(@RequestParam(required = false) String param){
+
+        if(ObjectUtils.isEmpty(param)){
+            JSONObject result = new JSONObject();
+            result.put("name","涉藏医院");
+            result.put("info","2");
+            result.put("url","/leaderview/ZHSQ/getSZCT12?param=name:");
+//            result.put("type","藏区人口");
+            return new JsonModel(true,result);
+        }else {
+
+            //前端传回的param是name: 加上param,所以需要取:后的param
+            /*JsonModel jsonModel1 = zhsqService.getSZCT7();
+            JSONObject obj = (JSONObject) jsonModel1.getObj();
+            JsonModel jsonModel2 = wuHouService.getPieToText(param, obj);
+            Object obj1 = jsonModel2.getObj();
+            //如果返回的是结果，则返回弹窗url
+            if (obj1 instanceof JSONObject) {
+                ((JSONObject) obj1).put("url", "");
+            }*/
+
+            return zhsqService.getSZCT12();
+        }
     }
 
     /**
      *9、涉藏处突-
      * @return
      */
-    @GetMapping("/getSZCT11")
-    public JsonModel getSZCT11(@RequestParam(required = false) String param){
+    @GetMapping("/getSZCT13")
+    public JsonModel getSZCT13(@RequestParam(required = false) String param){
         //前端传回的param是name: 加上param,所以需要取:后的param
         return zhsqService.getSZCT6(param);
     }
