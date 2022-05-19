@@ -370,10 +370,19 @@
     },
     {
         "key": "get_QZF17",
-        "name": "群租房-当日登记",
+        "name": "群租房-当日登记人数",
         "component": "monitor",
         "type": "NEWtextArea",
         "url": "/leaderview/QZF/getQZF17",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF20",
+        "name": "群租房-当日登记房间",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/QZF/getQZF20",
         "method" : "get",
         "params": []
     },
@@ -392,6 +401,42 @@
         "component": "monitor",
         "type": "WuhouTable",
         "url": "/leaderview/QZF/getQZF16",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF18",
+        "name": "群租房-社区群租房分布",
+        "component": "monitor",
+        "type": "NewBar,NewHistogram",
+        "url": "/leaderview/QZF/getQZF18",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF19",
+        "name": "群租房-入住社区top5",
+        "component": "monitor",
+        "type": "WuHolunboTab",
+        "url": "/leaderview/QZF/getQZF19",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF21",
+        "name": "群租房-一月内空置排名",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getQZF21",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_QZF22",
+        "name": "群租房-一月内入住排名",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/QZF/getQZF22",
         "method" : "get",
         "params": []
     },
@@ -1513,6 +1558,69 @@
         "component": "monitor",
         "type": "NEWtextArea",
         "url": "/leaderview/ZHSQ/getSZCT9",
+        "method" : "get",
+        "params": []
+    },
+    {
+        "key": "get_SZCT10",
+        "name": "涉藏处突-指挥体系",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/ZHSQ/getSZCT10",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "指挥长姓名职务",
+                        "value": "指挥长姓名职务"
+                    },
+                    {
+                        "name": "副总指挥长姓名职务",
+                        "value": "副总指挥长姓名职务"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_SZCT11",
+        "name": "涉藏处突-指挥体系",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getSZCT11",
+        "method" : "get",
+        "params": [
+            {
+                "key": "param",
+                "name": "类型",
+                "notNull": true,
+                "type": "drop-down",
+                "dataType": "static",
+                "data": [
+                    {
+                        "name": "指挥长",
+                        "value": "指挥长"
+                    },
+                    {
+                        "name": "副总指挥长",
+                        "value": "副总指挥长"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "get_SZCT12",
+        "name": "涉藏处突-涉藏医院",
+        "component": "monitor",
+        "type": "NEWtextArea",
+        "url": "/leaderview/ZHSQ/getSZCT12",
         "method" : "get",
         "params": []
     },
