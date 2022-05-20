@@ -357,6 +357,10 @@ public class ZHSQService {
         for(int i = 0;i < data.size();i++){
             JSONObject obj = data.getJSONObject(i);
             JSONArray array = obj.getJSONArray("items");
+            if("涉藏高校".equals(obj.getString("type"))){
+                JSONObject obj2 = array.getJSONObject(0);
+                array = obj2.getJSONArray("items");
+            }
             Collections.shuffle(array);
             typeAndDotMap.put(obj.getString("type"), array);
         }
@@ -932,7 +936,7 @@ public class ZHSQService {
     }
 
     /**
-     * 、涉藏处突-
+     * 13、涉藏处突-专家工作组
      * 接口URL： {{baseUrl}}/apis/daas/pro/3/components/y169-01/data?per_page=100&page=1
      * 请求方式： GET
      * Content-Type： multipart/form-data
@@ -950,11 +954,34 @@ public class ZHSQService {
 
         JSONObject object = JSONObject.parseObject(res);
         JSONArray data = object.getJSONArray("data");
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("","");
-        map.put("","");
+        //需要处理的数据
+        JSONArray targetData = new JSONArray();
 
-        JSONObject result = getPieResult(map,data);
+        for (int i = 0 ;i < data.size(); i ++){
+            JSONObject obj = data.getJSONObject(i);
+            if("涉藏工作组".equals(obj.getString("type"))){
+                targetData = obj.getJSONArray("items");
+            }
+        }
+
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        //工作职责  牵头单位    责任部门
+        //    "name": "现场处置组",
+        //
+        //    "gzzz": "负责协调公安、街道街面守护控制力量第一时间赶到现场，控制现场、掌握情报；组织常备处突力量开展处突工作。",
+        //
+        //    "qtdw": "区公安分局",
+        //
+        //    "zrbm": "区委政法委、区综合执法局，各街道"
+
+        map.put("名称","name");
+        map.put("工作职责","gzzz");
+        map.put("牵头单位","qtdw");
+        map.put("责任部门","zrbm");
+
+        JSONObject result = getPieResult(map,targetData);
+        List<String> columns = Arrays.asList("名称","牵头单位");
+        result.put("columns",columns);
 
         return new JsonModel(true,result);
 

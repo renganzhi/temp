@@ -157,6 +157,8 @@ public class ZHSQController {
             idAndNameMap.put("5", "涉藏机构");
             idAndNameMap.put("6", "小区院落");
             idAndNameMap.put("7", "锅庄舞场");
+            idAndNameMap.put("8", "涉藏高校");
+            idAndNameMap.put("9", "涉藏医院");
             param = idAndNameMap.get(param);
             LinkedHashMap<String, JSONArray> typeAndDotMap = (LinkedHashMap<String, JSONArray>) obj.get("typeAndDotMap");
             JSONArray dotArray = typeAndDotMap.get(param);
@@ -389,13 +391,13 @@ public class ZHSQController {
     }
 
     /**
-     *9、涉藏处突-
+     *13、涉藏处突-专家工作组
      * @return
      */
     @GetMapping("/getSZCT13")
     public JsonModel getSZCT13(@RequestParam(required = false) String param){
         //前端传回的param是name: 加上param,所以需要取:后的param
-        return zhsqService.getSZCT6(param);
+        return zhsqService.getSZCT11();
     }
 
 }
