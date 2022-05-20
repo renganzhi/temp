@@ -3,7 +3,7 @@
     <img src="./top.png" alt="">
     <div class="FanPaiTab" @click="getTableData(index)" v-for="(item,index) in NowData" :key="index">
       <div class="FanPaiName">
-         {{NowData[index]['所属街道']}}
+         {{NowData[index][keyWord]}}
       </div>
       <div class="FanPaiValue">
         <NewDoubler :item='getliqiudfill(index)'></NewDoubler>
@@ -12,43 +12,68 @@
   </div>
 </template>
 <script>
-import NewDoubler from "../NewDoubler/index.vue";
+import NewDoubler from '../NewDoubler/index.vue'
 export default {
-  name: "WuHolunboTab",
-  props: ["item"],
+  name: 'WuHolunboTab',
+  props: ['item'],
   components: {NewDoubler},
-  data() {
+  data () {
     return {
       value1: 0,
-      NowData:[],
-      url:''
-    };
+      NowData: [],
+      keyWord: '',
+      url: ''
+    }
   },
   computed: {
-    BodyStyle() {
+    BodyStyle () {
       return {
-        height: this.item.height + "px !important",
-        width: this.item.width + "px !important",
-        fontSize:this.item.textfontSize + "px !important",
-      };
-    },
+        height: this.item.height + 'px !important',
+        width: this.item.width + 'px !important',
+        fontSize: this.item.textfontSize + 'px !important'
+      }
+    }
   },
-  watch: {},
-  mounted() {
-    this.axios.get('leaderview/QZF/getWBZ3').then((res) => {
-      this.NowData = res.obj.rows
-      this.url = res.obj.url
-    })
+  watch: {
+    'item.chartData': {
+      handler: function () {
+        if (this.item.chartData.rows) {
+          this.NowData = this.item.chartData.rows
+        }
+        if (this.item.chartData.url) {
+          this.url = this.item.chartData.url
+        }
+        if (this.item.chartData.columns) {
+          this.keyWord = this.item.chartData.columns[0]
+        }
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    if (this.item.chartData.rows) {
+      this.NowData = this.item.chartData.rows
+    }
+    if (this.item.chartData.url) {
+      this.url = this.item.chartData.url
+    }
+    if (this.item.chartData.columns) {
+      this.keyWord = this.item.chartData.columns[0]
+    }
+    // this.axios.get('leaderview/QZF/getWBZ3').then((res) => {
+    //   this.NowData = res.obj.rows
+    //   this.url = res.obj.url
+    // })
   },
   methods: {
-    getliqiudfill(i) {
-      return{
+    getliqiudfill (i) {
+      return {
         'fontSize': this.item.fontSize,
         'bgClr': '#152b5f',
         'bdClr': '', // #0c527c
         'clr': this.item.textfontColor,
         'Zeroclr': this.item.Zeroclr,
-        'width': this.item.width/5,
+        'width': this.item.width / 5,
         'height': 52,
         'ctLegendShow': 'false',
         'minLength': 16,
@@ -59,18 +84,18 @@ export default {
         }
       }
     },
-    getTableData(i){
+    getTableData (i) {
       var _this = this
       let boxData = {
-        title:'数据详情',
-        data:this.NowData[i],
-        dataUrl:this.url
+        title: '数据详情',
+        data: this.NowData[i],
+        dataUrl: this.url
       }
       this.$parent.$parent.ShowTableBox(boxData)
     }
   },
-  beforeDestroy() {},
-};
+  beforeDestroy () {}
+}
 </script>
 <style scoped lang="scss">
 .WuHolunboTab{

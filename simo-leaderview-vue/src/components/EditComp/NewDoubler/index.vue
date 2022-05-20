@@ -5,7 +5,7 @@
             ref="hideNum"
             :style="numCardValue">8</span> -->
       <TurnOver v-for="(num,index) in numArrZero"
-                :key="index"
+                :key="index + 'a'"
                 :nextNum="num"
                 :numWidth="numWidth"
                 :numHeight="numHeight"
@@ -13,7 +13,7 @@
                 :style="numCardZeroValue">
       </TurnOver>
       <TurnOver v-for="(num,index) in numArr"
-                :key="index"
+                :key="index + 'b'"
                 :nextNum="num"
                 :numWidth="numWidth"
                 :numHeight="numHeight"
