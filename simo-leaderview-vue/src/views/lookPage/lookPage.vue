@@ -2161,7 +2161,7 @@ html[data-theme='blueWhite'] {
     width: 100%;
     tr {
       width: 100%;
-      height: 60px;
+      // height: 60px;
       font-size: 35px !important;
       display: flex;
       color: #94cffa;
@@ -2472,11 +2472,12 @@ html[data-theme='blueWhite'] {
   }
   .Nmae {
     padding: 0px 10px;
-    width: 30%;
+    // width: 30%;
+    white-space: nowrap;
     color: #415468;
   }
   .Data {
-    width: 70%;
+    // width: 70%;
     color: #789fb0;
   }
 }
@@ -2527,6 +2528,7 @@ html[data-theme='blueWhite'] {
   .Nmae {
     padding: 0px 10px;
     // width: 30%;
+    white-space: nowrap;
     color: #b5c2cf;
   }
   .Data {
@@ -2572,11 +2574,12 @@ html[data-theme='blueWhite'] {
   }
   .Nmae {
     padding: 0px 10px;
-    width: 30%;
+    // width: 30%;
+    white-space: nowrap;
     color: #415468;
   }
   .Data {
-    width: 70%;
+    // width: 70%;
     color: #789fb0;
   }
 }

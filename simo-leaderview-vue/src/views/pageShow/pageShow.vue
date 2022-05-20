@@ -67,6 +67,23 @@
         </div>
       </div>
     </div>
+    <div id="popGKQ" v-show="popshowGKQ">
+      <div class="XQBoxTan">
+        <div class="poptitle">{{GKQName}}</div>
+        <div class="CloseBtn" @click="popshowGKQ = false"></div>
+        <div class="lineContain">
+          <img  :src="GKQUrl" alt="">
+          <!-- <div class="line">网格员姓名: {{WGQData.name || '暂无数据'}}</div> -->
+          <!-- {{WGQData['网格员姓名']}} -->
+          <!-- <div class="line">性别: {{WGQData.xb || '暂无数据'}}</div>
+          <div class="line">电话: {{WGQData.lxdh || '暂无数据'}}</div>
+          <div class="line">身份证信息: {{WGQData.sfzh || '暂无数据'}}</div> -->
+          <!-- <div class="line">职务: {{WGQData['职务']}}</div> -->
+          <!-- <div class="line">对应社区民警姓名: 罗恩祥</div>
+          <div class="line">对应社区民警电话: 13281004566</div> -->
+        </div>
+      </div>
+    </div>
     <div id="popXMQ" v-show="popshowXMQ">
       <div class="XQBoxTan" v-if="IsXiuGaiState">
         <div class="poptitle">
@@ -152,13 +169,13 @@
         <div class="poptitle">{{ !sqjcfb ? iswbzzs? nowShowData.placeName:'小旅馆' :'警员详情'}}</div>
         <div class="CloseBtn" @click="popshowBig = false"></div>
         <div class="lineContain" v-if='sqjcfb'>
-          <div class="line">民警:{{nowShowData['民警']}}</div>
-          <div class="line">民警Id:{{nowShowData['民警Id']}}</div>
-          <div class="line">手机:{{nowShowData['手机']}}</div>
-          <div class="line">区域Id: {{nowShowData['区域Id']}}</div>
-          <div class="line">社区:{{nowShowData['社区']}}</div>
-          <div class="line">管控区:{{nowShowData['管控区']}}</div>
-          <div class="line">责任区:{{nowShowData['责任区']}}</div>
+          <div class="line">民警:{{nowShowData['民警'] || '暂无数据'}}</div>
+          <div class="line">民警Id:{{nowShowData['民警Id'] || '暂无数据'}}</div>
+          <div class="line">手机:{{nowShowData['手机'] || '暂无数据'}}</div>
+          <div class="line">区域Id: {{nowShowData['区域Id'] || '暂无数据'}}</div>
+          <div class="line">社区:{{nowShowData['社区'] || '暂无数据'}}</div>
+          <div class="line">管控区:{{nowShowData['管控区'] || '暂无数据'}}</div>
+          <div class="line">责任区:{{nowShowData['责任区'] || '暂无数据'}}</div>
         </div>
         <div class="lineContain" v-else-if='!iswbzzs'>
           <div class="line">名称: {{nowShowData.placeName}}</div>
@@ -248,6 +265,8 @@ let SZGKPoint = [
   [],
   [],
   [],
+  [],
+  [],
   []
 ]// 管控区
 let shezangmarkers = {} // 涉藏点位
@@ -288,7 +307,10 @@ export default {
         name: '',
         details: ''
       },
+      GKQUrl: '',
+      GKQName: '',
       popshowWGQ: false,
+      popshowGKQ: false,
       popshowXMQ: false,
       iswbzzs: false,
       sqjcfb: false,
@@ -816,7 +838,7 @@ export default {
       } else {
         this.removeGongAn()
       }
-      if (data.indexOf('视频巡控') >= 0) {
+      if (data.indexOf('天网巡控') >= 0) {
         if (videoPoint.length === 0) {
           this.addVideoPoint()
         }
@@ -863,6 +885,16 @@ export default {
         this.addSZGKPoint(7)
       } else {
         this.removeSZGKPoint(7)
+      }
+      if (data.indexOf('涉藏高校') >= 0) {
+        this.addSZGKPoint(8)
+      } else {
+        this.removeSZGKPoint(8)
+      }
+      if (data.indexOf('涉藏医院') >= 0) {
+        this.addSZGKPoint(9)
+      } else {
+        this.removeSZGKPoint(9)
       }
       if (data.indexOf('重点区域警情') >= 0) {
         if (shezangmarkers['beiqing'] === undefined || shezangmarkers['beiqing'].length === 0) {
@@ -965,6 +997,23 @@ export default {
             canvasWidth -
             windowPosition.x -
             ContentpopWGQ.offsetWidth * 0.5 +
+            'px'
+        }
+        let ContentpopGKQ = document.getElementById('popGKQ')
+        if (ContentpopGKQ) {
+          let windowPosition = new Cesium.Cartesian2()
+          let canvasHeight = viewer.scene.canvas.height
+          let canvasWidth = viewer.scene.canvas.width
+          Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            viewer.scene,
+            Cesium.Cartesian3.fromDegrees(that.x, that.y, that.z + 100),
+            windowPosition
+          )
+          ContentpopGKQ.style.bottom = canvasHeight - windowPosition.y + 'px'
+          ContentpopGKQ.style.right =
+            canvasWidth -
+            windowPosition.x -
+            ContentpopGKQ.offsetWidth * 0.5 +
             'px'
         }
         let containerpopWGQ = document.getElementById('popXMQ')
@@ -1199,7 +1248,7 @@ export default {
         dataArray: dataArray,
         billboard: {
           image: img || this.header + 'img/click.png',
-          scale: 0.2
+          scale: 0.3
         }
       })
       billboardMarkers.push(
@@ -1396,7 +1445,8 @@ export default {
             ygsl: '员工数量',
             aqfxdj: '安全风险等级',
             pqmjxm: '片区民警姓名',
-            pqmjlxdh: '片区民警联系电话'
+            pqmjlxdh: '片区民警联系电话',
+            gkcs: '管控措施'
           }
         } else if (nowShowData.type === '涉藏商店') {
           this.SZCTDataNameArray = {
@@ -1951,7 +2001,8 @@ export default {
             hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
             perPositionHeight: true,
             material: color
-          }
+          },
+          GKQName: item.name
         })
         GuanKongquPoint.push(gkPoint)
         GuanKongquPoint.push(poly)
@@ -2275,10 +2326,28 @@ export default {
             })
           })
         })
+      } else if (i === 8) {
+        this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
+          data.obj.dotArray.forEach((ele, index) => {
+            if (ele.xq_name.indexOf('太平园') === -1) {
+              let name = '西南民族大学' + ele.xq_name
+              // if (index <= 40) {
+              let en = this.addLabelMarker(
+                ele.longitude * 1,
+                ele.latitude * 1,
+                this.header + `img/imgs/${i}.png`,
+                name + 'SZGK' + i,
+                'small',
+                ele
+              )
+              SZGKPoint[i].push(en)
+            }
+          })
+        })
       } else {
         this.axios.get(`/leaderview/ZHSQ/getSZCT3?param=${i}`).then(data => {
           data.obj.dotArray.forEach((ele, index) => {
-            let name = ele.csmc || ele.company_name || ele.name
+            let name = ele.csmc || ele.company_name || ele.name || ele.hotel_name
             // if (index <= 40) {
             let en = this.addLabelMarker(
               ele.longitude * 1,
@@ -2445,6 +2514,7 @@ export default {
         this.popshow = false
         this.popshowBig = false
         this.popshowWGQ = false
+        this.popshowGKQ = false
         this.popshowXMQ = false
         this.SZDataShowBig = false
         this.SZCTDataXQ = false
@@ -2454,8 +2524,10 @@ export default {
         this.currentWangGe = {}
         this.iswbzzs = false
         this.sqjcfb = false
+        this.GKQName = ''
+        this.GKQUrl = ''
         this.SZGKName = ''
-        console.log('pick', picked.id.id, picked.id.name, picked.id.dataArray, picked.id.community, picked.id.wangGeInfo)
+        console.log('pick', picked.id)
         if (picked && picked.id && picked.id.name && picked.id.name.indexOf('网格区') > 0) {
           if (picked.id.community) {
             this.currentWangGe = picked.id.wangGeInfo
@@ -2667,6 +2739,27 @@ export default {
                   }
                   this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK7')) + '锅庄舞场'
                 }
+                if (picked.id.name.indexOf('SZGK8') >= 0) { // 涉藏高校
+                  this.SZCTDataNameArray = {
+                    xq_address: '校区地址',
+                    xq_zjzxxsrs: '校区在籍在校学生人数',
+                    xq_zjssmzxsrs: '校区在籍少数民族学生人数',
+                    xn: '学年'
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK8'))
+                }
+                if (picked.id.name.indexOf('SZGK9') >= 0) { // 涉藏医院
+                  this.SZCTDataNameArray = {
+                    hotel_address: '地址',
+                    cws: '床位数',
+                    bwkkzxm: '保卫科科长姓名',
+                    bwkkzlxdh: '保卫科科长联系电话',
+                    zybrs: '在院病人数',
+                    zyszbrs: '在院涉藏病人数',
+                    bwbzrs: '病危病重人数'
+                  }
+                  this.SZGKName = picked.id.name.slice(0, picked.id.name.indexOf('SZGK9'))
+                }
                 this.SZCTDataXQ = true
                 this.SZCTDataArray = []
                 for (const key in picked.id.DataArry) {
@@ -2706,6 +2799,11 @@ export default {
           //     }
           //     contrastBias.selected.push(pickObject)
           //   }
+        } else if (picked && picked.id && picked.id.GKQName) {
+          console.log('GKQName', picked.id.GKQName)
+          this.GKQName = picked.id.GKQName
+          this.GKQUrl = require('../../../static/img/GKQ/' + picked.id.GKQName + '.png')
+          this.popshowGKQ = true
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
       handler.setInputAction(jieliu, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
@@ -2966,9 +3064,10 @@ export default {
   font-size: 18px;
 }
 .content #SZCTpopBig .poptitle {
-  position: absolute;
-  top: 70px;
-  left: 50px;
+  position: relative;
+  /* top: 70px; */
+  left: 30px;
+  width:95%;
   font-size: 46px !important;
   color: #bbeefe;
   font-family: PangmenMainRoadTitleBody !important;
@@ -2985,8 +3084,8 @@ export default {
 .content #SZCTpopBig .lineContain {
   padding: 10px 40px;
   margin: 0 20px;
-  top: 70px;
-  height: 70%;
+  /* top: 70px; */
+  height: 200px;
   position: relative;
   overflow: auto;
 }
@@ -3098,5 +3197,43 @@ export default {
   top: 35px;
   text-align: right;
   padding: 0 50px;
+}
+
+.content #popGKQ {
+  width: 850px;
+  height: 429px;
+  background: url(./tipBig.png);
+  background-size: 100% 100%;
+  color: rgb(255, 255, 255);
+  position: relative;
+  padding: 70px 0px 0px 60px;
+  position: absolute;
+  z-index: 10;
+  font-size: 18px;
+}
+.content #popGKQ .poptitle {
+  position: absolute;
+  top: 70px;
+  left: 50px;
+  font-size: 46px !important;
+  color: #bbeefe;
+  font-family: PangmenMainRoadTitleBody !important;
+  font-weight: 400;
+}
+.content #popGKQ .CloseBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 0px;
+  height: 50px;
+  width: 50px;
+}
+.content #popGKQ .lineContain {
+  /* padding: 20px 60px; */
+  top: 70px;
+  height: 75%;
+  width: 90%;
+  position: relative;
+  overflow: auto;
 }
 </style>
