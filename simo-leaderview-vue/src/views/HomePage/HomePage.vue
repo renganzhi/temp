@@ -117,8 +117,8 @@
                   <div class="BoxTitle">涉藏高校详情</div>
                   <div class="BoxBody" v-show="barData.length"  style="display:flex;justify-content: center;align-items: center;">
                     <div class="ElineBox">
-                      <div style="width:450px;height:450px;" ref="ElineBox0"></div>
-                      <div style="width:450px;height:450px;" ref="ElineBox1"></div>
+                      <div style="width:800px;height:450px;margin-right:20px;" ref="ElineBox0"></div>
+                      <!-- <div style="width:450px;height:450px;" ref="ElineBox1"></div> -->
                     </div>
                     <div class="textBox" v-if="barData[2]">
                       <div v-for="(v, i) in barData[2].data" :key="i">
@@ -150,11 +150,11 @@
                   <div class="BoxTitle">{{infoData.title}}</div>
                   <div class="BoxBody" v-show="infoData.dataArray&& infoData.dataArray.length"  style="display:flex;justify-content: center;align-items: center;">
                     <div class="infoBox" v-for="(data,index) in infoData.dataArray" :key="index">
-                      <img :src="data.img" alt="">
+                      <img :src="data['照片']" alt="">
                       <div>
-                        <div><span>姓名：</span><span>{{data.name}}</span></div>
-                        <div><span>职位：</span><span>{{data.position}}</span></div>
-                        <div v-show="data.phone"><span>电话：</span><span>{{data.phone}}</span></div>
+                        <div><span class="title">姓名：</span><span class="data">{{data['姓名']}}</span></div>
+                        <div><span class="title">职务：</span><span class="data">{{data['职务']}}</span></div>
+                        <div><span class="title">电话：</span><span class="data">{{data['手机']}}</span></div>
                       </div>
                     </div>
                   </div>
@@ -564,150 +564,155 @@ export default {
     ShowElineBox (dataArray) {
       // if (dataArray.data) {
       if (dataArray.data.histogramData && dataArray.data.histogramData[0]) {
-        this.showElineBox = true
-        let eline = echarts.init(this.$refs.ElineBox0)
-        let myData = dataArray.data.histogramData[0]
-        this.barData[0] = myData
-        let myseries = []
-        let myXAxisData = []
-        let mySeriesData = []
-        myData.rows.forEach(element => {
-          myData.columns.forEach((e, d) => {
-            if (d === 0) {
-              myXAxisData.push(element[e])
-            } else {
-              if (mySeriesData[d]) {
-                mySeriesData[d].push(element[e])
+        if (dataArray.data.histogramData[0]['校区'].indexOf('太平园') === -1) {
+          this.showElineBox = true
+          let eline = echarts.init(this.$refs.ElineBox0)
+          let myData = dataArray.data.histogramData[0]
+          this.barData[0] = myData
+          let myseries = []
+          let myXAxisData = []
+          let mySeriesData = []
+          myData.rows.forEach(element => {
+            myData.columns.forEach((e, d) => {
+              if (d === 0) {
+                myXAxisData.push(element[e])
               } else {
-                mySeriesData[d] = [element[e]]
-              }
-            }
-          })
-        })
-        mySeriesData.forEach((data, index) => {
-          if (data) {
-            myseries.push({
-              data: data,
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  color: '#6fcaf7'
+                if (mySeriesData[d]) {
+                  mySeriesData[d].push(element[e])
+                } else {
+                  mySeriesData[d] = [element[e]]
                 }
               }
             })
-          }
-        })
-        let option = {
-          title: {
-            text: dataArray.data.histogramData[0]['校区'] + '少数民族人数TOP5',
-            textStyle: {
-              color: '#fff',
-              fontSize: '40'
+          })
+          mySeriesData.forEach((data, index) => {
+            if (data) {
+              myseries.push({
+                data: data,
+                type: 'bar',
+                itemStyle: {
+                  normal: {
+                    color: '#6fcaf7'
+                  }
+                }
+              })
             }
-          },
-          xAxis: {
-            type: 'category',
-            data: myXAxisData,
-            label: {
+          })
+          let option = {
+            title: {
+              text: dataArray.data.histogramData[0]['校区'] + '少数民族人数TOP5',
               textStyle: {
-                fontSize: 30,
-                color: '#fff'
+                color: '#fff',
+                fontSize: '40'
               }
             },
-            axisLabel: {
-              interval: 0, // 采用不重叠的方式展示
-              textStyle: {
-                color: '#fff',
-                fontSize: '30'
+            xAxis: {
+              type: 'category',
+              data: myXAxisData,
+              label: {
+                textStyle: {
+                  fontSize: 30,
+                  color: '#fff'
+                }
+              },
+              axisLabel: {
+                interval: 0, // 采用不重叠的方式展示
+                textStyle: {
+                  color: '#fff',
+                  fontSize: '30'
+                }
               }
-            }
-          },
-          yAxis: {
-            type: 'value',
-            axisLabel: {
-              interval: 0, // 采用不重叠的方式展示
-              textStyle: {
-                color: '#fff',
-                fontSize: '30'
+            },
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                interval: 0, // 采用不重叠的方式展示
+                textStyle: {
+                  color: '#fff',
+                  fontSize: '30'
+                }
               }
-            }
-          },
-          series: myseries
+            },
+            series: myseries
+          }
+          eline.setOption(option)
         }
-        eline.setOption(option)
       }
       if (dataArray.data.histogramData && dataArray.data.histogramData[1]) {
-        this.showElineBox = true
-        let eline = echarts.init(this.$refs.ElineBox1)
-        let myData = dataArray.data.histogramData[1]
-        this.barData[1] = myData
-        let myseries = []
-        let myXAxisData = []
-        let mySeriesData = []
-        myData.rows.forEach(element => {
-          myData.columns.forEach((e, d) => {
-            if (d === 0) {
-              myXAxisData.push(element[e])
-            } else {
-              if (mySeriesData[d]) {
-                mySeriesData[d].push(element[e])
+        if (dataArray.data.histogramData[1]['校区'].indexOf('太平园') === -1) {
+          this.showElineBox = true
+          let eline = echarts.init(this.$refs.ElineBox0)
+          let myData = dataArray.data.histogramData[1]
+          this.barData[1] = myData
+          let myseries = []
+          let myXAxisData = []
+          let mySeriesData = []
+          myData.rows.forEach(element => {
+            myData.columns.forEach((e, d) => {
+              if (d === 0) {
+                myXAxisData.push(element[e])
               } else {
-                mySeriesData[d] = [element[e]]
-              }
-            }
-          })
-        })
-        mySeriesData.forEach((data, index) => {
-          if (data) {
-            myseries.push({
-              data: data,
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  color: '#5c84e7'
+                if (mySeriesData[d]) {
+                  mySeriesData[d].push(element[e])
+                } else {
+                  mySeriesData[d] = [element[e]]
                 }
               }
             })
-          }
-        })
-        let option = {
-          title: {
-            text: dataArray.data.histogramData[0]['校区'] + '少数民族人数TOP5',
-            textStyle: {
-              color: '#fff',
-              fontSize: '40'
+          })
+          mySeriesData.forEach((data, index) => {
+            if (data) {
+              myseries.push({
+                data: data,
+                type: 'bar',
+                itemStyle: {
+                  normal: {
+                    color: '#5c84e7'
+                  }
+                }
+              })
             }
-          },
-          xAxis: {
-            type: 'category',
-            data: myXAxisData,
-            label: {
+          })
+          let option = {
+            title: {
+              text: dataArray.data.histogramData[1]['校区'] + '少数民族人数TOP5',
               textStyle: {
-                fontSize: 30,
-                color: '#fff'
+                color: '#fff',
+                fontSize: '35'
+              },
+              padding: [0, 0, 10, 0]
+            },
+            xAxis: {
+              type: 'category',
+              data: myXAxisData,
+              label: {
+                textStyle: {
+                  fontSize: 30,
+                  color: '#fff'
+                }
+              },
+              axisLabel: {
+                interval: 0, // 采用不重叠的方式展示
+                textStyle: {
+                  color: '#fff',
+                  fontSize: '30'
+                }
               }
             },
-            axisLabel: {
-              interval: 0, // 采用不重叠的方式展示
-              textStyle: {
-                color: '#fff',
-                fontSize: '30'
+            yAxis: {
+              type: 'value',
+              axisLabel: {
+                interval: 0, // 采用不重叠的方式展示
+                textStyle: {
+                  color: '#fff',
+                  fontSize: '30'
+                }
               }
-            }
-          },
-          yAxis: {
-            type: 'value',
-            axisLabel: {
-              interval: 0, // 采用不重叠的方式展示
-              textStyle: {
-                color: '#fff',
-                fontSize: '30'
-              }
-            }
-          },
-          series: myseries
+            },
+            series: myseries
+          }
+          eline.setOption(option)
         }
-        eline.setOption(option)
       }
       if (dataArray.data.textData && dataArray.data.textData.rows) {
         this.barData[2] = {
@@ -2730,25 +2735,36 @@ html[data-theme='blueWhite'] {
 }
 .infoBox{
   width: 100%;
-  height: 200px;
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
   font-size: 35px !important;
-  border-bottom: 1px solid white ;
+  border-bottom: 1px solid hsla(208, 100%, 20%, 0.836) ;
   >img{
-    width: 40%;
-    height: 100%;
+    width: 240px;
+    height: 300px;
   }
   >div{
     width: 60%;
     height: 100%;
+    padding-left:30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    // text-align: center;
+    >div{
+     width: 100%;
+     font-size: 45px;
+     .title{
+       width: 20%;
+       color:#0089ff;
+     }
+     .data{
+       width: 80%;
+     }
+    }
   }
 }
 </style>

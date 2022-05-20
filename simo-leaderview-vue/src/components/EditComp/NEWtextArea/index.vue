@@ -102,6 +102,32 @@ export default {
                 }
               })
           }
+        } else if (this.item.chartData.name === '指挥长') {
+          let boxData = {
+            title: '指挥长信息',
+            dataArray: []
+          }
+          this.axios
+            .get(this.item.chartData.url + this.item.chartData.name)
+            .then((data) => {
+              if (data.success) {
+                boxData.dataArray = data.obj.rows
+                this.$parent.$parent.ShowInformation(boxData)
+              }
+            })
+        } else if (this.item.chartData.name === '副总指挥长') {
+          let boxData = {
+            title: '副总指挥长信息',
+            dataArray: []
+          }
+          this.axios
+            .get(this.item.chartData.url + this.item.chartData.name)
+            .then((data) => {
+              if (data.success) {
+                boxData.dataArray = data.obj.rows
+                this.$parent.$parent.ShowInformation(boxData)
+              }
+            })
         } else {
           let boxData = {
             title: '数据详情',
