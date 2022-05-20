@@ -1616,6 +1616,15 @@
         ]
     },
     {
+        "key": "get_SZCT13",
+        "name": "涉藏处突-指挥体系-专业工作组",
+        "component": "monitor",
+        "type": "WuhouTable",
+        "url": "/leaderview/ZHSQ/getSZCT13",
+        "method" : "get",
+        "params": []
+    },
+    {
         "key": "get_SZCT12",
         "name": "涉藏处突-涉藏医院",
         "component": "monitor",
