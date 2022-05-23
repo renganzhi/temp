@@ -719,10 +719,11 @@ export default {
       } else {
         if (this.nowPageName.indexOf('群租房') >= 0) {
           this.initJXJ()
+          this.flyJXJ()
         } else {
           this.initBase()
+          this.fly()
         }
-        this.fly()
       }
       if (this.nowPageName && this.nowPageName.indexOf('群租房') >= 0) {
         this.axios.get(`/leaderview/WuHou/getOrgaDot`).then(data => {
