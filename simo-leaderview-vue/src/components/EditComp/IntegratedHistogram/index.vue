@@ -6,7 +6,7 @@
           {{item}}
         </div>
       </div>
-      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-else 
+      <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-else
                 :style="FontSizeStyle">
         <Select v-model="optIndex" >
             <Option
@@ -138,7 +138,7 @@ export default {
         this.mychart.resize()
       })
     },
-    'optIndex':function(){
+    'optIndex': function () {
       this.changeDataIndex(this.optIndex)
     },
     'item.height': function () {
@@ -259,11 +259,11 @@ export default {
                       color: this.item.topTextColor
                     },
                     formatter: (params, index) => {
-                      if(params.value !== 0){
+                      if (params.value !== 0) {
                         return params.value
                       }
                       return ''
-                    },
+                    }
                   },
                   itemStyle: {
                     normal: {
@@ -302,7 +302,7 @@ export default {
                   textStyle: {
                     fontSize: this.item.axisLabelSize1,
                     color: this.item.topTextColor
-                  },
+                  }
                 },
                 itemStyle: {
                   normal: {
@@ -472,7 +472,7 @@ export default {
               textStyle: {
                 color: this.item.legendColor1 || '#828bac',
                 fontSize: this.item.axisLabelSize1 || '14'
-              },
+              }
               // formatter: function (value) {
               //   if (value >= 1000) {
               //     return (value / 1000 + 'k')
@@ -509,7 +509,7 @@ export default {
             },
             formatter: (params, index) => {
               var value = ''
-              value =  params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData1.unit || '')
+              value = params.name + '<br>' + params.marker + params.seriesName + ':' + params.value + (this.item.chartData1.unit || '')
               return value
             }
           // formatter: (params, index) => {
@@ -693,7 +693,7 @@ export default {
               textStyle: {
                 color: this.item.legendColor2 || '#828bac',
                 fontSize: this.item.axisLabelSize2 || '14'
-              },
+              }
               // formatter: function (value) {
               //   if (value >= 1000) {
               //     return (value / 1000 + 'k')
@@ -730,7 +730,7 @@ export default {
             },
             formatter: (params, index) => {
               var value = ''
-              value =  params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData2.unit || '')
+              value = params.name + '<br>' + params.marker + params.seriesName + ':' + params.value + (this.item.chartData2.unit || '')
               return value
             }
           },
@@ -966,7 +966,7 @@ export default {
               textStyle: {
                 color: this.item.legendColor3 || '#828bac',
                 fontSize: this.item.axisLabelSize3 || '14'
-              },
+              }
               // formatter: function (value) {
               //   if (value >= 1000) {
               //     return (value / 1000 + 'k')
@@ -1003,7 +1003,7 @@ export default {
             },
             formatter: (params, index) => {
               var value = ''
-              value = params.name + '<br>' + params.marker  + params.seriesName + ':' + params.value + (this.item.chartData3.unit || '')
+              value = params.name + '<br>' + params.marker + params.seriesName + ':' + params.value + (this.item.chartData3.unit || '')
               return value
             }
           },
@@ -1235,7 +1235,7 @@ export default {
               textStyle: {
                 color: this.item.legendColor4 || '#828bac',
                 fontSize: this.item.axisLabelSize4 || '14'
-              },
+              }
               // formatter: function (value) {
               //   if (value >= 1000) {
               //     return (value / 1000 + 'k')
@@ -1328,26 +1328,58 @@ export default {
     this.mychart.on('click', function (params) {
       let dataOut = []
       let dataUrl = ''
-      if(_this.item.barType === 'NewHistogram'){
-          dataOut = _this.item.chartData1.rows[params.dataIndex]
-          dataUrl = _this.item.chartData1.url
-      }else if(_this.item.barType === 'NewGroupHistogram'){
-          dataOut = _this.item.chartData2.rows[params.dataIndex]
-          dataUrl = _this.item.chartData2.url
-      }else if(_this.item.barType === 'NewGroupLeftHistogram'){
-          dataOut = _this.item.chartData3.rows[params.dataIndex]
-          dataUrl = _this.item.chartData3.url
-      }else if(_this.item.barType === 'NewBar'){
-          dataOut = _this.item.chartData4.rows[_this.item.chartData4.rows.length - params.dataIndex - 1]
-          dataUrl = _this.item.chartData4.url
+      let keys = ''
+      let chartData = '' // 折线图url
+      let urls = ''
+      if (_this.item.barType === 'NewHistogram') {
+        dataOut = _this.item.chartData1.rows[params.dataIndex]
+        dataUrl = _this.item.chartData1.url
+        keys = _this.item.chartData1.columns[0]
+        chartData = _this.item.chartData1.chartData
+        urls = _this.item.chartData1.urls
+      } else if (_this.item.barType === 'NewGroupHistogram') {
+        dataOut = _this.item.chartData2.rows[params.dataIndex]
+        dataUrl = _this.item.chartData2.url
+        keys = _this.item.chartData2.columns[0]
+        chartData = _this.item.chartData2.chartData
+        urls = _this.item.chartData2.urls
+      } else if (_this.item.barType === 'NewGroupLeftHistogram') {
+        dataOut = _this.item.chartData3.rows[params.dataIndex]
+        dataUrl = _this.item.chartData3.url
+        keys = _this.item.chartData3.columns[0]
+        chartData = _this.item.chartData3.chartData
+        urls = _this.item.chartData3.urls
+      } else if (_this.item.barType === 'NewBar') {
+        dataOut = _this.item.chartData4.rows[_this.item.chartData4.rows.length - params.dataIndex - 1]
+        dataUrl = _this.item.chartData4.url
+        keys = _this.item.chartData4.columns[0]
+        chartData = _this.item.chartData4.chartData
+        urls = _this.item.chartData4.urls
       }
-      let boxData = {
-        title:'数据详情',
-        data:dataOut,
-        dataUrl:dataUrl
+      console.log('dataOut', dataOut)
+      if (chartData) {
+        let boxData = {
+          title: dataOut[keys] + '信息详情',
+          chartUrl: chartData,
+          data: dataOut
+        }
+        _this.$parent.$parent.ShowElineBox(boxData)
+      } else if (urls) {
+        let boxData = {
+          title: dataOut[keys] + '信息详情',
+          urls: urls,
+          data: dataOut
+        }
+        _this.$parent.$parent.ShowElineBox(boxData)
+      } else {
+        let boxData = {
+          title: '数据详情',
+          data: dataOut,
+          dataUrl: dataUrl
+        }
+        _this.$parent.$parent.ShowTableBox(boxData)
       }
-      _this.$parent.$parent.ShowTableBox(boxData)
-    });
+    })
   },
   beforeDestroy () {
     this.mychart.dispose()

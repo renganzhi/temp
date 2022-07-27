@@ -786,41 +786,7 @@ export default {
           {
             'name': '坐标文字大小',
             'key': 'axisLabelSize1',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '坐标单位颜色',
@@ -830,41 +796,7 @@ export default {
           {
             'name': '坐标单位大小',
             'key': 'DanweiSize1',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           }
         ],
         'parentKey': {
@@ -1049,49 +981,7 @@ export default {
             'parentKey': {
               'ctLegendShow2': true
             },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '12',
-                'value': 12
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '18',
-                'value': 18
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '图例字颜色',
@@ -1248,41 +1138,7 @@ export default {
           {
             'name': '坐标文字大小',
             'key': 'axisLabelSize2',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '坐标单位颜色',
@@ -1292,41 +1148,7 @@ export default {
           {
             'name': '坐标单位大小',
             'key': 'DanweiSize2',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           }
         ],
         'parentKey': {
@@ -1460,49 +1282,7 @@ export default {
             'parentKey': {
               'ctLegendShow3': true
             },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '12',
-                'value': 12
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '18',
-                'value': 18
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '图例字颜色',
@@ -1698,41 +1478,7 @@ export default {
           {
             'name': '坐标文字大小',
             'key': 'axisLabelSize3',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '坐标单位颜色',
@@ -1742,41 +1488,7 @@ export default {
           {
             'name': '坐标单位大小',
             'key': 'DanweiSize3',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           }
         ],
         'parentKey': {
@@ -1910,49 +1622,7 @@ export default {
             'parentKey': {
               'ctLegendShow4': true
             },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '12',
-                'value': 12
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '18',
-                'value': 18
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '图例字颜色',
@@ -2123,41 +1793,7 @@ export default {
           {
             'name': '坐标文字大小',
             'key': 'axisLabelSize4',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '坐标单位颜色',
@@ -2167,41 +1803,7 @@ export default {
           {
             'name': '坐标单位大小',
             'key': 'DanweiSize4',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           }
         ],
         'parentKey': {
