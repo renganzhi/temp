@@ -140,33 +140,7 @@ export default {
             'parentKey': {
               'ctLegendShow': true
             },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '图例宽度',

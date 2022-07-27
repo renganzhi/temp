@@ -148,49 +148,7 @@ export default {
             'parentKey': {
               'ctLegendShow': true
             },
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '12',
-                'value': 12
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '18',
-                'value': 18
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '图例高度',
@@ -338,41 +296,7 @@ export default {
           {
             'name': '坐标文字大小',
             'key': 'axisLabelSize',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '坐标单位颜色',
@@ -382,41 +306,7 @@ export default {
           {
             'name': '坐标单位大小',
             'key': 'DanweiSize',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '折线图类型',
@@ -585,53 +475,7 @@ export default {
           {
             'name': '数据点大小',
             'key': 'symbolSize',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '4',
-                'value': 4
-              },
-              {
-                'name': '6',
-                'value': 6
-              },
-              {
-                'name': '8',
-                'value': 8
-              },
-              {
-                'name': '10',
-                'value': 10
-              },
-              {
-                'name': '12',
-                'value': 12
-              },
-              {
-                'name': 14,
-                'value': 14
-              },
-              {
-                'name': 16,
-                'value': 16
-              },
-              {
-                'name': 20,
-                'value': 20
-              },
-              {
-                'name': 24,
-                'value': 24
-              },
-              {
-                'name': 28,
-                'value': 28
-              },
-              {
-                'name': 30,
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           },
           {
             'name': '是否标点',
@@ -651,33 +495,7 @@ export default {
           {
             'name': '标点字大小',
             'key': 'PointSize',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '14',
-                'value': 14
-              },
-              {
-                'name': '16',
-                'value': 16
-              },
-              {
-                'name': '20',
-                'value': 20
-              },
-              {
-                'name': '24',
-                'value': 24
-              },
-              {
-                'name': '28',
-                'value': 28
-              },
-              {
-                'name': '30',
-                'value': 30
-              }
-            ]
+            'tag': 'input'
           }
         ]
       },
