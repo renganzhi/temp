@@ -4,6 +4,13 @@ export default{
     'imgClass': 'icon-n-number',
     'chartType': 'NewNumber',
     'fontSize': 36,
+    'legendFontSize': 12,
+    'upFontSize': 26,
+    'upPos': 50,
+    'upIcon': 6,
+    'upIconLeft': -20,
+    'upIconTop': 23,
+    'upShow': 'false',
     'fontFamily': 'asn',
     'clr': '#30a1ff',
     'width': 300,
@@ -12,7 +19,8 @@ export default{
     'chartData': {
       'name': '繁忙度',
       'unit': '%',
-      'value': 60
+      'value': 60,
+      'type': 'percent'
     }
   },
   'styles': {
@@ -20,7 +28,8 @@ export default{
       {
         'name': '图例配置',
         'tag': 'Hint',
-        'childoption': [{
+        'childoption': [
+          {
           'name': '图例可见性',
           'key': 'ctLegendShow',
           'tag': 'select',
@@ -34,7 +43,87 @@ export default{
               'value': 'false'
             }
           ]
-        }]
+        },
+        {
+          'name': '字号',
+          'key': 'legendFontSize',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '12',
+              'value': 12
+            },
+            {
+              'name': '13',
+              'value': 13
+            },
+            {
+              'name': '14',
+              'value': 14
+            },
+            {
+              'name': '16',
+              'value': 16
+            },
+            {
+              'name': '18',
+              'value': 18
+            },
+            {
+              'name': '20',
+              'value': 20
+            },
+            {
+              'name': '24',
+              'value': 24
+            },
+            {
+              'name': '26',
+              'value': 26
+            },
+            {
+              'name': '28',
+              'value': 28
+            },
+            {
+              'name': '30',
+              'value': 30
+            },
+            {
+              'name': '36',
+              'value': 36
+            },
+            {
+              'name': '40',
+              'value': 40
+            },
+            {
+              'name': '48',
+              'value': 48
+            },
+            {
+              'name': '54',
+              'value': 54
+            },
+            {
+              'name': '60',
+              'value': 60
+            },
+            {
+              'name': '72',
+              'value': 72
+            },
+            {
+              'name': '84',
+              'value': 84
+            },
+            {
+              'name': '88',
+              'value': 88
+            }
+          ]
+        }
+      ]
       },
       {
         'name': '图表样式',
@@ -134,6 +223,126 @@ export default{
           'key': 'fontFamily',
           'tag': 'fontFamily'
         }]
+      },
+      {
+        'name': '悬浮配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '悬浮可见性',
+            'key': 'upShow',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '显示',
+                'value': 'true'
+              },
+              {
+                'name': '隐藏',
+                'value': 'false'
+              }
+            ]
+          },
+          {
+            'name': '悬浮字号',
+            'key': 'upFontSize',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '12',
+                'value': 12
+              },
+              {
+                'name': '13',
+                'value': 13
+              },
+              {
+                'name': '14',
+                'value': 14
+              },
+              {
+                'name': '16',
+                'value': 16
+              },
+              {
+                'name': '18',
+                'value': 18
+              },
+              {
+                'name': '20',
+                'value': 20
+              },
+              {
+                'name': '24',
+                'value': 24
+              },
+              {
+                'name': '26',
+                'value': 26
+              },
+              {
+                'name': '28',
+                'value': 28
+              },
+              {
+                'name': '30',
+                'value': 30
+              },
+              {
+                'name': '36',
+                'value': 36
+              },
+              {
+                'name': '40',
+                'value': 40
+              },
+              {
+                'name': '48',
+                'value': 48
+              },
+              {
+                'name': '54',
+                'value': 54
+              },
+              {
+                'name': '60',
+                'value': 60
+              },
+              {
+                'name': '72',
+                'value': 72
+              },
+              {
+                'name': '84',
+                'value': 84
+              },
+              {
+                'name': '88',
+                'value': 88
+              }
+            ]
+          },
+          {
+            'name': '悬浮位置',
+            'key': 'upPos',
+            'tag': 'input'
+          },
+          {
+            'name': '悬浮图标大小',
+            'key': 'upIcon',
+            'tag': 'input'
+          },
+          {
+            'name': '图标左边距',
+            'key': 'upIconLeft',
+            'tag': 'input'
+          },
+          {
+            'name': '图标上边距',
+            'key': 'upIconTop',
+            'tag': 'input'
+          }
+        ]
       }
     ]
   }
