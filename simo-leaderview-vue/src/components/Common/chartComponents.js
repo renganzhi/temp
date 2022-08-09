@@ -68,6 +68,8 @@ import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
+import IframePop from '@/components/EditComp/IframePop'
+import WordClouds from '@/components/EditComp/WordClouds'
 import Decorator from '@/components/EditComp/decorator'
 import DragResize from '@/components/EditComp/DragResize' // drag拖拽组件
 import TDModel from '@/components/EditComp/TDModel' // drag拖拽组件
@@ -147,5 +149,7 @@ export default {
   TDModel,
   VmVareTopo,
   Hotspot,
+  IframePop,
+  WordClouds,
   Decorator
 }

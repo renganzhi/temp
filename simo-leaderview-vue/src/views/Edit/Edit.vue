@@ -1824,7 +1824,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuHolunboTab','WuhoYXHL','CYZBTX','WuhoPointBox','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuHolunboTab','WuhoYXHL','CYZBTX','WuhoPointBox','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','JSMpeg','NewBorder','NewTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart','IframePop','WordClouds'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"
@@ -1934,7 +1934,7 @@
                         @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;"
-                   v-show="!['TDModel','VmVareTopo','image','Newimage', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
+                   v-show="!['TDModel','VmVareTopo','image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"

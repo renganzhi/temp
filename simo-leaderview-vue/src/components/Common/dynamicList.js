@@ -58,5 +58,7 @@ export default [
   'VmVareTopo',
   'bubble',
   'hotspot',
+  'IframePop',
+  'WordClouds',
   'decorator'
 ]

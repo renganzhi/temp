@@ -1,8 +1,8 @@
 <template>
   <div :style="boxStyle">
     <div class="v-charts-data-empty"
-         v-if="!item.imgSrc">请上传图片</div>
-    <img :src="baseUrl + item.imgSrc"
+         v-if="!getImg">请上传图片</div>
+    <img :src="getImg"
          v-else
          :style="imgSctyle" />
   </div>
@@ -31,6 +31,15 @@ export default {
         height: this.item.height + 'px',
         overflow: 'hidden'
       }
+    },
+    getImg: function () {
+      let url = ''
+      if (this.item.imgSrc) {
+        url = this.baseUrl + this.item.imgSrc
+      } else if (this.item.chartData.value) {
+        url = this.item.chartData.value
+      }
+      return url
     },
     imgSctyle: function () {
       if (this.item.showType && this.item.showType === '1') {

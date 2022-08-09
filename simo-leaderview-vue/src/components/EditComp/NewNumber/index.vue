@@ -1,10 +1,21 @@
 <template>
   <div style="text-align: center; height: 100%;">
-    <div>
-      <span :style="numStyle">{{numStr}}</span>
+    <div v-if="numberType === 'number'">
+      <span :style="numStyle">
+        {{numStr}}
+      </span>
     </div>
-    <div v-show="showTitle"
-         :style="{'font-size': '12px', 'color': item.legendColor || '#828bac'}">{{item.chartData.name}}{{ comUnit}}</div>
+    <div v-if="numberType === 'percent'">
+      <span :style="numStyle2">
+          <div :style="triangleStyle"/>{{increase}}
+        </span>
+    </div>
+    <div
+      v-show="showTitle"
+      :style="titleStyle"
+    >
+      {{item.chartData.name}}{{ comUnit}}
+    </div>
   </div>
 </template>
 <script>
@@ -18,14 +29,15 @@ export default {
   },
   watch: {
     'item.chartData': function () {
-      if(!this.item.chartData){
+      if (!this.item.chartData) {
         this.item.chartData = {
           'name': '--',
           'unit': '',
-          'value': '-'
+          'value': '-',
+          'type': 'number'
         }
       }
-    },
+    }
   },
   computed: {
     numStr: function () {
@@ -41,11 +53,19 @@ export default {
         return null
       }
       var numArr = num.split('.')
-      var formatStr = this.toThousands(numArr[0])
+      // var formatStr = this.toThousands(numArr[0])
+      // 英文逗号显示不完全
+      var formatStr = numArr[0]
       if (numArr[1]) {
         return formatStr + '.' + numArr[1]
       }
       return formatStr
+    },
+    increase: function () {
+      return this.item.chartData.value && (Math.abs(this.item.chartData.value).toFixed(2) + '%')
+    },
+    numberType: function () {
+      return this.item.chartData.type || 'number'
     },
     showTitle: function () {
       return this.item.ctLegendShow === 'true'
@@ -60,6 +80,40 @@ export default {
         fontSize: this.item.fontSize + 'px',
         fontFamily: this.item.fontFamily + ' !important',
         color: this.item.clr
+      }
+    },
+    numStyle2: function () { // 悬浮字号
+      return {
+        position: 'absolute',
+        lineHeight: '54px',
+        left: this.item.upPos + 'px' || '200px',
+        fontSize: this.item.upFontSize + 'px',
+        color: this.item.chartData.value > 0 ? 'red' : 'green'
+      }
+    },
+    titleStyle: function () { // {'font-size': '12px', 'color': item.legendColor || '#828bac'}
+      return {
+        fontSize: this.item.legendFontSize + 'px',
+        color: this.item.legendColor || '#828bac'
+      }
+    },
+    triangleStyle: function () {
+      let obj = this.item.chartData.value > 0
+        ? {
+          borderTop: (this.item.upIcon || 6) + 'px solid transparent',
+          borderBottom: (this.item.upIcon || 6) + 'px solid red'
+        } // 增加
+        : {
+          borderTop: (this.item.upIcon || 6) + 'px solid green',
+          borderBottom: (this.item.upIcon || 6) + 'px solid transparent'
+        } // 减少
+      return {
+        position: 'absolute',
+        left: (this.item.upIconLeft || -20) + 'px' || '-20px',
+        top: (this.item.upIconTop || 23) + 'px' || '23px',
+        borderLeft: (this.item.upIcon || 6) + 'px solid transparent',
+        borderRight: (this.item.upIcon || 6) + 'px solid transparent',
+        ...obj
       }
     },
     numCardOver: function () {

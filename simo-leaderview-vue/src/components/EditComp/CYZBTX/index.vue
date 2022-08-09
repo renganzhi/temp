@@ -1,6 +1,6 @@
 <template>
   <div :style="BodyStyle">
-    <div :style="leftBox">
+    <!-- <div :style="leftBox">
       <div :style="leftItem">
         <img src="./tx.jpeg" alt="" />
         <div :style="leftInfo">
@@ -25,7 +25,7 @@
           <p :style="leftPhoneInfo">12345678910</p>
         </div>
       </div>
-    </div>
+    </div> -->
     <div :style="rightBox">
         <div>
             <p :style="streetStyle">簇桥街道</p>
