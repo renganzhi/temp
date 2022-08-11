@@ -49,14 +49,17 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-              <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
+              <!-- <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div>
               <div v-else class="back" style="height: 1620px;width: 8640px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
+              </div> -->
+              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="height: 1620px;width: 8640px;position: absolute;">
+                <CYMap></CYMap>
               </div>
             <div class="full-height pagebox">
-              <div class="Tbaleban"  v-if="showTableBox">
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showTableBox">
                 <div :class="IsCityType ? 'CityTableBox': 'TableBox'">
                   <div class="closeBtn" @click="closeTableTtn()"></div>
                     <div class="BoxTitle">{{TableData.title}}</div>
@@ -79,7 +82,30 @@
                     </div>
                 </div>
               </div>
-              <div class="BoxMban"  v-if="showModelBox">
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showTableBox">
+                <div class="cyTableBox">
+                    <div class="closeBtn" @click="closeTableTtn()"></div>
+                    <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '信息列表'}}</div>
+                    <div class="cyTableHead">
+                        <tr>
+                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                            {{ data }}
+                          </th>
+                        </tr>
+                    </div>
+                    <div class="cyTableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
+                      <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
+                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                          {{  rowsData[data] }}
+                        </th>
+                      </tr>
+                    </div>
+                    <div class="NoData" v-else-if="!DataTkArry.rows || DataTkArry.rows.length === 0">
+                      暂无数据！
+                    </div>
+                </div>
+              </div>
+              <div class="BoxMban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showModelBox">
                 <div :class="IsCityType ? 'CityModelBox': 'ModelBox'">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
@@ -111,6 +137,26 @@
                   </div>
                 </div>
               </div>
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showModelBox">
+                <div class="cyBox">
+                  <div class="closeBtn" @click="closeBoxTtn()"></div>
+                  <div class="BoxTitle">{{boxData.title}}</div>
+                  <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
+                    <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
+                      <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
+                    </div>
+                  </div>
+                  <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
+                    <div class="DataValue" v-for="(data,index) in boxData.data" :key="index">
+                      {{ data.value }}
+                    </div>
+                  </div>
+                  <div class="NoData" v-else-if="boxData.data.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
               <div class="BoxMban" v-if="showElineBox">
                 <div class="CityModelBox">
                   <div class="closeBtn" @click="closeElineBox()"></div>
@@ -129,7 +175,7 @@
                           </tr>
                       </div>
                       <div class="TableBody" v-if="barData.table.rows&&barData.table.rows.length > 0">
-                        <tr  v-for="(rowsData, i) in barData.table.rows" :key="i">
+                        <tr  v-for="(rowsData, i) in barData.table.rows" :key="i" >
                           <th v-for="(data, index) in barData.table.columns" :key="index"  :style="{width:`calc(${100 / barData.table.columns.length}%)`}">
                             {{  rowsData[data] }}
                           </th>
@@ -192,6 +238,12 @@
                   </div>
                 </div>
               </div> -->
+              <div class="PopBox" v-if="showIframePop">
+                <div class="iframePop" :style="iframeStyle">
+                  <div class="closeBtn" @click="closeIframePop()"></div>
+                  <iframe :src="iframeUrl" frameborder="0"></iframe>
+                </div>
+              </div>
               <div class="VideoBox" v-if="showVideoBox">
                 <div class="videoTable">
                   <div class="closeBtn" @click="closeVideotn()"></div>
@@ -201,7 +253,7 @@
                     </div>
                 </div>
               </div>
-              <div :class="IfreamBoxSize === 'small'?'SmallifreamBox':'ifreamBox'" v-if="showIfreamBox">
+              <div class="ifreamBox" v-if="showIfreamBox">
                 <div class="videoTable">
                   <div class="closeBtn" @click="showIfreamBox = false"></div>
                     <div class="BoxTitle">{{OnwIfreamName}}</div>
@@ -349,6 +401,7 @@ import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
+import CYMap from '@/components/EditComp/CYMap/CYMap.vue'
 import ImportPage from './../EditPage/ImportPage'
 import WuhoIfream from '@/components/EditComp/WuhoIfream'
 import { Public, titleShowFn } from '#/js/public'
@@ -356,6 +409,7 @@ import AddPage from './../EditPage/AddPage'
 import { Notification } from 'element-ui'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { checkLogin } from '@/config/thirdLoginMix'
+import echarts from 'echarts'
 export default {
   name: 'lookPage',
   components: {
@@ -365,6 +419,7 @@ export default {
     WuhoIfream,
     AddPage,
     ImportPage,
+    CYMap,
     beijing
   },
   // mixins:[thirdLoginMix],
@@ -373,22 +428,25 @@ export default {
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
-      DataTkArry:{},
+      DataTkArry: {},
       showImport: false,
       showModelBox: false,
       showTableBox: false,
-      showIfreamBox: false,
       showElineBox: false, // 柱状图弹窗
       showInformation: false, // 指挥长信息弹窗
       showPieBox: false, // 饼图弹窗
+      showIfreamBox: false,
+      OnwIfreamName: '',
+      boxData: {},
       barData: {}, // 柱状图数据
       pieData: {}, // 饼图数据
       infoData: {},
-      IfreamBoxSize: 'big',
-      OnwIfreamName: '',
-      boxData: {},
       TableData: {},
       showVideoBox: false,
+      showIframePop: false,
+      iframeUrl: '',
+      iframeWidth: 0,
+      iframeHeight: 0,
       VideoIfream: {
         height: 1230,
         width: 2940,
@@ -479,8 +537,8 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageName(){
-      if(this.pageList[(this.pageIndex - 1) % this.pageSize]){
+    pageName () {
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize]) {
         let name = this.pageList[(this.pageIndex - 1) % this.pageSize].name
         // if(name.indexOf('市级') >= 0 ){
         //   this.IsCityType = true
@@ -490,12 +548,20 @@ export default {
         return name
       }
     },
-    IsCityType(){
-      if(this.pageName && this.pageName.indexOf('市级') >= 0 ){
-          return true
-        }else{
-          return false
-        }
+    iframeStyle () {
+      return {
+        height: this.iframeHeight + 'px',
+        width: this.iframeWidth + 'px',
+        left: (8640 - this.iframeWidth) / 2 + 'px',
+        top: (1620 - this.iframeHeight) / 2 + 'px'
+      }
+    },
+    IsCityType () {
+      if (this.pageName && this.pageName.indexOf('市级') >= 0) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -506,37 +572,37 @@ export default {
       this.changeEditId(id)
       this.$router.push(`/edit/${id}`)
     },
-    exchangeisOpenTW(){
+    exchangeisOpenTW () {
       this.isOpenTW = !this.isOpenTW
     },
-    consoleOUT(){
+    consoleOUT () {
       console.log(1111)
     },
-    showXQByUrl(DataTkArry,data){
-      if(DataTkArry.url){
-        this.axios.get(DataTkArry.url+data['姓名']).then((res) => {
+    showXQByUrl (DataTkArry, data) {
+      if (DataTkArry.url) {
+        this.axios.get(DataTkArry.url + data['姓名']).then((res) => {
           let boxData = {
-            title:'数据详情',
-            data:res.obj.rows[0]
+            title: '数据详情',
+            data: res.obj.rows[0]
           }
           this.ShowTanKuangBox(boxData)
         })
-      }else{
+      } else {
         let boxData = {
-          title:'数据详情',
-          data:data
+          title: '数据详情',
+          data: data
         }
         this.ShowTanKuangBox(boxData)
       }
     },
-    showXQ(data){
+    showXQ (data) {
       let boxData = {
-        title:'数据详情',
-        data:data
+        title: '数据详情',
+        data: data
       }
       this.ShowTanKuangBox(boxData)
     },
-    onSure(){
+    onSure () {
       console.log(1111)
     },
     hideModal (data) {
@@ -545,37 +611,391 @@ export default {
         this.$router.push('/edit/' + data.addId)
       }
     },
-    ShowIfreamBoxFun(data,size){
+    ShowIfreamBox (data) {
       this.OnwIfreamName = data
-      this.IfreamBoxSize = size
       this.showIfreamBox = true
     },
-    ShowTableBox(dataArray) {
+    ShowTableBox (dataArray) {
+      if (self !== top) {
+        window.parent.ShowTableBox(dataArray)
+        return ''
+      }
       console.log(dataArray)
-      if(dataArray.dataUrl){
+      if (dataArray.dataUrl) {
         this.DataTkArry = []
         let keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
         let keyValue = dataArray.data[keyWord]
-        this.showTableBox = true;
+        this.showTableBox = true
         this.axios
           .get(dataArray.dataUrl + keyValue)
           .then((data) => {
             if (data.success) {
-              this.DataTkArry = data.obj;
+              this.DataTkArry = data.obj
+              this.DataTkArry.title = dataArray.title
             }
-          });
-      } else if (dataArray.data === "arry") {
-        this.showTableBox = true;
+          })
+      } else if (dataArray.data === 'arry') {
+        this.showTableBox = true
         this.nowType = dataArray.nowType || ''
-        this.DataTkArry = dataArray.dataArray;
+        this.DataTkArry = dataArray.dataArray
       } else {
-        this.ShowTanKuangBox(dataArray);
+        this.ShowTanKuangBox(dataArray)
       }
     },
-    closeTableTtn(){
+    ShowElineBox (dataArray) {
+      // if (dataArray.data) {
+      if (dataArray.chartUrl) {
+        let keyWord = dataArray.chartUrl.split('param=')[1].split(':')[0]
+        let keyValue = dataArray.data[keyWord]
+        this.axios
+          .get(dataArray.chartUrl + keyValue)
+          .then((data) => {
+            if (data.success) {
+              this.showElineBox = true
+              let myData = data.obj
+              // this.barData.table = dataArray.tableData || ''
+              this.barData.eline = data.obj || ''
+              this.barData.title = dataArray.title || ''
+              this.$nextTick(() => {
+                let eline = echarts.init(this.$refs.ElineBox0)
+                this.barData[0] = myData
+                let myseries = []
+                let myXAxisData = []
+                let mySeriesData = []
+                myData.rows.forEach(element => {
+                  myData.columns.forEach((e, d) => {
+                    if (d === 0) {
+                      myXAxisData.push(element[e])
+                    } else {
+                      if (mySeriesData[d]) {
+                        mySeriesData[d].push(element[e])
+                      } else {
+                        mySeriesData[d] = [element[e]]
+                      }
+                    }
+                  })
+                })
+                mySeriesData.forEach((data, index) => {
+                  if (data) {
+                    myseries.push({
+                      data: data,
+                      type: 'line',
+                      smooth: true,
+                      itemStyle: {
+                        normal: {
+                          lineStyle: {
+                            color: '#5c84e7',
+                            width: 3
+                          }
+
+                        }
+                      }
+                    })
+                  }
+                })
+                let option = {
+                  title: {
+                    text: this.barData.eline.title || '',
+                    textStyle: {
+                      color: '#cad6dd',
+                      fontSize: '45'
+                    },
+                    show: true,
+                    padding: [0, 0, 0, 50]
+                  },
+                  xAxis: {
+                    type: 'category',
+                    data: myXAxisData,
+                    label: {
+                      textStyle: {
+                        fontSize: 40,
+                        color: 'rgba(212, 234, 240, 0.85)'
+                      }
+                    },
+                    axisTick: {
+                      show: true,
+                      alignWithLabel: true, // 刻度线与标签对齐
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴刻度
+                        width: 1
+                      }
+                    },
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
+                        width: 3
+                      }
+                    },
+                    splitLine: {
+                      show: false
+                    },
+                    axisLabel: {
+                      rotate: 40,
+                      textStyle: {
+                        color: 'rgba(212, 234, 240, 0.85)',
+                        fontSize: '40'
+                      },
+                      // formatter: function (value) {
+                      //   return value.split('').join('\n')
+                      // },
+                      interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+                    }
+                  },
+                  yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                      interval: 0, // 采用不重叠的方式展示
+                      textStyle: {
+                        color: 'rgba(212, 234, 240, 0.85)',
+                        fontSize: '40'
+                      }
+                    },
+                    splitLine: {
+                      show: false
+                    },
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
+                        width: 3
+                      }
+                    }
+                  },
+                  grid: {
+                    // left: '10%',
+                    bottom: '25%',
+                    top: '10%'
+                  },
+                  label: {
+                    show: true,
+                    fontSize: '40',
+                    color: '#fff' // 标点的文字颜色
+                  },
+                  series: myseries
+                }
+                eline.setOption(option)
+              })
+            }
+          })
+      } else if (dataArray.urls) {
+        let keyWord = dataArray.urls.split('param=')[1].split(':')[0]
+        let keyValue = dataArray.data[keyWord]
+        console.log(dataArray.urls, dataArray.data, keyWord, keyValue)
+        this.axios
+          .get(dataArray.urls + keyValue)
+          .then((data) => {
+            if (data.success) {
+              this.showElineBox = true
+              let myData = data.obj.chartData
+              // this.barData.table = dataArray.tableData || ''
+              this.barData.eline = data.obj.chartData || ''
+              this.barData.title = dataArray.title || ''
+              this.barData.table = data.obj.tableData || ''
+              this.$nextTick(() => {
+                let eline = echarts.init(this.$refs.ElineBox0)
+                this.barData[0] = myData
+                let myseries = []
+                let myXAxisData = []
+                let mySeriesData = []
+                myData.rows.forEach(element => {
+                  myData.columns.forEach((e, d) => {
+                    if (d === 0) {
+                      myXAxisData.push(element[e])
+                    } else {
+                      if (mySeriesData[d]) {
+                        mySeriesData[d].push(element[e])
+                      } else {
+                        mySeriesData[d] = [element[e]]
+                      }
+                    }
+                  })
+                })
+                mySeriesData.forEach((data, index) => {
+                  if (data) {
+                    myseries.push({
+                      data: data,
+                      type: 'line',
+                      smooth: true,
+                      itemStyle: {
+                        normal: {
+                          lineStyle: {
+                            color: '#5c84e7',
+                            width: 3
+                          }
+
+                        }
+                      }
+                    })
+                  }
+                })
+                let option = {
+                  title: {
+                    text: this.barData.eline.title || '',
+                    textStyle: {
+                      color: '#cad6dd',
+                      fontSize: '45'
+                    },
+                    show: true,
+                    padding: [0, 0, 0, 50]
+                  },
+                  xAxis: {
+                    type: 'category',
+                    data: myXAxisData,
+                    label: {
+                      textStyle: {
+                        fontSize: 40,
+                        color: 'rgba(212, 234, 240, 0.85)'
+                      }
+                    },
+                    axisTick: {
+                      show: true,
+                      alignWithLabel: true, // 刻度线与标签对齐
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴刻度
+                        width: 1
+                      }
+                    },
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
+                        width: 3
+                      }
+                    },
+                    splitLine: {
+                      show: false
+                    },
+                    axisLabel: {
+                      rotate: 40,
+                      textStyle: {
+                        color: 'rgba(212, 234, 240, 0.85)',
+                        fontSize: '40'
+                      },
+                      // formatter: function (value) {
+                      //   return value.split('').join('\n')
+                      // },
+                      interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+                    }
+                  },
+                  yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                      interval: 0, // 采用不重叠的方式展示
+                      textStyle: {
+                        color: 'rgba(212, 234, 240, 0.85)',
+                        fontSize: '40'
+                      }
+                    },
+                    splitLine: {
+                      show: false
+                    },
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
+                        width: 3
+                      }
+                    }
+                  },
+                  grid: {
+                    // left: '10%',
+                    bottom: '25%',
+                    top: '10%'
+                  },
+                  label: {
+                    show: true,
+                    fontSize: '40',
+                    color: '#fff' // 标点的文字颜色
+                  },
+                  series: myseries
+                }
+                eline.setOption(option)
+              })
+            }
+          })
+      }
+    },
+    closeElineBox () {
+      this.showElineBox = false
+      this.barData = {}
+    },
+    ShowInformation (dataArray) {
+      this.showInformation = true
+      this.infoData = dataArray
+    },
+    closeInformation () {
+      this.showInformation = false
+    },
+    ShowPieBox (dataArray) {
+      this.showPieBox = true
+      let eline = echarts.init(this.$refs.PieBox)
+      let myData = {
+        'columns': ['告警级别', '数量'],
+        'unit': '次',
+        'rows': [{
+          '告警级别': '致命',
+          '数量': 233
+        },
+        {
+          '告警级别': '严重',
+          '数量': 123
+        },
+        {
+          '告警级别': '警告',
+          '数量': 23
+        },
+        {
+          '告警级别': '一般',
+          '数量': 155
+        },
+        {
+          '告警级别': '次要',
+          '数量': 103
+        },
+        {
+          '告警级别': '通知',
+          '数量': 123
+        }
+        ]
+      }
+      this.pieData = myData
+      var SericeData = []
+      myData.rows.forEach((element, index) => {
+        SericeData.push({
+          name: element[myData.columns[0]],
+          value: element[myData.columns[1]] * 1,
+          label: { color: '' }
+        })
+      })
+      let myoption = {
+        tooltip: {
+          trigger: 'item',
+          show: true
+        },
+        series: [
+          {
+            type: 'pie',
+            // radius:,
+            // radius: this.item.isRing ? [(this.item.radius - this.item.detailwidth) > 0 ? (this.item.radius - this.item.detailwidth) + '%' : 0 + '%', this.item.radius + '%'] : ['0%', this.item.radius + '%'],
+            data: SericeData
+          }
+        ]
+      }
+      eline.setOption(myoption)
+    },
+    closePieBox () {
+      this.showPieBox = false
+      this.pieData = {}
+    },
+    closeTableTtn () {
       this.showTableBox = false
     },
-    ShowTanKuangBox(dataArray){
+    ShowTanKuangBox (dataArray) {
+      if (self !== top) {
+        window.parent.ShowTanKuangBox(dataArray)
+        return ''
+      }
       this.showModelBox = true
       this.showModelBoxtype = dataArray.type || 0
       let newData = []
@@ -849,11 +1269,11 @@ export default {
     },
     // 加载第一页大屏
     loadFirstPage: function () {
-      this.pageList.forEach((d,i) => {
-        if(d.id*1 === this.nowShowPageID*1){
+      this.pageList.forEach((d, i) => {
+        if (d.id * 1 === this.nowShowPageID * 1) {
           this.pageIndex = i
         }
-      });
+      })
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
@@ -1156,18 +1576,18 @@ export default {
               if (d.chartType === 'v-map') {
                 d.chartData.rows = ct.mapDataToChart(res.obj, d.chartData.rows)
               } else {
-                d.chartData = res.obj; // 会触发刷新
+                d.chartData = res.obj // 会触发刷新
                 if (d.chartData1) {
-                  d.chartData1 = res.obj;
+                  d.chartData1 = res.obj
                 }
                 if (d.chartData2) {
-                  d.chartData2 = res.obj;
+                  d.chartData2 = res.obj
                 }
                 if (d.chartData3) {
-                  d.chartData3 = res.obj;
+                  d.chartData3 = res.obj
                 }
                 if (d.chartData4) {
-                  d.chartData4 = res.obj;
+                  d.chartData4 = res.obj
                 } // 会触发刷新
               }
             }
@@ -1240,18 +1660,18 @@ export default {
                           d.chartData.rows
                         )
                       } else {
-                        d.chartData = res.obj; // 会触发刷新
+                        d.chartData = res.obj // 会触发刷新
                         if (d.chartData1) {
-                          d.chartData1 = res.obj;
+                          d.chartData1 = res.obj
                         }
                         if (d.chartData2) {
-                          d.chartData2 = res.obj;
+                          d.chartData2 = res.obj
                         }
                         if (d.chartData3) {
-                          d.chartData3 = res.obj;
+                          d.chartData3 = res.obj
                         }
                         if (d.chartData4) {
-                          d.chartData4 = res.obj;
+                          d.chartData4 = res.obj
                         } // 会触发刷新
                       }
                     }
@@ -1311,18 +1731,18 @@ export default {
                     d.chartData.rows
                   )
                 } else {
-                  d.chartData = res.obj; // 会触发刷新
+                  d.chartData = res.obj // 会触发刷新
                   if (d.chartData1) {
-                    d.chartData1 = res.obj;
+                    d.chartData1 = res.obj
                   }
                   if (d.chartData2) {
-                    d.chartData2 = res.obj;
+                    d.chartData2 = res.obj
                   }
                   if (d.chartData3) {
-                    d.chartData3 = res.obj;
+                    d.chartData3 = res.obj
                   }
                   if (d.chartData4) {
-                    d.chartData4 = res.obj;
+                    d.chartData4 = res.obj
                   } // 会触发刷新
                 }
               }
@@ -1514,290 +1934,15 @@ export default {
     closeVideotn () {
       this.showVideoBox = false
     },
-    ShowElineBox (dataArray) {
-      // if (dataArray.data) {
-      if (dataArray.chartUrl) {
-        let keyWord = dataArray.chartUrl.split('param=')[1].split(':')[0]
-        let keyValue = dataArray.data[keyWord]
-        this.axios
-          .get(dataArray.chartUrl + keyValue)
-          .then((data) => {
-            if (data.success) {
-              this.showElineBox = true
-              let myData = data.obj
-              // this.barData.table = dataArray.tableData || ''
-              this.barData.eline = data.obj || ''
-              this.barData.title = dataArray.title || ''
-              this.$nextTick(() => {
-                let eline = echarts.init(this.$refs.ElineBox0)
-                this.barData[0] = myData
-                let myseries = []
-                let myXAxisData = []
-                let mySeriesData = []
-                myData.rows.forEach(element => {
-                  myData.columns.forEach((e, d) => {
-                    if (d === 0) {
-                      myXAxisData.push(element[e])
-                    } else {
-                      if (mySeriesData[d]) {
-                        mySeriesData[d].push(element[e])
-                      } else {
-                        mySeriesData[d] = [element[e]]
-                      }
-                    }
-                  })
-                })
-                mySeriesData.forEach((data, index) => {
-                  if (data) {
-                    myseries.push({
-                      data: data,
-                      type: 'line',
-                      smooth: true,
-                      itemStyle: {
-                        normal: {
-                          lineStyle: {
-                            color: '#5c84e7',
-                            width: 3
-                          }
-
-                        }
-                      }
-                    })
-                  }
-                })
-                let option = {
-                  title: {
-                    text: this.barData.eline.title || '',
-                    textStyle: {
-                      color: '#cad6dd',
-                      fontSize: '45'
-                    },
-                    show: true,
-                    padding: [0, 0, 0, 50]
-                  },
-                  xAxis: {
-                    type: 'category',
-                    data: myXAxisData,
-                    label: {
-                      textStyle: {
-                        fontSize: 40,
-                        color: 'rgba(212, 234, 240, 0.85)'
-                      }
-                    },
-                    axisTick: {
-                      show: true,
-                      alignWithLabel: true, // 刻度线与标签对齐
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴刻度
-                        width: 1
-                      }
-                    },
-                    axisLine: {
-                      show: true,
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
-                        width: 3
-                      }
-                    },
-                    splitLine: {
-                      show: false
-                    },
-                    axisLabel: {
-                      rotate: 40,
-                      textStyle: {
-                        color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
-                      },
-                      // formatter: function (value) {
-                      //   return value.split('').join('\n')
-                      // },
-                      interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
-                    }
-                  },
-                  yAxis: {
-                    type: 'value',
-                    axisLabel: {
-                      interval: 0, // 采用不重叠的方式展示
-                      textStyle: {
-                        color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
-                      }
-                    },
-                    splitLine: {
-                      show: false
-                    },
-                    axisLine: {
-                      show: true,
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
-                        width: 3
-                      }
-                    }
-                  },
-                  grid: {
-                    // left: '10%',
-                    bottom: '25%',
-                    top: '10%'
-                  },
-                  label: {
-                    show: true,
-                    fontSize: '40',
-                    color: '#fff' // 标点的文字颜色
-                  },
-                  series: myseries
-                }
-                eline.setOption(option)
-              })
-            }
-          })
-      } else if (dataArray.urls) {
-        let keyWord = dataArray.urls.split('param=')[1].split(':')[0]
-        let keyValue = dataArray.data[keyWord]
-        console.log(dataArray.urls, dataArray.data, keyWord, keyValue)
-        this.axios
-          .get(dataArray.urls + keyValue)
-          .then((data) => {
-            if (data.success) {
-              this.showElineBox = true
-              let myData = data.obj.chartData
-              // this.barData.table = dataArray.tableData || ''
-              this.barData.eline = data.obj.chartData || ''
-              this.barData.title = dataArray.title || ''
-              this.barData.table = data.obj.tableData || ''
-              this.$nextTick(() => {
-                let eline = echarts.init(this.$refs.ElineBox0)
-                this.barData[0] = myData
-                let myseries = []
-                let myXAxisData = []
-                let mySeriesData = []
-                myData.rows.forEach(element => {
-                  myData.columns.forEach((e, d) => {
-                    if (d === 0) {
-                      myXAxisData.push(element[e])
-                    } else {
-                      if (mySeriesData[d]) {
-                        mySeriesData[d].push(element[e])
-                      } else {
-                        mySeriesData[d] = [element[e]]
-                      }
-                    }
-                  })
-                })
-                mySeriesData.forEach((data, index) => {
-                  if (data) {
-                    myseries.push({
-                      data: data,
-                      type: 'line',
-                      smooth: true,
-                      itemStyle: {
-                        normal: {
-                          lineStyle: {
-                            color: '#5c84e7',
-                            width: 3
-                          }
-
-                        }
-                      }
-                    })
-                  }
-                })
-                let option = {
-                  title: {
-                    text: this.barData.eline.title || '',
-                    textStyle: {
-                      color: '#cad6dd',
-                      fontSize: '45'
-                    },
-                    show: true,
-                    padding: [0, 0, 0, 50]
-                  },
-                  xAxis: {
-                    type: 'category',
-                    data: myXAxisData,
-                    label: {
-                      textStyle: {
-                        fontSize: 40,
-                        color: 'rgba(212, 234, 240, 0.85)'
-                      }
-                    },
-                    axisTick: {
-                      show: true,
-                      alignWithLabel: true, // 刻度线与标签对齐
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴刻度
-                        width: 1
-                      }
-                    },
-                    axisLine: {
-                      show: true,
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
-                        width: 3
-                      }
-                    },
-                    splitLine: {
-                      show: false
-                    },
-                    axisLabel: {
-                      rotate: 40,
-                      textStyle: {
-                        color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
-                      },
-                      // formatter: function (value) {
-                      //   return value.split('').join('\n')
-                      // },
-                      interval: 0 // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
-                    }
-                  },
-                  yAxis: {
-                    type: 'value',
-                    axisLabel: {
-                      interval: 0, // 采用不重叠的方式展示
-                      textStyle: {
-                        color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
-                      }
-                    },
-                    splitLine: {
-                      show: false
-                    },
-                    axisLine: {
-                      show: true,
-                      lineStyle: {
-                        color: 'rgba(30, 70, 109, 0.8)', // 坐标轴颜色
-                        width: 3
-                      }
-                    }
-                  },
-                  grid: {
-                    // left: '10%',
-                    bottom: '25%',
-                    top: '10%'
-                  },
-                  label: {
-                    show: true,
-                    fontSize: '40',
-                    color: '#fff' // 标点的文字颜色
-                  },
-                  series: myseries
-                }
-                eline.setOption(option)
-              })
-            }
-          })
-      }
+    ShowIframePop (data) {
+      this.showIframePop = true
+      this.iframeUrl = data.url
+      this.iframeWidth = data.width
+      this.iframeHeight = data.height
     },
-    closeElineBox () {
-      this.showElineBox = false
-      this.barData = {}
-    },
-    ShowInformation (dataArray) {
-      this.showInformation = true
-      this.infoData = dataArray
-    },
-    closeInformation () {
-      this.showInformation = false
+    closeIframePop () {
+      this.showIframePop = false
+      this.iframeUrl = ''
     },
     ShowVideoBox (vidoeId) {
       this.showVideoBox = true
@@ -1950,6 +2095,9 @@ export default {
   },
   mounted: function () {
     $('#screen').addClass('disShow')
+    window.ShowTanKuangBox = this.ShowTanKuangBox
+    window.ShowTableBox = this.ShowTableBox
+    window.ShowIframePop = this.ShowIframePop
     // var _url = window.location.protocol + '//' + window.location.host + '/index'
     // window.history.pushState({}, '', _url)
     this.getAccess()
@@ -2263,6 +2411,32 @@ html[data-theme='blueWhite'] {
   height: 3160px;
   z-index: 5000;
   background-color: #15192a65;
+}
+.PopBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 4999;
+  background-color: #15192a65;
+  .iframePop{
+    position: relative;
+    z-index: 10;
+    .closeBtn {
+      height: 50px;
+      width: 50px;
+      cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 32px;
+      background: url(./城运关闭.png);
+    }
+    iframe{
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 .Tbaleban{
   position: absolute;
@@ -2600,6 +2774,129 @@ html[data-theme='blueWhite'] {
     color: #789fb0;
   }
 }
+.cyTableBox {
+  width: 2088px;
+  height: 1000px;
+  position: relative;
+  top: 310px;
+  left: 3276px;
+  z-index: 5000;
+  padding: 15px 60px 60px 60px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    background: url(./城运关闭.png);
+  }
+  .BoxTitle {
+    font-size: 32px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 50px;
+  }
+  .cyTableHead {
+      width: 100%;
+      background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1)) !important;
+      border-bottom: 1px solid rgba(172,207,254,1) !important;
+      tr {
+        width: 100%;
+        // height: 60px;
+        min-height: 72px;
+        font-size: 24px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+        }
+      }
+    }
+  .cyTableBody {
+      width: 100%;
+      height: 648px;
+      overflow: auto;
+      tr {
+        width: 100%;
+        height: 72px;
+        line-height: 72px;
+        // margin: 10px 0;
+        font-size: 24px !important;
+        display: flex;
+        color: rgba(172,207,254,1);
+        border-bottom: 1px solid rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          -o-text-overflow:ellipsis;
+        }
+      }
+      tr:nth-child(2n) {
+        background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1));
+      }
+  }
+}
+.cyBox {
+  width: 2088px;
+  height: 1000px;
+  position: relative;
+  top: 310px;
+  left: 3276px;
+  z-index: 5000;
+  padding: 15px 60px 60px 60px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    background: url(./城运关闭.png);
+  }
+  .BoxTitle {
+    font-size: 32px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 50px;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 42px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 50%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    // width: 30%;
+    color: #4f9ff5;
+    white-space: nowrap;
+  }
+  .Data {
+    // width: 70%;
+    color: rgba(172,207,254,1);
+  }
+}
 .NoData{
   width: 100%;
   height: 80%;
@@ -2725,43 +3022,6 @@ html[data-theme='blueWhite'] {
     .closeBtn{
       height: 200px;
       width: 200px;
-      cursor: pointer;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-    .BoxTitle {
-      font-size: 46px !important;
-      color: #bbeefe;
-      font-family: PangmenMainRoadTitleBody !important;
-    }
-    .videoDiv{
-      height: 90%;
-      width: 100%;
-    }
-  }
-}
-.SmallifreamBox{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3840px;
-  height: 1080px;
-  z-index: 5000;
-  background-color: #15192a65;
-  .videoTable{
-    height: 900px;
-    width: 1700px;
-    padding: 100px;
-    top: 100px;
-    left: 1080px;
-    position: relative;
-    z-index: 5000;
-    background: url(./modelBox.png);
-    background-size: 100% 100%;
-    .closeBtn{
-      height: 100px;
-      width: 100px;
       cursor: pointer;
       position: absolute;
       top: 20px;
