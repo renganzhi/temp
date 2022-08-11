@@ -1,214 +1,150 @@
 <template>
-  <div :style="BodyStyle">
-    <!-- <div :style="leftBox">
-      <div :style="leftItem">
-        <img src="./tx.jpeg" alt="" />
-        <div :style="leftInfo">
-          <p :style="leftNameInfo">张三</p>
-          <p :style="leftPostInfo">区领导</p>
-          <p :style="leftPhoneInfo">12345678910</p>
+  <div class="CYZBTX" :style="boxStyle">
+    <div class="streetBox" v-for="(element, index) in boxData" :key="index">
+      <div class="streetName">{{index}}</div>
+      <div class="streetInfo">
+        <div class="personnelInfo">
+          <div>
+            <img v-if="element['值班领导']['照片链接']" :src="element['值班领导']['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+            <img v-else src="./矩形.png" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+          </div>
+          <div>
+            <div class="name">{{element['值班领导']['领导姓名']}}</div>
+            <div class="phone">{{element['值班领导']['手机号']}}</div>
+            <div class="position">{{element['值班领导']['职务']}}</div>
+          </div>
+        </div>
+        <div class="personnelInfo">
+          <div>
+            <img v-if="element['指挥长']['照片链接']" :src="element['指挥长']['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+            <img v-else src="./矩形.png" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+          </div>
+          <div>
+            <div class="name">{{element['指挥长']['领导姓名']}}</div>
+            <div class="phone">{{element['指挥长']['手机号']}}</div>
+            <div class="position">{{element['指挥长']['职务']}}</div>
+          </div>
+        </div>
+        <div class="personnelInfo">
+          <div>
+            <img v-if="element['值班长']['照片链接']" :src="element['值班长']['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+            <img v-else src="./矩形.png" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+          </div>
+          <div>
+            <div class="name">{{element['值班长']['领导姓名']}}</div>
+            <div class="phone">{{element['值班长']['手机号']}}</div>
+            <div class="position">{{element['值班长']['职务']}}</div>
+          </div>
         </div>
       </div>
-      <div :style="leftItem">
-        <img src="./tx.jpeg" alt="" />
-        <div :style="leftInfo">
-          <p :style="leftNameInfo">张三</p>
-          <p :style="leftPostInfo">区领导</p>
-          <p :style="leftPhoneInfo">12345678910</p>
-        </div>
-      </div>
-      <div :style="leftItem">
-        <img src="./tx.jpeg" alt="" />
-        <div :style="leftInfo">
-          <p :style="leftNameInfo">张三</p>
-          <p :style="leftPostInfo">区领导</p>
-          <p :style="leftPhoneInfo">12345678910</p>
-        </div>
-      </div>
-    </div> -->
-    <div :style="rightBox">
-        <div>
-            <p :style="streetStyle">簇桥街道</p>
-            <div :style="rightItemBox">
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <p :style="streetStyle">金花街道</p>
-            <div :style="rightItemBox">
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-                <div :style="rightItem">
-                    <img src="./tx.jpeg" alt="" />
-                    <div :style="rightInfo">
-                        <p :style="rightNameInfo">张三</p>
-                        <p :style="rightPostInfo">区领导</p>
-                        <p :style="rightPhoneInfo">12345678910</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: "CYZBTX",
-  props: ["item"],
-  data() {
-    return {};
+  name: 'CYZBTX',
+  props: ['item'],
+  data () {
+    return {
+      boxData: {}
+    }
   },
   computed: {
-    BodyStyle() {
+    boxStyle () {
       return {
-        display:'flex',
-        height: this.item.height + "px !important",
-        width: this.item.width + "px !important",
-      };
-    },
-    leftBox() {
-      return {
-        height: "100%",
-        width: "500px",
-        display: 'flex',
-        "flex-direction": "column",
-        "justify-content": "space-between",
-      };
-    },
-    leftItem() {
-      return {
-        display: "flex",
-        height: "32%",
-        width: "100%",
-        padding: "20px",
-        background: 'pink'
-      };
-    },
-    leftInfo() {
-      return {
-        display: 'flex',
-        "flex-direction": "column",
-        "align-items": "center",
-        "justify-content": "center",
-        'margin-left': "20px",
-      };
-    },
-    leftNameInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
-    leftPostInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
-    leftPhoneInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
-    rightBox() {
-      return {
-        flex: 1,
-        background: '#bbb',
-        'overflow-y': 'auto'
-      };
-    },
-    streetStyle() {
-      return {
-        fontSize: 30 + 'px',
-        color: '#ccc'
-      };
-    },
-    rightItemBox() {
-      return {
-        overflow: 'hidden'
-      };
-    },
-    rightItem() {
-      return {
-        float: 'left',
-        display: "flex",
-        height: "32%",
-        width: "32%",
-        padding: "20px",
-        background: 'skyblue'
-      };
-    },
-    rightInfo() {
-      return {
-        display: 'flex',
-        "flex-direction": "column",
-        "align-items": "center",
-        "justify-content": "center",
-        'margin-left': "20px",
-      }; 
-    },
-    rightNameInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
-    rightPostInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
-    rightPhoneInfo() {
-      return {
-        fontSize: 30 + "px",
-        paddingTop: 10 + "px",
-      };
-    },
+        width: this.item.width + 'px',
+        height: this.item.height + 'px'
+      }
+    }
   },
-  watch: {},
-  mounted() {},
+  watch: {
+    'item.chartData': {
+      handler (newV, oldV) {
+        this.boxData = {}
+        if (this.item.chartData.rows && this.item.chartData.rows.length) {
+          this.item.chartData.rows.forEach(element => {
+            if (this.boxData[element['所属街道']]) {
+              this.boxData[element['所属街道']][element['职务']] = element
+            } else {
+              this.boxData[element['所属街道']] = {}
+              this.boxData[element['所属街道']][element['职务']] = element
+            }
+          })
+          console.log('boxData', this.boxData)
+        }
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    if (this.item.chartData.rows && this.item.chartData.rows.length) {
+      this.item.chartData.rows.forEach(element => {
+        if (this.boxData[element['所属街道']]) {
+          this.boxData[element['所属街道']][element['职务']] = element
+        } else {
+          this.boxData[element['所属街道']] = {}
+          this.boxData[element['所属街道']][element['职务']] = element
+        }
+      })
+      console.log('boxData', this.boxData)
+    }
+  },
   methods: {},
-  beforeDestroy() {},
-};
+  beforeDestroy () {}
+}
 </script>
 <style scoped lang="scss">
+  .CYZBTX{
+    overflow-y: scroll;
+    .streetBox{
+      width: 1324px;
+      margin-bottom: 40px;
+      .streetName{
+        width: 330px;
+        height: 72px;
+        background: url(./标题背景.png) no-repeat;
+        background-size: 100% 100%;
+        color: rgba(172,207,254,1);
+        font-size: 28px;
+        line-height: 72px;
+        padding-left: 24px;
+        margin-bottom: 20px;
+      }
+      .streetInfo{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .personnelInfo{
+          display: flex;
+          >div:last-child{
+            width: 268px;
+            position: relative;
+            .name{
+              color: rgba(172,207,254,1);
+              font-size: 36px;
+              padding-left: 28px;
+            }
+            .phone{
+              color: rgba(172,207,254,1);
+              font-size: 24px;
+              padding-left: 28px;
+            }
+            .position{
+              color: rgba(172,207,254,1);
+              font-size: 24px;
+              padding-left: 28px;
+              height: 56px;
+              line-height: 56px;
+              width: 268px;
+              background: url(./职位背景.png) no-repeat;
+              background-size: 100% 100%;
+              position: absolute;
+              bottom: 0;
+            }
+          }
+        }
+      }
+    }
+  }
 </style>
