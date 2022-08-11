@@ -49,14 +49,17 @@
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
           <div class="home_wrapBox">
-              <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
+              <!-- <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div>
               <div v-else class="back" style="height: 1620px;width: 8640px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
+              </div> -->
+              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="height: 1620px;width: 8640px;position: absolute;">
+                <CYMap></CYMap>
               </div>
             <div class="full-height pagebox">
-              <div class="Tbaleban"  v-if="showTableBox">
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showTableBox">
                 <div :class="IsCityType ? 'CityTableBox': 'TableBox'">
                   <div class="closeBtn" @click="closeTableTtn()"></div>
                     <div class="BoxTitle">{{TableData.title}}</div>
@@ -79,7 +82,30 @@
                     </div>
                 </div>
               </div>
-              <div class="BoxMban"  v-if="showModelBox">
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showTableBox">
+                <div class="cyTableBox">
+                    <div class="closeBtn" @click="closeTableTtn()"></div>
+                    <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '信息列表'}}</div>
+                    <div class="cyTableHead">
+                        <tr>
+                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                            {{ data }}
+                          </th>
+                        </tr>
+                    </div>
+                    <div class="cyTableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
+                      <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
+                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                          {{  rowsData[data] }}
+                        </th>
+                      </tr>
+                    </div>
+                    <div class="NoData" v-else-if="!DataTkArry.rows || DataTkArry.rows.length === 0">
+                      暂无数据！
+                    </div>
+                </div>
+              </div>
+              <div class="BoxMban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showModelBox">
                 <div :class="IsCityType ? 'CityModelBox': 'ModelBox'">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
@@ -99,6 +125,26 @@
                           </Button>
                         </div>
                       </div> -->
+                    </div>
+                  </div>
+                  <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
+                    <div class="DataValue" v-for="(data,index) in boxData.data" :key="index">
+                      {{ data.value }}
+                    </div>
+                  </div>
+                  <div class="NoData" v-else-if="boxData.data.length === 0">
+                    暂无数据！
+                  </div>
+                </div>
+              </div>
+              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showModelBox">
+                <div class="cyBox">
+                  <div class="closeBtn" @click="closeBoxTtn()"></div>
+                  <div class="BoxTitle">{{boxData.title}}</div>
+                  <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
+                    <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
+                      <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
+                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
@@ -192,6 +238,12 @@
                   </div>
                 </div>
               </div> -->
+              <div class="PopBox" v-if="showIframePop">
+                <div class="iframePop" :style="iframeStyle">
+                  <div class="closeBtn" @click="closeIframePop()"></div>
+                  <iframe :src="iframeUrl" frameborder="0"></iframe>
+                </div>
+              </div>
               <div class="VideoBox" v-if="showVideoBox">
                 <div class="videoTable">
                   <div class="closeBtn" @click="closeVideotn()"></div>
@@ -349,6 +401,7 @@ import { baseData, gbs } from '@/config/settings'
 import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
+import CYMap from '@/components/EditComp/CYMap/CYMap.vue'
 import ImportPage from './../EditPage/ImportPage'
 import WuhoIfream from '@/components/EditComp/WuhoIfream'
 import { Public, titleShowFn } from '#/js/public'
@@ -366,6 +419,7 @@ export default {
     WuhoIfream,
     AddPage,
     ImportPage,
+    CYMap,
     beijing
   },
   // mixins:[thirdLoginMix],
@@ -389,6 +443,10 @@ export default {
       infoData: {},
       TableData: {},
       showVideoBox: false,
+      showIframePop: false,
+      iframeUrl: '',
+      iframeWidth: 0,
+      iframeHeight: 0,
       VideoIfream: {
         height: 1230,
         width: 2940,
@@ -490,6 +548,14 @@ export default {
         return name
       }
     },
+    iframeStyle () {
+      return {
+        height: this.iframeHeight + 'px',
+        width: this.iframeWidth + 'px',
+        left: (8640 - this.iframeWidth) / 2 + 'px',
+        top: (1620 - this.iframeHeight) / 2 + 'px'
+      }
+    },
     IsCityType () {
       if (this.pageName && this.pageName.indexOf('市级') >= 0) {
         return true
@@ -550,6 +616,10 @@ export default {
       this.showIfreamBox = true
     },
     ShowTableBox (dataArray) {
+      if (self !== top) {
+        window.parent.ShowTableBox(dataArray)
+        return ''
+      }
       console.log(dataArray)
       if (dataArray.dataUrl) {
         this.DataTkArry = []
@@ -561,6 +631,7 @@ export default {
           .then((data) => {
             if (data.success) {
               this.DataTkArry = data.obj
+              this.DataTkArry.title = dataArray.title
             }
           })
       } else if (dataArray.data === 'arry') {
@@ -921,6 +992,10 @@ export default {
       this.showTableBox = false
     },
     ShowTanKuangBox (dataArray) {
+      if (self !== top) {
+        window.parent.ShowTanKuangBox(dataArray)
+        return ''
+      }
       this.showModelBox = true
       this.showModelBoxtype = dataArray.type || 0
       let newData = []
@@ -1859,6 +1934,16 @@ export default {
     closeVideotn () {
       this.showVideoBox = false
     },
+    ShowIframePop (data) {
+      this.showIframePop = true
+      this.iframeUrl = data.url
+      this.iframeWidth = data.width
+      this.iframeHeight = data.height
+    },
+    closeIframePop () {
+      this.showIframePop = false
+      this.iframeUrl = ''
+    },
     ShowVideoBox (vidoeId) {
       this.showVideoBox = true
       this.VideoIfream.CheckedVideoId = vidoeId
@@ -2010,6 +2095,9 @@ export default {
   },
   mounted: function () {
     $('#screen').addClass('disShow')
+    window.ShowTanKuangBox = this.ShowTanKuangBox
+    window.ShowTableBox = this.ShowTableBox
+    window.ShowIframePop = this.ShowIframePop
     // var _url = window.location.protocol + '//' + window.location.host + '/index'
     // window.history.pushState({}, '', _url)
     this.getAccess()
@@ -2323,6 +2411,32 @@ html[data-theme='blueWhite'] {
   height: 3160px;
   z-index: 5000;
   background-color: #15192a65;
+}
+.PopBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 4999;
+  background-color: #15192a65;
+  .iframePop{
+    position: relative;
+    z-index: 10;
+    .closeBtn {
+      height: 50px;
+      width: 50px;
+      cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 32px;
+      background: url(./城运关闭.png);
+    }
+    iframe{
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 .Tbaleban{
   position: absolute;
@@ -2658,6 +2772,129 @@ html[data-theme='blueWhite'] {
   .Data {
     // width: 70%;
     color: #789fb0;
+  }
+}
+.cyTableBox {
+  width: 2088px;
+  height: 1000px;
+  position: relative;
+  top: 310px;
+  left: 3276px;
+  z-index: 5000;
+  padding: 15px 60px 60px 60px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    background: url(./城运关闭.png);
+  }
+  .BoxTitle {
+    font-size: 32px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 50px;
+  }
+  .cyTableHead {
+      width: 100%;
+      background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1)) !important;
+      border-bottom: 1px solid rgba(172,207,254,1) !important;
+      tr {
+        width: 100%;
+        // height: 60px;
+        min-height: 72px;
+        font-size: 24px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+        }
+      }
+    }
+  .cyTableBody {
+      width: 100%;
+      height: 648px;
+      overflow: auto;
+      tr {
+        width: 100%;
+        height: 72px;
+        line-height: 72px;
+        // margin: 10px 0;
+        font-size: 24px !important;
+        display: flex;
+        color: rgba(172,207,254,1);
+        border-bottom: 1px solid rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          -o-text-overflow:ellipsis;
+        }
+      }
+      tr:nth-child(2n) {
+        background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1));
+      }
+  }
+}
+.cyBox {
+  width: 2088px;
+  height: 1000px;
+  position: relative;
+  top: 310px;
+  left: 3276px;
+  z-index: 5000;
+  padding: 15px 60px 60px 60px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    background: url(./城运关闭.png);
+  }
+  .BoxTitle {
+    font-size: 32px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 50px;
+  }
+  .BoxBody {
+    padding: 80px 40px;
+    display: flex;
+    font-size: 42px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 50%;
+    padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    // width: 30%;
+    color: #4f9ff5;
+    white-space: nowrap;
+  }
+  .Data {
+    // width: 70%;
+    color: rgba(172,207,254,1);
   }
 }
 .NoData{

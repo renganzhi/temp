@@ -1,7 +1,7 @@
 <template>
   <div class="bootstrap-table home-table"
        :style="boxStyle">
-    <div class="fixed-table-header"
+    <div v-show="item.showHead" class="fixed-table-header"
         :style="heightLinght">
       <table class="table"
              style="table-layout: fixed;"
@@ -26,7 +26,7 @@
       </table>
     </div>
     <div class="fixed-table-body"
-         style="padding-bottom: 26px;">
+         style="padding-bottom: 26px;" @click="showXQ">
       <table class="table"
              style="table-layout: fixed;">
         <tbody>
@@ -224,6 +224,11 @@ export default {
           }
         })
         this.noworder[key] = 'down'
+      }
+    },
+    showXQ () {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+        // this.$parent.$parent.ShowTableBox()
       }
     },
     warnStyle (index) {

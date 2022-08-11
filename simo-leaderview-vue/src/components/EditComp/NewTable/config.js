@@ -4,6 +4,7 @@ export default {
     'imgClass': 'icon-n-table',
     'chartType': 'NewTable',
     'hdBgClr': 'rgba(28, 33, 50, 0.54)',
+    'showHead': true,
     'hdClr': '#cad6dd',
     'hdfontSize': 12,
     'fontSize': 12,
@@ -161,6 +162,20 @@ export default {
           'name': '表头背景色',
           'key': 'hdBgClr',
           'tag': 'Color'
+        }, {
+          'name': '表头显示隐藏',
+          'key': 'showHead',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
         }]
       },
       {
