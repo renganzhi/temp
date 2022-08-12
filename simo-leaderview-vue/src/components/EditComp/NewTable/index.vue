@@ -228,6 +228,14 @@ export default {
     },
     showXQ () {
       if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+        if (this.item.chartData.url) {
+          let boxData = {
+            title: '数据详情',
+            // data: {name: this.item.chartData.name},
+            dataUrl: this.item.chartData.url
+          }
+          this.$parent.$parent.ShowTableBox(boxData)
+        }
         // this.$parent.$parent.ShowTableBox()
       }
     },
