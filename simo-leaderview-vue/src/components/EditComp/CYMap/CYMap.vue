@@ -131,9 +131,10 @@ export default {
                 u = '/leaderview/newDistrict/GetDTDD8'
               }
               this.axios.get(u).then(res => {
-                console.log('res11', res)
                 res.obj.dataArray.forEach((d, i) => {
-                  this.dotMap(d.location_longitude || d.longitude, d.location_latitude || d.latitude, index2, d.items)
+                  let lng = d.location_longitude || d.longitude
+                  let lat = d.location_latitude || d.latitude
+                  this.dotMap(lng, lat, index2, d.items)
                 })
               })
             }
@@ -146,7 +147,7 @@ export default {
   methods: {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
-      const centerPoint = new window.BMapGL.Point(104.181, 30.600862475501987) // 定义一个中心点坐标
+      const centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
       this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
       this.map.setMapStyleV2({styleJson: styleJson})
@@ -192,9 +193,7 @@ export default {
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
                 // polygon.addEventListener('click', e => {
-                //   this.$parent.ShowTablePop({
-                //     name: data.properties.Name
-                //   })
+                //   this.getMapCenter()
                 // })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
@@ -212,9 +211,7 @@ export default {
                 strokeStyle: '' // 边线类型，solid或dashed
               })
               // polygon.addEventListener('click', e => {
-              //   this.$parent.ShowTablePop({
-              //     name: data.properties.Name
-              //   })
+              //   this.getMapCenter()
               // })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)
