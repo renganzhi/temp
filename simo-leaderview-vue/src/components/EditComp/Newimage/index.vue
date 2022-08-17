@@ -37,7 +37,15 @@ export default {
       if (this.item.imgSrc) {
         url = this.baseUrl + this.item.imgSrc
       } else if (this.item.chartData.value) {
-        url = this.item.chartData.value
+        if (this.item.chartData.name === '今日天气') {
+          try {
+            url = require('./' + this.item.chartData.value + '.png')
+          } catch (err) {
+
+          }
+        } else if (this.item.chartData.name === '照片链接') {
+          url = this.item.chartData.value
+        }
       }
       return url
     },

@@ -17,6 +17,7 @@ import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
+import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
 
@@ -695,6 +696,7 @@ Dashboard.item,
 NEWtextArea.item,
 hotspot.item,
 IframePop.item,
+OrderMenu.item,
 WordClouds.item,
 {
   text: '跑马灯',

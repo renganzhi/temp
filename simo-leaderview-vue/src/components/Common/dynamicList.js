@@ -59,6 +59,7 @@ export default [
   'bubble',
   'hotspot',
   'IframePop',
+  'OrderMenu',
   'WordClouds',
   'decorator'
 ]

@@ -314,10 +314,10 @@
               class="ring-icon"
               title
               data-original-title="设置"
-              v-show="!isFullScreen"
+              v-show="!isFullScreen && $route.name === 'HomePage'"
               ><i class="icon-n-set"></i
             ></span>
-            <span
+            <!-- <span
               @click="toEditPage()"
               class="ring-icon"
               data-toggle="tooltip"
@@ -344,7 +344,7 @@
               ><i
                 :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"
               ></i
-            ></span>
+            ></span> -->
           </div>
           <div class="fr ringparent">
             <span
@@ -352,11 +352,11 @@
               class="ring-icon"
               data-toggle="tooltip"
               title
-              v-show="showPagination"
+              v-show="showPagination && $route.name === 'HomePage'"
               :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"
               ><i class="icon-n-prev"></i
             ></span>
-            <span
+            <!-- <span
               @click="togglePlay"
               class="ring-icon"
               data-toggle="tooltip"
@@ -364,13 +364,13 @@
               :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
               v-show="showPagination && isFullScreen"
               ><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i
-            ></span>
+            ></span> -->
             <span
               @click="next"
               class="ring-icon"
               data-toggle="tooltip"
               title
-              v-show="showPagination"
+              v-show="showPagination && $route.name === 'HomePage'"
               :data-original-title="isFullScreen ? '下一页' : ' 下一页 '"
               ><i class="icon-n-next"></i
             ></span>
@@ -2825,7 +2825,7 @@ html[data-theme='blueWhite'] {
     }
   .cyTableBody {
       width: 100%;
-      height: 648px;
+      height: 720px;
       overflow: auto;
       tr {
         width: 100%;
