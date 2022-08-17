@@ -15,6 +15,7 @@ export default {
     'clr': '#919cc1',
     'bdClr': '#c2c6d7',
     'intervieData': 10,
+    'showHead': true,
     'moreUrlArry': [],
     'Internal': 'false',
     'Zebra': 'false',
@@ -164,6 +165,20 @@ export default {
           'name': '表头背景色',
           'key': 'hdBgClr',
           'tag': 'Color'
+        }, {
+          'name': '是否显示表头',
+          'key': 'showHead',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '显示',
+              'value': true
+            },
+            {
+              'name': '隐藏',
+              'value': false
+            }
+          ]
         }]
       },
       {

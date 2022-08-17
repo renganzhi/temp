@@ -39,6 +39,7 @@ Vue.prototype.$ensureModal = ensureModal
 Vue.config.performance = true
 Vue.prototype.$notify = Notification
 
+Vue.prototype.bus = new Vue()
 Vue.prototype.$EventBus = new Vue()
 Vue.prototype.$MyEventBus = new Vue()
   /* eslint-disable no-new */
