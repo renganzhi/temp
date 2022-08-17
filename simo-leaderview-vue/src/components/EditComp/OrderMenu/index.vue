@@ -15,7 +15,7 @@
         <div class="subMenu" v-show="selectMainMenu">
             <div class="subBox" v-for="(el, i) in menuData[selectMainMenu]" :key="i">
                 <div>
-                  <img :src="'../../../../static/img/打点图/' + i + '.png'" style="width:28px" alt="">
+                  <img :src="require('../../../../static/img/打点图/' + i + '.png')" style="width:28px" alt="">
                   <span>{{i}}</span>
                 </div>
                 <el-switch
@@ -48,7 +48,7 @@ export default {
           '幼儿园': false,
           '中小学': false,
           '高校': false,
-          '其他院校': false
+          '其它院校': false
         },
         '医院': {
           '医院': false
@@ -56,7 +56,7 @@ export default {
         '重点场所': {
           '宾馆、酒店': false,
           '网约房': false,
-          '商超、市场': false,
+          '商场、超市、市场': false,
           '固废处理场所': false,
           '加油、加气站': false,
           '酒吧、KTV、会所': false,
