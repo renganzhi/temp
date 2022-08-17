@@ -7,7 +7,9 @@
     </div>
     <div v-if="numberType === 'percent'">
       <span :style="numStyle2">
-          <div :style="triangleStyle"/>{{increase}}
+          <div :style="triangleStyle">
+            <img :src="imgUrl" :style="{width: item.upIcon + 'px'}" alt="">
+          </div>{{increase}}
         </span>
     </div>
     <div
@@ -88,7 +90,7 @@ export default {
         lineHeight: '54px',
         left: this.item.upPos + 'px' || '200px',
         fontSize: this.item.upFontSize + 'px',
-        color: this.item.chartData.value > 0 ? 'red' : 'green'
+        color: this.item.chartData.value > 0 ? '#ff1f36' : '#2ed8be'
       }
     },
     titleStyle: function () { // {'font-size': '12px', 'color': item.legendColor || '#828bac'}
@@ -98,23 +100,31 @@ export default {
       }
     },
     triangleStyle: function () {
-      let obj = this.item.chartData.value > 0
-        ? {
-          borderTop: (this.item.upIcon || 6) + 'px solid transparent',
-          borderBottom: (this.item.upIcon || 6) + 'px solid red'
-        } // 增加
-        : {
-          borderTop: (this.item.upIcon || 6) + 'px solid green',
-          borderBottom: (this.item.upIcon || 6) + 'px solid transparent'
-        } // 减少
+      // let obj = this.item.chartData.value > 0
+      //   ? {
+      //     borderTop: (this.item.upIcon || 6) + 'px solid transparent',
+      //     borderBottom: (this.item.upIcon || 6) + 'px solid red'
+      //   } // 增加
+      //   : {
+      //     borderTop: (this.item.upIcon || 6) + 'px solid green',
+      //     borderBottom: (this.item.upIcon || 6) + 'px solid transparent'
+      //   } // 减少
       return {
         position: 'absolute',
         left: (this.item.upIconLeft || -20) + 'px' || '-20px',
-        top: (this.item.upIconTop || 23) + 'px' || '23px',
-        borderLeft: (this.item.upIcon || 6) + 'px solid transparent',
-        borderRight: (this.item.upIcon || 6) + 'px solid transparent',
-        ...obj
+        top: (this.item.upIconTop || 23) + 'px' || '23px'
+        // borderLeft: (this.item.upIcon || 6) + 'px solid transparent',
+        // borderRight: (this.item.upIcon || 6) + 'px solid transparent',
       }
+    },
+    imgUrl: function () {
+      let img = ''
+      if (this.item.chartData.value > 0) {
+        img = require('./上涨.png')
+      } else if (this.item.chartData.value < 0) {
+        img = require('./下跌.png')
+      }
+      return img
     },
     numCardOver: function () {
       return {

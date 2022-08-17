@@ -8,15 +8,140 @@
 <script>
 import * as turf from '@turf/turf'
 import styleJson from './custom_map_config.json'
+import element from '@/element'
+import { ColorPicker } from 'element-ui'
 export default {
   data: function () {
     return {
+      potData: {},
+      keyValue: {
+        name: '名称',
+        sort: '类型',
+        // type: '类型',
+        street: '街道',
+        address: '地址',
+        category: '大类',
+        community: '社区',
+        person_liable: '联系人',
+        contact_number: '联系电话',
+        room_name: '网约房名称',
+        owner_name: '业主（房东）姓名',
+        owner_phone: '业主（房东）联系方式',
+        manager_name: '经营者姓名',
+        maager_phone: '经营者联系方式',
+        room_number: '房间数',
+        bed_number: '床位数',
+        gridman_name: '网格员姓名',
+        gridman_phone: '网格员联系方式',
+        police_name: '社区民警姓名',
+        police_phone: '社区民警联系方式',
+        liaison_name: '区域微型消防站联络员姓名',
+        liaison_phone: '区域微型消防站联络员联系方式',
+        team_name: '队伍名称',
+        team_type: '队伍类型',
+        team_work: '队伍职能',
+        team_address: '队伍驻地',
+        manager: '负责人',
+        manager_phone: '负责人联系方式',
+        member_number: '队伍人数',
+        team_specialty: '队伍特长',
+        team_equipment: '随队装备',
+        assemble: '集结要求',
+        gsbh: '古树编号',
+        zm: '中名',
+        sm: '俗名',
+        ldxm: '拉丁学名',
+        k: '科',
+        s: '属',
+        szcs: '生长场所',
+        fbtd: '分布特点',
+        px: '坡向',
+        trmc: '土壤名称',
+        nllx: '年龄类型',
+        gsdj: '古树等级',
+        pw: '坡位',
+        xzgsmyy: '新增古树名木原因',
+        lb: '类别',
+        qs: '权属',
+        pd: '坡度',
+        hb: '海拔',
+        tchd: '土层厚度',
+        sl: '树龄',
+        sg: '树高',
+        xw: '胸围',
+        pjgf: '平均冠幅',
+        dxgf: '东西冠幅',
+        nbgf: '南北冠幅',
+        smqtxms: '树木奇特性状描述',
+        ygph: '原挂牌号',
+        ghdw: '管护单位',
+        ghr: '管护人',
+        bhxz: '保护现状',
+        yhfzxz: '养护复壮现状',
+        szjdjz: '树种鉴定记载',
+        dcz: '调查者',
+        dcrq: '调查日期',
+        scz: '审查者',
+        scrq: '审查日期',
+        szs: '生长势',
+        szhj: '生长环境',
+        tbsj: '填表时间',
+        yxszhjys: '影响生长环境因素',
+        company: '公司名称',
+        asset_name: '资产名称',
+        ssgnq: '所属功能区',
+        area: '面积（㎡）',
+        qzyt: '权证用途',
+        sjsyyt: '实际使用业态'
+      },
       header: process.env.NODE_ENV === 'development' ? './static/' : './'
     }
   },
   props: ['nowPageName'],
   watch: {
-
+    potData: {
+      handler () {
+        let url = ''
+        this.map.clearOverlays()
+        for (let index1 in this.potData) {
+          if (index1 === '医院') {
+            url = '/leaderview/newDistrict/GetDTDD1?param='
+          } else if (index1 === '党政机关') {
+            url = '/leaderview/newDistrict/GetDTDD3?param='
+          } else if (index1 === '高层建筑') {
+            url = '/leaderview/newDistrict/GetDTDD4?param='
+          } else if (index1 === '文化景点') {
+            url = '/leaderview/newDistrict/GetDTDD4?param='
+          } else if (index1 === '学校') {
+            url = '/leaderview/newDistrict/GetDTDD2?param='
+          } else if (index1 === '重点场所') {
+            url = '/leaderview/newDistrict/GetDTDD7?param='
+          } else if (index1 === '处置队伍') {
+            url = '/leaderview/newDistrict/GetDTDD6'
+          }
+          for (let index2 in this.potData[index1]) {
+            if (this.potData[index1][index2] && url) {
+              let u = url
+              if (index2 !== '处置队伍') {
+                u = url + index2
+              }
+              if (index2 === '名木古树') {
+                u = '/leaderview/newDistrict/GetDTDD5'
+              } else if (index2 === '网约房') {
+                u = '/leaderview/newDistrict/GetDTDD8'
+              }
+              this.axios.get(u).then(res => {
+                console.log('res11', res)
+                res.obj.dataArray.forEach((d, i) => {
+                  this.dotMap(d.location_longitude || d.longitude, d.location_latitude || d.latitude, index2, d.items)
+                })
+              })
+            }
+          }
+        }
+      },
+      deep: true
+    }
   },
   methods: {
     initMap () {
@@ -30,7 +155,6 @@ export default {
     // 绘制武侯区
     getWHQ () {
       $.getJSON(this.header + 'geojson/xzqh.json', res => {
-        console.log('res', res)
         res.features.forEach(data => {
           let boundaries = []
           let points = []
@@ -72,6 +196,7 @@ export default {
                 //     name: data.properties.Name
                 //   })
                 // })
+                polygon.disableMassClear()
                 this.map.addOverlay(polygon)
               })
             } else {
@@ -91,13 +216,13 @@ export default {
               //     name: data.properties.Name
               //   })
               // })
+              polygon.disableMassClear()
               this.map.addOverlay(polygon)
             }
             let pointer = turf.centerOfMass(data.geometry).geometry.coordinates
             if (data.properties.Name === '金花桥街道') {
               pointer = [103.97374548683935, 30.591885280709842]
             }
-            console.log('name', data.properties.Name, data.properties.Name.length)
             if (data.properties.Name.length === 4) {
               myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(16, 6.5))
             } else if (data.properties.Name.length === 5) {
@@ -112,6 +237,7 @@ export default {
             // }
             // 创建标注对象并添加到地图
             marker = new window.BMapGL.Marker(new window.BMapGL.Point(pointer[0], pointer[1]), {icon: myIcon})
+            marker.disableMassClear()
             this.map.addOverlay(marker)
           }
         })
@@ -124,9 +250,44 @@ export default {
     // 清除覆盖物
     removeOverlay () {
       this.map.clearOverlays()
+    },
+    dotMap (lng, lat, type, dataArray) {
+      let tableData = {
+        title: type + '列表',
+        data: 'arry'
+      }
+      let columns = ['名称', '类型', '街道', '社区', '地址']
+      if (type === '处置队伍') {
+        columns = ['队伍名称', '队伍类型', '队伍职能', '队伍驻地', '街道']
+      } else if (type === '名木古树') {
+        columns = ['古树编号', '中名', '地址', '街道', '社区']
+      }
+      let rows = []
+      dataArray.forEach(element => {
+        let json = {}
+        for (let i in element) {
+          if (this.keyValue[i]) {
+            json[this.keyValue[i]] = element[i]
+          }
+        }
+        rows.push(json)
+      })
+      tableData.dataArray = {
+        columns: columns,
+        rows: rows
+      }
+      let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
+      let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
+      marker.addEventListener('click', e => {
+        this.$parent.ShowTableBox(tableData)
+      })
+      this.map.addOverlay(marker)
     }
   },
   mounted () {
+    this.bus.$on('Mark', res => {
+      this.potData = res
+    })
     this.initMap()
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="bootstrap-table home-table"
        :style="boxStyle">
-    <div class="fixed-table-header"
+    <div v-show="item.showHead" class="fixed-table-header"
         :style="heightLinght">
       <table class="table"
              :style="theadTrStyle"
