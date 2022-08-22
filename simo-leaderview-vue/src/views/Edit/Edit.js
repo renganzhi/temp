@@ -3357,6 +3357,7 @@ export default {
             }
           },
           error: async function (xhr) {
+            $('#lead-screen').removeClass('disShow')
             if (_this.isThird && xhr.status === 776) { // 第三方登录过期->重新登录->重新请求当前接口
               await checkLogin(_this.thirdIpPort) && _this.sentViewReq(curConf, datas, param)
               return false

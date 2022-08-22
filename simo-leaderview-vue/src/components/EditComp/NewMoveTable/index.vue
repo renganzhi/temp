@@ -47,10 +47,10 @@
             <tr v-for="(tr, id) in page1Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle('page1Data',id)]"
                 :key="id">
-              <td v-for="(tdText, ind,i) in tr"
+              <td v-for="(tdText, ind,i) in item.chartData.columns"
                   :key="ind"
-                  :style="[thStyle,heightLinght,widthLinght(i)]"
-                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
+                  :style="[thStyle,heightLinght,widthLinght(ind)]"
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tr[tdText]}}</td>
             </tr>
           </tbody>
         </table>
@@ -97,7 +97,7 @@ export default {
       page2Data: [],
       intervalId: 0,
       nowShowIndex: -1,
-      myNewInterVal:'',
+      myNewInterVal: '',
       nowPage: 0,
       tableEmpty: false
     }
@@ -146,14 +146,14 @@ export default {
     },
     widthArry: function () {
       let arr = this.item.LineSizeArry || []
-      if(this.item.chartData && this.item.chartData.columns){
-      this.item.chartData.columns.forEach((element, i) => {
-        if (arr[i]) {
+      if (this.item.chartData && this.item.chartData.columns) {
+        this.item.chartData.columns.forEach((element, i) => {
+          if (arr[i]) {
 
-        } else {
-          arr.push(86)
-        }
-      })
+          } else {
+            arr.push(86)
+          }
+        })
       }
       return arr
     },
@@ -196,7 +196,7 @@ export default {
       }
     },
     'item.chartData': function (newV, oldV) {
-      if(this.item.chartData === null || this.item.chartData === ''){
+      if (this.item.chartData === null || this.item.chartData === '') {
         this.item.chartData = {
           'columns': [],
           'rows': []
@@ -271,14 +271,14 @@ export default {
     //     }, this.intervalTime)
     //   }
     // },
-    getNewChartData(){
+    getNewChartData () {
       var _this = this
-      if(_this.item.moreUrlArry[_this.nowShowIndex]){
-        let myUrl =  _this.item.moreUrlArry[_this.nowShowIndex].url
+      if (_this.item.moreUrlArry[_this.nowShowIndex]) {
+        let myUrl = _this.item.moreUrlArry[_this.nowShowIndex].url
         $.each(_this.item.moreUrlArry[_this.nowShowIndex].params, function (i, d) {
           _this.item.moreUrlArry[_this.nowShowIndex].params[i] = $.isArray(d) ? d.join(',') : d
         })
-        if(_this.item.ctDataSource === 'system'){
+        if (_this.item.ctDataSource === 'system') {
           $.ajax({
             url: gbs.host + myUrl, // 第三方的ur已经拼接好host
             data: _this.item.moreUrlArry[_this.nowShowIndex].params,
@@ -363,46 +363,46 @@ export default {
       }
       var _this = this
       this.nowPage = 0
-      if(this.item.chartData && this.item.chartData.rows){
-      this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
-      this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
-      // 这里不用注释
-      // if ($(this.$el).find('[title]').length > 0) {
-      //   $(this.$el).find('[title]').tooltip('destroy')
-      // }
-      // if ($('#paintWrap').find('[title]').length > 0) {
-      //   $('#paintWrap').find('[title]').tooltip('destroy')
-      // }
-      // this.$nextTick(() => {
-      //   if ($('#home-html').length > 0) {
-      //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-      //   } else {
-      //     titleShowFn('bottom', $(this.$el), this.$el)
-      //   }
-      // })
-      // 这里不用注释
-      if (this.item.chartData.rows.length > this.pageNum) {
-        let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-        if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-          totalPage--
-        }
-        if (!this.moving || this.moving === 'false') return
-        if (this.intervalId) {
-          clearInterval(this.intervalId)
-          this.intervalId = null
-        }
-        this.intervalId = setInterval(()=> {
-          _this.tableMove = !_this.tableMove
-          if (_this.tableMove) {
-            _this.nowPage++
-            if (_this.nowPage === totalPage) {
-              _this.nowPage = -1
-              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
-            } else {
-              _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
-            }
-            _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
+      if (this.item.chartData && this.item.chartData.rows) {
+        this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
+        this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
+        // 这里不用注释
+        // if ($(this.$el).find('[title]').length > 0) {
+        //   $(this.$el).find('[title]').tooltip('destroy')
+        // }
+        // if ($('#paintWrap').find('[title]').length > 0) {
+        //   $('#paintWrap').find('[title]').tooltip('destroy')
+        // }
+        // this.$nextTick(() => {
+        //   if ($('#home-html').length > 0) {
+        //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
+        //   } else {
+        //     titleShowFn('bottom', $(this.$el), this.$el)
+        //   }
+        // })
+        // 这里不用注释
+        if (this.item.chartData.rows.length > this.pageNum) {
+          let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
+          if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+            totalPage--
           }
+          if (!this.moving || this.moving === 'false') return
+          if (this.intervalId) {
+            clearInterval(this.intervalId)
+            this.intervalId = null
+          }
+          this.intervalId = setInterval(() => {
+            _this.tableMove = !_this.tableMove
+            if (_this.tableMove) {
+              _this.nowPage++
+              if (_this.nowPage === totalPage) {
+                _this.nowPage = -1
+                _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
+              } else {
+                _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
+              }
+              _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
+            }
           // 这里不用注释
           // if ($(_this.$el).find('[title]').length > 0) {
           //   $(_this.$el).find('[title]').tooltip('destroy')
@@ -420,9 +420,15 @@ export default {
           // 这里不用注释
           // clearTimeout(_this.intervalId)
           // _this.intervalId = setTimeout(tableFn, _this.intervalTime)
-        }, _this.intervalTime)
+          }, _this.intervalTime)
+        }
       }
-      }
+      console.log('chartData', this.item.chartData)
+      this.item.chartData.columns.forEach(e => {
+        this.page1Data.rows.forEach(v => {
+          console.log('ee', this.page1Data, e, v[e])
+        })
+      })
     }
     // initMove () {
     //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
@@ -452,14 +458,14 @@ export default {
     // }
   },
   mounted: function () {
-    if(this.item.chartData && this.item.chartData.columns){
-    this.item.chartData.columns.forEach((element, i) => {
-      if (this.widthArry[i]) {
+    if (this.item.chartData && this.item.chartData.columns) {
+      this.item.chartData.columns.forEach((element, i) => {
+        if (this.widthArry[i]) {
 
-      } else {
-        this.widthArry.push(86)
-      }
-    })
+        } else {
+          this.widthArry.push(86)
+        }
+      })
     }
     this.pageNum = Number(this.item.pageNum)
     if (this.item.speed === '3') {
@@ -478,14 +484,14 @@ export default {
     if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length < 1) {
       this.tableEmpty = true
     }
-    if(this.item.moreUrlArry && this.item.moreUrlArry.length >1 && this.item.intervieData > 0){
-      if (this.myNewInterVal){
+    if (this.item.moreUrlArry && this.item.moreUrlArry.length > 1 && this.item.intervieData > 0) {
+      if (this.myNewInterVal) {
         clearInterval(this.myNewInterVal)
       }
       this.myNewInterVal = setInterval(() => {
-        this.nowShowIndex = (this.nowShowIndex+1 ) % this.item.moreUrlArry.length
+        this.nowShowIndex = (this.nowShowIndex + 1) % this.item.moreUrlArry.length
         this.getNewChartData()
-      }, this.item.intervieData *1000);
+      }, this.item.intervieData * 1000)
     }
   },
   beforeDestroy: function () {
@@ -496,7 +502,7 @@ export default {
     if ($(this.$el).find('[title]').length > 0) {
       $(this.$el).find('[title]').tooltip('destroy')
     }
-    if (this.myNewInterVal){
+    if (this.myNewInterVal) {
       clearInterval(this.myNewInterVal)
     }
     this.page1Data = null
