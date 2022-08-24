@@ -1,6 +1,7 @@
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
+import StreetMenu from '@/components/EditComp/StreetMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
 import NewBorder from '@/components/EditComp/NewBorder/config.js'
@@ -39,6 +40,7 @@ const others = {
     hotspot.item,
     IframePop.item,
     OrderMenu.item,
+    StreetMenu.item,
     WordClouds.item,
     decorator.item,
     TDModel.item,

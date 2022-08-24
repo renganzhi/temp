@@ -1,6 +1,7 @@
 <template>
     <div class="OrderMenu">
-        <div class="mainMenu">
+        <div class="openBtn" @click="showMenu = true" v-show="!showMenu"><img src="./打点.png" alt=""></div>
+        <div class="mainMenu" v-show="showMenu">
             <div class="mainBox" :style="ifCheck(index)" @click="showSubManu(index)" v-for="(element, index) in menuData" :key="index">
               <div>
                 <img :src="getImg('./' + index)" style="width:30px" alt="">
@@ -11,8 +12,9 @@
                 <img src="./more.png" style="width:24px" alt="">
               </div>
             </div>
+            <div class="closeBtn" @click="showMenu = false"><img style="width:140px;height:32px" src="./收起.png" alt=""></div>
         </div>
-        <div class="subMenu" v-show="selectMainMenu">
+        <div class="subMenu" v-show="selectMainMenu && showMenu">
             <div class="subBox" v-for="(el, i) in menuData[selectMainMenu]" :key="i">
                 <div>
                   <img :src="require('../../../../static/img/打点图/' + i + '.png')" style="width:28px" alt="">
@@ -73,6 +75,7 @@ export default {
           '处置队伍': false
         }
       },
+      showMenu: false,
       selectMainMenu: '',
       submenuList: []
     }
@@ -138,10 +141,16 @@ export default {
 <style scoped lang="scss">
 .OrderMenu{
   display: flex;
+  .openBtn{
+    position:absolute;
+    bottom: 0;
+    left:0;
+  }
   .mainMenu{
     height: 580px;
     padding: 10px 0;
     background:#002b59;
+    position: relative;
     .mainBox{
         height: 80px;
         color: #ACCFFE;
@@ -158,6 +167,12 @@ export default {
           margin-right: 30px;
         }
       }
+    .closeBtn{
+      position:absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+    }
   }
   .subMenu{
     background: #00244e;
