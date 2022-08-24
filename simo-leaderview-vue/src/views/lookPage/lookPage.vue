@@ -2081,7 +2081,9 @@ export default {
       }
       // this.refreshFn(newV)
       this.setScale()
-      this.refresh() // 整页刷新
+      window.setTimeout(() => {
+        this.refresh() // 整页刷新
+      }, 3000)
       // this.initRefreshTimer() 取消整页刷新
     }
     // combinList: function () {

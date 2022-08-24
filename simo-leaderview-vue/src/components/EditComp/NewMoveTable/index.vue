@@ -63,10 +63,10 @@
             <tr v-for="(tr, id) in page2Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle('page2Data',id)]"
                 :key="id">
-              <td v-for="(tdText, ind,i) in tr"
+              <td v-for="(tdText, ind,i) in item.chartData.columns"
                   :key="ind"
-                  :style="[thStyle,heightLinght,widthLinght(i)]"
-                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tdText}}</td>
+                  :style="[thStyle,heightLinght,widthLinght(ind)]"
+                  v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tr[tdText]}}</td>
             </tr>
           </tbody>
         </table>
