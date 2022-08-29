@@ -18,6 +18,7 @@ import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
+import CityEvent from '@/components/EditComp/CityEvent/config.js'
 import StreetMenu from '@/components/EditComp/StreetMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -698,6 +699,7 @@ NEWtextArea.item,
 hotspot.item,
 IframePop.item,
 OrderMenu.item,
+CityEvent.item,
 StreetMenu.item,
 WordClouds.item,
 {

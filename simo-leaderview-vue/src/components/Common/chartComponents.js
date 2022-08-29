@@ -70,6 +70,7 @@ import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
 import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
+import CityEvent from '@/components/EditComp/CityEvent'
 import StreetMenu from '@/components/EditComp/StreetMenu'
 import WordClouds from '@/components/EditComp/WordClouds'
 import Decorator from '@/components/EditComp/decorator'
@@ -153,6 +154,7 @@ export default {
   Hotspot,
   IframePop,
   OrderMenu,
+  CityEvent,
   StreetMenu,
   WordClouds,
   Decorator

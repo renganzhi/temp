@@ -60,6 +60,7 @@ export default [
   'hotspot',
   'IframePop',
   'OrderMenu',
+  'CityEvent',
   'StreetMenu',
   'WordClouds',
   'decorator'
