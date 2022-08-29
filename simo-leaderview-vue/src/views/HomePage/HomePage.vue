@@ -2889,7 +2889,7 @@ html[data-theme='blueWhite'] {
   }
   .lineBox {
     display: flex;
-    width: 50%;
+    width: 100%;
     padding: 30px 0px;
   }
   .Nmae {

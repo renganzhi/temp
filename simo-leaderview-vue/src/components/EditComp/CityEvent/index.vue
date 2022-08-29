@@ -1,0 +1,67 @@
+<template>
+    <div class="cityEvent" :style="boxStyle">
+        <div @click="showDetails(val)"  class="eventBox" v-for="(val, ind) in item.chartData.rows" :key="ind">
+            <div class="title">{{val.title}}</div>
+            <div class="date">{{val.date}}</div>
+            <div class="content">{{val.content}}</div>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+  props: ['item'],
+  computed: {
+    boxStyle: function () {
+      return {
+        width: this.item.width + 'px !important',
+        height: this.item.height + 'px !important'
+      }
+    }
+  },
+  methods: {
+    showDetails (data) {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+        this.$parent.$parent.ShowTanKuangBox({
+          title: '事件详情',
+          data: data
+        })
+      }
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.cityEvent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    .eventBox{
+        width: 100%;
+        height: 33%;
+        padding: 10px 20px;
+        overflow: hidden;
+        background: #122f61;
+        font-weight: bold;
+        .title{
+            // 渐变色字体
+            background-image: linear-gradient(#f04d4d, rgba(211, 179, 179, 0.67));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 34px;
+        }
+        .date{
+            font-size: 22px;
+            color: #3667ff;
+        }
+        .content{
+            height: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 27px;
+            color: #6689f8;
+        }
+    }
+}
+</style>
