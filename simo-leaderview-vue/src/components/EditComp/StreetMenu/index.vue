@@ -1,8 +1,11 @@
 <template>
     <div class="StreetMenu">
-        <div class="openBtn" @click="showMenu = true" ><img src="./街道按钮.png" alt=""></div>
+        <div class="openBtn" @click="showMenu = true" >
+          <img src="./街道按钮.png" style="width:68px;height:68px" alt="">
+          <div style="font-size:30px;padding:10px 5px;height:68px;text-align:center;">街镇城运平台</div>
+        </div>
         <div class="mainMenu" v-show="showMenu">
-            <div style="font-size:30px;padding:10px 5px;text-align:center">街镇城运平台</div>
+            <!-- <div style="font-size:30px;padding:10px 5px;text-align:center">街镇城运平台</div> -->
             <div class="mainBox"  v-for="(element, index) in item.chartData" :key="index">
                 <a :href="element" target="_blank">{{index}}</a>
             </div>
@@ -72,8 +75,13 @@ export default {
 </script>
 <style scoped lang="scss">
 .StreetMenu{
-  display: flex;
+  // display: flex;
   .openBtn{
+    display: flex;
+    background:#001828;
+    vertical-align: middle;
+    // align-items: center;
+    // justify-content: center;
   }
   .mainMenu{
     padding: 10px 0;
