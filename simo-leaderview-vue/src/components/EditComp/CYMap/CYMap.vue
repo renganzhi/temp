@@ -117,26 +117,68 @@ export default {
           } else if (index1 === '重点场所') {
             url = '/leaderview/newDistrict/GetDTDD7?param='
           } else if (index1 === '处置队伍') {
-            url = '/leaderview/newDistrict/GetDTDD6'
+            url = '/leaderview/newDistrict/GetDTDD6?street='
+          } else if (index1 === '天网') {
+            url = ''
           }
-          for (let index2 in this.potData[index1]) {
-            if (this.potData[index1][index2] && url) {
-              let u = url
-              if (index2 !== '处置队伍') {
-                u = url + index2
-              }
-              if (index2 === '名木古树') {
-                u = '/leaderview/newDistrict/GetDTDD5'
-              } else if (index2 === '网约房') {
-                u = '/leaderview/newDistrict/GetDTDD8'
-              }
-              this.axios.get(u).then(res => {
-                res.obj.dataArray.forEach((d, i) => {
-                  let lng = d.location_longitude || d.longitude
-                  let lat = d.location_latitude || d.latitude
-                  this.dotMap(lng, lat, index2, d.items)
+          for (let index2 in this.potData[index1]) { // index2表示2级菜单点位
+            for (let index3 in this.potData[index1][index2]) { // index3表示各个街道
+              if (this.potData[index1][index2][index3]) {
+                let u = url
+                if (index2 === '处置队伍') {
+                  u = url + index3
+                } else if (index2 === '视频监控') {
+                  if (index3 === '浆洗街街道') {
+                    u = '/leaderview/newDistrict/GetJXList'
+                  } else if (index3 === '火车南站街道') {
+                    u = '/leaderview/newDistrict/GetHCNZList'
+                  } else if (index3 === '簇桥街道') {
+                    u = '/leaderview/newDistrict/GetCQList'
+                  } else if (index3 === '华兴街道') {
+                    u = '/leaderview/newDistrict/GetHXList'
+                  } else if (index3 === '晋阳街道') {
+                    u = '/leaderview/newDistrict/GetJYList'
+                  } else if (index3 === '玉林街道') {
+                    u = '/leaderview/newDistrict/GetYLList'
+                  } else if (index3 === '簇锦街道') {
+                    u = '/leaderview/newDistrict/GetCJList'
+                  } else if (index3 === '红牌楼街道') {
+                    u = '/leaderview/newDistrict/GetHPLList'
+                  } else if (index3 === '金花桥街道') {
+                    u = '/leaderview/newDistrict/GetJHQList'
+                  } else if (index3 === '机投桥街道') {
+                    u = '/leaderview/newDistrict/GetJTQList'
+                  } else if (index3 === '望江路街道') {
+                    u = '/leaderview/newDistrict/GetWJLList'
+                  }
+                } else {
+                  u = url + index2 + '&street=' + index3
+                }
+                if (index2 === '名木古树') {
+                  u = '/leaderview/newDistrict/GetDTDD5?street=' + index3
+                } else if (index2 === '网约房') {
+                  u = '/leaderview/newDistrict/GetDTDD8?street=' + index3
+                }
+                this.axios.get(u).then(res => {
+                  if (index2 === '视频监控') {
+                    res.obj.forEach((d, i) => {
+                      let lng = d.location_longitude || d.longitude
+                      let lat = d.location_latitude || d.latitude
+                      this.dotMap(lng, lat, index2, {
+                        deviceIndexCode: d.deviceIndexCode,
+                        name: d.name
+                      }
+                      )
+                    })
+                  } else {
+                    res.obj.dataArray.forEach((d, i) => {
+                      let lng = d.location_longitude || d.longitude
+                      let lat = d.location_latitude || d.latitude
+                      this.dotMap(lng, lat, index2, d.items)
+                    })
+                  }
                 })
-              })
+              }
             }
           }
         }
@@ -249,36 +291,53 @@ export default {
       this.map.clearOverlays()
     },
     dotMap (lng, lat, type, dataArray) {
-      let tableData = {
-        title: type + '列表',
-        data: 'arry'
-      }
-      let columns = ['名称', '类型', '街道', '社区', '地址']
-      if (type === '处置队伍') {
-        columns = ['队伍名称', '队伍类型', '队伍职能', '队伍驻地', '街道']
-      } else if (type === '名木古树') {
-        columns = ['古树编号', '中名', '地址', '街道', '社区']
-      }
-      let rows = []
-      dataArray.forEach(element => {
-        let json = {}
-        for (let i in element) {
-          if (this.keyValue[i]) {
-            json[this.keyValue[i]] = element[i]
-          }
+      if (type === '视频监控') {
+        let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
+        let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
+        // let label = new window.BMapGL.Label(dataArray.name, {
+        //   position: new window.BMapGL.Point(lng, lat),
+        //   offset: new window.BMapGL.Size(30, -30)
+        // })
+        // marker.setLabel(label)
+        marker.setTitle(dataArray.name)
+        marker.addEventListener('click', e => {
+          this.$parent.ShowVideoBox(dataArray.deviceIndexCode)
+        })
+        this.map.addOverlay(marker)
+      } else {
+        let tableData = {
+          title: type + '列表',
+          data: 'arry'
         }
-        rows.push(json)
-      })
-      tableData.dataArray = {
-        columns: columns,
-        rows: rows
+        let columns = ['名称', '类型', '街道', '社区', '地址']
+        if (type === '处置队伍') {
+          columns = ['队伍名称', '队伍类型', '队伍职能', '队伍驻地', '街道']
+        } else if (type === '名木古树') {
+          columns = ['古树编号', '中名', '地址', '街道', '社区']
+        } else if (type === '网约房') {
+          columns = ['网约房名称', '街道', '地址']
+        }
+        let rows = []
+        dataArray.forEach(element => {
+          let json = {}
+          for (let i in element) {
+            if (this.keyValue[i]) {
+              json[this.keyValue[i]] = element[i]
+            }
+          }
+          rows.push(json)
+        })
+        tableData.dataArray = {
+          columns: columns,
+          rows: rows
+        }
+        let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
+        let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
+        marker.addEventListener('click', e => {
+          this.$parent.ShowTableBox(tableData)
+        })
+        this.map.addOverlay(marker)
       }
-      let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
-      let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
-      marker.addEventListener('click', e => {
-        this.$parent.ShowTableBox(tableData)
-      })
-      this.map.addOverlay(marker)
     }
   },
   mounted () {

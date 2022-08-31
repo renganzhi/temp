@@ -3,8 +3,8 @@ export default{
     'text': '打点菜单',
     'imgClass': 'icon-n-text',
     'chartType': 'OrderMenu',
-    'width': 850,
-    'height': 600,
+    'width': 870,
+    'height': 660,
     'size': 'big',
     'chartData': {}
   },
