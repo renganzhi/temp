@@ -448,8 +448,8 @@ export default {
       iframeWidth: 0,
       iframeHeight: 0,
       VideoIfream: {
-        height: 1230,
-        width: 2940,
+        height: 832,
+        width: 1968,
         chartData: {
           hkwsid: ''
         }
@@ -3016,27 +3016,30 @@ html[data-theme='blueWhite'] {
   z-index: 5000;
   background-color: #15192a65;
   .videoTable{
-    height: 1520px;
-    width: 3147px;
-    padding: 100px;
-    top: 50px;
-    left: 2800px;
+    width: 2088px;
+    height: 1000px;
     position: relative;
+    top: 310px;
+    left: 3276px;
     z-index: 5000;
-    background: url(./modelBox.png);
+    padding: 15px 60px 60px 60px;
+    background: url(./城运背景.png) no-repeat;
     background-size: 100% 100%;
     .closeBtn{
-      height: 200px;
-      width: 200px;
+      height: 50px;
+      width: 50px;
       cursor: pointer;
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 16px;
+      right: 32px;
+      background: url(./城运关闭.png);
     }
     .BoxTitle {
-      font-size: 46px !important;
-      color: #bbeefe;
+      font-size: 32px !important;
+      color: #ACCFFE;
+      font-weight: bold;
       font-family: PangmenMainRoadTitleBody !important;
+      margin-bottom: 50px;
     }
     .videoDiv{
       height: 90%;
