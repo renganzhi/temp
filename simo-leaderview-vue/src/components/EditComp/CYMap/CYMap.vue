@@ -184,15 +184,32 @@ export default {
         }
       },
       deep: true
+    },
+    nowPageName: function () {
+      if (this.nowPageName.indexOf('32:9') >= 0) {
+        let centerPoint = new window.BMapGL.Point(106.10623, 30.32010)
+        this.map.centerAndZoom(centerPoint, 12.619897464932635)
+      } else {
+        let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
+        this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+      }
     }
   },
   methods: {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
-      const centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
-      this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+      if (this.nowPageName.indexOf('32:9') >= 0) {
+        let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987)
+        this.map.centerAndZoom(centerPoint, 13.75951)
+      } else {
+        let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
+        this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+      }
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
       this.map.setMapStyleV2({styleJson: styleJson})
+      this.map.setDisplayOptions({
+        poiText: false
+      })
       this.getWHQ()
     },
     // 绘制武侯区
@@ -234,9 +251,9 @@ export default {
                   strokeOpacity: 1, // 边线透明度
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
-                // polygon.addEventListener('click', e => {
-                //   this.getMapCenter()
-                // })
+                polygon.addEventListener('click', e => {
+                  this.getMapCenter()
+                })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
               })
@@ -252,9 +269,9 @@ export default {
                 strokeOpacity: 1, // 边线透明度
                 strokeStyle: '' // 边线类型，solid或dashed
               })
-              // polygon.addEventListener('click', e => {
-              //   this.getMapCenter()
-              // })
+              polygon.addEventListener('click', e => {
+                this.getMapCenter()
+              })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)
             }
@@ -284,7 +301,7 @@ export default {
     },
     getMapCenter () {
       var cen = this.map.getCenter() // 获取地图中心点
-      alert('地图中心点: (' + cen.lng.toFixed(5) + ', ' + cen.lat.toFixed(5) + ')')
+      alert('地图中心点: (' + cen.lng.toFixed(5) + ', ' + cen.lat.toFixed(5) + ')' + '层级：' + this.map.getZoom())
     },
     // 清除覆盖物
     removeOverlay () {
