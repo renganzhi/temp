@@ -423,12 +423,6 @@ export default {
           }, _this.intervalTime)
         }
       }
-      console.log('chartData', this.item.chartData)
-      this.item.chartData.columns.forEach(e => {
-        this.page1Data.rows.forEach(v => {
-          console.log('ee', this.page1Data, e, v[e])
-        })
-      })
     }
     // initMove () {
     //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）

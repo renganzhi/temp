@@ -1,9 +1,9 @@
 <template>
     <div class="cityEvent" :style="boxStyle">
         <div @click="showDetails(val)"  class="eventBox" v-for="(val, ind) in item.chartData.rows" :key="ind">
-            <div class="title">{{val.title}}</div>
-            <div class="date">{{val.date}}</div>
-            <div class="content">{{val.content}}</div>
+            <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">{{val.title}}</div>
+            <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">{{val.date}}</div>
+            <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">{{val.content}}</div>
         </div>
     </div>
 </template>
