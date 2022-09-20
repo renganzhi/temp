@@ -55,8 +55,8 @@
               <div v-else class="back" style="height: 1620px;width: 8640px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div> -->
-              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="height: 1620px;width: 8640px;position: absolute;">
-                <CYMap></CYMap>
+              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" :style="{height: pageName.indexOf('32:9') >= 0?'1080px':'1620px',width: pageName.indexOf('32:9') >= 0?'3840px':'8640px',position: 'absolute'}">
+                <CYMap :nowPageName="pageName"></CYMap>
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showTableBox">
@@ -82,8 +82,8 @@
                     </div>
                 </div>
               </div>
-              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showTableBox">
-                <div class="cyTableBox">
+              <div class="Tbaleban" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showTableBox">
+                <div :class="pageName.indexOf('32:9')>=0?'NewCyTableBox':'cyTableBox'">
                     <div class="closeBtn" @click="closeTableTtn()"></div>
                     <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '信息列表'}}</div>
                     <div class="cyTableHead">
@@ -137,8 +137,8 @@
                   </div>
                 </div>
               </div>
-              <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showModelBox">
-                <div class="cyBox">
+              <div class="Tbaleban" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showModelBox">
+                <div :class="pageName.indexOf('32:9')>=0?'NewCyBox':'cyBox'">
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
@@ -238,14 +238,14 @@
                   </div>
                 </div>
               </div> -->
-              <div class="PopBox" v-if="showIframePop">
+              <div class="PopBox" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}" v-if="showIframePop">
                 <div class="iframePop" :style="iframeStyle">
                   <div class="closeBtn" @click="closeIframePop()"></div>
                   <iframe :src="iframeUrl" frameborder="0"></iframe>
                 </div>
               </div>
-              <div class="VideoBox" v-if="showVideoBox">
-                <div class="videoTable">
+              <div class="VideoBox" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}" v-if="showVideoBox">
+                <div :class="pageName.indexOf('32:9')>=0?'NewVideoTable':'videoTable'">
                   <div class="closeBtn" @click="closeVideotn()"></div>
                     <div class="BoxTitle">实时视频</div>
                     <div class="videoDiv">
@@ -552,8 +552,8 @@ export default {
       return {
         height: this.iframeHeight + 'px',
         width: this.iframeWidth + 'px',
-        left: (8640 - this.iframeWidth) / 2 + 'px',
-        top: (1620 - this.iframeHeight) / 2 + 'px'
+        left: this.pageName.indexOf('32:9') >= 0 ? ((3840 - this.iframeWidth) / 2 + 'px') : ((8640 - this.iframeWidth) / 2 + 'px'),
+        top: this.pageName.indexOf('32:9') >= 0 ? ((1080 - this.iframeWidth) / 2 + 'px') : ((1620 - this.iframeHeight) / 2 + 'px')
       }
     },
     IsCityType () {
@@ -1951,6 +1951,8 @@ export default {
     ShowVideoBox (vidoeId) {
       this.showVideoBox = true
       this.VideoIfream.CheckedVideoId = vidoeId
+      this.VideoIfream.height = this.pageName.indexOf('32:9') >= 0 ? 415 : 832
+      this.VideoIfream.width = this.pageName.indexOf('32:9') >= 0 ? 984 : 1968
     },
     getAccess () {
       let permission = 'r'
@@ -2083,7 +2085,7 @@ export default {
       this.setScale()
       window.setTimeout(() => {
         this.refresh() // 整页刷新
-      }, 3000)
+      }, 5000)
       // this.initRefreshTimer() 取消整页刷新
     }
     // combinList: function () {
@@ -2852,6 +2854,79 @@ html[data-theme='blueWhite'] {
       }
   }
 }
+.NewCyTableBox {
+  width: 1044px;
+  height: 500px;
+  position: relative;
+  top: 290px;
+  left: 1398px;
+  z-index: 5000;
+  padding: 8px 30px 30px 30px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    background: url(./城运关闭.png) no-repeat;
+    background-size: 100% 100%;
+  }
+  .BoxTitle {
+    font-size: 16px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 25px;
+  }
+  .cyTableHead {
+      width: 100%;
+      background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1)) !important;
+      border-bottom: 1px solid rgba(172,207,254,1) !important;
+      tr {
+        width: 100%;
+        // height: 60px;
+        min-height: 36px;
+        font-size: 12px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+        }
+      }
+    }
+  .cyTableBody {
+      width: 100%;
+      height: 360px;
+      overflow: auto;
+      tr {
+        width: 100%;
+        height: 36px;
+        line-height: 36px;
+        // margin: 10px 0;
+        font-size: 12px !important;
+        display: flex;
+        color: rgba(172,207,254,1);
+        border-bottom: 1px solid rgba(172,207,254,1);
+        th {
+          height: 100%;
+          text-align: center;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          -o-text-overflow:ellipsis;
+        }
+      }
+      tr:nth-child(2n) {
+        background: linear-gradient(to bottom,rgba(49,131,233,0.2),rgba(41,84,135,0.1));
+      }
+  }
+}
 .cyBox {
   width: 2088px;
   height: 1000px;
@@ -2891,6 +2966,58 @@ html[data-theme='blueWhite'] {
     display: flex;
     width: 100%;
     padding: 30px 0px;
+  }
+  .Nmae {
+    padding: 0px 10px;
+    // width: 30%;
+    color: #4f9ff5;
+    white-space: nowrap;
+  }
+  .Data {
+    // width: 70%;
+    color: rgba(172,207,254,1);
+  }
+}
+.NewCyBox {
+  width: 1044px;
+  height: 500px;
+  position: relative;
+  top: 290px;
+  left: 1398px;
+  z-index: 5000;
+  padding: 8px 30px 30px 30px;
+  background: url(./城运背景.png) no-repeat;
+  background-size: 100% 100%;
+   .closeBtn{
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    background: url(./城运关闭.png) no-repeat;
+    background-size: 100% 100%;
+  }
+  .BoxTitle {
+    font-size: 16px !important;
+    color: #ACCFFE;
+    font-weight: bold;
+    font-family: PangmenMainRoadTitleBody !important;
+    margin-bottom: 25px;
+  }
+  .BoxBody {
+    padding: 40px 20px;
+    display: flex;
+    font-size: 21px !important;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+    overflow: auto;
+  }
+  .lineBox {
+    display: flex;
+    width: 100%;
+    padding: 15px 0px;
   }
   .Nmae {
     padding: 0px 10px;
@@ -3040,6 +3167,38 @@ html[data-theme='blueWhite'] {
       font-weight: bold;
       font-family: PangmenMainRoadTitleBody !important;
       margin-bottom: 50px;
+    }
+    .videoDiv{
+      height: 90%;
+      width: 100%;
+    }
+  }
+  .NewVideoTable{
+    width: 1044px;
+    height: 500px;
+    position: relative;
+    top: 290px;
+    left: 1398px;
+    z-index: 5000;
+    padding: 8px 30px 30px 30px;
+    background: url(./城运背景.png) no-repeat;
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 25px;
+      width: 25px;
+      cursor: pointer;
+      position: absolute;
+      top: 8px;
+      right: 16px;
+      background: url(./城运关闭.png) no-repeat;
+      background-size: 100% 100%;
+    }
+    .BoxTitle {
+      font-size: 16px !important;
+      color: #ACCFFE;
+      font-weight: bold;
+      font-family: PangmenMainRoadTitleBody !important;
+      margin-bottom: 25px;
     }
     .videoDiv{
       height: 90%;

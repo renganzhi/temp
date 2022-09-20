@@ -1,31 +1,31 @@
 <template>
-    <div class="OrderMenu">
+    <div class="SmallOrderMenu">
         <div class="openBtn" @click="showMenu = true">
-          <img style="width:68px;height:68px" src="./打点.png" alt="">
-          <div style="font-size:30px;padding:10px 5px;height:68px;text-align:center;">武侯区基础设施 </div>
+          <img style="width:34px;height:34px" src="./打点.png" alt="">
+          <div style="font-size:20px;height:34px;text-align:center;line-height:34px;">武侯区基础设施 </div>
         </div>
         <div style="position:absolute;left:0;bottom:0;display:inherit;">
             <div class="mainMenu" v-show="showMenu">
               <div class="mainBox" :style="ifCheck(index, 1)" @click="showSubManu(index)" v-for="(element, index) in menuData" :key="index">
                 <div>
-                  <img :src="getImg('./' + index)" style="width:30px" alt="">
+                  <img :src="getImg('./' + index)" style="width:15px" alt="">
                   <span>{{index}}</span>
                 </div>
                 <div>
                   <span style="color:#318ec7">{{selectLength(element)}}/{{Object.keys(element).length}}</span>
-                  <img src="./more.png" style="width:24px" alt="">
+                  <img src="./more.png" style="width:12px" alt="">
                 </div>
               </div>
-              <div class="closeBtn" @click="showMenu = false"><img style="width:140px;height:32px" src="./收起.png" alt=""></div>
+              <div class="closeBtn" @click="showMenu = false"><img style="width:70px;height:16px" src="./收起.png" alt=""></div>
           </div>
           <div class="mainMenu" style="overflow: scroll;" v-show="selectMainMenu && showMenu">
               <div class="mainBox" :style="ifCheck(i, 2)" @click="showThreeMenu(i)" v-for="(el, i) in menuData[selectMainMenu]" :key="i">
                   <div>
-                    <img :src="require('../../../../static/img/打点图/' + i + '.png')" style="width:28px" alt="">
+                    <img :src="require('../../../../static/img/打点图/' + i + '.png')" style="width:14px" alt="">
                     <span>{{i}}</span>
                   </div>
                   <div>
-                    <img src="./more.png" style="width:24px" alt="">
+                    <img src="./more.png" style="width:12px" alt="">
                   </div>
               </div>
           </div>
@@ -553,27 +553,27 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.OrderMenu{
+.SmallOrderMenu{
   display: flex;
   .openBtn{
     display: flex;
     background: #022a56;
-    height: 68px;
-    padding-right: 10px;
+    height: 34px;
+    padding-right: 5px;
     position:absolute;
     bottom: 0;
     left:0;
   }
   .mainMenu{
-    height: 660px;
-    padding: 10px 0;
+    height: 450px;
+    padding: 5px 0;
     background:#002b59;
     position: relative;
     .mainBox{
-        height: 80px;
+        height: 55px;
         color: #ACCFFE;
-        font-size: 28px;
-        padding: 20px;
+        font-size: 20px;
+        padding: 10px;
         display: flex;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -582,7 +582,7 @@ export default {
         text-align: center;
         vertical-align: middle;
         >div:first-child{
-          margin-right: 30px;
+          margin-right: 15px;
         }
       }
     .closeBtn{
@@ -594,13 +594,13 @@ export default {
   }
   .subMenu{
     background: #00244e;
-    height: 660px;
-    padding: 20px;
+    height: 450px;
+    padding: 5px;
     overflow: scroll;
     .subBox{
       color: #ACCFFE;
-      font-size: 20px;
-      height: 60px;
+      font-size: 18px;
+      height: 55px;
       background: url(./矩形.png) no-repeat;
       background-size: 100% 100%;
       display: flex;
@@ -608,13 +608,13 @@ export default {
       align-items: center;
       text-align: center;
       vertical-align: middle;
-      margin-bottom: 16px;
-      padding: 16px;
+      margin-bottom: 8px;
+      padding: 8px;
       >div{
         img{
-          margin-right: 10px;
+          margin-right: 5px;
         }
-        margin-right: 20px;
+        margin-right: 10px;
       }
     }
     .subBox:last-child{
