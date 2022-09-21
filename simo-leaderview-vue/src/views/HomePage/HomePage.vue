@@ -317,19 +317,20 @@
               v-show="!isFullScreen && $route.name === 'HomePage'"
               ><i class="icon-n-set"></i
             ></span>
-            <!-- <span
+            <span
               @click="toEditPage()"
               class="ring-icon"
               data-toggle="tooltip"
               ref="editbutton"
               title
               data-original-title="编辑当前页"
-              v-show="!isFullScreen"
+              v-show="!isFullScreen && $route.name === 'HomePage'"
               ><i class="icon-n-edit"></i
             ></span>
             <span
               @click="refresh"
               class="ring-icon"
+              v-show="$route.name === 'HomePage'"
               data-toggle="tooltip"
               title
               :data-original-title="isFullScreen ? '刷新' : ' 刷新 '"
@@ -338,13 +339,14 @@
             <span
               @click="fullScreen"
               class="ring-icon"
+              v-show="$route.name === 'HomePage'"
               data-toggle="tooltip"
               title
               :data-original-title="isFullScreen ? '退出全屏' : '全屏'"
               ><i
                 :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"
               ></i
-            ></span> -->
+            ></span>
           </div>
           <div class="fr ringparent">
             <span
@@ -553,7 +555,7 @@ export default {
         height: this.iframeHeight + 'px',
         width: this.iframeWidth + 'px',
         left: this.pageName.indexOf('32:9') >= 0 ? ((3840 - this.iframeWidth) / 2 + 'px') : ((8640 - this.iframeWidth) / 2 + 'px'),
-        top: this.pageName.indexOf('32:9') >= 0 ? ((1080 - this.iframeWidth) / 2 + 'px') : ((1620 - this.iframeHeight) / 2 + 'px')
+        top: this.pageName.indexOf('32:9') >= 0 ? ((1080 - this.iframeHeight) / 2 + 'px') : ((1620 - this.iframeHeight) / 2 + 'px')
       }
     },
     IsCityType () {
