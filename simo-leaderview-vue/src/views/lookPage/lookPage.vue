@@ -553,7 +553,7 @@ export default {
         height: this.iframeHeight + 'px',
         width: this.iframeWidth + 'px',
         left: this.pageName.indexOf('32:9') >= 0 ? ((3840 - this.iframeWidth) / 2 + 'px') : ((8640 - this.iframeWidth) / 2 + 'px'),
-        top: this.pageName.indexOf('32:9') >= 0 ? ((1080 - this.iframeWidth) / 2 + 'px') : ((1620 - this.iframeHeight) / 2 + 'px')
+        top: this.pageName.indexOf('32:9') >= 0 ? ((1080 - this.iframeHeight) / 2 + 'px') : ((1620 - this.iframeHeight) / 2 + 'px')
       }
     },
     IsCityType () {
