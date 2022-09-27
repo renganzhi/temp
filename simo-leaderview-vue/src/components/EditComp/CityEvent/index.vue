@@ -33,7 +33,7 @@ export default {
 <style lang="scss" scoped>
 .cityEvent{
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     align-items: center;
     flex-direction: column;
     .eventBox{
@@ -41,6 +41,7 @@ export default {
         height: 33%;
         padding: 10px 20px;
         overflow: hidden;
+        margin-bottom: 10px;
         background: #122f61;
         font-weight: bold;
         .title{
