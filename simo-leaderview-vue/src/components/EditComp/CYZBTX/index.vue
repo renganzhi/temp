@@ -14,7 +14,7 @@
             <div class="position">{{element['值班领导']['职务']}}</div>
           </div>
         </div>
-        <div class="personnelInfo">
+        <!-- <div class="personnelInfo">
           <div>
             <img v-if="element['指挥长']['照片链接']" :src="element['指挥长']['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
             <img v-else src="./矩形.png" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
@@ -35,7 +35,7 @@
             <div class="phone">{{element['值班长']['手机号']}}</div>
             <div class="position">{{element['值班长']['职务']}}</div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -96,9 +96,14 @@ export default {
 <style scoped lang="scss">
   .CYZBTX{
     overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    // flex-direction: column;
+    // justify-content: space-around;
+    // align-items: center;
     .streetBox{
-      width: 1324px;
-      margin-bottom: 40px;
+      // width: 1324px;
+      margin-bottom: 30px;
       .streetName{
         width: 330px;
         height: 72px;
@@ -118,7 +123,7 @@ export default {
         .personnelInfo{
           display: flex;
           >div:last-child{
-            width: 268px;
+            width: 200px;
             position: relative;
             .name{
               color: rgba(172,207,254,1);
@@ -134,9 +139,9 @@ export default {
               color: rgba(172,207,254,1);
               font-size: 24px;
               padding-left: 28px;
-              height: 56px;
-              line-height: 56px;
-              width: 268px;
+              height: 44px;
+              line-height: 44px;
+              width: 200px;
               background: url(./职位背景.png) no-repeat;
               background-size: 100% 100%;
               position: absolute;
