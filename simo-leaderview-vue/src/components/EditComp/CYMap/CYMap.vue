@@ -199,14 +199,20 @@ export default {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
       if (this.nowPageName.indexOf('32:9') >= 0) {
-        let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987)
-        this.map.centerAndZoom(centerPoint, 13.75951)
+        let centerPoint = new window.BMapGL.Point(104.01273, 30.62180)
+        this.map.centerAndZoom(centerPoint, 14)
       } else {
         let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
         this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
       }
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
-      this.map.setMapStyleV2({styleJson: styleJson})
+      // this.map.setMapStyleV2({styleJson: styleJson})
+      this.map.setOptions({
+        style: {
+          styleJson: styleJson
+        },
+        styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
+      })
       this.map.setDisplayOptions({
         poiText: false
       })
@@ -252,7 +258,7 @@ export default {
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
                 polygon.addEventListener('click', e => {
-                  this.getMapCenter()
+                  // this.getMapCenter()
                 })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
@@ -270,7 +276,7 @@ export default {
                 strokeStyle: '' // 边线类型，solid或dashed
               })
               polygon.addEventListener('click', e => {
-                this.getMapCenter()
+                // this.getMapCenter()
               })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)
