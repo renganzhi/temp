@@ -68,6 +68,7 @@ import NEWtextArea from '@/components/EditComp/NEWtextArea' // 散点图
 import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
+import ExternalJump from '@/components/EditComp/ExternalJump'
 import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
@@ -153,6 +154,7 @@ export default {
   TDModel,
   VmVareTopo,
   Hotspot,
+  ExternalJump,
   IframePop,
   OrderMenu,
   SmallOrderMenu,
