@@ -200,7 +200,7 @@ export default {
       this.map = new window.BMapGL.Map('cyMap')
       if (this.nowPageName.indexOf('32:9') >= 0) {
         let centerPoint = new window.BMapGL.Point(104.01273, 30.62180)
-        this.map.centerAndZoom(centerPoint, 14)
+        this.map.centerAndZoom(centerPoint, 13.5)
       } else {
         let centerPoint = new window.BMapGL.Point(104.22513, 30.600862475501987) // 定义一个中心点坐标
         this.map.centerAndZoom(centerPoint, 14.25472) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
@@ -286,11 +286,11 @@ export default {
               pointer = [103.97374548683935, 30.591885280709842]
             }
             if (data.properties.Name.length === 4) {
-              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(16, 6.5))
+              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(32, 13))
             } else if (data.properties.Name.length === 5) {
-              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(24.5, 6.5))
+              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(49, 13))
             } else {
-              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(33, 6.5))
+              myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(66, 13))
             }
             // if (data.properties.Name === '火车南站街道') {
             //   myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(50.5, 14.85))
