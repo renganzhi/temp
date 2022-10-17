@@ -101,7 +101,11 @@
                       </tr>
                     </div>
                     <div class="NoData" v-else-if="!DataTkArry.rows || DataTkArry.rows.length === 0">
-                      暂无数据！
+                      <Spin fix v-show="ifLoad">
+                        <Icon type="ios-loading" size=40 class="demo-spin-icon-load"></Icon>
+                        <div>Loading</div>
+                      </Spin>
+                      <span v-show="!ifLoad">暂无数据</span>
                     </div>
                 </div>
               </div>
@@ -432,6 +436,7 @@ export default {
       showImport: false,
       showModelBox: false,
       showTableBox: false,
+      ifLoad: false,
       showElineBox: false, // 柱状图弹窗
       showInformation: false, // 指挥长信息弹窗
       showPieBox: false, // 饼图弹窗
@@ -624,6 +629,7 @@ export default {
       if (dataArray.dataUrl) {
         let keyValue = ''
         let keyWord = ''
+        this.ifLoad = true
         this.DataTkArry = []
         if (dataArray.dataUrl.indexOf('param=') >= 0) {
           keyWord = dataArray.dataUrl.split('param=')[1].split(':')[0]
@@ -633,6 +639,7 @@ export default {
         this.axios
           .get(dataArray.dataUrl + keyValue)
           .then((data) => {
+            this.ifLoad = false
             if (data.success) {
               this.DataTkArry = data.obj
               this.DataTkArry.title = dataArray.title
@@ -2167,6 +2174,19 @@ export default {
 </script>
 <style scoped lang="scss">
 /*   drag-class */
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+        from { transform: rotate(0deg);}
+        50%  { transform: rotate(180deg);}
+        to   { transform: rotate(360deg);}
+    }
+    .demo-spin-col{
+        height: 100px;
+        position: relative;
+        border: 1px solid #eee;
+    }
 .vdr {
   position: absolute;
   box-sizing: border-box;
@@ -3332,5 +3352,10 @@ html[data-theme='blueWhite'] {
      }
     }
   }
+}
+</style>
+<style>
+.ivu-spin-fix{
+  background: transparent;
 }
 </style>
