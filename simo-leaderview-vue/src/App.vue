@@ -38,7 +38,7 @@ export default {
         if (data.success) {
         }
       })
-    }, 10000)
+    }, 120000)
     // /mc/system/setting/get
     // var _hash = window.location.hash
     // if (_hash.split('/')[1]) {
