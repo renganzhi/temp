@@ -38,6 +38,7 @@ import NewBorder from '@/components/EditComp/NewBorder' // 3D地图-柱状图
 import JSMpeg from '@/components/EditComp/JSMpeg' // 3D地图-柱状图
 import Newimage from '@/components/EditComp/Newimage' // 3D地图-柱状图
 import NewNumber from '@/components/EditComp/NewNumber' // 3D地图-柱状图
+import Indicator from '@/components/EditComp/Indicator'
 import DataFlow from '@/components/EditComp/DataFlow' // 地图-迁徙图
 import GradientPie from '@/components/EditComp/GradientPie' // 圆角饼图
 import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
@@ -117,6 +118,7 @@ export default {
   NewTable,
   NewMoveTable,
   NewNumber,
+  Indicator,
   NewProgress,
   NewVMap,
   NewScatter,

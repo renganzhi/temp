@@ -49,6 +49,7 @@ export default [
   'NewVMap',
   'NewScatter',
   'NewNumber',
+  'Indicator',
   'NewBorder',
   'NEWtextArea',
   'JSMpeg',
