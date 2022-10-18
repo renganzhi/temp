@@ -4,6 +4,7 @@ import NewMarquee from '@/components/EditComp/NewMarquee/config.js'
 import NewDoubler from '@/components/EditComp/NewDoubler/config.js'
 import NewTime from '@/components/EditComp/NewTime/config.js'
 import NewNumber from '@/components/EditComp/NewNumber/config.js'
+import Indicator from '@/components/EditComp/Indicator/config.js'
 import Ueditor from '@/components/EditComp/Ueditor/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
@@ -19,6 +20,7 @@ const text = {
     NewDoubler.item,
     NewTime.item,
     NewNumber.item,
+    Indicator.item,
     // {
     //   text: '跑马灯',
     //   imgClass: 'icon-n-marquee',

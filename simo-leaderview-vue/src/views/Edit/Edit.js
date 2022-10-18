@@ -81,6 +81,7 @@ let config = {
   NewTime: require('@/components/EditComp/NewTime/config.js'),
   NewGauge: require('@/components/EditComp/NewGauge/config.js'),
   NewNumber: require('@/components/EditComp/NewNumber/config.js'),
+  Indicator: require('@/components/EditComp/Indicator/config.js'),
   NewBorder: require('@/components/EditComp/NewBorder/config.js'),
   JSMpeg: require('@/components/EditComp/JSMpeg/config.js'),
   Newimage: require('@/components/EditComp/Newimage/config.js'),
