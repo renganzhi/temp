@@ -37,7 +37,9 @@ export default {
       subsectionType: '',
       Linesubsection: '',
       oldformatterType: '',
-      oldchartData: ''
+      barParam: '',
+      oldchartData: '',
+      clock: ''
     }
   },
   computed: {
@@ -71,9 +73,17 @@ export default {
         this.mychart.resize()
       })
     },
+    'item.conditionType': function () {
+      if (this.item.conditionType) {
+        this.requestInterface()
+      }
+    },
+    'barParam': function () {
+      this.requestInterface()
+    },
     'item': {
       handler (newVal, oldVal) {
-        if(this.item.chartData.rows && this.item.chartData.columns){
+        if (this.item.chartData.rows && this.item.chartData.columns) {
           if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
             this.showLine = false
           } else {
@@ -461,27 +471,64 @@ export default {
       } else {
 
       }
+    },
+    requestInterface () {
+      if (this.item.conditionType) {
+        let url = ''
+        if (this.item.conditionType === 1) {
+          url = '/leaderview/newDistrict/GetGGAQ6_7'
+        }
+        if (url) {
+          if (this.barParam) {
+            url = url + '?param=' + this.barParam
+          }
+          this.axios.get(url).then(res => {
+            this.item.chartData = res.obj
+            if ($.isEmptyObject(this.item.chartData)) {
+              this.item.chartData = {
+                columns: [],
+                rows: []
+              }
+            }
+          })
+        }
+      }
     }
   },
   mounted () {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      this.bus.$on('clickBar', res => {
+        this.barParam = res
+      })
+      if (this.item.conditionType) {
+        this.clock = window.setInterval(() => {
+          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
+            clearInterval(this.clock)
+          }
+          this.requestInterface()
+        }, this.item.refrashTime || 30000)
+      }
+    }
+
+    this.requestInterface()
     if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
       this.showLine = false
     } else {
       this.showLine = true
       this.drawFlow()
       var _this = this
-      _this.mychart.getZr().on('click', function(params) {
-        const pointInPixel = [params.offsetX, params.offsetY];
-        if (_this.mychart.containPixel('grid',pointInPixel)) { // 第一步
-          let xIndex= _this.mychart.convertFromPixel({seriesIndex:0},[params.offsetX, params.offsetY])[0]; // 第二部
+      _this.mychart.getZr().on('click', function (params) {
+        const pointInPixel = [params.offsetX, params.offsetY]
+        if (_this.mychart.containPixel('grid', pointInPixel)) { // 第一步
+          let xIndex = _this.mychart.convertFromPixel({seriesIndex: 0}, [params.offsetX, params.offsetY])[0] // 第二部
           let dataOut = []
           dataOut = _this.item.chartData.rows[xIndex]
           let boxData = {
-            title:'数据详情',
-            data:dataOut
+            title: '数据详情',
+            data: dataOut
           }
-          _this.$parent.$parent.ShowTanKuangBox(boxData)
-          }
+          // _this.$parent.$parent.ShowTanKuangBox(boxData)
+        }
       })
     }
   },
@@ -489,6 +536,8 @@ export default {
     if (this.mychart) {
       this.mychart.dispose()
     }
+    clearInterval(this.clock)
+    this.clock = ''
     this.mychart = null
   }
 

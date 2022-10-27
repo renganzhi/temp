@@ -17,6 +17,7 @@ export default [
   'Scatter',
   'KLine',
   'DownMenu',
+  'NewDropMenu',
   'WuhoIfream',
   'WuhoMaoBL',
   'WuhoOpenBox',

@@ -20,10 +20,23 @@ export default {
   },
   methods: {
     showDetails (data) {
+      console.log('data', data)
+      let d = {}
+      for (let i in data) {
+        if (i === 'title') {
+          d['标题'] = data[i]
+        } else if (i === 'content') {
+          d['内容'] = data[i]
+        } else if (i === 'date') {
+          d['时间'] = data[i]
+        } else {
+          d[i] = data[i]
+        }
+      }
       if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
         this.$parent.$parent.ShowTanKuangBox({
           title: '事件详情',
-          data: data
+          data: d
         })
       }
     }
@@ -44,6 +57,7 @@ export default {
         margin-bottom: 10px;
         background: #122f61;
         font-weight: bold;
+        overflow-y: scroll;
         .title{
             // 渐变色字体
             background-image: linear-gradient(#f04d4d, rgba(211, 179, 179, 0.67));
@@ -57,9 +71,9 @@ export default {
             color: #3667ff;
         }
         .content{
-            height: 80%;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            // height: 80%;
+            // overflow: scroll;
+            // text-overflow: ellipsis;
             font-size: 27px;
             color: #6689f8;
         }

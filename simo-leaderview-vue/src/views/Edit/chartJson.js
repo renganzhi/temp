@@ -10,6 +10,7 @@ import ELine from '@/components/EditComp/ELine/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import DownMenu from '@/components/EditComp/DownMenu/config.js'
+import NewDropMenu from '@/components/EditComp/NewDropMenu/config.js'
 import TreeMap from '@/components/EditComp/TreeMap/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
 import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
@@ -1010,6 +1011,7 @@ Sunrise.item,
 Scatter.item,
 KLine.item,
 DownMenu.item,
+NewDropMenu.item,
 BulletFrame.item,
 TreeMap.item,
 TDHistogram.item,
