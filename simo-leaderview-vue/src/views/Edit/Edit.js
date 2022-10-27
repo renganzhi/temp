@@ -41,6 +41,7 @@ let config = {
   polarBar: require('@/components/EditComp/polarBar/config.js'),
   KLine: require('@/components/EditComp/KLine/config.js'),
   DownMenu: require('@/components/EditComp/DownMenu/config.js'),
+  NewDropMenu: require('@/components/EditComp/NewDropMenu/config.js'),
   WuhoIfream: require('@/components/EditComp/WuhoIfream/config.js'),
   WuhoMaoBL: require('@/components/EditComp/WuhoMaoBL/config.js'),
   WuhoOpenBox: require('@/components/EditComp/WuhoOpenBox/config.js'),

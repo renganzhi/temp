@@ -9,6 +9,7 @@ import Ueditor from '@/components/EditComp/Ueditor/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 import DownMenu from '@/components/EditComp/DownMenu/config.js'
+import NewDropMenu from '@/components/EditComp/NewDropMenu/config.js'
 import WuhoIfream from '@/components/EditComp/WuhoIfream/config.js'
 
 const text = {
@@ -75,6 +76,7 @@ const text = {
     pyramid.item,
     bubble.item,
     DownMenu.item,
+    NewDropMenu.item,
     WuhoIfream.item
   ]
 }
