@@ -46,6 +46,8 @@ export default {
     'showPoint': true, // 是否标点
     'PointSize': '14',
     'rotate': 0,
+    conditionType: '', // 接口选择
+    refrashTime: 30000,
     'colorMatchType': 'line', // 配色类型
     'ScatterColor': [
       '#2d98f1',
@@ -123,6 +125,32 @@ export default {
   },
   'styles': {
     'base': [
+      {
+        'name': '接口配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '选择接口',
+            'key': 'conditionType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '空',
+                'value': ''
+              },
+              {
+                'name': '核算点位七日趋势',
+                'value': 1
+              }
+            ]
+          },
+          {
+            'name': '接口刷新间隔',
+            'key': 'refrashTime',
+            'tag': 'input'
+          }
+        ]
+      },
       {
         'name': '图例配置',
         'tag': 'Hint',

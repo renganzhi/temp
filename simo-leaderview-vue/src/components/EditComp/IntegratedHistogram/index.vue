@@ -161,6 +161,36 @@ export default {
         //   this.showLine = false
         // } else {
         // this.showLine = true
+        if ($.isEmptyObject(this.item.chartData1)) {
+          this.item.chartData1 = {
+            columns: [],
+            rows: []
+          }
+        }
+        if ($.isEmptyObject(this.item.chartData2)) {
+          this.item.chartData2 = {
+            columns: [],
+            rows: []
+          }
+        }
+        if ($.isEmptyObject(this.item.chartData3)) {
+          this.item.chartData3 = {
+            columns: [],
+            rows: []
+          }
+        }
+        if ($.isEmptyObject(this.item.chartData4)) {
+          this.item.chartData4 = {
+            columns: [],
+            rows: []
+          }
+        }
+        if ($.isEmptyObject(this.item.chartData)) {
+          this.item.chartData = {
+            columns: [],
+            rows: []
+          }
+        }
         this.drawFlow()
         // }
       },
@@ -1356,28 +1386,37 @@ export default {
         chartData = _this.item.chartData4.chartData
         urls = _this.item.chartData4.urls
       }
-      console.log('dataOut', dataOut)
+      console.log('dataOut', dataOut, params)
+      if (dataOut.id) {
+        _this.bus.$emit('clickBar', dataOut.id)
+      }
       if (chartData) {
         let boxData = {
           title: dataOut[keys] + '信息详情',
           chartUrl: chartData,
           data: dataOut
         }
-        _this.$parent.$parent.ShowElineBox(boxData)
+        // if (_this.$parent.$parent.ShowElineBox) {
+        //   _this.$parent.$parent.ShowElineBox(boxData)
+        // }
       } else if (urls) {
         let boxData = {
           title: dataOut[keys] + '信息详情',
           urls: urls,
           data: dataOut
         }
-        _this.$parent.$parent.ShowElineBox(boxData)
+        // if (_this.$parent.$parent.ShowElineBox) {
+        //   _this.$parent.$parent.ShowElineBox(boxData)
+        // }
       } else {
         let boxData = {
           title: '数据详情',
           data: dataOut,
           dataUrl: dataUrl
         }
-        _this.$parent.$parent.ShowTableBox(boxData)
+        // if (_this.$parent.$parent.ShowTableBox) {
+        //   _this.$parent.$parent.ShowTableBox(boxData)
+        // }
       }
     })
   },

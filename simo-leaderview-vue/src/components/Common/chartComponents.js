@@ -45,6 +45,7 @@ import Sunrise from '@/components/EditComp/Sunrise' // 旭日图
 import Scatter from '@/components/EditComp/Scatter' // 散点图
 import KLine from '@/components/EditComp/KLine' // 散点图
 import DownMenu from '@/components/EditComp/DownMenu' // 散点图
+import NewDropMenu from '@/components/EditComp/NewDropMenu'
 import WuhoIfream from '@/components/EditComp/WuhoIfream' // 散点图
 import WuhoMaoBL from '@/components/EditComp/WuhoMaoBL' // 散点图
 import WuhoOpenBox from '@/components/EditComp/WuhoOpenBox' // 散点图
@@ -130,6 +131,7 @@ export default {
   Scatter,
   KLine,
   DownMenu,
+  NewDropMenu,
   WuhoIfream,
   WuhoOpenBox,
   WuhoPointBox,

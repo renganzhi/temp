@@ -2042,26 +2042,51 @@ export default {
   watch: {
     nowPageId: function (newV, oldV) {
       if (newV !== -1) {
+        this.cancleRequest()
         this.getPageConf(newV).then(res => {
           var nowPageObj = res.obj
           if (nowPageObj.composeObj) {
             this.combinList = JSON.parse(nowPageObj.composeObj)
+            this.combinList2 = this.combinList
           } else {
             this.combinList = []
+            this.combinList2 = []
           }
           if (nowPageObj.paintObj) {
             this.paintConf = JSON.parse(nowPageObj.paintObj)
+            this.paintConf2 = this.paintConf
           } else {
             this.paintConf = {}
+            this.paintConf2 = {}
           }
           this.setPaint()
           if (nowPageObj.viewConf) {
             this.nowPage = JSON.parse(nowPageObj.viewConf)
+            this.nowPage2 = this.nowPage
           } else {
             this.nowPage = []
+            this.nowPage2 = []
           }
           nowPageObj = null
           this.updatePageIndex(newV)
+          if (this.refreshType !== '1') {
+            if (!this.moveFlag) return // 正在轮播中
+            if (this.refreshType === 'left') {
+              this.moveBox1 = 'moveLeft1'
+              this.moveBox2 = 'moveLeft2'
+            } else if (this.refreshType === 'top') {
+              this.moveBox1 = 'moveTop1'
+              this.moveBox2 = 'moveTop2'
+            } else if (this.refreshType === 'scale') {
+              this.moveBox1 = 'moveScale1'
+              this.moveBox2 = 'moveScale2'
+            }
+            this.moveFlag = !this.moveFlag // false
+            setTimeout(() => {
+              this.moveFlag = !this.moveFlag // true
+            }, 1000)
+          }
+          // this.updatePageIndex(newV)
         })
         $('.tp-tip').remove()
         $('.tooltip.in').remove()
