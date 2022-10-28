@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     showPop () {
-      if (this.item.popUrl && (this.$route.name === 'HomePage' || this.$route.name === 'lookPage')) {
+      if (this.item.popUrl && (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage')) {
         let popData = {
           url: this.item.popUrl,
           width: this.item.popWidth,
