@@ -90,7 +90,7 @@ export default {
             }
           }
           this.ifShow = true
-          if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+          if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
             this.axios({
               method: 'post',
               url: '/leaderview/QingBao/GetYJYP6_2',

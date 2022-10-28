@@ -496,7 +496,7 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
       this.bus.$on('clickBar', res => {
         this.barParam = res
       })
