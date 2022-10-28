@@ -142,7 +142,7 @@ export default {
   },
   methods: {
     ShowXq () {
-      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
         if (this.item.chartData.list) {
           let boxData = {
             title: '数据详情',

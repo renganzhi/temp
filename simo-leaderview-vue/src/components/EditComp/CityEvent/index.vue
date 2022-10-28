@@ -33,7 +33,7 @@ export default {
           d[i] = data[i]
         }
       }
-      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
         this.$parent.$parent.ShowTanKuangBox({
           title: '事件详情',
           data: d

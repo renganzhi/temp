@@ -26,6 +26,11 @@ export default new Router({
       component: (resolve) => require(['@/views/lookPage/lookPage'], resolve)
     },
     {
+      path: '/popPage/:id',
+      name: 'popPage',
+      component: (resolve) => require(['@/views/popPage/popPage'], resolve)
+    },
+    {
       path: '/editPage',
       name: 'EditPage',
       component: (resolve) => require(['@/views/EditPage/EditPage'], resolve)

@@ -227,7 +227,7 @@ export default {
       }
     },
     showXQ () {
-      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
         if (this.item.chartData.url) {
           let boxData = {
             title: '数据详情',
