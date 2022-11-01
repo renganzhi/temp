@@ -48,6 +48,7 @@ export default {
     'rotate': 0,
     conditionType: '', // 接口选择
     refrashTime: 30000,
+    interval: 0,
     'colorMatchType': 'line', // 配色类型
     'ScatterColor': [
       '#2d98f1',
@@ -585,6 +586,21 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
+            }
+          ]
+        },
+        {
+          'name': '标注显示间隔',
+          'key': 'interval',
+          'tag': 'select',
+          'options': [
+            {
+              'name': '不裁剪',
+              'value': 0
+            },
+            {
+              'name': '自适应',
+              'value': 1
             }
           ]
         }

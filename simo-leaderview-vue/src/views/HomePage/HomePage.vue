@@ -103,7 +103,7 @@
                     <div class="NoData" v-else-if="!DataTkArry.rows || DataTkArry.rows.length === 0">
                       <Spin fix v-show="ifLoad">
                         <Icon type="ios-loading" size=40 class="demo-spin-icon-load"></Icon>
-                        <div>Loading</div>
+                        <div>加载中...</div>
                       </Spin>
                       <span v-show="!ifLoad">暂无数据</span>
                     </div>
@@ -245,7 +245,11 @@
               <div class="PopBox" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}" v-if="showIframePop">
                 <div class="iframePop" :style="iframeStyle">
                   <div class="closeBtn" @click="closeIframePop()"></div>
-                  <iframe :src="iframeUrl" frameborder="0"></iframe>
+                  <iframe :src="iframeUrl" frameborder="0" @load="loadIframe"></iframe>
+                  <Spin fix v-show="ifLoad">
+                        <Icon type="ios-loading" size=100 class="demo-spin-icon-load"></Icon>
+                        <div style="font-size:40px;">加载中...</div>
+                  </Spin>
                 </div>
               </div>
               <div class="VideoBox" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}" v-if="showVideoBox">
@@ -1949,11 +1953,16 @@ export default {
     },
     ShowIframePop (data) {
       this.showIframePop = true
+      this.ifLoad = true
       this.iframeUrl = data.url
       this.iframeWidth = data.width
       this.iframeHeight = data.height
     },
+    loadIframe () {
+      this.ifLoad = false
+    },
     closeIframePop () {
+      this.ifLoad = false
       this.showIframePop = false
       this.iframeUrl = ''
     },
@@ -2478,6 +2487,7 @@ html[data-theme='blueWhite'] {
   .iframePop{
     position: relative;
     z-index: 10;
+    background: #002147;
     .closeBtn {
       height: 50px;
       width: 50px;

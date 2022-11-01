@@ -1,20 +1,17 @@
 <template>
   <div class="ELine">
+    <div ref="ELine" v-show="showLine" :style="boxStyle"></div>
     <div
-      ref="ELine"
-      v-show="showLine"
-      :style="boxStyle">
-    </div>
-    <div class="v-charts-data-empty"
-        v-show="!showLine"
-        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
-        <div><i class="icon-n-nodata"
-            style="font-size: 108px;"></i><br>
-          <p>抱歉，没有数据可供展示...</p>
-        </div>
+      class="v-charts-data-empty"
+      v-show="!showLine"
+      style="width: 100%; height: 100%; text-align: center; font-size: 12px"
+    >
+      <div>
+        <i class="icon-n-nodata" style="font-size: 108px"></i><br />
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
     </div>
   </div>
-
 </template>
 <script>
 import echarts from 'echarts'
@@ -243,7 +240,7 @@ export default {
                 return params
               }
             },
-            interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
+            interval: this.item.interval === 0 ? 0 : 'auto'
           }
         },
         color: optioncolor,
@@ -324,7 +321,7 @@ export default {
             }
           },
           axisLabel: {
-            interval: 'auto', // 采用不重叠的方式展示
+            interval: this.item.interval === 0 ? 0 : 'auto',
             textStyle: {
               color: this.item.legendColor || '#828bac',
               fontSize: this.item.axisLabelSize || '14'
