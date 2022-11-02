@@ -57,6 +57,7 @@ import WoHoNumber from '@/components/EditComp/WoHoNumber' // 散点图
 import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
 import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
 import ELine from '@/components/EditComp/ELine' // 散点图
+import ConditionalEline from '@/components/EditComp/ConditionalEline'
 import Dashboard from '@/components/EditComp/Dashboard' // 散点图
 import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
 import TreeMap from '@/components/EditComp/TreeMap' // 散点图
@@ -71,6 +72,7 @@ import TDHistogram from '@/components/EditComp/TDHistogram' // 散点图
 import Bubble from '@/components/EditComp/bubble' // 3D地图-柱状图
 import Hotspot from '@/components/EditComp/hotspot'
 import ExternalJump from '@/components/EditComp/ExternalJump'
+import ToggleButton from '@/components/EditComp/ToggleButton'
 import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
@@ -143,6 +145,7 @@ export default {
   WuhouTable,
   XiaLaShu,
   ELine,
+  ConditionalEline,
   Dashboard,
   BulletFrame,
   TreeMap,
@@ -159,6 +162,7 @@ export default {
   VmVareTopo,
   Hotspot,
   ExternalJump,
+  ToggleButton,
   IframePop,
   OrderMenu,
   SmallOrderMenu,

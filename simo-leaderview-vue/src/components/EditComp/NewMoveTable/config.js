@@ -9,6 +9,8 @@ export default {
     'pageNum': 5,
     'heightLinght': 36,
     'hdBgClr': '#1c2132',
+    conditionType: '', // 接口选择
+    refrashTime: 30000,
     'hdClr': '#cad6dd',
     'hdfontSize': 12,
     'bgClr': 'rgba(34, 40, 58, 0.5)',
@@ -100,6 +102,32 @@ export default {
   },
   'styles': {
     'base': [
+      {
+        'name': '接口配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '选择接口',
+            'key': 'conditionType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '空',
+                'value': ''
+              },
+              {
+                'name': '核算点位七日趋势',
+                'value': 1
+              }
+            ]
+          },
+          {
+            'name': '接口刷新间隔',
+            'key': 'refrashTime',
+            'tag': 'input'
+          }
+        ]
+      },
       {
         'name': '图表样式',
         'tag': 'Hint',

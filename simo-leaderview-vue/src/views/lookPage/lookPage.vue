@@ -161,7 +161,25 @@
                   </div>
                 </div>
               </div>
-              <div class="BoxMban" v-if="showElineBox">
+              <div class="Tbaleban" :style="pageName.indexOf('32:9') >= 0?{width:'3840px',height: '1080px'}:{}"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showElineBox">
+                <div :class="pageName.indexOf('32:9')>=0?'NewCyBox':'cyBox'">
+                  <div class="closeBtn" @click="closeElineBox()"></div>
+                  <div class="BoxTitle">{{barData.title}}</div>
+                  <div class="BoxBody" v-if="barData.eline" style="display:flex;justify-content: center;align-items: center;padding:0px;">
+                    <div class="ElineBox" style="width: 100%;">
+                      <div style="width:100%;height:95%" ref="ElineBox0"></div>
+                    </div>
+                  </div>
+                  <div class="NoData" v-else>
+                    <Spin fix v-if="ifLoad">
+                          <Icon type="ios-loading" size=100 class="demo-spin-icon-load"></Icon>
+                          <div style="font-size:40px;">加载中...</div>
+                    </Spin>
+                    <span v-else>暂无数据！</span>
+                  </div>
+                </div>
+              </div>
+              <div class="BoxMban" v-if="pageName&&pageName.indexOf('城运') < 0&&showElineBox">
                 <div class="CityModelBox">
                   <div class="closeBtn" @click="closeElineBox()"></div>
                   <div class="BoxTitle">{{barData.title}}</div>
@@ -662,15 +680,17 @@ export default {
       if (dataArray.chartUrl) {
         let keyWord = dataArray.chartUrl.split('param=')[1].split(':')[0]
         let keyValue = dataArray.data[keyWord]
+        this.showElineBox = true
+        this.ifLoad = true
+        this.barData.title = dataArray.title || ''
         this.axios
           .get(dataArray.chartUrl + keyValue)
           .then((data) => {
             if (data.success) {
-              this.showElineBox = true
+              this.ifLoad = false
               let myData = data.obj
               // this.barData.table = dataArray.tableData || ''
               this.barData.eline = data.obj || ''
-              this.barData.title = dataArray.title || ''
               this.$nextTick(() => {
                 let eline = echarts.init(this.$refs.ElineBox0)
                 this.barData[0] = myData
@@ -713,7 +733,7 @@ export default {
                     text: this.barData.eline.title || '',
                     textStyle: {
                       color: '#cad6dd',
-                      fontSize: '45'
+                      fontSize: '20'
                     },
                     show: true,
                     padding: [0, 0, 0, 50]
@@ -723,7 +743,7 @@ export default {
                     data: myXAxisData,
                     label: {
                       textStyle: {
-                        fontSize: 40,
+                        fontSize: 20,
                         color: 'rgba(212, 234, 240, 0.85)'
                       }
                     },
@@ -749,7 +769,7 @@ export default {
                       rotate: 40,
                       textStyle: {
                         color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
+                        fontSize: '20'
                       },
                       // formatter: function (value) {
                       //   return value.split('').join('\n')
@@ -763,7 +783,7 @@ export default {
                       interval: 0, // 采用不重叠的方式展示
                       textStyle: {
                         color: 'rgba(212, 234, 240, 0.85)',
-                        fontSize: '40'
+                        fontSize: '20'
                       }
                     },
                     splitLine: {
@@ -784,8 +804,15 @@ export default {
                   },
                   label: {
                     show: true,
-                    fontSize: '40',
+                    fontSize: '20',
                     color: '#fff' // 标点的文字颜色
+                  },
+                  tooltip: {
+                    show: true,
+                    trigger: 'axis',
+                    textStyle: {
+                      fontSize: 20
+                    }
                   },
                   series: myseries
                 }
@@ -933,6 +960,7 @@ export default {
     },
     closeElineBox () {
       this.showElineBox = false
+      this.ifLoad = false
       this.barData = {}
     },
     ShowInformation (dataArray) {
