@@ -60,6 +60,8 @@ let config = {
   XiaLaShu: require('@/components/EditComp/XiaLaShu/config.js'),
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),
   ELine: require('@/components/EditComp/ELine/config.js'),
+  ConditionalEline: require('@/components/EditComp/ConditionalEline/config.js'),
+  ToggleButton: require('@/components/EditComp/ToggleButton/config.js'),
   DataFlow: require('@/components/EditComp/DataFlow/config.js'),
   TreeMap: require('@/components/EditComp/TreeMap/config.js'),
   Ueditor: require('@/components/EditComp/Ueditor/config.js'),

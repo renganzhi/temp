@@ -1,23 +1,31 @@
 <template>
-  <div class="ELine">
-    <div ref="ELine" v-show="showLine" :style="boxStyle"></div>
+  <div class="ConditionalEline">
+    <div class="checkBox" :style="checkStyle" v-if="item.chartData.dataArray && item.chartData.dataArray.length">
+            <div class="normalBtn" v-for="(v, i) in item.chartData.dataArray" :style="buttonStyle(i)" :key="i" @click="changeData(i)">
+              {{v.title}}
+            </div>
+       </div>
     <div
-      class="v-charts-data-empty"
-      v-show="!showLine"
-      style="width: 100%; height: 100%; text-align: center; font-size: 12px"
-    >
-      <div>
-        <i class="icon-n-nodata" style="font-size: 108px"></i><br />
-        <p>抱歉，没有数据可供展示...</p>
-      </div>
+      ref="ConditionalEline"
+      v-show="showLine"
+      :style="boxStyle">
+    </div>
+    <div class="v-charts-data-empty"
+        v-show="!showLine"
+        style="width: 100%; height: 100%; text-align: center; font-size: 12px;">
+        <div><i class="icon-n-nodata"
+            style="font-size: 108px;"></i><br>
+          <p>抱歉，没有数据可供展示...</p>
+        </div>
     </div>
   </div>
+
 </template>
 <script>
 import echarts from 'echarts'
 import { gbs } from '@/config/settings'
 export default {
-  name: 'ELine',
+  name: 'ConditionalEline',
   props: ['item'],
   data () {
     return {
@@ -31,12 +39,15 @@ export default {
       ],
       showLine: true,
       oldOption: '',
+      tableData: {
+        columns: [],
+        rows: []
+      },
+      currentIndex: 0,
       subsectionType: '',
       Linesubsection: '',
       oldformatterType: '',
-      barParam: '',
-      oldchartData: '',
-      clock: ''
+      oldchartData: ''
     }
   },
   computed: {
@@ -46,17 +57,46 @@ export default {
         height: this.item.height + 'px'
       }
     },
+    checkStyle: function () {
+      return {
+        left: this.item.paddingLeft + 'px',
+        top: this.item.paddingTop + 'px',
+        fontSize: this.item.boxFontSize + 'px',
+        flexDirection: this.item.boxDirection ? 'column' : 'row'
+      }
+    },
+    buttonStyle: function () {
+      return (index) => {
+        if (this.currentIndex === index) {
+          return {
+            backgroundImage: this.item.checkedButton
+              ? 'url(' + gbs.host + this.item.checkedButton + ')'
+              : 'url(' + require('./checked.png') + ')',
+            padding: this.item.buttonPadding + 'px !important',
+            margin: this.item.buttonMargin + 'px'
+          }
+        } else {
+          return {
+            backgroundImage: this.item.normalButton
+              ? 'url(' + gbs.host + this.item.normalButton + ')'
+              : 'url(' + require('./normal.png') + ')',
+            padding: this.item.buttonPadding + 'px !important',
+            margin: this.item.buttonMargin + 'px'
+          }
+        }
+      }
+    },
     maxData: function () {
-      return this.item.chartData.max || 10000
+      return this.tableData.max || 10000
     },
     minData: function () {
-      return this.item.chartData.min || 1
+      return this.tableData.min || 1
     },
     maxIndex: function () {
-      return this.item.chartData.maxIndex || 10000
+      return this.tableData.maxIndex || 10000
     },
     minIndex: function () {
-      return this.item.chartData.minIndex || 1
+      return this.tableData.minIndex || 1
     }
   },
   watch: {
@@ -70,18 +110,38 @@ export default {
         this.mychart.resize()
       })
     },
-    'item.conditionType': function () {
-      if (this.item.conditionType) {
-        this.requestInterface()
+    'item.chartData': {
+      handler (newV, oldV) {
+        if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+          this.tableData = this.item.chartData.dataArray[0]
+          this.currentIndex = 0
+        }
+      },
+      deep: true
+    },
+    'currentIndex': function (newV, oldV) {
+      if (newV !== oldV) {
+        this.tableData = this.item.chartData.dataArray[this.currentIndex]
       }
     },
-    'barParam': function () {
-      this.requestInterface()
-    },
     'item': {
+      handler (newV, oldV) {
+        if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+          this.drawFlow()
+        }
+      },
+      deep: true
+    },
+    'tableData': {
       handler (newVal, oldVal) {
-        if (this.item.chartData.rows && this.item.chartData.columns) {
-          if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+        if (this.tableData === null || this.tableData === '') {
+          this.tableData = {
+            'columns': [],
+            'rows': []
+          }
+        }
+        if (this.tableData.rows && this.tableData.columns) {
+          if (this.tableData.rows.length === 0 || this.tableData.columns.length === 0) {
             this.showLine = false
           } else {
             this.showLine = true
@@ -99,8 +159,8 @@ export default {
       if (!reg.test(this.item.symbolSrc)) {
         baseUrl = gbs.host
       }
-      this.mychart = echarts.init(this.$refs.ELine)
-      let myData = this.item.chartData
+      this.mychart = echarts.init(this.$refs.ConditionalEline)
+      let myData = this.tableData
       var myseries = []
       var myXAxisData = []
       var mySeriesData = []
@@ -197,7 +257,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: this.item.boundaryGap,
-          name: this.item.chartData.unitX,
+          name: this.tableData.unitX,
           nameTextStyle: {
             color: this.item.DanweiColor || '#828bac',
             fontSize: this.item.DanweiSize || 16
@@ -231,7 +291,7 @@ export default {
               fontSize: this.item.axisLabelSize || '14'
             },
             formatter: (params, index) => {
-              var rows = this.item.chartData.rows
+              var rows = this.tableData.rows
               let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
               let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
               if (this.item.formatterType === '0') {
@@ -240,7 +300,7 @@ export default {
                 return params
               }
             },
-            interval: this.item.interval === 0 ? 0 : 'auto'
+            interval: 'auto' // auto 采用不重叠的方式展示，具体数字n则为间隔n展示
           }
         },
         color: optioncolor,
@@ -285,7 +345,7 @@ export default {
                 if (typeof (value * 1) !== 'number') {
                   value = '--'
                 }
-                showHtm += name + '：' + value + (this.item.chartData.unit || '') + '<br>'
+                showHtm += name + '：' + value + (this.tableData.unit || '') + '<br>'
               }
             })
             return showHtm
@@ -293,7 +353,7 @@ export default {
         },
         yAxis: {
           type: 'value',
-          name: this.item.chartData.unit,
+          name: this.tableData.unit,
           nameTextStyle: {
             color: this.item.DanweiColor || '#828bac',
             fontSize: this.item.DanweiSize || 16
@@ -321,7 +381,7 @@ export default {
             }
           },
           axisLabel: {
-            interval: this.item.interval === 0 ? 0 : 'auto',
+            interval: 'auto', // 采用不重叠的方式展示
             textStyle: {
               color: this.item.legendColor || '#828bac',
               fontSize: this.item.axisLabelSize || '14'
@@ -426,7 +486,7 @@ export default {
       } else {
         delete myoption.visualMap
       }
-      var rows = this.item.chartData.rows
+      var rows = this.tableData.rows
       let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
       let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
       if (this.item.formatterType === '0' && this.oldformatterType !== this.item.formatterType) {
@@ -434,114 +494,53 @@ export default {
           return params.length > strLen ? params.substr(0, strLen) + '...' : params
         }
         this.oldformatterType = this.item.formatterType
-        this.mychart.clear()
-        this.mychart.setOption(myoption)
       } else if (this.oldformatterType !== this.item.formatterType) {
         myoption.xAxis.axisLabel.formatter = function (params, index) {
           return params
         }
         this.oldformatterType = this.item.formatterType
-        this.mychart.clear()
-        this.mychart.setOption(myoption)
       }
-      if (this.oldOption !== JSON.stringify(myoption)) {
-        this.oldOption = JSON.stringify(myoption)
-        if (this.subsectionType === this.item.subsectionType) {
-
-        } else {
-          this.subsectionType = this.item.subsectionType
-          this.mychart.clear()
-        }
-        if (this.Linesubsection === this.item.Linesubsection) {
-
-        } else {
-          this.Linesubsection = this.item.Linesubsection
-          this.mychart.clear()
-        }
-        if (this.oldchartData === JSON.stringify(this.item.chartData)) {
-
-        } else {
-          this.oldchartData = JSON.stringify(this.item.chartData)
-          this.mychart.clear()
-        }
-        this.mychart.setOption(myoption)
-      } else {
-
-      }
+      this.mychart.clear()
+      this.mychart.setOption(myoption)
     },
-    requestInterface () {
-      if (this.item.conditionType) {
-        let url = ''
-        if (this.item.conditionType === 1) {
-          url = '/leaderview/newDistrict/GetGGAQ6_7'
-          if (this.barParam) {
-            url = url + '?param=' + this.barParam
-          }
-        } else if (this.item.conditionType === 2) {
-          url = '/leaderview/newDistrict/GetGGFW13' + '?param=' + (this.barParam || '房屋中介')
-        }
-        if (url) {
-          this.axios.get(url).then(res => {
-            this.item.chartData = res.obj
-            if ($.isEmptyObject(this.item.chartData)) {
-              this.item.chartData = {
-                columns: [],
-                rows: []
-              }
-            }
-          })
-        }
-      }
+    changeData (index) {
+      this.currentIndex = index
     }
   },
   mounted () {
-    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
-      this.bus.$on('clickBar', res => {
-        this.barParam = res
-      })
-      this.bus.$on('selectType', res => {
-        this.barParam = res
-      })
-      if (this.item.conditionType) {
-        this.clock = window.setInterval(() => {
-          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
-            clearInterval(this.clock)
-          }
-          this.requestInterface()
-        }, this.item.refrashTime || 30000)
-      }
+    if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+      this.tableData = this.item.chartData.dataArray[this.currentIndex]
     }
-
-    this.requestInterface()
-    if (this.item.chartData.rows.length === 0 || this.item.chartData.columns.length === 0) {
+    if (this.tableData.rows.length === 0 || this.tableData.columns.length === 0) {
       this.showLine = false
     } else {
       this.showLine = true
       this.drawFlow()
-      var _this = this
-      _this.mychart.getZr().on('click', function (params) {
-        const pointInPixel = [params.offsetX, params.offsetY]
-        if (_this.mychart.containPixel('grid', pointInPixel)) { // 第一步
-          let xIndex = _this.mychart.convertFromPixel({seriesIndex: 0}, [params.offsetX, params.offsetY])[0] // 第二部
-          let dataOut = []
-          dataOut = _this.item.chartData.rows[xIndex]
-          let boxData = {
-            title: '数据详情',
-            data: dataOut
-          }
-          // _this.$parent.$parent.ShowTanKuangBox(boxData)
-        }
-      })
     }
   },
   beforeDestroy () {
     if (this.mychart) {
       this.mychart.dispose()
     }
-    clearInterval(this.clock)
-    this.clock = ''
     this.mychart = null
   }
 
 }
 </script>
+<style lang="scss" scoped>
+ .checkBox{
+  display: flex;
+  position:absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  .normalBtn{
+    padding: 10px;
+    cursor: pointer;
+    background: url(./normal.png) no-repeat;
+    background-repeat: no-repeat !important;
+    background-size: 100% 100% !important;
+    margin: 5px;
+  }
+}
+</style>

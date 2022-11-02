@@ -29,6 +29,8 @@ export default {
     return {
       stateCol: '',
       titleHeight: 0,
+      barParam: '',
+      clock: '',
       textHeight: 50
     }
   },
@@ -37,6 +39,23 @@ export default {
       // this.$refs.NEWtextArea.$el.focus() // 双击穿透，使文本框获得焦点
       if (this.item.ctDataSource === 'static') {
         this.$refs.NEWtextArea.focus()
+      }
+    },
+    requestInterface () {
+      if (this.item.conditionType) {
+        let url = ''
+        if (this.item.conditionType === 1) {
+          url = '/leaderview/newDistrict/GetGGFW14' + '?param=' + (this.barParam || '房屋中介')
+        }
+        if (url) {
+          this.axios.get(url).then(res => {
+            this.item.chartData = res.obj
+            this.item.ctName = res.obj.info
+            if ($.isEmptyObject(this.item.chartData)) {
+              this.item.chartData = {}
+            }
+          })
+        }
       }
     },
     getBlur () {
@@ -140,6 +159,20 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      this.bus.$on('selectType', res => {
+        this.barParam = res
+      })
+      if (this.item.conditionType) {
+        this.clock = window.setInterval(() => {
+          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
+            clearInterval(this.clock)
+          }
+          this.requestInterface()
+        }, this.item.refrashTime || 30000)
+      }
+    }
+    this.requestInterface()
     this.updateHeight()
     this.updateColor()
   },
@@ -227,6 +260,14 @@ export default {
     'item.ctDataSource': function () {
       this.updateHeight()
       this.updateColor()
+    },
+    'item.conditionType': function () {
+      if (this.item.conditionType) {
+        this.requestInterface()
+      }
+    },
+    'barParam': function () {
+      this.requestInterface()
     },
     'item.chartData': function () {
       if (this.item.ctDataSource !== 'static') {

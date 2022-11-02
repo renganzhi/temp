@@ -19,11 +19,39 @@ export default{
     'fontFamily': '',
     'fontSize': 12,
     'fontSpaceing': 5,
+    conditionType: '', // 接口选择
+    refrashTime: 30000,
     'linkId': '',
     'chartData': {}
   },
   'styles': {
     'base': [
+      {
+        'name': '接口配置',
+        'tag': 'Hint',
+        'childoption': [
+          {
+            'name': '选择接口',
+            'key': 'conditionType',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '空',
+                'value': ''
+              },
+              {
+                'name': '近七日各元素数据量占总量比例',
+                'value': 1
+              }
+            ]
+          },
+          {
+            'name': '接口刷新间隔',
+            'key': 'refrashTime',
+            'tag': 'input'
+          }
+        ]
+      },
       {
         'name': '图表样式',
         'tag': 'Hint',

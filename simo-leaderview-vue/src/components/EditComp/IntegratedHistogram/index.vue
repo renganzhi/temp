@@ -1361,30 +1361,35 @@ export default {
       let keys = ''
       let chartData = '' // 折线图url
       let urls = ''
+      let url = ''
       if (_this.item.barType === 'NewHistogram') {
         dataOut = _this.item.chartData1.rows[params.dataIndex]
         dataUrl = _this.item.chartData1.url
         keys = _this.item.chartData1.columns[0]
         chartData = _this.item.chartData1.chartData
         urls = _this.item.chartData1.urls
+        url = _this.item.chartData1.url
       } else if (_this.item.barType === 'NewGroupHistogram') {
         dataOut = _this.item.chartData2.rows[params.dataIndex]
         dataUrl = _this.item.chartData2.url
         keys = _this.item.chartData2.columns[0]
         chartData = _this.item.chartData2.chartData
         urls = _this.item.chartData2.urls
+        url = _this.item.chartData2.url
       } else if (_this.item.barType === 'NewGroupLeftHistogram') {
         dataOut = _this.item.chartData3.rows[params.dataIndex]
         dataUrl = _this.item.chartData3.url
         keys = _this.item.chartData3.columns[0]
         chartData = _this.item.chartData3.chartData
         urls = _this.item.chartData3.urls
+        url = _this.item.chartData3.url
       } else if (_this.item.barType === 'NewBar') {
         dataOut = _this.item.chartData4.rows[_this.item.chartData4.rows.length - params.dataIndex - 1]
         dataUrl = _this.item.chartData4.url
         keys = _this.item.chartData4.columns[0]
         chartData = _this.item.chartData4.chartData
         urls = _this.item.chartData4.urls
+        url = _this.item.chartData4.url
       }
       console.log('dataOut', dataOut, params)
       if (dataOut.id) {
@@ -1396,18 +1401,27 @@ export default {
           chartUrl: chartData,
           data: dataOut
         }
-        // if (_this.$parent.$parent.ShowElineBox) {
-        //   _this.$parent.$parent.ShowElineBox(boxData)
-        // }
+        if (_this.$parent.$parent.ShowElineBox) {
+          _this.$parent.$parent.ShowElineBox(boxData)
+        }
       } else if (urls) {
         let boxData = {
           title: dataOut[keys] + '信息详情',
           urls: urls,
           data: dataOut
         }
-        // if (_this.$parent.$parent.ShowElineBox) {
-        //   _this.$parent.$parent.ShowElineBox(boxData)
-        // }
+        if (_this.$parent.$parent.ShowElineBox) {
+          _this.$parent.$parent.ShowElineBox(boxData)
+        }
+      } else if (url) {
+        let boxData = {
+          title: dataOut[keys] + '信息详情',
+          chartUrl: url,
+          data: dataOut
+        }
+        if (_this.$parent.$parent.ShowElineBox) {
+          _this.$parent.$parent.ShowElineBox(boxData)
+        }
       } else {
         let boxData = {
           title: '数据详情',

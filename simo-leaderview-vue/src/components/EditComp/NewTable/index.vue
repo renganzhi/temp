@@ -70,7 +70,9 @@ export default {
       tableEmpty: false,
       nowShowIndex: -1,
       myNewInterVal:'',
-      noworder: {}
+      noworder: {},
+      barParam: '',
+      clock: ''
     }
   },
   computed: {
@@ -179,6 +181,14 @@ export default {
       this.item.LineSizeArry[this.item.chartData.columns.indexOf(this.item.AlarmField)] = newV
       document.querySelector('.DataChangeBtn').click()
     },
+    'item.conditionType': function () {
+      if (this.item.conditionType) {
+        this.requestInterface()
+      }
+    },
+    'barParam': function () {
+      this.requestInterface()
+    },
     'item.AlarmField': function (newV, oldV) {
       this.item.OneLineSize = this.item.LineSizeArry[this.item.chartData.columns.indexOf(newV)]
     }
@@ -201,6 +211,25 @@ export default {
             success: function (res) {
               _this.item.chartData = res.obj
             },
+          })
+        }
+      }
+    },
+    requestInterface () {
+      if (this.item.conditionType) {
+        let url = ''
+        if (this.item.conditionType === 1) {
+          url = '/leaderview/newDistrict/GetGGFW1_1' + '?param=' + (this.barParam || '房屋中介')
+        }
+        if (url) {
+          this.axios.get(url).then(res => {
+            this.item.chartData = res.obj
+            if ($.isEmptyObject(this.item.chartData)) {
+              this.item.chartData = {
+                columns: [],
+                rows: []
+              }
+            }
           })
         }
       }
@@ -319,6 +348,20 @@ export default {
     }
   },
   mounted: function () {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      this.bus.$on('selectType', res => {
+        this.barParam = res
+      })
+      if (this.item.conditionType) {
+        this.clock = window.setInterval(() => {
+          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
+            clearInterval(this.clock)
+          }
+          this.requestInterface()
+        }, this.item.refrashTime || 30000)
+      }
+    }
+    this.requestInterface()
     if(this.item.chartData){
       this.item.chartData.columns && this.item.chartData.columns.forEach((element, i) => {
         if (this.widthArry[i]) {

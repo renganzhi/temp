@@ -5,6 +5,7 @@ import TDHistogram from '@/components/EditComp/TDHistogram/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
+import ConditionalEline from '@/components/EditComp/ConditionalEline/config.js'
 import DoubleLinde from '@/components/EditComp/DoubleLinde/config.js'
 import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram/config.js'
 import BiaxialBarChart from '@/components/EditComp/BiaxialBarChart/config.js'
@@ -58,6 +59,7 @@ const coordinate = {
     BiaxialBarChart.item,
     // NewBar.item,
     ELine.item,
+    ConditionalEline.item,
     DoubleLinde.item,
     GradientPie.item,
     polarBar.item,

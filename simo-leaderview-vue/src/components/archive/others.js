@@ -1,5 +1,6 @@
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
+import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
@@ -42,6 +43,7 @@ const others = {
     NewBorder.item,
     hotspot.item,
     ExternalJump.item,
+    ToggleButton.item,
     IframePop.item,
     OrderMenu.item,
     SmallOrderMenu.item,
