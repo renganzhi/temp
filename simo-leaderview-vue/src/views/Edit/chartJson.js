@@ -7,6 +7,7 @@ import GradientPie from '@/components/EditComp/GradientPie/config.js'
 import Sunrise from '@/components/EditComp/Sunrise/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
+import ConditionalEline from '@/components/EditComp/ConditionalEline/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import DownMenu from '@/components/EditComp/DownMenu/config.js'
@@ -18,6 +19,7 @@ import NEWtextArea from '@/components/EditComp/NEWtextArea/config.js'
 import bubble from '@/components/EditComp/bubble/config.js'
 import hotspot from '@/components/EditComp/hotspot/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
+import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
@@ -531,6 +533,7 @@ var compsArr = [{
   chartData: morenData.pie
 },
 ELine.item,
+ConditionalEline.item,
 // {
 //   text: '曲线图',
 //   imgClass: 'icon-n-line',
@@ -701,6 +704,7 @@ Dashboard.item,
 NEWtextArea.item,
 hotspot.item,
 ExternalJump.item,
+ToggleButton.item,
 IframePop.item,
 OrderMenu.item,
 SmallOrderMenu.item,

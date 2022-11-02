@@ -1,10 +1,10 @@
 export default {
   'item': {
-    'text': '曲线图',
+    'text': '条件曲线图',
     'imgClass': 'icon-n-line',
     'height': 400,
     'width': 700,
-    'chartType': 'ELine',
+    'chartType': 'ConditionalEline',
     'ifEidetColor': false, // 曲线是否配色
     'ifEidetColor2': false,
     'ifGradual': 'false', // 曲线是否渐变
@@ -46,9 +46,6 @@ export default {
     'showPoint': true, // 是否标点
     'PointSize': '14',
     'rotate': 0,
-    conditionType: '', // 接口选择
-    refrashTime: 30000,
-    interval: 0,
     'colorMatchType': 'line', // 配色类型
     'ScatterColor': [
       '#2d98f1',
@@ -56,6 +53,16 @@ export default {
       '#67e0e3',
       '#9fe6b8',
       '#ffdb5c'],
+    paddingTop: 0,
+    paddingLeft: 0,
+    boxFontSize: 16,
+    buttonPadding: 20,
+    buttonMargin: 20,
+    boxDirection: false,
+    normalButton: '',
+    normalButtonName: '',
+    checkedButton: '',
+    checkedButtonName: '',
     'DScatterColor': [
       ['rgba(213, 153, 17, 0.52)', '#be4d24'],
       ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
@@ -84,78 +91,94 @@ export default {
       ['#85f8c0', '#62dc26']
     ], // 区域渐变
     'chartData': {
-      'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
-      'unit': '%',
-      'min': 60,
-      'max': 80,
-      'minIndex': 2,
-      'maxIndex': 3,
-      'unitX': '时间',
-      'rows': [{
-        '日期': '2020-01-01',
-        'CPU核心利用率': 15,
-        'CPU平均利用率': 15
-      },
-      {
-        '日期': '2020-01-02',
-        'CPU核心利用率': 80,
-        'CPU平均利用率': 50
-      },
-      {
-        '日期': '2020-01-03',
-        'CPU核心利用率': 40,
-        'CPU平均利用率': 6
-      },
-      {
-        '日期': '2020-01-05',
-        'CPU核心利用率': 45,
-        'CPU平均利用率': 70
-      },
-      {
-        '日期': '2020-01-06',
-        'CPU核心利用率': 10,
-        'CPU平均利用率': 40
-      },
-      {
-        '日期': '2020-01-07',
-        'CPU核心利用率': 95,
-        'CPU平均利用率': 50
-      }
+      dataArray: [
+        {
+          'title': '风险告警',
+          'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
+          'unit': '%',
+          'min': 60,
+          'max': 80,
+          'minIndex': 2,
+          'maxIndex': 3,
+          'unitX': '时间',
+          'rows': [{
+            '日期': '2020-01-01',
+            'CPU核心利用率': 15,
+            'CPU平均利用率': 15
+          },
+          {
+            '日期': '2020-01-02',
+            'CPU核心利用率': 80,
+            'CPU平均利用率': 50
+          },
+          {
+            '日期': '2020-01-03',
+            'CPU核心利用率': 40,
+            'CPU平均利用率': 6
+          },
+          {
+            '日期': '2020-01-05',
+            'CPU核心利用率': 45,
+            'CPU平均利用率': 70
+          },
+          {
+            '日期': '2020-01-06',
+            'CPU核心利用率': 10,
+            'CPU平均利用率': 40
+          },
+          {
+            '日期': '2020-01-07',
+            'CPU核心利用率': 95,
+            'CPU平均利用率': 50
+          }
+          ]
+        },
+        {
+          'title': '终端告警',
+          'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
+          'unit': '%',
+          'min': 60,
+          'max': 80,
+          'minIndex': 2,
+          'maxIndex': 3,
+          'unitX': '时间',
+          'rows': [{
+            '日期': '2020-01-01',
+            'CPU核心利用率': 15,
+            'CPU平均利用率': 15
+          },
+          {
+            '日期': '2020-01-02',
+            'CPU核心利用率': 80,
+            'CPU平均利用率': 50
+          },
+          {
+            '日期': '2020-01-03',
+            'CPU核心利用率': 40,
+            'CPU平均利用率': 6
+          },
+          {
+            '日期': '2020-01-05',
+            'CPU核心利用率': 45,
+            'CPU平均利用率': 70
+          },
+          {
+            '日期': '2020-01-06',
+            'CPU核心利用率': 10,
+            'CPU平均利用率': 40
+          },
+          {
+            '日期': '2020-01-07',
+            'CPU核心利用率': 95,
+            'CPU平均利用率': 50
+          }
+          ]
+        }
       ]
     }
   },
   'styles': {
     'base': [
-      {
-        'name': '接口配置',
-        'tag': 'Hint',
-        'childoption': [
-          {
-            'name': '选择接口',
-            'key': 'conditionType',
-            'tag': 'select',
-            'options': [
-              {
-                'name': '空',
-                'value': ''
-              },
-              {
-                'name': '核算点位七日趋势',
-                'value': 1
-              },
-              {
-                'name': '各元素受理量七日趋势',
-                'value': 2
-              }
-            ]
-          },
-          {
-            'name': '接口刷新间隔',
-            'key': 'refrashTime',
-            'tag': 'input'
-          }
-        ]
-      },
       {
         'name': '图例配置',
         'tag': 'Hint',
@@ -174,6 +197,51 @@ export default {
                 'value': false
               }
             ]
+          }, {
+            'name': '选择框上边距',
+            'key': 'paddingTop',
+            'tag': 'input'
+          }, {
+            'name': '选择框左边距',
+            'key': 'paddingLeft',
+            'tag': 'input'
+          },
+          {
+            'name': '选择框方向',
+            'key': 'boxDirection',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '纵向',
+                'value': true
+              },
+              {
+                'name': '横向',
+                'value': false
+              }
+            ]
+          }, {
+            'name': '按钮文字大小',
+            'key': 'boxFontSize',
+            'tag': 'input'
+          }, {
+            'name': '按钮间距',
+            'key': 'buttonMargin',
+            'tag': 'input'
+          }, {
+            'name': '按钮内边距',
+            'key': 'buttonPadding',
+            'tag': 'input'
+          }, {
+            'name': '正常按钮背景',
+            'key': 'normalButton',
+            'tag': 'ImgFile',
+            'keyName': 'normalButtonName'
+          }, {
+            'name': '高亮按钮背景',
+            'key': 'checkedButton',
+            'tag': 'ImgFile',
+            'keyName': 'checkedButtonName'
           },
           {
             'name': '图例字体大小',
@@ -590,21 +658,6 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
-            }
-          ]
-        },
-        {
-          'name': '标注显示间隔',
-          'key': 'interval',
-          'tag': 'select',
-          'options': [
-            {
-              'name': '不裁剪',
-              'value': 0
-            },
-            {
-              'name': '自适应',
-              'value': 1
             }
           ]
         }

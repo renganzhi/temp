@@ -98,6 +98,8 @@ export default {
       intervalId: 0,
       nowShowIndex: -1,
       myNewInterVal: '',
+      barParam: '',
+      clock: '',
       nowPage: 0,
       tableEmpty: false
     }
@@ -195,6 +197,14 @@ export default {
         this.intervalId = null
       }
     },
+    'item.conditionType': function () {
+      if (this.item.conditionType) {
+        this.requestInterface()
+      }
+    },
+    'barParam': function () {
+      this.requestInterface()
+    },
     'item.chartData': function (newV, oldV) {
       if (this.item.chartData === null || this.item.chartData === '') {
         this.item.chartData = {
@@ -287,6 +297,25 @@ export default {
             ascyn: false,
             success: function (res) {
               _this.item.chartData = res.obj
+            }
+          })
+        }
+      }
+    },
+    requestInterface () {
+      if (this.item.conditionType) {
+        let url = ''
+        if (this.item.conditionType === 1) {
+          url = '/leaderview/newDistrict/GetGGFW1_1' + '?param=' + (this.barParam || '房屋中介')
+        }
+        if (url) {
+          this.axios.get(url).then(res => {
+            this.item.chartData = res.obj
+            if ($.isEmptyObject(this.item.chartData)) {
+              this.item.chartData = {
+                columns: [],
+                rows: []
+              }
             }
           })
         }
@@ -452,6 +481,19 @@ export default {
     // }
   },
   mounted: function () {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+      this.bus.$on('selectType', res => {
+        this.barParam = res
+      })
+      if (this.item.conditionType) {
+        this.clock = window.setInterval(() => {
+          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
+            clearInterval(this.clock)
+          }
+          this.requestInterface()
+        }, this.item.refrashTime || 30000)
+      }
+    }
     if (this.item.chartData && this.item.chartData.columns) {
       this.item.chartData.columns.forEach((element, i) => {
         if (this.widthArry[i]) {

@@ -60,12 +60,12 @@ export default {
         overflow: 'hidden'
       }
     },
-    contenterStyle:function(){
+    contenterStyle: function () {
       let style = {}
-      if(this.item.placement==='top'){
+      if (this.item.placement === 'top') {
         style = {
-          position:'relative',
-          bottom: this.item.chartData.children.length * 50 + 50 +'px'
+          position: 'relative',
+          bottom: this.item.chartData.children.length * 50 + 50 + 'px'
         }
       }
       return style
@@ -75,12 +75,14 @@ export default {
     var Moveout = this.$refs.dropMenuTitle
     var content = this.$refs.contenter
     // 鼠标移入显示
-    Moveout.onmouseover = function () {
-      content.style.display = 'block'
-    }
-    // 鼠标移出隐藏
-    Moveout.onmouseout = function () {
-      content.style.display = 'none'
+    if (Moveout) {
+      Moveout.onmouseover = function () {
+        content.style.display = 'block'
+      }
+      // 鼠标移出隐藏
+      Moveout.onmouseout = function () {
+        content.style.display = 'none'
+      }
     }
   },
   methods: {
