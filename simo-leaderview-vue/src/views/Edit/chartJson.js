@@ -24,6 +24,7 @@ import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
+import EventVenation from '@/components/EditComp/EventVenation/config.js'
 import StreetMenu from '@/components/EditComp/StreetMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
 import decorator from '@/components/EditComp/decorator/config.js'
@@ -709,6 +710,7 @@ IframePop.item,
 OrderMenu.item,
 SmallOrderMenu.item,
 CityEvent.item,
+EventVenation.item,
 StreetMenu.item,
 WordClouds.item,
 {
