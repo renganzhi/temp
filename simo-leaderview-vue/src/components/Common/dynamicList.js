@@ -67,6 +67,7 @@ export default [
   'OrderMenu',
   'SmallOrderMenu',
   'CityEvent',
+  'EventVenation',
   'StreetMenu',
   'WordClouds',
   'decorator'
