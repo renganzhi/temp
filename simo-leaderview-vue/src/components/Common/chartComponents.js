@@ -77,6 +77,7 @@ import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
+import EventVenation from '@/components/EditComp/EventVenation'
 import StreetMenu from '@/components/EditComp/StreetMenu'
 import WordClouds from '@/components/EditComp/WordClouds'
 import Decorator from '@/components/EditComp/decorator'
@@ -167,6 +168,7 @@ export default {
   OrderMenu,
   SmallOrderMenu,
   CityEvent,
+  EventVenation,
   StreetMenu,
   WordClouds,
   Decorator
