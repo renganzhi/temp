@@ -91,6 +91,7 @@ let config = {
   Newimage: require('@/components/EditComp/Newimage/config.js'),
   NewMoveTable: require('@/components/EditComp/NewMoveTable/config.js'),
   NewTable: require('@/components/EditComp/NewTable/config.js'),
+  ConditionalTable: require('@/components/EditComp/ConditionalTable/config.js'),
   NewProgress: require('@/components/EditComp/NewProgress/config.js'),
   NewHistogram: require('@/components/EditComp/NewHistogram/config.js'),
   NewVMap: require('@/components/EditComp/NewVMap/config.js'),
