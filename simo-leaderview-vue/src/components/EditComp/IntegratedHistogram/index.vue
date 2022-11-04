@@ -461,6 +461,8 @@ export default {
                 let strLen = Math.round(barW / (this.item.axisLabelSize1 * 2))
                 if (this.item.formatterType1 === '0') {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                } else if (this.item.formatterType1 === '2') {
+                  return params.length > this.item.cropSize1 ? params.substr(0, this.item.cropSize1) + '...' : params
                 } else {
                   return params
                 }
@@ -560,6 +562,13 @@ export default {
         if (this.item.formatterType1 === '0' && this.oldformatterType !== this.item.formatterType1) {
           myoption.xAxis.axisLabel.formatter = function (params, index) {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          }
+          this.oldformatterType = this.item.formatterType1
+          this.mychart.clear()
+          this.mychart.setOption(myoption, true)
+        } else if (this.item.formatterType1 === '2' && this.oldformatterType !== this.item.formatterType1) {
+          myoption.xAxis.axisLabel.formatter = (params, index) => {
+            return params.length > this.item.cropSize1 ? params.substr(0, this.item.cropSize1) + '...' : params
           }
           this.oldformatterType = this.item.formatterType1
           this.mychart.clear()
@@ -682,6 +691,8 @@ export default {
                 let strLen = Math.round(barW / (this.item.axisLabelSize2 * 2))
                 if (this.item.formatterType2 === '0') {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                } else if (this.item.formatterType2 === '2') {
+                  return params.length > this.item.cropSize2 ? params.substr(0, this.item.cropSize2) + '...' : params
                 } else {
                   return params
                 }
@@ -772,6 +783,13 @@ export default {
         if (this.item.formatterType2 === '0' && this.oldformatterType !== this.item.formatterType2) {
           myoption.xAxis.axisLabel.formatter = function (params, index) {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          }
+          this.oldformatterType = this.item.formatterType2
+          this.mychart.clear()
+          this.mychart.setOption(myoption, true)
+        } else if (this.item.formatterType2 === '2' && this.oldformatterType !== this.item.formatterType2) {
+          myoption.xAxis.axisLabel.formatter = (params, index) => {
+            return params.length > this.item.cropSize2 ? params.substr(0, this.item.cropSize2) + '...' : params
           }
           this.oldformatterType = this.item.formatterType2
           this.mychart.clear()
@@ -955,6 +973,8 @@ export default {
                 let strLen = Math.round(barW / (this.item.axisLabelSize3 * 2))
                 if (this.item.formatterType3 === '0') {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                } else if (this.item.formatterType3 === '2') {
+                  return params.length > this.item.cropSize3 ? params.substr(0, this.item.cropSize3) + '...' : params
                 } else {
                   return params
                 }
@@ -1045,6 +1065,13 @@ export default {
         if (this.item.formatterType3 === '0' && this.oldformatterType !== this.item.formatterType3) {
           myoption.xAxis.axisLabel.formatter = function (params, index) {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          }
+          this.oldformatterType = this.item.formatterType3
+          this.mychart.clear()
+          this.mychart.setOption(myoption, true)
+        } else if (this.item.formatterType3 === '2' && this.oldformatterType !== this.item.formatterType3) {
+          myoption.xAxis.axisLabel.formatter = (params, index) => {
+            return params.length > this.item.cropSize3 ? params.substr(0, this.item.cropSize3) + '...' : params
           }
           this.oldformatterType = this.item.formatterType3
           this.mychart.clear()
@@ -1224,6 +1251,8 @@ export default {
                 let strLen = Math.round(barW / (this.item.axisLabelSize4 * 2))
                 if (this.item.formatterType4 === '0') {
                   return params.length > strLen ? params.substr(0, strLen) + '...' : params
+                } else if (this.item.formatterType4 === '2') {
+                  return params.length > this.item.cropSize4 ? params.substr(0, this.item.cropSize4) + '...' : params
                 } else {
                   return params
                 }
@@ -1318,6 +1347,13 @@ export default {
         if (this.item.formatterType4 === '0' && this.oldformatterType !== this.item.formatterType4) {
           myoption.xAxis.axisLabel.formatter = function (params, index) {
             return params.length > strLen ? params.substr(0, strLen) + '...' : params
+          }
+          this.oldformatterType = this.item.formatterType4
+          this.mychart.clear()
+          this.mychart.setOption(myoption, true)
+        } else if (this.item.formatterType4 === '2' && this.oldformatterType !== this.item.formatterType4) {
+          myoption.xAxis.axisLabel.formatter = (params, index) => {
+            return params.length > this.item.cropSize4 ? params.substr(0, this.item.cropSize4) + '...' : params
           }
           this.oldformatterType = this.item.formatterType4
           this.mychart.clear()

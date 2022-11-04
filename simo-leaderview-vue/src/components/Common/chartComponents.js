@@ -30,6 +30,7 @@ import NewPie from '@/components/EditComp/NewPie' // 3D地图-柱状图
 import NewRadar from '@/components/EditComp/NewRadar' // 3D地图-柱状图
 import NewTime from '@/components/EditComp/NewTime' // 3D地图-柱状图
 import NewTable from '@/components/EditComp/NewTable' // 3D地图-柱状图
+import ConditionalTable from '@/components/EditComp/ConditionalTable'
 import NewMoveTable from '@/components/EditComp/NewMoveTable' // 3D地图-柱状图
 import NewProgress from '@/components/EditComp/NewProgress' // 3D地图-柱状图
 import NewVMap from '@/components/EditComp/NewVMap' // 3D地图-柱状图
@@ -120,6 +121,7 @@ export default {
   NewRadar,
   NewTime,
   NewTable,
+  ConditionalTable,
   NewMoveTable,
   NewNumber,
   Indicator,
