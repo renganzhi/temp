@@ -32,17 +32,17 @@
         <tbody>
           <tr
               v-for="(tr, id) in tableData"
-              :key="id" :style="[trStyle,tbodyTrStyle(id), warnStyle(id)]">
-            <td v-for="(tdText, ind, i) in tr"
+              :key="id" :style="[trStyle,tbodyTrStyle(id), warnStyle(id)]" @click="showDetails(tr)">
+            <td v-for="(tdText, i) in item.chartData.columns"
                 :style="[thStyle,heightLinght,widthLinght(i)]"
-                :key="ind">
+                :key="i">
                 <!-- template: '<div class=\'tooltip\' role=\'tooltip\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>'  -->
               <span v-if="i === 0"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}"
-                  :style="{ 'color': alertColor(tdText, ind) }">{{tdText}}</span>
+                  :style="{ 'color': alertColor(tdText, i) }">{{tr[tdText]}}</span>
               <span
                 v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}"
-                v-else>{{tdText}}</span>
+                v-else>{{tr[tdText]}}</span>
             </td>
           </tr>
         </tbody>
@@ -232,6 +232,15 @@ export default {
             }
           })
         }
+      }
+    },
+    showDetails (data) {
+      if (this.$parent.$parent.ShowTanKuangBox && !this.item.chartData.url) {
+        let dataArray = {
+          title: '数据详情',
+          data: data
+        }
+        this.$parent.$parent.ShowTanKuangBox(dataArray)
       }
     },
     sortArry (key) {

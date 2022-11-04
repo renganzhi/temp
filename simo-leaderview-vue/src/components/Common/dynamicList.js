@@ -46,6 +46,7 @@ export default [
   'NewGroupLeftHistogram',
   'NewTime',
   'NewTable',
+  'ConditionalTable',
   'NewMoveTable',
   'NewProgress',
   'NewVMap',

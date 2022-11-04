@@ -51,6 +51,7 @@ var NewHistogram = {
   'gridLeft1': 10,
   'gridRight1': 10,
   'formatterType1': '0',
+  'cropSize1': 2,
   'tooltipShow1': true,
   'dataTypeStation': false,
   'tooltipBackColor1': '#57625d',
@@ -119,6 +120,7 @@ var NewGroupHistogram = {
   'subType2': 'groupHistogram',
   'rotate2': 0,
   'formatterType2': '0',
+  'cropSize2': 2,
   'ScatterColor2': [
     '#37a2da',
     '#30a4f9',
@@ -212,6 +214,7 @@ var NewGroupLeftHistogram = {
   'splitSize3': 1,
   'rotate3': 0,
   'formatterType3': '0',
+  'cropSize3': 2,
   'ScatterColor3': [
     '#6fcaf7',
     '#8feee5',
@@ -302,6 +305,7 @@ var NewBar = {
   'splitSize4': 1,
   'rotate4': 0,
   'formatterType4': '0',
+  'cropSize4': 2,
   'ScatterColor4': [
     '#6fcaf7',
     '#8feee5',
@@ -861,8 +865,20 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
+            },
+            {
+              'name': '自定义',
+              'value': '2'
             }
           ]
+        },
+        {
+          'name': '裁剪大小',
+          'key': 'cropSize1',
+          'parentKey': {
+            'formatterType1': '2'
+          },
+          'tag': 'input'
         }
         ],
         'parentKey': {
@@ -1213,8 +1229,20 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
+            },
+            {
+              'name': '自定义',
+              'value': '2'
             }
           ]
+        },
+        {
+          'name': '裁剪大小',
+          'key': 'cropSize2',
+          'parentKey': {
+            'formatterType2': '2'
+          },
+          'tag': 'input'
         }
         ],
         'parentKey': {
@@ -1553,8 +1581,20 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
+            },
+            {
+              'name': '自定义',
+              'value': '2'
             }
           ]
+        },
+        {
+          'name': '裁剪大小',
+          'key': 'cropSize3',
+          'parentKey': {
+            'formatterType3': '2'
+          },
+          'tag': 'input'
         }
         ],
         'parentKey': {
@@ -1868,8 +1908,20 @@ export default {
             {
               'name': '不裁剪',
               'value': '1'
+            },
+            {
+              'name': '自定义',
+              'value': '2'
             }
           ]
+        },
+        {
+          'name': '裁剪大小',
+          'key': 'cropSize4',
+          'parentKey': {
+            'formatterType4': '2'
+          },
+          'tag': 'input'
         }
         ],
         'parentKey': {

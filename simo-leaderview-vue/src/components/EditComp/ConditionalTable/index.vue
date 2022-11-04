@@ -1,14 +1,19 @@
 <template>
   <div class="bootstrap-table home-table"
        :style="boxStyle">
-    <div v-show="item.showHead" class="fixed-table-header"
+       <div class="checkBox" :style="checkStyle" v-if="item.chartData.dataArray && item.chartData.dataArray.length">
+            <div class="normalBtn" v-for="(v, i) in item.chartData.dataArray" :style="buttonStyle(i)" :key="i" @click="changeData(i)">
+              {{v.title}}
+            </div>
+       </div>
+    <div class="fixed-table-header"
         :style="heightLinght">
       <table class="table"
              :style="theadTrStyle"
              style="table-layout: fixed;">
         <thead :style="theadTrStyle">
           <tr :style="[trStyle,theadTrStyle]">
-            <th v-for="(title, index) in item.chartData.columns"
+            <th v-for="(title, index) in tableData.columns"
                 :key="index"
                 :style="[thStyle,heightLinght,widthLinght(index)]"
                 v-tooltip.bottom="{ content: title, container: '#home-html', classes: 'bottom in'}"
@@ -17,26 +22,6 @@
         </thead>
       </table>
     </div>
-    <!-- <div class="fixed-table-body"
-         v-if="item.direction === 'top'"
-         :style="{'max-height': pageNum * 36 + 'px'}"
-         style="padding-bottom: 26px; overflow: hidden;">
-      <transition>
-        <table class="table"
-               :style="scrollStyle"
-               style="table-layout: fixed; transition: all 0.6s ease;">
-          <tbody>
-            <tr :style="[trStyle,tbodyTrStyle]"
-                v-for="(tr, id) in item.chartData.rows"
-                :key="id">
-              <td v-for="(tdText, ind) in tr"
-                  :key="ind"
-                  data-original-title="tdText">{{tdText}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </transition>
-    </div> -->
     <div class="fixed-table-body"
          style="padding-bottom: 26px; overflow: hidden; position: relative;height: 95%;">
       <transition :name="tableEmpty ? '' : item.direction === 'top' ? 'table-tpfadeout': 'table-fadeout'">
@@ -46,8 +31,9 @@
           <tbody>
             <tr v-for="(tr, id) in page1Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle('page1Data',id)]"
-                :key="id" @click="showDetails(tr)">
-              <td v-for="(tdText, ind,i) in item.chartData.columns"
+                @click="showXQ(tr)"
+                :key="id">
+              <td v-for="(tdText, ind) in tableData.columns"
                   :key="ind"
                   :style="[thStyle,heightLinght,widthLinght(ind)]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tr[tdText]}}</td>
@@ -62,8 +48,9 @@
           <tbody>
             <tr v-for="(tr, id) in page2Data"
                 :style="[trStyle,tbodyTrStyle(id),warnStyle('page2Data',id)]"
-                :key="id" @click="showDetails(tr)">
-              <td v-for="(tdText, ind,i) in item.chartData.columns"
+                @click="showXQ(tr)"
+                :key="id">
+              <td v-for="(tdText, ind) in tableData.columns"
                   :key="ind"
                   :style="[thStyle,heightLinght,widthLinght(ind)]"
                   v-tooltip.bottom="{ content: tdText, container: '#home-html', classes: 'bottom in'}">{{tr[tdText]}}</td>
@@ -86,20 +73,24 @@
 import { mapGetters } from 'vuex'
 import { gbs } from '@/config/settings'
 export default {
-  name: 'NewMoveTable',
+  name: 'ConditionalTable',
   props: ['item', 'moving'],
   data () {
     return {
       tableMove: true,
       pageNum: 5,
       intervalTime: 4000,
+      checkedIndex: 0,
       page1Data: [],
       page2Data: [],
+      tableData: {
+        columns: [],
+        rows: []
+      },
+      currentIndex: 0,
       intervalId: 0,
       nowShowIndex: -1,
       myNewInterVal: '',
-      barParam: '',
-      clock: '',
       nowPage: 0,
       tableEmpty: false
     }
@@ -121,19 +112,36 @@ export default {
         border: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
       }
     },
+    checkStyle: function () {
+      return {
+        paddingLeft: this.item.paddingLeft + 'px',
+        paddingTop: this.item.paddingTop + 'px',
+        fontSize: this.item.boxFontSize + 'px'
+      }
+    },
+    buttonStyle: function () {
+      return (index) => {
+        if (this.currentIndex === index) {
+          return {
+            background: 'url(' + require('./checked.png') + ') no-repeat',
+            padding: this.item.buttonPadding + 'px !important',
+            marginRight: this.item.buttonMargin + 'px'
+          }
+        } else {
+          return {
+            background: 'url(' + require('./normal.png') + ') no-repeat',
+            padding: this.item.buttonPadding + 'px !important',
+            marginRight: this.item.buttonMargin + 'px'
+          }
+        }
+      }
+    },
     trStyle: function () {
       return {
         color: this.item.clr + ' !important',
         fontSize: this.item.fontSize + 'px !important'
       }
     },
-    // theadTrStyle: function () {
-    //   return {
-    //     backgroundColor: this.item.hdBgClr + ' !important', // 表头背景色
-    //     color: this.item.hdClr + ' !important',
-    //     fontSize: this.item.hdfontSize + 'px !important'
-    //   }
-    // },
     thStyle: function () {
       return {
         textAlign: this.item.Alignment + '!important',
@@ -148,8 +156,8 @@ export default {
     },
     widthArry: function () {
       let arr = this.item.LineSizeArry || []
-      if (this.item.chartData && this.item.chartData.columns) {
-        this.item.chartData.columns.forEach((element, i) => {
+      if (this.tableData && this.tableData.columns) {
+        this.tableData.columns.forEach((element, i) => {
           if (arr[i]) {
 
           } else {
@@ -175,12 +183,6 @@ export default {
         }
       }
     },
-    // tbodyTrStyle: function () {
-    //   return {
-    //     backgroundColor: this.item.bgClr + ' !important', // 表体背景色
-    //     borderTop: this.item.bdpx + 'px solid ' + this.item.bdClr + ' !important'
-    //   }
-    // },
     scrollStyle: function () {
       return {
         // marginTop: -36 * this.pageNum * this.nowPage + 'px' // 回流
@@ -197,24 +199,30 @@ export default {
         this.intervalId = null
       }
     },
-    'item.conditionType': function () {
-      if (this.item.conditionType) {
-        this.requestInterface()
+    'item.chartData': {
+      handler (newV, oldV) {
+        if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+          this.tableData = this.item.chartData.dataArray[0]
+          this.currentIndex = 0
+        }
+      },
+      deep: true
+    },
+    'currentIndex': function (newV, oldV) {
+      if (newV !== oldV) {
+        this.tableData = this.item.chartData.dataArray[this.currentIndex]
       }
     },
-    'barParam': function () {
-      this.requestInterface()
-    },
-    'item.chartData': function (newV, oldV) {
-      if (this.item.chartData === null || this.item.chartData === '') {
-        this.item.chartData = {
+    'tableData': function (newV, oldV) {
+      if (this.tableData === null || this.tableData === '') {
+        this.tableData = {
           'columns': [],
           'rows': []
         }
       }
       this.pageNum = Number(this.item.pageNum)
       if (JSON.stringify(oldV) === JSON.stringify(newV)) return
-      if ((this.item.chartData.rows && this.item.chartData.rows.length < 1) || !this.item.chartData.rows) {
+      if ((this.tableData.rows && this.tableData.rows.length < 1) || !this.tableData.rows) {
         this.tableEmpty = true
         this.page1Data = []
         this.page2Data = []
@@ -223,19 +231,9 @@ export default {
       } else {
         this.tableEmpty = false
       }
-      // if (this.item.direction === 'left') {
-      //   this.initLeftMove()
-      // } else {
-      //   this.initTopMove()
-      // }
       this.initLeftMove()
     },
     'item.direction': function (val) {
-      // if (val === 'left') {
-      //   this.initLeftMove()
-      // } else {
-      //   this.initTopMove()
-      // }
       this.initLeftMove()
     },
     'item.pageNum': function (val) {
@@ -253,43 +251,14 @@ export default {
       this.initLeftMove()
     },
     'item.OneLineSize': function (newV, oldV) {
-      this.item.LineSizeArry[this.item.chartData.columns.indexOf(this.item.AlarmField)] = newV
+      this.item.LineSizeArry[this.tableData.columns.indexOf(this.item.AlarmField)] = newV
       document.querySelector('.DataChangeBtn').click()
     },
     'item.AlarmField': function (newV, oldV) {
-      this.item.OneLineSize = this.item.LineSizeArry[this.item.chartData.columns.indexOf(newV)]
+      this.item.OneLineSize = this.item.LineSizeArry[this.tableData.columns.indexOf(newV)]
     }
   },
   methods: {
-    // initTopMove () {
-    //   if (this.intervalId) {
-    //     clearTimeout(this.intervalId)
-    //   }
-    //   this.nowPage = 0
-    //   if (this.item.chartData.rows.length > this.pageNum) {
-    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-    //       totalPage--
-    //     }
-    //     // let nowPage = 0
-    //     if (!this.moving || this.moving === 'false') return
-    //     this.intervalId = setInterval(() => {
-    //       this.nowPage++
-    //       if (this.nowPage > totalPage) {
-    //         this.nowPage = 0
-    //       }
-    //     }, this.intervalTime)
-    //   }
-    // },
-    showDetails (data) {
-      if (this.$parent.$parent.ShowTanKuangBox && !this.item.chartData.url) {
-        let dataArray = {
-          title: '数据详情',
-          data: data
-        }
-        this.$parent.$parent.ShowTanKuangBox(dataArray)
-      }
-    },
     getNewChartData () {
       var _this = this
       if (_this.item.moreUrlArry[_this.nowShowIndex]) {
@@ -305,30 +274,23 @@ export default {
             cache: false,
             ascyn: false,
             success: function (res) {
-              _this.item.chartData = res.obj
+              _this.tableData = res.obj
             }
           })
         }
       }
     },
-    requestInterface () {
-      if (this.item.conditionType) {
-        let url = ''
-        if (this.item.conditionType === 1) {
-          url = '/leaderview/newDistrict/GetGGFW1_1' + '?param=' + (this.barParam || '房屋中介')
+    showXQ (data) {
+      if (this.$parent.$parent.ShowTanKuangBox) {
+        let dataArray = {
+          title: '数据详情',
+          data: data
         }
-        if (url) {
-          this.axios.get(url).then(res => {
-            this.item.chartData = res.obj
-            if ($.isEmptyObject(this.item.chartData)) {
-              this.item.chartData = {
-                columns: [],
-                rows: []
-              }
-            }
-          })
-        }
+        this.$parent.$parent.ShowTanKuangBox(dataArray)
       }
+    },
+    changeData (index) {
+      this.currentIndex = index
     },
     warnStyle (ArryName, index) {
       if (this.item.AlarmField) {
@@ -401,27 +363,12 @@ export default {
       }
       var _this = this
       this.nowPage = 0
-      if (this.item.chartData && this.item.chartData.rows) {
-        this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
-        this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
-        // 这里不用注释
-        // if ($(this.$el).find('[title]').length > 0) {
-        //   $(this.$el).find('[title]').tooltip('destroy')
-        // }
-        // if ($('#paintWrap').find('[title]').length > 0) {
-        //   $('#paintWrap').find('[title]').tooltip('destroy')
-        // }
-        // this.$nextTick(() => {
-        //   if ($('#home-html').length > 0) {
-        //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-        //   } else {
-        //     titleShowFn('bottom', $(this.$el), this.$el)
-        //   }
-        // })
-        // 这里不用注释
-        if (this.item.chartData.rows.length > this.pageNum) {
-          let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-          if (totalPage === this.item.chartData.rows.length / this.pageNum) {
+      if (this.tableData && this.tableData.rows) {
+        this.page1Data = this.tableData.rows.slice(0, this.pageNum)
+        this.page2Data = this.tableData.rows.slice(this.pageNum, this.pageNum * (this.nowPage + 2))
+        if (this.tableData.rows.length > this.pageNum) {
+          let totalPage = Math.floor(this.tableData.rows.length / this.pageNum)
+          if (totalPage === this.tableData.rows.length / this.pageNum) {
             totalPage--
           }
           if (!this.moving || this.moving === 'false') return
@@ -435,76 +382,23 @@ export default {
               _this.nowPage++
               if (_this.nowPage === totalPage) {
                 _this.nowPage = -1
-                _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
+                _this.page1Data = _this.tableData.rows.slice(_this.pageNum * totalPage, _this.pageNum * (totalPage + 1))
               } else {
-                _this.page1Data = _this.item.chartData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
+                _this.page1Data = _this.tableData.rows.slice(_this.pageNum * _this.nowPage, _this.pageNum * (_this.nowPage + 1))
               }
-              _this.page2Data = _this.item.chartData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
+              _this.page2Data = _this.tableData.rows.slice(_this.pageNum * (_this.nowPage + 1), _this.pageNum * (_this.nowPage + 2))
             }
-          // 这里不用注释
-          // if ($(_this.$el).find('[title]').length > 0) {
-          //   $(_this.$el).find('[title]').tooltip('destroy')
-          // }
-          // if ($('#paintWrap').find('[title]').length > 0) {
-          //   $('#paintWrap').find('[title]').tooltip('destroy')
-          // }
-          // _this.$nextTick(() => {
-          //   if ($('#home-html').length > 0) {
-          //     titleShowFn('bottom', $('#paintWrap'), '#paintWrap')
-          //   } else {
-          //     titleShowFn('bottom', $(_this.$el), _this.$el)
-          //   }
-          // })
-          // 这里不用注释
-          // clearTimeout(_this.intervalId)
-          // _this.intervalId = setTimeout(tableFn, _this.intervalTime)
           }, _this.intervalTime)
         }
       }
     }
-    // initMove () {
-    //   // 两个transition，vue动画实现的方式（可用于横向轮播,或者允许设置最后一页的数据不足时自动添加空数据）
-    //   if (this.intervalId) {
-    //     clearTimeout(this.intervalId)
-    //   }
-    //   if (this.item.chartData.rows.length > this.pageNum) {
-    //     let totalPage = Math.floor(this.item.chartData.rows.length / this.pageNum)
-    //     if (totalPage === this.item.chartData.rows.length / this.pageNum) {
-    //       totalPage--
-    //     }
-    //     let nowPage = 0
-    //     this.page1Data = this.item.chartData.rows.slice(0, this.pageNum)
-    //     this.page2Data = this.item.chartData.rows.slice(this.pageNum, this.pageNum * (nowPage + 2))
-    //     this.intervalId = setInterval(() => {
-    //       this.tableMove = !this.tableMove
-    //       if (this.tableMove) {
-    //         nowPage++
-    //         if (nowPage === totalPage) {
-    //           nowPage = 0
-    //         }
-    //         this.page1Data = this.item.chartData.rows.slice(this.pageNum * nowPage, this.pageNum * (nowPage + 1))
-    //         this.page2Data = this.item.chartData.rows.slice(this.pageNum * (nowPage + 1), this.pageNum * (nowPage + 2))
-    //       }
-    //     }, 3000)
-    //   }
-    // }
   },
   mounted: function () {
-    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
-      this.bus.$on('selectType', res => {
-        this.barParam = res
-      })
-      if (this.item.conditionType) {
-        this.clock = window.setInterval(() => {
-          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
-            clearInterval(this.clock)
-          }
-          this.requestInterface()
-        }, this.item.refrashTime || 30000)
-      }
+    if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+      this.tableData = this.item.chartData.dataArray[this.currentIndex]
     }
-    if (this.item.chartData && this.item.chartData.columns) {
-      this.item.chartData.columns.forEach((element, i) => {
+    if (this.tableData && this.tableData.columns) {
+      this.tableData.columns.forEach((element, i) => {
         if (this.widthArry[i]) {
 
         } else {
@@ -520,13 +414,8 @@ export default {
     } else {
       this.intervalTime = 4000
     }
-    // if (this.item.direction === 'left') {
-    //   this.initLeftMove()
-    // } else {
-    //   this.initTopMove()
-    // }
     this.initLeftMove()
-    if (this.item.chartData && this.item.chartData.rows && this.item.chartData.rows.length < 1) {
+    if (this.tableData && this.tableData.rows && this.tableData.rows.length < 1) {
       this.tableEmpty = true
     }
     if (this.item.moreUrlArry && this.item.moreUrlArry.length > 1 && this.item.intervieData > 0) {
@@ -555,7 +444,19 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped lang="scss">
+.checkBox{
+  display: flex;
+  .normalBtn{
+    padding: 20px;
+    background: url(./normal.png) no-repeat;
+    background-size: 100% 100% !important;
+    margin-right: 20px;
+  }
+  .normalBtn:last-child{
+    margin-right: 0px !important;
+  }
+}
 .home-table .table {
   background: transparent;
   position: relative;

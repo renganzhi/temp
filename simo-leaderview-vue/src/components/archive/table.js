@@ -1,11 +1,13 @@
 
 import NewTable from '@/components/EditComp/NewTable/config.js'
+import ConditionalTable from '@/components/EditComp/ConditionalTable/config.js'
 import NewMoveTable from '@/components/EditComp/NewMoveTable/config.js'
 import WuhouTable from '@/components/EditComp/WuhouTable/config.js'
 const table = {
   name: '表格',
   child: [
     NewTable.item,
+    ConditionalTable.item,
     NewMoveTable.item,
     WuhouTable.item
     // {
