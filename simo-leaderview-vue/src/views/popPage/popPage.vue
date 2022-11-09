@@ -2311,6 +2311,10 @@ export default {
 </script>
 <style scoped lang="scss">
 /*   drag-class */
+::v-deep .ivu-spin-fix{
+  height: 90%;
+  top: 10%;
+}
     .demo-spin-icon-load{
         animation: ani-demo-spin 1s linear infinite;
     }
