@@ -120,7 +120,7 @@ export default {
     },
     imgUrl: function () {
       let img = ''
-      if (this.item.chartData.value > 0) {
+      if (this.item.chartData.value >= 0) {
         img = require('./上涨.png')
       } else if (this.item.chartData.value < 0) {
         img = require('./下跌.png')
