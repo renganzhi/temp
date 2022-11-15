@@ -11,7 +11,7 @@ export default {
         height: this.item.height + 'px !important'
       }
       if (this.$route.name === 'edit' && !this.$parent.$parent.previewStatus) {
-        style.backgroundColor = this.item.chartData.linkURL ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)'
+        style.backgroundColor = this.item.chartData.linkURL ? 'rgba(255, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)'
       }
       return style
     }
@@ -19,7 +19,9 @@ export default {
   methods: {
     jump () {
       if (this.item.chartData.linkURL) {
-        window.open(this.item.chartData.linkURL)
+        if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
+          window.open(this.item.chartData.linkURL)
+        }
       }
     }
   }
