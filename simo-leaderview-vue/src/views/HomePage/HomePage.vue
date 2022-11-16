@@ -1132,6 +1132,7 @@ export default {
     closeVenationBox () {
       this.showVenationBox = false
       this.vboxData = {}
+      this.venationData.chartData = {}
     },
     hideImportModal () {
       this.showImport = false

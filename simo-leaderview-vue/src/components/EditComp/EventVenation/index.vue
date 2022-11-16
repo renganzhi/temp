@@ -14,10 +14,11 @@
           :style="contentBoxStyle"
           @click="showDetails(cont)"
         >
-          <p :style="contentTitleStyle">{{ cont['处置单位'] || cont.info_title }}</p>
+          <p :style="contentTitleStyle">{{ cont['处置单位'] || cont.info_title || cont['审批组织'] }}</p>
           <div :style="contentStyle">
-            <span>处置人：{{ cont['处置人'] || cont.info_source_name }}</span>
-            <span>{{ cont['操作时间'] || cont.info_time }}</span>
+            <span v-show="cont['处置人']">处置人：{{ cont['处置人'] || cont.info_source_name }}</span>
+            <span v-show="cont['审批人']">审批人：{{ cont['审批人']}}</span>
+            <span style="margin-left:10px">{{ cont['操作时间'] || cont['审批时间'] || cont.info_time }}</span>
           </div>
         </div>
       </TimelineItem>
