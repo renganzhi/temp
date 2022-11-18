@@ -434,6 +434,10 @@
                            style="right: 8px; margin-top: 5px;">{{yVali.errorMsg}}</label>
                   </div>
                 </div>
+                <div class="form-group" style="height: 30px;">
+                  <label>组合名称</label>
+                  <input type="text" v-model="testObj.comName">
+                </div>
               </div>
             </div>
           </div>
@@ -1824,7 +1828,7 @@
                   </div>
               </template> -->
 
-              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuHolunboTab','WuhoYXHL','CYZBTX','WuhoPointBox','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','ConditionalEline','ToggleButton','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','Indicator','JSMpeg','NewBorder','NewTable','ConditionalTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart','IframePop','WordClouds','OrderMenu','StreetMenu','CityEvent','EventVenation','SmallOrderMenu','NewDropMenu'].includes(selectedItem.chartType)">
+              <template v-if="['GradientPie','Sunrise','WoHoNumber','WuHolunboTab','WuhoYXHL','CYZBTX','WuhoPointBox','WuhoOpenBox','Newimage','Scatter','NewGroupLeftHistogram','NewGauge','NewBar','DownMenu','XiaLaShu','WuhoMaoBL','WuhouTable','WuhoIfream','NewRadar','polarBar','NewHistogram','DataFlow','BaiDuMap','NewPie','DoubleLinde','NewMarquee','ELine','ConditionalEline','ToggleButton','NewScatter','NewVMap','VmVareTopo','TDModel','NewNumber','Indicator','JSMpeg','NewBorder','NewTable','ConditionalTable','NewMoveTable','NewProgress','NewTime','NewGroupHistogram','NewDoubler','KLine','Dashboard','TDEarthLine','TDEarthBar','TreeMap','Ueditor','TDHistogram','NEWtextArea','BulletFrame', 'liquidfill', 'video', 'ppt', 'bubble','IntegratedHistogram','BiaxialBarChart','SwitchButton','IframePop','WordClouds','OrderMenu','StreetMenu','CityEvent','EventVenation','SmallOrderMenu','NewDropMenu'].includes(selectedItem.chartType)">
                 <el-collapse v-model="activeNames"
                              class="form-group m-gap cols2">
                   <el-collapse-item :title="item.name"
@@ -1857,6 +1861,16 @@
                           :key="item.id"
                           :value="item.id">{{item.name}}</option>
                 </select>
+              </div>
+              <div class="form-group cols2"
+                   v-show="['SwitchButton'].includes(selectedItem.chartType)">
+                <label>控制组件</label>
+                <Select multiple v-model="selectedItem.bindCom">
+                  <Option v-for="(item,index) in combinList"
+                          :key="index"
+                          v-show="item.comName"
+                          :value="index.toString()">{{'组合-' +item.comName}}</Option>
+                </Select>
               </div>
               <div v-show="['image','Newimage'].includes(selectedItem.chartType)">
                 <div class="form-group cols2"
@@ -1934,7 +1948,7 @@
                         @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;"
-                   v-show="!['TDModel','VmVareTopo','image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot'].includes(selectedItem.chartType)">
+                   v-show="!['TDModel','VmVareTopo','image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot','SwitchButton'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"

@@ -11,6 +11,7 @@ import usRules from './config/validate' // 表单验证规则
 
 import ViewUI from 'view-design'
 import 'view-design/dist/styles/iview.css'
+import 'animate.css'
 
 import '../static/css/theme.scss'
 import '../static/css/normal.scss'

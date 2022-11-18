@@ -4,6 +4,7 @@
   <!-- :isResizable="!chooseChild" -->
   <DragResize class="newDrag2 newDrag3"
               :isDraggable="editable"
+              :id ="'p_compose' + index"
               :isResizable="!chooseChild"
               :active="editable && list.slted"
               :isActive="editable && list.slted"
