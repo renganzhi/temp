@@ -1,5 +1,6 @@
 <template>
   <div class="newDrag compWrapBox"
+       :id="'p_viewCompose'+index"
        :key="list.id"
        :style="boxStyle">
     <LookItem v-for="(item,_index) in list.child"
