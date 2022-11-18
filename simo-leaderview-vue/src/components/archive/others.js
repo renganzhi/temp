@@ -1,4 +1,5 @@
 import hotspot from '@/components/EditComp/hotspot/config.js'
+import SwitchButton from '@/components/EditComp/SwitchButton/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
 import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
@@ -43,6 +44,7 @@ const others = {
     // },
     NewBorder.item,
     hotspot.item,
+    SwitchButton.item,
     ExternalJump.item,
     ToggleButton.item,
     IframePop.item,

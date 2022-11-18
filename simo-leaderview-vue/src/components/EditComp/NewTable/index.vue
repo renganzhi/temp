@@ -357,13 +357,13 @@ export default {
     }
   },
   mounted: function () {
-    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage') {
+    if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
       this.bus.$on('selectType', res => {
         this.barParam = res
       })
       if (this.item.conditionType) {
         this.clock = window.setInterval(() => {
-          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage') {
+          if (this.$route.name !== 'HomePage' && this.$route.name !== 'lookPage' && this.$route.name !== 'popPage') {
             clearInterval(this.clock)
           }
           this.requestInterface()

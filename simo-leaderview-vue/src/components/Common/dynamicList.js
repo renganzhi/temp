@@ -62,6 +62,7 @@ export default [
   'VmVareTopo',
   'bubble',
   'hotspot',
+  'SwitchButton',
   'ExternalJump',
   'ToggleButton',
   'IframePop',

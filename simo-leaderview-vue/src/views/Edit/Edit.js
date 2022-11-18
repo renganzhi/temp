@@ -74,6 +74,7 @@ let config = {
   IntegratedHistogram: require('@/components/EditComp/IntegratedHistogram/config.js'),
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
+  SwitchButton: require('@/components/EditComp/SwitchButton/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
   DoubleLinde: require('@/components/EditComp/DoubleLinde/config.js'),
@@ -4517,6 +4518,17 @@ export default {
       }
       this.selectedItem[position] = Number(this.selectedItem[position])
     },
+    testNameChange (name, value) {
+      this.selectedItem[name] = value
+      if (this.chooseCompIndexs.length === 1) {
+        this.combinList[this.chooseCompIndexs][name] = value
+      }
+      // this.combinList.forEach(elment => {
+      //   if (element.id === this.selectedItem.id) {
+      //     element[name] = value
+      //   }
+      // })
+    },
     changePaintStyle (scale, top, left) {
       this.paintObj.scale = Math.floor(100 / scale)
       let height = document.querySelector('.paint-bg').clientHeight
@@ -5234,6 +5246,9 @@ export default {
     },
     'testObj.y': function (newValue, oldValue) {
       this.testObjPosChange('y', newValue)
+    },
+    'testObj.comName': function (newValue, oldValue) {
+      this.testNameChange('comName', newValue)
     }
   },
   beforeMount: function () {
