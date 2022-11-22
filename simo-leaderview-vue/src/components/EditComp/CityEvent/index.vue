@@ -1,20 +1,94 @@
 <template>
     <div class="cityEvent" :style="boxStyle">
-        <div @click="showDetails(val)"  class="eventBox" v-for="(val, ind) in item.chartData.rows" :key="ind">
-            <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">{{val.title}}</div>
-            <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">{{val.date}}</div>
-            <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">{{val.content}}</div>
-        </div>
+      <div class="checkBox" :style="checkStyle" v-if="item.chartData.dataArray && item.chartData.dataArray.length > 1">
+            <div class="normalBtn" v-for="(v, i) in item.chartData.dataArray" :style="buttonStyle(i)" :key="i" @click="changeData(i)">
+              {{v.title}}
+            </div>
+       </div>
+      <el-carousel style="width:100%; height:100%" :interval="5000" indicator-position="none"  direction="vertical" arrow="never">
+        <el-carousel-item v-for="(value, index) in pageLength" :key="index">
+          <div @click="showDetails(val)"  class="eventBox" v-for="(val, ind) in dataList(value)" :key="ind">
+              <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
+              <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
+              <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
     </div>
 </template>
 <script>
+import { gbs } from '@/config/settings'
 export default {
   props: ['item'],
+  data: function () {
+    return {
+      pageIndex: 0,
+      pageSize: 3,
+      currentIndex: 0,
+      eventData: {
+        rows: [],
+        columns: []
+      }
+    }
+  },
   computed: {
     boxStyle: function () {
       return {
         width: this.item.width + 'px !important',
         height: this.item.height + 'px !important'
+      }
+    },
+    buttonStyle: function () {
+      return (index) => {
+        if (this.currentIndex === index) {
+          return {
+            backgroundImage: this.item.checkedButton
+              ? 'url(' + gbs.host + this.item.checkedButton + ')'
+              : 'url(' + require('./checked.png') + ')',
+            padding: this.item.buttonPadding + 'px !important',
+            margin: this.item.buttonMargin + 'px'
+          }
+        } else {
+          return {
+            backgroundImage: this.item.normalButton
+              ? 'url(' + gbs.host + this.item.normalButton + ')'
+              : 'url(' + require('./normal.png') + ')',
+            padding: this.item.buttonPadding + 'px !important',
+            margin: this.item.buttonMargin + 'px'
+          }
+        }
+      }
+    },
+    checkStyle: function () {
+      return {
+        left: this.item.paddingLeft + 'px',
+        top: this.item.paddingTop + 'px',
+        fontSize: this.item.boxFontSize + 'px',
+        flexDirection: this.item.boxDirection ? 'column' : 'row'
+      }
+    },
+    pageLength: function () {
+      return Math.ceil(Number(this.eventData.rows.length) / Number(this.pageSize))
+    },
+    dataList: function () {
+      return (value) => {
+        return this.eventData.rows.slice((value - 1) * this.pageSize, value * this.pageSize)
+      }
+    }
+  },
+  watch: {
+    'item.chartData': {
+      handler (newV, oldV) {
+        if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+          this.eventData = this.item.chartData.dataArray[0]
+          this.currentIndex = 0
+        }
+      },
+      deep: true
+    },
+    'currentIndex': function (newV, oldV) {
+      if (newV !== oldV) {
+        this.eventData = this.item.chartData.dataArray[this.currentIndex]
       }
     }
   },
@@ -37,9 +111,17 @@ export default {
         this.$parent.$parent.ShowVenationBox({
           title: '事件详情',
           data: d,
-          url: this.item.chartData.url
+          url: this.eventData.url
         })
       }
+    },
+    changeData (index) {
+      this.currentIndex = index
+    }
+  },
+  mounted () {
+    if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+      this.eventData = this.item.chartData.dataArray[this.currentIndex]
     }
   }
 }
@@ -50,9 +132,22 @@ export default {
     // justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    .checkBox{
+      display: flex;
+      position: absolute;
+      .normalBtn{
+        padding: 20px;
+        background: url(./normal.png) no-repeat;
+        background-size: 100% 100% !important;
+        margin-right: 20px;
+      }
+      .normalBtn:last-child{
+        margin-right: 0px !important;
+      }
+    }
     .eventBox{
         width: 100%;
-        height: 33%;
+        height: 32%;
         padding: 10px 20px;
         overflow: hidden;
         margin-bottom: 10px;
@@ -79,5 +174,12 @@ export default {
             color: #6689f8;
         }
     }
+}
+</style>
+<style lang="scss">
+.cityEvent{
+  .el-carousel__container{
+    height: 100% !important;
+  }
 }
 </style>

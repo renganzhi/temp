@@ -41,7 +41,7 @@ export default {
           if (this.item.showCom === value) {
             return h('div', {
               style: {
-                background: this.item.focusColor,
+                background: this.item.checkedBack ? 'url(' + gbs.host + this.item.checkedBack + ') 0% 0% / 100% 100% no-repeat' : this.item.focusColor,
                 width: '100%',
                 height: '100%',
                 marginRight: this.item.marginRight + 'px !important',
@@ -52,7 +52,7 @@ export default {
           } else {
             return h('div', {
               style: {
-                background: this.item.normalColor,
+                background: this.item.normalBack ? 'url(' + gbs.host + this.item.normalBack + ') 0% 0% / 100% 100% no-repeat' : this.item.normalColor,
                 width: '100%',
                 height: '100%',
                 marginRight: this.item.marginRight + 'px !important',
