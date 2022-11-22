@@ -12,11 +12,11 @@
                   <span>{{index}}</span>
                 </div>
                 <div>
-                  <span style="color:#318ec7">{{selectLength(element)}}/{{Object.keys(element).length}}</span>
+                  <!-- <span style="color:#318ec7">{{selectLength(element)}}/{{Object.keys(element).length}}</span> -->
                   <img src="./more.png" style="width:12px" alt="">
                 </div>
               </div>
-              <div class="closeBtn" @click="showMenu = false"><img style="width:70px;height:16px" src="./收起.png" alt=""></div>
+              <div class="closeBtn" @click="showMenu = false"><img style="width:70px;height:16px" class="Stow" src="./收起.png" alt=""></div>
           </div>
           <div class="mainMenu" style="overflow: scroll;" v-show="selectMainMenu && showMenu">
               <div class="mainBox" :style="ifCheck(i, 2)" @click="showThreeMenu(i)" v-for="(el, i) in menuData[selectMainMenu]" :key="i">
@@ -587,9 +587,12 @@ export default {
       }
     .closeBtn{
       position:absolute;
-      bottom: 0;
+      top: 0;
       left: 50%;
       transform: translate(-50%, 0);
+      .Stow{
+        transform: rotateX(180deg);
+      }
     }
   }
   .subMenu{

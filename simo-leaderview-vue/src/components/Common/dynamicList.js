@@ -63,6 +63,7 @@ export default [
   'bubble',
   'hotspot',
   'SwitchButton',
+  'ShrinkBox',
   'ExternalJump',
   'ToggleButton',
   'IframePop',

@@ -298,6 +298,12 @@ export default {
             color: this.item.DanweiColor || '#828bac',
             fontSize: this.item.DanweiSize || 16
           },
+          min: function (value) {
+            return value.min
+          },
+          max: function (value) {
+            return value.max
+          },
           minInterval: this.item.minInterval,
           axisTick: {
             show: false,
