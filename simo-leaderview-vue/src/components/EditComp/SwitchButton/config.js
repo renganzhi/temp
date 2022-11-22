@@ -1,7 +1,7 @@
 
 export default {
   'item': {
-    text: '切换按钮',
+    text: '切换组合',
     imgClass: 'icon-hotspot',
     chartType: 'SwitchButton',
     width: 200,
@@ -20,6 +20,10 @@ export default {
     ifCarousel: false,
     speed: 5000,
     showTabs: false,
+    normalBack: '',
+    normalBackName: '',
+    checkedBack: '',
+    checkedBackName: '',
     normalColor: 'rgba(255,0,0,0.4)',
     focusColor: 'rgba(0,255,0,0.4)',
     focusBorderColor: '#00ff00',
@@ -123,6 +127,16 @@ export default {
             'name': '按钮间隔',
             'key': 'marginRight',
             'tag': 'input'
+          }, {
+            'name': '正常按钮背景',
+            'key': 'normalBack',
+            'tag': 'ImgFile',
+            'keyName': 'normalBackName'
+          }, {
+            'name': '高亮按钮背景',
+            'key': 'checkedBack',
+            'tag': 'ImgFile',
+            'keyName': 'checkedBackName'
           }
         ]
       }

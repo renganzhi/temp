@@ -75,6 +75,7 @@ let config = {
   TDEarthBar: require('@/components/EditComp/TDEarthBar/config.js'),
   NEWtextArea: require('@/components/EditComp/NEWtextArea/config.js'),
   SwitchButton: require('@/components/EditComp/SwitchButton/config.js'),
+  ShrinkBox: require('@/components/EditComp/ShrinkBox/config.js'),
   NewMarquee: require('@/components/EditComp/NewMarquee/config.js'),
   NewDoubler: require('@/components/EditComp/NewDoubler/config.js'),
   DoubleLinde: require('@/components/EditComp/DoubleLinde/config.js'),
