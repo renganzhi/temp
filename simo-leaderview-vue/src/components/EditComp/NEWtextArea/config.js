@@ -21,6 +21,7 @@ export default{
     'fontSpaceing': 5,
     conditionType: '', // 接口选择
     refrashTime: 30000,
+    placeHolder: '',
     'linkId': '',
     'chartData': {}
   },
@@ -49,6 +50,12 @@ export default{
             'name': '接口刷新间隔',
             'key': 'refrashTime',
             'tag': 'input'
+          },
+          {
+            'name': '占位内容',
+            'key': 'placeHolder',
+            'tag': 'input',
+            'type': 'text'
           }
         ]
       },

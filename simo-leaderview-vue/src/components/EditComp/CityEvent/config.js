@@ -22,6 +22,8 @@ export default{
     normalButtonName: '',
     checkedButton: '',
     checkedButtonName: '',
+    ifLoop: true,
+    loopSpeed: 3000,
     'chartData': {
       'dataArray': [
         {
@@ -89,6 +91,32 @@ export default{
   },
   'styles': {
     'base': [
+      {
+        'name': '轮播调整',
+        'tag': 'Hint',
+        'childoption': [
+          // {
+          //   'name': '是否轮播',
+          //   'key': 'ifLoop',
+          //   'tag': 'select',
+          //   'options': [
+          //     {
+          //       'name': '是',
+          //       'value': true
+          //     },
+          //     {
+          //       'name': '否',
+          //       'value': false
+          //     }
+          //   ]
+          // },
+          {
+            'name': '轮播速度',
+            'key': 'loopSpeed',
+            'tag': 'input'
+          }
+        ]
+      },
       {
         'name': '样式调整',
         'tag': 'Hint',

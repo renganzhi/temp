@@ -5,21 +5,31 @@
               {{v.title}}
             </div>
        </div>
-      <el-carousel style="width:100%; height:100%" :interval="5000" indicator-position="none"  direction="vertical" arrow="never">
-        <el-carousel-item v-for="(value, index) in pageLength" :key="index">
-          <div @click="showDetails(val)"  class="eventBox" v-for="(val, ind) in dataList(value)" :key="ind">
-              <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
-              <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
-              <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
+       <vue-seamless-scroll
+          :data="eventData.rows"
+          :class-option="classOption"
+          class="warp"
+        >
+          <ul class="item">
+            <li :style="liStyle" v-for="(val, ind) in eventData.rows" :key="ind">
+              <div @click="showDetails(val)"  class="eventBox" >
+                  <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
+                  <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
+                  <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
+              </div>
+            </li>
+          </ul>
+        </vue-seamless-scroll>
     </div>
 </template>
 <script>
 import { gbs } from '@/config/settings'
+import vueSeamlessScroll from 'vue-seamless-scroll'
 export default {
   props: ['item'],
+  components: {
+    vueSeamlessScroll
+  },
   data: function () {
     return {
       pageIndex: 0,
@@ -36,6 +46,17 @@ export default {
       return {
         width: this.item.width + 'px !important',
         height: this.item.height + 'px !important'
+      }
+    },
+    classOption: function () {
+      return {
+        singleHeight: (this.item.height - 20) / 3 + 10,
+        waitTime: this.item.loopSpeed
+      }
+    },
+    liStyle: function () {
+      return {
+        height: (this.item.height - 20) / 3 + 'px'
       }
     },
     buttonStyle: function () {
@@ -132,6 +153,21 @@ export default {
     // justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    .warp{
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      ul{
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        li{
+          margin-bottom: 10px;
+          background: #122f61;
+          padding: 10px;
+        }
+      }
+    }
     .checkBox{
       display: flex;
       position: absolute;
@@ -147,10 +183,10 @@ export default {
     }
     .eventBox{
         width: 100%;
-        height: 32%;
-        padding: 10px 20px;
+        height: 100%;
+        padding: 10px;
         overflow: hidden;
-        margin-bottom: 10px;
+        // margin-bottom: 10px;
         background: #122f61;
         font-weight: bold;
         overflow-y: scroll;
@@ -174,12 +210,5 @@ export default {
             color: #6689f8;
         }
     }
-}
-</style>
-<style lang="scss">
-.cityEvent{
-  .el-carousel__container{
-    height: 100% !important;
-  }
 }
 </style>
