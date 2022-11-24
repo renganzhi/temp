@@ -159,6 +159,9 @@ export default {
     }
   },
   mounted () {
+    if (this.item.placeHolder) {
+      this.item.ctName = this.item.placeHolder
+    }
     if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
       this.bus.$on('selectType', res => {
         this.barParam = res

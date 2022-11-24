@@ -1,0 +1,614 @@
+<template>
+  <div class="TimePickerEline">
+    <div ref="TimePickerEline" v-show="showLine" :style="boxStyle"></div>
+    <div
+      class="v-charts-data-empty"
+      v-show="!showLine"
+      style="width: 100%; height: 100%; text-align: center; font-size: 12px"
+    >
+      <div>
+        <i class="icon-n-nodata" style="font-size: 108px"></i><br />
+        <p>抱歉，没有数据可供展示...</p>
+      </div>
+    </div>
+    <div class="timepicker" :style="pickerStyle">
+      <DatePicker v-model="time_frame" type="daterange" split-panels placeholder="Select date" style="width: 200px"></DatePicker>
+    </div>
+  </div>
+</template>
+<script>
+import echarts from 'echarts'
+import { gbs } from '@/config/settings'
+export default {
+  name: 'TimePickerEline',
+  props: ['item'],
+  data () {
+    let today = new Date()
+    let lastDay = new Date(today - 1000 * 60 * 60 * 24 * 30)
+    return {
+      mychart: null,
+      defaultColor: [
+        '#2d98f1',
+        '#32c5e9',
+        '#67e0e3',
+        '#9fe6b8',
+        '#ffdb5c'
+      ],
+      time_frame: [lastDay, today],
+      showLine: true,
+      oldOption: '',
+      subsectionType: '',
+      Linesubsection: '',
+      oldformatterType: '',
+      oldchartData: ''
+    }
+  },
+  computed: {
+    boxStyle: function () {
+      return {
+        width: this.item.width + 'px',
+        height: this.item.height + 'px'
+      }
+    },
+    pickerStyle: function () {
+      return {
+        top: this.item.pickTop + 'px',
+        left: this.item.pickLeft + 'px'
+      }
+    },
+    maxData: function () {
+      return this.elineData.max || 10000
+    },
+    minData: function () {
+      return this.elineData.min || 1
+    },
+    maxIndex: function () {
+      return this.elineData.maxIndex || 10000
+    },
+    minIndex: function () {
+      return this.elineData.minIndex || 1
+    },
+    elineData: function () {
+      let data = JSON.parse(JSON.stringify(this.item.chartData))
+      let newRows = []
+      let beginTime = 0
+      let endTime = 0
+      if (this.time_frame[0]) {
+        if (typeof this.time_frame[0] === 'string') {
+          beginTime = Date.parse(this.time_frame[0])
+        } else {
+          beginTime = this.time_frame[0].getTime()
+        }
+      }
+      if (this.time_frame[1]) {
+        if (typeof this.time_frame[1] === 'string') {
+          endTime = Date.parse(this.time_frame[1])
+        } else {
+          endTime = this.time_frame[1].getTime()
+        }
+      }
+      this.item.chartData.rows.forEach(element => {
+        if (element['时间']) {
+          if (Date.parse(element['时间']) >= beginTime && Date.parse(element['时间']) <= endTime) {
+            newRows.push(element)
+          }
+        }
+      })
+      data.rows = newRows
+      return data
+    }
+  },
+  watch: {
+    'item.width': function () {
+      this.$nextTick(() => {
+        this.mychart.resize()
+      })
+    },
+    elineData: function () {
+      console.log('elineData', this.elineData)
+      this.drawFlow()
+    },
+    'item.height': function () {
+      this.$nextTick(() => {
+        this.mychart.resize()
+      })
+    },
+    'item': {
+      handler (newVal, oldVal) {
+        if (this.elineData.rows && this.elineData.columns) {
+          if (this.elineData.rows.length === 0 || this.elineData.columns.length === 0) {
+            this.showLine = false
+          } else {
+            this.showLine = true
+            this.drawFlow()
+          }
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    drawFlow () {
+      var reg = /^\/api/
+      var baseUrl = ''
+      if (!reg.test(this.item.symbolSrc)) {
+        baseUrl = gbs.host
+      }
+      this.mychart = echarts.init(this.$refs.TimePickerEline)
+      let myData = this.elineData
+      var myseries = []
+      var myXAxisData = []
+      var mySeriesData = []
+      myData.rows.forEach(element => {
+        myData.columns.forEach((e, d) => {
+          if (d === 0) {
+            myXAxisData.push(element[e])
+          } else {
+            if (mySeriesData[d]) {
+              mySeriesData[d].push(element[e])
+            } else {
+              mySeriesData[d] = [element[e]]
+            }
+          }
+        })
+      })
+      // let errorArry = []
+      // mySeriesData.forEach(data => {
+      //   let oneArry = []
+      //   data.forEach((d, index) => {
+      //     if (d >= this.minData && d <= this.maxData) {
+      //       oneArry.push(index)
+      //     }
+      //   })
+      //   errorArry.push(oneArry)
+      // })
+      mySeriesData.forEach((data, index) => {
+        if (data) {
+          myseries.push({
+            type: 'line',
+            name: myData.columns[index],
+            smooth: this.item.smooth ? this.item.smooth === 'true' : true, // 折线/曲线
+            data: data,
+            symbol: this.item.symbolType !== 'pic' ? this.item.symbolType : this.item.symbolSrc ? `image://${baseUrl}${this.item.symbolSrc}` : 'circle',
+            showAllSymbol: false,
+            symbolSize: this.item.symbolSize,
+            areaStyle: {
+              color: this.item.ifEidetColor2 ? this.item.ifAreaGradual === 'true' ? this.item.AreaDScatterColor[index - 1] ? {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: this.item.AreaDScatterColor[index - 1][1] || '' // 0% 处的颜色
+                }, {
+                  offset: 1, color: this.item.AreaDScatterColor[index - 1][0] || '' // 100% 处的颜色
+                }],
+                global: false // 缺省为 false
+              } : '' : this.item.AreaScatterColor[index - 1] || '' : this.defaultColor[index - 1] || '',
+              opacity: this.item.lineArea ? 1 : 0
+            },
+            itemStyle: {
+              normal: {
+                lineStyle: {
+                  color: this.item.ifEidetColor ? this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index - 1] ? {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                      offset: 0, color: this.item.DScatterColor[index - 1][1] || '' // 0% 处的颜色
+                    }, {
+                      offset: 1, color: this.item.DScatterColor[index - 1][0] || '' // 100% 处的颜色
+                    }],
+                    global: false // 缺省为 false
+                  } : '' : this.item.DScatterColor[index - 1] ? this.item.DScatterColor[index - 1][1] : '' || '' : this.item.ScatterColor[index - 1] || '' : this.defaultColor[index - 1] || '',
+                  width: this.item.lineWidth, // 设置线条粗细
+                  type: this.item.LineType || 'solid'
+                }
+              }
+            }
+          })
+        }
+      })
+      let newseries = []
+      myseries.forEach(element => {
+        newseries.push(element)
+      })
+      let optioncolor = []
+      if (this.item.ifEidetColor) {
+        if (this.item.ifGradual === 'true') {
+          this.item.DScatterColor.forEach(element => {
+            optioncolor.push(element[1])
+          })
+        } else {
+          optioncolor = this.item.ScatterColor
+        }
+      } else {
+        optioncolor = this.defaultColor
+      }
+      let myoption = {
+        xAxis: {
+          type: 'category',
+          boundaryGap: this.item.boundaryGap,
+          name: this.elineData.unitX,
+          nameTextStyle: {
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
+          },
+          animation: true,
+          animationDuration: 500,
+          data: myXAxisData,
+          position: 'bottom',
+          axisTick: {
+            show: true,
+            alignWithLabel: true, // 刻度线与标签对齐
+            lineStyle: {
+              color: '#333849', // 坐标轴刻度
+              width: 1
+            }
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.item.splitColor || '#333849', // 坐标轴颜色
+              width: this.item.splitSize || 1
+            }
+          },
+          splitLine: {
+            show: false
+          },
+          axisLabel: {
+            rotate: this.item.rotate || 0,
+            textStyle: {
+              color: this.item.legendColor || '#828bac',
+              fontSize: this.item.axisLabelSize || '14'
+            },
+            formatter: (params, index) => {
+              var rows = this.elineData.rows
+              let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+              let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
+              if (this.item.formatterType === '0') {
+                return params.length > strLen ? params.substr(0, strLen) + '...' : params
+              } else {
+                return params
+              }
+            },
+            interval: this.item.interval === 0 ? 0 : 'auto'
+          }
+        },
+        color: optioncolor,
+        grid: {
+          left: this.item.gridLeft + '%',
+          right: this.item.gridRight + '%',
+          top: this.item.gridTop + '%',
+          bottom: this.item.gridBotton + '%',
+          containLabel: true
+        },
+        label: {
+          show: this.item.showPoint,
+          fontSize: this.item.PointSize || '14',
+          color: '#828bac' // 标点的文字颜色
+        },
+        legend: {
+          x: 'center',
+          y: this.item.legendY + '%',
+          show: this.item.ctLegendShow,
+          textStyle: {
+            fontSize: this.item.ctLegendSize,
+            color: this.item.ctLegendColor
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          show: this.item.tooltipShow,
+          backgroundColor: this.item.tooltipBackColor,
+          textStyle: {
+            color: this.item.tooltipTextColor,
+            fontSize: this.item.tooltipfontSize
+          },
+          formatter: (params, ticket, callback) => {
+            let nameArr = []
+            let time = params[0].axisValue
+            let showHtm = time + '<br>'
+            params.forEach((element, i) => {
+              let name = element.seriesName
+              if (nameArr.indexOf(name) === -1) {
+                nameArr.push(name)
+                let value = element.value
+                if (typeof (value * 1) !== 'number') {
+                  value = '--'
+                }
+                showHtm += name + '：' + value + (this.elineData.unit || '') + '<br>'
+              }
+            })
+            return showHtm
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: this.elineData.unit,
+          nameTextStyle: {
+            color: this.item.DanweiColor || '#828bac',
+            fontSize: this.item.DanweiSize || 16
+          },
+          min: function (value) {
+            return value.min
+          },
+          max: function (value) {
+            return value.max
+          },
+          minInterval: this.item.minInterval,
+          axisTick: {
+            show: false,
+            lineStyle: {
+              color: '#333849', // 坐标轴刻度
+              width: 1
+            }
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.item.splitColor || '#333849', // 坐标轴颜色
+              width: this.item.splitSize || 1
+            }
+          },
+          splitLine: {
+            show: this.item.splitShow,
+            lineStyle: {
+              color: this.item.splitColor || '#333849', // 修改网格线颜色
+              width: this.item.splitSize || 1
+            }
+          },
+          axisLabel: {
+            interval: this.item.interval === 0 ? 0 : 'auto',
+            textStyle: {
+              color: this.item.legendColor || '#828bac',
+              fontSize: this.item.axisLabelSize || '14'
+            },
+            formatter: function (value) {
+              if (value >= 1000) {
+                return (value / 1000 + 'k')
+              } else {
+                return value
+              }
+            }
+          }
+        },
+        series: newseries
+      }
+      if (this.item.Linesubsection && this.item.subsectionType) {
+        // let myvisualMap = []
+        // errorArry.forEach((d, index) => {
+        //   let pices = []
+        //   d.forEach(element => {
+        //     pices.push({gte: element, lte: element * 1 + 1, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red'})
+        //   })
+        //   myvisualMap.push({
+        //     show: false,
+        //     dimension: 0,
+        //     seriesIndex: index,
+        //     pieces: pices,
+        //     outOfRange: {
+        //       color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || '#009bff' : this.item.ScatterColor[1] || '#009bff'
+        //     }
+        //   })
+        // })
+        let myvisualMap = {
+          show: false,
+          dimension: 0,
+          pieces: [
+            { lte: this.minIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red' },
+            { gte: this.minIndex, lte: this.maxIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || 'red' : this.item.ScatterColor[1] || 'red' },
+            { gte: this.maxIndex, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[2][0] || 'red' : this.item.ScatterColor[2] || 'red' }
+          ]
+        }
+        myoption.visualMap = myvisualMap
+        myoption.series.forEach((element, index) => {
+          element.itemStyle.normal.lineStyle = {
+            width: this.item.lineWidth, // 设置线条粗细
+            type: this.item.LineType || 'solid'
+          }
+          if (this.item.ifGradual === 'true' && this.item.lineArea) {
+            element.itemStyle.normal.lineStyle.color = this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index] ? {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: this.item.DScatterColor[index][1] || '' // 0% 处的颜色
+              }, {
+                offset: 1, color: this.item.DScatterColor[index][0] || '' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            } : '' : this.item.DScatterColor[index] ? this.item.DScatterColor[index][1] : '' || '' : this.item.ScatterColor[index] || ''
+          }
+          element.itemStyle.normal.areaStyle = {
+            opacity: this.item.lineArea ? 1 : 0
+          }
+        })
+      } else if (this.item.Linesubsection && !this.item.subsectionType) {
+        let visualMap = {
+          show: false,
+          dimension: 1,
+          pieces: [
+            { lte: this.minData, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[0][0] || 'red' : this.item.ScatterColor[0] || 'red' },
+            { gte: this.minData, lte: this.maxData, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[1][0] || 'red' : this.item.ScatterColor[1] || 'red' },
+            { gte: this.maxData, color: this.item.ifGradual === 'true' ? this.item.DScatterColor[2][0] || 'red' : this.item.ScatterColor[2] || 'red' }
+          ]
+        }
+        myoption.visualMap = visualMap
+        myoption.series.forEach((element, index) => {
+          element.itemStyle.normal.lineStyle = {
+            width: this.item.lineWidth, // 设置线条粗细
+            type: this.item.LineType || 'solid'
+          }
+          if (this.item.ifGradual === 'true' && this.item.lineArea) {
+            element.itemStyle.normal.lineStyle.color = this.item.ifGradual === 'true' ? this.item.areaLineType ? this.item.DScatterColor[index] ? {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: this.item.DScatterColor[index][1] || '' // 0% 处的颜色
+              }, {
+                offset: 1, color: this.item.DScatterColor[index][0] || '' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            } : '' : this.item.DScatterColor[index] ? this.item.DScatterColor[index][1] : '' || '' : this.item.ScatterColor[index] || ''
+          }
+          element.itemStyle.normal.areaStyle = {
+            opacity: this.item.lineArea ? 1 : 0
+          }
+        })
+      } else {
+        delete myoption.visualMap
+      }
+      var rows = this.elineData.rows
+      let barW = Math.floor((this.item.width - 60) * 0.7 / rows.length)
+      let strLen = Math.round(barW / (this.item.axisLabelSize * 2))
+      if (this.item.formatterType === '0' && this.oldformatterType !== this.item.formatterType) {
+        myoption.xAxis.axisLabel.formatter = function (params, index) {
+          return params.length > strLen ? params.substr(0, strLen) + '...' : params
+        }
+        this.oldformatterType = this.item.formatterType
+        this.mychart.clear()
+        this.mychart.setOption(myoption)
+      } else if (this.oldformatterType !== this.item.formatterType) {
+        myoption.xAxis.axisLabel.formatter = function (params, index) {
+          return params
+        }
+        this.oldformatterType = this.item.formatterType
+        this.mychart.clear()
+        this.mychart.setOption(myoption)
+      }
+      if (this.oldOption !== JSON.stringify(myoption)) {
+        this.oldOption = JSON.stringify(myoption)
+        if (this.subsectionType === this.item.subsectionType) {
+
+        } else {
+          this.subsectionType = this.item.subsectionType
+          this.mychart.clear()
+        }
+        if (this.Linesubsection === this.item.Linesubsection) {
+
+        } else {
+          this.Linesubsection = this.item.Linesubsection
+          this.mychart.clear()
+        }
+        if (this.oldchartData === JSON.stringify(this.elineData)) {
+
+        } else {
+          this.oldchartData = JSON.stringify(this.elineData)
+          this.mychart.clear()
+        }
+        this.mychart.setOption(myoption)
+      } else {
+
+      }
+    }
+  },
+  mounted () {
+    if (this.elineData.rows.length === 0 || this.elineData.columns.length === 0) {
+      this.showLine = false
+    } else {
+      this.showLine = true
+      this.drawFlow()
+      var _this = this
+      _this.mychart.getZr().on('click', function (params) {
+        const pointInPixel = [params.offsetX, params.offsetY]
+        if (_this.mychart.containPixel('grid', pointInPixel)) { // 第一步
+          let xIndex = _this.mychart.convertFromPixel({seriesIndex: 0}, [params.offsetX, params.offsetY])[0] // 第二部
+          let dataOut = []
+          dataOut = _this.elineData.rows[xIndex]
+          let boxData = {
+            title: '数据详情',
+            data: dataOut
+          }
+          // _this.$parent.$parent.ShowTanKuangBox(boxData)
+        }
+      })
+    }
+  },
+  beforeDestroy () {
+    if (this.mychart) {
+      this.mychart.dispose()
+    }
+    this.mychart = null
+  }
+
+}
+</script>
+<style scoped lang="scss">
+.timepicker{
+  position: absolute;
+  top:0;
+  left: 0;
+}
+</style>
+<style lang="scss">
+.timepicker{
+  .ivu-date-picker-transfer {
+    max-height: unset !important;
+  }
+  .ivu-date-picker-rel{
+    width: 365px !important;
+  }
+  .ivu-date-picker{
+      .ivu-select-dropdown{
+        max-height: unset !important;
+        top: 50px !important;
+        font-size: 22px !important;
+        .ivu-picker-panel-body-date{
+          width: 540px !important;
+        }
+        .ivu-date-picker-cells{
+          padding: 10px !important;
+          width: 250px !important;
+        }
+        .ivu-date-picker-header{
+          height: 40px !important;
+          line-height: 43px !important;
+          .ivu-picker-panel-icon-btn{
+            color: #000 !important;
+            font-size: 25px !important;
+          }
+        }
+        .ivu-date-picker-cells-header{
+          span{
+            width: 28px !important;
+          }
+        }
+        .ivu-date-picker-cells-cell{
+          width: 31px !important;
+          em{
+            width: 100% !important;
+          }
+        }
+      }
+  }
+  .ivu-input-wrapper{
+    .ivu-icon-ios-calendar-outline{
+      line-height: 50px !important;
+      color: #fff !important;
+      font-size: 22px !important;
+
+    }
+    .ivu-icon-ios-close-circle{
+      line-height: 50px !important;
+      color: #fff !important;
+      font-size: 22px !important;
+    }
+    .ivu-input{
+      width: 365px !important;
+      height: 50px !important;
+      color: #fff !important;
+      font-size: 25px !important;
+      border: 1px solid rgb(247, 234, 234) !important;
+    }
+  }
+}
+</style>
