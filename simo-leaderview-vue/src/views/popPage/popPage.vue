@@ -2229,7 +2229,7 @@ export default {
       this.setScale()
       window.setTimeout(() => {
         this.refresh() // 整页刷新
-      }, 3000)
+      }, 2000)
       // this.initRefreshTimer() 取消整页刷新
     }
     // combinList: function () {

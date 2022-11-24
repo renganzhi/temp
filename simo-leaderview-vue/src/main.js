@@ -22,11 +22,14 @@ import './plugins/axios-init'
 import './plugins/element'
 // import VCharts from 'v-charts'
 import '#/font/asn/icon.css'
+import 'swiper/swiper-bundle.min.css'
 import { gbs } from '@/config/settings'
 import { VTooltip } from 'v-tooltip'
 import App from './App.vue'
 import router from './router'
 import store from './vuex/store'
+import scroll from 'vue-seamless-scroll'
+Vue.use(scroll)
 // Vue.use(VueAxios, axios)
 // Vue.use(VCharts)
 // Vue.use(ElementUI)

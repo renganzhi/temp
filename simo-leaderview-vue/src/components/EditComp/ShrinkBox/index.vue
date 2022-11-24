@@ -14,7 +14,7 @@ export default {
     return {
       clock: '',
       baseUrl: '',
-      ifShow: true
+      ifShow: false
     }
   },
   computed: {
@@ -81,8 +81,14 @@ export default {
     }
   },
   beforeDestroy () {
-    document.getElementById('p_compose' + this.item.bindCom[0]).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-    document.getElementById('p_compose' + this.item.bindCom[0]).style.display = 'block'
+    if (document.getElementById('p_compose' + this.item.bindCom[0])) {
+      document.getElementById('p_compose' + this.item.bindCom[0]).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+      document.getElementById('p_compose' + this.item.bindCom[0]).style.display = 'block'
+    }
+    if (document.getElementById('p_viewCompose' + this.item.bindCom[0])) {
+      document.getElementById('p_viewCompose' + this.item.bindCom[0]).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+      document.getElementById('p_viewCompose' + this.item.bindCom[0]).style.display = 'block'
+    }
   }
 }
 </script>

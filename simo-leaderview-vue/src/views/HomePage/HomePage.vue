@@ -2229,9 +2229,14 @@ export default {
       }
       // this.refreshFn(newV)
       this.setScale()
-      window.setTimeout(() => {
+      console.log('nowPage', newV)
+      if (newV.length > 200) {
+        window.setTimeout(() => {
+          this.refresh() // 整页刷新
+        }, 8000)
+      } else {
         this.refresh() // 整页刷新
-      }, 8000)
+      }
       // this.initRefreshTimer() 取消整页刷新
     }
     // combinList: function () {
