@@ -151,7 +151,7 @@
                       <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
                     </div>
                     <template v-if="venationData.chartData.data&&venationData.chartData.data.length">
-                      <EventVenation :item="venationData"></EventVenation>
+                      <EventVenation :style="{left:pageName.indexOf('32:9')>=0?'168px': '356px'}" :item="venationData"></EventVenation>
                     </template>
                   </div>
                   <div class="NoData" v-else-if="vboxData.data.length === 0">
@@ -479,26 +479,8 @@ export default {
       showModelBox: false,
       showVenationBox: false,
       vboxData: {},
-      venationData: {
-        'text': '事件脉络',
-        'imgClass': 'icon-n-text',
-        'chartType': 'EventVenation',
-        'width': 800,
-        'height': 400,
-        'titleFontSize': 24,
-        'titleBottm': 10,
-        'iconColor': '#7d7df4',
-        'titleColor': '#7d7df4',
-        'contBorderColor': 'gray',
-        'contPadding': 6,
-        'contBorderRdius': 5,
-        'contTitleSize': 20,
-        'contTitleColor': 'white',
-        'contColor': 'white',
-        'contSize': 20,
-        'chartData': {
-          'data': []
-        }
+      venationChartData: {
+        data: []
       },
       showTableBox: false,
       ifLoad: false,
@@ -616,6 +598,29 @@ export default {
         //   this.IsCityType = false
         // }
         return name
+      }
+    },
+    venationData () {
+      return {
+        'text': '事件脉络',
+        'imgClass': 'icon-n-text',
+        'chartType': 'EventVenation',
+        'width': this.pageName.indexOf('32:9') >= 0 ? 790 : 1565,
+        'height': 400,
+        'titleFontSize': this.pageName.indexOf('32:9') >= 0 ? 24 : 42,
+        'titleBottm': 10,
+        'iconColor': '#86e2f7',
+        'titleColor': '#86e2f7',
+        'contBorderColor': '#f1e9c2',
+        'contPadding': 15,
+        'contBorderRdius': 5,
+        'contTitleSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
+        'contTitleColor': 'white',
+        'contColor': '#cef1ff',
+        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -175 : -346,
+        'dateTop': 0,
+        'contSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
+        'chartData': this.venationChartData
       }
     },
     iframeStyle () {
@@ -1120,7 +1125,7 @@ export default {
         this.axios.get(dataArray.url + dataArray.data['事件编号']).then(res => {
           if (res.success) {
             // dataArray.chartData = JSON.parse(JSON.stringify(res.obj))
-            this.venationData.chartData = JSON.parse(JSON.stringify(res.obj))
+            this.venationChartData = JSON.parse(JSON.stringify(res.obj))
           }
         })
       }
@@ -1130,7 +1135,9 @@ export default {
     closeVenationBox () {
       this.showVenationBox = false
       this.vboxData = {}
-      this.venationData.chartData = {}
+      this.venationChartData = {
+        data: []
+      }
     },
     hideImportModal () {
       this.showImport = false

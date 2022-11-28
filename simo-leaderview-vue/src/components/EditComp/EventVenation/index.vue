@@ -6,7 +6,7 @@
         :key="i"
         :color="iconColor"
       >
-        <p :style="titleStyle">{{ event.sj_time }}</p>
+        <p class="dateline" :style="titleStyle">{{ event.sj_time }}</p>
         <div
           v-for="(cont, n) in event.items.rows"
           :key="n"
@@ -14,11 +14,11 @@
           :style="contentBoxStyle"
           @click="showDetails(cont)"
         >
-          <p :style="contentTitleStyle">{{ cont['处置单位'] || cont.info_title || cont['审批组织'] }}</p>
+          <p :style="contentTitleStyle">{{event.items.columns[0]}}:{{ cont[event.items.columns[0]] }}</p>
           <div :style="contentStyle">
-            <span v-show="cont['处置人']">处置人：{{ cont['处置人'] || cont.info_source_name }}</span>
-            <span v-show="cont['审批人']">审批人：{{ cont['审批人']}}</span>
-            <span style="margin-left:10px">{{ cont['操作时间'] || cont['审批时间'] || cont.info_time }}</span>
+            <p v-for="(val, ind) in event.items.columns" v-show="ind > 0" :key="val + ind">
+              {{val}}:{{cont[val]}}
+            </p>
           </div>
         </div>
       </TimelineItem>
@@ -31,7 +31,7 @@ export default {
   props: ['item'],
   data () {
     return {
-      eventsList: this.item.chartData.data || []
+      // eventsList: this.item.chartData.data || []
     }
   },
   computed: {
@@ -48,7 +48,9 @@ export default {
       return {
         color: this.item.titleColor,
         fontSize: this.item.titleFontSize + 'px',
-        marginBottom: this.item.titleBottm + 'px'
+        marginBottom: this.item.titleBottm + 'px',
+        left: this.item.dateLeft + 'px',
+        top: this.item.dateTop + 'px'
       }
     },
     contentBoxStyle () {
@@ -69,20 +71,42 @@ export default {
     },
     contentStyle () {
       return {
-        display: 'flex',
-        'justify-content': 'space-between',
+        // display: 'flex',
+        // 'justify-content': 'space-between',
         color: this.item.contColor,
         fontSize: this.item.contSize + 'px'
       }
+    },
+    eventsList () {
+      let dataArr = []
+      this.item.chartData.data.forEach(element => {
+        let dateKey = ''
+        element.items.columns.forEach(e => {
+          if (e.indexOf('时间') >= 0) {
+            dateKey = e
+          }
+        })
+        element.items.rows.forEach(el => {
+          let d = {
+            sj_time: el[dateKey],
+            items: {
+              columns: element.items.columns,
+              rows: [el]
+            }
+          }
+          dataArr.push(d)
+        })
+      })
+      return dataArr
     }
   },
   watch: {
-    'item.chartData': {
-      handler: function () {
-        this.eventsList = this.item.chartData.data || []
-      },
-      deep: true
-    }
+    // 'item.chartData': {
+    //   handler: function () {
+    //     this.eventsList = this.item.chartData.data || []
+    //   },
+    //   deep: true
+    // }
   },
   methods: {
     showDetails (data) {
@@ -107,6 +131,11 @@ export default {
 .WuHouEvents {
   position: relative;
   overflow: visible;
+  .dateline{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
 }
 
 .content + .content {
