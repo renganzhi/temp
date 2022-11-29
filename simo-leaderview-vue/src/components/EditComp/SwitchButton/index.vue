@@ -4,7 +4,7 @@
           暂未配置数据
         </div>
         <Tabs v-else v-model="item.showCom" class="tabbody" :style="wrapStyle">
-        <TabPane v-for="(value,index) in item.bindCom" :label="setTabPaneLabel(value)"  :key="index" :name="value"></TabPane>
+        <TabPane v-for="(value,index) in item.bindCom" :label="setTabPaneLabel(value, index)"  :key="index" :name="value"></TabPane>
       </Tabs>
       </div>
 </template>
@@ -36,7 +36,7 @@ export default {
       return style
     },
     setTabPaneLabel () {
-      return (value) => {
+      return (value, index) => {
         return (h) => {
           if (this.item.showCom === value) {
             return h('div', {
@@ -46,9 +46,14 @@ export default {
                 height: '100%',
                 marginRight: this.item.marginRight + 'px !important',
                 borderRadius: this.item.borderRadius + 'px !important',
-                border: '1px solid ' + this.item.focusBorderColor
+                border: '1px solid ' + this.item.focusBorderColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: this.item.textSize + 'px',
+                color: this.item.checkedTextColor
               }
-            })
+            }, this.item.chartData.data[index])
           } else {
             return h('div', {
               style: {
@@ -57,9 +62,14 @@ export default {
                 height: '100%',
                 marginRight: this.item.marginRight + 'px !important',
                 borderRadius: this.item.borderRadius + 'px !important',
-                border: '1px solid ' + this.item.normalBorderColor
+                border: '1px solid ' + this.item.normalBorderColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: this.item.textSize + 'px',
+                color: this.item.normalTextColor
               }
-            })
+            }, this.item.chartData.data[index])
           }
         }
       }

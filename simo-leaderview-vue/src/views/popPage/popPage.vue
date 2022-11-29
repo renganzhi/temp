@@ -2246,11 +2246,11 @@ export default {
   beforeMount: function () {
     var id = this.$route.params.id
     this.nowShowPageID = id
-    this.axios
-      .get('/alert/currencyAlertmanager/findAlertLevelList')
-      .then(res => {
-        this.changeAlertInfo(res.obj)
-      })
+    // this.axios
+    //   .get('/alert/currencyAlertmanager/findAlertLevelList')
+    //   .then(res => {
+    //     this.changeAlertInfo(res.obj)
+    //   })
   },
   mounted: function () {
     $('#screen').addClass('disShow')
