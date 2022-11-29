@@ -15,6 +15,8 @@ export default{
     'contTitleSize': 16,
     'contTitleColor': 'white',
     'contColor': 'white',
+    dateLeft: 0,
+    dateTop: 0,
     'contSize': 12,
     'chartData': {
       'data': [
