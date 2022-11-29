@@ -1875,7 +1875,7 @@
               <div class="form-group cols2"
                    v-show="['ShrinkBox'].includes(selectedItem.chartType)">
                 <label>控制组件</label>
-                <Select v-model="selectedItem.bindCom">
+                <Select v-model="selectedItem.bdCom">
                   <Option v-for="(item,index) in combinList"
                           :key="index"
                           v-show="item.comName"
@@ -1958,7 +1958,7 @@
                         @click="dataChange">更新视图</button>
               </div>
               <div style="height: 100%;"
-                   v-show="!['TDModel','VmVareTopo','image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot','SwitchButton','ShrinkBox'].includes(selectedItem.chartType)">
+                   v-show="!['TDModel','VmVareTopo','image', 'NewBorder', 'NewTime', 'video', 'ppt','BulletFrame', 'Ueditor','hotspot','ShrinkBox'].includes(selectedItem.chartType)">
                 <div class="form-group cols2">
                   <label>数据来源</label>
                   <select @change="chgDataSource"

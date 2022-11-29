@@ -1,6 +1,6 @@
 <template>
       <div :style="wrapStyle" @click="ifShow = !ifShow">
-        <p v-show="!item.bindCom.length">暂未配置</p>
+        <p v-show="!item.bdCom.length">暂未配置</p>
       </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
         height: this.item.height + 'px !important',
         opacity: this.$route.name === 'edit' && !this.$parent.$parent.previewStatus ? '1' : this.item.showTabs ? '1' : '0'
       }
-      if (this.item.bindCom && this.item.bindCom.length) {
+      if (this.item.bdCom || this.item.bdCom === 0) {
         if (this.item.normalBack) {
           style.background = 'url(' + gbs.host + this.item.normalBack + ') 0% 0% / 100% 100% no-repeat'
         } else {
@@ -38,22 +38,23 @@ export default {
   },
   watch: {
     'ifShow': function (newV) {
-      if (this.item.bindCom.length) {
+      if (this.item.bdCom || this.item.bdCom === 0) {
         this.control()
       }
     },
-    'item.bindCom': function (newV, oldV) {
+    'item.bdCom': function (newV, oldV) {
+      console.log('bdCom', newV, oldV)
       this.control()
     }
   },
   methods: {
     control () {
       let controlDOM = ''
-      if (this.item.bindCom.length) {
+      if (this.item.bdCom || this.item.bdCom === 0) {
         if (this.$route.name === 'edit' && !this.$parent.$parent.previewStatus) {
-          controlDOM = document.getElementById('p_compose' + this.item.bindCom[0])
+          controlDOM = document.getElementById('p_compose' + this.item.bdCom)
         } else {
-          controlDOM = document.getElementById('p_viewCompose' + this.item.bindCom[0])
+          controlDOM = document.getElementById('p_viewCompose' + this.item.bdCom)
         }
         controlDOM.classList.add('animate__animated')
         if (this.ifShow) {
@@ -76,18 +77,18 @@ export default {
     }
   },
   mounted () {
-    if (this.item.bindCom.length) {
+    if (this.item.bdCom || this.item.bdCom === 0) {
       this.control()
     }
   },
   beforeDestroy () {
-    if (document.getElementById('p_compose' + this.item.bindCom[0])) {
-      document.getElementById('p_compose' + this.item.bindCom[0]).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-      document.getElementById('p_compose' + this.item.bindCom[0]).style.display = 'block'
+    if (document.getElementById('p_compose' + this.item.bdCom)) {
+      document.getElementById('p_compose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+      document.getElementById('p_compose' + this.item.bdCom).style.display = 'block'
     }
-    if (document.getElementById('p_viewCompose' + this.item.bindCom[0])) {
-      document.getElementById('p_viewCompose' + this.item.bindCom[0]).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-      document.getElementById('p_viewCompose' + this.item.bindCom[0]).style.display = 'block'
+    if (document.getElementById('p_viewCompose' + this.item.bdCom)) {
+      document.getElementById('p_viewCompose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+      document.getElementById('p_viewCompose' + this.item.bdCom).style.display = 'block'
     }
   }
 }

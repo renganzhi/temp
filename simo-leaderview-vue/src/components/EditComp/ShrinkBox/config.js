@@ -15,7 +15,7 @@ export default {
     chartData: {},
     rotate: 0,
     showCom: '', // tabs绑定元素
-    bindCom: [], // 绑定的组合
+    bdCom: null, // 绑定的组合
     ifCarousel: false,
     speed: 5000,
     showTabs: false,
