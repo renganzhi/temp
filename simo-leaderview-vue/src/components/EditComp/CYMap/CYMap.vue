@@ -187,11 +187,11 @@ export default {
     },
     nowPageName: function () {
       if (this.nowPageName.indexOf('32:9') >= 0) {
-        let centerPoint = new window.BMapGL.Point(104.01273, 30.62180)
-        this.map.centerAndZoom(centerPoint, 13.5)
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094)
+        this.map.centerAndZoom(centerPoint, 15)
       } else {
-        let centerPoint = new window.BMapGL.Point(104.20081, 30.59718) // 定义一个中心点坐标
-        this.map.centerAndZoom(centerPoint, 13.39) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 定义一个中心点坐标
+        this.map.centerAndZoom(centerPoint, 15) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
       }
     }
   },
@@ -199,11 +199,11 @@ export default {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
       if (this.nowPageName.indexOf('32:9') >= 0) {
-        let centerPoint = new window.BMapGL.Point(104.01273, 30.62180)
-        this.map.centerAndZoom(centerPoint, 13.5)
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01273, 30.62180
+        this.map.centerAndZoom(centerPoint, 15) // 13.5
       } else {
-        let centerPoint = new window.BMapGL.Point(104.20081, 30.59718) // 定义一个中心点坐标
-        this.map.centerAndZoom(centerPoint, 13.39) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 定义一个中心点坐标104.20081, 30.59718
+        this.map.centerAndZoom(centerPoint, 15) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.39
       }
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
       this.map.setMapStyleV2({styleJson: styleJson})
@@ -258,7 +258,7 @@ export default {
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
                 polygon.addEventListener('click', e => {
-                  // this.getMapCenter()
+                  this.getMapCenter()
                 })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
@@ -276,7 +276,7 @@ export default {
                 strokeStyle: '' // 边线类型，solid或dashed
               })
               polygon.addEventListener('click', e => {
-                // this.getMapCenter()
+                this.getMapCenter()
               })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)

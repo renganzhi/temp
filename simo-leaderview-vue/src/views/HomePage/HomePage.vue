@@ -48,14 +48,14 @@
           id="paintWrap"
         >
           <div id="mainbox" v-show="pageList.length >= 1"></div>
-          <div class="home_wrapBox">
+          <div class="home_wrapBox" style="position:relative">
               <!-- <div v-if="!IsCityType" class="back" style="height: 2160px;width: 3840px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div>
               <div v-else class="back" style="height: 1620px;width: 8640px;position: absolute;">
                 <beijing :nowPageName="pageName"></beijing>
               </div> -->
-              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" :style="{height: pageName.indexOf('32:9') >= 0?'1080px':'1620px',width: pageName.indexOf('32:9') >= 0?'3840px':'8640px',position: 'absolute'}">
+              <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
                 <CYMap :nowPageName="pageName"></CYMap>
               </div>
             <div class="full-height pagebox">
@@ -1396,11 +1396,16 @@ export default {
     },
     // 加载第一页大屏
     loadFirstPage: function () {
+      let ifTrueID = false
       this.pageList.forEach((d, i) => {
         if (d.id * 1 === this.nowShowPageID * 1) {
           this.pageIndex = i
+          ifTrueID = true
         }
       })
+      if (this.nowShowPageID && !ifTrueID) {
+        this.pageIndex = undefined
+      }
       this.pageIndex++
       var nowPageObj = this.pageList[(this.pageIndex - 1) % this.pageSize]
       if (nowPageObj.composeObj) {
