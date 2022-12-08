@@ -6,6 +6,7 @@ import Scatter from '@/components/EditComp/Scatter/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
 import ConditionalEline from '@/components/EditComp/ConditionalEline/config.js'
+import ConditionalBar from '@/components/EditComp/ConditionalBar/config.js'
 import TimePickerEline from '@/components/EditComp/TimePickerEline/config.js'
 import DoubleLinde from '@/components/EditComp/DoubleLinde/config.js'
 import IntegratedHistogram from '@/components/EditComp/IntegratedHistogram/config.js'
@@ -61,6 +62,7 @@ const coordinate = {
     // NewBar.item,
     ELine.item,
     ConditionalEline.item,
+    ConditionalBar.item,
     TimePickerEline.item,
     DoubleLinde.item,
     GradientPie.item,
