@@ -59,6 +59,7 @@ import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
 import XiaLaShu from '@/components/EditComp/XiaLaShu' // 散点图
 import ELine from '@/components/EditComp/ELine' // 散点图
 import ConditionalEline from '@/components/EditComp/ConditionalEline'
+import ConditionalBar from '@/components/EditComp/ConditionalBar'
 import TimePickerEline from '@/components/EditComp/TimePickerEline'
 import Dashboard from '@/components/EditComp/Dashboard' // 散点图
 import BulletFrame from '@/components/EditComp/BulletFrame' // 散点图
@@ -152,6 +153,7 @@ export default {
   XiaLaShu,
   ELine,
   ConditionalEline,
+  ConditionalBar,
   TimePickerEline,
   Dashboard,
   BulletFrame,

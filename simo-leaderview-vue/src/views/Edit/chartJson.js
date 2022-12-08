@@ -8,6 +8,7 @@ import Sunrise from '@/components/EditComp/Sunrise/config.js'
 import Scatter from '@/components/EditComp/Scatter/config.js'
 import ELine from '@/components/EditComp/ELine/config.js'
 import ConditionalEline from '@/components/EditComp/ConditionalEline/config.js'
+import ConditionalBar from '@/components/EditComp/ConditionalBar/config.js'
 import TimePickerEline from '@/components/EditComp/TimePickerEline/config.js'
 import Dashboard from '@/components/EditComp/Dashboard/config.js'
 import KLine from '@/components/EditComp/KLine/config.js'
@@ -538,6 +539,7 @@ var compsArr = [{
 },
 ELine.item,
 ConditionalEline.item,
+ConditionalBar.item,
 TimePickerEline.item,
 // {
 //   text: '曲线图',
