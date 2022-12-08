@@ -62,6 +62,7 @@ let config = {
   Dashboard: require('@/components/EditComp/Dashboard/config.js'),
   ELine: require('@/components/EditComp/ELine/config.js'),
   ConditionalEline: require('@/components/EditComp/ConditionalEline/config.js'),
+  ConditionalBar: require('@/components/EditComp/ConditionalBar/config.js'),
   TimePickerEline: require('@/components/EditComp/TimePickerEline/config.js'),
   ToggleButton: require('@/components/EditComp/ToggleButton/config.js'),
   DataFlow: require('@/components/EditComp/DataFlow/config.js'),

@@ -258,7 +258,7 @@ export default {
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
                 polygon.addEventListener('click', e => {
-                  this.getMapCenter()
+                  // this.getMapCenter()
                 })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
@@ -276,7 +276,7 @@ export default {
                 strokeStyle: '' // 边线类型，solid或dashed
               })
               polygon.addEventListener('click', e => {
-                this.getMapCenter()
+                // this.getMapCenter()
               })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)

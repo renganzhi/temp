@@ -30,6 +30,7 @@ export default [
   'XiaLaShu',
   'ELine',
   'ConditionalEline',
+  'ConditionalBar',
   'TimePickerEline',
   'Dashboard',
   'BulletFrame',
