@@ -26,7 +26,7 @@
       </table>
     </div>
     <div class="fixed-table-body"
-         style="padding-bottom: 26px;" @click="showXQ">
+         style="padding-bottom: 26px;">
       <table class="table"
              style="table-layout: fixed;">
         <tbody>
@@ -241,6 +241,15 @@ export default {
           data: data
         }
         this.$parent.$parent.ShowTanKuangBox(dataArray)
+      } else if (this.item.chartData.url) {
+        let dataArray = {
+          title: '数据详情',
+          data: data,
+          dataUrl: this.item.chartData.url
+        }
+        if (this.$parent.$parent.ShowTableBox) {
+          this.$parent.$parent.ShowTableBox(dataArray)
+        }
       }
     },
     sortArry (key) {
