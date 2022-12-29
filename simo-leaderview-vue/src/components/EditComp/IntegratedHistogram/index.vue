@@ -1398,6 +1398,7 @@ export default {
       let chartData = '' // 折线图url
       let urls = ''
       let url = ''
+      let type = ''
       if (_this.item.barType === 'NewHistogram') {
         dataOut = _this.item.chartData1.rows[params.dataIndex]
         dataUrl = _this.item.chartData1.url
@@ -1405,6 +1406,7 @@ export default {
         chartData = _this.item.chartData1.chartData
         urls = _this.item.chartData1.urls
         url = _this.item.chartData1.url
+        type = _this.item.chartData1.typeName
       } else if (_this.item.barType === 'NewGroupHistogram') {
         dataOut = _this.item.chartData2.rows[params.dataIndex]
         dataUrl = _this.item.chartData2.url
@@ -1412,6 +1414,7 @@ export default {
         chartData = _this.item.chartData2.chartData
         urls = _this.item.chartData2.urls
         url = _this.item.chartData2.url
+        type = _this.item.chartData2.typeName
       } else if (_this.item.barType === 'NewGroupLeftHistogram') {
         dataOut = _this.item.chartData3.rows[params.dataIndex]
         dataUrl = _this.item.chartData3.url
@@ -1419,6 +1422,7 @@ export default {
         chartData = _this.item.chartData3.chartData
         urls = _this.item.chartData3.urls
         url = _this.item.chartData3.url
+        type = _this.item.chartData3.typeName
       } else if (_this.item.barType === 'NewBar') {
         dataOut = _this.item.chartData4.rows[_this.item.chartData4.rows.length - params.dataIndex - 1]
         dataUrl = _this.item.chartData4.url
@@ -1426,6 +1430,7 @@ export default {
         chartData = _this.item.chartData4.chartData
         urls = _this.item.chartData4.urls
         url = _this.item.chartData4.url
+        type = _this.item.chartData4.typeName
       }
       console.log('dataOut', dataOut, params)
       if (dataOut.id) {
@@ -1450,13 +1455,24 @@ export default {
           _this.$parent.$parent.ShowElineBox(boxData)
         }
       } else if (url) {
-        let boxData = {
-          title: dataOut[keys] + '信息详情',
-          chartUrl: url,
-          data: dataOut
-        }
-        if (_this.$parent.$parent.ShowElineBox) {
-          _this.$parent.$parent.ShowElineBox(boxData)
+        if (type && type === 'table') {
+          let boxData = {
+            title: dataOut[keys] + '信息详情',
+            data: dataOut,
+            dataUrl: url
+          }
+          if (_this.$parent.$parent.ShowTableBox) {
+            _this.$parent.$parent.ShowTableBox(boxData)
+          }
+        } else {
+          let boxData = {
+            title: dataOut[keys] + '信息详情',
+            chartUrl: url,
+            data: dataOut
+          }
+          if (_this.$parent.$parent.ShowElineBox) {
+            _this.$parent.$parent.ShowElineBox(boxData)
+          }
         }
       } else {
         let boxData = {

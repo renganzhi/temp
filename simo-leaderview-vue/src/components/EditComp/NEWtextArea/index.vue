@@ -153,7 +153,11 @@ export default {
             data: {name: this.item.chartData.name},
             dataUrl: this.item.chartData.url
           }
-          this.$parent.$parent.ShowTableBox(boxData)
+          if (this.$parent.$parent.ShowTableBox) {
+            this.$parent.$parent.ShowTableBox(boxData)
+          } else if (this.$parent.$parent.$parent.ShowTableBox) {
+            this.$parent.$parent.$parent.ShowTableBox(boxData)
+          }
         }
       }
     }
