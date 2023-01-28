@@ -101,8 +101,10 @@ export default {
     'item.chartData': {
       handler (newV, oldV) {
         if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
+          if (JSON.stringify(newV) !== JSON.stringify(oldV)) {
+            this.currentIndex = 0
+          }
           this.eventData = this.item.chartData.dataArray[0]
-          this.currentIndex = 0
         }
       },
       deep: true

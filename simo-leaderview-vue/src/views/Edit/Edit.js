@@ -4919,6 +4919,14 @@ export default {
     'paintObj.opacity': function (newV, oldV) {
       // console.log(newV, oldV)
     },
+    // 'selectedItem.ctDataSource': function () {
+    //   if (this.selectedItem.ctDataSource && this.selectedItem.ctDataSource !== 'static') {
+    //     if ($('.urlSel')) {
+    //       $('.urlSel').select2()
+    //       $('.urlSel').on('change', this.chgUrl)
+    //     }
+    //   }
+    // },
     'selectedItem.ifGradual': function (newV) {
       // 对象类型不能统一赋值
       if (newV && !this.selectChange) {

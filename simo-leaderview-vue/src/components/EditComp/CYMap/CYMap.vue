@@ -187,11 +187,11 @@ export default {
     },
     nowPageName: function () {
       if (this.nowPageName.indexOf('32:9') >= 0) {
-        let centerPoint = new window.BMapGL.Point(104.01273, 30.62180)
-        this.map.centerAndZoom(centerPoint, 13.5)
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094)
+        this.map.centerAndZoom(centerPoint, 14)
       } else {
-        let centerPoint = new window.BMapGL.Point(104.20081, 30.59718) // 定义一个中心点坐标
-        this.map.centerAndZoom(centerPoint, 13.39) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 定义一个中心点坐标
+        this.map.centerAndZoom(centerPoint, 14) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
       }
     }
   },
@@ -199,20 +199,20 @@ export default {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
       if (this.nowPageName.indexOf('32:9') >= 0) {
-        let centerPoint = new window.BMapGL.Point(104.01273, 30.62180) // 104.01273, 30.62180(内网)/104.01764, 30.62094(外网)
-        this.map.centerAndZoom(centerPoint, 13.5) // 13.5(内网)/15(外网)
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
+        this.map.centerAndZoom(centerPoint, 14) // 13.5(内网)/15(外网)
       } else {
-        let centerPoint = new window.BMapGL.Point(104.20081, 30.59718) // 定义一个中心点坐标104.20081, 30.59718(内网)/104.01332, 30.62716(外网)
-        this.map.centerAndZoom(centerPoint, 13.39) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.39(内网)/15(外网)
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
+        this.map.centerAndZoom(centerPoint, 14) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
       }
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
-      // this.map.setMapStyleV2({styleJson: styleJson})
-      this.map.setOptions({
-        style: {
-          styleJson: styleJson
-        },
-        styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
-      })
+      this.map.setMapStyleV2({styleJson: styleJson})
+      // this.map.setOptions({
+      //   style: {
+      //     styleJson: styleJson
+      //   },
+      //   styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
+      // })
       this.map.setDisplayOptions({
         poiText: false
       })
