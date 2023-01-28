@@ -1991,6 +1991,7 @@
                        contenteditable="false">
                     <label>选择接口</label>
                     <select ref="urlSel"
+                            class="urlSel"
                             v-model="syst.curConf.url"
                             @change="chgUrl">
                       <option v-for="v in syst.urlSel"

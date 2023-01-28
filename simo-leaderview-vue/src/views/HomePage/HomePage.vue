@@ -57,6 +57,7 @@
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
                 <CYMap :nowPageName="pageName"></CYMap>
+                <!-- <EconomicMap :nowPageName="pageName"></EconomicMap> -->
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showTableBox">
@@ -448,6 +449,7 @@ import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
 import CYMap from '@/components/EditComp/CYMap/CYMap.vue'
+import EconomicMap from '@/components/EditComp/EconomicMap/index.vue'
 import ImportPage from './../EditPage/ImportPage'
 import WuhoIfream from '@/components/EditComp/WuhoIfream'
 import EventVenation from '@/components/EditComp/EventVenation'
@@ -468,6 +470,7 @@ export default {
     AddPage,
     ImportPage,
     CYMap,
+    EconomicMap,
     beijing
   },
   // mixins:[thirdLoginMix],
