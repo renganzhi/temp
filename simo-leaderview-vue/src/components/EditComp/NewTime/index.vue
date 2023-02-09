@@ -15,14 +15,14 @@ export default {
       serverceTime: '',
       refreshTime: 1, // 设置为1误差最小
       timeoutId: null,
-      weekDateArru:[
+      weekDateArru: [
         '星期天',
         '星期一',
         '星期二',
         '星期三',
         '星期四',
         '星期五',
-        '星期六',
+        '星期六'
       ],
       sizeObj: {
         'f12': { w: 44, h: 17 },
@@ -54,40 +54,45 @@ export default {
     }
   },
   mounted () {
-      if(this.item.timeName && this.item.timeName === '2'){
-        this.timeoutId && clearTimeout(this.timeoutId)
-        if (this.item.timeSource === 'system') {
-          this.serviceWeekDayFn()
-        } else {
-          this.showTime = this.weekDateArru[new Date().getDay()]
-        }
-      }else{
-        if (this.item.timeSource === 'system') {
-          this.serviceTimeFn()
-        } else {
-          this.localTimeFn()
-        }
+    if (this.item.timeName && this.item.timeName === '2') {
+      this.timeoutId && clearTimeout(this.timeoutId)
+      if (this.item.timeSource === 'system') {
+        this.serviceWeekDayFn()
+      } else {
+        this.showTime = this.weekDateArru[new Date().getDay()]
       }
+    } else {
+      if (this.item.timeSource === 'system') {
+        this.serviceTimeFn()
+      } else {
+        this.localTimeFn()
+      }
+    }
   },
   methods: {
     initTime (type, time) {
-      switch (type) {
-        case '1': // 时分秒
-          this.showTime = moment(time).format('HH:mm:ss')
-          this.refreshTime = 1
-          break
-        case '2':
-          this.showTime = moment(time).format('YYYY-MM-DD')
-          this.refreshTime = 60 * 60 // 这种需要确定一下精确度
-          break
-        case '3':
-          this.showTime = moment(time).format('YYYY-MM-DD HH:mm')
-          this.refreshTime = 10 // 存在10s内的误差
-          break
-        case '4':
-          this.showTime = moment(time).format('YYYY-MM-DD HH:mm:ss')
-          this.refreshTime = 1
-          break
+      if (this.item.timeName === '1') {
+        switch (type) {
+          case '1': // 时分秒
+            this.showTime = moment(time).format('HH:mm:ss')
+            this.refreshTime = 1
+            break
+          case '2':
+            this.showTime = moment(time).format('YYYY-MM-DD')
+            this.refreshTime = 60 * 60 // 这种需要确定一下精确度
+            break
+          case '3':
+            this.showTime = moment(time).format('YYYY-MM-DD HH:mm')
+            this.refreshTime = 10 // 存在10s内的误差
+            break
+          case '4':
+            this.showTime = moment(time).format('YYYY-MM-DD HH:mm:ss')
+            this.refreshTime = 1
+            break
+        }
+      } else {
+        this.timeoutId && clearTimeout(this.timeoutId)
+        this.showTime = this.weekDateArru[new Date().getDay()]
       }
     },
     initServiceTime (type) {
@@ -108,7 +113,7 @@ export default {
           break
       }
     },
-    serviceWeekDayFn(){
+    serviceWeekDayFn () {
       this.axios.get('/leaderview/home/getWeekDay').then((res) => {
         this.showTime = res.obj[0]
       })
@@ -169,13 +174,13 @@ export default {
       //     _this.timeoutId = setTimeout(test, _this.refreshTime * 1000)
       //   }, this.refreshTime * 1000)
       // }
-      if(this.item.timeName === '1'){
+      if (this.item.timeName === '1') {
         if (newV === 'system') {
           this.serviceTimeFn()
         } else {
           this.localTimeFn()
         }
-      }else{
+      } else {
         this.timeoutId && clearTimeout(this.timeoutId)
         if (newV === 'system') {
           this.serviceWeekDayFn()
@@ -184,8 +189,8 @@ export default {
         }
       }
     },
-    'item.timeName':function(){
-      if(this.item.timeName === '1'){
+    'item.timeName': function () {
+      if (this.item.timeName === '1') {
         if (this.item.timeSource === 'system') {
           this.timeoutId && clearTimeout(this.timeoutId)
           this.serviceTimeFn()
@@ -193,11 +198,11 @@ export default {
           this.localTimeFn()
           // this.initTime(newV)
         }
-      }else{
+      } else {
         this.timeoutId && clearTimeout(this.timeoutId)
         if (this.item.timeSource === 'system') {
           this.serviceWeekDayFn()
-        }else{
+        } else {
           this.showTime = this.weekDateArru[new Date().getDay()]
         }
       }
