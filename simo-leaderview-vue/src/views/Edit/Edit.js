@@ -52,6 +52,7 @@ let config = {
   OrderMenu: require('@/components/EditComp/OrderMenu/config.js'),
   SmallOrderMenu: require('@/components/EditComp/SmallOrderMenu/config.js'),
   CityEvent: require('@/components/EditComp/CityEvent/config.js'),
+  WuhouSinglePage: require('@/components/EditComp/WuhouSinglePage/config.js'),
   EventVenation: require('@/components/EditComp/EventVenation/config.js'),
   StreetMenu: require('@/components/EditComp/StreetMenu/config.js'),
   WordClouds: require('@/components/EditComp/WordClouds/config.js'),
