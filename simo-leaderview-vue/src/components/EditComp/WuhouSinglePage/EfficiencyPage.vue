@@ -1550,14 +1550,14 @@ export default {
       padding-top: 80px !important;
     }
     .backgroun28{
-      background: url('./background/编组28.png');
+      background: url('./background/编组128.png');
       background-size: 100%;
       background-repeat: no-repeat;
       background-size: 100%;
       padding-top: 80px !important;
     }
     .backgroun29{
-      background: url('./background/编组29.png');
+      background: url('./background/编组129.png');
       background-size: 100%;
       background-repeat: no-repeat;
       padding-top: 80px !important;
