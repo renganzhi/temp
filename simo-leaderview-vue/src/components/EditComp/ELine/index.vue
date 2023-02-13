@@ -1,5 +1,5 @@
 <template>
-  <div class="ELine">
+  <div class="ELine" :style="boxStyle">
     <div ref="ELine" v-show="showLine" :style="boxStyle"></div>
     <div
       class="v-charts-data-empty"
@@ -43,7 +43,8 @@ export default {
     boxStyle: function () {
       return {
         width: this.item.width + 'px',
-        height: this.item.height + 'px'
+        height: this.item.height + 'px',
+        position: 'relative'
       }
     },
     maxData: function () {

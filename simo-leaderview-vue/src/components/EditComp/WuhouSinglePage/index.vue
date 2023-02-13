@@ -1633,9 +1633,9 @@ export default {
         }
     }
     #Module2{
-        width: 2792px;
+        width: 2855px;
         height:  1620px;
-        padding: 32px 30px 32px 32px;
+        padding: 32px 32px 32px 32px;
         .row1{
             width: 100%;
             display: flex;
@@ -2932,10 +2932,10 @@ export default {
         width: 680px;
         height: 1620px;
         background: #0B1B2A;
-        padding: 32px 36px 52px 35px;
+        padding: 32px 32px 32px 0px;
         .title{
             img{
-                width:609px;
+                width:100%;
                 height:76px;
             }
             margin-bottom: 32px;
@@ -2945,7 +2945,7 @@ export default {
             overflow: hidden;
             .cityEvent{
                 width: 100%;
-                height: 1428px;
+                height: 1448px;
                 display: flex;
                 // justify-content: space-between;
                 align-items: center;
