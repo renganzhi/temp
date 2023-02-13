@@ -517,44 +517,14 @@ export default {
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
         'chartData': {
-          'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
+          'columns': (bodyData && bodyData['办件量走势']) ? bodyData['办件量走势'].columns : [],
           'unit': '%',
           'min': 60,
           'max': 80,
           'minIndex': 2,
           'maxIndex': 3,
           'unitX': '时间',
-          'rows': [{
-            '日期': '2020-01-01',
-            'CPU核心利用率': 15,
-            'CPU平均利用率': 15
-          },
-          {
-            '日期': '2020-01-02',
-            'CPU核心利用率': 80,
-            'CPU平均利用率': 50
-          },
-          {
-            '日期': '2020-01-03',
-            'CPU核心利用率': 40,
-            'CPU平均利用率': 6
-          },
-          {
-            '日期': '2020-01-05',
-            'CPU核心利用率': 45,
-            'CPU平均利用率': 70
-          },
-          {
-            '日期': '2020-01-06',
-            'CPU核心利用率': 10,
-            'CPU平均利用率': 40
-          },
-          {
-            '日期': '2020-01-07',
-            'CPU核心利用率': 95,
-            'CPU平均利用率': 50
-          }
-          ]
+          'rows': (bodyData && bodyData['办件量走势']) ? bodyData['办件量走势'].rows : []
         }
       }
     },
@@ -638,33 +608,9 @@ export default {
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': {
-          'columns': ['告警级别', '数量'],
+          'columns': (bodyData && bodyData['各委办局办件量统计']) ? bodyData['各委办局办件量统计'].columns : [],
           'unit': '次',
-          'rows': [{
-            '告警级别': '致命',
-            '数量': 233
-          },
-          {
-            '告警级别': '严重',
-            '数量': 123
-          },
-          {
-            '告警级别': '警告',
-            '数量': 23
-          },
-          {
-            '告警级别': '一般',
-            '数量': 155
-          },
-          {
-            '告警级别': '次要',
-            '数量': 103
-          },
-          {
-            '告警级别': '通知',
-            '数量': 123
-          }
-          ]
+          'rows': (bodyData && bodyData['各委办局办件量统计']) ? bodyData['各委办局办件量统计'].rows : []
         }
       }
     },
@@ -838,7 +784,7 @@ export default {
         'ifGradual': 'false', // 曲线是否渐变
         'ifAreaGradual': 'true', // 区域是否渐变
         'splitShow': false,
-        'ctLegendShow': true,
+        'ctLegendShow': false,
         'ctLegendColor': '#828bac',
         'ctLegendSize': '20',
         'axisLabelSize': '20',
@@ -943,8 +889,15 @@ export default {
       this.axios.get('/leaderview/newDistrict/GetQJXN?param=' + type || '').then(res => {
         if (res.success) {
           $('#lead-screen').removeClass('disShow')
+          this.$parent.openisopenShow()
           this.bodyData = res.obj
           this.getBar2.chartData1.rows = (res.obj && res.obj['办理完成率总览']) ? res.obj['办理完成率总览'].rows : []
+
+          this.getBar1.chartData1.columns = (res.obj && res.obj['各委办局办件量统计']) ? res.obj['各委办局办件量统计'].columns : []
+          this.getBar1.chartData1.rows = (res.obj && res.obj['各委办局办件量统计']) ? res.obj['各委办局办件量统计'].rows : []
+
+          this.getOfficeTrend.chartData.columns = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].columns : []
+          this.getOfficeTrend.chartData.rows = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].rows : []
         }
       })
     },
@@ -960,7 +913,6 @@ export default {
 
           this.getSJLX1.chartData.columns = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].columns : []
           this.getSJLX1.chartData.rows = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].rows : []
-          console.log(this.getSJLX1)
         }
       })
     },
@@ -1102,6 +1054,7 @@ export default {
                     .streeBox{
                       height: 420px;
                       width: 444px;
+                      margin: 14px;
                       padding: 24px;
                       .titleTop{
                         width: 100%;

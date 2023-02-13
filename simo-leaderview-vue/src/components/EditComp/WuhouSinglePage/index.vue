@@ -1,7 +1,7 @@
 <template>
     <div class="WuhouSinglePage">
-        <transition name="moveRight">
-            <div class="leftPart">
+        <transition name="moveRight" >
+            <div class="leftPart"  v-show="isopenShow">
                 <div id="Module1">
                     <div class="content">
                         <div class="title"><img src="./background/编组.png" alt=""></div>
@@ -503,7 +503,7 @@
         </transition>
         <!-- 模块三、四 -->
         <transition name="moveLeft">
-            <div class="rightPart">
+            <div class="rightPart" v-show="isopenShow">
                 <EfficiencyPage></EfficiencyPage>
                 <div id="Module5">
                     <div class="title"><img src="./background/编组_1.png" alt=""></div>
@@ -573,6 +573,7 @@ export default {
   data: function () {
     return {
       showRYXX: false,
+      isopenShow: false,
       indexOf7: -1,
       indexOf15: -1,
       showGZFF1: false,
@@ -1086,6 +1087,9 @@ export default {
     }
   },
   methods: {
+    openisopenShow () {
+      this.isopenShow = true
+    },
     ShowEventDetails (val) {
       this.xqValue = val
       this.showEventDetails = true
