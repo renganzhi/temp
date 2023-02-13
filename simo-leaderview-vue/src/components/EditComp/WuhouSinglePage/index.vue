@@ -515,17 +515,17 @@
                                 class="warp"
                                 >
                                 <ul class="item">
-                                    <li v-for="(val, ind) in 10" :key="ind">
+                                    <li v-for="(val, ind) in qztsList" :key="ind">
                                     <div  class="eventBox" >
                                         <div>
-                                            <div><span></span>标题XXXXXXXXXXX</div>
-                                            <div @click="ShowEventDetails">详情</div>
+                                            <div><span></span>{{val['来电标题']}}</div>
+                                            <div @click="ShowEventDetails(val)">详情</div>
                                         </div>
                                         <div>
-                                            诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容…
+                                            {{val['来电详情']}}
                                         </div>
                                         <div>
-                                            2022-08-12 10:21:12
+                                            {{val['来电时间']}}
                                         </div>
                                     </div>
                                     </li>
@@ -534,35 +534,25 @@
                         </div>
                         <transition name="moveLeft">
                             <div id="Module5Pop" v-show="showEventDetails">
-                                <div>
-                                    <span>民众诉求详情</span>
-                                    <img @click="CloseEventDetails" src="./background/关闭.png" alt="">
+                              <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseEventDetails" src="./background/关闭.png" alt="">
+                              </div>
+                              <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                <div style="margin: 26px;font-size: 26px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['来电标题'] || ''}}</div>
+                                <div style="margin: 0 28px; color: #C5EEF3;font-size: 18px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                  {{xqValue['来电详情'] || ''}}
                                 </div>
-                                <div>解决房屋拆迁赔偿</div>
-                                <div>解决房屋XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位拆迁赔偿</div>
-                                <div>处置时间线</div>
-                                <div class="block">
-                                    <el-timeline color="#FCB83C">
-                                        <el-timeline-item timestamp="2018/4/12" placement="top">
-                                        <el-card>
-                                            <h4>更新 Github 模板</h4>
-                                            <p>王小虎 提交于 2018/4/12 20:46</p>
-                                        </el-card>
-                                        </el-timeline-item>
-                                        <el-timeline-item timestamp="2018/4/3" placement="top">
-                                        <el-card>
-                                            <h4>更新 Github 模板</h4>
-                                            <p>王小虎 提交于 2018/4/3 20:46</p>
-                                        </el-card>
-                                        </el-timeline-item>
-                                        <el-timeline-item timestamp="2018/4/2" placement="top">
-                                        <el-card>
-                                            <h4>更新 Github 模板</h4>
-                                            <p>王小虎 提交于 2018/4/2 20:46</p>
-                                        </el-card>
-                                        </el-timeline-item>
-                                    </el-timeline>
+                                <div style="margin: 28px;font-size: 22px;color: #C5EEF3;">处置时间线</div>
+                                <div class="block" style="padding: 0 28px;">
+                                    <div class="TimeBox" v-for="(da,index) in 10" :key="index">
+                                      <div class="line"></div>
+                                      <div class="radio"></div>
+                                      <div class="time">ssssss</div>
+                                      <div class="data">ssssssssssssssssss</div>
+                                    </div>
                                 </div>
+                              </div>
                             </div>
                         </transition>
                     </div>
@@ -609,11 +599,13 @@ export default {
       qmssqList: [], // module2 区民生诉求指数列表
       qmssqDetail: {}, // module2 区民生诉求指数详情
       gfxryDetail3: {}, // module2 区民生诉求指数详情 高风险人员详情
+      qztsList: [], // 投诉列表
       eventData: [],
       classOption: {
         singleHeight: 208,
         waitTime: 3000
       },
+      xqValue: {},
       showEventDetails: false
     }
   },
@@ -1094,7 +1086,8 @@ export default {
     }
   },
   methods: {
-    ShowEventDetails () {
+    ShowEventDetails (val) {
+      this.xqValue = val
       this.showEventDetails = true
     },
     CloseEventDetails () {
@@ -1246,6 +1239,12 @@ export default {
       this.axios.get('/leaderview/newDistrict/GetMSSQ4').then(res => {
         if (res.success && res.obj.rows) {
           this.qmssqList = res.obj.rows
+        }
+      })
+      // 获取群众投诉数据
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20').then(res => {
+        if (res.success && res.obj.rows) {
+          this.qztsList = res.obj.rows
         }
       })
     }
@@ -3040,9 +3039,49 @@ export default {
                 position: absolute;
                 top: 0;
                 right: 0;
+                .TimeBox{
+                  position: relative;
+                  .line{
+                    position: absolute;
+                    left: 8px;
+                    top: 15px;
+                    height: 100%;
+                    border-left: 2px solid #FCB83C;
+                  }
+                  .radio{
+                    position: absolute;
+                    border: 6px solid #FCB83C;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 50%;
+                  }
+                  .time{
+                    font-size: 20px;
+                    padding-left: 28px;
+                    color: #C5EEF3;
+                  }
+                  .data{
+                    font-size: 18px;
+                    color: #C5EEF3;
+                    margin: 12px 12px 12px 30px;
+                    padding: 18px;
+                    background-color: transparent;
+                    background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                  }
+                }
             }
         }
     }
+::deep .el-timeline-item__timestamp{
+  color: #C5EEF3;
+  font-size: 20px;
+}
+.el-timeline-item__tail{
+  border-color: #FCB83C;
+}
+.el-timeline-item__node{
+  background-color: #FCB83C;
+}
 </style>
 <style lang="scss">
 .WuhouSinglePage{
