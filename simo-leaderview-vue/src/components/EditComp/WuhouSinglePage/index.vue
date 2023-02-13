@@ -1,460 +1,574 @@
 <template>
     <div class="WuhouSinglePage">
-        <div id="Module1">
-            <div class="content">
-                <div class="title"><img src="./background/编组.png" alt=""></div>
-                <div class="TOP3">
-                    <div class="ball" @click="showPersonDetails(1)">
-                        <div>{{gsqryList.length?gsqryList[1]['姓名']: '暂无数据'}}</div>
-                        <div>{{gsqryList.length?gsqryList[1]['次数']: '暂无数据'}}</div>
-                        <div>详情</div>
-                    </div>
-                    <div class="ball" @click="showPersonDetails(0)">
-                        <div>{{gsqryList.length?gsqryList[0]['姓名']: '暂无数据'}}</div>
-                        <div>{{gsqryList.length?gsqryList[0]['次数']: '暂无数据'}}</div>
-                        <div>详情</div>
-                    </div>
-                    <div class="ball" @click="showPersonDetails(2)">
-                        <div>{{gsqryList.length?gsqryList[2]['姓名']: '暂无数据'}}</div>
-                        <div>{{gsqryList.length?gsqryList[2]['次数']: '暂无数据'}}</div>
-                        <div>详情</div>
-                    </div>
-                </div>
-                <div class="list">
-                    <div class="rows" v-for="(data,index) in gsqryList" :key="index" v-show="index > 2">
-                        <div class="col1"><span></span>{{9>index?'0' + (index + 1):(index + 1)}}</div>
-                        <div class="col2">{{data['姓名']}}</div>
-                        <div class="col3">{{data['次数']}}</div>
-                        <div class="col4" @click="showPersonDetails(index)">详情</div>
-                    </div>
-                </div>
-            </div>
-            <transition name="moveRight">
-                <div class="firstPop" v-show="showRYXX">
-                    <div class="title">
-                        <div>人员详情</div>
-                        <div @click="showRYXX = false">返回</div>
-                    </div>
-                    <div class="row1">
+        <transition name="moveRight">
+            <div class="leftPart">
+                <div id="Module1">
+                    <div class="content">
+                        <div class="title"><img src="./background/编组.png" alt=""></div>
                         <div>
-                            <div>姓名</div>
-                            <div>{{gsqryDetail['姓名']}}</div>
+                            <div class="TOP3">
+                                <div class="ball" @click="showPersonDetails(1)">
+                                    <div>{{gsqryList.length?gsqryList[1]['姓名']: '暂无数据'}}</div>
+                                    <div>{{gsqryList.length?gsqryList[1]['次数']: '暂无数据'}}</div>
+                                    <div>详情</div>
+                                </div>
+                                <div class="ball" @click="showPersonDetails(0)">
+                                    <div>{{gsqryList.length?gsqryList[0]['姓名']: '暂无数据'}}</div>
+                                    <div>{{gsqryList.length?gsqryList[0]['次数']: '暂无数据'}}</div>
+                                    <div>详情</div>
+                                </div>
+                                <div class="ball" @click="showPersonDetails(2)">
+                                    <div>{{gsqryList.length?gsqryList[2]['姓名']: '暂无数据'}}</div>
+                                    <div>{{gsqryList.length?gsqryList[2]['次数']: '暂无数据'}}</div>
+                                    <div>详情</div>
+                                </div>
+                            </div>
+                            <div class="list">
+                                <div class="rows" v-for="(data,index) in gsqryList" :key="index" v-show="index > 2">
+                                    <div class="col1"><span></span>{{9>index?'0' + (index + 1):(index + 1)}}</div>
+                                    <div class="col2">{{data['姓名']}}</div>
+                                    <div class="col3">{{data['次数']}}</div>
+                                    <div class="col4" @click="showPersonDetails(index)">详情</div>
+                                </div>
+                            </div>
+                            <transition name="moveRight">
+                                <div class="firstPop" v-show="showRYXX">
+                                    <div class="title">
+                                        <div>高诉求人员</div>
+                                        <div @click="showRYXX = false"><img src="./background/关闭.png" alt=""></div>
+                                    </div>
+                                    <div>
+                                        <div>{{gsqryDetail['姓名']}}</div>
+                                        <div>
+                                            <img src="./background/电话.png" alt="">
+                                            <span>{{gsqryDetail['电话']}}</span>
+                                        </div>
+                                        <div>
+                                            <img src="./background/定位.png" alt="">
+                                            <span>{{gsqryDetail['地址']}}</span>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <div><span style="color:#FCB83C;font-size:24px;">{{gsqryDetail['投诉频率']}}</span>次/天</div>
+                                                <div>投诉频率</div>
+                                            </div>
+                                            <div>
+                                                <div style="color:#5AE8FA;font-size:22px;">{{gsqryDetail['小区名称']}}</div>
+                                                <div>风险微网格</div>
+                                            </div>
+                                        </div>
+                                        <div>风险业务情况</div>
+                                        <div>
+                                            <IntegratedHistogram :item="getRiskBusiness"></IntegratedHistogram>
+                                        </div>
+                                    </div>
+                                </div>
+                            </transition>
                         </div>
-                        <div>
-                            <div>联系方式</div>
-                            <div>{{gsqryDetail['电话']}}</div>
+                    </div>
+                </div>
+                <div id="Module2">
+                    <div class="row1">
+                        <div class="listArr">
+                            <div class="Abox">
+                                <div class="leftList">
+                                    <div>7天内</div>
+                                    <div class="list">
+                                        <div class="li" v-for="(data, index) in kszzry7List" :key="index">
+                                            <div class="info1">
+                                                <div><span></span>{{index + 1}}</div>
+                                                <div>{{data['姓名']}}</div>
+                                                <div>
+                                                    <div>环比增长次数 </div>
+                                                    <div> {{data['增长']}}</div>
+                                                </div>
+                                                <div @click="showKSZZRY7(index)">
+                                                    详情
+                                                </div>
+                                            </div>
+                                            <transition name="moveRight">
+                                                <div class="info2" v-show="indexOf7 === index">
+                                                    <div>
+                                                        <div>{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div>投诉类别TOP1</div>
+                                                    </div>
+                                                    <div>
+                                                        <div>{{data['次数']}}</div>
+                                                        <div>次数</div>
+                                                    </div>
+                                                    <div>
+                                                        <div>{{data['增速']}}%</div>
+                                                        <div>投诉增速</div>
+                                                    </div>
+                                                    <div @click="indexOf7 = -1"><img src="./background/关闭.png" alt=""></div>
+                                                </div>
+                                            </transition>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="RightList">
+                                    <div>15天内</div>
+                                    <div class="list">
+                                        <div class="li" v-for="(data, index) in kszzry15List" :key="index">
+                                            <div class="info1">
+                                                <div><span></span>{{index + 1}}</div>
+                                                <div>{{data['姓名']}}</div>
+                                                <div>
+                                                    <div>环比增长次数 </div>
+                                                    <div>{{data['环比增长']}}</div>
+                                                </div>
+                                                <div @click="showKSZZRY15(index)">
+                                                    详情
+                                                </div>
+                                            </div>
+                                            <transition name="moveRight">
+                                                <div class="info2" v-show="indexOf15 === index">
+                                                    <div>
+                                                        <div>{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div>投诉类别TOP1</div>
+                                                    </div>
+                                                    <div>
+                                                        <div>{{data['次数']}}</div>
+                                                        <div>次数</div>
+                                                    </div>
+                                                    <div>
+                                                        <div>{{data['投诉频率']}}%</div>
+                                                        <div>投诉增速</div>
+                                                    </div>
+                                                    <div @click="indexOf15 = -1"><img src="./background/关闭.png" alt=""></div>
+                                                </div>
+                                            </transition>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ConditionalList">
+                            <div class="ball">
+                                <div :class="{normal1: true,active1:appealType === data}" @click="changeAppeal(data)" v-for="(data, index) in getBubble" :key="index">
+                                    {{data}}
+                                </div>
+                            </div>
+                            <div class="title">{{appealType}}诉求小区排行</div>
+                            <div>
+                                <div class="list">
+                                    <div class="lhead">
+                                        <div>排名</div>
+                                        <div>小区名称</div>
+                                        <div>投诉数量</div>
+                                        <div></div>
+                                    </div>
+                                    <div class="lbody">
+                                        <div class="rows" v-for="(data,index) in sqxqphList" :key="index">
+                                            <div>{{index + 1}}</div>
+                                            <div>{{data['小区名称']}}</div>
+                                            <div>{{data['数量']}}</div>
+                                            <div @click="ShowGZFF1(index)">详情</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <transition name="moveRight">
+                                        <div class="pop1" v-show="showGZFF1">
+                                            <div class="return">{{sqxqphDetail['小区名称']}}<img @click="CloseGZFF1" src="./background/关闭.png" alt=""></div>
+                                            <div>
+                                                <div class="left">
+                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区排名']}}</div><div class="key">小区对应排名</div></div>
+                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['街道']}}</div><div class="key">小区所属街道</div></div>
+                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['数量']}}</div><div class="key">此小区存在的此风险数</div></div>
+                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区该类投诉总人数']}}</div><div class="key">风险涉及人员数</div></div>
+                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['高风险人员']?sqxqphDetail['高风险人员'].rows.length:0}}</div><div class="key">高风险人员数</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日增速']}}</div><div class="key">该小区近15日风险增速</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['风险增速']}}</div><div class="key">该小区风险增速</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日环比增长数']}}</div><div class="key">近15日环比增长数</div></div>
+                                                </div>
+                                                <div class="right">
+                                                    <div class="title2">高风险人员清单</div>
+                                                    <div class="list2">
+                                                        <div class="li2" v-for="(data, index) in sqxqphDetail['高风险人员']?sqxqphDetail['高风险人员'].rows:[]" :key="index">
+                                                            <div>{{data['姓名']}}</div>
+                                                            <div>{{data['电话']}}</div>
+                                                            <div @click="ShowGZFF2(data['电话'])">详情</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </transition>
+                                <transition name="moveTop">
+                                    <div class="pop2" v-show="showGZFF2">
+                                        <div class="return">风险人员详情<img @click="CloseGZFF2" src="./background/关闭.png" alt=""></div>
+                                        <div>
+                                            <div class="left">
+                                                <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail['姓名']}}</span></div>
+                                                <div><span class="key">联系方式</span><span class="value">{{gfxryDetail['电话']}}</span></div>
+                                                <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail['地址']}}</span></div>
+                                                <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail['投诉频率']}}次/天</span></div>
+                                                <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail['小区名称']}}</span></div>
+                                            </div>
+                                            <div class="right">
+                                                <div class="title2">风险业务情况</div>
+                                                <div class="barchart">
+                                                    <IntegratedHistogram :item="getFXYWQK"></IntegratedHistogram>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </transition>
+                            </div>
                         </div>
                     </div>
                     <div class="row2">
-                        <div>地址</div>
-                        <div>{{gsqryDetail['地址']}}</div>
+                        <div class="tabButton">
+                            <div :class="{normal2: true,active2: gsqxq === '矛盾突出小区'}" @click="changeGSQXQ('矛盾突出小区')">矛盾突出小区</div>
+                            <div :class="{normal2: true,active2: gsqxq === '高群体诉求小区'}" @click="changeGSQXQ('高群体诉求小区')">高群体诉求小区</div>
+                            <div :class="{normal2: true,active2: gsqxq === '诉求快速增长小区'}" @click="changeGSQXQ('诉求快速增长小区')">诉求快速增长小区</div>
+                        </div>
+                        <div class="tabContent">
+                            <div v-show="gsqxq === '矛盾突出小区'" class="lunbo1" ref="lunbo1" @mousewheel="onMouseWheel($event, 'lunbo1')">
+                                        <div class="col" v-for="(data, index) in mdtcxqList" :key="index">
+                                            <div>{{9 > index?'0' + (index + 1):(index + 1)}}</div>
+                                            <div @click="ShowMDTCXQ(index)">详情</div>
+                                            <div>{{data['小区']}}</div>
+                                            <div>
+                                                <div>
+                                                    <div>{{data['数量']}}</div>
+                                                    <div>全年投诉次数</div>
+                                                </div>
+                                                <div>
+                                                    <div>{{data['全年该小区投诉总人数']}}</div>
+                                                    <div>涉及人数</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+                            <div v-show="gsqxq === '高群体诉求小区'" class="lunbo2" ref="lunbo2" @mousewheel="onMouseWheel($event, 'lunbo2')">
+                                        <div class="col" v-for="(data, index) in gqtsqxqList" :key="index">
+                                            <div>{{9 > index?'0' + (index + 1):(index + 1)}}</div>
+                                            <div @click="ShowMDTCXQ(index)">详情</div>
+                                            <div>{{data['小区']}}</div>
+                                            <div>
+                                                <div>{{data['数量']}}</div>
+                                                <div>全年投诉涉及人数</div>
+                                            </div>
+                                        </div>
+                            </div>
+                            <div v-show="gsqxq === '诉求快速增长小区'" class="lunbo3" ref="lunbo3" @mousewheel="onMouseWheel($event, 'lunbo3')">
+                                        <div class="col" v-for="(data, index) in sqkszzxqList" :key="index">
+                                            <div>{{9 > index?'0' + (index + 1):(index + 1)}}</div>
+                                            <div @click="ShowMDTCXQ(index)">详情</div>
+                                            <div>{{data['小区']}}</div>
+                                            <div>
+                                                <div>{{data['近15日投诉总人数']}}</div>
+                                                <div>近15日投诉总人数</div>
+                                            </div>
+                                        </div>
+                            </div>
+                            <transition name="moveRight">
+                                <div class="pop1" v-show="showMDTCXQ">
+                                        <div class="return" @click="CloseMDTCXQ"><img src="./background/关闭.png" alt=""></div>
+                                        <div class="content1" v-show="gsqxq === '矛盾突出小区'">
+                                            <div>
+                                                <div class="field">
+                                                    <div>{{gsqxqDetail['街道']}}</div>
+                                                    <div>所属街道</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div>{{gsqxqDetail['地址']}}</div>
+                                                    <div>小区地址</div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
+                                                <div class="title2">本月投诉比变动情况</div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">月度投诉量变动情况</div>
+                                                <ELine :item="getYDTSL"></ELine>
+                                            </div>
+                                            <div>
+                                                <div class="title2">风险分类排名</div>
+                                                <div class="list2">
+                                                    <div class="li2" v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
+                                                        <div>{{index + 1}}</div>
+                                                        <div>{{data['类别']}}</div>
+                                                        <div>{{data['数量']}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">高风险人员<span style="color:#FFB83F;font-size:24px;font-weight:bold;">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
+                                                <div class="list2">
+                                                    <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
+                                                        <div>{{data['姓名']}}</div>
+                                                        <div>{{data['电话']}}</div>
+                                                        <div @click="ShowGFXRYQD(data['电话'])">详情</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="content1" v-show="gsqxq === '高群体诉求小区'">
+                                            <div>
+                                                <div class="field">
+                                                    <div>{{gsqxqDetail['街道']}}</div>
+                                                    <div>所属街道</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div>{{gsqxqDetail['地址']}}</div>
+                                                    <div>小区地址</div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
+                                                <div class="title2">本月投诉比变动情况</div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">月度投诉量变动情况</div>
+                                                <ELine :item="getYDTSL"></ELine>
+                                            </div>
+                                            <div>
+                                                <div class="title2">风险分类排名</div>
+                                                <div class="list2">
+                                                    <div class="li2" v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
+                                                        <div>{{index + 1}}</div>
+                                                        <div>{{data['类别']}}</div>
+                                                        <div>{{data['数量']}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">高风险人员<span style="color:#FFB83F;font-size:24px;font-weight:bold;">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
+                                                <div class="list2">
+                                                    <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
+                                                        <div>{{data['姓名']}}</div>
+                                                        <div>{{data['电话']}}</div>
+                                                        <div @click="ShowGFXRYQD(data['电话'])">详情</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="content2" v-show="gsqxq === '诉求快速增长小区'">
+                                            <div>
+                                                <div class="field">
+                                                    <div class="key">所属街道</div>
+                                                    <div class="value">{{gsqxqDetail['街道']}}</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div class="key">小区地址</div>
+                                                    <div class="value">{{gsqxqDetail['地址']}}</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div class="key">15日内环比增长数</div>
+                                                    <div class="value">{{gsqxqDetail['近15日环比增长数']}}</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div class="key">近15日投诉总人数</div>
+                                                    <div class="value">{{gsqxqDetail['近15日投诉总人数']}}</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div class="key">高风险人员数</div>
+                                                    <div class="value">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].length:0}}</div>
+                                                </div>
+                                                <div class="field">
+                                                    <div class="key">近15日风险增速</div>
+                                                    <div class="value">{{gsqxqDetail['近15日增速']}}</div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">风险分类排名</div>
+                                                <div class="list2">
+                                                    <div class="li2" v-for="(data, index) in gsqxqDetail['投诉类别数量']?gsqxqDetail['投诉类别数量'].rows:[]" :key="index">
+                                                        <div>· {{index + 1}}</div>
+                                                        <div>{{data['小区']}}</div>
+                                                        <div>{{data['次数']}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="title2">高风险人员<span>{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
+                                                <div class="list2">
+                                                    <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
+                                                        <div>{{data['姓名']}}</div>
+                                                        <div>{{data['电话']}}</div>
+                                                        <div @click="ShowGFXRYQD(data['电话'])">详情</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </transition>
+                            <transition name="moveTop">
+                                <div class="pop2" v-show="showGFXRYQD">
+                                    <div class="return"><img @click="CloseGFXRYQD" src="./background/关闭.png" alt=""></div>
+                                    <div>
+                                        <div class="left">
+                                            <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail2['姓名']}}</span></div>
+                                            <div><span class="key">联系方式</span><span class="value">{{gfxryDetail2['电话']}}</span></div>
+                                            <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail2['地址']}}</span></div>
+                                            <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail2['投诉频率']}}次/天</span></div>
+                                            <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail2['小区名称']}}</span></div>
+                                        </div>
+                                        <div class="right">
+                                            <div class="title2">风险业务情况</div>
+                                            <div class="barchart">
+                                                <IntegratedHistogram :item="getFXYWQK2"></IntegratedHistogram>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </transition>
+                        </div>
                     </div>
                     <div class="row3">
+                        <div>{{getWholeRegionNum}}</div>
                         <div>
-                            <div>投诉频率</div>
-                            <div>{{gsqryDetail['投诉频率']}}次/天</div>
-                        </div>
-                        <div>
-                            <div>风险微网格</div>
-                            <div>{{gsqryDetail['小区名称']}}</div>
-                        </div>
-                    </div>
-                    <div class="row4">
-                        <div>风险业务情况</div>
-                        <div>
-                            <IntegratedHistogram :item="getRiskBusiness"></IntegratedHistogram>
-                        </div>
-                    </div>
-                </div>
-            </transition>
-        </div>
-        <div id="Module2">
-            <div class="row1">
-                <div class="listArr">
-                    <div class="Abox">
-                        <div class="leftList">
-                            <div>7天内</div>
-                            <div class="list">
-                                <div class="li" v-for="(data, index) in kszzry7List" :key="index">
-                                    <div class="info1">
-                                        <div><span></span>{{index + 1}}</div>
-                                        <div>{{data['姓名']}}</div>
-                                        <div>
-                                            <div>环比增长次数 </div>
-                                            <div> {{data['增长']}}</div>
-                                        </div>
-                                        <div @click="showKSZZRY7(index)">
-                                            详情
-                                        </div>
-                                    </div>
-                                    <transition name="moveRight">
-                                        <div class="info2" v-show="indexOf7 === index">
-                                            <div>
-                                                <div>{{data['个人投诉类别最多类'][0]['类别']}}</div>
-                                                <div>投诉类别TOP1</div>
-                                            </div>
-                                            <div>
-                                                <div>{{data['次数']}}</div>
-                                                <div>次数</div>
-                                            </div>
-                                            <div>
-                                                <div>{{data['增速']}}%</div>
-                                                <div>投诉增速</div>
-                                            </div>
-                                            <div @click="indexOf7 = -1">返回>></div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="RightList">
-                            <div>15天内</div>
-                            <div class="list">
-                                <div class="li" v-for="(data, index) in kszzry15List" :key="index">
-                                    <div class="info1">
-                                        <div><span></span>{{index + 1}}</div>
-                                        <div>{{data['姓名']}}</div>
-                                        <div>
-                                            <div>环比增长次数 </div>
-                                            <div>{{data['环比增长']}}</div>
-                                        </div>
-                                        <div @click="showKSZZRY15(index)">
-                                            详情
-                                        </div>
-                                    </div>
-                                    <transition name="moveRight">
-                                        <div class="info2" v-show="indexOf15 === index">
-                                            <div>
-                                                <div>{{data['个人投诉类别top3']?data['个人投诉类别top3'][0]['类别']:'暂无数据'}}</div>
-                                                <div>投诉类别TOP1</div>
-                                            </div>
-                                            <div>
-                                                <div>{{data['次数']}}</div>
-                                                <div>次数</div>
-                                            </div>
-                                            <div>
-                                                <div>{{data['投诉频率']}}%</div>
-                                                <div>投诉增速</div>
-                                            </div>
-                                            <div @click="indexOf15 = -1">返回>></div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ConditionalList">
-                    <div class="ball">
-                        <div class="normal1" @click="changeAppeal(data)" v-for="(data, index) in getBubble" :key="index">
-                            {{data}}
-                        </div>
-                    </div>
-                    <div class="title">{{appealType}}诉求小区排行</div>
-                    <div class="list">
-                        <div class="lhead">
-                            <div>排名</div>
-                            <div>小区名称</div>
-                            <div>投诉数量</div>
-                            <div></div>
-                        </div>
-                        <div class="lbody">
-                            <div class="rows" v-for="(data,index) in sqxqphList" :key="index">
-                                <div>{{index + 1}}</div>
-                                <div>{{data['小区名称']}}</div>
-                                <div>{{data['数量']}}</div>
-                                <div @click="ShowGZFF1(index)">详情</div>
-                            </div>
-                        </div>
-                    </div>
-                    <transition name="moveRight">
-                            <div class="pop1" v-show="showGZFF1">
-                                <div class="left">
-                                    <div><span class="key">小区名称</span><span class="value">{{sqxqphDetail['小区名称']}}</span></div>
-                                    <div><span class="key">小区对应排名</span><span class="value">{{sqxqphDetail['小区排名']}}</span></div>
-                                    <div><span class="key">小区所属街道</span><span class="value">{{sqxqphDetail['街道']}}</span></div>
-                                    <div><span class="key">此小区存在的此风险数</span><span class="value">{{sqxqphDetail['数量']}}</span></div>
-                                    <div><span class="key">风险涉及人员数</span><span class="value">{{sqxqphDetail['小区该类投诉总人数']}}</span></div>
-                                    <div><span class="key">高风险人员数</span><span class="value">{{sqxqphDetail['高风险人员']?sqxqphDetail['高风险人员'].length:0}}</span></div>
-                                    <div><span class="key">该小区近15日风险增速</span><span class="value">0%</span></div>
-                                    <div><span class="key">该小区风险增速</span><span class="value">0%</span></div>
-                                    <div><span class="key">近15日环比增长数</span><span class="value">0%</span></div>
-                                </div>
-                                <div class="right">
-                                    <div class="return" @click="CloseGZFF1">返回</div>
-                                    <div class="title2">高风险人员清单</div>
-                                    <div class="list2">
-                                        <div class="li2" v-for="(data, index) in sqxqphDetail['高风险人员']" :key="index">
-                                            <div>{{data['姓名']}}</div>
-                                            <div>{{data['手机']}}</div>
-                                            <div @click="ShowGZFF2(data['手机'])">></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </transition>
-                    <transition name="moveTop">
-                        <div class="pop2" v-show="showGZFF2">
-                            <div class="left">
-                                <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail['姓名']}}</span></div>
-                                <div><span class="key">联系方式</span><span class="value">{{gfxryDetail['电话']}}</span></div>
-                                <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail['地址']}}</span></div>
-                                <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail['投诉频率']}}次/天</span></div>
-                                <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail['小区名称']}}</span></div>
-                            </div>
-                            <div class="right">
-                                <div class="return" @click="CloseGZFF2">返回</div>
-                                <div class="title2">风险业务情况</div>
-                                <div class="barchart">
-                                    <IntegratedHistogram :item="getFXYWQK"></IntegratedHistogram>
-                                </div>
-                            </div>
-                        </div>
-                    </transition>
-                </div>
-            </div>
-            <div class="row2">
-                <div class="tabButton">
-                    <div class="normal2" @click="changeGSQXQ('矛盾突出小区')">矛盾突出小区</div>
-                    <div class="normal2" @click="changeGSQXQ('高群体诉求小区')">高群体诉求小区</div>
-                    <div class="normal2" @click="changeGSQXQ('诉求快速增长小区')">诉求快速增长小区</div>
-                </div>
-                <div class="tabContent">
-                    <div v-show="gsqxq === '矛盾突出小区'" class="lunbo1" ref="lunbo1" @mousewheel="onMouseWheel($event, 'lunbo1')">
-                                <div class="col" v-for="(data, index) in mdtcxqList" :key="index">
-                                    <div>{{9 > index?'0' + (index + 1):(index + 1)}}</div>
-                                    <div @click="ShowMDTCXQ(index)">详情</div>
-                                    <div>{{data['小区']}}</div>
+                            <div class="lunbo" ref="lunbo" @mousewheel="onMouseWheel($event, 'lunbo')">
+                                <div class="col" v-for="(data, index) in qmssqList" :key="index">
+                                    <div><img :src="getSreetImg(data['街道'])" alt=""></div>
+                                    <div>{{data['街道']}}</div>
                                     <div>
-                                        <div>
-                                            <div>{{data['数量']}}</div>
-                                            <div>全年投诉次数</div>
+                                        <div>{{data['数量']}}</div>
+                                        <div @click="ShowQMSSQ(index)">详情</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <transition name="moveRight">
+                                <div class="pop1" v-show="showQMSSQ">
+                                    <div class="return" @click="CloseQMSSQ"><img src="./background/关闭.png" alt=""></div>
+                                    <div class="column1">
+                                        <div class="title2">风险分类</div>
+                                        <div class="list1">
+                                            <div class="li1" v-for="(data, index) in qmssqDetail['全年投诉类别数量']?qmssqDetail['全年投诉类别数量'].rows:[]" :key="index">
+                                                <div>{{index + 1}}</div>
+                                                <div>{{data['小区']}}</div>
+                                                <div>{{data['数量']}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column2">
+                                        <div class="title2">
+                                            高风险人员数
+                                            <span>{{qmssqDetail['高风险人员']?qmssqDetail['高风险人员']['rows'].length:0}}</span>
+                                        </div>
+                                            <div class="list2">
+                                                <div class="li2" v-for="(data, index) in qmssqDetail['高风险人员']?qmssqDetail['高风险人员'].rows:[]" :key="index">
+                                                    <div class="prop1">{{data['姓名']}}</div>
+                                                    <div class="prop2">{{data['电话']}}</div>
+                                                    <div class="prop3" @click="ShowGFXRYS(data['电话'])">详情</div>
+                                                </div>
+                                            </div>
+                                            <transition name="moveTop">
+                                                <div class="pop2" v-show="showGFXRYS">
+                                                    <div class="return" @click="CloseGFXRYS"><img src="./background/关闭.png" alt=""></div>
+                                                    <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail3['姓名']}}</span></div>
+                                                    <div><span class="key">联系方式</span><span class="value">{{gfxryDetail3['电话']}}</span></div>
+                                                    <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail3['地址']}}</span></div>
+                                                    <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail3['投诉频率']}}次/天</span></div>
+                                                    <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail3['小区名称']}}</span></div>
+                                                </div>
+                                            </transition>
+                                    </div>
+                                    <div class="column3">
+                                        <div class="title2">
+                                            高矛盾值小区数
+                                            <span>{{qmssqDetail['高矛盾小区']?qmssqDetail['高矛盾小区']['rows'].length:0}}</span>
+                                            <span @click="showGMDZXQ = !showGMDZXQ">详情</span>
                                         </div>
                                         <div>
-                                            <div>{{data['全年该小区投诉总人数']}}</div>
-                                            <div>涉及人数</div>
+                                            <transition name="moveBottom">
+                                                <div class="list3" v-show="showGMDZXQ">
+                                                    <div class="li3" v-for="(data, index) in qmssqDetail['高矛盾小区']?qmssqDetail['高矛盾小区'].rows:[]" :key="index">
+                                                        <div class="prop1">{{data['小区']}}</div>
+                                                        <div class="prop2">{{data['数量']}}</div>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                        </div>
+                                    </div>
+                                    <div class="column4">
+                                        <div>{{qmssqDetail['近15日环比增长数']}}</div>
+                                        <div class="title2">近15日环比增长数</div>
+                                    </div>
+                                    <div class="column5">
+                                        <div class="title2">近15日投诉增长情况</div>
+                                        <div class="eline">
+                                            <ELine :item="getTSZZQK15"></ELine>
                                         </div>
                                     </div>
                                 </div>
-                    </div>
-                    <div v-show="gsqxq === '高群体诉求小区'" class="lunbo2" ref="lunbo2" @mousewheel="onMouseWheel($event, 'lunbo2')">
-                                <div class="col" v-for="(data, index) in gqtsqxqList" :key="index">
-                                    <div>
-                                        <span>▪ {{index + 1}}</span>
-                                        <span @click="ShowMDTCXQ(index)">详情>></span>
-                                    </div>
-                                    <div>{{data['小区']}}</div>
-                                    <div>小区名称</div>
-                                    <div>{{data['本月该小区投诉人数总数']}}</div>
-                                    <div>全年投诉涉及人数</div>
-                                </div>
-                    </div>
-                    <div v-show="gsqxq === '诉求快速增长小区'" class="lunbo3" ref="lunbo3" @mousewheel="onMouseWheel($event, 'lunbo3')">
-                                <div class="col" v-for="(data, index) in sqkszzxqList" :key="index">
-                                    <div>{{9 > index?'0' + (index + 1):(index + 1)}}</div>
-                                    <div @click="ShowMDTCXQ(index)">详情</div>
-                                    <div>{{data['小区']}}</div>
-                                    <div>
-                                        <div>{{data['近15日投诉总人数']}}</div>
-                                        <div>近15日投诉总人数</div>
-                                    </div>
-                                </div>
-                    </div>
-                    <transition name="moveRight">
-                        <div class="pop1" v-show="showMDTCXQ">
-                            <div class="left">
-                                <div v-show="gsqxq === '矛盾突出小区'">
-                                    <div>
-                                        <div><span class="key">所属街道</span><span class="value">{{gsqxqDetail['街道']}}</span></div>
-                                        <div><span class="key">小区地址</span><span class="value">{{gsqxqDetail['地址']}}</span></div>
-                                        <div><span class="key">本月投诉比变动情况</span><span class="value">{{gsqxqDetail['本月投诉环比上月增长率']}}%</span></div>
-                                        <div><span class="key">高风险人员数</span><span class="value">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].length:0}}</span></div>
-                                    </div>
-                                    <div class="title2">风险分类排名</div>
-                                    <div class="list2">
-                                        <div class="li2" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']" :key="index">
-                                            <div>· {{index + 1}}</div>
-                                            <div>{{data['小区']}}</div>
-                                            <div>{{data['数量']}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="title2">月度投诉量变动情况</div>
-                                    <div class="eline">
-                                        <ELine :item="getYDTSL"></ELine>
-                                    </div>
-                                </div>
-                                <div v-show="gsqxq === '高群体诉求小区'">
-                                    <div>
-                                        <div><span class="key">所属街道</span><span class="value">{{gsqxqDetail['街道']}}</span></div>
-                                        <div><span class="key">小区地址</span><span class="value">{{gsqxqDetail['地址']}}</span></div>
-                                        <div><span class="key">本月投诉比变动情况</span><span class="value">{{gsqxqDetail['本月投诉环比上月增长率']?gsqxqDetail['本月投诉环比上月增长率'] + '%':'暂无数据'}}</span></div>
-                                        <div><span class="key">高风险人员数</span><span class="value">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].length:0}}</span></div>
-                                    </div>
-                                    <div class="title2">风险分类排名</div>
-                                    <div class="list2">
-                                        <div class="li2" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']" :key="index">
-                                            <div>· {{index + 1}}</div>
-                                            <div>{{data['小区']}}</div>
-                                            <div>{{data['次数']}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="title2">月度投诉量变动情况</div>
-                                    <div class="eline">
-                                        <ELine :item="getYDTSL"></ELine>
-                                    </div>
-                                </div>
-                                <div v-show="gsqxq === '诉求快速增长小区'">
-                                    <div>
-                                        <div><span class="key">所属街道</span><span class="value">{{gsqxqDetail['街道']}}</span></div>
-                                        <div><span class="key">小区地址</span><span class="value">{{gsqxqDetail['地址']}}</span></div>
-                                        <div><span class="key">15日内环比增长数</span><span class="value">{{gsqxqDetail['近15日环比增长数']}}</span></div>
-                                        <div><span class="key">近15日投诉总人数</span><span class="value">{{gsqxqDetail['近15日投诉总人数']}}</span></div>
-                                        <div><span class="key">高风险人员数</span><span class="value">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].length:0}}</span></div>
-                                        <div><span class="key">近15日风险增速</span><span class="value">{{gsqxqDetail['近15日增速']}}</span></div>
-                                    </div>
-                                    <div class="title2">风险分类排名</div>
-                                    <div class="list2">
-                                        <div class="li2" v-for="(data, index) in gsqxqDetail['投诉类别数量']" :key="index">
-                                            <div>· {{index + 1}}</div>
-                                            <div>{{data['小区']}}</div>
-                                            <div>{{data['次数']}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <div class="return" @click="CloseMDTCXQ">返回</div>
-                                <div class="title2">高风险人员清单</div>
-                                <div class="list2">
-                                    <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']" :key="index">
-                                        <div>{{data['姓名']}}</div>
-                                        <div>{{data['电话']}}</div>
-                                        <div @click="ShowGFXRYQD(data['电话'])">></div>
-                                    </div>
-                                </div>
-                            </div>
+                            </transition>
                         </div>
-                    </transition>
-                    <transition name="moveTop">
-                        <div class="pop2" v-show="showGFXRYQD">
-                            <div class="left">
-                                <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail2['姓名']}}</span></div>
-                                <div><span class="key">联系方式</span><span class="value">{{gfxryDetail2['电话']}}</span></div>
-                                <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail2['地址']}}</span></div>
-                                <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail2['投诉频率']}}次/天</span></div>
-                                <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail2['小区名称']}}</span></div>
-                            </div>
-                            <div class="right">
-                                <div class="return" @click="CloseGFXRYQD">返回</div>
-                                <div class="title2">风险业务情况</div>
-                                <div class="barchart">
-                                    <IntegratedHistogram :item="getFXYWQK2"></IntegratedHistogram>
-                                </div>
-                            </div>
-                        </div>
-                    </transition>
+                    </div>
                 </div>
             </div>
-            <div class="row3">
-                <div class="title">区民生诉求指数</div>
-                <div>
-                    <div class="lunbo" ref="lunbo" @mousewheel="onMouseWheel($event, 'lunbo')">
-                        <div class="col">
-                            <div>区民生诉求指数</div>
-                            <div><span>{{getWholeRegionNum}}</span></div>
-                            <img src="" alt="">
+        </transition>
+        <!-- 模块三、四 -->
+        <transition name="moveLeft">
+            <div class="rightPart">
+                <EfficiencyPage></EfficiencyPage>
+                <div id="Module5">
+                    <div class="title"><img src="./background/编组_1.png" alt=""></div>
+                    <div class="content">
+                        <div class="cityEvent">
+                            <vue-seamless-scroll
+                                :data="eventData"
+                                :class-option="classOption"
+                                class="warp"
+                                >
+                                <ul class="item">
+                                    <li v-for="(val, ind) in 10" :key="ind">
+                                    <div  class="eventBox" >
+                                        <div>
+                                            <div><span></span>标题XXXXXXXXXXX</div>
+                                            <div @click="ShowEventDetails">详情</div>
+                                        </div>
+                                        <div>
+                                            诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容诉求内容…
+                                        </div>
+                                        <div>
+                                            2022-08-12 10:21:12
+                                        </div>
+                                    </div>
+                                    </li>
+                                </ul>
+                            </vue-seamless-scroll>
                         </div>
-                        <div class="col" v-for="(data, index) in qmssqList" :key="index">
-                            <div>{{data['街道']}}</div>
-                            <div>
-                                <span>{{data['次数']}}</span>
-                                <span @click="ShowQMSSQ(index)">详情</span>
+                        <transition name="moveLeft">
+                            <div id="Module5Pop" v-show="showEventDetails">
+                                <div>
+                                    <span>民众诉求详情</span>
+                                    <img @click="CloseEventDetails" src="./background/关闭.png" alt="">
+                                </div>
+                                <div>解决房屋拆迁赔偿</div>
+                                <div>解决房屋XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位XX小区拆迁赔偿一直没有到位拆迁赔偿</div>
+                                <div>处置时间线</div>
+                                <div class="block">
+                                    <el-timeline color="#FCB83C">
+                                        <el-timeline-item timestamp="2018/4/12" placement="top">
+                                        <el-card>
+                                            <h4>更新 Github 模板</h4>
+                                            <p>王小虎 提交于 2018/4/12 20:46</p>
+                                        </el-card>
+                                        </el-timeline-item>
+                                        <el-timeline-item timestamp="2018/4/3" placement="top">
+                                        <el-card>
+                                            <h4>更新 Github 模板</h4>
+                                            <p>王小虎 提交于 2018/4/3 20:46</p>
+                                        </el-card>
+                                        </el-timeline-item>
+                                        <el-timeline-item timestamp="2018/4/2" placement="top">
+                                        <el-card>
+                                            <h4>更新 Github 模板</h4>
+                                            <p>王小虎 提交于 2018/4/2 20:46</p>
+                                        </el-card>
+                                        </el-timeline-item>
+                                    </el-timeline>
+                                </div>
                             </div>
-                            <img :src="getSreetImg(data['街道'])" alt="">
-                        </div>
+                        </transition>
                     </div>
-                    <transition name="moveRight">
-                        <div class="pop1" v-show="showQMSSQ">
-                            <div class="return" @click="CloseQMSSQ">返回</div>
-                            <div class="column1">
-                                <div>风险分类</div>
-                                <div class="list1">
-                                    <div class="li1" v-for="(data, index) in qmssqDetail['全年投诉类别数量']" :key="index">
-                                        <div class="prop1">{{data['小区']}}</div>
-                                        <div class="prop2">{{data['次数']}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="column2">
-                                <div>
-                                    <span>高风险人员数</span>
-                                    <span>{{qmssqDetail['高风险人员']?qmssqDetail['高风险人员'].length:0}}</span>
-                                </div>
-                                <div>
-                                    <div class="list2">
-                                        <div class="li2" v-for="(data, index) in qmssqDetail['高风险人员']" :key="index">
-                                            <div class="prop1">{{data['姓名']}}</div>
-                                            <div class="prop2">{{data['电话']}}</div>
-                                            <div class="prop3" @click="ShowGFXRYS(data['电话'])">></div>
-                                        </div>
-                                    </div>
-                                    <transition name="moveTop">
-                                        <div class="pop2" v-show="showGFXRYS">
-                                            <div class="return" @click="CloseGFXRYS">返回</div>
-                                            <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail3['姓名']}}</span></div>
-                                            <div><span class="key">联系方式</span><span class="value">{{gfxryDetail3['电话']}}</span></div>
-                                            <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail3['地址']}}</span></div>
-                                            <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail3['投诉频率']}}次/天</span></div>
-                                            <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail3['小区名称']}}</span></div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div>
-                            <div class="column3">
-                                <div>
-                                    <span>高矛盾值小区数</span>
-                                    <span>{{qmssqDetail['高矛盾小区']?qmssqDetail['高矛盾小区'].length:0}}</span>
-                                    <span @click="showGMDZXQ = !showGMDZXQ">详情</span>
-                                </div>
-                                <div>
-                                    <transition name="moveBottom">
-                                        <div class="list3" v-show="showGMDZXQ">
-                                            <div class="li3" v-for="(data, index) in qmssqDetail['高矛盾小区']" :key="index">
-                                                <div class="prop1">{{data['小区']}}</div>
-                                                <div class="prop2">{{data['次数']}}</div>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div>
-                            <div class="column4">
-                                <div>
-                                    <span>近15日环比增长数</span>
-                                    <span>{{qmssqDetail['近15日环比增长数']}}</span>
-                                </div>
-                                <div></div>
-                            </div>
-                            <div class="column5">
-                                <div>近15日投诉增长情况</div>
-                                <div class="eline">
-                                    <ELine :item="getTSZZQK15"></ELine>
-                                </div>
-                            </div>
-                        </div>
-                    </transition>
                 </div>
             </div>
-        </div>
-        <EfficiencyPage></EfficiencyPage>
-        <div id="Module5">
-            <div class="title">群众诉求</div>
-            <div>
-                <CityEvent :item="getEventData"></CityEvent>
-            </div>
-        </div>
-        <div id="Module5Pop">
-
-        </div>
+        </transition>
     </div>
 </template>
 <script>
@@ -462,10 +576,9 @@ import IntegratedHistogram from '../IntegratedHistogram/index.vue'
 import ELine from '../ELine/index.vue'
 import NewGauge from '../NewGauge/index.vue'
 import NewProgress from '../NewProgress/index.vue'
-import CityEvent from '../CityEvent/index.vue'
 import EfficiencyPage from './EfficiencyPage.vue'
 import NewPie from '../NewPie/index.vue'
-import element from '@/element'
+import vueSeamlessScroll from 'vue-seamless-scroll'
 export default {
   data: function () {
     return {
@@ -474,7 +587,7 @@ export default {
       indexOf15: -1,
       showGZFF1: false,
       showGZFF2: false,
-      appealType: '',
+      appealType: '工资发放',
       showMDTCXQ: false,
       showGFXRYQD: false,
       showQMSSQ: false,
@@ -495,18 +608,25 @@ export default {
       gfxryDetail2: {}, // module2 高诉求小区详情 高风险人员详情
       qmssqList: [], // module2 区民生诉求指数列表
       qmssqDetail: {}, // module2 区民生诉求指数详情
-      gfxryDetail3: {} // module2 区民生诉求指数详情 高风险人员详情
-
+      gfxryDetail3: {}, // module2 区民生诉求指数详情 高风险人员详情
+      eventData: [],
+      classOption: {
+        singleHeight: 208,
+        waitTime: 3000
+      },
+      showEventDetails: false
     }
   },
-  components: {IntegratedHistogram, EfficiencyPage, ELine, NewGauge, NewProgress, CityEvent, NewPie},
+  components: {IntegratedHistogram, EfficiencyPage, ELine, NewGauge, NewProgress, NewPie, vueSeamlessScroll},
   computed: {
     // module2 某诉求小区排行列表
     sqxqphList () {
       let arr = []
       this.AllsqxqphList.forEach(element => {
         if (element['类别名称'] === this.appealType) {
-          arr = element['明细']
+          if (element['明细']) {
+            arr = element['明细'].rows
+          }
         }
       })
       return arr
@@ -521,7 +641,7 @@ export default {
     getWholeRegionNum () {
       let num = 0
       this.qmssqList.forEach(element => {
-        num = num + element['次数']
+        num = num + element['数量']
       })
       return num
     },
@@ -535,28 +655,25 @@ export default {
       }
       return {
         'text': '柱状图',
-        width: 600,
-        height: 300,
+        width: 550,
+        height: 500,
         'imgClass': 'icon-n-histogram',
         'chartType': 'IntegratedHistogram',
         'barType': 'NewHistogram',
-        'ifGradual': 'false',
+        'ifGradual': 'true',
         'showBackground1': false, // 是否显示背景柱图
         'backgroundColor1': 'rgba(180, 180, 180, 0.2)', // 背景柱图的颜色
         'barRadius1': 0, // 柱体圆角
-        'barWidth1': 40, // 柱体大小
-        'HistogramType': 3, // 柱状图类型
+        'barWidth1': 28, // 柱体大小
+        'HistogramType': 1, // 柱状图类型
         'dataTypeSet': 2, // 柱状图类型
-        'lineColor': '#fff', // 类型2中的分割线颜色
-        'downColor': '#6d9eeb', // 类型3中下方颜色
-        'upColor': '#4a86e8', // 类型3中上方颜色
         'topTextColor': '#fff', // 柱状图类型2、3顶部文字的颜色
         'ctLegendShow1': false,
         'dataSetType': false,
         'colorful1': false,
         'ifGradual1': 'false',
-        'legendColor1': '',
-        'splitShow1': false,
+        'legendColor1': 'rgba(197,238,243,1)',
+        'splitShow1': true,
         'ctLegendSize1': '20',
         'TabFontSize': '20',
         'colorType1': 'custom',
@@ -568,10 +685,20 @@ export default {
           '#f5739c',
           '#ffdf91',
           '#5c84e7'],
+        'DScatterColor1': [
+          ['rgba(245,155,66,1)', 'rgba(245,155,66,0.1)'],
+          ['#8feee5', '#1bbcae'],
+          ['#fa8d76', '#db4222'],
+          ['#af8af3', '#874edc'],
+          ['#f5739c', '#f31d53'],
+          ['#ffdf91', '#eeb01b'],
+          ['#5c84e7', '#144fe5'],
+          ['#85f8c0', '#62dc26']
+        ],
         'ctLegendColor1': '#666f8b',
-        'axisLabelSize1': '20',
-        'DanweiColor1': '#828bac',
-        'DanweiSize1': 20,
+        'axisLabelSize1': '18',
+        'DanweiColor1': 'rgba(197,238,243,1)',
+        'DanweiSize1': 18,
         'minInterval1': '',
         'legendY1': 90,
         'gridTop1': 10,
@@ -582,21 +709,30 @@ export default {
         'cropSize1': 2,
         'tooltipShow1': true,
         'dataTypeStation': false,
-        'tooltipBackColor1': '#57625d',
-        'tooltipTextColor1': '#fff',
-        'tooltipfontSize1': 14,
-        'splitColor1': '#fff',
+        'tooltipBackColor1': 'rgba(87, 98, 93, 0.63)',
+        'tooltipTextColor1': 'rgba(197,238,243,1)',
+        'tooltipfontSize1': 18,
+        'splitColor1': 'rgba(197,238,243,1)',
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': chartData
       }
     },
     getTSZZQK15 () {
+      let chartData = {
+        columns: [],
+        rows: []
+      }
+      if (this.qmssqDetail['双曲线图']) {
+        chartData = this.qmssqDetail['双曲线图']
+      }
+      chartData.unitX = '月份'
+      chartData.unit = '次'
       return {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
         'height': 220,
-        'width': 1000,
+        'width': 740,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
@@ -676,46 +812,7 @@ export default {
           ['#5c84e7', '#144fe5'],
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
-        'chartData': {
-          'columns': ['日期', 'CPU核心利用率', 'CPU平均利用率'],
-          'unit': '%',
-          'min': 60,
-          'max': 80,
-          'minIndex': 2,
-          'maxIndex': 3,
-          'unitX': '时间',
-          'rows': [{
-            '日期': '2020-01-01',
-            'CPU核心利用率': 15,
-            'CPU平均利用率': 15
-          },
-          {
-            '日期': '2020-01-02',
-            'CPU核心利用率': 80,
-            'CPU平均利用率': 50
-          },
-          {
-            '日期': '2020-01-03',
-            'CPU核心利用率': 40,
-            'CPU平均利用率': 6
-          },
-          {
-            '日期': '2020-01-05',
-            'CPU核心利用率': 45,
-            'CPU平均利用率': 70
-          },
-          {
-            '日期': '2020-01-06',
-            'CPU核心利用率': 10,
-            'CPU平均利用率': 40
-          },
-          {
-            '日期': '2020-01-07',
-            'CPU核心利用率': 95,
-            'CPU平均利用率': 50
-          }
-          ]
-        }
+        'chartData': chartData
       }
     },
     getYDTSL () {
@@ -736,40 +833,40 @@ export default {
       return {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
-        'height': 300,
-        'width': 1280,
+        'height': 150,
+        'width': 780,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
         'ifGradual': 'false', // 曲线是否渐变
         'ifAreaGradual': 'true', // 区域是否渐变
         'splitShow': false,
-        'ctLegendShow': true,
+        'ctLegendShow': false,
         'ctLegendColor': '#828bac',
         'ctLegendSize': '20',
         'axisLabelSize': '20',
         'legendY': 90,
-        'gridTop': 10,
-        'gridBotton': 15,
-        'gridLeft': 10,
+        'gridTop': 5,
+        'gridBotton': 5,
+        'gridLeft': 5,
         'gridRight': 10,
         'tooltipShow': true,
         'subsectionType': true,
         'areaLineType': true,
         'tooltipBackColor': '#57625d',
         'tooltipTextColor': '#e9eaee',
-        'tooltipfontSize': 20,
-        'splitColor': '#d0e0e3',
-        'splitSize': 2,
+        'tooltipfontSize': 18,
+        'splitColor': 'rgba(197,238,243,1)',
+        'splitSize': 1,
         'minInterval': '',
         'Linesubsection': false,
         'boundaryGap': true,
-        'legendColor': '#828bac',
-        'DanweiColor': '#828bac',
-        'DanweiSize': 20,
+        'legendColor': 'rgba(197,238,243,1)',
+        'DanweiColor': 'rgba(197,238,243,1)',
+        'DanweiSize': 18,
         'lineArea': true, // 是否为区域图
         'lineColorType': false, // 是否为区域图
-        'smooth': false,
+        'smooth': true,
         'LineType': 'solid',
         'formatterType': '1',
         'symbolType': 'circle',
@@ -830,30 +927,27 @@ export default {
       }
       return {
         'text': '柱状图',
-        width: 650,
-        height: 160,
+        width: 750,
+        height: 240,
         'imgClass': 'icon-n-histogram',
         'chartType': 'IntegratedHistogram',
         'barType': 'NewHistogram',
-        'ifGradual': 'false',
+        'ifGradual': 'true',
         'showBackground1': false, // 是否显示背景柱图
         'backgroundColor1': 'rgba(180, 180, 180, 0.2)', // 背景柱图的颜色
         'barRadius1': 0, // 柱体圆角
-        'barWidth1': 40, // 柱体大小
-        'HistogramType': 3, // 柱状图类型
+        'barWidth1': 28, // 柱体大小
+        'HistogramType': 1, // 柱状图类型
         'dataTypeSet': 2, // 柱状图类型
-        'lineColor': '#fff', // 类型2中的分割线颜色
-        'downColor': '#6d9eeb', // 类型3中下方颜色
-        'upColor': '#4a86e8', // 类型3中上方颜色
         'topTextColor': '#fff', // 柱状图类型2、3顶部文字的颜色
         'ctLegendShow1': false,
         'dataSetType': false,
         'colorful1': false,
         'ifGradual1': 'false',
-        'legendColor1': '',
-        'splitShow1': false,
-        'ctLegendSize1': '18',
-        'TabFontSize': '18',
+        'legendColor1': 'rgba(197,238,243,1)',
+        'splitShow1': true,
+        'ctLegendSize1': '20',
+        'TabFontSize': '20',
         'colorType1': 'custom',
         'ScatterColor1': [
           '#6fcaf7',
@@ -863,24 +957,34 @@ export default {
           '#f5739c',
           '#ffdf91',
           '#5c84e7'],
+        'DScatterColor1': [
+          ['rgba(245,155,66,1)', 'rgba(245,155,66,0.1)'],
+          ['#8feee5', '#1bbcae'],
+          ['#fa8d76', '#db4222'],
+          ['#af8af3', '#874edc'],
+          ['#f5739c', '#f31d53'],
+          ['#ffdf91', '#eeb01b'],
+          ['#5c84e7', '#144fe5'],
+          ['#85f8c0', '#62dc26']
+        ],
         'ctLegendColor1': '#666f8b',
         'axisLabelSize1': '18',
-        'DanweiColor1': '#828bac',
+        'DanweiColor1': 'rgba(197,238,243,1)',
         'DanweiSize1': 18,
         'minInterval1': '',
         'legendY1': 90,
-        'gridTop1': 15,
-        'gridBotton1': 5,
-        'gridLeft1': 5,
-        'gridRight1': 5,
-        'formatterType1': '0',
+        'gridTop1': 10,
+        'gridBotton1': 10,
+        'gridLeft1': 10,
+        'gridRight1': 10,
+        'formatterType1': '1',
         'cropSize1': 2,
         'tooltipShow1': true,
         'dataTypeStation': false,
-        'tooltipBackColor1': '#57625d',
-        'tooltipTextColor1': '#fff',
-        'tooltipfontSize1': 14,
-        'splitColor1': '#fff',
+        'tooltipBackColor1': 'rgba(87, 98, 93, 0.63)',
+        'tooltipTextColor1': 'rgba(197,238,243,1)',
+        'tooltipfontSize1': 18,
+        'splitColor1': 'rgba(197,238,243,1)',
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': chartData
@@ -896,30 +1000,27 @@ export default {
       }
       return {
         'text': '柱状图',
-        width: 850,
-        height: 160,
+        width: 800,
+        height: 190,
         'imgClass': 'icon-n-histogram',
         'chartType': 'IntegratedHistogram',
         'barType': 'NewHistogram',
-        'ifGradual': 'false',
+        'ifGradual': 'true',
         'showBackground1': false, // 是否显示背景柱图
         'backgroundColor1': 'rgba(180, 180, 180, 0.2)', // 背景柱图的颜色
         'barRadius1': 0, // 柱体圆角
         'barWidth1': 40, // 柱体大小
-        'HistogramType': 3, // 柱状图类型
+        'HistogramType': 1, // 柱状图类型
         'dataTypeSet': 2, // 柱状图类型
-        'lineColor': '#fff', // 类型2中的分割线颜色
-        'downColor': '#6d9eeb', // 类型3中下方颜色
-        'upColor': '#4a86e8', // 类型3中上方颜色
         'topTextColor': '#fff', // 柱状图类型2、3顶部文字的颜色
         'ctLegendShow1': false,
         'dataSetType': false,
         'colorful1': false,
         'ifGradual1': 'false',
-        'legendColor1': '',
-        'splitShow1': false,
-        'ctLegendSize1': '18',
-        'TabFontSize': '18',
+        'legendColor1': 'rgba(197,238,243,1)',
+        'splitShow1': true,
+        'ctLegendSize1': '20',
+        'TabFontSize': '20',
         'colorType1': 'custom',
         'ScatterColor1': [
           '#6fcaf7',
@@ -929,24 +1030,34 @@ export default {
           '#f5739c',
           '#ffdf91',
           '#5c84e7'],
+        'DScatterColor1': [
+          ['rgba(245,155,66,1)', 'rgba(245,155,66,0.1)'],
+          ['#8feee5', '#1bbcae'],
+          ['#fa8d76', '#db4222'],
+          ['#af8af3', '#874edc'],
+          ['#f5739c', '#f31d53'],
+          ['#ffdf91', '#eeb01b'],
+          ['#5c84e7', '#144fe5'],
+          ['#85f8c0', '#62dc26']
+        ],
         'ctLegendColor1': '#666f8b',
         'axisLabelSize1': '18',
-        'DanweiColor1': '#828bac',
+        'DanweiColor1': 'rgba(197,238,243,1)',
         'DanweiSize1': 18,
         'minInterval1': '',
         'legendY1': 90,
-        'gridTop1': 20,
-        'gridBotton1': 5,
-        'gridLeft1': 5,
-        'gridRight1': 5,
-        'formatterType1': '0',
+        'gridTop1': 10,
+        'gridBotton1': 15,
+        'gridLeft1': 10,
+        'gridRight1': 10,
+        'formatterType1': '1',
         'cropSize1': 2,
         'tooltipShow1': true,
         'dataTypeStation': false,
-        'tooltipBackColor1': '#57625d',
-        'tooltipTextColor1': '#fff',
-        'tooltipfontSize1': 14,
-        'splitColor1': '#fff',
+        'tooltipBackColor1': 'rgba(87, 98, 93, 0.63)',
+        'tooltipTextColor1': 'rgba(197,238,243,1)',
+        'tooltipfontSize1': 18,
+        'splitColor1': 'rgba(197,238,243,1)',
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': chartData
@@ -967,100 +1078,8 @@ export default {
         '物业服务',
         '食品安全',
         '消防安全',
-        '企业诉求'
+        '企业问题'
       ]
-    },
-    getEventData () {
-      return {
-        'text': '城运事件',
-        'imgClass': 'icon-n-text',
-        'chartType': 'CityEvent',
-        'width': 600,
-        'height': 1478,
-        'titleColor': ['#f04d4d', '#d3b3b3'],
-        'titleSize': 20,
-        'dateColor': '#3667ff',
-        'dateSize': 12,
-        'contentColor': '#6689f8',
-        'contentSize': 12,
-        'size': 'big',
-        paddingTop: -90,
-        paddingLeft: 0,
-        boxFontSize: 16,
-        buttonPadding: 20,
-        buttonMargin: 20,
-        boxDirection: false,
-        normalButton: '',
-        normalButtonName: '',
-        checkedButton: '',
-        checkedButtonName: '',
-        ifLoop: true,
-        loopSpeed: 3000,
-        'chartData': {
-          'dataArray': [
-            {
-              'columns': [
-                'title',
-                'content',
-                'date'
-              ],
-              'tile': '值守事件',
-              'rows': [
-                {
-                  'title': null,
-                  'content': '报告领导:120于12点15分接警，在武侯区逸霞街21号棕北中学，据报警人称有人晕厥，调派四川省妇幼保健院出诊，医院于15点32分回复，现场接回一名未成年女性13岁，初步诊断为癫痫，重度无有生命危险。收到请回复，谢谢！',
-                  'date': '2022-11-21 12:15:00'
-                },
-                {
-                  'title': null,
-                  'content': '五办群众上访类信息报送\n\n上访时间：2022年11月21日13：49\n\n上访地点：五办（蜀绣路办公区）政策咨询大厅\n\n被访部门：住建局\n\n上访人员：来自都江堰市融创文旅城的业主（开发商 融创）\n \n上访原因：反映停工停产、延期交房问题\n\n人员状态：无过激行为/无横幅/无统一服装\n\n上访动态 ：13：49 上访人数10人，开始接待中\n  \n 情况跟进：持续跟进中',
-                  'date': '2022-11-21 13:49:00'
-                },
-                {
-                  'title': null,
-                  'content': '110转接【讨薪】\n涉及人数： 几百人\n做工时间：2022年4月-至今\n金额：几十万\n拖欠单位：陕西建工\n问题描述/补充：讨要工资\n来电诉求：及时发放工资，现场100多人聚集，已派警前往处置，暂无过激行为。\n我办已紧急联系武侯区85365671值班老师，要求立即核实维稳。值班老师回复，簇锦街办已将现场聚集群众带至街道办协调，现场平稳。',
-                  'date': '2022-11-21 00:00:00'
-                },
-                {
-                  'title': null,
-                  'content': '管某坤，男，27岁，居住在火车南站街道高攀东路33号魏玛国际3栋1单元2702号，工作单位为成都武侯瑞泰融诚口腔医院。11月15日从贵州返蓉后，每日主要活动轨迹为两点一线上下班。16日-18日核酸检测阴性，19日核酸检测阳性（CT值38，38），20日核酸检测阳性（CT值24,25）。相关涉疫工作区疾控中心正在有序开展。',
-                  'date': '2022-11-20 15:00:00'
-                },
-                {
-                  'title': null,
-                  'content': '【我市本土疫情情况】11月19日0—24时',
-                  'date': '2022-11-20 09:52:00'
-                },
-                {
-                  'title': null,
-                  'content': '11月19日0-24时成都本土疫情情况',
-                  'date': '2022-11-20 09:43:00'
-                },
-                {
-                  'title': null,
-                  'content': '11月19日0-24时成都本土疫情情况',
-                  'date': '2022-11-20 09:10:00'
-                },
-                {
-                  'title': null,
-                  'content': '11月20日疫情信息报送领导',
-                  'date': '2022-11-20 00:55:00'
-                },
-                {
-                  'title': null,
-                  'content': '【我市本土疫情情况】11月19日0—18时，我市新增本土确诊病例64例，新增本土无症状感染者84例。其中在管密接96例，隔离管控人员18例，愿检尽检16例，重点人员筛查12例，主动就诊6例。详情见附件：11月19日0—18时成都市本土疫情情况。（主送：小琳、凤朝同志；抄送：瑞武、彦夫、邓涛、筱柳、智勇、俊杰、光辉、陈麟、玉泉、张瑛、海波、志华、任远、平江、旭光、荣生、王乾、林楠，先毅，杨俊、云帆同志。值班信息，请勿外传。）',
-                  'date': '2022-11-19 20:50:00'
-                },
-                {
-                  'title': null,
-                  'content': '【我市本土疫情情况】11月19日0—14时，我市新增本土确诊病例41例，新增本土无症状感染者69例。其中在管密接75例，隔离管控人员11例，愿检尽检11例，重点人员筛查8例，主动就诊5例。详情见附件：11月19日0—14时成都市本土疫情情况。（主送：小琳、凤朝同志；抄送：瑞武、彦夫、邓涛、筱柳、智勇、俊杰、光辉、陈麟、玉泉、张瑛、海波、志华、任远、平江、旭光、荣生、王乾、林楠，先毅，杨俊、云帆同志。值班信息，请勿外传。）',
-                  'date': '2022-11-19 17:36:00'
-                }
-              ]
-            }
-          ]
-        }
-      }
     }
   },
   watch: {
@@ -1075,6 +1094,12 @@ export default {
     }
   },
   methods: {
+    ShowEventDetails () {
+      this.showEventDetails = true
+    },
+    CloseEventDetails () {
+      this.showEventDetails = false
+    },
     onMouseWheel (e, refName) {
       let eventDelta = -e.wheelDelta || -e.deltaY * 40
       let box = this.$refs[refName]
@@ -1086,8 +1111,8 @@ export default {
     },
     changeGSQXQ (type) {
       this.gsqxq = type
-      $('.normal2').removeClass('active2')
-      event.target.classList.add('active2')
+    //   $('.normal2').removeClass('active2')
+    //   event.target.classList.add('active2')
     },
     showKSZZRY7 (index) {
       if (this.indexOf7 === -1) {
@@ -1101,8 +1126,8 @@ export default {
     },
     changeAppeal (data) {
       this.appealType = data
-      $('.normal1').removeClass('active1')
-      event.target.classList.add('active1')
+    //   $('.normal1').removeClass('active1')
+    //   event.target.classList.add('active1')
     },
     ShowGZFF1 (index) {
       this.showGZFF1 = true
@@ -1233,11 +1258,23 @@ export default {
 <style lang="scss" scoped>
 .WuhouSinglePage{
     display: flex;
+    // flex-wrap: wrap;
+    font-family: monospace !important;
+    // overflow: hidden;
+    .leftPart,.rightPart{
+        display: flex;
+    }
     .moveRight-enter-active {
     animation: box-right-in 0.5s;
     }
     .moveRight-leave-active {
         animation: box-left-leave 0.5s;
+    }
+    .moveLeft-enter-active {
+    animation: box-left-in 0.5s;
+    }
+    .moveLeft-leave-active {
+        animation: box-right-leave 0.5s;
     }
     .moveTop-enter-active {
     animation: box-top-in 0.5s;
@@ -1323,7 +1360,6 @@ export default {
     #Module1{
         width: 680px;
         height: 1620px;
-        position: relative;
         .content{
             width: 100%;
             height: 100%;
@@ -1335,239 +1371,263 @@ export default {
                 }
                 margin-bottom: 32px;
             }
-            .TOP3{
-                color: #797979;
-                width: 100%;
-                font-size: 14px;
-                margin-bottom: 12px;
-                display: flex;
-                .ball:nth-child(1){
-                    width: 192px;
-                    height: 250px;
-                    background: url('./background/2_1.png');
-                    margin-right: 16px;
-                    >div:nth-child(1){
-                        color:#fff;
-                        font-size: 26px;
-                        width: 100%;
-                        text-align: center;
-                        margin-top:64px;
-                    }
-                    >div:nth-child(2){
-                        font-size: 44px;
-                        font-weight: bold;
-                        width: 100%;
-                        text-align: center;
-                        background-image: linear-gradient(to bottom, #d6eaef, #95a5a9);
-                        -webkit-background-clip: text;
-                        color: transparent;
-                        margin-top:12px;
-                        margin-bottom: 20px;
-                    }
-                    >div:nth-child(3){
-                        color:#fff;
-                        font-size: 20px;
-                        width: 80px;
-                        height: 32px;
-                        text-align: center;
-                        line-height: 32px;
-                        border:1px solid rgba(255,255,255,0.3);
-                        border-radius: 16px;
-                        text-align: center;
-                        margin: 0px auto;
-                    }
-                }
-                .ball:nth-child(2){
-                    width: 192px;
-                    height: 280px;
-                    background: url('./background/1_1.png');
-                    margin-right: 16px;
-                    >div:nth-child(1){
-                        color:#fff;
-                        font-size: 26px;
-                        width: 100%;
-                        text-align: center;
-                        margin-top:64px;
-                    }
-                    >div:nth-child(2){
-                        font-size: 44px;
-                        font-weight: bold;
-                        width: 100%;
-                        text-align: center;
-                        background-image: linear-gradient(to bottom, #f2e9db, #f5a01d);
-                        -webkit-background-clip: text;
-                        color: transparent;
-                        margin-top:12px;
-                        margin-bottom: 20px;
-                    }
-                    >div:nth-child(3){
-                        color:#fff;
-                        font-size: 20px;
-                        width: 80px;
-                        height: 32px;
-                        text-align: center;
-                        line-height: 32px;
-                        border:1px solid rgba(255,255,255,0.3);
-                        border-radius: 16px;
-                        text-align: center;
-                        margin: 0px auto;
-                    }
-                }
-                .ball:nth-child(3){
-                    width: 192px;
-                    height: 220px;
-                    background: url('./background/3_1.png');
-                    >div:nth-child(1){
-                        color:#fff;
-                        font-size: 26px;
-                        width: 100%;
-                        text-align: center;
-                        margin-top:64px;
-                    }
-                    >div:nth-child(2){
-                        font-size: 44px;
-                        font-weight: bold;
-                        width: 100%;
-                        text-align: center;
-                        background-image: linear-gradient(to bottom, #f0e1d7, #c27b4b);
-                        -webkit-background-clip: text;
-                        color: transparent;
-                        margin-top:12px;
-                        margin-bottom: 24px;
-                    }
-                    >div:nth-child(3){
-                        color:#fff;
-                        font-size: 20px;
-                        width: 80px;
-                        height: 32px;
-                        text-align: center;
-                        line-height: 32px;
-                        border:1px solid rgba(255,255,255,0.3);
-                        border-radius: 16px;
-                        text-align: center;
-                        margin: 0px auto;
-                    }
-                }
-            }
-            .list{
-                width: 608px;
-                height: 1164px;
-                overflow-y:scroll;
-                // margin:0 auto;
-                .rows{
+            >div:last-child{
+                position: relative;
+                overflow: hidden;
+                .TOP3{
+                    color: #797979;
                     width: 100%;
-                    height: 72px;
-                    background: url('./background/编组_7.png');
+                    font-size: 14px;
                     margin-bottom: 12px;
                     display: flex;
-                    align-items: center;
-                    justify-content: space-around;
-                    .col1{
-                        color: #5ae8fa;
-                        font-size: 20px;
-                        font-weight: bold;
-                        display: flex;
-                        align-items: center;
-                        text-align: center;
-                        width: 20%;
-                        >span{
-                            display: inline-block;
-                            background: #fcb83c;
-                            width: 10px;
-                            height: 10px;
-                            border-radius: 50%;
-                            margin-right: 10px;
+                    .ball:nth-child(1){
+                        width: 192px;
+                        height: 250px;
+                        background: url('./background/2_1.png');
+                        margin-right: 16px;
+                        >div:nth-child(1){
+                            color:#fff;
+                            font-size: 26px;
+                            width: 100%;
+                            text-align: center;
+                            margin-top:64px;
+                        }
+                        >div:nth-child(2){
+                            font-size: 44px;
+                            font-weight: bold;
+                            width: 100%;
+                            text-align: center;
+                            background-image: linear-gradient(to bottom, #d6eaef, #95a5a9);
+                            -webkit-background-clip: text;
+                            color: transparent;
+                            margin-top:12px;
+                            margin-bottom: 20px;
+                        }
+                        >div:nth-child(3){
+                            color:#fff;
+                            font-size: 20px;
+                            width: 80px;
+                            height: 32px;
+                            text-align: center;
+                            line-height: 32px;
+                            border:1px solid rgba(255,255,255,0.3);
+                            border-radius: 16px;
+                            text-align: center;
+                            margin: 0px auto;
+                            cursor: pointer;
                         }
                     }
-                    .col2{
-                        color: #c5eef3;
-                        font-size: 22px;
-                        width: 30%;
-                        text-align: center;
+                    .ball:nth-child(2){
+                        width: 192px;
+                        height: 280px;
+                        background: url('./background/1_1.png');
+                        margin-right: 16px;
+                        >div:nth-child(1){
+                            color:#fff;
+                            font-size: 26px;
+                            width: 100%;
+                            text-align: center;
+                            margin-top:64px;
+                        }
+                        >div:nth-child(2){
+                            font-size: 44px;
+                            font-weight: bold;
+                            width: 100%;
+                            text-align: center;
+                            background-image: linear-gradient(to bottom, #f2e9db, #f5a01d);
+                            -webkit-background-clip: text;
+                            color: transparent;
+                            margin-top:12px;
+                            margin-bottom: 20px;
+                        }
+                        >div:nth-child(3){
+                            color:#fff;
+                            font-size: 20px;
+                            width: 80px;
+                            height: 32px;
+                            text-align: center;
+                            line-height: 32px;
+                            border:1px solid rgba(255,255,255,0.3);
+                            border-radius: 16px;
+                            text-align: center;
+                            margin: 0px auto;
+                            cursor: pointer;
+                        }
                     }
-                    .col3{
-                        color: #c5eef3;
-                        font-size: 22px;
-                        width: 30%;
-                        text-align: center;
-                    }
-                    .col4{
-                        color:#16DFF8;
-                        font-size: 20px;
-                        width: 80px;
-                        height: 32px;
-                        text-align: center;
-                        line-height: 32px;
-                        border:1px solid rgba(22,223,248,0.6);
-                        border-radius: 16px;
-                        text-align: center;
-                        margin: 0px auto;
-                    }
-                }
-            }
-        }
-        .firstPop{
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: #0f1a54;
-            padding: 30px 20px;
-            .title{
-                font-size: 28px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 60px;
-            }
-            .row1{
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 60px;
-                >div{
-                    >div:first-child{
-                        font-size: 24px;
-                        margin-bottom: 5px;
-                    }
-                    >div:last-child{
-                        font-size: 40px;
-                        color: #1ee4fc;
-                    }
-                }
-            }
-            .row2{
-                margin-bottom: 60px;
-                >div:first-child{
-                    font-size: 24px;
-                    margin-bottom: 5px;
-                }
-                >div:last-child{
-                    font-size: 40px;
-                    color: #1ee4fc;
-                }
-            }
-            .row3{
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 60px;
-                >div{
-                    >div:first-child{
-                        font-size: 24px;
-                        margin-bottom: 5px;
-                    }
-                    >div:last-child{
-                        font-size: 40px;
-                        color: #1ee4fc;
+                    .ball:nth-child(3){
+                        width: 192px;
+                        height: 220px;
+                        background: url('./background/3_1.png');
+                        >div:nth-child(1){
+                            color:#fff;
+                            font-size: 26px;
+                            width: 100%;
+                            text-align: center;
+                            margin-top:64px;
+                        }
+                        >div:nth-child(2){
+                            font-size: 44px;
+                            font-weight: bold;
+                            width: 100%;
+                            text-align: center;
+                            background-image: linear-gradient(to bottom, #f0e1d7, #c27b4b);
+                            -webkit-background-clip: text;
+                            color: transparent;
+                            margin-top:12px;
+                            margin-bottom: 24px;
+                        }
+                        >div:nth-child(3){
+                            color:#fff;
+                            font-size: 20px;
+                            width: 80px;
+                            height: 32px;
+                            text-align: center;
+                            line-height: 32px;
+                            border:1px solid rgba(255,255,255,0.3);
+                            border-radius: 16px;
+                            text-align: center;
+                            margin: 0px auto;
+                            cursor: pointer;
+                        }
                     }
                 }
-            }
-            .row4{
-                >div:first-child{
-                    font-size: 24px;
-                    margin-bottom: 20px;
+                .list{
+                    width: 608px;
+                    height: 1164px;
+                    overflow-y:scroll;
+                    // margin:0 auto;
+                    .rows{
+                        width: 100%;
+                        height: 72px;
+                        background: url('./background/编组_7.png');
+                        margin-bottom: 12px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
+                        .col1{
+                            color: #5ae8fa;
+                            font-size: 20px;
+                            font-weight: bold;
+                            display: flex;
+                            align-items: center;
+                            text-align: center;
+                            width: 20%;
+                            >span{
+                                display: inline-block;
+                                background: #fcb83c;
+                                width: 10px;
+                                height: 10px;
+                                border-radius: 50%;
+                                margin-right: 10px;
+                            }
+                        }
+                        .col2{
+                            color: #c5eef3;
+                            font-size: 22px;
+                            width: 30%;
+                            text-align: center;
+                        }
+                        .col3{
+                            color: #c5eef3;
+                            font-size: 22px;
+                            width: 30%;
+                            text-align: center;
+                        }
+                        .col4{
+                            color:#16DFF8;
+                            font-size: 20px;
+                            width: 80px;
+                            height: 32px;
+                            text-align: center;
+                            line-height: 32px;
+                            border:1px solid rgba(22,223,248,0.6);
+                            border-radius: 16px;
+                            text-align: center;
+                            margin: 0px auto;
+                            cursor: pointer;
+                        }
+                    }
+                }
+                .firstPop{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                    border: 2px solid;
+                    border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                    border-radius: 4px;
+                    .title{
+                        height: 76px;
+                        background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                        font-size: 30px;
+                        color: #5AE8FA;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 20px 0 28px;
+                        margin-bottom: 32px;
+                        >div:last-child{
+                            img{
+                                width: 49px;
+                                height:49px;
+                            }
+                        }
+                    }
+                    >div:nth-child(2){
+                        width:100%;
+                        padding: 0 28px;
+                        >div:nth-child(1){
+                            font-size: 26px;
+                            color: #C5EEF3;
+                        }
+                        >div:nth-child(2){
+                            img{
+                                width: 18px;
+                                height:18px;
+                                margin-right: 5px;
+                            }
+                            font-size: 22px;
+                            font-weight: bold;
+                            color: #C5EEF3;
+                            vertical-align: middle;
+                            margin: 18px 0 16px 0;
+                        }
+                        >div:nth-child(3){
+                            img{
+                                width: 18px;
+                                height:18px;
+                                margin-right: 5px;
+                            }
+                            font-size: 20px;
+                            color: #C5EEF3;
+                            vertical-align: middle;
+                            margin-bottom: 32px;
+                        }
+                        >div:nth-child(4){
+                            width: 100%;
+                            height: 116px;
+                            background: linear-gradient(270deg,rgba(22,223,248,0.04), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.04));
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-around;
+                            color: #C5EEF3;
+                            font-size: 18px;
+                            margin-bottom: 32px;
+                            >div{
+                                width: auto;
+                                height: auto;
+                                >div:first-child{
+                                    margin-bottom: 5px;
+                                }
+                            }
+                        }
+                        >div:nth-child(5){
+                            color: #C5EEF3;
+                            font-size: 22px;
+                        }
+                    }
                 }
             }
         }
@@ -1669,47 +1729,55 @@ export default {
                                     // z-index: 1;
                                     width: 100%;
                                     height: 100%;
-                                    background: radial-gradient(#1c45b0, #2e4879);
+                                    background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                                    border: 2px solid;
+                                    border-image: linear-gradient(0deg, rgba(13,171,149,0.20), rgba(30,213,199,0.20)) 2 2;
+                                    border-radius: 4px;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
-                                    padding: 0 15px;
+                                    padding: 0 25px;
                                     >div:nth-child(1) {
                                         >div:first-child {
-                                            font-size: 20px;
-                                            margin-bottom: 2px;
-                                            color: #afcfff;
+                                            font-size: 22px;
+                                            margin-bottom: 4px;
+                                            color: rgba(90,232,250,1);
                                         }
                                         >div:last-child {
-                                            font-size: 16px;
-                                            color: #afcfff;
+                                            font-size: 18px;
+                                            color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(2) {
                                         >div:first-child {
-                                            font-size: 20px;
-                                            color: #ff8787;
-                                            margin-bottom: 2px;
+                                            font-size: 24px;
+                                            color: rgba(252,184,60,1);
+                                            margin-bottom: 4px;
+                                            font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 16px;
-                                            color: #afcfff;
+                                            font-size: 18px;
+                                            color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(3) {
                                         >div:first-child {
-                                            font-size: 20px;
-                                            color: #ff8787;
-                                            margin-bottom: 2px;
+                                            font-size: 24px;
+                                            color: rgba(220,97,79,1);
+                                            margin-bottom: 4px;
+                                            font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 16px;
-                                            color: #afcfff;
+                                            font-size: 18px;
+                                            color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(4) {
-                                        font-size: 18px;
-                                        color: #afcfff;
+                                        img{
+                                            width: 26px;
+                                            height: 26px;
+                                            cursor: pointer;
+                                        }
                                     }
                                 }
                             }
@@ -1755,8 +1823,6 @@ export default {
                 height: 800px;
                 padding: 104px 37px 56px 36px;
                 background: url('./background/编组20.png');
-                position: relative;
-                overflow: hidden;
                 .ball{
                     width: 100%;
                     display: flex;
@@ -1786,196 +1852,248 @@ export default {
                     margin: 16px 0 20px 0;
                     font-weight: bold;
                 }
-                .list{
-                    width: 100%;
-                    .lhead{
+                >div:last-child{
+                    position: relative;
+                    overflow: hidden;
+                    .list{
                         width: 100%;
-                        height: 48px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-around;
-                        color: rgba(22,223,248,1);
-                        font-size: 18px;
-                        font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
-                        font-weight: 500;
-                        text-align: center;
-                        background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
-                        >div:nth-child(1){
-                                width: 10%;
-                        }
-                        >div:nth-child(2){
-                                width: 30%;
-                        }
-                        >div:nth-child(3){
-                                width: 20%;
-                        }
-                        >div:nth-child(4){
-                                width: 5%;
-                        }
-                    }
-                    .lbody{
-                        width: 100%;
-                        height: 384px;
-                        overflow-y: scroll;
-                        .rows{
+                        .lhead{
                             width: 100%;
                             height: 48px;
                             display: flex;
                             align-items: center;
                             justify-content: space-around;
+                            color: rgba(22,223,248,1);
+                            font-size: 18px;
+                            font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
+                            font-weight: 500;
+                            text-align: center;
+                            background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
                             >div:nth-child(1){
-                                font-size: 20px;
-                                font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
-                                font-weight: 700;
-                                text-align: center;
-                                color: #d8f4f7;
-                                width: 10%;
+                                    width: 10%;
                             }
                             >div:nth-child(2){
-                                font-size: 20px;
-                                font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
-                                font-weight: 400;
-                                text-align: center;
-                                color: #d8f4f7;
-                                width: 30%;
+                                    width: 30%;
                             }
                             >div:nth-child(3){
-                                font-size: 20px;
-                                font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
-                                font-weight: 700;
-                                text-align: center;
-                                color: #d8f4f7;
-                                width: 20%;
+                                    width: 20%;
                             }
                             >div:nth-child(4){
-                                width: 5%;
-                                font-size: 20px;
-                                font-family: Source Han Sans SC, Source Han Sans SC-Regular;
-                                font-weight: 400;
-                                text-align: center;
-                                color: #16dff8;
+                                    width: 5%;
                             }
                         }
-                        .rows:nth-child(even){
-                            background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                        .lbody{
+                            width: 100%;
+                            height: 384px;
+                            overflow-y: scroll;
+                            .rows{
+                                width: 100%;
+                                height: 48px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-around;
+                                >div:nth-child(1){
+                                    font-size: 20px;
+                                    font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
+                                    font-weight: 700;
+                                    text-align: center;
+                                    color: #d8f4f7;
+                                    width: 10%;
+                                }
+                                >div:nth-child(2){
+                                    font-size: 20px;
+                                    font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
+                                    font-weight: 400;
+                                    text-align: center;
+                                    color: #d8f4f7;
+                                    width: 30%;
+                                }
+                                >div:nth-child(3){
+                                    font-size: 20px;
+                                    font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
+                                    font-weight: 700;
+                                    text-align: center;
+                                    color: #d8f4f7;
+                                    width: 20%;
+                                }
+                                >div:nth-child(4){
+                                    width: 5%;
+                                    font-size: 20px;
+                                    font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+                                    font-weight: 400;
+                                    text-align: center;
+                                    color: #16dff8;
+                                }
+                            }
+                            .rows:nth-child(even){
+                                background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                            }
                         }
                     }
-                }
-                .pop1{
-                        width: calc(100% - 76px);
-                        height: 255px;
-                        position: absolute;
-                        bottom: 34px;
-                        left: 38px;
-                        display: flex;
-                        align-items: center;
-                        background: radial-gradient(#1c45b0, #2e4879);
-                        justify-content: space-between;
-                        padding: 20px;
-                        .left{
-                            width: 54%;
+                    .pop1{
+                            width: 100%;
                             height: 100%;
-                            overflow:scroll;
-                            font-size: 24px;
-                            font-weight: bold;
-                            >div{
-                                margin-bottom: 30px;
-                                .key{
-                                    color: #fff;
-                                    margin-right: 25px;
-                                }
-                                .value{
-                                    color: #ff8787;
-                                }
-                            }
-                        }
-                        .right{
-                            width: 45%;
-                            height: 100%;
-                            color: #fff;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                            border: 2px solid;
+                            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                            border-radius: 4px;
                             .return{
-                                font-size: 24px;
-                                font-weight: bold;
-                                text-align: right;
-                                position: absolute;
-                                top: 5px;
-                                right: 10px;
-                            }
-                            .title2{
-                                margin-bottom: 5px;
-                                font-size: 24px;
-                                font-weight: bold;
-                            }
-                            .list2{
                                 width: 100%;
-                                height: 170px;
-                                overflow-y: scroll;
-                                font-size: 18px;
-                                padding-right: 10px;
-                                .li2{
+                                height: 76px;
+                                background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                                padding: 0 37px 0 28px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                color: rgba(90,232,250,1);
+                                font-size: 30px;
+                                margin-bottom: 32px;
+                                >img{
+                                    width: 35px;
+                                    height: 35px;
+                                    cursor: pointer;
+                                }
+                            }
+                            >div:last-child{
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                padding: 0 28px;
+                                .left{
+                                    width: 55%;
+                                    height: 280px;
+                                    overflow-y:scroll;
                                     display: flex;
-                                    padding: 0px 10px;
+                                    flex-wrap: wrap;
                                     align-items: center;
-                                    justify-content: space-between;
+                                    >div{
+                                        margin-bottom: 30px;
+                                        margin-right: 50px;
+                                        .key{
+                                            color: rgba(197,238,243,1);
+                                            font-size: 18px;
+                                        }
+                                        .value{
+                                            margin-bottom: 10px;
+                                            font-size: 22px;
+                                            font-weight: bold;
+                                        }
+                                    }
                                 }
-                                >.li2:nth-child(odd){
-                                    background: rgba(138,176,194,0.3);
-                                }
-                                >.li2:nth-child(even){
-                                    background: rgba(255,133,133,0.3);
+                                .right{
+                                    width: 40%;
+                                    height: 280px;
+                                    .title2{
+                                        margin-bottom: 12px;
+                                        font-size: 18px;
+                                        color: rgba(197,238,243,1);
+                                    }
+                                    .list2{
+                                        width: 100%;
+                                        height: 242px;
+                                        overflow-y: scroll;
+                                        font-size: 18px;
+                                        padding-right: 10px;
+                                        .li2{
+                                            display: flex;
+                                            padding: 0px 10px;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            border-top: 2px solid;
+                                            border-bottom: 2px solid;
+                                            border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                            >div:first-child{
+                                                width: 30%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                            }
+                                            >div:last-child{
+                                                width: 60%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                                font-weight: bold;
+                                            }
+                                            >div:nth-child(3){
+                                                width: 10%;
+                                                text-align: center;
+                                                color: #16DFF8;
+                                                font-size: 20px;
+                                            }
+                                        }
+                                        >.li2:nth-child(even){
+                                             background:linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                                        }
+                                    }
                                 }
                             }
-                        }
-                }
-                .pop2{
-                        width: calc(100% - 76px);
-                        height: 255px;
-                        position: absolute;
-                        bottom: 34px;
-                        left: 38px;
-                        display: flex;
-                        align-items: center;
-                        background: radial-gradient(#1c45b0, #2e4879);
-                        justify-content: space-between;
-                        padding: 20px;
-                        .left{
-                            width: 44%;
+                    }
+                    .pop2{
+                            width: 100%;
                             height: 100%;
-                            overflow:scroll;
-                            font-size: 24px;
-                            font-weight: bold;
-                            >div{
-                                margin-bottom: 30px;
-                                .key{
-                                    color: #fff;
-                                    margin-right: 25px;
-                                }
-                                .value{
-                                    color: #ff8787;
-                                }
-                            }
-                        }
-                        .right{
-                            width: 55%;
-                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                            border: 2px solid;
+                            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                            border-radius: 4px;
                             .return{
-                                font-size: 24px;
-                                font-weight: bold;
-                                text-align: right;
-                                position: absolute;
-                                top: 5px;
-                                right: 10px;
+                                width: 100%;
+                                height: 76px;
+                                background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                                padding: 0 37px 0 28px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                color: rgba(90,232,250,1);
+                                font-size: 30px;
+                                margin-bottom: 32px;
+                                >img{
+                                    width: 35px;
+                                    height: 35px;
+                                    cursor: pointer;
+                                }
                             }
-                            .title2{
-                                margin-bottom: 5px;
-                                font-size: 24px;
-                                font-weight: bold;
+                            >div:last-child{
+                                display: flex;
+                                justify-content: space-between;
+                                flex-wrap: wrap;
+                                align-items: center;
+                                padding: 0 28px 20px 28px;
+                                height: 314px;
+                                .left{
+                                    width: 44%;
+                                    height: 100%;
+                                    overflow-y:scroll;
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    >div{
+                                        margin-bottom: 30px;
+                                        .key{
+                                            color: rgba(197,238,243,1);
+                                            margin-right: 25px;
+                                        }
+                                        .value{
+                                            color: #ff8787;
+                                        }
+                                    }
+                                }
+                                .right{
+                                    width: 55%;
+                                    height: 100%;
+                                    .title2{
+                                        margin-bottom: 12px;
+                                        font-size: 18px;
+                                        color: rgba(197,238,243,1);
+                                    }
+                                }
                             }
-                            .barchart{
-                                width: 670px;
-                                height: 180px;
-                            }
-                        }
+                    }
                 }
             }
         }
@@ -1984,6 +2102,7 @@ export default {
             height: 346px;
             background: url('./background/编组17.png');
             padding: 100px 84px 32px 36px;
+            display: flex;
             .tabButton{
                 width: 200px;
                 height: 100%;
@@ -2018,6 +2137,7 @@ export default {
                         width: 2436px;
                         height: 214px;
                         overflow-x: scroll;
+                        overflow-y: hidden;
                         white-space: nowrap;
                         .col{
                             display:inline-flex;
@@ -2026,6 +2146,7 @@ export default {
                             background: url('./background/编组_13.png');
                             margin-right: 28px;
                             text-align: center;
+                            flex-wrap: wrap;
                             position: relative;
                             >div:nth-child(1) {
                                 font-size: 22px;
@@ -2048,25 +2169,22 @@ export default {
                             }
                             >div:nth-child(3) {
                                 width: 100%;
+                                height: auto;
                                 font-size: 24px;
                                 font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
                                 font-weight: 500;
                                 text-align: center;
                                 color: #C5EEF3;
                                 margin-top:53px;
-                                margin-bottom: 37px;
+                                margin-bottom: 30px;
                             }
                             >div:nth-child(4) {
                                 width: 280px;
                                 height: 100px;
-                                background: linear-gradient(270deg,rgba(22,223,248,0.00), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.00));
-                                border: 2px solid rgba(90,232,250,0.04);
                                 display: flex;
                                 justify-content: space-around;
                                 width: 100%;
-                                >div{
-                                    padding: 15px 20px 20px 20px;
-                                    >div:first-child{
+                                >div:first-child{
                                         >div:first-child{
                                             font-size: 24px;
                                             font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
@@ -2080,8 +2198,8 @@ export default {
                                             font-weight: 400;
                                             color: #c5eef3;
                                         }
-                                    }
-                                    >div:last-child{
+                                }
+                                >div:last-child{
                                         >div:first-child{
                                             font-size: 24px;
                                             font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
@@ -2095,7 +2213,6 @@ export default {
                                             font-weight: 400;
                                             color: #c5eef3;
                                         }
-                                    }
                                 }
                             }
                         }
@@ -2104,6 +2221,7 @@ export default {
                         width: 2436px;
                         height: 214px;
                         overflow-x: scroll;
+                        overflow-y: hidden;
                         white-space: nowrap;
                         .col{
                             display:inline-flex;
@@ -2113,6 +2231,7 @@ export default {
                             margin-right: 28px;
                             text-align: center;
                             position: relative;
+                            flex-wrap: wrap;
                             >div:nth-child(1) {
                                 font-size: 22px;
                                 font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
@@ -2140,7 +2259,7 @@ export default {
                                 text-align: center;
                                 color: #C5EEF3;
                                 margin-top:53px;
-                                margin-bottom: 37px;
+                                margin-bottom: 30px;
                             }
                             >div:nth-child(4) {
                                 width: 280px;
@@ -2170,190 +2289,353 @@ export default {
                 }
                 .pop1{
                         position: absolute;
-                        bottom: 1px;
+                        top: 0px;
                         left: 0;
-                        width: 2434px;
-                        height: 219px;
-                        display: flex;
-                        align-items: center;
-                        background: radial-gradient(#1c45b0, #2e4879);
-                        justify-content: space-between;
-                        padding: 20px;
-                            .left{
-                                width: 54%;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                        border: 2px solid;
+                        border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                        border-radius: 4px;
+                        .title2{
+                            color: rgba(197,238,243,1);
+                            font-size: 18px;
+                        }
+                        .return{
+                            img{
+                                width: 26px;
+                                height: 26px;
+                                position: absolute;
+                                top:8px;
+                                right:10px;
+                                cursor: pointer;
+                            }
+                        }
+                        .content1{
+                            width: 100%;
+                            height: 100%;
+                            padding: 10px 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            >div:nth-child(1){
                                 height: 100%;
-                                overflow:scroll;
-                                font-size: 24px;
-                                font-weight: bold;
-                                >div{
+                                width: 20%;
+                                overflow-y: scroll;
+                                .field{
+                                    margin-bottom: 15px;
                                     >div:first-child{
-                                        display: flex;
-                                        flex-wrap: wrap;
-                                        width: 100%;
-                                        justify-content: space-between;
-                                        >div{
-                                            margin-bottom: 30px;
-                                            width: 50%;
-                                            .key{
-                                                color: #fff;
-                                                margin-right: 25px;
-                                            }
-                                            .value{
-                                                color: #ff8787;
-                                            }
-                                        }
+                                        color: rgba(90,232,250,1);
+                                        font-size: 22px;
+                                        white-space: pre-wrap;
                                     }
-                                    .title2{
-                                        margin-bottom: 5px;
-                                        font-size: 24px;
-                                        font-weight: bold;
-                                        color: #fff;
-                                    }
-                                    .list2{
-                                        width: 60%;
-                                        height: auto;
+                                    >div:last-child{
+                                        color: rgba(197,238,243,1);
                                         font-size: 18px;
-                                        .li2{
-                                            display: flex;
-                                            padding: 0px 10px;
-                                            align-items: center;
-                                            justify-content: space-between;
-                                            text-align: center;
-                                            >div:nth-child(1){
-                                                width: 15%;
-                                            }
-                                            >div:nth-child(2){
-                                                width: 70%;
-                                            }
-                                            >div:nth-child(3){
-                                                width: 15%;
-                                            }
-                                        }
-                                        >.li2:nth-child(odd){
-                                            background: rgba(138,176,194,0.3);
-                                        }
-                                        >.li2:nth-child(even){
-                                            background: rgba(255,133,133,0.3);
-                                        }
-                                    }
-                                    .eline{
                                     }
                                 }
                             }
-                            .right{
-                                width: 45%;
-                                height: 100%;
-                                color: #fff;
-                                .return{
+                            >div:nth-child(2){
+                                width: 218px;
+                                height: 158px;
+                                background: linear-gradient(270deg,rgba(22,223,248,0.04), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.04));
+                                >div:first-child{
+                                    color: rgba(255,184,63,1);
                                     font-size: 24px;
                                     font-weight: bold;
-                                    text-align: right;
-                                    position: absolute;
-                                    top: 5px;
-                                    right: 10px;
-                                }
-                                .title2{
-                                    margin-bottom: 5px;
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                }
-                                .list2{
                                     width: 100%;
-                                    height: 120px;
-                                    overflow-y: scroll;
-                                    font-size: 18px;
-                                    padding-right: 10px;
+                                    text-align: center;
+                                    margin: 40px 0 20px 0;
+                                }
+                                >div:last-child{
+                                    width: 100%;
+                                    text-align: center;
+                                }
+                            }
+                            >div:nth-child(3){
+                                height: 100%;
+                            }
+                            >div:nth-child(4){
+                                width: 360px;
+                                .list2{
+                                    margin-top: 5px;
+                                    height: 140px;
+                                    width:100%;
                                     .li2{
+                                        height: 40px;
+                                        width: 100%;
                                         display: flex;
-                                        padding: 0px 10px;
                                         align-items: center;
                                         justify-content: space-between;
-                                    }
-                                    >.li2:nth-child(odd){
-                                        background: rgba(138,176,194,0.3);
+                                        border-top: 1px solid;
+                                        border-bottom: 1px solid;
+                                        border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                        >div:nth-child(1){
+                                            width: 10%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                        >div:nth-child(2){
+                                            width: 50%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                        }
+                                        >div:nth-child(3){
+                                            width: 40%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
                                     }
                                     >.li2:nth-child(even){
-                                        background: rgba(255,133,133,0.3);
+                                        background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
                                     }
                                 }
                             }
+                            >div:nth-child(5){
+                                width: 480px;
+                                .list2{
+                                    margin-top: 5px;
+                                    height: 140px;
+                                    width:100%;
+                                    .li2{
+                                        height: 40px;
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        border-top: 1px solid;
+                                        border-bottom: 1px solid;
+                                        border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                        >div:nth-child(1){
+                                            width: 30%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                        }
+                                        >div:nth-child(2){
+                                            width: 60%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                        >div:nth-child(3){
+                                            width: 10%;
+                                            text-align: center;
+                                            color: #16DFF8;
+                                            font-size: 20px;
+                                        }
+                                    }
+                                    >.li2:nth-child(even){
+                                        background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                                    }
+                                }
+                            }
+                        }
+                        .content2{
+                            width: 100%;
+                            height: 100%;
+                            padding: 10px 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            >div:nth-child(1){
+                                height: 100%;
+                                width: 30%;
+                                overflow-y: scroll;
+                                .field{
+                                    margin-bottom: 15px;
+                                    >div:first-child{
+                                        color: rgba(90,232,250,1);
+                                        font-size: 22px;
+                                        white-space: pre-wrap;
+                                    }
+                                    >div:last-child{
+                                        color: rgba(197,238,243,1);
+                                        font-size: 18px;
+                                    }
+                                }
+                            }
+                            >div:nth-child(2){
+                                width: 35%;
+                                .list2{
+                                    margin-top: 5px;
+                                    height: 140px;
+                                    width:100%;
+                                    .li2{
+                                        height: 40px;
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        border-top: 1px solid;
+                                        border-bottom: 1px solid;
+                                        border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                        >div:nth-child(1){
+                                            width: 10%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                        >div:nth-child(2){
+                                            width: 50%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                        }
+                                        >div:nth-child(3){
+                                            width: 40%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                    }
+                                    >.li2:nth-child(even){
+                                        background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                                    }
+                                }
+                            }
+                            >div:nth-child(3){
+                                width: 30%;
+                                .list2{
+                                    margin-top: 5px;
+                                    height: 140px;
+                                    width:100%;
+                                    .li2{
+                                        height: 40px;
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        border-top: 1px solid;
+                                        border-bottom: 1px solid;
+                                        border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                        >div:nth-child(1){
+                                            width: 30%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                        }
+                                        >div:nth-child(2){
+                                            width: 60%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                        >div:nth-child(3){
+                                            width: 10%;
+                                            text-align: center;
+                                            color: #16DFF8;
+                                            font-size: 20px;
+                                        }
+                                    }
+                                    >.li2:nth-child(even){
+                                        background: linear-gradient(270deg,rgba(22,223,248,0.03), rgba(22,223,248,0.06) 50%, rgba(22,223,248,0.03));
+                                    }
+                                }
+                            }
+                        }
                 }
                 .pop2{
-                        position: absolute;
-                        bottom: 1px;
-                        left: 0;
-                        width: 2434px;
-                        height: 219px;
-                        background: radial-gradient(#1c45b0, #2e4879);
-                        padding: 20px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 20px;
-                        .left{
-                            width: 60%;
+                            width: 100%;
                             height: 100%;
-                            overflow:scroll;
-                            font-size: 24px;
-                            font-weight: bold;
-                            >div{
-                                margin-bottom: 30px;
-                                .key{
-                                    color: #fff;
-                                    margin-right: 25px;
-                                }
-                                .value{
-                                    color: #ff8787;
-                                }
-                            }
-                        }
-                        .right{
-                            width: 40%;
-                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                            border: 2px solid;
+                            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                            border-radius: 4px;
                             .return{
-                                font-size: 24px;
-                                font-weight: bold;
-                                text-align: right;
-                                position: absolute;
-                                top: 5px;
-                                right: 10px;
+                                img{
+                                    width: 26px;
+                                    height: 26px;
+                                    position: absolute;
+                                    top:8px;
+                                    right:10px;
+                                    cursor: pointer;
+                                }
                             }
-                            .title2{
-                                margin-bottom: 5px;
-                                font-size: 24px;
-                                font-weight: bold;
+                            >div:last-child{
+                                display: flex;
+                                justify-content: space-between;
+                                flex-wrap: wrap;
+                                align-items: center;
+                                padding: 10px 20px;
+                                height: 100%;
+                                .left{
+                                    width: 55%;
+                                    height: 100%;
+                                    overflow-y:scroll;
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    >div{
+                                        margin-bottom: 30px;
+                                        .key{
+                                            color: rgba(197,238,243,1);
+                                            margin-right: 25px;
+                                        }
+                                        .value{
+                                            color: #ff8787;
+                                        }
+                                    }
+                                }
+                                .right{
+                                    width: 45%;
+                                    height: 100%;
+                                    .title2{
+                                        margin-bottom: 12px;
+                                        font-size: 18px;
+                                        color: rgba(197,238,243,1);
+                                    }
+                                }
                             }
-                            .barchart{
-                                width: 670px;
-                                height: 180px;
-                            }
-                        }
                 }
             }
         }
         .row3{
             width: 100%;
-            height: auto;
-            padding-left: 54px;
-            .title{
-                color: #fff;
-                font-size: 20px;
-                margin: 20px 0px;
+            height: 346px;
+            display: flex;
+            align-items: center;
+            background: url('./background/矩形备份11.png');
+            >div:first-child{
+                font-size: 44px;
+                font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
+                font-weight: 700;
+                text-align: center;
+                color: #c5eef3;
+                width: 300px;
+                height: 346px;
+                line-height: 346px;
+                background: url('./background/编组_18.png');
+                margin-right: 28px;
             }
             >div:last-child{
-                width: 2434px;
-                height: 267px;
+                width: 2324px;
+                height: 280px;
                 position: relative;
                 overflow: hidden;
                 .lunbo{
                     width: 100%;
                     height: 100%;
                     overflow-x: scroll;
+                    overflow-y: hidden;
                     white-space: nowrap;
                     .col{
-                        width: 300px;
-                        height: 218px;
-                        margin-right: 20px;
+                        width: 260px;
+                        height: 280px;
+                        margin-right: 28px;
                         // padding: 10px;
                         display: inline-flex;
                         flex-wrap: wrap;
@@ -2361,230 +2643,280 @@ export default {
                         // align-items: center;
                         justify-content: space-around;
                         position: relative;
-                        background: linear-gradient(to top right,rgba(145,181,245,0.65),rgba(12,91,234,0.32));
+                        background: url('./background/编组19.png');
                         >div:nth-child(1) {
-                            color: #fff;
-                            font-size: 18px;
-                            width: 100%;
-                            font-weight: bold;
+                            text-align: center;
+                            >img{
+                                width: 100px;
+                                height: 100px;
+                            }
                         }
                         >div:nth-child(2) {
                             width: 100%;
+                            font-size: 24px;
+                            font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
+                            font-weight: 500;
+                            text-align: center;
+                            color: #c5eef3;
+                        }
+                        >div:nth-child(3) {
+                            width: 100%;
                             display: flex;
                             align-items: center;
-                            justify-content: space-between;
-                            >span:nth-child(1){
-                                color: #fff;
-                                font-size: 50px;
+                            justify-content: space-around;
+                            >div:nth-child(1){
+                                color: #5AE8FA;
+                                font-size: 36px;
                                 font-weight: bold;
                             }
-                            >span:nth-child(2) {
-                                color: #1e98d7;
-                                font-size: 30px;
+                            >div:nth-child(2) {
+                                color:#16DFF8;
+                                font-size: 20px;
+                                width: 80px;
+                                height: 32px;
+                                text-align: center;
+                                line-height: 32px;
+                                border:1px solid rgba(22,223,248,0.6);
+                                border-radius: 16px;
+                                text-align: center;
                             }
-                        }
-                        >img{
-                            position: absolute;
-                            top:1px;
-                            right: 0;
-                            width: 115px;
-                            height:115px;
                         }
                     }
                 }
                 .pop1{
+                    position: absolute;
+                    top: 0px;
+                    left: 0;
                     width: 100%;
                     height: 100%;
-                    position: absolute;
-                    top: -0;
-                    left: 0;
                     display: flex;
-                    padding: 20px;
-                    background: #0E2973;
+                    align-items: center;
+                    background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                    border: 2px solid;
+                    border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                    border-radius: 4px;
+                    padding: 10px 20px;
+                    .title2{
+                        color: rgba(197,238,243,1);
+                        font-size: 20px;
+                    }
                     .return{
-                        font-size: 24px;
-                        font-weight: bold;
-                        text-align: right;
-                        position: absolute;
-                        top: 5px;
-                        right: 10px;
-                        color:#fff;
+                        img{
+                            width: 26px;
+                            height: 26px;
+                            position: absolute;
+                            top:8px;
+                            right:10px;
+                            cursor: pointer;
+                        }
                     }
                     .column1{
-                        width: 300px;
+                        width: 360px;
                         height: 100%;
                         margin-right: 40px;
-                        >div:first-child{
-                            font-size: 24px;
-                            font-weight: bold;
-                            color:#fff;
-                            margin-bottom: 5px;
-                        }
                         .list1{
                             width: 100%;
-                            height: 84%;
+                            height: 194px;
                             overflow-y: scroll;
-                            color: #fff;
+                            color: #D8F4F7;
+                            margin-top:5px;
                             .li1{
-                                height: 30px;
-                                width: 99%;
-                                margin-bottom: 10px;
-                                background: radial-gradient(#C280FF, #81D3F8);
-                                font-size: 20px;
-                                padding: 0px 10px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                .prop2{
-                                    color: #FF8787;
+                                        height: 48px;
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        border-top: 1px solid;
+                                        border-bottom: 1px solid;
+                                        border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                        >div:nth-child(1){
+                                            width: 20%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
+                                        >div:nth-child(2){
+                                            width: 60%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                        }
+                                        >div:nth-child(3){
+                                            width: 20%;
+                                            text-align: center;
+                                            color: rgba(216,244,247,1);
+                                            font-size: 20px;
+                                            font-weight: bold;
+                                        }
                                 }
-                            }
                         }
                     }
                     .column2{
-                        width: 300px;
+                        width: 360px;
                         height: 100%;
                         margin-right: 40px;
-                        >div:first-child{
-                            font-size: 24px;
-                            font-weight: bold;
-                            color:#fff;
-                            margin-bottom: 5px;
-                            >span:nth-child(2){
-                                color:#ff8787;
+                        overflow: hidden;
+                        position: relative;
+                        .title2{
+                            >span{
+                                color:#FFB83F;
+                                font-size: 20px;
+                                margin-left: 4px;
+                                font-weight: bold;
                             }
                         }
-                        >div:last-child{
-                            width: 100%;
-                            height: 84%;
-                            overflow: hidden;
-                            position: relative;
-                            .list2{
+                        .list2{
                                 width: 100%;
-                                height: 100%;
+                                height: 194px;
                                 overflow-y: scroll;
+                                color: #D8F4F7;
+                                margin-top:5px;
                                 .li2{
-                                    height: 30px;
-                                    width: 99%;
-                                    font-size: 20px;
-                                    padding: 0px 10px;
-                                    display: flex;
-                                    align-items: center;
-                                    color:#fff;
-                                    text-align: center;
-                                    justify-content: space-between;
-                                    .prop1{
-                                        width: 40%;
+                                            height: 48px;
+                                            width: 100%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            border-top: 1px solid;
+                                            border-bottom: 1px solid;
+                                            border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                            >div:nth-child(1){
+                                                width: 20%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                            }
+                                            >div:nth-child(2){
+                                                width: 60%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                                font-weight: bold;
+                                            }
+                                            >div:nth-child(3){
+                                                width: 20%;
+                                                text-align: center;
+                                                color: #16DFF8;
+                                                font-size: 20px;
+                                                cursor: pointer;
+                                            }
                                     }
-                                    .prop2{
-                                        width: 40%;
-                                    }
-                                    .prop3{
-                                        width: 20%;
-                                    }
-                                }
-                                >.li2:nth-child(odd){
-                                    background: radial-gradient(#C280FF, #81D3F8);
-                                }
-                                >.li2:nth-child(even){
-                                    // background: radial-gradient(#C280FF, #81D3F8);
-                                }
-                            }
-                            .pop2{
+                        }
+                        .pop2{
                                 width: 100%;
                                 height: 100%;
-                                padding: 10px;
+                                padding: 10px 15px;
                                 position: absolute;
                                 top: 0;
                                 left: 0;
-                                overflow:scroll;
-                                font-size: 24px;
+                                overflow-y:scroll;
+                                font-size: 18px;
                                 font-weight: bold;
-                                background: radial-gradient(#1c45b0, #2e4879);
+                                background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                                border: 2px solid;
+                                border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                                border-radius: 4px;
                                 .return{
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                    text-align: right;
-                                    position: absolute;
-                                    top: 5px;
-                                    right: 10px;
-                                    color:#fff;
+                                    img{
+                                        width: 26px;
+                                        height: 26px;
+                                        position: absolute;
+                                        top:8px;
+                                        right:10px;
+                                        cursor: pointer;
+                                    }
+                                    margin-bottom: 0px !important;
                                 }
                                 >div{
-                                    margin-bottom: 20px;
+                                    margin-bottom: 15px;
                                     .key{
-                                        color: #fff;
-                                        margin-right: 25px;
+                                        color: #C5EEF3;
+                                        margin-right: 10px;
                                     }
                                     .value{
-                                        color: #ff8787;
+                                        color: #5AE8FA;
                                     }
                                 }
-                            }
                         }
                     }
                     .column3{
-                        width: 300px;
+                        width: 360px;
                         height: 100%;
                         margin-right: 40px;
-                        >div:first-child{
-                            font-size: 24px;
-                            font-weight: bold;
-                            color:#fff;
-                            margin-bottom: 5px;
-                            >span:nth-child(2){
-                                color:#ff8787;
-                                margin-left:5px;
-                                margin-right: 5px;
+                        .title2{
+                            >span:first-child{
+                                color:#FFB83F;
+                                font-size: 20px;
+                                margin:0 4px;
+                                font-weight: bold;
                             }
-                            >span:nth-child(3){
-                                color:#afcfff;
+                            >span:last-child{
+                                color:#16DFF8;
+                                font-size: 20px;
+                                cursor: pointer;
                             }
                         }
                         >div:last-child{
-                            height: 84%;
                             overflow: hidden;
+                            position: relative;
                             .list3{
                                 width: 100%;
-                                height: 100%;
+                                height: 194px;
                                 overflow-y: scroll;
+                                color: #D8F4F7;
+                                margin-top:5px;
                                 .li3{
-                                    height: 30px;
-                                    width: 99%;
-                                    font-size: 20px;
-                                    padding: 0px 10px;
-                                    display: flex;
-                                    align-items: center;
-                                    color:#fff;
-                                    background: radial-gradient(#C280FF, #81D3F8);
-                                    margin-bottom: 10px;
-                                    justify-content: space-between;
-                                }
+                                            height: 48px;
+                                            width: 100%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            border-top: 1px solid;
+                                            border-bottom: 1px solid;
+                                            border-image: linear-gradient(297deg,rgba(23,237,186,0.00) 17%, rgba(22,244,191,0.60) 87%, rgba(28,240,188,0.00)) 1;
+                                            >div:nth-child(1){
+                                                width: 70%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                            }
+                                            >div:nth-child(2){
+                                                width: 30%;
+                                                text-align: center;
+                                                color: rgba(216,244,247,1);
+                                                font-size: 20px;
+                                                font-weight: bold;
+                                            }
+                                    }
                             }
                         }
                     }
                     .column4{
-                        width: 300px;
-                        height: 100%;
+                        width: 200px;
+                        height: 216px;
                         margin-right: 40px;
+                        background: linear-gradient(270deg,rgba(22,223,248,0.04), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.04));
                         >div:first-child{
                             font-size: 24px;
+                            color: #FFB83F;
                             font-weight: bold;
-                            color:#fff;
-                            margin-bottom: 5px;
-                            >span:nth-child(2){
-                                color:#ff8787;
-                                margin-left:5px;
-                            }
+                            width: 100%;
+                            text-align: center;
+                            margin-top: 70px;
+                            margin-bottom: 20px;
+                        }
+                        >div:last-child{
+                            font-size: 18px;
+                            color: #C5EEF3;
+                            width: 100%;
+                            text-align: center;
                         }
                     }
                     .column5{
-                        width: 400px;
+                        width: auto;
                         height: 100%;
                         >div:first-child{
-                            font-size: 24px;
-                            font-weight: bold;
-                            color:#fff;
                             margin-bottom: 5px;
                         }
                         .eline{
@@ -2597,16 +2929,118 @@ export default {
         }
     }
     #Module5{
-        width: 667px;
+        width: 680px;
         height: 1620px;
-        padding: 30px;
+        background: #0B1B2A;
+        padding: 32px 36px 52px 35px;
         .title{
-            width: 100%;
-            border-left:17px solid #81d3f8;
-            color: #4182ff;
-            font-size: 28px;
-            padding-left: 15px;
-            margin-bottom: 20px;
+            img{
+                width:609px;
+                height:76px;
+            }
+            margin-bottom: 32px;
+        }
+        .content{
+            position: relative;
+            overflow: hidden;
+            .cityEvent{
+                width: 100%;
+                height: 1428px;
+                display: flex;
+                // justify-content: space-between;
+                align-items: center;
+                flex-direction: column;
+                .warp{
+                    overflow: hidden;
+                    width: 100%;
+                    height: 100%;
+                    ul{
+                        list-style: none;
+                        padding: 0;
+                        margin: 0 auto;
+                        li{
+                        margin-bottom: 28px;
+                        // background: #122f61;
+                        height: 180px;
+                        }
+                    }
+                }
+                .eventBox{
+                    width: 100%;
+                    height: 100%;
+                    padding: 24px 24px 24px 16px;
+                    overflow: hidden !important;
+                    // margin-bottom: 10px;
+                    background: url('./background/编组30.png') no-repeat;
+                    background-size: 100% 100%;
+                    font-weight: bold;
+                    overflow-y: scroll;
+                    >div:nth-child(1){
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        >div:nth-child(1) {
+                            color: #C5EEF3;
+                            font-size: 22px;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            span{
+                                width: 12px;
+                                height: 12px;
+                                display: inline-block;
+                                background: #fcb83c;
+                                border-radius: 50%;
+                                margin-right:12px;
+                            }
+                        }
+                        >div:nth-child(2) {
+                            color:#C5EEF3;
+                            font-size: 20px;
+                            width: 80px;
+                            height: 32px;
+                            text-align: center;
+                            line-height: 32px;
+                            background: rgba(22,223,248,0.10);
+                            border: 1px solid rgba(22,223,248,0.60);
+                            border-radius: 17px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
+                    }
+                    >div:nth-child(2){
+                        width: 100%;
+                        height: 56px;
+                        padding-left: 24px;
+                        color: rgba(197,238,243,0.8);
+                        font-size: 20px;
+                        margin-top:8px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 2;
+                    }
+                    >div:nth-child(3){
+                        width: 100%;
+                        height: auto;
+                        padding-left: 24px;
+                        color: rgba(197,238,243,0.8);
+                        font-size: 18px;
+                        margin-top:12px;
+                    }
+
+                }
+            }
+            #Module5Pop{
+                width: 100%;
+                height: 1428px;
+                background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                border: 2px solid;
+                border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                border-radius: 4px;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
         }
     }
 </style>

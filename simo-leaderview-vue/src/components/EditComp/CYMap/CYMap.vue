@@ -214,7 +214,7 @@ export default {
       //   styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
       // })
       this.map.setDisplayOptions({
-        poiText: false
+        // poiText: true
       })
       this.getWHQ()
     },
