@@ -1,5 +1,5 @@
 <template>
-  <div class="NewPie">
+  <div class="NewPie" :style="boxStyle">
     <div ref="NewPie" v-show="showLine" :style="boxStyle"></div>
     <div
       class="v-charts-data-empty"
@@ -39,7 +39,8 @@ export default {
     boxStyle: function () {
       return {
         width: this.item.width + 'px',
-        height: this.item.height + 'px'
+        height: this.item.height + 'px',
+        position: 'relative'
       }
     },
     maxData: function () {
@@ -136,7 +137,7 @@ export default {
           x: this.item.legendX + '%',
           y: this.item.legendY + '%',
           show: this.item.ctLegendShow,
-          width:this.item.legendwidth ,
+          width: this.item.legendwidth,
           textStyle: {
             fontSize: this.item.ctLegendSize,
             color: this.item.ctLegendColor
@@ -149,13 +150,13 @@ export default {
             roseType:
               this.item.pieType === '南丁格尔图' ? 'radius' : false,
             // roseType: this.item.roseType || false,
-            center: [ this.item.gridLeft? this.item.gridLeft+"%":'50%', this.item.gridTop?this.item.gridTop+"%":'50%'],
+            center: [ this.item.gridLeft ? this.item.gridLeft + '%' : '50%', this.item.gridTop ? this.item.gridTop + '%' : '50%'],
             label: {
               normal: {
                 show: this.item.showword,
                 fontSize: this.item.showwordSize || 12,
                 formatter: (params, ticket, callback) => {
-                  return params.name+'('+params.value+')'+'\n'+params.percent+'%'
+                  return params.name + '(' + params.value + ')' + '\n' + params.percent + '%'
                 }
               }
             },

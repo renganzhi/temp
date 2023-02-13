@@ -1,5 +1,6 @@
 <template>
-  <div class="NewHistogram">
+  <div class="NewHistogram"
+      :style="boxStyle">
     <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="item.dataTypeSet === 1">
       <div :class="item.dataTypeStation ? 'DataChangBtnRight':'DataChangBtn'" v-if="!item.dataSetType" :style="FontSizeStyle">
         <div v-for="(item,index) in nameArray" :key='index' @click="changeDataIndex(index)" :class="nowdataShowIndex === index?'checkBox checked':'checkBox nochecked'">
@@ -122,7 +123,8 @@ export default {
     boxStyle: function () {
       return {
         width: this.item.width + 'px',
-        height: this.item.height + 'px'
+        height: this.item.height + 'px',
+        position: 'relative'
       }
     },
     maxData: function () {
