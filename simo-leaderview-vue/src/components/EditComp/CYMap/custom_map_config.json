@@ -76,13 +76,13 @@
     "featureType": "poilabel",
     "elementType": "labels",
     "stylers": {
-        "visibility": "off"
+        "visibility": "on"
     }
 }, {
     "featureType": "poilabel",
     "elementType": "labels.icon",
     "stylers": {
-        "visibility": "off"
+        "visibility": "on"
     }
 }, {
     "featureType": "scenicspotslabel",
