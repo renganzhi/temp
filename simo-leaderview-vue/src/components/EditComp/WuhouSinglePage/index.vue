@@ -541,12 +541,12 @@
                                 <div style="margin: 28px;font-size: 22px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
                                     <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
-                                      <div class="line"></div>
+                                      <div class="line" v-if="index !== xqValue.length-1"></div>
                                       <div class="radio"></div>
                                       <div class="time">{{da['修改时间']}}</div>
                                       <div class="data">
-                                        <div>处置单位：{{da['当前节点名称']}}</div>
-                                        <div>处置内容：{{da['流转内容']}}</div>
+                                        <div>流转状态：{{da['当前节点名称']}}</div>
+                                        <div>流转内容：{{da['流转内容']}}</div>
                                       </div>
                                     </div>
                                 </div>
@@ -1086,13 +1086,13 @@ export default {
     ShowEventDetails (val) {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
+        document.querySelector('.cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
             val.timeLine = res.obj.obj.data[0].items.rows
             this.xqValue = val
             this.showEventDetails = true
-            document.querySelector('.cityEvent .item').style.animationPlayState = 'paused'
           }
         })
       }
@@ -2962,7 +2962,7 @@ export default {
                   animation:anima 20s linear infinite;
                 }
                 .item:hover{
-                  animation-play-state: paused;
+                  animation-play-state: paused !important;
                 }
                 @keyframes anima {
                   0%{
