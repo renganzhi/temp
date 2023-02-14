@@ -508,29 +508,24 @@
                 <div id="Module5">
                     <div class="title"><img src="./background/编组_1.png" alt=""></div>
                     <div class="content">
-                        <div class="cityEvent">
-                            <vue-seamless-scroll
-                                :data="eventData"
-                                :class-option="classOption"
-                                class="warp"
-                                >
-                                <ul class="item">
-                                    <li v-for="(val, ind) in qztsList" :key="ind">
-                                    <div  class="eventBox" >
-                                        <div>
-                                            <div><span></span>{{val['来电标题']}}</div>
-                                            <div @click="ShowEventDetails(val)">详情</div>
-                                        </div>
-                                        <div>
-                                            {{val['来电详情']}}
-                                        </div>
-                                        <div>
-                                            {{val['来电时间']}}
-                                        </div>
+                        <div class="cityEvent" ref="cityEvent"
+                           >
+                            <ul class="item" ref="item">
+                                <li v-for="(val, ind) in qztsList" :key="ind">
+                                <div  class="eventBox" >
+                                    <div>
+                                        <div><span></span>{{val['问题标题']}}</div>
+                                        <div @click="ShowEventDetails(val)">详情</div>
                                     </div>
-                                    </li>
-                                </ul>
-                            </vue-seamless-scroll>
+                                    <div>
+                                        {{val['描述']}}
+                                    </div>
+                                    <div>
+                                        {{val['上报时间']}}
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
                         </div>
                         <transition name="moveLeft">
                             <div id="Module5Pop" v-show="showEventDetails">
@@ -539,17 +534,20 @@
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseEventDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;font-size: 26px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['来电标题'] || ''}}</div>
+                                <div style="margin: 26px;font-size: 26px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 18px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
-                                  {{xqValue['来电详情'] || ''}}
+                                  {{xqValue['描述'] || ''}}
                                 </div>
                                 <div style="margin: 28px;font-size: 22px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
-                                    <div class="TimeBox" v-for="(da,index) in 10" :key="index">
+                                    <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
                                       <div class="line"></div>
                                       <div class="radio"></div>
-                                      <div class="time">ssssss</div>
-                                      <div class="data">ssssssssssssssssss</div>
+                                      <div class="time">{{da['修改时间']}}</div>
+                                      <div class="data">
+                                        <div>处置单位：{{da['当前节点名称']}}</div>
+                                        <div>处置内容：{{da['流转内容']}}</div>
+                                      </div>
                                     </div>
                                 </div>
                               </div>
@@ -601,11 +599,6 @@ export default {
       qmssqDetail: {}, // module2 区民生诉求指数详情
       gfxryDetail3: {}, // module2 区民生诉求指数详情 高风险人员详情
       qztsList: [], // 投诉列表
-      eventData: [],
-      classOption: {
-        singleHeight: 208,
-        waitTime: 3000
-      },
       xqValue: {},
       showEventDetails: false
     }
@@ -1091,11 +1084,22 @@ export default {
       this.isopenShow = true
     },
     ShowEventDetails (val) {
-      this.xqValue = val
-      this.showEventDetails = true
+      if (val['工单号']) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj) {
+            val.timeLine = res.obj.obj.data[0].items.rows
+            this.xqValue = val
+            this.showEventDetails = true
+            document.querySelector('.cityEvent .item').style.animationPlayState = 'paused'
+          }
+        })
+      }
     },
     CloseEventDetails () {
       this.showEventDetails = false
+      document.querySelector('.cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
       let eventDelta = -e.wheelDelta || -e.deltaY * 40
@@ -1249,6 +1253,7 @@ export default {
       this.axios.get('/leaderview/newDistrict/GetMSSQ20').then(res => {
         if (res.success && res.obj.rows) {
           this.qztsList = res.obj.rows
+          document.querySelector('.cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
       })
     }
@@ -2950,9 +2955,23 @@ export default {
                 width: 100%;
                 height: 1448px;
                 display: flex;
-                // justify-content: space-between;
                 align-items: center;
                 flex-direction: column;
+                .item{
+                  width: 100%;
+                  animation:anima 20s linear infinite;
+                }
+                .item:hover{
+                  animation-play-state: paused;
+                }
+                @keyframes anima {
+                  0%{
+                    transform: translateY(0);
+                  }
+                  100%{
+                    transform: translateY(-100%);
+                  }
+                }
                 .warp{
                     overflow: hidden;
                     width: 100%;
@@ -3035,7 +3054,7 @@ export default {
             }
             #Module5Pop{
                 width: 100%;
-                height: 1428px;
+                height: 1448px;
                 background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
                 border: 2px solid;
                 border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
