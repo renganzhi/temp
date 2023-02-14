@@ -1092,12 +1092,14 @@ export default {
             val.timeLine = res.obj.obj.data[0].items.rows
             this.xqValue = val
             this.showEventDetails = true
+            document.querySelector('.cityEvent .item').style.animationPlayState = 'paused'
           }
         })
       }
     },
     CloseEventDetails () {
       this.showEventDetails = false
+      document.querySelector('.cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
       let eventDelta = -e.wheelDelta || -e.deltaY * 40
