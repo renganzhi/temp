@@ -541,7 +541,7 @@
                                 <div style="margin: 28px;font-size: 22px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
                                     <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
-                                      <div class="line" v-if="index !== xqValue.length-1"></div>
+                                      <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
                                       <div class="radio"></div>
                                       <div class="time">{{da['修改时间']}}</div>
                                       <div class="data">
@@ -3066,7 +3066,7 @@ export default {
                   position: relative;
                   .line{
                     position: absolute;
-                    left: 8px;
+                    left: 9px;
                     top: 15px;
                     height: 100%;
                     border-left: 2px solid #FCB83C;
@@ -3200,24 +3200,25 @@ export default {
                 }
         }
         .ivu-input-wrapper{
-            background: #fff;
+            background: linear-gradient(45deg, rgba(22, 222, 248, 0.1), rgba(22, 223, 248, 0.02));
                 .ivu-icon-ios-calendar-outline{
                 line-height: 50px !important;
-                color: #000 !important;
+                color: #C5EEF3 !important;
                 font-size: 22px !important;
 
                 }
                 .ivu-icon-ios-close-circle{
                 line-height: 50px !important;
-                color: #000 !important;
+                color: #C5EEF3 !important;
                 font-size: 22px !important;
                 }
                 .ivu-input{
                 width: 365px !important;
                 height: 50px !important;
-                color: #000 !important;
+                color: #C5EEF3 !important;
                 font-size: 25px !important;
-                border: 1px solid rgb(247, 234, 234) !important;
+                border-radius: 4px;
+                border: 2px solid hsla(187, 94%, 67%, 0.2) !important;
                 }
         }
     }
