@@ -73,6 +73,7 @@ export default [
   'SmallOrderMenu',
   'CityEvent',
   'WuhouSinglePage',
+  'AppMarket',
   'EventVenation',
   'StreetMenu',
   'WordClouds',

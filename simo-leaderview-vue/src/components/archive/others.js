@@ -23,6 +23,7 @@ import WuhoYXHL from '@/components/EditComp/WuhoYXHL/config.js'
 import CYZBTX from '@/components/EditComp/CYZBTX/config.js'
 import WuHolunboTab from '@/components/EditComp/WuHolunboTab/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
+import AppMarket from '@/components/EditComp/AppMarket/config.js'
 
 const others = {
   name: '其他',
@@ -68,7 +69,8 @@ const others = {
     WuhoYXHL.item,
     CYZBTX.item,
     WuHolunboTab.item,
-    WuhoMaoBL.item
+    WuhoMaoBL.item,
+    AppMarket.item
   ]
 }
 

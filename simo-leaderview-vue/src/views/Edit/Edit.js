@@ -53,6 +53,7 @@ let config = {
   SmallOrderMenu: require('@/components/EditComp/SmallOrderMenu/config.js'),
   CityEvent: require('@/components/EditComp/CityEvent/config.js'),
   WuhouSinglePage: require('@/components/EditComp/WuhouSinglePage/config.js'),
+  AppMarket: require('@/components/EditComp/AppMarket/config.js'),
   EventVenation: require('@/components/EditComp/EventVenation/config.js'),
   StreetMenu: require('@/components/EditComp/StreetMenu/config.js'),
   WordClouds: require('@/components/EditComp/WordClouds/config.js'),
@@ -3531,7 +3532,7 @@ export default {
         }
       }
     },
-    getVideoIdsArry(){
+    getVideoIdsArry () {
       this.axios.get('/leaderview/WuHou/getHcnetNationPoints').then((res) => {
         this.VideoIdsArry = res.obj
       })
