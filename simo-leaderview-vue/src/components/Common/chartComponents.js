@@ -84,6 +84,7 @@ import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage'
 import AppMarket from '@/components/EditComp/AppMarket'
+import KeyProjects from '@/components/EditComp/KeyProjects'
 import EventVenation from '@/components/EditComp/EventVenation'
 import StreetMenu from '@/components/EditComp/StreetMenu'
 import WordClouds from '@/components/EditComp/WordClouds'
@@ -182,6 +183,7 @@ export default {
   CityEvent,
   WuhouSinglePage,
   AppMarket,
+  KeyProjects,
   EventVenation,
   StreetMenu,
   WordClouds,

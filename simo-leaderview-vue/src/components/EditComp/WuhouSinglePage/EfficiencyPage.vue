@@ -58,12 +58,12 @@
                                     </div>
                                     <div class="datatime allDatatime">
                                       <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                      <div style="color:#C5EEF3">0天0小时0分钟</div>
                                     </div>
                                   </div>
                                   <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
+                                    <div>----</div>
+                                    <div>----</div>
                                   </div>
                                   <div class="peoplename">
                                     <div>处置人员</div>
@@ -95,12 +95,12 @@
                                     </div>
                                     <div class="datatime">
                                       <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                      <div style="color:#C5EEF3">{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-平均办件时间_自定义时段'].rows[0]['平均办件时间']:'0天0小时0分钟'}}</div>
                                     </div>
                                   </div>
                                   <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
+                                    <div>{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['办件人员数']:'----'}}</div>
+                                    <div>{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['人均办件量']:'----'}}</div>
                                   </div>
                                   <div class="peoplename">
                                     <div>处置人员</div>

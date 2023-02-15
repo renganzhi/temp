@@ -9,28 +9,30 @@
       <div class="appmodel">大数据资源平台</div>
       <div class="appmodel">成都市防汛减灾保障系统</div>
     </div>
-    <div class="showModelBox" v-if="isShowModel">
-      <div class="title">
-        <div class="closeTitle" @click="isShowModel = false"></div>
-      </div>
-      <div class="ModelBody">
-        <div class="selectTitle">
-          <Input
-            v-model="SelectName"
-            style="width:270px"
-            type="password"
-            placeholder="请输入搜索内容"
-          />
-          <div class="search" @click="searchData"></div>
+    <transition name="moveLeft">
+      <div class="showModelBox" v-show="isShowModel">
+        <div class="title">
+          <div class="closeTitle" @click="isShowModel = false"></div>
         </div>
-        <div class="dataBody">
-          <div class="data" v-for="(item,index) in 40" :key="index">
-            <div class="name">成都市防汛减灾保障系统</div>
-            <div class="name2">市城运中心</div>
+        <div class="ModelBody">
+          <div class="selectTitle">
+            <Input
+              v-model="SelectName"
+              style="width:270px"
+              type="password"
+              placeholder="请输入搜索内容"
+            />
+            <div class="search" @click="searchData"></div>
+          </div>
+          <div class="dataBody">
+            <div class="data" v-for="(item,index) in 40" :key="index">
+              <div class="name">成都市防汛减灾保障系统</div>
+              <div class="name2">市城运中心</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -184,5 +186,107 @@ export default {
       }
     }
   }
+}
+
+.appmarket{
+    display: flex;
+    flex-wrap: wrap;
+    font-family: monospace !important;
+    // overflow: hidden;
+    .leftPart,.rightPart{
+        display: flex;
+    }
+    .moveRight-enter-active {
+    animation: box-right-in 0.5s;
+    }
+    .moveRight-leave-active {
+        animation: box-left-leave 0.5s;
+    }
+    .moveLeft-enter-active {
+    animation: box-left-in 0.5s;
+    }
+    .moveLeft-leave-active {
+        animation: box-right-leave 0.5s;
+    }
+    .moveTop-enter-active {
+    animation: box-top-in 0.5s;
+    }
+    .moveTop-leave-active {
+        animation: box-bottom-leave 0.5s;
+    }
+    .moveBottom-enter-active {
+    animation: box-bottom-in 0.5s;
+    }
+    .moveBottom-leave-active {
+        animation: box-top-leave 0.5s;
+    }
+    // 向左移动
+    @keyframes box-left-leave {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+    }
+    @keyframes box-left-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+    }
+    // 向右移动
+    @keyframes box-right-leave {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+    }
+    @keyframes box-right-in {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+    }
+    // 向上移动
+    @keyframes box-top-leave {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+    }
+    @keyframes box-top-in {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+    }
+    // 向下移动
+    @keyframes box-bottom-leave {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+    }
+    }
+    @keyframes box-bottom-in {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+    }
 }
 </style>
