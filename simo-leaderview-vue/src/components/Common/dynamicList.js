@@ -74,6 +74,7 @@ export default [
   'CityEvent',
   'WuhouSinglePage',
   'AppMarket',
+  'KeyProjects',
   'EventVenation',
   'StreetMenu',
   'WordClouds',

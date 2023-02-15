@@ -943,3 +943,17 @@ html[data-theme="blueWhite"] {
         max-height: 886px !important;
     }
 }
+.keyprojects{
+  .ivu-table{
+    font-size: 12px;
+    color: rgb(218, 214, 214) !important;
+    th{
+      padding: 0;
+      text-align: center;
+    }
+    .ivu-table-cell{
+      padding: 0;
+      text-align: center;
+    }
+  }
+}

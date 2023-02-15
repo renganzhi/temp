@@ -30,6 +30,7 @@ import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage/config.js'
 import AppMarket from '@/components/EditComp/AppMarket/config.js'
+import KeyProjects from '@/components/EditComp/KeyProjects/config.js'
 import EventVenation from '@/components/EditComp/EventVenation/config.js'
 import StreetMenu from '@/components/EditComp/StreetMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
@@ -722,6 +723,7 @@ SmallOrderMenu.item,
 CityEvent.item,
 WuhouSinglePage.item,
 AppMarket.item,
+KeyProjects.item,
 EventVenation.item,
 StreetMenu.item,
 WordClouds.item,

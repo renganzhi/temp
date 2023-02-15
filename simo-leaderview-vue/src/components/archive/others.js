@@ -24,6 +24,7 @@ import CYZBTX from '@/components/EditComp/CYZBTX/config.js'
 import WuHolunboTab from '@/components/EditComp/WuHolunboTab/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 import AppMarket from '@/components/EditComp/AppMarket/config.js'
+import KeyProjects from '@/components/EditComp/KeyProjects/config.js'
 
 const others = {
   name: '其他',
@@ -70,7 +71,8 @@ const others = {
     CYZBTX.item,
     WuHolunboTab.item,
     WuhoMaoBL.item,
-    AppMarket.item
+    AppMarket.item,
+    KeyProjects.item
   ]
 }
 
