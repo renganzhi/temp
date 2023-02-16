@@ -70,7 +70,7 @@
                                     <div>人均办件量</div>
                                   </div>
                                 </div>
-                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data['单位'])">
+                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data)">
                                   <div class="titleTop">
                                     <div class="leftOne">
                                       <div class="streeName">{{data['单位']}}</div>
@@ -95,7 +95,7 @@
                                     </div>
                                     <div class="datatime">
                                       <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-平均办件时间_自定义时段'].rows[0]['平均办件时间']:'0天0小时0分钟'}}</div>
+                                      <div style="color:#C5EEF3">{{data['平均办件时长'] ? data['平均办件时长']:'0天0小时0分钟'}}</div>
                                     </div>
                                   </div>
                                   <div class="peoplevalue">
@@ -227,7 +227,7 @@
                     </div>
                   </div>
                   <div class="datatime">
-                    <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">0天10小时30分钟 <div :class="true?'upBack':'downBack'">66%</div></div>
+                    <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}} <div :class="true?'upBack':'downBack'">66%</div></div>
                     <div>平均办件时间</div>
                   </div>
                   <div class="peoplevalue">
@@ -911,14 +911,14 @@ export default {
         }
       })
     },
-    getJieDaoParamData (type) {
-      console.log(type)
+    getJieDaoParamData (olddata) {
       $('#lead-screen').addClass('disShow')
-      this.axios.get('/leaderview/newDistrict/GetCQXN?param=' + (type || '') + '&start_time=' + (this.dateValue[0] || '') + '&end_time=' + (this.dateValue[1] || '')).then(res => {
+      this.axios.get('/leaderview/newDistrict/GetCQXN?param=' + (olddata['单位'] || '') + '&start_time=' + (this.dateValue[0] || '') + '&end_time=' + (this.dateValue[1] || '')).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
           this.showStreetInfo = true
           this.modelData = res.obj
+          this.modelData.bodyData = olddata
           this.getBJLZS.chartData.columns = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].columns : []
           this.getBJLZS.chartData.rows = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].rows : []
 
@@ -932,7 +932,6 @@ export default {
     }
   },
   mounted () {
-    console.log(modelData)
     this.getBodyParamData()
   }
 }

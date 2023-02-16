@@ -8,16 +8,16 @@
         <div class="leftData">
           <div class="data" style="width:260px;height:55px">
             <div class="name">项目总数</div>
-            <div class="data">256个</div>
+            <div class="data">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
           <div class="BotData" style="width:260px;height:55px">
             <div class="data" style="width:128px;height:55px">
               <div class="name">总投资</div>
-              <div class="data">2567.38亿</div>
+              <div class="data">{{modelBodyData['总投资']||0}}万元</div>
             </div>
             <div class="data" style="width:128px;height:55px">
               <div class="name">本年度计划投资</div>
-              <div class="data">567.5亿</div>
+              <div class="data">{{modelBodyData['本年度投资计划']||0}}万元</div>
             </div>
           </div>
         </div>
@@ -48,104 +48,52 @@ export default {
       columns1: [
         {
           title: '项目名称',
-          key: 'name'
+          key: '项目名称'
         },
         {
           title: '项目批次',
-          key: 'age'
+          key: '项目批次'
         },
         {
           title: '投资类别',
-          key: 'address'
+          key: '投资类别'
         },
         {
           title: '投资总额',
-          key: 'data1'
+          key: '投资总额'
         },
-        {
-          title: '牵头领导',
-          key: 'data2'
-        },
+        // {
+        //   title: '牵头领导',
+        //   key: '牵头领导'
+        // },
         {
           title: '业主单位',
-          key: 'data3'
+          key: '业主单位'
         },
-        {
-          title: '责任单位',
-          key: 'data4'
-        },
+        // {
+        //   title: '责任单位',
+        //   key: '责任单位'
+        // },
         {
           title: '行业分类',
-          key: 'data5'
+          key: '行业分类'
         },
         {
           title: '所属区域',
-          key: 'data6'
+          key: '所属区域'
         },
         {
           title: '所属功能区',
-          key: 'data7'
+          key: '所属功能区'
         },
         {
           title: '所属行业部门',
           width: 90,
-          key: 'data8'
+          key: '所属行业部门'
         }
       ],
-      data1: [
-        {
-          name: '污水处理项目',
-          age: '新开工项目',
-          address: '政府投资',
-          data1: '2500万元',
-          data2: '郑春雷',
-          data3: '区环保局',
-          data4: '区环保局',
-          data5: '水利基础建设',
-          data6: '望江路街道',
-          data7: '悦湖新材料科技转换中心',
-          data8: '区卫健委'
-        },
-        {
-          name: '污水处理项目',
-          age: '新开工项目',
-          address: '政府投资',
-          data1: '2500万元',
-          data2: '郑春雷',
-          data3: '区环保局',
-          data4: '区环保局',
-          data5: '水利基础建设',
-          data6: '望江路街道',
-          data7: '悦湖新材料科技转换中心',
-          data8: '区卫健委'
-        },
-        {
-          name: '污水处理项目',
-          age: '新开工项目',
-          address: '政府投资',
-          data1: '2500万元',
-          data2: '郑春雷',
-          data3: '区环保局',
-          data4: '区环保局',
-          data5: '水利基础建设',
-          data6: '望江路街道',
-          data7: '悦湖新材料科技转换中心',
-          data8: '区卫健委'
-        },
-        {
-          name: '污水处理项目',
-          age: '新开工项目',
-          address: '政府投资',
-          data1: '2500万元',
-          data2: '郑春雷',
-          data3: '区环保局',
-          data4: '区环保局',
-          data5: '水利基础建设',
-          data6: '望江路街道',
-          data7: '悦湖新材料科技转换中心',
-          data8: '区卫健委'
-        }
-      ],
+      data1: [],
+      modelBodyData: {},
       isShowModel: false,
       mychart: null,
       mychart2: null
@@ -154,31 +102,25 @@ export default {
   mounted () {
     this.mychart = echarts.init(this.$refs.PeiModel)
     this.mychart2 = echarts.init(this.$refs.PeiModel2)
-    this.getOption1()
-    this.getOption2()
+    this.axios.get('/leaderview/ChengYun4/GetFGW1').then(res => {
+      if (res.success) {
+        this.modelBodyData = res.obj.rows[0] || {}
+        this.data1 = this.modelBodyData['项目列表'] || []
+        this.getOption1()
+        this.getOption2()
+      }
+    })
   },
   methods: {
     getOption1 () {
-      var m2R2Data = [
-        {
-          value: 200,
-          legendname: '新开项目',
-          name: '新开项目  200',
-          itemStyle: { color: '#8d7fec' }
-        },
-        {
-          value: 50,
-          legendname: '续建项目',
-          name: '续建项目  50',
-          itemStyle: { color: '#5085f2' }
-        },
-        {
-          value: 40,
-          legendname: '竣工项目',
-          name: '竣工项目  40',
-          itemStyle: { color: '#e75fc3' }
-        }
-      ]
+      var m2R2Data = []
+      this.modelBodyData['重大项目批次组成'].forEach(d => {
+        m2R2Data.push({
+          value: d['数量'],
+          legendname: d['名称'],
+          name: d['名称'] + '    ' + d['数量']
+        })
+      })
       let option = {
         tooltip: {
           trigger: 'item',
@@ -233,20 +175,14 @@ export default {
       this.mychart.setOption(option)
     },
     getOption2 () {
-      var m2R2Data = [
-        {
-          value: 46,
-          legendname: '正常推进',
-          name: '正常推进  46',
-          itemStyle: { color: '#8d7fec' }
-        },
-        {
-          value: 200,
-          legendname: '相对滞后',
-          name: '相对滞后  200',
-          itemStyle: { color: '#5085f2' }
-        }
-      ]
+      var m2R2Data = []
+      this.modelBodyData['重大项目类别组成'].forEach(d => {
+        m2R2Data.push({
+          value: d['数量'],
+          legendname: d['名称'],
+          name: d['名称'] + '    ' + d['数量']
+        })
+      })
       let option = {
         tooltip: {
           trigger: 'item',
@@ -293,7 +229,6 @@ export default {
           }
         ]
       }
-
       this.mychart2.setOption(option)
     }
   }
