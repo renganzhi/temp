@@ -95,6 +95,14 @@ export default {
       data1: [],
       modelBodyData: {},
       isShowModel: false,
+      colorList: [
+        '#ffd965',
+        '#97d87e',
+        '#4aa8eb',
+        '#3bafff',
+        '#f1bb4c',
+        'rgba(250,250,250,0.5)'
+      ],
       mychart: null,
       mychart2: null
     }
@@ -152,7 +160,7 @@ export default {
             return str
           },
           textStyle: {
-            color: '#8C8C8C',
+            color: '#dfdfdf',
             fontSize: 8
           },
           height: 95
@@ -165,6 +173,13 @@ export default {
             radius: ['40%', '65%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
+            itemStyle: {
+              normal: {
+                color: (params) => {
+                  return this.colorList[params.dataIndex]
+                }
+              }
+            },
             label: {
               show: false
             },
@@ -211,6 +226,13 @@ export default {
             radius: ['0%', '65%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
+            itemStyle: {
+              normal: {
+                color: (params) => {
+                  return this.colorList[params.dataIndex]
+                }
+              }
+            },
             label: {
               show: true,
               formatter: '{b}个',
