@@ -207,9 +207,15 @@
                                         <div class="return">风险人员详情<img @click="CloseGZFF2" src="./background/关闭.png" alt=""></div>
                                         <div>
                                             <div class="left">
-                                                <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail['姓名']}}</span></div>
-                                                <div><span class="key">联系方式</span><span class="value">{{gfxryDetail['电话']}}</span></div>
-                                                <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail['地址']}}</span></div>
+                                                <div><span class="key">人员姓名</span><span class="value">
+                                                  {{gfxryDetail['姓名']?(isVerification?gfxryDetail['姓名']:(gfxryDetail['姓名'].slice(0,1)+'**')):''}}
+                                                </span></div>
+                                                <div><span class="key">联系方式</span><span class="value">
+                                                  {{gfxryDetail['电话']?(isVerification?gfxryDetail['电话']:(gfxryDetail['电话'].slice(0,3)+'*********')):''}}
+                                                </span></div>
+                                                <div><span class="key">家庭住址</span><span class="value">
+                                                  {{gfxryDetail['地址']?(isVerification?gfxryDetail['地址']:(gfxryDetail['地址'].slice(0,5)+'***********')):''}}
+                                                </span></div>
                                                 <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail['投诉频率']}}次/天</span></div>
                                                 <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail['小区名称']}}</span></div>
                                             </div>
@@ -281,7 +287,7 @@
                                                     <div>所属街道</div>
                                                 </div>
                                                 <div class="field">
-                                                    <div>{{gsqxqDetail['地址']}}</div>
+                                                    <div>{{gsqxqDetail['地址']?(isVerification?gsqxqDetail['地址']:(gsqxqDetail['地址'].slice(0,5)+'**********')):''}}</div>
                                                     <div>小区地址</div>
                                                 </div>
                                             </div>
@@ -307,8 +313,8 @@
                                                 <div class="title2">高风险人员<span style="color:#FFB83F;font-size:24px;font-weight:bold;">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
                                                 <div class="list2">
                                                     <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
-                                                        <div>{{data['姓名']}}</div>
-                                                        <div>{{data['电话']}}</div>
+                                                        <div>{{data['姓名']?(isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')):''}}</div>
+                                                        <div>{{data['电话']?(isVerification?data['电话']:(data['电话'].slice(0,3)+'********')):''}}</div>
                                                         <div @click="ShowGFXRYQD(data['电话'])">详情</div>
                                                     </div>
                                                 </div>
@@ -321,7 +327,7 @@
                                                     <div>所属街道</div>
                                                 </div>
                                                 <div class="field">
-                                                    <div>{{gsqxqDetail['地址']}}</div>
+                                                    <div>{{gsqxqDetail['地址']?(isVerification?gsqxqDetail['地址']:(gsqxqDetail['地址'].slice(0,5)+'**********')):''}}</div>
                                                     <div>小区地址</div>
                                                 </div>
                                             </div>
@@ -347,8 +353,8 @@
                                                 <div class="title2">高风险人员<span style="color:#FFB83F;font-size:24px;font-weight:bold;">{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
                                                 <div class="list2">
                                                     <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
-                                                        <div>{{data['姓名']}}</div>
-                                                        <div>{{data['电话']}}</div>
+                                                        <div>{{data['姓名']?(isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')):''}}</div>
+                                                        <div>{{data['姓名']?(isVerification?data['电话']:(data['电话'].slice(0,3)+'********')):''}}</div>
                                                         <div @click="ShowGFXRYQD(data['电话'])">详情</div>
                                                     </div>
                                                 </div>
@@ -395,8 +401,8 @@
                                                 <div class="title2">高风险人员<span>{{gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows.length:0}}</span></div>
                                                 <div class="list2">
                                                     <div class="li2" v-for="(data, index) in gsqxqDetail['高风险人员']?gsqxqDetail['高风险人员'].rows:[]" :key="index">
-                                                        <div>{{data['姓名']}}</div>
-                                                        <div>{{data['电话']}}</div>
+                                                        <div>{{data['姓名']?(isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')):''}}</div>
+                                                        <div>{{data['电话']?(isVerification?data['电话']:(data['电话'].slice(0,3)+'********')):''}}</div>
                                                         <div @click="ShowGFXRYQD(data['电话'])">详情</div>
                                                     </div>
                                                 </div>
@@ -409,9 +415,15 @@
                                     <div class="return"><img @click="CloseGFXRYQD" src="./background/关闭.png" alt=""></div>
                                     <div>
                                         <div class="left">
-                                            <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail2['姓名']}}</span></div>
-                                            <div><span class="key">联系方式</span><span class="value">{{gfxryDetail2['电话']}}</span></div>
-                                            <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail2['地址']}}</span></div>
+                                            <div><span class="key">人员姓名</span><span class="value">
+                                              {{gfxryDetail2['姓名']?(isVerification?gfxryDetail2['姓名']:(gfxryDetail2['姓名'].slice(0,1)+'**')):''}}
+                                            </span></div>
+                                            <div><span class="key">联系方式</span><span class="value">
+                                              {{gfxryDetail2['电话']?(isVerification?gfxryDetail2['电话']:(gfxryDetail2['电话'].slice(0,3)+'********')):''}}
+                                            </span></div>
+                                            <div><span class="key">家庭住址</span><span class="value">
+                                              {{gfxryDetail2['地址']?(isVerification?gfxryDetail2['地址']:(gfxryDetail2['地址'].slice(0,5)+'*********')):''}}
+                                            </span></div>
                                             <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail2['投诉频率']}}次/天</span></div>
                                             <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail2['小区名称']}}</span></div>
                                         </div>
@@ -459,17 +471,23 @@
                                         </div>
                                             <div class="list2">
                                                 <div class="li2" v-for="(data, index) in qmssqDetail['高风险人员']?qmssqDetail['高风险人员'].rows:[]" :key="index">
-                                                    <div class="prop1">{{data['姓名']}}</div>
-                                                    <div class="prop2">{{data['电话']}}</div>
+                                                    <div class="prop1">{{data['姓名']?(isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')):''}}</div>
+                                                    <div class="prop2">{{data['电话']?(isVerification?data['电话']:(data['电话'].slice(0,3)+'********')):''}}</div>
                                                     <div class="prop3" @click="ShowGFXRYS(data['电话'])">详情</div>
                                                 </div>
                                             </div>
                                             <transition name="moveTop">
                                                 <div class="pop2" v-show="showGFXRYS">
                                                     <div class="return" @click="CloseGFXRYS"><img src="./background/关闭.png" alt=""></div>
-                                                    <div><span class="key">人员姓名</span><span class="value">{{gfxryDetail3['姓名']}}</span></div>
-                                                    <div><span class="key">联系方式</span><span class="value">{{gfxryDetail3['电话']}}</span></div>
-                                                    <div><span class="key">家庭住址</span><span class="value">{{gfxryDetail3['地址']}}</span></div>
+                                                    <div><span class="key">人员姓名</span><span class="value">
+                                                      {{gfxryDetail3['姓名']?(isVerification?gfxryDetail3['姓名']:(gfxryDetail3['姓名'].slice(0,1)+'**')):''}}
+                                                    </span></div>
+                                                    <div><span class="key">联系方式</span><span class="value">
+                                                      {{gfxryDetail3['电话']?(isVerification?gfxryDetail3['电话']:(gfxryDetail3['电话'].slice(0,3)+'*********')):''}}
+                                                    </span></div>
+                                                    <div><span class="key">家庭住址</span><span class="value">
+                                                      {{gfxryDetail3['地址']?(isVerification?gfxryDetail3['地址']:(gfxryDetail3['地址'].slice(0,5)+'***********')):''}}
+                                                    </span></div>
                                                     <div><span class="key">投诉频率</span><span class="value">{{gfxryDetail3['投诉频率']}}次/天</span></div>
                                                     <div><span class="key">风险微网格</span><span class="value">{{gfxryDetail3['小区名称']}}</span></div>
                                                 </div>
