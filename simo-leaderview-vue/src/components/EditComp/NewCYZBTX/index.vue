@@ -110,7 +110,7 @@
                             <div>类别</div>
                         </div>
                         <div class="tablebody">
-                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSQK" :key="index">
                                 <div>{{data['日期']}}</div>
                                 <div>{{data['内容']}}</div>
                                 <div>{{data['类别']}}</div>
@@ -125,7 +125,7 @@
                             <div>时间</div>
                         </div>
                         <div class="tablebody">
-                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSQK" :key="index">
                                 <div>{{data['类别']}}</div>
                                 <div>{{data['标题']}}</div>
                                 <div>{{data['内容']}}</div>
@@ -140,7 +140,7 @@
                             <div>值班长交接内容</div>
                         </div>
                         <div class="tablebody">
-                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSQK" :key="index">
                                 <div>{{data['今日值班长']}}</div>
                                 <div>{{data['昨日值班长']}}</div>
                                 <div>{{data['值班长交接内容']}}</div>
@@ -157,9 +157,9 @@
                             <div class="refresh"><Icon @click="refreshZBZSZD" type="md-refresh" /></div>
                         </div>
                         <div class="list">
-                            <div class="rows" v-for="(data, index) in getZBZSZD" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSZD" :key="index">
                                 <div></div>
-                                <div>{{data['内容']}}</div>
+                                <div>{{data['标题']}}</div>
                             </div>
                         </div>
                     </div>
@@ -171,9 +171,9 @@
                             <div class="refresh"><Icon @click="refreshYJYA" type="md-refresh" /></div>
                         </div>
                         <div class="list">
-                            <div class="rows" v-for="(data, index) in getYJYA" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getYJYA" :key="index">
                                 <div></div>
-                                <div>{{data['内容']}}</div>
+                                <div>{{data['标题']}}</div>
                             </div>
                         </div>
                     </div>
@@ -216,11 +216,11 @@
                             <div>备注</div>
                         </div>
                         <div class="tablebody">
-                            <div class="rows" v-for="(data, index) in getCurrentGZQD" :key="index">
+                            <div @click="showXQ(data)" class="rows" v-for="(data, index) in getCurrentGZQD" :key="index">
                                 <div>{{index + 1}}</div>
                                 <div>{{data['时间']}}</div>
                                 <div>{{data['内容']}}</div>
-                                <div>备注</div>
+                                <div></div>
                             </div>
                         </div>
                 </div>
@@ -424,6 +424,15 @@ export default {
     }
   },
   methods: {
+    showXQ (data) {
+      if (this.$parent.$parent.ShowTanKuangBox) {
+        let dataArray = {
+          title: '数据详情',
+          data: data
+        }
+        this.$parent.$parent.ShowTanKuangBox(dataArray)
+      }
+    },
     DateToString (date) {
       let da = ''
       if (typeof date !== 'string') {
@@ -1011,12 +1020,21 @@ export default {
                             background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
                             >div:nth-child(1){
                                 width: 20%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(2){
                                 width: 30%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(3){
                                 width: 50%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                         }
                         >.rows:nth-child(odd){
@@ -1061,15 +1079,27 @@ export default {
                             background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
                             >div:nth-child(1){
                                 width: 10%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(2){
                                 width: 35%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(3){
                                 width: 40%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(4){
                                 width: 15%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                         }
                         >.rows:nth-child(odd){
@@ -1114,15 +1144,27 @@ export default {
                             background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
                             >div:nth-child(1){
                                 width: 20%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(2){
                                 width: 30%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(3){
                                 width: 30%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(4){
                                 width: 20%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                         }
                         >.rows:nth-child(odd){
@@ -1182,6 +1224,7 @@ export default {
                         .rows{
                             height: 37px;
                             width: 100%;
+                            padding-right: 8px;
                             border: 1px solid;
                             border-image: linear-gradient(90deg, #2e578b, #2e578b) 1 1;
                             border-radius: 2px;
@@ -1197,6 +1240,12 @@ export default {
                                 background: linear-gradient(180deg,#d4e7ff, #d8d8d8);
                                 border-radius: 50%;
                                 margin-right: 6px;
+                            }
+                            >div:last-child{
+                              width: calc(100% - 16px);
+                              white-space: nowrap;
+                              overflow: hidden;
+                              text-overflow:ellipsis;
                             }
                         }
                     }
@@ -1338,15 +1387,27 @@ export default {
                             width: 100%;
                             >div:nth-child(1){
                                 width: 5%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(2){
                                 width: 15%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(3){
                                 width: 50%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                             >div:nth-child(4){
                                 width: 30%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
                             }
                         }
                         >.rows:nth-child(odd){
