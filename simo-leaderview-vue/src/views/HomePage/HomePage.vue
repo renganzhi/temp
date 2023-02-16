@@ -56,7 +56,8 @@
                 <beijing :nowPageName="pageName"></beijing>
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
-                <CYMap :nowPageName="pageName"></CYMap>
+                <!-- <CYMap :nowPageName="pageName"></CYMap> -->
+                <MapSwitch :nowPageName="pageName"></MapSwitch>
                 <!-- <iframe  id="BaiDuIframe" style="height:100%;width:100%;position: absolute;z-index:0"
      src="http://172.16.149.41:8181/appli/start?appliId=987084259741138944&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe> -->
                 <!-- <EconomicMap :nowPageName="pageName"></EconomicMap> -->
@@ -451,6 +452,7 @@ import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
 import CYMap from '@/components/EditComp/CYMap/CYMap.vue'
+import MapSwitch from '@/components/EditComp/MapSwitch/index.vue'
 import EconomicMap from '@/components/EditComp/EconomicMap/index.vue'
 import ImportPage from './../EditPage/ImportPage'
 import WuhoIfream from '@/components/EditComp/WuhoIfream'
@@ -472,6 +474,7 @@ export default {
     AddPage,
     ImportPage,
     CYMap,
+    MapSwitch,
     EconomicMap,
     beijing
   },
