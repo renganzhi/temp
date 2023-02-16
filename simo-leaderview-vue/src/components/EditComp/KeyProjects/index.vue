@@ -8,16 +8,16 @@
         <div class="leftData">
           <div class="data" style="width:260px;height:55px">
             <div class="name">项目总数</div>
-            <div class="data">{{modelBodyData['项目总数'] || 0}}个</div>
+            <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
           <div class="BotData" style="width:260px;height:55px">
             <div class="data" style="width:128px;height:55px">
               <div class="name">总投资</div>
-              <div class="data">{{modelBodyData['总投资']||0}}万元</div>
+              <div class="data1">{{modelBodyData['总投资']||0}}万元</div>
             </div>
             <div class="data" style="width:128px;height:55px">
               <div class="name">本年度计划投资</div>
-              <div class="data">{{modelBodyData['本年度投资计划']||0}}万元</div>
+              <div class="data1">{{modelBodyData['本年度投资计划']||0}}万元</div>
             </div>
           </div>
         </div>
@@ -299,7 +299,8 @@ export default {
           justify-content: space-between;
         }
         .data{
-          background-color: #182b4c;
+          background-image: url('./img/03.png');
+          background-size: 100% 100%;
           display: flex;
           flex-wrap: wrap;
           .name{
@@ -307,16 +308,18 @@ export default {
             width: 100%;
             display: flex;
             font-size: 14px;
-            color: #C8E0FF;
+            background-image: linear-gradient(to top, #32c2d4, #d5efff);
+            -webkit-background-clip: text;
+            color: transparent;
             justify-content: center;
             align-items: flex-end;
           }
-          .data{
+          .data1{
             height: 55%;
             width: 100%;
             font-size: 16px;
             display: flex;
-            color: #C8E0FF;
+            color: #d4e7ff;
             justify-content: center;
             align-items: flex-start;
           }
