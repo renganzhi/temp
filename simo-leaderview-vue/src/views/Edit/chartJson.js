@@ -23,6 +23,7 @@ import hotspot from '@/components/EditComp/hotspot/config.js'
 import SwitchButton from '@/components/EditComp/SwitchButton/config.js'
 import ShrinkBox from '@/components/EditComp/ShrinkBox/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
+import LLZYPotButton from '@/components/EditComp/LLZYPotButton/config.js'
 import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
@@ -716,6 +717,7 @@ hotspot.item,
 SwitchButton.item,
 ShrinkBox.item,
 ExternalJump.item,
+LLZYPotButton.item,
 ToggleButton.item,
 IframePop.item,
 OrderMenu.item,

@@ -78,6 +78,7 @@ import Hotspot from '@/components/EditComp/hotspot'
 import SwitchButton from '@/components/EditComp/SwitchButton'
 import ShrinkBox from '@/components/EditComp/ShrinkBox'
 import ExternalJump from '@/components/EditComp/ExternalJump'
+import LLZYPotButton from '@/components/EditComp/LLZYPotButton'
 import ToggleButton from '@/components/EditComp/ToggleButton'
 import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
@@ -178,6 +179,7 @@ export default {
   SwitchButton,
   ShrinkBox,
   ExternalJump,
+  LLZYPotButton,
   ToggleButton,
   IframePop,
   OrderMenu,

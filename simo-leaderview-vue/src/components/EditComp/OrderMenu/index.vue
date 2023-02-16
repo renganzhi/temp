@@ -1,6 +1,6 @@
 <template>
     <div class="OrderMenu">
-        <div class="openBtn" @click="showMenu = true">
+        <div v-show="!showMenu" class="openBtn" @click="showMenu = true">
           <img style="width:68px;height:68px" src="./打点.png" alt="">
           <div style="font-size:30px;padding:10px 5px;height:68px;text-align:center;">武侯区基础设施 </div>
         </div>
@@ -505,6 +505,11 @@ export default {
           '机投桥街道': false,
           '望江路街道': false
         }
+      },
+      '力量资源': {
+        '力量资源': {
+          '全部': false
+        }
       }
     }
     this.axios.get('/leaderview/newDistrict/GetDTDD9').then(res => {
@@ -565,7 +570,7 @@ export default {
     left:0;
   }
   .mainMenu{
-    height: 660px;
+    height: 734px;
     padding: 10px 0;
     background:#002b59;
     position: relative;
@@ -597,7 +602,7 @@ export default {
   }
   .subMenu{
     background: #00244e;
-    height: 660px;
+    height: 734px;
     padding: 20px;
     overflow: scroll;
     .subBox{

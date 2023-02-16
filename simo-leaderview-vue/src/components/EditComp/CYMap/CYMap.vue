@@ -14,6 +14,7 @@ export default {
   data: function () {
     return {
       potData: {},
+      llzyList: [],
       keyValue: {
         name: '名称',
         sort: '类型',
@@ -120,6 +121,8 @@ export default {
             url = '/leaderview/newDistrict/GetDTDD6?street='
           } else if (index1 === '天网') {
             url = ''
+          } else if (index1 === '力量资源') {
+            url = '/leaderview/ChengYun4/GetDTDD1'
           }
           for (let index2 in this.potData[index1]) { // index2表示2级菜单点位
             for (let index3 in this.potData[index1][index2]) { // index3表示各个街道
@@ -151,6 +154,8 @@ export default {
                   } else if (index3 === '望江路街道') {
                     u = '/leaderview/newDistrict/GetWJLList'
                   }
+                } else if (index2 === '力量资源') {
+
                 } else {
                   u = url + index2 + '&street=' + index3
                 }
@@ -170,6 +175,10 @@ export default {
                       }
                       )
                     })
+                  } else if (index2 === '力量资源') {
+                    res.obj.rows.forEach(element => {
+                      this.dotMap(element['经度'], element['纬度'], index2, element)
+                    })
                   } else {
                     res.obj.dataArray.forEach((d, i) => {
                       let lng = d.location_longitude || d.longitude
@@ -182,8 +191,18 @@ export default {
             }
           }
         }
+        this.MarkLLZY()
       },
       deep: true
+    },
+    llzyList: function () {
+      if (this.llzyList) {
+        if (this.llzyList.length) {
+          this.MarkLLZY()
+        } else {
+          this.map.clearOverlays()
+        }
+      }
     },
     nowPageName: function () {
       if (this.nowPageName.indexOf('32:9') >= 0) {
@@ -332,6 +351,16 @@ export default {
           this.$parent.ShowVideoBox(dataArray.deviceIndexCode)
         })
         this.map.addOverlay(marker)
+      } else if (type === '力量资源') {
+        let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
+        let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
+        marker.addEventListener('click', e => {
+          this.$parent.ShowTanKuangBox({
+            title: '力量资源详情',
+            data: dataArray
+          })
+        })
+        this.map.addOverlay(marker)
       } else {
         let tableData = {
           title: type + '列表',
@@ -366,11 +395,19 @@ export default {
         })
         this.map.addOverlay(marker)
       }
+    },
+    MarkLLZY () {
+      this.llzyList.forEach(element => {
+        this.dotMap(element['经度'], element['纬度'], '力量资源', element)
+      })
     }
   },
   mounted () {
     this.bus.$on('Mark', res => {
       this.potData = res
+    })
+    this.bus.$on('LLZYDot', res => {
+      this.llzyList = res
     })
     this.initMap()
   }
