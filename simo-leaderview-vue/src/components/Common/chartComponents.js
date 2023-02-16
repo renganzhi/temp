@@ -79,6 +79,7 @@ import SwitchButton from '@/components/EditComp/SwitchButton'
 import ShrinkBox from '@/components/EditComp/ShrinkBox'
 import ExternalJump from '@/components/EditComp/ExternalJump'
 import LLZYPotButton from '@/components/EditComp/LLZYPotButton'
+import SwitchMapButton from '@/components/EditComp/SwitchMapButton'
 import ToggleButton from '@/components/EditComp/ToggleButton'
 import IframePop from '@/components/EditComp/IframePop'
 import OrderMenu from '@/components/EditComp/OrderMenu'
@@ -180,6 +181,7 @@ export default {
   ShrinkBox,
   ExternalJump,
   LLZYPotButton,
+  SwitchMapButton,
   ToggleButton,
   IframePop,
   OrderMenu,

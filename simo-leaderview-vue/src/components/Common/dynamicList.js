@@ -69,6 +69,7 @@ export default [
   'ShrinkBox',
   'ExternalJump',
   'LLZYPotButton',
+  'SwitchMapButton',
   'ToggleButton',
   'IframePop',
   'OrderMenu',
