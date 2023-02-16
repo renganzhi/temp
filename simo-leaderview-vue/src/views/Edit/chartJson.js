@@ -29,6 +29,8 @@ import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage/config.js'
+import AppMarket from '@/components/EditComp/AppMarket/config.js'
+import KeyProjects from '@/components/EditComp/KeyProjects/config.js'
 import EventVenation from '@/components/EditComp/EventVenation/config.js'
 import StreetMenu from '@/components/EditComp/StreetMenu/config.js'
 import WordClouds from '@/components/EditComp/WordClouds/config.js'
@@ -720,6 +722,8 @@ OrderMenu.item,
 SmallOrderMenu.item,
 CityEvent.item,
 WuhouSinglePage.item,
+AppMarket.item,
+KeyProjects.item,
 EventVenation.item,
 StreetMenu.item,
 WordClouds.item,
@@ -857,7 +861,7 @@ bubble.item,
   mapLevel: 'country',
   countryCode: 100000,
   provinceCode: '',
-	countyCode:'',
+  countyCode: '',
   cityCode: '',
   visualPosition: 'left',
   fontSize: 10,
@@ -878,7 +882,7 @@ bubble.item,
   width: 300,
   height: 300,
   mapLevel: 'country',
-	countyCode:'',
+  countyCode: '',
   countryCode: 100000,
   ctLegendShow: 'false', // 地名是否展示
   provinceCode: '',

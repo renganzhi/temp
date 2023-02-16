@@ -4,7 +4,7 @@
             <div class="row1">
                 <div class="percentage backgroun21">
                   <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
-                    <div class="name" @click="getBodyParamData(data['平台'])">
+                    <div class="name" @click="selectTypeData(data['平台'])">
                       {{data['平台']}}
                     </div>
                     <div class="value">
@@ -30,7 +30,7 @@
         <div id="Module4">
             <div class="whole">
                 <div class="datepicker">
-                    <DatePicker  type="daterange" split-panels placeholder="Select date" style="width: 365px"></DatePicker>
+                    <DatePicker :value="dateValue"  type="daterange" split-panels placeholder="请输入时间" style="width: 365px" @on-change='chengBodyData'></DatePicker>
                 </div>
                 <div class="row1 diyTabsStyle backgroun27">
                     <Tabs value="name1">
@@ -58,19 +58,19 @@
                                     </div>
                                     <div class="datatime allDatatime">
                                       <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                      <div style="color:#C5EEF3">0天0小时0分钟</div>
                                     </div>
                                   </div>
                                   <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
+                                    <div>----</div>
+                                    <div>----</div>
                                   </div>
                                   <div class="peoplename">
                                     <div>处置人员</div>
                                     <div>人均办件量</div>
                                   </div>
                                 </div>
-                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfo">
+                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data['单位'])">
                                   <div class="titleTop">
                                     <div class="leftOne">
                                       <div class="streeName">{{data['单位']}}</div>
@@ -95,12 +95,12 @@
                                     </div>
                                     <div class="datatime">
                                       <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                      <div style="color:#C5EEF3">{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-平均办件时间_自定义时段'].rows[0]['平均办件时间']:'0天0小时0分钟'}}</div>
                                     </div>
                                   </div>
                                   <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
+                                    <div>{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['办件人员数']:'----'}}</div>
+                                    <div>{{data['单位'] ==='簇桥街道'?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['人均办件量']:'----'}}</div>
                                   </div>
                                   <div class="peoplename">
                                     <div>处置人员</div>
@@ -145,7 +145,7 @@
                                     <div>人均办件量</div>
                                   </div>
                                 </div>
-                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各委办局数量统计'].rows" :key="index" @click="ShowStreetInfo">
+                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各委办局数量统计'].rows" :key="index">
                                   <div class="titleTop">
                                     <div class="leftOne">
                                       <div class="streeName">{{data['单位']}}</div>
@@ -392,6 +392,8 @@ export default {
   data: function () {
     return {
       showStreetInfo: false,
+      dateValue: [],
+      selectType: '',
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
       modelData,
       bodyData
@@ -881,12 +883,20 @@ export default {
       let box = this.$refs[refName]
       box.scrollLeft = box.scrollLeft + eventDelta / 2
     },
-    ShowStreetInfo () {
-      this.getJieDaoParamData()
+    ShowStreetInfoFun (stree) {
+      this.getJieDaoParamData(stree)
     },
-    getBodyParamData (type) {
+    selectTypeData (type) {
+      this.selectType = type
+      this.getBodyParamData()
+    },
+    chengBodyData (data) {
+      this.dateValue = data
+      this.getBodyParamData()
+    },
+    getBodyParamData () {
       $('#lead-screen').addClass('disShow')
-      this.axios.get('/leaderview/newDistrict/GetQJXN?param=' + type || '').then(res => {
+      this.axios.get('/leaderview/newDistrict/GetQJXN?param=' + (this.selectType || '') + '&start_time=' + (this.dateValue[0] || '') + '&end_time=' + (this.dateValue[1] || '')).then(res => {
         if (res.success) {
           $('#lead-screen').removeClass('disShow')
           this.$parent.openisopenShow()
@@ -902,8 +912,9 @@ export default {
       })
     },
     getJieDaoParamData (type) {
+      console.log(type)
       $('#lead-screen').addClass('disShow')
-      this.axios.get('/leaderview/newDistrict/GetCQXN').then(res => {
+      this.axios.get('/leaderview/newDistrict/GetCQXN?param=' + (type || '') + '&start_time=' + (this.dateValue[0] || '') + '&end_time=' + (this.dateValue[1] || '')).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
           this.showStreetInfo = true
@@ -922,7 +933,7 @@ export default {
   },
   mounted () {
     console.log(modelData)
-    this.getBodyParamData('')
+    this.getBodyParamData()
   }
 }
 </script>
@@ -1045,7 +1056,7 @@ export default {
                 height: 1008px;
                 .tabContent1{
                     width:2850px;
-                    height:890px;
+                    height:900px;
                     display: flex;
                     flex-wrap: wrap;
                     overflow: auto;
@@ -1314,12 +1325,12 @@ export default {
             }
         }
         .part{
-          width: 2810px;
+          width: 2830px;
           height: 864px;
           padding: 72px 32px 32px 0px;
           position: absolute;
           top: 124px;
-          left: 30px;
+          left: 10px;
           display: flex;
           flex-direction: column;
           align-items: center;
