@@ -85,7 +85,7 @@ export default {
         {
           name: '区综合执法局',
           xtname: '景观照明集中控制系统',
-          url: '110.185.171.39:81'
+          url: 'http://110.185.171.39:81/#/bigScreen/index?user=DJF&pd=lAGIOwlxZqOMoH81DpCVPlG7edmWL1upB1zW5tySJ%2F4tvlXfO8bUSJNul6d7NYrsvXDRs7xBSU5CPHg9PE05eSDOA821SMfSDSFK9sjpH5DCLXiR4bPz2%2B3kW9iIXZyQfEmpWPPu5dVz5ohlNzYz2OE%2B0lFMRltbnM5wdCxh1VM%3D&path=%2FbigScreen%2Findex'
         },
         {
           name: '区发改局',
