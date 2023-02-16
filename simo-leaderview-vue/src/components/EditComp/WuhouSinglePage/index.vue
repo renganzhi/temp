@@ -8,18 +8,18 @@
                         <div>
                             <div class="TOP3">
                                 <div class="ball" @click="showPersonDetails(1)">
-                                    <div>{{gsqryList[1]['姓名']?(isVerification?gsqryList[1]['姓名']:(gsqryList[1]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
-                                    <div>{{gsqryList[1]['姓名']?gsqryList[1]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[1]?(isVerification?gsqryList[1]['姓名']:(gsqryList[1]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[1]?gsqryList[1]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                                 <div class="ball" @click="showPersonDetails(0)">
-                                    <div>{{gsqryList[0]['姓名']?(isVerification?gsqryList[0]['姓名']:(gsqryList[0]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
-                                    <div>{{gsqryList[0]['姓名']?gsqryList[0]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[0]?(isVerification?gsqryList[0]['姓名']:(gsqryList[0]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[0]?gsqryList[0]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                                 <div class="ball" @click="showPersonDetails(2)">
-                                    <div>{{gsqryList[2]['姓名']?(isVerification?gsqryList[2]['姓名']:(gsqryList[2]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
-                                    <div>{{gsqryList[2]['姓名']?gsqryList[2]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[2]?(isVerification?gsqryList[2]['姓名']:(gsqryList[2]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[2]?gsqryList[2]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                             </div>

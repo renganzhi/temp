@@ -1,6 +1,6 @@
 <template>
     <div class="EfficiencyPage" style="width:4455px">
-        <div id="Module3">
+        <div id="Module3" v-if="bodyData['事件分布总览']">
             <div class="row1">
                 <div class="percentage backgroun21">
                   <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div id="Module4">
+        <div id="Module4" v-if="bodyData['街道总览']">
             <div class="whole">
                 <div class="datepicker">
                     <DatePicker :value="dateValue"  type="daterange" split-panels placeholder="请输入时间" style="width: 365px" @on-change='chengBodyData'></DatePicker>
@@ -44,7 +44,7 @@
                                       <span>总办件量</span>
                                     </div>
                                   </div>
-                                  <div class="progress">
+                                  <div class="newprogress">
                                     <div class="canvas">
                                       <MyProgress :successdata='bodyData["街道总览"].rows[0]["未完成率"]' />
                                     </div>
@@ -77,11 +77,11 @@
                                       <div class="streeNum">{{data['办件量']}}</div>
                                       <span>总办件量</span>
                                     </div>
-                                    <div class="rightpic">
+                                    <div class="rightpic" v-if="data['单位']">
                                       <img :src="require('./'+data['单位']+'.jpg')" alt="">
                                     </div>
                                   </div>
-                                  <div class="progress">
+                                  <div class="newprogress">
                                     <div class="canvas">
                                       <MyProgress :successdata='data["未完成率"]' />
                                     </div>
@@ -119,7 +119,7 @@
                                       <span>总办件量</span>
                                     </div>
                                   </div>
-                                  <div class="progress">
+                                  <div class="newprogress">
                                     <div class="canvas">
                                       <MyProgress :successdata='100 - bodyData["委办局总览"].rows[0]["完成率"]' />
                                     </div>
@@ -153,7 +153,7 @@
                                       <span>总办件量</span>
                                     </div>
                                   </div>
-                                  <div class="progress">
+                                  <div class="newprogress">
                                     <div class="canvas">
                                       <MyProgress :successdata='data["未完成率"]' />
                                     </div>
@@ -197,7 +197,7 @@
                 </div>
             </div>
             <!-- 弹窗 -->
-            <div class="part" v-show="showStreetInfo">
+            <div class="part" v-if="showStreetInfo && modelData['总办件量']">
                 <div class="Btn" @click="showStreetInfo = false"
                 style="position: absolute;
                       right: 9px;
@@ -383,11 +383,11 @@ import IntegratedHistogram from '../IntegratedHistogram/index.vue'
 import ELine from '../ELine/index.vue'
 import NewGauge from '../NewGauge/index.vue'
 import NewProgress from '../NewProgress/index.vue'
-import MyProgress from './progress.vue'
+import MyProgress from './newprogress.vue'
 import CityEvent from '../CityEvent/index.vue'
 import NewPie from '../NewPie/index.vue'
-import modelData from './data'
-import bodyData from './data2'
+// import modelData from './data'
+// import bodyData from './data2'
 export default {
   data: function () {
     return {
@@ -395,8 +395,8 @@ export default {
       dateValue: [],
       selectType: '',
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
-      modelData,
-      bodyData
+      modelData: {},
+      bodyData: {}
     }
   },
   components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
@@ -519,14 +519,14 @@ export default {
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
         'chartData': {
-          'columns': (bodyData && bodyData['办件量走势']) ? bodyData['办件量走势'].columns : [],
+          'columns': (this.bodyData && this.bodyData['办件量走势']) ? this.bodyData['办件量走势'].columns : [],
           'unit': '%',
           'min': 60,
           'max': 80,
           'minIndex': 2,
           'maxIndex': 3,
           'unitX': '时间',
-          'rows': (bodyData && bodyData['办件量走势']) ? bodyData['办件量走势'].rows : []
+          'rows': (this.bodyData && this.bodyData['办件量走势']) ? this.bodyData['办件量走势'].rows : []
         }
       }
     },
@@ -610,9 +610,9 @@ export default {
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': {
-          'columns': (bodyData && bodyData['各委办局办件量统计']) ? bodyData['各委办局办件量统计'].columns : [],
+          'columns': (this.bodyData && this.bodyData['各委办局办件量统计']) ? this.bodyData['各委办局办件量统计'].columns : [],
           'unit': '次',
-          'rows': (bodyData && bodyData['各委办局办件量统计']) ? bodyData['各委办局办件量统计'].rows : []
+          'rows': (this.bodyData && this.bodyData['各委办局办件量统计']) ? this.bodyData['各委办局办件量统计'].rows : []
         }
       }
     },
@@ -675,7 +675,7 @@ export default {
         'chartData1': {
           'columns': ['项目', '完成率'],
           'unit': '%',
-          'rows': (bodyData && bodyData['办理完成率总览']) ? bodyData['办理完成率总览'].rows : []
+          'rows': (this.bodyData && this.bodyData['办理完成率总览']) ? this.bodyData['办理完成率总览'].rows : []
         }
       }
     },
@@ -768,9 +768,9 @@ export default {
           ['#85f8c0', '#62dc26']
         ],
         'chartData': {
-          'columns': (modelData && modelData['事件大类_自定义时段']) ? modelData['事件大类_自定义时段'].columns : [],
+          'columns': (this.modelData && this.modelData['事件大类_自定义时段']) ? this.modelData['事件大类_自定义时段'].columns : [],
           'unit': '次',
-          'rows': (modelData && modelData['事件大类_自定义时段']) ? modelData['事件大类_自定义时段'].rows : []
+          'rows': (this.modelData && this.modelData['事件大类_自定义时段']) ? this.modelData['事件大类_自定义时段'].rows : []
         }
       }
     },
@@ -860,14 +860,14 @@ export default {
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
         'chartData': {
-          'columns': (modelData && modelData['办件量走势']) ? modelData['办件量走势'].columns : [],
+          'columns': (this.modelData && this.modelData['办件量走势']) ? this.modelData['办件量走势'].columns : [],
           'unit': '%',
           'min': 60,
           'max': 80,
           'minIndex': 2,
           'maxIndex': 3,
           'unitX': '时间',
-          'rows': (modelData && modelData['办件量走势']) ? modelData['办件量走势'].rows : []
+          'rows': (this.modelData && this.modelData['办件量走势']) ? this.modelData['办件量走势'].rows : []
         }
       }
     }
@@ -1102,7 +1102,7 @@ export default {
                           }
                         }
                       }
-                      .progress{
+                      .newprogress{
                         width: 100%;
                         height: 160px;
                         display: flex;
@@ -1215,7 +1215,7 @@ export default {
                           }
                         }
                       }
-                      .progress{
+                      .newprogress{
                         width: 100%;
                         height: 160px;
                         display: flex;
