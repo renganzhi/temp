@@ -48,6 +48,7 @@ let config = {
   WuhoPointBox: require('@/components/EditComp/WuhoPointBox/config.js'),
   WuhoYXHL: require('@/components/EditComp/WuhoYXHL/config.js'),
   CYZBTX: require('@/components/EditComp/CYZBTX/config.js'),
+  NewCYZBTX: require('@/components/EditComp/NewCYZBTX/config.js'),
   IframePop: require('@/components/EditComp/IframePop/config.js'),
   OrderMenu: require('@/components/EditComp/OrderMenu/config.js'),
   SmallOrderMenu: require('@/components/EditComp/SmallOrderMenu/config.js'),

@@ -1,0 +1,1453 @@
+<template>
+    <div class="NewCYZBTX">
+        <div class="content">
+            <div class="personBox" @click="ShowPop1">
+                <div class="position">区领导</div>
+                <div class="information1">
+                    <img :src="getZBRY('区领导','照片链接')" alt="">
+                    <div>
+                        <div>{{getZBRY('区领导','姓名')}}</div>
+                        <div>{{getZBRY('区领导','职务')}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="personBox" @click="ShowPop1">
+                <div class="position">指挥长</div>
+                <div class="information2">
+                    <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
+                    <div>{{getZBRY('指挥长','职务')}}</div>
+                </div>
+                <div class="phonePop" v-show="phoneIndex === 1 && !showPop1">
+                    <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
+                    <div>{{getZBRY('指挥长','姓名')}}</div>
+                    <div>指挥长</div>
+                    <div>{{getZBRY('指挥长','手机号')}}</div>
+                    <div>拨打</div>
+                </div>
+            </div>
+            <div class="personBox" @click="ShowPop1">
+                <div class="position">值班长</div>
+                <div class="information2">
+                    <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
+                    <div>{{getZBRY('值班长','职务')}}</div>
+                </div>
+                <div class="phonePop" v-show="phoneIndex === 2 && !showPop1">
+                    <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
+                    <div>{{getZBRY('值班长','姓名')}}</div>
+                    <div>值班长</div>
+                    <div>{{getZBRY('值班长','手机号')}}</div>
+                    <div>拨打</div>
+                </div>
+            </div>
+        </div>
+        <div class="pop1" :style="pop1Style" v-show="showPop1">
+            <div class="bigTitle">
+                <img @click="ClosePop1" style="cursor:pointer;" src="./关闭.png" alt="">
+            </div>
+            <div>
+                <div class="row1">
+                    <div>区级城运中心</div>
+                    <div @click="ShowPop2" style="cursor:pointer;">职能职责</div>
+                    <div @click="ShowPop3" style="cursor:pointer;">工作清单</div>
+                </div>
+                <div class="row2">
+                    <div class="personBox">
+                        <div class="position">区领导</div>
+                        <div class="information1">
+                            <img :src="getZBRY('区领导','照片链接')" alt="">
+                            <div>
+                                <div>{{getZBRY('区领导','姓名')}}</div>
+                                <div>{{getZBRY('区领导','职务')}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="personBox">
+                        <div class="position">指挥长</div>
+                        <div class="information2">
+                            <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
+                            <div>{{getZBRY('指挥长','职务')}}</div>
+                        </div>
+                        <div class="phonePop" v-show="phoneIndex === 1 && showPop1">
+                            <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
+                            <div>{{getZBRY('指挥长','姓名')}}</div>
+                            <div>指挥长</div>
+                            <div>{{getZBRY('指挥长','手机号')}}</div>
+                            <div>拨打</div>
+                        </div>
+                    </div>
+                    <div class="personBox">
+                        <div class="position">值班长</div>
+                        <div class="information2">
+                            <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
+                            <div>{{getZBRY('值班长','职务')}}</div>
+                        </div>
+                        <div class="phonePop" v-show="phoneIndex === 2 && showPop1">
+                            <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
+                            <div>{{getZBRY('值班长','姓名')}}</div>
+                            <div>值班长</div>
+                            <div>{{getZBRY('值班长','手机号')}}</div>
+                            <div>拨打</div>
+                        </div>
+                    </div>
+                    <img @click="ShowPop4" style="cursor:pointer;" src="./更多.png" alt="">
+                </div>
+                <div class="row3">
+                    <div>值班值守情况</div>
+                    <div @click="changeType1('工作要求')" style="cursor:pointer;" :class="{activeButton: type1 === '工作要求'}">工作要求</div>
+                    <div @click="changeType1('预警台账')" style="cursor:pointer;" :class="{activeButton: type1 === '预警台账'}">预警台账</div>
+                    <div @click="changeType1('交接班清单')" style="cursor:pointer;" :class="{activeButton: type1 === '交接班清单'}">交接班清单</div>
+                </div>
+                <div class="row4">
+                    <div class="checkBox">
+                        <Input v-model="InputCondition1" placeholder="输入搜索内容" style="width:285px;height:33px;" />
+                        <div class="search"><Icon type="md-search" /></div>
+                        <div class="refresh"><Icon @click="refreshZBZSQK" type="md-refresh" /></div>
+                    </div>
+                    <div class="mytable1" v-show="type1 === '工作要求'">
+                        <div class="tablehead">
+                            <div>日期</div>
+                            <div>内容</div>
+                            <div>类别</div>
+                        </div>
+                        <div class="tablebody">
+                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                                <div>{{data['日期']}}</div>
+                                <div>{{data['内容']}}</div>
+                                <div>{{data['类别']}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mytable2" v-show="type1 === '预警台账'">
+                        <div class="tablehead">
+                            <div>类别</div>
+                            <div>标题</div>
+                            <div>内容</div>
+                            <div>时间</div>
+                        </div>
+                        <div class="tablebody">
+                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                                <div>{{data['类别']}}</div>
+                                <div>{{data['标题']}}</div>
+                                <div>{{data['内容']}}</div>
+                                <div>{{data['时间']}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mytable3" v-show="type1 === '交接班清单'">
+                        <div class="tablehead">
+                            <div>今日值班长</div>
+                            <div>昨日值班长</div>
+                            <div>值班长交接内容</div>
+                        </div>
+                        <div class="tablebody">
+                            <div class="rows" v-for="(data, index) in getZBZSQK" :key="index">
+                                <div>{{data['今日值班长']}}</div>
+                                <div>{{data['昨日值班长']}}</div>
+                                <div>{{data['值班长交接内容']}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row5">
+                    <div class="left">
+                        <div>值班值守制度</div>
+                        <div class="checkBox">
+                            <Input v-model="InputCondition2" placeholder="输入搜索内容" style="width:283px;height:33px;margin-right:2px;" />
+                            <div class="search"><Icon type="md-search" /></div>
+                            <div class="refresh"><Icon @click="refreshZBZSZD" type="md-refresh" /></div>
+                        </div>
+                        <div class="list">
+                            <div class="rows" v-for="(data, index) in getZBZSZD" :key="index">
+                                <div></div>
+                                <div>{{data['内容']}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div>应急预案</div>
+                        <div class="checkBox">
+                            <Input v-model="InputCondition3" placeholder="输入搜索内容" style="width:283px;height:33px;margin-right:2px;" />
+                            <div class="search"><Icon type="md-search" /></div>
+                            <div class="refresh"><Icon @click="refreshYJYA" type="md-refresh" /></div>
+                        </div>
+                        <div class="list">
+                            <div class="rows" v-for="(data, index) in getYJYA" :key="index">
+                                <div></div>
+                                <div>{{data['内容']}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pop2" :style="pop2Style" v-show="showPop2">
+            <div class="bigTitle">
+                <img @click="ClosePop2" src="./关闭.png" alt="">
+            </div>
+            <div>
+                <div class="switchButton">
+                    <div @click="changeType2('区领导')" style="cursor:pointer;" :class="{checked: type2 === '区领导'}">区领导</div>
+                    <div @click="changeType2('指挥长')" style="cursor:pointer;" :class="{checked: type2 === '指挥长'}">指挥长</div>
+                    <div @click="changeType2('值班长')" style="cursor:pointer;" :class="{checked: type2 === '值班长'}">值班长</div>
+                </div>
+                <div class="text">
+                    {{getCurrentZNZZ}}
+                </div>
+            </div>
+        </div>
+        <div class="pop3" :style="pop3Style" v-show="showPop3">
+            <div class="bigTitle">
+                <img @click="ClosePop3" src="./关闭.png" alt="">
+            </div>
+            <div>
+                <div class="switchButton">
+                    <div @click="changeType2('区领导')" style="cursor:pointer;" :class="{checked: type2 === '区领导'}">区领导</div>
+                    <div @click="changeType2('指挥长')" style="cursor:pointer;" :class="{checked: type2 === '指挥长'}">指挥长</div>
+                    <div @click="changeType2('值班长')" style="cursor:pointer;" :class="{checked: type2 === '值班长'}">值班长</div>
+                </div>
+                <div class="checkBox">
+                    <DatePicker v-model="DateCondition2" type="date" placeholder="请选择时间段" style="width:285px;height:33px;" />
+                </div>
+                <div class="mytable">
+                        <div class="tablehead">
+                            <div>序号</div>
+                            <div>时间</div>
+                            <div>具体事项</div>
+                            <div>备注</div>
+                        </div>
+                        <div class="tablebody">
+                            <div class="rows" v-for="(data, index) in getCurrentGZQD" :key="index">
+                                <div>{{index + 1}}</div>
+                                <div>{{data['时间']}}</div>
+                                <div>{{data['内容']}}</div>
+                                <div>备注</div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="pop4" :style="pop4Style" v-show="showPop4">
+            <div class="bigTitle">
+                <img @click="ClosePop4" src="./关闭.png" alt="">
+            </div>
+            <div>
+                <CYZBTX :item="getCYZBTX"></CYZBTX>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import element from '@/element'
+import CYZBTX from '../CYZBTX/index.vue'
+export default {
+  data: function () {
+    return {
+      showPop1: false,
+      showPop2: false,
+      showPop3: false,
+      showPop4: false,
+      phoneIndex: 0,
+      type1: '工作要求',
+      type2: '区领导',
+      ZBpersonInfo: [], // 值班人员信息
+      InputCondition1: '',
+      InputCondition2: '',
+      InputCondition3: '',
+      DateCondition1: '',
+      DateCondition2: new Date(),
+      ZBZSZDList: [], // 值班值守制度
+      YJYAList: [], // 应急预案
+      ZNZZList: [], // 职能职责
+      GZQDList: [], // 工作清单
+      StreetInfo: {}, // 街道人员信息
+      GZYQList: [], // 工作清单
+      YJTZList: [], // 预警台账
+      JJBQDList: [] // 交接班清单
+    }
+  },
+  props: ['item'],
+  components: {CYZBTX},
+  computed: {
+    getZBRY () {
+      return (type, key) => {
+        let value = '暂无数据'
+        this.ZBpersonInfo.forEach(element => {
+          if (element['值班职位'] === type) {
+            if (element[key]) {
+              value = element[key]
+            }
+          }
+        })
+        return value
+      }
+    },
+    getCYZBTX () {
+      let chartData = {
+        columns: [],
+        rows: []
+      }
+      if (this.StreetInfo) {
+        chartData = JSON.parse(JSON.stringify(this.StreetInfo))
+      }
+      return {
+        'text': '城运值班体系',
+        'imgClass': 'icon-n-text',
+        'chartType': 'CYZBTX',
+        'width': 754,
+        'height': 796,
+        'LunBoType': 0,
+        'fontSize': 20,
+        'barWidth': 20,
+        'chartData': chartData
+      }
+    },
+    pop1Style () {
+      return {
+        top: this.item.pop1Top + 'px',
+        left: this.item.pop1Left + 'px'
+      }
+    },
+    pop2Style () {
+      return {
+        top: this.item.pop2Top + 'px',
+        right: this.item.pop2Right + 'px'
+      }
+    },
+    pop3Style () {
+      return {
+        top: this.item.pop3Top + 'px',
+        right: this.item.pop3Right + 'px'
+      }
+    },
+    pop4Style () {
+      return {
+        top: this.item.pop4Top + 'px',
+        right: this.item.pop4Right + 'px'
+      }
+    },
+    getZBZSQK () { // 值班值守情况
+      let arr = []
+      if (this.type1 === '工作要求') {
+        this.GZYQList.forEach(element => {
+          if (this.InputCondition1) {
+            if (JSON.stringify(element).indexOf(this.InputCondition1) >= 0) {
+              arr.push(element)
+            }
+          } else {
+            arr.push(element)
+          }
+        })
+      } else if (this.type1 === '预警台账') {
+        this.YJTZList.forEach(element => {
+          if (this.InputCondition1) {
+            if (JSON.stringify(element).indexOf(this.InputCondition1) >= 0) {
+              arr.push(element)
+            }
+          } else {
+            arr.push(element)
+          }
+        })
+      } else if (this.type1 === '交接班清单') {
+        this.JJBQDList.forEach(element => {
+          if (this.InputCondition1) {
+            if (JSON.stringify(element).indexOf(this.InputCondition1) >= 0) {
+              arr.push(element)
+            }
+          } else {
+            arr.push(element)
+          }
+        })
+      }
+      return arr
+    },
+    getZBZSZD () { // 值班值守制度
+      let arr = []
+      if (this.InputCondition2) {
+        this.ZBZSZDList.forEach(element => {
+          if (JSON.stringify(element).indexOf(this.InputCondition2) >= 0) {
+            arr.push(element)
+          }
+        })
+      } else {
+        arr = this.ZBZSZDList
+      }
+      return arr
+    },
+    getYJYA () { // 应急预案
+      let arr = []
+      if (this.InputCondition3) {
+        this.YJYAList.forEach(element => {
+          if (JSON.stringify(element).indexOf(this.InputCondition3) >= 0) {
+            arr.push(element)
+          }
+        })
+      } else {
+        arr = this.YJYAList
+      }
+      return arr
+    },
+    getCurrentZNZZ () { // 获取当前职能职责
+      let text = '暂无数据'
+      this.ZNZZList.forEach(element => {
+        if (element['职务'] === this.type2) {
+          text = element['内容']
+        }
+      })
+      return text
+    },
+    getCurrentGZQD () { // 工作清单
+      let arr = []
+      this.GZQDList.forEach(element => {
+        if (element['职务'] === this.type2) {
+          if (element['明细']) {
+            element['明细'].rows.forEach(el => {
+              if (this.DateCondition2) {
+                if (el['日期'] === this.DateToString(this.DateCondition2)) {
+                  arr.push(el)
+                }
+              } else {
+                arr.push(el)
+              }
+            })
+          }
+        }
+      })
+      return arr
+    }
+  },
+  watch: {
+    type2: function () {
+      this.DateCondition2 = new Date()
+    },
+    type1: function () {
+      this.InputCondition1 = ''
+    }
+  },
+  methods: {
+    DateToString (date) {
+      let da = ''
+      if (typeof date !== 'string') {
+        let y = date.getFullYear()
+        let m = ''
+        let d = ''
+        if (date.getMonth() < 9) {
+          m = '0' + (date.getMonth() + 1)
+        } else {
+          m = date.getMonth() + 1
+        }
+        if (date.getDate() < 10) {
+          d = '0' + date.getDate()
+        } else {
+          d = date.getDate()
+        }
+        da = y + '-' + m + '-' + d
+      } else {
+        da = date
+      }
+      return da
+    },
+    refreshZBZSQK () {
+      this.InputCondition1 = ''
+      // 工作要求
+      this.axios.get('/leaderview/ChengYun4/GetZBTX1').then(res => {
+        if (res.success && res.obj.rows) {
+          this.GZYQList = res.obj.rows
+        }
+      })
+      // 预警台账
+      this.axios.get('/leaderview/ChengYun4/GetZBTX7').then(res => {
+        if (res.success && res.obj.rows) {
+          this.YJTZList = res.obj.rows
+        }
+      })
+      // 交接班清单
+      this.axios.get('/leaderview/ChengYun4/GetZBTX6').then(res => {
+        if (res.success && res.obj.rows) {
+          this.JJBQDList = res.obj.rows
+        }
+      })
+    },
+    refreshZBZSZD () {
+      this.InputCondition2 = ''
+      // 值守制度
+      this.axios.get('/leaderview/ChengYun4/GetZBTX4').then(res => {
+        if (res.success && res.obj.rows) {
+          this.ZBZSZDList = res.obj.rows
+        }
+      })
+    },
+    refreshYJYA () {
+      this.InputCondition3 = ''
+      // 应急预案
+      this.axios.get('/leaderview/ChengYun4/GetZBTX5').then(res => {
+        if (res.success && res.obj.rows) {
+          this.YJYAList = res.obj.rows
+        }
+      })
+    },
+    ShowPop1 () {
+      this.getData()
+      this.showPop1 = true
+      this.phoneIndex = 0
+    },
+    ClosePop1 () {
+      this.getData()
+      this.showPop1 = false
+      this.showPop2 = false
+      this.showPop3 = false
+      this.showPop4 = false
+      this.type2 = '区领导'
+      this.type1 = '工作要求'
+      this.phoneIndex = 0
+    },
+    ShowPop2 () {
+      this.showPop2 = true
+      this.showPop3 = false
+      this.showPop4 = false
+      this.type2 = '区领导'
+    },
+    ClosePop2 () {
+      this.showPop2 = false
+      this.type2 = '区领导'
+    },
+    ShowPop3 () {
+      this.showPop3 = true
+      this.showPop2 = false
+      this.showPop4 = false
+      this.type2 = '区领导'
+    },
+    ClosePop3 () {
+      this.showPop3 = false
+      this.type2 = '区领导'
+    },
+    ShowPop4 () {
+      this.showPop4 = true
+      this.showPop2 = false
+      this.showPop3 = false
+    },
+    ClosePop4 () {
+      this.showPop4 = false
+    },
+    ShowPhone (index) {
+      this.phoneIndex = index
+    },
+    getData () {
+      // 工作要求
+      this.axios.get('/leaderview/ChengYun4/GetZBTX1').then(res => {
+        if (res.success && res.obj.rows) {
+          this.GZYQList = res.obj.rows
+        }
+      })
+      // 职能职责
+      this.axios.get('/leaderview/ChengYun4/GetZBTX2').then(res => {
+        if (res.success && res.obj.rows) {
+          this.ZNZZList = res.obj.rows
+        }
+      })
+      // 工作清单
+      this.axios.get('/leaderview/ChengYun4/GetZBTX3').then(res => {
+        if (res.success && res.obj.rows) {
+          this.GZQDList = res.obj.rows
+        }
+      })
+      // 值守制度
+      this.axios.get('/leaderview/ChengYun4/GetZBTX4').then(res => {
+        if (res.success && res.obj.rows) {
+          this.ZBZSZDList = res.obj.rows
+        }
+      })
+      // 应急预案
+      this.axios.get('/leaderview/ChengYun4/GetZBTX5').then(res => {
+        if (res.success && res.obj.rows) {
+          this.YJYAList = res.obj.rows
+        }
+      })
+      // 交接班清单
+      this.axios.get('/leaderview/ChengYun4/GetZBTX6').then(res => {
+        if (res.success && res.obj.rows) {
+          this.JJBQDList = res.obj.rows
+        }
+      })
+      // 预警台账
+      this.axios.get('/leaderview/ChengYun4/GetZBTX7').then(res => {
+        if (res.success && res.obj.rows) {
+          this.YJTZList = res.obj.rows
+        }
+      })
+      // 值班信息
+      this.axios.get('/leaderview/ChengYun4/GetZBTX8').then(res => {
+        if (res.success && res.obj.rows) {
+          this.ZBpersonInfo = res.obj.rows
+        }
+      })
+      // 值班街道
+      this.axios.get('/leaderview/newDistrict/GetZBTX3').then(res => {
+        if (res.success) {
+          this.StreetInfo = res.obj
+        }
+      })
+    },
+    changeType1 (type) {
+      this.type1 = type
+    },
+    changeType2 (type) {
+      this.type2 = type
+    }
+  },
+  mounted () {
+    this.getData()
+  }
+}
+</script>
+<style scoped lang="scss">
+.NewCYZBTX{
+    position: relative;
+    .content{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .personBox{
+            width: 252px;
+            height: 90px;
+            background: url('./矩形.png');
+            display: flex;
+            align-items: center;
+            position: relative;
+            .position{
+                width: 36px;
+                height: 100%;
+                border-radius: 0px 0px 4px 4px;
+                color: rgba(82,214,231,1);
+                font-size: 14px;
+                writing-mode:vertical-rl;
+                text-align: center;
+                line-height: 36px;
+                background: url('./小矩形.png');
+            }
+            .information1{
+                padding: 14px 20px;
+                width: 216px;
+                height: 100%;
+                display: flex;
+                >img{
+                    width: 46px;
+                    height: 60px;
+                    margin-right: 12px;
+                }
+                >div:last-child{
+                    >div:first-child{
+                        font-size: 18px;
+                        color: rgba(200,224,255,1);
+                        // margin-bottom: 16px;
+                    }
+                    >div:last-child{
+                        font-size: 12px;
+                        color: rgba(172,207,254,1);
+                    }
+
+                }
+            }
+            .information2{
+                padding: 14px 20px;
+                width: 216px;
+                height: 100%;
+                >div:first-child{
+                    font-size: 18px;
+                    color: rgba(200,224,255,1);
+                    margin-bottom: 16px;
+                    >img{
+                        width: 16px;
+                        height: 16px;
+                        margin-left: 7px;
+                        vertical-align: baseline;
+                    }
+                }
+                >div:last-child{
+                    font-size: 12px;
+                    color: rgba(172,207,254,1);
+                }
+            }
+            .phonePop{
+                position: absolute;
+                top: 20px;
+                right: -20px;
+                width: 148px;
+                height: 200px;
+                z-index: 1;
+                background: url('./电话弹窗.png') no-repeat;
+                background-size:100% 100%;
+                text-align: center;
+                >img{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                     width: 20px;
+                    height: 20px;
+                }
+                >div:nth-child(2){
+                    color: #C8E0FF;
+                    font-size: 18px;
+                    margin-bottom: 25px;
+                    margin-top: 15px;
+                }
+                >div:nth-child(3){
+                    color: #C8E0FF;
+                    font-size: 14px;
+                    margin-bottom: 25px;
+                }
+                >div:nth-child(4){
+                    color: #ACCFFE;
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+                >div:nth-child(5){
+                    color: #0A2047;
+                    font-size: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 48px;
+                    height: 48px;
+                    border: 4px solid rgba(255,255,255,0.12);
+                    border-radius: 50%;
+                    background: url('./椭圆形.png') no-repeat;
+                    background-size: 100% 100%;
+                    margin: 0 auto
+                }
+            }
+        }
+    }
+    .pop1{
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(10,32,71,1);
+        .bigTitle{
+            width: 780px;
+            height: 45px;
+            line-height: 45px;
+            background: url('./值班体系备份.png');
+            text-align: right;
+            >img{
+                width: 26px;
+                height: 26px;
+            }
+        }
+        >div:last-child{
+            width: 780px;
+            height: 826px;
+            padding: 16px 20px 19px 20px;
+            .row1{
+                display: flex;
+                align-items: center;
+                >div:nth-child(1){
+                    width: 571px;
+                    height: 36px;
+                    background: url('./title2.png') no-repeat;
+                    background-size: 100% 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 16px;
+                    line-height: 36px;
+                    padding-left: 14px;
+                }
+                >div:nth-child(2){
+                    width: 81px;
+                    height: 37px;
+                    background: url('./button1.png') no-repeat;
+                    background-size: 100% 100%;
+                    line-height: 37px;
+                    text-align: center;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                    margin-right: 7px;
+                }
+                >div:nth-child(3){
+                    width: 81px;
+                    height: 37px;
+                    background: url('./button1.png') no-repeat;
+                    background-size: 100% 100%;
+                    line-height: 37px;
+                    text-align: center;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                }
+                margin-bottom: 8px;
+            }
+            .row2{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                position: relative;
+                justify-content: space-between;
+                .personBox{
+                    width: 232px;
+                    height: 90px;
+                    background: url('./矩形.png');
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                    .position{
+                        width: 36px;
+                        height: 100%;
+                        border-radius: 0px 0px 4px 4px;
+                        color: rgba(82,214,231,1);
+                        font-size: 14px;
+                        writing-mode:vertical-rl;
+                        text-align: center;
+                        line-height: 36px;
+                        background: url('./小矩形.png');
+                    }
+                    .information1{
+                        padding: 14px 20px;
+                        width: 216px;
+                        height: 100%;
+                        display: flex;
+                        >img{
+                            width: 46px;
+                            height: 60px;
+                            margin-right: 12px;
+                        }
+                        >div:last-child{
+                            >div:first-child{
+                                font-size: 18px;
+                                color: rgba(200,224,255,1);
+                                // margin-bottom: 16px;
+                            }
+                            >div:last-child{
+                                font-size: 12px;
+                                color: rgba(172,207,254,1);
+                            }
+
+                        }
+                    }
+                    .information2{
+                        padding: 14px 20px;
+                        width: 216px;
+                        height: 100%;
+                        >div:first-child{
+                            font-size: 18px;
+                            color: rgba(200,224,255,1);
+                            margin-bottom: 16px;
+                            >img{
+                                width: 16px;
+                                height: 16px;
+                                margin-left: 7px;
+                                vertical-align: baseline;
+                            }
+                        }
+                        >div:last-child{
+                            font-size: 12px;
+                            color: rgba(172,207,254,1);
+                        }
+                    }
+                    .phonePop{
+                        position: absolute;
+                        top: 20px;
+                        right: -20px;
+                        width: 148px;
+                        height: 200px;
+                        background: url('./电话弹窗.png') no-repeat;
+                        background-size:100% 100%;
+                        text-align: center;
+                        z-index: 1;
+                        >img{
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                        >div:nth-child(2){
+                            color: #C8E0FF;
+                            font-size: 18px;
+                            margin-bottom: 25px;
+                            margin-top: 15px;
+                        }
+                        >div:nth-child(3){
+                            color: #C8E0FF;
+                            font-size: 14px;
+                            margin-bottom: 25px;
+                        }
+                        >div:nth-child(4){
+                            color: #ACCFFE;
+                            font-size: 16px;
+                            font-weight: bold;
+                        }
+                        >div:nth-child(5){
+                            color: #0A2047;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 48px;
+                            height: 48px;
+                            border: 4px solid rgba(255,255,255,0.12);
+                            border-radius: 50%;
+                            background: url('./椭圆形.png') no-repeat;
+                            background-size: 100% 100%;
+                            margin: 0 auto;
+                        }
+                    }
+                }
+                >.personBox:first-child{
+                    width: 252px;
+                }
+                >img{
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                }
+                margin-bottom: 15px;
+            }
+            .row3{
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                >div:nth-child(1){
+                    width: 316px;
+                    height: 36px;
+                    background: url('./title1.png') no-repeat;
+                    background-size: 100% 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 16px;
+                    line-height: 36px;
+                    padding-left: 14px;
+                }
+                >div:nth-child(2){
+                    width: 136px;
+                    height: 36px;
+                    background: url('./矩形备份17.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                    line-height: 36px;
+                    text-align: center;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                    margin-right: 7px;
+                }
+                >div:nth-child(3){
+                    width: 136px;
+                    height: 36px;
+                    background: url('./矩形备份17.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                    line-height: 36px;
+                    text-align: center;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                    margin-right: 7px;
+                }
+                >div:nth-child(4){
+                    width: 136px;
+                    height: 36px;
+                    background: url('./矩形备份17.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                    line-height: 36px;
+                    text-align: center;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                }
+                .activeButton{
+                    background: url('./矩形备份14.png') !important;
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+            }
+            .row4{
+                .checkBox{
+                    display: flex;
+                    margin-bottom: 11px;
+                    .search{
+                        width: 32px;
+                        height: 32px;
+                        color: rgba(82,214,231,1);
+                        font-size: 20px;
+                        text-align: center;
+                        line-height: 32px;
+                        margin-right: 8px;
+                        background: url('./矩形备份43.png');
+                    }
+                    .refresh{
+                        width: 32px;
+                        height: 32px;
+                        color: rgba(82,214,231,1);
+                        font-size: 20px;
+                        text-align: center;
+                        line-height: 32px;
+                        background: url('./矩形备份43.png');
+                    }
+                }
+                .mytable1{
+                    width: 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 12px;
+                    text-align: center;
+                    margin-bottom: 11px;
+                    .tablehead{
+                        display: flex;
+                        align-items: center;
+                        height: 36px;
+                        width: 100%;
+                        background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                        >div:nth-child(1){
+                            width: 20%;
+                        }
+                        >div:nth-child(2){
+                            width: 30%;
+                        }
+                        >div:nth-child(3){
+                            width: 50%;
+                        }
+                    }
+                    .tablebody{
+                        height: 180px;
+                        overflow-y: scroll;
+                        .rows{
+                            display: flex;
+                            align-items: center;
+                            height: 36px;
+                            width: 100%;
+                            background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                            >div:nth-child(1){
+                                width: 20%;
+                            }
+                            >div:nth-child(2){
+                                width: 30%;
+                            }
+                            >div:nth-child(3){
+                                width: 50%;
+                            }
+                        }
+                        >.rows:nth-child(odd){
+                            background: url('./row.png') no-repeat;
+                            background-size: 100% 100%;
+                        }
+                    }
+                }
+                .mytable2{
+                    width: 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 12px;
+                    text-align: center;
+                    margin-bottom: 11px;
+                    .tablehead{
+                        display: flex;
+                        align-items: center;
+                        height: 36px;
+                        width: 100%;
+                        background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                        >div:nth-child(1){
+                            width: 10%;
+                        }
+                        >div:nth-child(2){
+                            width: 35%;
+                        }
+                        >div:nth-child(3){
+                            width: 40%;
+                        }
+                        >div:nth-child(4){
+                            width: 15%;
+                        }
+                    }
+                    .tablebody{
+                        height: 180px;
+                        overflow-y: scroll;
+                        .rows{
+                            display: flex;
+                            align-items: center;
+                            height: 36px;
+                            width: 100%;
+                            background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                            >div:nth-child(1){
+                                width: 10%;
+                            }
+                            >div:nth-child(2){
+                                width: 35%;
+                            }
+                            >div:nth-child(3){
+                                width: 40%;
+                            }
+                            >div:nth-child(4){
+                                width: 15%;
+                            }
+                        }
+                        >.rows:nth-child(odd){
+                            background: url('./row.png') no-repeat;
+                            background-size: 100% 100%;
+                        }
+                    }
+                }
+                .mytable3{
+                    width: 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 12px;
+                    text-align: center;
+                    margin-bottom: 11px;
+                    .tablehead{
+                        display: flex;
+                        align-items: center;
+                        height: 36px;
+                        width: 100%;
+                        background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                        >div:nth-child(1){
+                            width: 20%;
+                        }
+                        >div:nth-child(2){
+                            width: 30%;
+                        }
+                        >div:nth-child(3){
+                            width: 30%;
+                        }
+                        >div:nth-child(4){
+                            width: 20%;
+                        }
+                    }
+                    .tablebody{
+                        height: 180px;
+                        overflow-y: scroll;
+                        .rows{
+                            display: flex;
+                            align-items: center;
+                            height: 36px;
+                            width: 100%;
+                            background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                            >div:nth-child(1){
+                                width: 20%;
+                            }
+                            >div:nth-child(2){
+                                width: 30%;
+                            }
+                            >div:nth-child(3){
+                                width: 30%;
+                            }
+                            >div:nth-child(4){
+                                width: 20%;
+                            }
+                        }
+                        >.rows:nth-child(odd){
+                            background: url('./row.png') no-repeat;
+                            background-size: 100% 100%;
+                        }
+                    }
+                }
+                margin-bottom: 20px;
+            }
+            .row5{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .left,.right{
+                    width: 360px;
+                    height: auto;
+                    >div:first-child{
+                        width: 100%;
+                        height: 36px;
+                        line-height: 36px;
+                        background: url('./矩形2.png') no-repeat;
+                        background-size: 100% 100%;
+                        padding-left: 14px;
+                        color: rgba(200,224,255,1);
+                        font-size: 16px;
+                        margin-bottom: 11px;
+                    }
+                    .checkBox{
+                        display: flex;
+                        margin-bottom: 11px;
+                        .search{
+                            width: 32px;
+                            height: 32px;
+                            color: rgba(82,214,231,1);
+                            font-size: 20px;
+                            text-align: center;
+                            line-height: 32px;
+                            margin-right: 8px;
+                            background: url('./矩形备份43.png');
+                        }
+                        .refresh{
+                            width: 32px;
+                            height: 32px;
+                            color: rgba(82,214,231,1);
+                            font-size: 20px;
+                            text-align: center;
+                            line-height: 32px;
+                            background: url('./矩形备份43.png');
+                        }
+                    }
+                    .list{
+                        height: 169px;
+                        width: 100%;
+                        overflow-y:scroll;
+                        .rows{
+                            height: 37px;
+                            width: 100%;
+                            border: 1px solid;
+                            border-image: linear-gradient(90deg, #2e578b, #2e578b) 1 1;
+                            border-radius: 2px;
+                            margin-bottom: 7px;
+                            display: flex;
+                            align-items: center;
+                            padding-left: 9px;
+                            color: #c8e0ff;
+                            font-size: 14px;
+                            >div:first-child{
+                                width: 8px;
+                                height: 8px;
+                                background: linear-gradient(180deg,#d4e7ff, #d8d8d8);
+                                border-radius: 50%;
+                                margin-right: 6px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .pop2{
+        position: absolute;
+        top: 0;
+        right: -780px;
+        background: rgba(10,32,71,1);
+        .bigTitle{
+            width: 780px;
+            height: 45px;
+            line-height: 45px;
+            background: url('./职能职责.png');
+            text-align: right;
+            >img{
+                width: 26px;
+                height: 26px;
+            }
+        }
+        >div:last-child{
+            width: 780px;
+            height: 826px;
+            padding: 16px 20px 19px 20px;
+            .switchButton{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                >div{
+                    width:240px;
+                    height: 37px;
+                    background: url('./normal.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                    text-align: center;
+                    line-height: 37px;
+                }
+                .checked{
+                    background: url('./checkButton.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+            }
+            .text{
+                font-size: 16px;
+                color: rgba(200,224,255,1);
+                height: 100%;
+                width: 100%;
+                padding-top:19px;
+                overflow-y: scroll;
+            }
+        }
+    }
+    .pop3{
+        position: absolute;
+        top: 0;
+        right: -780px;
+        width: 780px;
+        height: auto;
+        background: rgba(10,32,71,1);
+        .bigTitle{
+            width: 780px;
+            height: 45px;
+            line-height: 45px;
+            background: url('./工作清单.png');
+            text-align: right;
+            >img{
+                width: 26px;
+                height: 26px;
+            }
+        }
+        >div:last-child{
+            width: 780px;
+            height: 826px;
+            padding: 16px 20px 19px 20px;
+            .switchButton{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 11px;
+                >div{
+                    width:240px;
+                    height: 37px;
+                    background: url('./normal.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 14px;
+                    text-align: center;
+                    line-height: 37px;
+                }
+                .checked{
+                    background: url('./checkButton.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+            }
+            .checkBox{
+                margin-bottom: 11px;
+            }
+            .mytable{
+                    width: 100%;
+                    color: rgba(200,224,255,1);
+                    font-size: 12px;
+                    text-align: center;
+                    .tablehead{
+                        display: flex;
+                        align-items: center;
+                        height: 36px;
+                        width: 100%;
+                        background: linear-gradient(180deg,rgba(49,131,233,0.20), rgba(41,84,135,0.10));
+                        >div:nth-child(1){
+                            width: 5%;
+                        }
+                        >div:nth-child(2){
+                            width: 15%;
+                        }
+                        >div:nth-child(3){
+                            width: 50%;
+                        }
+                        >div:nth-child(4){
+                            width: 30%;
+                        }
+                    }
+                    .tablebody{
+                        height: 658px;
+                        overflow-y: scroll;
+                        .rows{
+                            display: flex;
+                            align-items: center;
+                            height: 36px;
+                            width: 100%;
+                            >div:nth-child(1){
+                                width: 5%;
+                            }
+                            >div:nth-child(2){
+                                width: 15%;
+                            }
+                            >div:nth-child(3){
+                                width: 50%;
+                            }
+                            >div:nth-child(4){
+                                width: 30%;
+                            }
+                        }
+                        >.rows:nth-child(odd){
+                            background: url('./row.png') no-repeat;
+                            background-size: 100% 100%;
+                        }
+                    }
+            }
+        }
+    }
+    .pop4{
+        position: absolute;
+        top: 0;
+        right: -780px;
+        background: rgba(10,32,71,1);
+        .bigTitle{
+            width: 780px;
+            height: 45px;
+            line-height: 45px;
+            background: url('./街道值班信息.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            text-align: right;
+            >img{
+                width: 26px;
+                height: 26px;
+            }
+        }
+        >div:last-child{
+            width: 780px;
+            height: 826px;
+            padding: 16px 20px 19px 20px;
+        }
+    }
+}
+</style>
+<style lang="scss">
+.checkBox{
+        .ivu-date-picker-transfer {
+            max-height: unset !important;
+        }
+        .ivu-date-picker-rel{
+            width: 285px !important;
+        }
+        .ivu-date-picker{
+            position: relative;
+                .ivu-select-dropdown{
+                    max-height: unset !important;
+                    top: 28px !important;
+                    left: 0px !important;
+                    font-size: 22px !important;
+                    .ivu-picker-panel-body-date{
+                    width: 540px !important;
+                    }
+                    .ivu-date-picker-cells{
+                    padding: 10px !important;
+                    width: 250px !important;
+                    }
+                    .ivu-date-picker-header{
+                    height: 33px !important;
+                    line-height: 33px !important;
+                    .ivu-picker-panel-icon-btn{
+                        color: #000 !important;
+                        font-size: 25px !important;
+                    }
+                    }
+                    .ivu-date-picker-cells-header{
+                    span{
+                        width: 28px !important;
+                    }
+                    }
+                    .ivu-date-picker-cells-cell{
+                    width: 31px !important;
+                    em{
+                        width: 100% !important;
+                    }
+                    }
+                }
+        }
+        .ivu-input-wrapper{
+            background: transparent;
+                .ivu-icon-ios-calendar-outline{
+                line-height: 33px !important;
+                color: #000 !important;
+                font-size: 22px !important;
+
+                }
+                .ivu-icon-ios-close-circle{
+                line-height: 33px !important;
+                color: #000 !important;
+                font-size: 22px !important;
+                }
+                .ivu-input{
+                width: 285px !important;
+                height: 33px !important;
+                color: #C8E0FF !important;
+                font-size: 20px !important;
+                border: 1px solid;
+                border-image: linear-gradient(90deg, #2e578b, #2e578b) 1 1;
+                border-radius: 2px;
+                }
+        }
+    }
+</style>

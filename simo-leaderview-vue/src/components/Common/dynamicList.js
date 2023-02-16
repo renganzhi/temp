@@ -23,6 +23,7 @@ export default [
   'WuhoOpenBox',
   'WuhoYXHL',
   'CYZBTX',
+  'NewCYZBTX',
   'WuHolunboTab',
   'WuhoPointBox',
   'WoHoNumber',
