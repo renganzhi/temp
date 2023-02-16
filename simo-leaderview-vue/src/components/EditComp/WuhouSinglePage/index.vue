@@ -8,25 +8,25 @@
                         <div>
                             <div class="TOP3">
                                 <div class="ball" @click="showPersonDetails(1)">
-                                    <div>{{gsqryList.length?gsqryList[1]['姓名']: '暂无数据'}}</div>
-                                    <div>{{gsqryList.length?gsqryList[1]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[1]['姓名']?(isVerification?gsqryList[1]['姓名']:(gsqryList[1]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[1]['姓名']?gsqryList[1]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                                 <div class="ball" @click="showPersonDetails(0)">
-                                    <div>{{gsqryList.length?gsqryList[0]['姓名']: '暂无数据'}}</div>
-                                    <div>{{gsqryList.length?gsqryList[0]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[0]['姓名']?(isVerification?gsqryList[0]['姓名']:(gsqryList[0]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[0]['姓名']?gsqryList[0]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                                 <div class="ball" @click="showPersonDetails(2)">
-                                    <div>{{gsqryList.length?gsqryList[2]['姓名']: '暂无数据'}}</div>
-                                    <div>{{gsqryList.length?gsqryList[2]['次数']: '暂无数据'}}</div>
+                                    <div>{{gsqryList[2]['姓名']?(isVerification?gsqryList[2]['姓名']:(gsqryList[2]['姓名'].slice(0,1)+'**')): '暂无数据'}}</div>
+                                    <div>{{gsqryList[2]['姓名']?gsqryList[2]['次数']: '暂无数据'}}</div>
                                     <div>详情</div>
                                 </div>
                             </div>
-                            <div class="list">
+                            <div class="list" v-if="gsqryList">
                                 <div class="rows" v-for="(data,index) in gsqryList" :key="index" v-show="index > 2">
                                     <div class="col1"><span></span>{{9>index?'0' + (index + 1):(index + 1)}}</div>
-                                    <div class="col2">{{data['姓名']}}</div>
+                                    <div class="col2">{{isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')}}</div>
                                     <div class="col3">{{data['次数']}}</div>
                                     <div class="col4" @click="showPersonDetails(index)">详情</div>
                                 </div>
@@ -37,15 +37,15 @@
                                         <div>高诉求人员</div>
                                         <div @click="showRYXX = false"><img src="./background/关闭.png" alt=""></div>
                                     </div>
-                                    <div>
-                                        <div>{{gsqryDetail['姓名']}}</div>
+                                    <div v-if="gsqryDetail['姓名']">
+                                        <div>{{isVerification?gsqryDetail['姓名']:(gsqryDetail['姓名'].slice(0,1)+'**')}}</div>
                                         <div>
                                             <img src="./background/电话.png" alt="">
-                                            <span>{{gsqryDetail['电话']}}</span>
+                                            <span>{{isVerification?gsqryDetail['电话']:(gsqryDetail['电话'].slice(0,3)+'********')}}</span>
                                         </div>
                                         <div>
                                             <img src="./background/定位.png" alt="">
-                                            <span>{{gsqryDetail['地址']}}</span>
+                                            <span>{{isVerification?gsqryDetail['地址']:(gsqryDetail['地址'].slice(0,5)+'**********')}}</span>
                                         </div>
                                         <div>
                                             <div>
@@ -69,6 +69,15 @@
                 </div>
                 <div id="Module2">
                     <div class="row1">
+                        <div class="selectTitle">
+                          <Input
+                            v-model="SqTipsName"
+                            style="width:270px"
+                            type="password"
+                            placeholder="输入授权码获取全部信息"
+                          />
+                          <div class="search" @click="searchData"></div>
+                        </div>
                         <div class="listArr">
                             <div class="Abox">
                                 <div class="leftList">
@@ -77,7 +86,7 @@
                                         <div class="li" v-for="(data, index) in kszzry7List" :key="index">
                                             <div class="info1">
                                                 <div><span></span>{{index + 1}}</div>
-                                                <div>{{data['姓名']}}</div>
+                                                <div>{{isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')}}</div>
                                                 <div>
                                                     <div>环比增长次数 </div>
                                                     <div> {{data['增长']}}</div>
@@ -112,7 +121,7 @@
                                         <div class="li" v-for="(data, index) in kszzry15List" :key="index">
                                             <div class="info1">
                                                 <div><span></span>{{index + 1}}</div>
-                                                <div>{{data['姓名']}}</div>
+                                                <div>{{ isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')}}</div>
                                                 <div>
                                                     <div>环比增长次数 </div>
                                                     <div>{{data['环比增长']}}</div>
@@ -576,7 +585,7 @@ export default {
       indexOf15: -1,
       showGZFF1: false,
       showGZFF2: false,
-      appealType: '工资发放',
+      appealType: '企业问题',
       showMDTCXQ: false,
       showGFXRYQD: false,
       showQMSSQ: false,
@@ -600,7 +609,9 @@ export default {
       gfxryDetail3: {}, // module2 区民生诉求指数详情 高风险人员详情
       qztsList: [], // 投诉列表
       xqValue: {},
-      showEventDetails: false
+      showEventDetails: false,
+      SqTipsName: '',
+      isVerification: false
     }
   },
   components: {IntegratedHistogram, EfficiencyPage, ELine, NewGauge, NewProgress, NewPie, vueSeamlessScroll},
@@ -1051,6 +1062,7 @@ export default {
     },
     getBubble () {
       return [
+        '企业问题',
         '工资发放',
         '城乡居民医疗',
         '水电气',
@@ -1063,8 +1075,7 @@ export default {
         '消费纠纷',
         '物业服务',
         '食品安全',
-        '消防安全',
-        '企业问题'
+        '消防安全'
       ]
     }
   },
@@ -1199,6 +1210,9 @@ export default {
     CloseGFXRYS () {
       this.showGFXRYS = false
       this.gfxryDetail3 = {}
+    },
+    searchData () {
+      this.isVerification = true
     },
     getHomePageData () {
       // 获取module1 高诉求人员排行信息
@@ -1647,6 +1661,21 @@ export default {
         .row1{
             width: 100%;
             display: flex;
+            position: relative;
+            .selectTitle{
+              position: absolute;
+              top: 20px;
+              left: 850px;
+              display: flex;
+              .search{
+                height: 27px;
+                width: 30px;
+                margin-left: 10px;
+                background-image: url('./127.png');
+                cursor: pointer;
+                background-size: 100%;
+              }
+            }
             .listArr{
                 width: 1281px;
                 height: 800px;
@@ -2988,8 +3017,8 @@ export default {
                     }
                 }
                 .eventBox{
-                    width: 100%;
-                    height: 100%;
+                    // width: 100%;
+                    // height: 100%;
                     padding: 24px 24px 24px 16px;
                     overflow: hidden !important;
                     // margin-bottom: 10px;
