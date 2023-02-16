@@ -196,7 +196,6 @@
                     </div>
                 </div>
             </div>
-            <!-- 弹窗 -->
             <div class="part" v-if="showStreetInfo && modelData['总办件量']">
                 <div class="Btn" @click="showStreetInfo = false"
                 style="position: absolute;
@@ -290,90 +289,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="row1">
-                    <div class="select">
-                        <Select style="width:254px">
-                            <Option value="全部事件">全部事件</Option>
-                        </Select>
-                    </div>
-                    <div class="box1">
-                        <div class="left">
-                            <div>总办件量</div>
-                            <div>1445</div>
-                            <div>环比过去30天<Icon type="md-arrow-round-up" /><span>0%</span></div>
-                        </div>
-                        <div class="right">
-                            <div>
-                                <div><NewProgress :item="getZBJLCZZ"></NewProgress></div>
-                                <span>1346</span>
-                            </div>
-                            <div>
-                                <div><NewProgress :item="getZBJLYWC"></NewProgress></div>
-                                <span>1346</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="box2">
-                        <div>平均办件时间</div>
-                        <div>0天10小时30分钟</div>
-                        <div>环比过去30天<Icon type="md-arrow-round-up" /><span>0%</span></div>
-                    </div>
-                    <div class="box3">
-                        <div>共有处置人员3人</div>
-                        <div>人均办件量710件</div>
-                    </div>
-                    <div class="return" @click="CloseStreetInfo">
-                        返回总览
-                    </div>
-                    <div class="datepicker">
-                        <DatePicker  type="daterange" split-panels placeholder="Select date" style="width: 365px"></DatePicker>
-                    </div>
-                </div>
-                <div class="row2">
-                    <div class="left">
-                        <div class="title">
-                            <span>· 事件类型统计</span>
-                            <span>单位：件</span>
-                        </div>
-                        <div class="content">
-                            <NewPie :item="getSJLX1"></NewPie>
-                            <NewPie :item="getSJLX2"></NewPie>
-                        </div>
-                    </div>
-                    <div class="right">
-                        <div class="title">
-                            <span>· 办理完成率</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row3">
-                    <div class="left">
-                        <div class="title">
-                            <span>· 事件类型统计</span>
-                        </div>
-                        <div class="content">
-                            <div class="event" v-for="(data,index) in 7" :key="index">
-                                <div><span>2333</span>件</div>
-                                <div>市容环境-暴露垃圾-暴露垃圾</div>
-                                <div><img src="./事件图标.svg" alt=""></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="right">
-                        <div class="title">
-                            <span>· 办件量统计</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row4">
-                    <div class="title">
-                        <span>· 办件量走势</span>
-                        <span>单位：件</span>
-                    </div>
-                    <div>
-                        <ELine :item="getBJLZS"></ELine>
-                    </div>
-                </div> -->
             </div>
         </div>
     </div>
@@ -386,55 +301,16 @@ import NewProgress from '../NewProgress/index.vue'
 import MyProgress from './newprogress.vue'
 import CityEvent from '../CityEvent/index.vue'
 import NewPie from '../NewPie/index.vue'
-// import modelData from './data'
-// import bodyData from './data2'
 export default {
-  data: function () {
+  data () {
     return {
       showStreetInfo: false,
       dateValue: [],
       selectType: '',
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
       modelData: {},
-      bodyData: {}
-    }
-  },
-  components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
-  computed: {
-    getEventDistribution () {
-      return {
-        'text': '目标占比图',
-        'width': 200,
-        'height': 200,
-        'imgClass': 'icon-n-percent',
-        'chartType': 'NewGauge',
-        'ifGradual': 'false',
-        'subType': 'progress',
-        'bgClr': 'rgba(255, 255, 255, 0.2)',
-        'legendY': 86,
-        'fontSize': 24,
-        'NameShow': true,
-        'NameSize': 24,
-        'NamelegendY': 43,
-        'colorful': 'true',
-        'NameColor': '#d0e0e3',
-        'ctLegendShow': true,
-        'detailColor': '#52a8c0',
-        'barClr': '#37a2da',
-        'barClrs': ['#ff9900', '#f1c232'],
-        'detailwidth': 15,
-        'ctLegendSize': '24',
-        'ctLegendColor': '#d0e0e3',
-        'axisLabelSize': '16',
-        'chartData': {
-          'name': '12345平台',
-          'unit': '%',
-          'value': 60
-        }
-      }
-    },
-    getOfficeTrend () {
-      return {
+      bodyData: {},
+      getOfficeTrend: {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
         'height': 410,
@@ -519,42 +395,17 @@ export default {
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
         'chartData': {
-          'columns': (this.bodyData && this.bodyData['办件量走势']) ? this.bodyData['办件量走势'].columns : [],
+          'columns': [],
           'unit': '%',
           'min': 60,
           'max': 80,
           'minIndex': 2,
           'maxIndex': 3,
           'unitX': '时间',
-          'rows': (this.bodyData && this.bodyData['办件量走势']) ? this.bodyData['办件量走势'].rows : []
+          'rows': []
         }
-      }
-    },
-    getProgress () {
-      return {
-        'text': '进度条',
-        'imgClass': 'icon-n-progress',
-        'chartType': 'NewProgress',
-        'width': 290,
-        'height': 25,
-        'bgClr': 'rgba(6, 46, 77, 0.37)',
-        'barClr': '#fff',
-        'fontSize': 14,
-        'barClrs': ['#1068ed', '#69b1f3'],
-        'clr': '#fff',
-        'colorful': 'false',
-        'ctLegendShow': 'true',
-        'chartData': {
-          'name': '繁忙度',
-          'unit': '%',
-          'value': 60
-        },
-        'proHeight': 16,
-        'radius': 8
-      }
-    },
-    getBar1 () {
-      return {
+      },
+      getBar1: {
         'text': '柱状图',
         width: 1496,
         height: 450,
@@ -610,14 +461,12 @@ export default {
         'splitSize1': 1,
         'rotate1': 0,
         'chartData1': {
-          'columns': (this.bodyData && this.bodyData['各委办局办件量统计']) ? this.bodyData['各委办局办件量统计'].columns : [],
+          'columns': [],
           'unit': '次',
-          'rows': (this.bodyData && this.bodyData['各委办局办件量统计']) ? this.bodyData['各委办局办件量统计'].rows : []
+          'rows': []
         }
-      }
-    },
-    getBar2 () {
-      return {
+      },
+      getBar2: {
         'text': '柱状图',
         width: 1420,
         height: 450,
@@ -675,58 +524,10 @@ export default {
         'chartData1': {
           'columns': ['项目', '完成率'],
           'unit': '%',
-          'rows': (this.bodyData && this.bodyData['办理完成率总览']) ? this.bodyData['办理完成率总览'].rows : []
+          'rows': []
         }
-      }
-    },
-    getZBJLCZZ () {
-      return {
-        'text': '进度条',
-        'imgClass': 'icon-n-progress',
-        'chartType': 'NewProgress',
-        'width': 350,
-        'height': 30,
-        'bgClr': 'rgba(6, 46, 77, 0.37)',
-        'barClr': '#fff',
-        'fontSize': 24,
-        'barClrs': ['#1068ed', '#69b1f3'],
-        'clr': '#fff',
-        'colorful': 'false',
-        'ctLegendShow': 'true',
-        'chartData': {
-          'name': '繁忙度',
-          'unit': '%',
-          'value': 60
-        },
-        'proHeight': 20,
-        'radius': 8
-      }
-    },
-    getZBJLYWC () {
-      return {
-        'text': '进度条',
-        'imgClass': 'icon-n-progress',
-        'chartType': 'NewProgress',
-        'width': 350,
-        'height': 30,
-        'bgClr': 'rgba(6, 46, 77, 0.37)',
-        'barClr': '#fff',
-        'fontSize': 24,
-        'barClrs': ['#1068ed', '#69b1f3'],
-        'clr': '#fff',
-        'colorful': 'false',
-        'ctLegendShow': 'true',
-        'chartData': {
-          'name': '繁忙度',
-          'unit': '%',
-          'value': 60
-        },
-        'proHeight': 20,
-        'radius': 8
-      }
-    },
-    getSJLX1 () {
-      return {
+      },
+      getSJLX1: {
         'text': '环形图',
         'width': 700,
         'height': 250,
@@ -768,14 +569,12 @@ export default {
           ['#85f8c0', '#62dc26']
         ],
         'chartData': {
-          'columns': (this.modelData && this.modelData['事件大类_自定义时段']) ? this.modelData['事件大类_自定义时段'].columns : [],
+          'columns': [],
           'unit': '次',
-          'rows': (this.modelData && this.modelData['事件大类_自定义时段']) ? this.modelData['事件大类_自定义时段'].rows : []
+          'rows': []
         }
-      }
-    },
-    getBJLZS () {
-      return {
+      },
+      getBJLZS: {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
         'height': 210,
@@ -860,29 +659,20 @@ export default {
           ['#85f8c0', '#62dc26']
         ], // 区域渐变
         'chartData': {
-          'columns': (this.modelData && this.modelData['办件量走势']) ? this.modelData['办件量走势'].columns : [],
+          'columns': [],
           'unit': '%',
           'min': 60,
           'max': 80,
           'minIndex': 2,
           'maxIndex': 3,
           'unitX': '时间',
-          'rows': (this.modelData && this.modelData['办件量走势']) ? this.modelData['办件量走势'].rows : []
+          'rows': []
         }
       }
     }
   },
-  watch: {
-    'getBar2' () {
-      console.log(this.getBar2)
-    }
-  },
+  components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
   methods: {
-    onMouseWheel (e, refName) {
-      let eventDelta = -e.wheelDelta || -e.deltaY * 40
-      let box = this.$refs[refName]
-      box.scrollLeft = box.scrollLeft + eventDelta / 2
-    },
     ShowStreetInfoFun (stree) {
       this.getJieDaoParamData(stree)
     },
