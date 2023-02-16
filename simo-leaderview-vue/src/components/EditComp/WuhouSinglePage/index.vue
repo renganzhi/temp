@@ -73,7 +73,6 @@
                           <Input
                             v-model="SqTipsName"
                             style="width:270px"
-                            type="password"
                             placeholder="输入授权码获取全部信息"
                           />
                           <div class="search" @click="searchData"></div>
@@ -1212,7 +1211,16 @@ export default {
       this.gfxryDetail3 = {}
     },
     searchData () {
-      this.isVerification = true
+      if (this.SqTipsName === '141242') {
+        this.isVerification = true
+      } else {
+        this.isVerification = false
+        this.$notify({
+          message: '未授权！',
+          position: 'bottom-right',
+          customClass: 'toast toast-error'
+        })
+      }
     },
     getHomePageData () {
       // 获取module1 高诉求人员排行信息
