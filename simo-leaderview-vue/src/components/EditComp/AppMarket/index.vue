@@ -4,10 +4,18 @@
       <div class="title">
         <div class="openTitle" @click="isShowModel = true"></div>
       </div>
-      <div class="appmodel">大数据资源平台</div>
-      <div class="appmodel">成都市防汛减灾保障系统</div>
-      <div class="appmodel">大数据资源平台</div>
-      <div class="appmodel">成都市防汛减灾保障系统</div>
+      <div class="appmodel">
+        <a :href="appArry[0].url"  target="_blank">{{appArry[0].name}}</a>
+      </div>
+      <div class="appmodel">
+        <a :href="appArry[1].url"  target="_blank">{{appArry[1].name}}</a>
+      </div>
+      <div class="appmodel">
+        <a :href="appArry[2].url"  target="_blank">{{appArry[2].name}}</a>
+      </div>
+      <div class="appmodel">
+        <a :href="appArry[3].url"  target="_blank">{{appArry[3].name}}</a>
+      </div>
     </div>
     <transition name="moveLeft">
       <div class="showModelBox" v-show="isShowModel">
@@ -25,9 +33,11 @@
             <div class="search" @click="searchData"></div>
           </div>
           <div class="dataBody">
-            <div class="data" v-for="(item,index) in 40" :key="index">
-              <div class="name">成都市防汛减灾保障系统</div>
-              <div class="name2">市城运中心</div>
+            <div class="data" v-for="(item,index) in appArry" :key="index">
+              <a :href="item.url">
+                <div class="name">{{item.xtname}}</div>
+                <div class="name2">{{item.name}}</div>
+              </a>
             </div>
           </div>
         </div>
@@ -40,7 +50,49 @@ export default {
   data () {
     return {
       isShowModel: false,
-      SelectName: ''
+      SelectName: '',
+      appArry: [
+        {
+          name: '区生态环保局',
+          xtname: '智能化大气监测管治平台',
+          url: 'https://am.glzt.com.cn/login/redirect?noLogin=1'
+        },
+        {
+          name: '区应急管理局',
+          xtname: '武侯区安全风险智能管控平台',
+          url: 'https://cd.wh.safety114.com/login?id=eyJ1c2VybmFtZSI6InpmNjEwMDAwIiwicHdkIjoiNjEwMDAwIn0='
+        },
+        {
+          name: '区社治委',
+          xtname: '小武生活管理平台',
+          url: 'https://xwlife.sciirc.com:6351/#/tempLogin'
+        },
+        {
+          name: '区民政局',
+          xtname: '颐居通智能物联综合管控平台',
+          url: 'https://center.91xxt.com/admin/screen/safe/safe_show_jump_view?areaId=330105&token=wuhougz'
+        },
+        {
+          name: '区水务局',
+          xtname: '颐居通智能物联综合管控平台',
+          url: 'http://10.29.119.30:8080/#/dataIndex/index'
+        },
+        {
+          name: '区司法局',
+          xtname: '智慧公共法律服务平台',
+          url: 'https://cj.lvwa18.com/manager/login?adminLogin=cdwhsfj&adminPassword=MVrGyqgmQz5UxHbwiEMNw'
+        },
+        {
+          name: '区综合执法局',
+          xtname: '景观照明集中控制系统',
+          url: '110.185.171.39:81'
+        },
+        {
+          name: '区发改局',
+          xtname: '三支队伍（重点企业走访）',
+          url: 'https://whcig.cdwh.gov.cn:8060/#/4Hwl6bwK3r5kLEU'
+        }
+      ]
     }
   },
   methods: {
@@ -80,12 +132,14 @@ export default {
       width: 100%;
       height: 53px;
       margin-top: 7px;
-      color: #C8E0FF;
-      font-size: 16px;
       display: flex;
       align-items: center;
       background-image: url('./img/123.png');
       background-size: 100%;
+      a{
+        color: #C8E0FF;
+        font-size: 16px;
+      }
     }
     .appmodel::before{
       content: '';
