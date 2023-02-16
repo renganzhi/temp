@@ -57,6 +57,8 @@
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
                 <CYMap :nowPageName="pageName"></CYMap>
+                <!-- <iframe  id="BaiDuIframe" style="height:100%;width:100%;position: absolute;z-index:0"
+     src="http://172.16.149.41:8181/appli/start?appliId=987084259741138944&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe> -->
                 <!-- <EconomicMap :nowPageName="pageName"></EconomicMap> -->
               </div>
             <div class="full-height pagebox">

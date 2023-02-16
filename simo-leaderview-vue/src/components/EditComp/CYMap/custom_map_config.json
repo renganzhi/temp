@@ -16,14 +16,21 @@
     "featureType": "building",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#081432ff",
+        "color": "#666975ff",
         "visibility": "on"
     }
 }, {
     "featureType": "building",
     "elementType": "geometry.stroke",
     "stylers": {
-        "color": "#000219ff",
+        "color": "#b58946ff",
+        "visibility": "on"
+    }
+}, {
+    "featureType": "building",
+    "elementType": "geometry.topfill",
+    "stylers": {
+        "color": "#e4d067ff",
         "visibility": "on"
     }
 }, {
@@ -170,7 +177,8 @@
     "stylers": {
         "weight": 1,
         "color": "#6b99d8ff",
-        "visibility": "on"
+        "visibility": "on",
+        "opacity": "00"
     }
 }, {
     "featureType": "continent",
@@ -306,7 +314,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "shopping",
@@ -349,7 +358,8 @@
     "elementType": "labels.text.stroke",
     "stylers": {
         "color": "#58657600",
-        "visibility": "on"
+        "visibility": "on",
+        "opacity": "00"
     }
 }, {
     "featureType": "road",
@@ -455,7 +465,7 @@
     "featureType": "road",
     "elementType": "labels.text",
     "stylers": {
-        "fontsize": 24
+        "fontsize": 28
     }
 }, {
     "featureType": "highway",
@@ -463,7 +473,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "highway",
@@ -517,7 +528,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "nationalway",
@@ -622,7 +634,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "fourlevelway",
@@ -665,7 +678,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "cityhighway",
@@ -673,7 +687,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "arterial",
@@ -681,7 +696,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "tertiaryway",
@@ -689,7 +705,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "fourlevelway",
@@ -697,7 +714,8 @@
     "stylers": {
         "color": "#6b99d8ff",
         "visibility": "on",
-        "weight": 1
+        "weight": 1,
+        "opacity": "00"
     }
 }, {
     "featureType": "fourlevelway",
@@ -1109,5 +1127,83 @@
         "curZoomRegionId": "0",
         "curZoomRegion": "9,9",
         "level": "9"
+    }
+}, {
+    "featureType": "highway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "nationalway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "provincialway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "cityhighway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "arterial",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "tertiaryway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "fourlevelway",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "local",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 28
+    }
+}, {
+    "featureType": "education",
+    "elementType": "labels.text.stroke",
+    "stylers": {
+        "opacity": "00"
+    }
+}, {
+    "featureType": "medical",
+    "elementType": "labels.text.stroke",
+    "stylers": {
+        "opacity": "00"
+    }
+}, {
+    "featureType": "transportation",
+    "elementType": "labels.text.stroke",
+    "stylers": {
+        "opacity": "00"
+    }
+}, {
+    "featureType": "poilabel",
+    "elementType": "labels.text.stroke",
+    "stylers": {
+        "opacity": "00"
+    }
+}, {
+    "featureType": "poilabel",
+    "elementType": "labels.text.fill",
+    "stylers": {
+        "color": "#c0e8f1ff"
     }
 }]
