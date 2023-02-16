@@ -11,6 +11,8 @@ export default{
     pop2Top: 0,
     pop3Right: -780,
     pop3Top: 0,
+    pop4Right: -780,
+    pop4Top: 0,
     'chartData': {}
   },
   'styles': {
@@ -54,6 +56,20 @@ export default{
         {
           'name': '弹窗上边距',
           'key': 'pop3Top',
+          'tag': 'input'
+        }]
+      },
+      {
+        'name': '四级弹窗配置',
+        'tag': 'Hint',
+        'childoption': [{
+          'name': '弹窗右边距',
+          'key': 'pop4Right',
+          'tag': 'input'
+        },
+        {
+          'name': '弹窗上边距',
+          'key': 'pop4Top',
           'tag': 'input'
         }]
       }
