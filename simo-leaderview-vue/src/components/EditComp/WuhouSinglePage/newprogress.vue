@@ -1,9 +1,9 @@
 <template>
-  <div class="Pro" ref="progress"></div>
+  <div class="Pro" ref="newprogress"></div>
 </template>
 <script>
 export default {
-  name: 'progress',
+  name: 'newprogress',
   props: ['successdata', 'progressType', 'color'],
   data () {
     return {
@@ -12,7 +12,7 @@ export default {
     }
   },
   mounted () {
-    this.mychart = echarts.init(this.$refs.progress)
+    this.mychart = echarts.init(this.$refs.newprogress)
     setTimeout(() => {
       if (this.progressType === 2) {
         this.setOption2()
