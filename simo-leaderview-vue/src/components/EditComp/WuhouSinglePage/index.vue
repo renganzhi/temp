@@ -447,7 +447,7 @@
                                     <div>{{data['街道']}}</div>
                                     <div>
                                         <div>
-                                            <span style="color:#5abf5a;font-size:20px;vertical-align:text-bottom;">优</span>
+                                            <span style="color:#5abf5a;font-size:30px;vertical-align:text-bottom;">优</span>
                                             {{data['数量']}}
                                         </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
@@ -2735,7 +2735,7 @@ export default {
                             justify-content: space-around;
                             >div:nth-child(1){
                                 color: #5AE8FA;
-                                font-size: 36px;
+                                font-size: 28px;
                                 font-weight: bold;
                             }
                             >div:nth-child(2) {

@@ -53,13 +53,8 @@ export default {
       SelectName: '',
       appArry: [
         {
-          name: '区生态环保局',
-          xtname: '智能化大气监测管治',
-          url: 'https://am.glzt.com.cn/login/redirect?noLogin=1'
-        },
-        {
           name: '区应急管理局',
-          xtname: '安全风险智能管控',
+          xtname: '安全风险管控',
           url: 'https://cd.wh.safety114.com/login?id=eyJ1c2VybmFtZSI6InpmNjEwMDAwIiwicHdkIjoiNjEwMDAwIn0='
         },
         {
@@ -70,7 +65,12 @@ export default {
         {
           name: '区民政局',
           xtname: '颐居通智能物联',
-          url: 'https://center.91xxt.com/admin/screen/safe/safe_show_jump_view?areaId=330105&token=wuhougz'
+          url: 'https://gov.91xxt.com/admin/report?wuhou&token=1X77hYVrwkLrRrLKprW2ndi4vjk'
+        },
+        {
+          name: '区生态环保局',
+          xtname: '智能大气监管',
+          url: 'https://am.glzt.com.cn/login/redirect?noLogin=1'
         },
         {
           name: '区水务局',
@@ -106,6 +106,21 @@ export default {
           name: '区发改局',
           xtname: '重点企业走访',
           url: 'https://whcig.cdwh.gov.cn:8060/#/4Hwl6bwK3r5kLEU'
+        },
+        {
+          name: '行政审批局',
+          xtname: '政务服务',
+          url: 'http://172.16.251.99/whspj/cdwhzwfw/newdataanalysis/matter-analysis2'
+        },
+        {
+          name: '行政审批局',
+          xtname: '政务窗口全景',
+          url: 'http://172.16.251.99/whspj/cdwhzwfw/windowdynamic/windowdynamic2'
+        },
+        {
+          name: '行政审批局',
+          xtname: '政务云',
+          url: 'http://172.16.251.128:8080/bmc/vm/generalView/index?currentIndex=pg-13-06&amp;parentId=pg-05-group-04&sso=ywpn2m7UAaOiawGF2XNVUIq2BpqmNGfJ0gak1IgdKbP0EsSeDVgioQ=='
         }
       ]
     }
