@@ -5,16 +5,16 @@
         <div class="openTitle" @click="isShowModel = true"></div>
       </div>
       <div class="appmodel">
-        <a :href="appArry[0].url"  target="_blank">{{appArry[0].name}}</a>
+        <a :href="appArry[0].url"  target="_blank">{{appArry[0].xtname}}</a>
       </div>
       <div class="appmodel">
-        <a :href="appArry[1].url"  target="_blank">{{appArry[1].name}}</a>
+        <a :href="appArry[1].url"  target="_blank">{{appArry[1].xtname}}</a>
       </div>
       <div class="appmodel">
-        <a :href="appArry[2].url"  target="_blank">{{appArry[2].name}}</a>
+        <a :href="appArry[2].url"  target="_blank">{{appArry[2].xtname}}</a>
       </div>
       <div class="appmodel">
-        <a :href="appArry[3].url"  target="_blank">{{appArry[3].name}}</a>
+        <a :href="appArry[3].url"  target="_blank">{{appArry[3].xtname}}</a>
       </div>
     </div>
     <transition name="moveLeft">
@@ -54,42 +54,57 @@ export default {
       appArry: [
         {
           name: '区生态环保局',
-          xtname: '智能化大气监测管治平台',
+          xtname: '智能化大气监测管治',
           url: 'https://am.glzt.com.cn/login/redirect?noLogin=1'
         },
         {
           name: '区应急管理局',
-          xtname: '武侯区安全风险智能管控平台',
+          xtname: '安全风险智能管控',
           url: 'https://cd.wh.safety114.com/login?id=eyJ1c2VybmFtZSI6InpmNjEwMDAwIiwicHdkIjoiNjEwMDAwIn0='
         },
         {
           name: '区社治委',
-          xtname: '小武生活管理平台',
+          xtname: '小武生活',
           url: 'https://xwlife.sciirc.com:6351/#/tempLogin'
         },
         {
           name: '区民政局',
-          xtname: '颐居通智能物联综合管控平台',
+          xtname: '颐居通智能物联',
           url: 'https://center.91xxt.com/admin/screen/safe/safe_show_jump_view?areaId=330105&token=wuhougz'
         },
         {
           name: '区水务局',
-          xtname: '颐居通智能物联综合管控平台',
-          url: 'http://10.29.119.30:8080/#/dataIndex/index'
+          xtname: '智慧河长',
+          url: 'http://10.29.119.30:8080/#/river/index'
+        },
+        {
+          name: '区水务局',
+          xtname: '智慧管网',
+          url: 'http://10.29.119.30:8080/#/pipe/index'
+        },
+        {
+          name: '区水务局',
+          xtname: '智慧防汛',
+          url: 'http://10.29.119.30:8080/#/floodControl/index'
+        },
+        {
+          name: '区水务局',
+          xtname: '智慧运管',
+          url: 'http://10.29.119.30:8080/#/control/index'
         },
         {
           name: '区司法局',
-          xtname: '智慧公共法律服务平台',
+          xtname: '智慧公共法律服务',
           url: 'https://cj.lvwa18.com/manager/login?adminLogin=cdwhsfj&adminPassword=MVrGyqgmQz5UxHbwiEMNw'
         },
         {
           name: '区综合执法局',
-          xtname: '景观照明集中控制系统',
+          xtname: '景观照明',
           url: 'http://110.185.171.39:81/#/bigScreen/index?user=DJF&pd=lAGIOwlxZqOMoH81DpCVPlG7edmWL1upB1zW5tySJ%2F4tvlXfO8bUSJNul6d7NYrsvXDRs7xBSU5CPHg9PE05eSDOA821SMfSDSFK9sjpH5DCLXiR4bPz2%2B3kW9iIXZyQfEmpWPPu5dVz5ohlNzYz2OE%2B0lFMRltbnM5wdCxh1VM%3D&path=%2FbigScreen%2Findex'
         },
         {
           name: '区发改局',
-          xtname: '三支队伍（重点企业走访）',
+          xtname: '重点企业走访',
           url: 'https://whcig.cdwh.gov.cn:8060/#/4Hwl6bwK3r5kLEU'
         }
       ]

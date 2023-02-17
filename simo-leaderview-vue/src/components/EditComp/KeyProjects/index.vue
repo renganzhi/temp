@@ -7,28 +7,28 @@
       <div class="Data">
         <div class="leftData">
           <div class="data" style="width:260px;height:55px">
-            <div class="name">项目总数</div>
+            <div class="name" style="font-weight:bold;">项目总数</div>
             <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
           <div class="BotData" style="width:260px;height:55px">
             <div class="data" style="width:128px;height:55px">
-              <div class="name">总投资</div>
+              <div class="name" style="font-weight:bold;">总投资</div>
               <div class="data1">{{modelBodyData['总投资']||0}}万元</div>
             </div>
             <div class="data" style="width:128px;height:55px">
-              <div class="name">本年度计划投资</div>
+              <div class="name" style="font-weight:bold;">本年度计划投资</div>
               <div class="data1">{{modelBodyData['本年度投资计划']||0}}万元</div>
             </div>
           </div>
         </div>
         <div class="center">
-          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;">重点项目批次组成</div>
+          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;font-weight:bold;text-align:center;">重点项目批次组成</div>
           <div class="canvas" ref="PeiModel" style="width: 100%;height: calc(100% - 20px);">
 
           </div>
         </div>
         <div class="rightData">
-          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;">项目进度组成</div>
+          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;font-weight:bold;text-align:center;">项目进度组成</div>
           <div class="canvas" ref="PeiModel2" style="width: 100%;height: calc(100% - 20px);"></div>
         </div>
       </div>
