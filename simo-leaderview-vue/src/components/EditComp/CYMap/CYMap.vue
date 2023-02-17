@@ -350,17 +350,28 @@ export default {
         // marker.setLabel(label)
         marker.setTitle(dataArray.name)
         marker.addEventListener('click', e => {
-          this.$parent.ShowVideoBox(dataArray.deviceIndexCode)
+          if (this.$parent.ShowVideoBox) {
+            this.$parent.ShowVideoBox(dataArray.deviceIndexCode)
+          } else if (this.$parent.$parent.ShowVideoBox) {
+            this.$parent.$parent.ShowVideoBox(dataArray.deviceIndexCode)
+          }
         })
         this.map.addOverlay(marker)
       } else if (type === '力量资源') {
         let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
         let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
         marker.addEventListener('click', e => {
-          this.$parent.ShowTanKuangBox({
-            title: '力量资源详情',
-            data: dataArray
-          })
+          if (this.$parent.ShowTanKuangBox) {
+            this.$parent.ShowTanKuangBox({
+              title: '力量资源详情',
+              data: dataArray
+            })
+          } else if (this.$parent.$parent.ShowTanKuangBox) {
+            this.$parent.$parent.ShowTanKuangBox({
+              title: '力量资源详情',
+              data: dataArray
+            })
+          }
         })
         this.map.addOverlay(marker)
       } else {
@@ -393,7 +404,11 @@ export default {
         let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
         let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
         marker.addEventListener('click', e => {
-          this.$parent.ShowTableBox(tableData)
+          if (this.$parent.ShowTableBox) {
+            this.$parent.ShowTableBox(tableData)
+          } else if (this.$parent.$parent.ShowTableBox) {
+            this.$parent.$parent.ShowTableBox(tableData)
+          }
         })
         this.map.addOverlay(marker)
       }

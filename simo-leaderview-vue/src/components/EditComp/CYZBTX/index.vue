@@ -1,17 +1,17 @@
 <template>
   <div class="CYZBTX" :style="boxStyle">
-    <div class="streetBox" v-for="(element, index) in boxData" :key="index">
-      <div class="streetName">{{index}}</div>
+    <div class="streetBox" v-for="(element, index) in item.chartData.rows" v-show="element['值班职务'] === '值班领导'" :key="index">
+      <div class="streetName">{{element['所属街道']}}</div>
       <div class="streetInfo">
         <div class="personnelInfo">
           <div>
-            <img v-if="element['值班领导']['照片链接']" :src="element['值班领导']['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
+            <img v-if="element['照片链接']" :src="element['照片链接']" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
             <img v-else src="./矩形.png" style="width: 136px !important;height: 182px !important;object-fit: fill !important;" alt="">
           </div>
           <div>
-            <div class="name">{{element['值班领导']['领导姓名']}}</div>
-            <div class="phone">{{element['值班领导']['手机号']}}</div>
-            <div class="position">{{element['值班领导']['职务']}}</div>
+            <div class="name">{{element['领导姓名']}}</div>
+            <div class="phone">{{element['手机号']}}</div>
+            <div class="position">{{element['职务']}}</div>
           </div>
         </div>
         <!-- <div class="personnelInfo">
@@ -58,36 +58,36 @@ export default {
     }
   },
   watch: {
-    'item.chartData': {
-      handler (newV, oldV) {
-        this.boxData = {}
-        if (this.item.chartData.rows && this.item.chartData.rows.length) {
-          this.item.chartData.rows.forEach(element => {
-            if (this.boxData[element['所属街道']]) {
-              this.boxData[element['所属街道']][element['职务']] = element
-            } else {
-              this.boxData[element['所属街道']] = {}
-              this.boxData[element['所属街道']][element['职务']] = element
-            }
-          })
-          console.log('boxData', this.boxData)
-        }
-      },
-      deep: true
-    }
+    // 'item.chartData': {
+    //   handler (newV, oldV) {
+    //     this.boxData = {}
+    //     if (this.item.chartData.rows && this.item.chartData.rows.length) {
+    //       this.item.chartData.rows.forEach(element => {
+    //         if (this.boxData[element['所属街道']]) {
+    //           this.boxData[element['所属街道']][element['职务']] = element
+    //         } else {
+    //           this.boxData[element['所属街道']] = {}
+    //           this.boxData[element['所属街道']][element['职务']] = element
+    //         }
+    //       })
+    //       console.log('boxData', this.boxData)
+    //     }
+    //   },
+    //   deep: true
+    // }
   },
   mounted () {
-    if (this.item.chartData.rows && this.item.chartData.rows.length) {
-      this.item.chartData.rows.forEach(element => {
-        if (this.boxData[element['所属街道']]) {
-          this.boxData[element['所属街道']][element['职务']] = element
-        } else {
-          this.boxData[element['所属街道']] = {}
-          this.boxData[element['所属街道']][element['职务']] = element
-        }
-      })
-      console.log('boxData', this.boxData)
-    }
+    // if (this.item.chartData.rows && this.item.chartData.rows.length) {
+    //   this.item.chartData.rows.forEach(element => {
+    //     if (this.boxData[element['所属街道']]) {
+    //       this.boxData[element['所属街道']][element['职务']] = element
+    //     } else {
+    //       this.boxData[element['所属街道']] = {}
+    //       this.boxData[element['所属街道']][element['职务']] = element
+    //     }
+    //   })
+    //   console.log('boxData', this.boxData)
+    // }
   },
   methods: {},
   beforeDestroy () {}
