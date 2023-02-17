@@ -11,6 +11,15 @@ export default {
       options: {}
     }
   },
+  watch: {
+    'successdata': function () {
+      if (this.progressType === 2) {
+        this.setOption2()
+      } else {
+        this.setOption()
+      }
+    }
+  },
   mounted () {
     this.mychart = echarts.init(this.$refs.newprogress)
     setTimeout(() => {

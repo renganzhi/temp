@@ -4,7 +4,7 @@
             <div class="row1">
                 <div class="percentage backgroun21">
                   <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
-                    <div class="name" @click="selectTypeData(data['平台'])">
+                    <div :class="selectType===data['平台']?'name checked':'name'" @click="selectTypeData(data['平台'])">
                       {{data['平台']}}
                     </div>
                     <div class="value">
@@ -456,7 +456,7 @@ export default {
         'dataTypeStation': false,
         'tooltipBackColor1': '#57625d',
         'tooltipTextColor1': '#fff',
-        'tooltipfontSize1': 14,
+        'tooltipfontSize1': 22,
         'splitColor1': '#fff',
         'splitSize1': 1,
         'rotate1': 0,
@@ -517,7 +517,7 @@ export default {
         'dataTypeStation': false,
         'tooltipBackColor1': '#57625d',
         'tooltipTextColor1': '#fff',
-        'tooltipfontSize1': 14,
+        'tooltipfontSize1': 22,
         'splitColor1': '#fff',
         'splitSize1': 1,
         'rotate1': 0,
@@ -677,12 +677,23 @@ export default {
       this.getJieDaoParamData(stree)
     },
     selectTypeData (type) {
-      this.selectType = type
+      if (this.selectType === type) {
+        this.selectType = ''
+      } else {
+        this.selectType = type
+      }
       this.getBodyParamData()
     },
     chengBodyData (data) {
       this.dateValue = data
       this.getBodyParamData()
+    },
+    getTop10 (arr, key) {
+      let newArry = arr.sort((a, b) => {
+        return b[key] * 1 - a[key] * 1
+      })
+      let outarry = newArry.slice(0, 10)
+      return outarry
     },
     getBodyParamData () {
       $('#lead-screen').addClass('disShow')
@@ -691,10 +702,11 @@ export default {
           $('#lead-screen').removeClass('disShow')
           this.$parent.openisopenShow()
           this.bodyData = res.obj
-          this.getBar2.chartData1.rows = (res.obj && res.obj['办理完成率总览']) ? res.obj['办理完成率总览'].rows : []
 
           this.getBar1.chartData1.columns = (res.obj && res.obj['各委办局办件量统计']) ? res.obj['各委办局办件量统计'].columns : []
-          this.getBar1.chartData1.rows = (res.obj && res.obj['各委办局办件量统计']) ? res.obj['各委办局办件量统计'].rows : []
+          this.getBar1.chartData1.rows = (res.obj && res.obj['各委办局办件量统计']) ? this.getTop10(res.obj['各委办局办件量统计'].rows, '办件量') : []
+
+          this.getBar2.chartData1.rows = (res.obj && res.obj['办理完成率总览']) ? this.getTop10(res.obj['办理完成率总览'].rows, '完成率') : []
 
           this.getOfficeTrend.chartData.columns = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].columns : []
           this.getOfficeTrend.chartData.rows = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].rows : []
@@ -753,6 +765,17 @@ export default {
                   display: flex;
                   align-items: center;
                   padding: 20px;
+                  position: relative;
+                  .checked::before{
+                    content: '';
+                    height: 12px;
+                    width: 12px;
+                    margin-left: -140px;
+                    position: absolute;
+                    display: inline-block;
+                    border-radius: 50%;
+                    background-color: #FCB83C;
+                  }
                   .name{
                     width: 220px;
                     height: 100%;
