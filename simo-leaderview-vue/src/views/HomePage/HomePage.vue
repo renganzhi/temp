@@ -3065,10 +3065,11 @@ html[data-theme='blueWhite'] {
     background-size: 100% 100%;
   }
   .BoxTitle {
-    font-size: 16px !important;
+    font-size: 22px !important;
+    padding-left: 10px;
     color: #ACCFFE;
-    font-weight: bold;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-weight: bold;
+    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 25px;
   }
   .cyTableHead {
@@ -3189,10 +3190,11 @@ html[data-theme='blueWhite'] {
     background-size: 100% 100%;
   }
   .BoxTitle {
-    font-size: 16px !important;
+    font-size: 22px !important;
+    padding-left: 10px;
     color: #ACCFFE;
-    font-weight: bold;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-weight: bold;
+    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 25px;
   }
   .BoxBody {
@@ -3384,10 +3386,11 @@ html[data-theme='blueWhite'] {
       background-size: 100% 100%;
     }
     .BoxTitle {
-      font-size: 16px !important;
+      font-size: 22px !important;
+      padding-left: 10px;
       color: #ACCFFE;
-      font-weight: bold;
-      font-family: PangmenMainRoadTitleBody !important;
+      // font-weight: bold;
+      // font-family: PangmenMainRoadTitleBody !important;
       margin-bottom: 25px;
     }
     .videoDiv{
