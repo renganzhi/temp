@@ -34,7 +34,7 @@
           </div>
           <div class="dataBody">
             <div class="data" v-for="(item,index) in appArry" :key="index">
-              <a :href="item.url">
+              <a :href="item.url"  target="_blank">
                 <div class="name">{{item.xtname}}</div>
                 <div class="name2">{{item.name}}</div>
               </a>
