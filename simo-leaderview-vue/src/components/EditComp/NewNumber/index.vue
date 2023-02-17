@@ -90,7 +90,7 @@ export default {
         lineHeight: '54px',
         left: this.item.upPos + 'px' || '200px',
         fontSize: this.item.upFontSize + 'px',
-        color: this.item.chartData.value > 0 ? '#ff1f36' : '#2ed8be'
+        color: this.item.chartData.value > 0 ? '#d9d2e9' : '#2ed8be'
       }
     },
     titleStyle: function () { // {'font-size': '12px', 'color': item.legendColor || '#828bac'}

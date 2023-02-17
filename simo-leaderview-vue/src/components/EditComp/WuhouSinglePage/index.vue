@@ -446,7 +446,10 @@
                                     <div><img :src="getSreetImg(data['街道'])" alt=""></div>
                                     <div>{{data['街道']}}</div>
                                     <div>
-                                        <div>{{data['数量']}}</div>
+                                        <div>
+                                            <span style="color:#5abf5a;font-size:20px;vertical-align:text-bottom;">优</span>
+                                            {{data['数量']}}
+                                        </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
                                     </div>
                                 </div>
@@ -1687,6 +1690,7 @@ export default {
         .row1{
             width: 100%;
             display: flex;
+            justify-content: space-between;
             position: relative;
             .selectTitle{
               position: absolute;
@@ -2166,6 +2170,7 @@ export default {
             background: url('./background/编组17.png');
             padding: 100px 84px 32px 36px;
             display: flex;
+            margin-top: 30px;
             .tabButton{
                 width: 200px;
                 height: 100%;
@@ -2670,6 +2675,7 @@ export default {
             width: 100%;
             height: 346px;
             display: flex;
+            margin-top: 30px;
             align-items: center;
             background: url('./background/矩形备份11.png');
             >div:first-child{
