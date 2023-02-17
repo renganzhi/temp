@@ -180,14 +180,14 @@
                                             <div class="return">{{sqxqphDetail['小区名称']}}<img @click="CloseGZFF1" src="./background/关闭.png" alt=""></div>
                                             <div>
                                                 <div class="left">
-                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区排名']}}</div><div class="key">小区对应排名</div></div>
-                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['街道']}}</div><div class="key">小区所属街道</div></div>
-                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['数量']}}</div><div class="key">此小区存在的此风险数</div></div>
-                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区该类投诉总人数']}}</div><div class="key">风险涉及人员数</div></div>
+                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区排名'] || 0}}</div><div class="key">小区对应排名</div></div>
+                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['街道'] || '--'}}</div><div class="key">小区所属街道</div></div>
+                                                    <div><div class="value" style="color:rgba(252,184,60,1)">{{sqxqphDetail['数量'] || 0}}</div><div class="key">此小区存在的此风险数</div></div>
+                                                    <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['小区该类投诉总人数'] || 0}}</div><div class="key">风险涉及人员数</div></div>
                                                     <div><div class="value" style="color:rgba(90,232,250,1)">{{sqxqphDetail['高风险人员']?sqxqphDetail['高风险人员'].rows.length:0}}</div><div class="key">高风险人员数</div></div>
-                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日增速']}}</div><div class="key">该小区近15日风险增速</div></div>
-                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['风险增速']}}</div><div class="key">该小区风险增速</div></div>
-                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日环比增长数']}}</div><div class="key">近15日环比增长数</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日增速'] || 0}}</div><div class="key">该小区近15日风险增速</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['风险增速'] || 0}}</div><div class="key">该小区风险增速</div></div>
+                                                    <div><div class="value" style="color:rgba(220,97,79,1)">{{sqxqphDetail['近15日环比增长数'] || 0}}</div><div class="key">近15日环比增长数</div></div>
                                                 </div>
                                                 <div class="right">
                                                     <div class="title2">高风险人员清单</div>
@@ -446,8 +446,8 @@
                                     <div><img :src="getSreetImg(data['街道'])" alt=""></div>
                                     <div>{{data['街道']}}</div>
                                     <div>
-                                        <div>
-                                            <span style="color:#5abf5a;font-size:30px;vertical-align:text-bottom;">优</span>
+                                        <div style="display: flex;justify-content: center;align-items: center;">
+                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">优</span>
                                             {{data['数量']}}
                                         </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
@@ -563,11 +563,11 @@
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseEventDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;font-size: 26px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
-                                <div style="margin: 0 28px; color: #C5EEF3;font-size: 18px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                   {{xqValue['描述'] || ''}}
                                 </div>
-                                <div style="margin: 28px;font-size: 22px;color: #C5EEF3;">处置时间线</div>
+                                <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
                                     <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
                                       <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
@@ -2031,7 +2031,7 @@ export default {
                                 padding: 0 28px;
                                 .left{
                                     width: 55%;
-                                    height: 280px;
+                                    height: 320px;
                                     overflow-y:scroll;
                                     display: flex;
                                     flex-wrap: wrap;
@@ -2041,7 +2041,7 @@ export default {
                                         margin-right: 50px;
                                         .key{
                                             color: rgba(197,238,243,1);
-                                            font-size: 18px;
+                                            font-size: 22px;
                                         }
                                         .value{
                                             margin-bottom: 10px;
@@ -2055,14 +2055,14 @@ export default {
                                     height: 280px;
                                     .title2{
                                         margin-bottom: 12px;
-                                        font-size: 18px;
+                                        font-size: 24px;
                                         color: rgba(197,238,243,1);
                                     }
                                     .list2{
                                         width: 100%;
                                         height: 242px;
                                         overflow-y: scroll;
-                                        font-size: 18px;
+                                        font-size: 20px;
                                         padding-right: 10px;
                                         .li2{
                                             display: flex;
@@ -2155,7 +2155,7 @@ export default {
                                     height: 100%;
                                     .title2{
                                         margin-bottom: 12px;
-                                        font-size: 18px;
+                                        font-size: 24px;
                                         color: rgba(197,238,243,1);
                                     }
                                 }
@@ -2168,7 +2168,7 @@ export default {
             width: 100%;
             height: 346px;
             background: url('./background/编组17.png');
-            padding: 100px 84px 32px 36px;
+            padding: 100px 32px 32px 36px;
             display: flex;
             margin-top: 30px;
             .tabButton{
@@ -2286,7 +2286,7 @@ export default {
                         }
                 }
                 .lunbo2,.lunbo3{
-                        width: 2436px;
+                        width: 2487px;
                         height: 214px;
                         overflow-x: scroll;
                         overflow-y: hidden;
@@ -2691,7 +2691,7 @@ export default {
                 margin-right: 28px;
             }
             >div:last-child{
-                width: 2324px;
+                width: 2435px;
                 height: 280px;
                 position: relative;
                 overflow: hidden;
@@ -3056,7 +3056,6 @@ export default {
                     // margin-bottom: 10px;
                     background: url('./background/编组30.png') no-repeat;
                     background-size: 100% 100%;
-                    font-weight: bold;
                     overflow-y: scroll;
                     >div:nth-child(1){
                         display: flex;
@@ -3064,7 +3063,7 @@ export default {
                         justify-content: space-between;
                         >div:nth-child(1) {
                             color: #C5EEF3;
-                            font-size: 22px;
+                            font-size: 26px;
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
@@ -3079,7 +3078,7 @@ export default {
                         }
                         >div:nth-child(2) {
                             color:#C5EEF3;
-                            font-size: 20px;
+                            font-size: 24px;
                             width: 80px;
                             height: 32px;
                             text-align: center;
@@ -3093,10 +3092,10 @@ export default {
                     }
                     >div:nth-child(2){
                         width: 100%;
-                        height: 56px;
+                        height: 75px;
                         padding-left: 24px;
                         color: rgba(197,238,243,0.8);
-                        font-size: 20px;
+                        font-size: 24px;
                         margin-top:8px;
                         overflow: hidden;
                         text-overflow: ellipsis;
@@ -3107,7 +3106,7 @@ export default {
                         height: auto;
                         padding-left: 24px;
                         color: rgba(197,238,243,0.8);
-                        font-size: 18px;
+                        font-size: 22px;
                         margin-top:12px;
                     }
 
@@ -3140,12 +3139,12 @@ export default {
                     border-radius: 50%;
                   }
                   .time{
-                    font-size: 20px;
+                    font-size: 24px;
                     padding-left: 28px;
                     color: #C5EEF3;
                   }
                   .data{
-                    font-size: 18px;
+                    font-size: 24px;
                     color: #C5EEF3;
                     margin: 12px 12px 12px 30px;
                     padding: 18px;
