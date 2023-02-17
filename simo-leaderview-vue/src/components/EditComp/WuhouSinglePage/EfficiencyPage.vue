@@ -321,7 +321,7 @@ export default {
         'ifGradual': 'false', // 曲线是否渐变
         'ifAreaGradual': 'true', // 区域是否渐变
         'splitShow': false,
-        'ctLegendShow': true,
+        'ctLegendShow': false,
         'ctLegendColor': '#828bac',
         'ctLegendSize': '20',
         'axisLabelSize': '20',
