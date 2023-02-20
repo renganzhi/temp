@@ -216,7 +216,7 @@
           :class="{
             fl: true,
             'font-case': true,
-            act: selectedItem.fontFamily === fontitem.fontFace
+            act: selectedItem[item.key] === fontitem.fontFace
           }"
           :style="{
             'font-family': fontitem.fontFace,
@@ -557,7 +557,7 @@ export default {
       this.selectedItem[this.item.key] = option.value
     },
     setFontFamily: function (val) {
-      this.selectedItem.fontFamily = val
+      this.selectedItem[this.item.key] = val
     },
     chgImgSrc (imgSrc) {
       this.selectedItem[this.item.key] = imgSrc

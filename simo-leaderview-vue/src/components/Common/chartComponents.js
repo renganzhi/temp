@@ -2,6 +2,7 @@ import Vtextarea from '@/components/EditComp/Vtextarea' // 文本
 import Vprogress from '@/components/EditComp/Vprogress' // 进度条
 import Vimg from '@/components/EditComp/Vimg'
 import Ppt from '@/components/EditComp/ppt'
+import TextRotation from '@/components/EditComp/TextRotation'
 import Doubler from '@/components/EditComp/Doubler' // 数字翻牌器
 import Border from '@/components/EditComp/Border' // 边框
 import Vchart from '@/components/EditComp/Vchart'
@@ -102,6 +103,7 @@ export default {
   Vprogress,
   Vimg,
   Ppt,
+  TextRotation,
   Doubler,
   Border,
   Vchart,

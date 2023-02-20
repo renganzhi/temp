@@ -106,6 +106,7 @@ let config = {
   NewScatter: require('@/components/EditComp/NewScatter/config.js'),
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
+  TextRotation: require('@/components/EditComp/TextRotation/config.js'),
   bubble: require('@/components/EditComp/bubble/config.js')
 }
 
