@@ -34,6 +34,15 @@ body {
   cursor: pointer;
   box-shadow: none;
 }
+.ConditionalList .ivu-select.ivu-select-single  .ivu-select-selection {
+  height: 40px;
+  border: 1px solid #16DFF8 !important;
+  .ivu-select-selected-value{
+    font-size: 24px;
+    height: 40px;
+    line-height: 40px;
+  }
+}
 .ivu-select-item {
   padding: 2px 16px;
 }
