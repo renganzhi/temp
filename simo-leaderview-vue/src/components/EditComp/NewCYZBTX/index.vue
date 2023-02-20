@@ -242,11 +242,20 @@
                           <img v-else src="./街道矩形.png" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
                         </div>
                         <div>
-                          <div class="name">{{element['领导姓名']}}</div>
-                          <div class="phone">{{element['手机号']}}</div>
+                          <div class="name">{{element['领导姓名']}}<img style="vertical-align: baseline;margin-left: 5px;" @click="phoneIndex2 = index" src="./电话.png" alt=""></div>
+                          <!-- <div class="phone" @click="phoneIndex2 = index">{{element['手机号']}}
+                            <img src="./电话.png" alt="">
+                          </div> -->
                           <div class="post" v-if="element['值班职务'] && element['职务'] !== '值班领导'" :title="element['职务']">{{element['职务']}}</div>
                           <div class="position">{{element['值班职务'] || element['职务']}}</div>
                         </div>
+                      </div>
+                      <div class="phonePop" v-show="phoneIndex2 === index && showPop4">
+                          <img @click.stop="phoneIndex2 = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                          <div>{{element['领导姓名']}}</div>
+                          <div>值班领导</div>
+                          <div>{{element['手机号']}}</div>
+                          <div>拨打</div>
                       </div>
                     </div>
                   </div>
@@ -266,6 +275,7 @@ export default {
       showPop3: false,
       showPop4: false,
       phoneIndex: 0,
+      phoneIndex2: -1,
       type1: '工作要求',
       type2: '区领导',
       ZBpersonInfo: [], // 值班人员信息
@@ -557,6 +567,7 @@ export default {
     },
     ClosePop4 () {
       this.showPop4 = false
+      this.phoneIndex2 = -1
     },
     ShowPhone (index) {
       this.phoneIndex = index
@@ -1501,6 +1512,7 @@ export default {
                   display: flex;
                   justify-content: space-between;
                   align-items: center;
+                  position: relative;
                   .personnelInfo{
                     display: flex;
                     >div:last-child{
@@ -1540,6 +1552,54 @@ export default {
                         bottom: 0;
                       }
                     }
+                  }
+                  .phonePop{
+                        position: absolute;
+                        top: 10px;
+                        right: -10px;
+                        width: 148px;
+                        height: 200px;
+                        background: url('./电话弹窗.png') no-repeat;
+                        background-size:100% 100%;
+                        text-align: center;
+                        z-index: 1;
+                        >img{
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                        >div:nth-child(2){
+                            color: #C8E0FF;
+                            font-size: 18px;
+                            margin-bottom: 25px;
+                            margin-top: 15px;
+                        }
+                        >div:nth-child(3){
+                            color: #C8E0FF;
+                            font-size: 14px;
+                            margin-bottom: 25px;
+                        }
+                        >div:nth-child(4){
+                            color: #ACCFFE;
+                            font-size: 16px;
+                            font-weight: bold;
+                        }
+                        >div:nth-child(5){
+                            color: #0A2047;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 48px;
+                            height: 48px;
+                            border: 4px solid rgba(255,255,255,0.12);
+                            border-radius: 50%;
+                            background: url('./椭圆形.png') no-repeat;
+                            background-size: 100% 100%;
+                            margin: 0 auto;
+                        }
                   }
                 }
               }

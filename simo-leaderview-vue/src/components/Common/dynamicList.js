@@ -3,6 +3,7 @@
 export default [
   'liquidfill',
   'ppt',
+  'TextRotation',
   'heatmap',
   'polarBar',
   'pyramid',

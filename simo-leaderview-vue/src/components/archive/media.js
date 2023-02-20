@@ -1,5 +1,6 @@
 
 import ppt from '@/components/EditComp/ppt/config.js'
+import TextRotation from '@/components/EditComp/TextRotation/config.js'
 import player from '@/components/EditComp/player/config.js'
 import BulletFrame from '@/components/EditComp/BulletFrame/config.js'
 import JSMpeg from '@/components/EditComp/JSMpeg/config.js'
@@ -24,6 +25,7 @@ const media = {
     // },
     Newimage.item,
     ppt.item,
+    TextRotation.item,
     player.item,
     BulletFrame.item,
     JSMpeg.item
