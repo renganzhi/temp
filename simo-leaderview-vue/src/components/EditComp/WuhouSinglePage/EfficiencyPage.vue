@@ -1,296 +1,345 @@
 <template>
-    <div class="EfficiencyPage" style="width:4455px">
-        <div id="Module3" v-if="bodyData['事件分布总览']">
-            <div class="row1">
-                <div class="percentage backgroun21">
-                  <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
-                    <div :class="selectType===data['平台']?'name checked':'name'" @click="selectTypeData(data['平台'])">
-                      {{data['平台']}}
-                    </div>
-                    <div class="value">
-                      <MyProgress :successdata="data['百分比']" :progressType='2' :color='colorArry[index]'/>
-                    </div>
-                  </div>
-                </div>
+    <div class="EfficiencyPage">
+      <div id="Module55">
+        <div class="Mydyj">
+          <div class="YJbox">
+            <div class="img">
+              <img src="./newBack/8.png" alt="">
             </div>
-            <div class="row2">
-                <div class="boxList backgroun22">
-                    <div class="Abox " v-for="(data, index) in bodyData['热门事件'].rows" :key="index">
-                        <div class="name">{{data[bodyData['热门事件'].columns[0]]}}</div>
-                        <div class="backgrounwt"><span>{{data[bodyData['热门事件'].columns[1]]}}</span></div>
-                    </div>
-                </div>
+            <div class="Value">
+              <div class="data">98 <div class="unit">件</div></div>
+              <div class="name">部门承办态度预警</div>
             </div>
-            <div class="row3">
-                <div class="backgroun23">
-                    <ELine :item="getOfficeTrend"></ELine>
-                </div>
+          </div>
+          <div class="YJbox">
+            <div class="img">
+              <img src="./newBack/9.png" alt="">
             </div>
+            <div class="Value">
+              <div class="data">0 <div class="unit">人</div></div>
+              <div class="name">多次不满意预警</div>
+            </div>
+          </div>
+          <div class="YJbox">
+            <div class="img">
+              <img src="./newBack/10.png" alt="">
+            </div>
+            <div class="Value">
+              <div class="data">上升</div>
+              <div class="name">不满意趋势预警</div>
+            </div>
+          </div>
         </div>
-        <div id="Module4" v-if="bodyData['街道总览']">
-            <div class="whole">
-                <div class="datepicker">
-                    <DatePicker :value="dateValue"  type="daterange" split-panels placeholder="请输入时间" style="width: 365px" @on-change='chengBodyData'></DatePicker>
-                </div>
-                <div class="row1 diyTabsStyle backgroun27">
-                    <Tabs value="name1">
-                        <TabPane label="街道总览" name="name1">
-                            <div class="tabContent1">
-                                <div class="backgroun24 streeBox">
-                                  <div class="titleTop">
-                                    <div class="leftOne">
-                                      <div class="streeName">街道总览</div>
-                                      <div class="streeNum">{{bodyData['街道总览'].rows[0]['办件量']}}</div>
-                                      <span>总办件量</span>
-                                    </div>
-                                  </div>
-                                  <div class="newprogress">
-                                    <div class="canvas">
-                                      <MyProgress :successdata='bodyData["街道总览"].rows[0]["未完成率"]' />
-                                    </div>
-                                    <div class="data1">
-                                      <div>处置中 {{bodyData['街道总览'].rows[0]['未完成率']}}%</div>
-                                      <div>已完成 {{bodyData['街道总览'].rows[0]['完成率']}}%</div>
-                                    </div>
-                                    <div class="data2">
-                                      <div style="color:#F59B42">{{bodyData['街道总览'].rows[0]['办理中']}}</div>
-                                      <div style="color:#3DF8C2">{{bodyData['街道总览'].rows[0]['完成数量']}}</div>
-                                    </div>
-                                    <div class="datatime allDatatime">
-                                      <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天0小时0分钟</div>
-                                    </div>
-                                  </div>
-                                  <div class="peoplevalue">
-                                    <div>----</div>
-                                    <div>----</div>
-                                  </div>
-                                  <div class="peoplename">
-                                    <div>处置人员</div>
-                                    <div>人均办件量</div>
+        <div class="Mydgy">
+          <div class="Gybox">
+            <div class="Value"></div>
+            <div class="Name">本周不满意回访数</div>
+          </div>
+          <div class="Gybox">
+            <div class="Value"></div>
+            <div class="Name">本周满意回访数</div>
+          </div>
+          <div class="Gybox">
+            <div class="Value"></div>
+            <div class="Name">本周未解决回访数</div>
+          </div>
+          <div class="Gybox">
+            <div class="Value"></div>
+            <div class="Name">本周已解决回访数</div>
+          </div>
+        </div>
+      </div>
+      <div id="Module4" v-if="bodyData['街道总览']">
+          <div class="whole">
+              <div class="datepicker">
+                  <DatePicker :value="dateValue"  type="daterange" split-panels placeholder="请输入时间" style="width: 365px" @on-change='chengBodyData'></DatePicker>
+              </div>
+              <div class="row1 diyTabsStyle backgroun27">
+                  <Tabs value="name1">
+                      <TabPane label="街道总览" name="name1">
+                          <div class="tabContent1">
+                              <div class="backgroun24 streeBox">
+                                <div class="titleTop">
+                                  <div class="leftOne">
+                                    <div class="streeName">街道总览</div>
+                                    <div class="streeNum">{{bodyData['街道总览'].rows[0]['办件量']}}</div>
+                                    <span>总办件量</span>
                                   </div>
                                 </div>
-                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data)">
-                                  <div class="titleTop">
-                                    <div class="leftOne">
-                                      <div class="streeName">{{data['单位']}}</div>
-                                      <div class="streeNum">{{data['办件量']}}</div>
-                                      <span>总办件量</span>
-                                    </div>
-                                    <div class="rightpic" v-if="data['单位']">
-                                      <img :src="require('./'+data['单位']+'.jpg')" alt="">
-                                    </div>
+                                <div class="newprogress">
+                                  <div class="canvas">
+                                    <MyProgress :successdata='bodyData["街道总览"].rows[0]["未完成率"]' />
                                   </div>
-                                  <div class="newprogress">
-                                    <div class="canvas">
-                                      <MyProgress :successdata='data["未完成率"]' />
-                                    </div>
-                                    <div class="data1">
-                                      <div>处置中 {{data['未完成率']}}%</div>
-                                      <div>已完成 {{data['完成率']}}%</div>
-                                    </div>
-                                    <div class="data2">
-                                      <div style="color:#F59B42">{{data['办理中']}}</div>
-                                      <div style="color:#3DF8C2">{{data['完成数量']}}</div>
-                                    </div>
-                                    <div class="datatime">
-                                      <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">{{data['平均办件时长'] ? data['平均办件时长']:'0天0小时0分钟'}}</div>
-                                    </div>
+                                  <div class="data1">
+                                    <div>处置中 {{bodyData['街道总览'].rows[0]['未完成率']}}%</div>
+                                    <div>已完成 {{bodyData['街道总览'].rows[0]['完成率']}}%</div>
                                   </div>
-                                  <div class="peoplevalue">
-                                    <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['办件人员数']:'----'}}</div>
-                                    <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['人均办件量']:'----'}}</div>
+                                  <div class="data2">
+                                    <div style="color:#F59B42">{{bodyData['街道总览'].rows[0]['办理中']}}</div>
+                                    <div style="color:#3DF8C2">{{bodyData['街道总览'].rows[0]['完成数量']}}</div>
                                   </div>
-                                  <div class="peoplename">
-                                    <div>处置人员</div>
-                                    <div>人均办件量</div>
+                                  <div class="datatime allDatatime">
+                                    <div>平均办件时间</div>
+                                    <div style="color:#C5EEF3">0天0小时0分钟</div>
                                   </div>
                                 </div>
-                            </div>
-                        </TabPane>
-                        <TabPane label="委办局总览" name="name3">
-                            <div class="tabContent2">
-                               <div class="backgroun24 streeBox">
-                                  <div class="titleTop">
-                                    <div class="leftOne">
-                                      <div class="streeName">委办局总览</div>
-                                      <div class="streeNum">{{bodyData['委办局总览'].rows[0]['总办件量']}}</div>
-                                      <span>总办件量</span>
-                                    </div>
+                                <div class="peoplevalue">
+                                  <div>----</div>
+                                  <div>----</div>
+                                </div>
+                                <div class="peoplename">
+                                  <div>处置人员</div>
+                                  <div>人均办件量</div>
+                                </div>
+                              </div>
+                              <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data)">
+                                <div class="titleTop">
+                                  <div class="leftOne">
+                                    <div class="streeName">{{data['单位']}}</div>
+                                    <div class="streeNum">{{data['办件量']}}</div>
+                                    <span>总办件量</span>
                                   </div>
-                                  <div class="newprogress">
-                                    <div class="canvas">
-                                      <MyProgress :successdata='100 - bodyData["委办局总览"].rows[0]["完成率"]' />
-                                    </div>
-                                    <div class="data1">
-                                      <div>处置中 {{100 - bodyData['委办局总览'].rows[0]['完成率']}}%</div>
-                                      <div>已完成 {{bodyData['委办局总览'].rows[0]['完成率']}}%</div>
-                                    </div>
-                                    <div class="data2">
-                                      <div style="color:#F59B42">{{bodyData['委办局总览'].rows[0]['总办件量'] - bodyData['委办局总览'].rows[0]['完成数量']}}</div>
-                                      <div style="color:#3DF8C2">{{bodyData['委办局总览'].rows[0]['完成数量']}}</div>
-                                    </div>
-                                    <div class="datatime allDatatime">
-                                      <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
-                                    </div>
-                                  </div>
-                                  <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
-                                  </div>
-                                  <div class="peoplename">
-                                    <div>处置人员</div>
-                                    <div>人均办件量</div>
+                                  <div class="rightpic" v-if="data['单位']">
+                                    <img :src="require('./'+data['单位']+'.jpg')" alt="">
                                   </div>
                                 </div>
-                                <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各委办局数量统计'].rows" :key="index">
-                                  <div class="titleTop">
-                                    <div class="leftOne">
-                                      <div class="streeName">{{data['单位']}}</div>
-                                      <div class="streeNum">{{data['办件量']}}</div>
-                                      <span>总办件量</span>
-                                    </div>
+                                <div class="newprogress">
+                                  <div class="canvas">
+                                    <MyProgress :successdata='data["未完成率"]' />
                                   </div>
-                                  <div class="newprogress">
-                                    <div class="canvas">
-                                      <MyProgress :successdata='data["未完成率"]' />
-                                    </div>
-                                    <div class="data1">
-                                      <div>处置中 {{data['未完成率']}}%</div>
-                                      <div>已完成 {{data['完成率']}}%</div>
-                                    </div>
-                                    <div class="data2">
-                                      <div style="color:#F59B42">{{data['办理中']}}</div>
-                                      <div style="color:#3DF8C2">{{data['完成数量']}}</div>
-                                    </div>
-                                    <div class="datatime">
-                                      <div>平均办件时间</div>
-                                      <div style="color:#C5EEF3">0天10小时30分钟</div>
-                                    </div>
+                                  <div class="data1">
+                                    <div>处置中 {{data['未完成率']}}%</div>
+                                    <div>已完成 {{data['完成率']}}%</div>
                                   </div>
-                                  <div class="peoplevalue">
-                                    <div>6736</div>
-                                    <div>26</div>
+                                  <div class="data2">
+                                    <div style="color:#F59B42">{{data['办理中']}}</div>
+                                    <div style="color:#3DF8C2">{{data['完成数量']}}</div>
                                   </div>
-                                  <div class="peoplename">
-                                    <div>处置人员</div>
-                                    <div>人均办件量</div>
+                                  <div class="datatime">
+                                    <div>平均办件时间</div>
+                                    <div style="color:#C5EEF3">{{data['平均办件时长'] ? data['平均办件时长']:'0天0小时0分钟'}}</div>
                                   </div>
                                 </div>
-                            </div>
-                        </TabPane>
-                    </Tabs>
+                                <div class="peoplevalue">
+                                  <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['办件人员数']:'----'}}</div>
+                                  <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['人均办件量']:'----'}}</div>
+                                </div>
+                                <div class="peoplename">
+                                  <div>处置人员</div>
+                                  <div>人均办件量</div>
+                                </div>
+                              </div>
+                          </div>
+                      </TabPane>
+                      <TabPane label="委办局总览" name="name3">
+                          <div class="tabContent2">
+                              <div class="backgroun24 streeBox">
+                                <div class="titleTop">
+                                  <div class="leftOne">
+                                    <div class="streeName">委办局总览</div>
+                                    <div class="streeNum">{{bodyData['委办局总览'].rows[0]['总办件量']}}</div>
+                                    <span>总办件量</span>
+                                  </div>
+                                </div>
+                                <div class="newprogress">
+                                  <div class="canvas">
+                                    <MyProgress :successdata='100 - bodyData["委办局总览"].rows[0]["完成率"]' />
+                                  </div>
+                                  <div class="data1">
+                                    <div>处置中 {{100 - bodyData['委办局总览'].rows[0]['完成率']}}%</div>
+                                    <div>已完成 {{bodyData['委办局总览'].rows[0]['完成率']}}%</div>
+                                  </div>
+                                  <div class="data2">
+                                    <div style="color:#F59B42">{{bodyData['委办局总览'].rows[0]['总办件量'] - bodyData['委办局总览'].rows[0]['完成数量']}}</div>
+                                    <div style="color:#3DF8C2">{{bodyData['委办局总览'].rows[0]['完成数量']}}</div>
+                                  </div>
+                                  <div class="datatime allDatatime">
+                                    <div>平均办件时间</div>
+                                    <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                  </div>
+                                </div>
+                                <div class="peoplevalue">
+                                  <div>6736</div>
+                                  <div>26</div>
+                                </div>
+                                <div class="peoplename">
+                                  <div>处置人员</div>
+                                  <div>人均办件量</div>
+                                </div>
+                              </div>
+                              <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各委办局数量统计'].rows" :key="index">
+                                <div class="titleTop">
+                                  <div class="leftOne">
+                                    <div class="streeName">{{data['单位']}}</div>
+                                    <div class="streeNum">{{data['办件量']}}</div>
+                                    <span>总办件量</span>
+                                  </div>
+                                </div>
+                                <div class="newprogress">
+                                  <div class="canvas">
+                                    <MyProgress :successdata='data["未完成率"]' />
+                                  </div>
+                                  <div class="data1">
+                                    <div>处置中 {{data['未完成率']}}%</div>
+                                    <div>已完成 {{data['完成率']}}%</div>
+                                  </div>
+                                  <div class="data2">
+                                    <div style="color:#F59B42">{{data['办理中']}}</div>
+                                    <div style="color:#3DF8C2">{{data['完成数量']}}</div>
+                                  </div>
+                                  <div class="datatime">
+                                    <div>平均办件时间</div>
+                                    <div style="color:#C5EEF3">0天10小时30分钟</div>
+                                  </div>
+                                </div>
+                                <div class="peoplevalue">
+                                  <div>6736</div>
+                                  <div>26</div>
+                                </div>
+                                <div class="peoplename">
+                                  <div>处置人员</div>
+                                  <div>人均办件量</div>
+                                </div>
+                              </div>
+                          </div>
+                      </TabPane>
+                  </Tabs>
+              </div>
+              <!-- <div class="row2">
+                  <div class="left backgroun28">
+                      <div>
+                          <IntegratedHistogram :item="getBar1"></IntegratedHistogram>
+                      </div>
+                  </div>
+                  <div class="right backgroun29">
+                      <div>
+                          <IntegratedHistogram :item="getBar2"></IntegratedHistogram>
+                      </div>
+                  </div>
+              </div> -->
+          </div>
+          <div class="part" v-if="showStreetInfo && modelData['总办件量']">
+              <div class="Btn" @click="showStreetInfo = false"
+              style="position: absolute;
+                    right: 9px;
+                    top: 16px;
+                    font-size: 30px;
+                    cursor: pointer
+                    height: 40px;
+                    width: 40px;
+              ">x</div>
+              <div class="partTitle">
+                <div class="select"></div>
+                <div class="state">
+                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData['总办件量'].info}} <div :class="true?'upBack':'downBack'">66%</div></div>
+                  <div>总办件量</div>
                 </div>
-                <div class="row2">
-                    <div class="left backgroun28">
-                        <div>
-                            <IntegratedHistogram :item="getBar1"></IntegratedHistogram>
-                        </div>
-                    </div>
-                    <div class="right backgroun29">
-                        <div>
-                            <IntegratedHistogram :item="getBar2"></IntegratedHistogram>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="part" v-if="showStreetInfo && modelData['总办件量']">
-                <div class="Btn" @click="showStreetInfo = false"
-                style="position: absolute;
-                      right: 9px;
-                      top: 16px;
-                      font-size: 30px;
-                      cursor: pointer
-                      height: 40px;
-                      width: 40px;
-                ">x</div>
-                <div class="partTitle">
-                  <div class="select"></div>
-                  <div class="state">
-                    <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData['总办件量'].info}} <div :class="true?'upBack':'downBack'">66%</div></div>
-                    <div>总办件量</div>
+                <div class="datavalue">
+                  <div class="data2">
+                    <div style="color:#F59B42">{{modelData['处置中办件量'].info}}</div>
+                    <div style="color:#3DF8C2">{{modelData['已完成办件量'].info}}</div>
                   </div>
-                  <div class="datavalue">
-                    <div class="data2">
-                      <div style="color:#F59B42">{{modelData['处置中办件量'].info}}</div>
-                      <div style="color:#3DF8C2">{{modelData['已完成办件量'].info}}</div>
-                    </div>
-                    <div class="canvas" style="width:400px">
-                      <MyProgress :successdata='50' />
-                    </div>
-                    <div class="data1">
-                      <div>处置中 {{modelData['处置中办件量占比'].info}}%</div>
-                      <div>已完成 {{modelData['已完成办件量占比'].info}}%</div>
-                    </div>
+                  <div class="canvas" style="width:400px">
+                    <MyProgress :successdata='50' />
                   </div>
-                  <div class="datatime">
-                    <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}} <div :class="true?'upBack':'downBack'">66%</div></div>
-                    <div>平均办件时间</div>
-                  </div>
-                  <div class="peoplevalue">
-                    <div style="color:#5AE8FA">6736</div>
-                    <div>共有处置人员</div>
-                  </div>
-                  <div class="peoplename">
-                    <div style="color:#5AE8FA">26</div>
-                    <div>人均办件量</div>
+                  <div class="data1">
+                    <div>处置中 {{modelData['处置中办件量占比'].info}}%</div>
+                    <div>已完成 {{modelData['已完成办件量占比'].info}}%</div>
                   </div>
                 </div>
-                <div class="partBody">
-                  <div class="eventType">
-                    <div class="title">
-                      <div class="radioBtn" style="font-size:22px">事件类型统计</div>
-                      <div style="font-size:20px">单位：件</div>
-                    </div>
-                    <div class="canvas">
-                      <NewPie :item="getSJLX1"></NewPie>
-                    </div>
+                <div class="datatime">
+                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}} <div :class="true?'upBack':'downBack'">66%</div></div>
+                  <div>平均办件时间</div>
+                </div>
+                <div class="peoplevalue">
+                  <div style="color:#5AE8FA">6736</div>
+                  <div>共有处置人员</div>
+                </div>
+                <div class="peoplename">
+                  <div style="color:#5AE8FA">26</div>
+                  <div>人均办件量</div>
+                </div>
+              </div>
+              <div class="partBody">
+                <div class="eventType">
+                  <div class="title">
+                    <div class="radioBtn" style="font-size:22px">事件类型统计</div>
+                    <div style="font-size:20px">单位：件</div>
                   </div>
-                  <div class="eventwcl">
-                    <div class="title">
-                      <div class="radioBtn" style="font-size:22px">办理完成率</div>
-                    </div>
-                    <div class="canvas"></div>
+                  <div class="canvas">
+                    <NewPie :item="getSJLX1"></NewPie>
                   </div>
-                  <div class="hotevent">
-                    <div class="title">
-                      <div class="radioBtn" style="font-size:22px">热门事件</div>
-                    </div>
-                    <div class="canvas">
+                </div>
+                <div class="eventwcl">
+                  <div class="title">
+                    <div class="radioBtn" style="font-size:22px">办理完成率</div>
+                  </div>
+                  <div class="canvas"></div>
+                </div>
+                <div class="hotevent">
+                  <div class="title">
+                    <div class="radioBtn" style="font-size:22px">热门事件</div>
+                  </div>
+                  <div class="canvas">
 
-                      <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
-                        <div class="name">
-                          {{data['事件小类名称']}}
-                        </div>
-                        <div class="value">
-                          {{data['事件小类办件量']}}
-                        </div>
+                    <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
+                      <div class="name">
+                        {{data['事件小类名称']}}
+                      </div>
+                      <div class="value">
+                        {{data['事件小类办件量']}}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="partFoot">
-                  <div class="eventtj">
-                    <div class="title">
-                      <div class="radioBtn" style="font-size:22px">办件量统计</div>
-                      <div style="font-size:20px">单位：件</div>
-                    </div>
-                    <div class="canvas"></div>
+              </div>
+              <div class="partFoot">
+                <div class="eventtj">
+                  <div class="title">
+                    <div class="radioBtn" style="font-size:22px">办件量统计</div>
+                    <div style="font-size:20px">单位：件</div>
                   </div>
-                  <div class="eventqs">
-                    <div class="title">
-                      <div class="radioBtn" style="font-size:22px">办件量走势</div>
-                      <div style="font-size:20px">单位：件</div>
-                    </div>
-                    <div class="canvas" style="height:210px">
-                        <ELine :item="getBJLZS"></ELine>
-                    </div>
+                  <div class="canvas"></div>
+                </div>
+                <div class="eventqs">
+                  <div class="title">
+                    <div class="radioBtn" style="font-size:22px">办件量走势</div>
+                    <div style="font-size:20px">单位：件</div>
+                  </div>
+                  <div class="canvas" style="height:210px">
+                      <ELine :item="getBJLZS"></ELine>
                   </div>
                 </div>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
+      <div id="Module3" v-if="bodyData['事件分布总览']">
+          <div class="row1">
+              <div class="percentage backgroun21">
+                <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
+                  <div :class="selectType===data['平台']?'name checked':'name'" @click="selectTypeData(data['平台'])">
+                    {{data['平台']}}
+                  </div>
+                  <div class="value">
+                    <MyProgress :successdata="data['百分比']" :progressType='2' :color='colorArry[index]'/>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <!-- <div class="row2">
+              <div class="boxList backgroun22">
+                  <div class="Abox " v-for="(data, index) in bodyData['热门事件'].rows" :key="index">
+                      <div class="name">{{data[bodyData['热门事件'].columns[0]]}}</div>
+                      <div class="backgrounwt"><span>{{data[bodyData['热门事件'].columns[1]]}}</span></div>
+                  </div>
+              </div>
+          </div> -->
+          <div class="row3">
+              <div class="backgroun23">
+                  <ELine :item="getOfficeTrend"></ELine>
+              </div>
+          </div>
+      </div>
     </div>
 </template>
 <script>
@@ -313,8 +362,8 @@ export default {
       getOfficeTrend: {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
-        'height': 410,
-        'width': 1423,
+        'height': 320,
+        'width': 1600,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
@@ -740,619 +789,715 @@ export default {
 </script>
 <style scoped lang="scss">
 #Module3{
-        width: 1513px;
-        height: 1620px;
-        .row1{
+    width: 100%;
+    height: 443px;
+    display: flex;
+    .row1{
+        width: 45%;
+        height: 100%;
+        padding: 32px 32px 0 0px;
+        .title{
             width: 100%;
-            height: 520px;
-            padding: 32px 32px 0 0px;
-            .title{
-                width: 100%;
-                color: #4182ff;
-                font-size: 28px;
-                padding-left: 15px;
-            }
-            .percentage{
-                width: 100%;
+            color: #4182ff;
+            font-size: 28px;
+            padding-left: 15px;
+        }
+        .percentage{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+            .percentChild{
+              width: 1400px;
+              height: 70px;
+              display: flex;
+              align-items: center;
+              padding: 20px;
+              position: relative;
+              .checked::before{
+                content: '';
+                height: 12px;
+                width: 12px;
+                margin-left: -140px;
+                position: absolute;
+                display: inline-block;
+                border-radius: 50%;
+                background-color: #FCB83C;
+              }
+              .name{
+                width: 220px;
                 height: 100%;
+                cursor: pointer;
+                color: #16DFF8;
+                font-size: 24px;
                 display: flex;
                 justify-content: center;
-                flex-wrap: wrap;
                 align-items: center;
-                .percentChild{
-                  width: 1400px;
-                  height: 70px;
-                  display: flex;
-                  align-items: center;
-                  padding: 20px;
-                  position: relative;
-                  .checked::before{
-                    content: '';
-                    height: 12px;
-                    width: 12px;
-                    margin-left: -140px;
-                    position: absolute;
-                    display: inline-block;
-                    border-radius: 50%;
-                    background-color: #FCB83C;
+              }
+              .value{
+                width: 1140px;
+                height: 100%;
+                display: flex;
+                align-items: center;
+              }
+              ::deep .ivu-progress .ivu-progress-inner{
+                background-color: transparent;
+              }
+            }
+        }
+    }
+    // .row2{
+    //     width: 100%;
+    //     height: 520px;
+    //     padding: 32px 32px 0 0px;
+    //     .title{
+    //         width: 100%;
+    //         color: #4182ff;
+    //         font-size: 28px;
+    //         padding-left: 15px;
+    //     }
+    //     .boxList{
+    //         width: 100%;
+    //         height: 100%;
+    //         display: flex;
+    //         flex-wrap: wrap;
+    //         .Abox{
+    //             width: 20%;
+    //             height: 50%;
+    //             display: flex;
+    //             flex-wrap: wrap;
+    //             justify-content: center;
+    //             align-items: center;
+    //             .name{
+    //               width: 180px;
+    //               height: 80px;
+    //               font-size: 20px;
+    //               color: #16DFF8;
+    //               display: flex;
+    //               align-items: flex-end;
+    //             }
+    //             .backgrounwt{
+    //               height: 120px;
+    //               width: 180px;
+    //               display: flex;
+    //               font-size: 32px;
+    //               justify-content: center;
+    //               align-items: center;
+    //             }
+    //         }
+    //     }
+    // }
+    .row3{
+        width: 55%;
+        height: 100%;
+        padding: 32px 32px 0 0px;
+        .title{
+            width: 100%;
+            color: #4182ff;
+            font-size: 28px;
+            padding-left: 15px;
+        }
+    }
+}
+#Module55{
+  width: 100%;
+  // width: 2913px;
+  height: 370px;
+  display: flex;
+  margin-top: 108px;
+  .Mydyj{
+    width: 1480px;
+    height: 370px;
+    background: url('./newBack/2.png');
+    background-size: 100% 100%;
+    padding-top: 90px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-repeat: no-repeat;
+    .YJbox{
+      height: 186px;
+      width: 410px;
+      display: flex;
+      background-image: url('./newBack/7.png');
+      background-size: 100% 100%;
+      .img{
+        height: 100%;
+        width: 175px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+          height: 94px;
+          width: 85px;
+        }
+      }
+      .Value{
+        .data{
+          font-size: 44px;
+          color: #FFFFFF;
+          height: 55%;
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
+          .unit{
+            font-size: 28px;
+          }
+        }
+        .name{
+          font-size: 28px;
+          height: 45%;
+          color: #16DFF8;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+        }
+      }
+    }
+  }
+  .Mydgy{
+    width: 1800px;
+    height: 370px;
+    margin-left: 32px;
+    background: url('./newBack/3.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    padding-top: 80px;
+    justify-content: space-around;
+    .Gybox{
+      .Value{
+        width: 260px;
+        background-image: url('./background/位图.png');
+        background-size: 100% 100%;
+        height: 160px;
+        margin-top: 50px;
+        font-size: 44px;
+        color: white;
+      }
+      .Name{
+        width: 260px;
+        height: 60px;
+        font-size: 28px;
+        color: #16DFF8;
+      }
+    }
+  }
+}
+#Module4{
+    width: 100%;
+    // width: 2913px;
+    height: 590px;
+    position: relative;
+    .whole{
+        padding: 32px 32px 0 0px;
+        .datepicker{
+          position:absolute;
+          top: 40px;
+          left: 640px;
+          z-index: 1;
+        }
+        .row1{
+            height: 580px;
+            .tabContent1{
+                width:100%;
+                height: 480px;
+                margin-top: 30px;
+                display: flex;
+                flex-wrap: wrap;
+                overflow: auto;
+                align-items: flex-start;
+                justify-content: flex-start;
+                .streeBox{
+                  height: 420px;
+                  width: 440px;
+                  margin: 7px;
+                  padding: 24px;
+                  display: inline-block;
+                  .titleTop{
+                    width: 100%;
+                    height: 140px;
+                    display: flex;
+                    justify-content: space-between;
+                    .leftOne{
+                      display: flex;
+                      flex-wrap: wrap;
+                      .streeName{
+                        width: 100%;
+                        color: #C5EEF3;
+                        position: relative;
+                        margin-top: -6px;
+                        font-size: 28px;
+                      }
+                      .streeNum{
+                        width: 100%;
+                        color: #FFFFFF;
+                        font-size: 40px;
+                      }
+                      span{
+                        width: 100%;
+                        color: #FFFFFF;
+                        font-size: 20px;
+                      }
+                    }
+                    .rightpic{
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      img{
+                        height: 100px;
+                        width: 100px;
+                      }
+                    }
                   }
-                  .name{
-                    width: 220px;
-                    height: 100%;
-                    cursor: pointer;
-                    color: #16DFF8;
+                  .newprogress{
+                    width: 100%;
+                    height: 160px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    color: white;
+                    .canvas{
+                      width: 100%;
+                      height: 30px;
+                    }
+                    .data1{
+                      width: 100%;
+                      height: 24px;
+                      font-size: 20px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                    .data2{
+                      width: 100%;
+                      height: 24px;
+                      font-size: 24px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                    .allDatatime{
+                      background: url('./background/1.png');
+                      background-size: 100%;
+                    }
+                    .datatime{
+                      width: 100%;
+                      height: 60px;
+                      font-size: 22px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                  }
+                  .peoplevalue{
+                    height: 40px;
                     font-size: 24px;
+                    color: #5AE8FA;
                     display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    justify-content: space-between;
                   }
-                  .value{
-                    width: 1140px;
-                    height: 100%;
+                  .peoplename{
+                    height: 40px;
+                    font-size: 20px;
                     display: flex;
-                    align-items: center;
+                    justify-content: space-between;
+                    color: #C5EEF3;
                   }
-                  ::deep .ivu-progress .ivu-progress-inner{
-                    background-color: transparent;
+                }
+            }
+            .tabContent2{
+                width:100%;
+                height: 480px;
+                margin-top: 30px;
+                display: flex;
+                flex-wrap: wrap;
+                overflow: auto;
+                align-items: flex-start;
+                justify-content: flex-start;
+                .streeBox{
+                  height: 420px;
+                  width: 440px;
+                  margin: 7px;
+                  display: inline-block;
+                  padding: 24px;
+                  .titleTop{
+                    width: 100%;
+                    height: 140px;
+                    display: flex;
+                    justify-content: space-between;
+                    .leftOne{
+                      display: flex;
+                      flex-wrap: wrap;
+                      .streeName{
+                        width: 100%;
+                        color: #C5EEF3;
+                        position: relative;
+                        margin-top: -6px;
+                        font-size: 28px;
+                      }
+                      .streeNum{
+                        width: 100%;
+                        color: #FFFFFF;
+                        font-size: 40px;
+                      }
+                      span{
+                        width: 100%;
+                        color: #FFFFFF;
+                        font-size: 20px;
+                      }
+                    }
+                    .rightpic{
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      img{
+                        height: 100px;
+                        width: 100px;
+                      }
+                    }
+                  }
+                  .newprogress{
+                    width: 100%;
+                    height: 160px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    color: white;
+                    .canvas{
+                      width: 100%;
+                      height: 30px;
+                    }
+                    .data1{
+                      width: 100%;
+                      height: 24px;
+                      font-size: 20px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                    .data2{
+                      width: 100%;
+                      height: 24px;
+                      font-size: 24px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                    .allDatatime{
+                      background: url('./background/1.png');
+                      background-size: 100%;
+                    }
+                    .datatime{
+                      width: 100%;
+                      height: 60px;
+                      font-size: 22px;
+                      display: flex;
+                      justify-content: space-between;
+                      div{
+                        display: flex;
+                        align-items: center;
+                      }
+                    }
+                  }
+                  .peoplevalue{
+                    height: 40px;
+                    font-size: 24px;
+                    color: #5AE8FA;
+                    display: flex;
+                    justify-content: space-between;
+                  }
+                  .peoplename{
+                    height: 40px;
+                    font-size: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    color: #C5EEF3;
                   }
                 }
             }
         }
         .row2{
+            height: 580px;
+            padding: 32px 0px;
             width: 100%;
-            height: 520px;
-            padding: 32px 32px 0 0px;
-            .title{
-                width: 100%;
-                color: #4182ff;
-                font-size: 28px;
-                padding-left: 15px;
-            }
-            .boxList{
-                width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .left{
+                width: 50%;
                 height: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                .Abox{
-                    width: 20%;
-                    height: 50%;
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    align-items: center;
-                    .name{
-                      width: 180px;
-                      height: 80px;
-                      font-size: 20px;
-                      color: #16DFF8;
-                      display: flex;
-                      align-items: flex-end;
-                    }
-                    .backgrounwt{
-                      height: 120px;
-                      width: 180px;
-                      display: flex;
-                      font-size: 32px;
-                      justify-content: center;
-                      align-items: center;
-                    }
+                margin: 0 16px 0 0;
+                .title{
+                    width: 100%;
+                    border-left:17px solid #81d3f8;
+                    color: #4182ff;
+                    font-size: 28px;
+                    padding-left: 15px;
+                    margin-bottom: 40px;
+                }
+                >div:last-child{
+                    width: 100%;
+                    height: auto;
                 }
             }
-        }
-        .row3{
-            width: 100%;
-            height: 548px;
-            padding: 32px 32px 0 0px;
-            margin-bottom: 32px;
-            .title{
-                width: 100%;
-                color: #4182ff;
-                font-size: 28px;
-                padding-left: 15px;
+            .right{
+                width: 50%;
+                height: 100%;
+                margin: 0 0 0 16px;
+                .title{
+                    width: 100%;
+                    border-left:17px solid #81d3f8;
+                    color: #4182ff;
+                    font-size: 28px;
+                    padding-left: 15px;
+                    margin-bottom: 40px;
+                }
+                >div:last-child{
+                    width: 100%;
+                    height: auto;
+                }
             }
         }
     }
-    #Module4{
-        width: 2913px;
-        height: 1620px;
-        position: relative;
-        .whole{
-            padding: 32px 32px 0 0px;
-            .datepicker{
-              position:absolute;
-              top: 40px;
-              left: 640px;
-              z-index: 1;
-            }
-            .row1{
-                height: 1008px;
-                .tabContent1{
-                    width:2850px;
-                    height:900px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    overflow: auto;
-                    align-items: flex-start;
-                    justify-content: flex-start;
-                    .streeBox{
-                      height: 420px;
-                      width: 444px;
-                      margin: 14px;
-                      padding: 24px;
-                      .titleTop{
-                        width: 100%;
-                        height: 140px;
-                        display: flex;
-                        justify-content: space-between;
-                        .leftOne{
-                          display: flex;
-                          flex-wrap: wrap;
-                          .streeName{
-                            width: 100%;
-                            color: #C5EEF3;
-                            position: relative;
-                            margin-top: -6px;
-                            font-size: 28px;
-                          }
-                          .streeNum{
-                            width: 100%;
-                            color: #FFFFFF;
-                            font-size: 40px;
-                          }
-                          span{
-                            width: 100%;
-                            color: #FFFFFF;
-                            font-size: 20px;
-                          }
-                        }
-                        .rightpic{
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                          img{
-                            height: 100px;
-                            width: 100px;
-                          }
-                        }
-                      }
-                      .newprogress{
-                        width: 100%;
-                        height: 160px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        color: white;
-                        .canvas{
-                          width: 100%;
-                          height: 30px;
-                        }
-                        .data1{
-                          width: 100%;
-                          height: 24px;
-                          font-size: 20px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                        .data2{
-                          width: 100%;
-                          height: 24px;
-                          font-size: 24px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                        .allDatatime{
-                          background: url('./background/1.png');
-                          background-size: 100%;
-                        }
-                        .datatime{
-                          width: 100%;
-                          height: 60px;
-                          font-size: 22px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                      }
-                      .peoplevalue{
-                        height: 40px;
-                        font-size: 24px;
-                        color: #5AE8FA;
-                        display: flex;
-                        justify-content: space-between;
-                      }
-                      .peoplename{
-                        height: 40px;
-                        font-size: 20px;
-                        display: flex;
-                        justify-content: space-between;
-                        color: #C5EEF3;
-                      }
-                    }
-                }
-                .tabContent2{
-                    width:2850px;
-                    height:890px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    overflow: auto;
-                    align-items: flex-start;
-                    justify-content: flex-start;
-                    .streeBox{
-                      height: 420px;
-                      width: 444px;
-                      margin: 14px;
-                      padding: 24px;
-                      .titleTop{
-                        width: 100%;
-                        height: 140px;
-                        display: flex;
-                        justify-content: space-between;
-                        .leftOne{
-                          display: flex;
-                          flex-wrap: wrap;
-                          .streeName{
-                            width: 100%;
-                            color: #C5EEF3;
-                            position: relative;
-                            margin-top: -6px;
-                            font-size: 28px;
-                          }
-                          .streeNum{
-                            width: 100%;
-                            color: #FFFFFF;
-                            font-size: 40px;
-                          }
-                          span{
-                            width: 100%;
-                            color: #FFFFFF;
-                            font-size: 20px;
-                          }
-                        }
-                        .rightpic{
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                          img{
-                            height: 100px;
-                            width: 100px;
-                          }
-                        }
-                      }
-                      .newprogress{
-                        width: 100%;
-                        height: 160px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        color: white;
-                        .canvas{
-                          width: 100%;
-                          height: 30px;
-                        }
-                        .data1{
-                          width: 100%;
-                          height: 24px;
-                          font-size: 20px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                        .data2{
-                          width: 100%;
-                          height: 24px;
-                          font-size: 24px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                        .allDatatime{
-                          background: url('./background/1.png');
-                          background-size: 100%;
-                        }
-                        .datatime{
-                          width: 100%;
-                          height: 60px;
-                          font-size: 22px;
-                          display: flex;
-                          justify-content: space-between;
-                          div{
-                            display: flex;
-                            align-items: center;
-                          }
-                        }
-                      }
-                      .peoplevalue{
-                        height: 40px;
-                        font-size: 24px;
-                        color: #5AE8FA;
-                        display: flex;
-                        justify-content: space-between;
-                      }
-                      .peoplename{
-                        height: 40px;
-                        font-size: 20px;
-                        display: flex;
-                        justify-content: space-between;
-                        color: #C5EEF3;
-                      }
-                    }
-                }
-            }
-            .row2{
-                height: 580px;
-                padding: 32px 0px;
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                .left{
-                    width: 50%;
-                    height: 100%;
-                    margin: 0 16px 0 0;
-                    .title{
-                        width: 100%;
-                        border-left:17px solid #81d3f8;
-                        color: #4182ff;
-                        font-size: 28px;
-                        padding-left: 15px;
-                        margin-bottom: 40px;
-                    }
-                    >div:last-child{
-                        width: 100%;
-                        height: auto;
-                    }
-                }
-                .right{
-                    width: 50%;
-                    height: 100%;
-                    margin: 0 0 0 16px;
-                    .title{
-                        width: 100%;
-                        border-left:17px solid #81d3f8;
-                        color: #4182ff;
-                        font-size: 28px;
-                        padding-left: 15px;
-                        margin-bottom: 40px;
-                    }
-                    >div:last-child{
-                        width: 100%;
-                        height: auto;
-                    }
-                }
-            }
+    .part{
+      // width: 2830px;
+      width: 3280px;
+      height: 970px;
+      padding: 72px 32px 32px 0px;
+      position: absolute;
+      z-index: 10;
+      top: 124px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: url('./background/bg.png');
+      background-size: 100%;
+      .partTitle{
+        height: 100px;
+        width: 100%;
+        display: flex;
+        padding: 6px;
+        margin-top: 24px;
+        background: url('./background/矩形01.png');
+        background-size: 100%;
+        .select{
+          height: 100%;
+          width: 180px;
+          margin-right: 120px;
         }
-        .part{
-          width: 2830px;
-          height: 864px;
-          padding: 72px 32px 32px 0px;
-          position: absolute;
-          top: 124px;
-          left: 10px;
+        .state{
+          width: 300px;
+          font-size: 22px;
           display: flex;
-          flex-direction: column;
+          flex-wrap: wrap;
+          justify-content: center;
           align-items: center;
-          justify-content: space-between;
-          background: url('./background/bg.png');
-          background-size: 100%;
-          .partTitle{
-            height: 100px;
+          div{
             width: 100%;
-            display: flex;
-            padding: 6px;
-            margin-top: 24px;
-            background: url('./background/矩形01.png');
-            background-size: 100%;
-            .select{
-              height: 100%;
-              width: 180px;
-              margin-right: 120px;
-            }
-            .state{
-              width: 300px;
-              font-size: 22px;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              align-items: center;
-              div{
-                width: 100%;
-              }
-            }
-            .datavalue{
-              width: 400px;
-              margin-right: 120px;
-              height: 100%;
-              display: flex;
-              flex-wrap: wrap;
-              color: white;
-              .canvas{
-                width: 100%;
-                height: 30px;
-              }
-              .data1{
-                width: 100%;
-                height: 24px;
-                font-size: 20px;
-                display: flex;
-                justify-content: space-between;
-                div{
-                  display: flex;
-                  align-items: center;
-                }
-              }
-              .data2{
-                width: 100%;
-                height: 24px;
-                font-size: 24px;
-                display: flex;
-                justify-content: space-between;
-                div{
-                  display: flex;
-                  align-items: center;
-                }
-              }
-            }
-            .datatime{
-              width: 400px;
-              height: 100%;
-              font-size: 22px;
-              margin-right: 120px;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              align-items: center;
-              div{
-                width: 100%;
-              }
-            }
-            .peoplevalue{
-              width: 250px;
-              height: 100%;
-              font-size: 22px;
-              margin-right: 120px;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              align-items: center;
-              div{
-                width: 100%;
-              }
-            }
-            .peoplename{
-              width: 250px;
-              height: 100%;
-              font-size: 22px;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              align-items: center;
-              div{
-                width: 100%;
-              }
-            }
-            .upBack{
-              font-size: 14px;
-              width: 162px !important;
-              padding-left: 115px;
-              display: inline-block;
-              height: 24px;
-              margin-left: 10px;
-              background: url('./background/编组-16.png');
-              background-size: 100%;
-            }
-            .downBack{
-              font-size: 14px;
-              padding-left: 115px;
-              width: 162px !important;
-              display: inline-block;
-              margin-left: 10px;
-              height: 24px;
-              background: url('./background/编组-17.png');
-              background-size: 100%;
-            }
-          }
-          .partBody{
-            height: 286px;
-            width: 100%;
-            margin-top: 28px;
-            display: flex;
-            justify-content: space-between;
-            >div{
-              width: 886px;
-              background: url('./background/矩形02.png');
-              background-size: 100%;
-              height: 100%;
-              padding: 20px;
-            }
-            .hotevent{
-              .canvas{
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                height: 100%;
-                width: 100%;
-                .events{
-                  width: 130px;
-                  .name{
-                    width: 100%;
-                    text-align: center;
-                    color: #16DFF8;
-                    font-size: 20px;
-                  }
-                  .value{
-                    width: 100%;
-                    height: 88px;
-                    color: white;
-                    font-size: 24px;
-                    background: url('./background/位图.png');
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    background-size: 100%;
-                  }
-                }
-              }
-            }
-          }
-          .partFoot{
-            height: 286px;
-            width: 100%;
-            margin-top: 28px;
-            display: flex;
-            justify-content: space-between;
-            >div:nth-child(1){
-              width: 886px;
-              background: url('./background/矩形02.png');
-              background-size: 100%;
-              padding: 20px;
-            }
-            >div:nth-child(2){
-              width: 1813px;
-              background: url('./background/矩形02.png');
-              background-size: 100%;
-              padding: 20px;
-            }
-          }
-          .title{
-            height: 30px;
-            width: 100%;
-            color:#C5EEF3;
-            display: flex;
-            justify-content: space-between;
-            .radioBtn::before{
-              content: '';
-              height: 12px;
-              width: 12px;
-              margin-right: 10px;
-              display: inline-block;
-              border-radius: 50%;
-              background-color: #FCB83C;
-            }
-          }
-          .canvas{
-
           }
         }
+        .datavalue{
+          width: 400px;
+          margin-right: 120px;
+          height: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          color: white;
+          .canvas{
+            width: 100%;
+            height: 30px;
+          }
+          .data1{
+            width: 100%;
+            height: 24px;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            div{
+              display: flex;
+              align-items: center;
+            }
+          }
+          .data2{
+            width: 100%;
+            height: 24px;
+            font-size: 24px;
+            display: flex;
+            justify-content: space-between;
+            div{
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+        .datatime{
+          width: 400px;
+          height: 100%;
+          font-size: 22px;
+          margin-right: 120px;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          div{
+            width: 100%;
+          }
+        }
+        .peoplevalue{
+          width: 250px;
+          height: 100%;
+          font-size: 22px;
+          margin-right: 120px;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          div{
+            width: 100%;
+          }
+        }
+        .peoplename{
+          width: 250px;
+          height: 100%;
+          font-size: 22px;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          div{
+            width: 100%;
+          }
+        }
+        .upBack{
+          font-size: 14px;
+          width: 162px !important;
+          padding-left: 115px;
+          display: inline-block;
+          height: 24px;
+          margin-left: 10px;
+          background: url('./background/编组-16.png');
+          background-size: 100%;
+        }
+        .downBack{
+          font-size: 14px;
+          padding-left: 115px;
+          width: 162px !important;
+          display: inline-block;
+          margin-left: 10px;
+          height: 24px;
+          background: url('./background/编组-17.png');
+          background-size: 100%;
+        }
+      }
+      .partBody{
+        height: 286px;
+        width: 100%;
+        margin-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        >div{
+          width: 886px;
+          background: url('./background/矩形02.png');
+          background-size: 100%;
+          height: 100%;
+          padding: 20px;
+        }
+        .hotevent{
+          .canvas{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            .events{
+              width: 130px;
+              .name{
+                width: 100%;
+                text-align: center;
+                color: #16DFF8;
+                font-size: 20px;
+              }
+              .value{
+                width: 100%;
+                height: 88px;
+                color: white;
+                font-size: 24px;
+                background: url('./background/位图.png');
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-size: 100%;
+              }
+            }
+          }
+        }
+      }
+      .partFoot{
+        height: 286px;
+        width: 100%;
+        margin-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        >div:nth-child(1){
+          width: 886px;
+          background: url('./background/矩形02.png');
+          background-size: 100%;
+          padding: 20px;
+        }
+        >div:nth-child(2){
+          width: 1813px;
+          background: url('./background/矩形02.png');
+          background-size: 100%;
+          padding: 20px;
+        }
+      }
+      .title{
+        height: 30px;
+        width: 100%;
+        color:#C5EEF3;
+        display: flex;
+        justify-content: space-between;
+        .radioBtn::before{
+          content: '';
+          height: 12px;
+          width: 12px;
+          margin-right: 10px;
+          display: inline-block;
+          border-radius: 50%;
+          background-color: #FCB83C;
+        }
+      }
+      .canvas{
+
+      }
     }
+}
 </style>
 <style lang="scss">
 .EfficiencyPage{
     display: flex;
+    flex-wrap: wrap;
+    width: 3350px;
+    height: 1620px;
+    margin-left: 24px;
     .backgroun21{
       background: url('./background/编组21.png');
       background-size: 100%;

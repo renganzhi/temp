@@ -1,5 +1,13 @@
 <template>
     <div class="WuhouSinglePage">
+        <transition name="moveTop" >
+          <div class="topPart"  v-show="isopenShow">
+            <img src="./newBack/6.png" alt="">
+            <!-- <div class="Title">
+              <img src="./newBack/5.png" alt="">
+            </div> -->
+          </div>
+        </transition>
         <transition name="moveRight" >
             <div class="leftPart"  v-show="isopenShow">
                 <div id="Module1">
@@ -152,12 +160,21 @@
                             </div>
                         </div>
                         <div class="ConditionalList">
-                            <div class="ball">
-                                <div :class="{normal1: true,active1:appealType === data}" @click="changeAppeal(data)" v-for="(data, index) in getBubble" :key="index">
-                                    {{data}}
-                                </div>
+                            <div class="title">
+                              {{appealType}}诉求小区排行
+                              <div class="selectBox">
+                                <Select v-model="appealType">
+                                  <Option
+                                    v-for="(data, index) in getBubble"
+                                    :key="index"
+                                    :value="data"
+                                    :label="data"
+                                  >
+                                    {{ data }}
+                                  </Option>
+                                </Select>
+                              </div>
                             </div>
-                            <div class="title">{{appealType}}诉求小区排行</div>
                             <div>
                                 <div class="list">
                                     <div class="lhead">
@@ -439,16 +456,16 @@
                         </div>
                     </div>
                     <div class="row3">
-                        <div>727.23 <span style="color:#5abf5a;font-size:50px;margin-left: 10px;">优</span></div>
+                        <div>{{GetMSSQ7[0]?GetMSSQ7[0]['街道投诉指数均值']:''}}</div>
                         <div>
                             <div class="lunbo" ref="lunbo" @mousewheel="onMouseWheel($event, 'lunbo')">
-                                <div class="col" v-for="(data, index) in qmssqList" :key="index">
+                                <div class="col" v-for="(data, index) in GetMSSQ7[0]?GetMSSQ7[0]['街道指数列表'].rows:[]" :key="index">
                                     <div><img :src="getSreetImg(data['街道'])" alt=""></div>
                                     <div>{{data['街道']}}</div>
                                     <div>
                                         <div style="display: flex;justify-content: center;align-items: center;">
-                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">优</span>
-                                            {{data['数量']}}
+                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">{{data['评级']}}</span>
+                                            {{data['指数']}}
                                         </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
                                     </div>
@@ -533,12 +550,15 @@
         <!-- 模块三、四 -->
         <transition name="moveLeft">
             <div class="rightPart" v-show="isopenShow">
-                <EfficiencyPage></EfficiencyPage>
                 <div id="Module5">
-                    <div class="title"><img src="./background/编组_1.png" alt=""></div>
+                  <div class="TopName"><img src="./newBack/15.png" alt=""></div>
+                    <div class="title"><img src="./newBack/4.png" alt=""></div>
                     <div class="content">
-                        <div class="cityEvent" ref="cityEvent"
-                           >
+                        <div class="MsgType">
+                          <div :class="!IsreadBox?'checked':'nochecked'" @click="changeIsreadBox(false)">未办事件</div>
+                          <div :class="!IsreadBox?'nochecked':'checked'"  @click="changeIsreadBox(true)">已办事件</div>
+                        </div>
+                        <div class="cityEvent" ref="cityEvent">
                             <ul class="item" ref="item">
                                 <li v-for="(val, ind) in qztsList" :key="ind">
                                 <div  class="eventBox" >
@@ -549,8 +569,13 @@
                                     <div>
                                         {{val['描述']}}
                                     </div>
-                                    <div>
+                                    <div style="display: flex;justify-content: space-between;">
+                                      <div class="Time">
                                         {{val['上报时间']}}
+                                      </div>
+                                      <div class="state">
+                                        不满意
+                                      </div>
                                     </div>
                                 </div>
                                 </li>
@@ -584,6 +609,57 @@
                         </transition>
                     </div>
                 </div>
+                <div id="Module6">
+                    <div class="title"><img src="./newBack/1.png" alt=""></div>
+                    <div class="content">
+                        <div class="cityEvent" ref="cityEvent"
+                           >
+                            <ul class="item" ref="item">
+                                <li v-for="(val, ind) in qztsList" :key="ind">
+                                <div  class="eventBox" >
+                                    <div>
+                                        <div><span></span>{{val['问题标题']}}</div>
+                                        <div @click="ShowOtherDetails(val)">详情</div>
+                                    </div>
+                                    <div>
+                                        {{val['描述']}}
+                                    </div>
+                                    <div>
+                                        {{val['上报时间']}}
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <transition name="moveLeft">
+                            <div id="Module6Pop" v-show="showotherDetails">
+                              <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseotherDetails" src="./background/关闭.png" alt="">
+                              </div>
+                              <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                  {{xqValue['描述'] || ''}}
+                                </div>
+                                <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
+                                <div class="block" style="padding: 0 28px;">
+                                    <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
+                                      <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
+                                      <div class="radio"></div>
+                                      <div class="time">{{da['修改时间']}}</div>
+                                      <div class="data">
+                                        <div>流转状态：{{da['当前节点名称']}}</div>
+                                        <div>流转内容：{{da['流转内容']}}</div>
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+                <EfficiencyPage></EfficiencyPage>
             </div>
         </transition>
     </div>
@@ -627,9 +703,13 @@ export default {
       qmssqList: [], // module2 区民生诉求指数列表
       qmssqDetail: {}, // module2 区民生诉求指数详情
       gfxryDetail3: {}, // module2 区民生诉求指数详情 高风险人员详情
+      GetMSSQ7: [],
+      GetMSSQ16: {},
       qztsList: [], // 投诉列表
       xqValue: {},
       showEventDetails: false,
+      IsreadBox: false,
+      showotherDetails: false,
       SqTipsName: '',
       isVerification: false
     }
@@ -655,13 +735,13 @@ export default {
         }
       }
     },
-    getWholeRegionNum () {
-      let num = 0
-      this.qmssqList.forEach(element => {
-        num = num + element['数量']
-      })
-      return num
-    },
+    // getWholeRegionNum () {
+    //   let num = 0
+    //   this.qmssqList.forEach(element => {
+    //     num = num + element['数量']
+    //   })
+    //   return num
+    // },
     getRiskBusiness () {
       let chartData = {
         columns: [],
@@ -1117,7 +1197,7 @@ export default {
     ShowEventDetails (val) {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
-        document.querySelector('.cityEvent .item').style.animationPlayState = 'paused'
+        document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
@@ -1128,9 +1208,27 @@ export default {
         })
       }
     },
+    ShowOtherDetails (val) {
+      if (val['工单号']) {
+        $('#lead-screen').addClass('disShow')
+        document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj) {
+            val.timeLine = res.obj.obj.data[0].items.rows
+            this.xqValue = val
+            this.showotherDetails = true
+          }
+        })
+      }
+    },
+    CloseotherDetails () {
+      this.showotherDetails = false
+      document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'running'
+    },
     CloseEventDetails () {
       this.showEventDetails = false
-      document.querySelector('.cityEvent .item').style.animationPlayState = 'running'
+      document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
       let eventDelta = -e.wheelDelta || -e.deltaY * 40
@@ -1227,6 +1325,9 @@ export default {
         }
       })
     },
+    changeIsreadBox (state) {
+      this.IsreadBox = state
+    },
     CloseGFXRYS () {
       this.showGFXRYS = false
       this.gfxryDetail3 = {}
@@ -1292,11 +1393,24 @@ export default {
           this.qmssqList = res.obj.rows
         }
       })
+
+      this.axios.get('/leaderview/newDistrict/GetMSSQ7').then(res => {
+        if (res.success && res.obj.rows) {
+          this.GetMSSQ7 = res.obj.rows
+        }
+      })
+
+      this.axios.get('/leaderview/newDistrict/GetMSSQ16').then(res => {
+        if (res.success && res.obj.rows) {
+          this.GetMSSQ16 = res.obj.rows
+        }
+      })
       // 获取群众投诉数据
       this.axios.get('/leaderview/newDistrict/GetMSSQ20').then(res => {
         if (res.success && res.obj.rows) {
           this.qztsList = res.obj.rows
-          document.querySelector('.cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+          document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+          document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
       })
     }
@@ -1311,7 +1425,24 @@ export default {
     display: flex;
     // flex-wrap: wrap;
     font-family: monospace !important;
+    position: relative;
     // overflow: hidden;
+    .topPart{
+      width: 100%;
+      height: 172px;
+      position: absolute;
+      .Title{
+        height: 123px;
+        width: 534px;
+        left: 4053px;
+        top: 0;
+        position: absolute;
+        img{
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
     .leftPart,.rightPart{
         display: flex;
     }
@@ -1410,7 +1541,8 @@ export default {
 }
     #Module1{
         width: 680px;
-        height: 1620px;
+        height: 1512px;
+        margin-top: 108px;
         .content{
             width: 100%;
             height: 100%;
@@ -1544,7 +1676,7 @@ export default {
                 }
                 .list{
                     width: 608px;
-                    height: 1164px;
+                    height: 1056px;
                     overflow-y:scroll;
                     // margin:0 auto;
                     .rows{
@@ -1684,9 +1816,10 @@ export default {
         }
     }
     #Module2{
-        width: 2855px;
-        height:  1620px;
-        padding: 32px 32px 32px 32px;
+        width: 2140px;
+        height: 1512px;
+        margin: 108px 32px 0 32px;
+        padding: 32px 0 32px 0;
         .row1{
             width: 100%;
             display: flex;
@@ -1707,10 +1840,11 @@ export default {
               }
             }
             .listArr{
-                width: 1281px;
-                height: 800px;
+                width: 1250px;
+                height: 692px;
+                margin-right: 30px;
                 background: url('./background/编组_11.png');
-                padding: 105px 37px 14px 36px;
+                padding: 105px 0px 14px 36px;
                 .Abox{
                     display: flex;
                     justify-content: space-between;
@@ -1723,7 +1857,7 @@ export default {
                         }
                         .list{
                             width: 100%;
-                            height: 632px;
+                            height: 524px;
                             overflow-y: scroll;
                             .li{
                                 height: 72px;
@@ -1886,38 +2020,41 @@ export default {
                 }
             }
             .ConditionalList{
-                width: 1481px;
-                height: 800px;
+                width: 824px;
+                height: 692px;
                 padding: 104px 37px 56px 36px;
                 background: url('./background/编组20.png');
-                .ball{
-                    width: 100%;
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    justify-content: space-between;
-                    .normal1{
-                        width: 180px;
-                        height: 52px;
-                        cursor: pointer;
-                        color: rgba(22,223,248,1);
-                        font-size: 22px;
-                        border-radius: 4px;
-                        text-align: center;
-                        line-height: 52px;
-                        margin-bottom: 20px;
-                        background: url('./background/矩形_1.png');
-                    }
-                    .active1{
-                        background: url('./background/矩形.png') !important;
-                        color: rgba(255,244,223,1) !important;
-                    }
-                }
+                // .ball{
+                //     width: 100%;
+                //     display: flex;
+                //     flex-wrap: wrap;
+                //     align-items: center;
+                //     justify-content: space-between;
+                //     .normal1{
+                //         width: 180px;
+                //         height: 52px;
+                //         cursor: pointer;
+                //         color: rgba(22,223,248,1);
+                //         font-size: 22px;
+                //         border-radius: 4px;
+                //         text-align: center;
+                //         line-height: 52px;
+                //         margin-bottom: 20px;
+                //         background: url('./background/矩形_1.png');
+                //     }
+                //     .active1{
+                //         background: url('./background/矩形.png') !important;
+                //         color: rgba(255,244,223,1) !important;
+                //     }
+                // }
                 >.title{
                     color: rgba(197,238,243,1);
                     font-size: 26px;
-                    margin: 16px 0 20px 0;
+                    margin: 0 0 20px 0;
+                    height: 40px;
                     font-weight: bold;
+                    display: flex;
+                    justify-content: space-between;
                 }
                 >div:last-child{
                     position: relative;
@@ -1951,7 +2088,7 @@ export default {
                         }
                         .lbody{
                             width: 100%;
-                            height: 384px;
+                            height: 410px;
                             overflow-y: scroll;
                             .rows{
                                 width: 100%;
@@ -1984,7 +2121,7 @@ export default {
                                     width: 20%;
                                 }
                                 >div:nth-child(4){
-                                    width: 5%;
+                                    width: 10%;
                                     font-size: 20px;
                                     font-family: Source Han Sans SC, Source Han Sans SC-Regular;
                                     font-weight: 400;
@@ -2202,7 +2339,7 @@ export default {
                 overflow: hidden;
                 position: relative;
                 .lunbo1{
-                        width: 2436px;
+                        width: 1840px;
                         height: 214px;
                         overflow-x: scroll;
                         overflow-y: hidden;
@@ -2691,7 +2828,7 @@ export default {
                 margin-right: 28px;
             }
             >div:last-child{
-                width: 2435px;
+                width: 1780px;
                 height: 280px;
                 position: relative;
                 overflow: hidden;
@@ -2998,10 +3135,226 @@ export default {
         }
     }
     #Module5{
-        width: 680px;
-        height: 1620px;
+        width: 1392px;
+        height: 1384px;
+        margin-top: 200px;
+        margin-right: 32px;
         background: #0B1B2A;
-        padding: 32px 32px 32px 0px;
+        position: relative;
+        padding: 0;
+        .TopName{
+          height: 90px;
+          width: 530px;
+          position: absolute;
+          top: -90px;
+          left: 0;
+        }
+        .title{
+            img{
+                width:100%;
+                height:76px;
+            }
+            margin-bottom: 12px;
+        }
+        .content{
+            position: relative;
+            overflow: hidden;
+            .MsgType{
+              height: 80px;
+              width: 100%;
+              display: flex;
+              align-items: center;
+              .checked{
+                width: 180px;
+                height: 50px;
+                background-image: url('./newBack/12.png');
+                background-size: 100% 100%;
+                font-size: 26px;
+                color: #0B1B2A;
+                margin-left: 17px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+              .nochecked{
+                width: 180px;
+                height: 50px;
+                background-image: url('./newBack/11.png');
+                background-size: 100% 100%;
+                font-size: 26px;
+                cursor: pointer;
+                color: #C5EEF3;
+                margin-left: 17px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
+            .cityEvent{
+                width: 100%;
+                height: 1210px;
+                display: flex;
+                overflow: hidden;
+                align-items: center;
+                flex-direction: column;
+                .item{
+                  width: 100%;
+                  animation:anima 20s linear infinite;
+                }
+                .item:hover{
+                  animation-play-state: paused !important;
+                }
+                @keyframes anima {
+                  0%{
+                    transform: translateY(0);
+                  }
+                  100%{
+                    transform: translateY(-100%);
+                  }
+                }
+                .warp{
+                    overflow: hidden;
+                    width: 100%;
+                    height: 100%;
+                    ul{
+                        list-style: none;
+                        padding: 0;
+                        margin: 0 auto;
+                        li{
+                        margin-bottom: 28px;
+                        // background: #122f61;
+                        height: 180px;
+                        }
+                    }
+                }
+                li{
+                  padding: 14px 24px 14px 16px;
+                  .eventBox{
+                      width: 100%;
+                      height: 100%;
+                      overflow: hidden !important;
+                      padding: 14px 14px 5px 28px;
+                      // margin-bottom: 10px;
+                      background: url('./newBack/14.png') no-repeat;
+                      background-size: 100% 100%;
+                      overflow-y: scroll;
+                      >div:nth-child(1){
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-between;
+                          >div:nth-child(1) {
+                              color: #C5EEF3;
+                              font-size: 26px;
+                              overflow: hidden;
+                              white-space: nowrap;
+                              text-overflow: ellipsis;
+                              span{
+                                  width: 12px;
+                                  height: 12px;
+                                  display: inline-block;
+                                  background: #fcb83c;
+                                  border-radius: 50%;
+                                  margin-right:12px;
+                              }
+                          }
+                          >div:nth-child(2) {
+                              color:#C5EEF3;
+                              font-size: 24px;
+                              width: 80px;
+                              height: 32px;
+                              text-align: center;
+                              line-height: 32px;
+                              background: rgba(22,223,248,0.10);
+                              border: 1px solid rgba(22,223,248,0.60);
+                              border-radius: 17px;
+                              text-align: center;
+                              cursor: pointer;
+                          }
+                      }
+                      >div:nth-child(2){
+                          width: 100%;
+                          height: 75px;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 24px;
+                          margin-top:8px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          -webkit-line-clamp: 2;
+                      }
+                      >div:nth-child(3){
+                          width: 100%;
+                          height: auto;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 22px;
+                          margin-top:12px;
+                      }
+                      .state{
+                        width: 100px;
+                        height: 40px;
+                        background-image: url('./newBack/13.png');
+                        background-size: 100% 100%;
+                        display: flex;
+                        justify-content: center;
+                        color: black;
+                        align-items: center;
+                      }
+
+                  }
+                }
+            }
+            #Module5Pop{
+                width: 100%;
+                height: 1448px;
+                background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                border: 2px solid;
+                border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                border-radius: 4px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                .TimeBox{
+                  position: relative;
+                  .line{
+                    position: absolute;
+                    left: 9px;
+                    top: 15px;
+                    height: 100%;
+                    border-left: 2px solid #FCB83C;
+                  }
+                  .radio{
+                    position: absolute;
+                    border: 6px solid #FCB83C;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 50%;
+                  }
+                  .time{
+                    font-size: 24px;
+                    padding-left: 28px;
+                    color: #C5EEF3;
+                  }
+                  .data{
+                    font-size: 24px;
+                    color: #C5EEF3;
+                    margin: 12px 12px 12px 30px;
+                    padding: 18px;
+                    background-color: transparent;
+                    background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                  }
+                }
+            }
+        }
+    }
+    #Module6{
+        width: 932px;
+        height: 1384px;
+        margin-top: 200px;
+        margin-right: 32px;
+        background: #0B1B2A;
+        padding: 0;
         .title{
             img{
                 width:100%;
@@ -3014,7 +3367,7 @@ export default {
             overflow: hidden;
             .cityEvent{
                 width: 100%;
-                height: 1448px;
+                height: 1270px;
                 display: flex;
                 align-items: center;
                 flex-direction: column;
@@ -3048,71 +3401,74 @@ export default {
                         }
                     }
                 }
-                .eventBox{
-                    // width: 100%;
-                    // height: 100%;
-                    padding: 24px 24px 24px 16px;
-                    overflow: hidden !important;
-                    // margin-bottom: 10px;
-                    background: url('./background/编组30.png') no-repeat;
-                    background-size: 100% 100%;
-                    overflow-y: scroll;
-                    >div:nth-child(1){
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        >div:nth-child(1) {
-                            color: #C5EEF3;
-                            font-size: 26px;
-                            overflow: hidden;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            span{
-                                width: 12px;
-                                height: 12px;
-                                display: inline-block;
-                                background: #fcb83c;
-                                border-radius: 50%;
-                                margin-right:12px;
-                            }
-                        }
-                        >div:nth-child(2) {
-                            color:#C5EEF3;
-                            font-size: 24px;
-                            width: 80px;
-                            height: 32px;
-                            text-align: center;
-                            line-height: 32px;
-                            background: rgba(22,223,248,0.10);
-                            border: 1px solid rgba(22,223,248,0.60);
-                            border-radius: 17px;
-                            text-align: center;
-                            cursor: pointer;
-                        }
-                    }
-                    >div:nth-child(2){
-                        width: 100%;
-                        height: 75px;
-                        padding-left: 24px;
-                        color: rgba(197,238,243,0.8);
-                        font-size: 24px;
-                        margin-top:8px;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        -webkit-line-clamp: 2;
-                    }
-                    >div:nth-child(3){
-                        width: 100%;
-                        height: auto;
-                        padding-left: 24px;
-                        color: rgba(197,238,243,0.8);
-                        font-size: 22px;
-                        margin-top:12px;
-                    }
+                li{
+                  padding: 14px 24px 14px 16px;
+                  .eventBox{
+                      width: 100%;
+                      height: 100%;
+                      padding: 14px 14px 5px 28px;
+                      overflow: hidden !important;
+                      // margin-bottom: 10px;
+                      background: url('./newBack/14.png') no-repeat;
+                      background-size: 100% 100%;
+                      overflow-y: scroll;
+                      >div:nth-child(1){
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-between;
+                          >div:nth-child(1) {
+                              color: #C5EEF3;
+                              font-size: 26px;
+                              overflow: hidden;
+                              white-space: nowrap;
+                              text-overflow: ellipsis;
+                              span{
+                                  width: 12px;
+                                  height: 12px;
+                                  display: inline-block;
+                                  background: #fcb83c;
+                                  border-radius: 50%;
+                                  margin-right:12px;
+                              }
+                          }
+                          >div:nth-child(2) {
+                              color:#C5EEF3;
+                              font-size: 24px;
+                              width: 80px;
+                              height: 32px;
+                              text-align: center;
+                              line-height: 32px;
+                              background: rgba(22,223,248,0.10);
+                              border: 1px solid rgba(22,223,248,0.60);
+                              border-radius: 17px;
+                              text-align: center;
+                              cursor: pointer;
+                          }
+                      }
+                      >div:nth-child(2){
+                          width: 100%;
+                          height: 75px;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 24px;
+                          margin-top:8px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          -webkit-line-clamp: 2;
+                      }
+                      >div:nth-child(3){
+                          width: 100%;
+                          height: auto;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 22px;
+                          margin-top:12px;
+                      }
 
+                  }
                 }
             }
-            #Module5Pop{
+            #Module6Pop{
                 width: 100%;
                 height: 1448px;
                 background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
