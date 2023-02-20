@@ -1,5 +1,6 @@
 import player from '@/components/EditComp/player/config.js'
 import ppt from '@/components/EditComp/ppt/config.js'
+import TextRotation from '@/components/EditComp/TextRotation/config.js'
 import liquidfill from '@/components/EditComp/liquidfill/config.js'
 import polarBar from '@/components/EditComp/polarBar/config.js'
 import pyramid from '@/components/EditComp/pyramid/config.js'
@@ -796,6 +797,7 @@ pyramid.item,
   chartData: {}
 },
 ppt.item,
+TextRotation.item,
 decorator.item,
 {
   text: '边框',
