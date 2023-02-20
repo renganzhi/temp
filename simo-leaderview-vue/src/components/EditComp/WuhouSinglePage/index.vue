@@ -95,8 +95,8 @@
                                                 <div><span></span>{{index + 1}}</div>
                                                 <div>{{isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')}}</div>
                                                 <div>
-                                                    <div>环比增长次数 </div>
-                                                    <div> {{data['增长']}}</div>
+                                                    <div>次数 </div>
+                                                    <div> {{data['次数']}}</div>
                                                 </div>
                                                 <div @click="showKSZZRY7(index)">
                                                     详情
@@ -109,8 +109,8 @@
                                                         <div>投诉类别TOP1</div>
                                                     </div>
                                                     <div>
-                                                        <div>{{data['次数']}}</div>
-                                                        <div>次数</div>
+                                                        <div>{{data['增长']}}</div>
+                                                        <div>环比增长次数</div>
                                                     </div>
                                                     <div>
                                                         <div>{{data['增速']}}%</div>
@@ -130,8 +130,8 @@
                                                 <div><span></span>{{index + 1}}</div>
                                                 <div>{{ isVerification?data['姓名']:(data['姓名'].slice(0,1)+'**')}}</div>
                                                 <div>
-                                                    <div>环比增长次数 </div>
-                                                    <div>{{data['环比增长']}}</div>
+                                                    <div>次数 </div>
+                                                    <div>{{data['次数']}}</div>
                                                 </div>
                                                 <div @click="showKSZZRY15(index)">
                                                     详情
@@ -144,8 +144,8 @@
                                                         <div>投诉类别TOP1</div>
                                                     </div>
                                                     <div>
-                                                        <div>{{data['次数']}}</div>
-                                                        <div>次数</div>
+                                                        <div>{{data['环比增长']}}</div>
+                                                        <div>环比增长次数</div>
                                                     </div>
                                                     <div>
                                                         <div>{{data['投诉频率']}}%</div>
@@ -310,7 +310,7 @@
                                             </div>
                                             <div>
                                                 <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
-                                                <div class="title2">本月投诉比变动情况</div>
+                                                <div class="title2">本月投诉环比变动情况</div>
                                             </div>
                                             <div>
                                                 <div class="title2">月度投诉量变动情况</div>
@@ -349,8 +349,8 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
-                                                <div class="title2">本月投诉比变动情况</div>
+                                                <div>{{gsqxqDetail['本月人数环比上月增长率']}}%</div>
+                                                <div class="title2">本月投诉环比变动情况</div>
                                             </div>
                                             <div>
                                                 <div class="title2">月度投诉量变动情况</div>
@@ -681,7 +681,7 @@ export default {
       indexOf15: -1,
       showGZFF1: false,
       showGZFF2: false,
-      appealType: '企业问题',
+      appealType: '工资发放',
       showMDTCXQ: false,
       showGFXRYQD: false,
       showQMSSQ: false,
@@ -1162,7 +1162,7 @@ export default {
     },
     getBubble () {
       return [
-        '企业问题',
+        // '企业问题',
         '工资发放',
         '城乡居民医疗',
         '水电气',

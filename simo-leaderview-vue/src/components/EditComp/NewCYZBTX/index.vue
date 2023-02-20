@@ -42,6 +42,7 @@
         </div>
         <div class="pop1" :style="pop1Style" v-show="showPop1">
             <div class="bigTitle">
+                值班体系
                 <img @click="ClosePop1" style="cursor:pointer;" src="./关闭.png" alt="">
             </div>
             <div>
@@ -231,7 +232,34 @@
                 <img @click="ClosePop4" src="./关闭.png" alt="">
             </div>
             <div>
-                <CYZBTX :item="getCYZBTX"></CYZBTX>
+                <div class="CYZBTX">
+                  <div class="streetBox" v-for="(element, index) in StreetInfo" v-show="element['值班职务'] === '值班领导' || element['职务'] === '值班领导'" :key="index">
+                    <div class="streetName">{{element['所属街道']}}</div>
+                    <div class="streetInfo">
+                      <div class="personnelInfo">
+                        <div>
+                          <img v-if="element['照片链接']" :src="element['照片链接']" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
+                          <img v-else src="./街道矩形.png" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
+                        </div>
+                        <div>
+                          <div class="name">{{element['领导姓名']}}<img style="vertical-align: baseline;margin-left: 5px;" @click="phoneIndex2 = index" src="./电话.png" alt=""></div>
+                          <!-- <div class="phone" @click="phoneIndex2 = index">{{element['手机号']}}
+                            <img src="./电话.png" alt="">
+                          </div> -->
+                          <div class="post" v-if="element['值班职务'] && element['职务'] !== '值班领导'" :title="element['职务']">{{element['职务']}}</div>
+                          <div class="position">{{element['值班职务'] || element['职务']}}</div>
+                        </div>
+                      </div>
+                      <div class="phonePop" v-show="phoneIndex2 === index && showPop4">
+                          <img @click.stop="phoneIndex2 = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                          <div>{{element['领导姓名']}}</div>
+                          <div>值班领导</div>
+                          <div>{{element['手机号']}}</div>
+                          <div>拨打</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -247,6 +275,7 @@ export default {
       showPop3: false,
       showPop4: false,
       phoneIndex: 0,
+      phoneIndex2: -1,
       type1: '工作要求',
       type2: '区领导',
       ZBpersonInfo: [], // 值班人员信息
@@ -259,7 +288,7 @@ export default {
       YJYAList: [], // 应急预案
       ZNZZList: [], // 职能职责
       GZQDList: [], // 工作清单
-      StreetInfo: {}, // 街道人员信息
+      StreetInfo: [], // 街道人员信息
       GZYQList: [], // 工作清单
       YJTZList: [], // 预警台账
       JJBQDList: [] // 交接班清单
@@ -271,13 +300,15 @@ export default {
     getZBRY () {
       return (type, key) => {
         let value = '暂无数据'
-        this.ZBpersonInfo.forEach(element => {
-          if (element['值班职位'] === type) {
-            if (element[key]) {
-              value = element[key]
+        if (this.ZBpersonInfo.length) {
+          this.ZBpersonInfo.forEach(element => {
+            if (element['值班职位'] === type) {
+              if (element[key]) {
+                value = element[key]
+              }
             }
-          }
-        })
+          })
+        }
         return value
       }
     },
@@ -536,6 +567,7 @@ export default {
     },
     ClosePop4 () {
       this.showPop4 = false
+      this.phoneIndex2 = -1
     },
     ShowPhone (index) {
       this.phoneIndex = index
@@ -591,8 +623,8 @@ export default {
       })
       // 值班街道
       this.axios.get('/leaderview/newDistrict/GetZBTX3').then(res => {
-        if (res.success) {
-          this.StreetInfo = res.obj
+        if (res.success && res.obj.rows) {
+          this.StreetInfo = res.obj.rows
         }
       })
     },
@@ -611,6 +643,7 @@ export default {
 <style scoped lang="scss">
 .NewCYZBTX{
     position: relative;
+    letter-spacing: 1px;
     .content{
         display: flex;
         align-items: center;
@@ -645,12 +678,12 @@ export default {
                 }
                 >div:last-child{
                     >div:first-child{
-                        font-size: 18px;
+                        font-size: 20px;
                         color: rgba(200,224,255,1);
-                        // margin-bottom: 16px;
+                        margin-bottom: 0px;
                     }
                     >div:last-child{
-                        font-size: 12px;
+                        font-size: 14px;
                         color: rgba(172,207,254,1);
                     }
 
@@ -661,9 +694,9 @@ export default {
                 width: 216px;
                 height: 100%;
                 >div:first-child{
-                    font-size: 18px;
+                    font-size: 20px;
                     color: rgba(200,224,255,1);
-                    margin-bottom: 16px;
+                    margin-bottom: 0px;
                     >img{
                         width: 16px;
                         height: 16px;
@@ -672,7 +705,7 @@ export default {
                     }
                 }
                 >div:last-child{
-                    font-size: 12px;
+                    font-size: 14px;
                     color: rgba(172,207,254,1);
                 }
             }
@@ -735,9 +768,19 @@ export default {
             width: 780px;
             height: 45px;
             line-height: 45px;
-            background: url('./值班体系备份.png');
-            text-align: right;
+            background: url('./标题背景.png') no-repeat;
+            background-size: 100% 100%;
+            text-align: left;
+            padding-left: 40px;
+            line-height: 45px;
+            letter-spacing: 1px;
+            font-size: 23px;
+            font-weight: bold;
+            position: relative;
             >img{
+              position: absolute;
+              top: 10px;
+              right: 5px;
                 width: 26px;
                 height: 26px;
             }
@@ -818,12 +861,12 @@ export default {
                         }
                         >div:last-child{
                             >div:first-child{
-                                font-size: 18px;
+                                font-size: 20px;
                                 color: rgba(200,224,255,1);
-                                // margin-bottom: 16px;
+                                margin-bottom: 0px;
                             }
                             >div:last-child{
-                                font-size: 12px;
+                                font-size: 14px;
                                 color: rgba(172,207,254,1);
                             }
 
@@ -834,9 +877,9 @@ export default {
                         width: 216px;
                         height: 100%;
                         >div:first-child{
-                            font-size: 18px;
+                            font-size: 20px;
                             color: rgba(200,224,255,1);
-                            margin-bottom: 16px;
+                            margin-bottom: 0px;
                             >img{
                                 width: 16px;
                                 height: 16px;
@@ -845,7 +888,7 @@ export default {
                             }
                         }
                         >div:last-child{
-                            font-size: 12px;
+                            font-size: 14px;
                             color: rgba(172,207,254,1);
                         }
                     }
@@ -990,7 +1033,7 @@ export default {
                 .mytable1{
                     width: 100%;
                     color: rgba(200,224,255,1);
-                    font-size: 12px;
+                    font-size: 14px;
                     text-align: center;
                     margin-bottom: 11px;
                     .tablehead{
@@ -1046,7 +1089,7 @@ export default {
                 .mytable2{
                     width: 100%;
                     color: rgba(200,224,255,1);
-                    font-size: 12px;
+                    font-size: 14px;
                     text-align: center;
                     margin-bottom: 11px;
                     .tablehead{
@@ -1111,7 +1154,7 @@ export default {
                 .mytable3{
                     width: 100%;
                     color: rgba(200,224,255,1);
-                    font-size: 12px;
+                    font-size: 14px;
                     text-align: center;
                     margin-bottom: 11px;
                     .tablehead{
@@ -1302,6 +1345,7 @@ export default {
                 width: 100%;
                 padding-top:19px;
                 overflow-y: scroll;
+                white-space: pre-line;
             }
         }
     }
@@ -1356,7 +1400,7 @@ export default {
             .mytable{
                     width: 100%;
                     color: rgba(200,224,255,1);
-                    font-size: 12px;
+                    font-size: 14px;
                     text-align: center;
                     .tablehead{
                         display: flex;
@@ -1440,6 +1484,126 @@ export default {
             width: 780px;
             height: 826px;
             padding: 16px 20px 19px 20px;
+            .CYZBTX{
+              overflow-y: scroll;
+              display: flex;
+              flex-wrap: wrap;
+              width: 100%;
+              height: 100%;
+              // flex-direction: column;
+              // justify-content: space-around;
+              // align-items: center;
+              .streetBox{
+                // width: 1324px;
+                margin-bottom: 30px;
+                .streetName{
+                  width: 330px;
+                  height: 42px;
+                  background: url('./街道标题背景.png') no-repeat;
+                  background-size: 100% 100%;
+                  color: rgba(172,207,254,1);
+                  font-size: 18px;
+                  line-height: 42px;
+                  padding-left: 14px;
+                  margin-bottom: 10px;
+                }
+                .streetInfo{
+                  width: 100%;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  position: relative;
+                  .personnelInfo{
+                    display: flex;
+                    >div:last-child{
+                      width: 230px;
+                      position: relative;
+                      .name{
+                        color: rgba(172,207,254,1);
+                        font-size: 18px;
+                        padding-left: 10px;
+                      }
+                      .phone{
+                        color: rgba(172,207,254,1);
+                        font-size: 14px;
+                        padding-left: 10px;
+                      }
+                      .post{
+                        color: rgba(172,207,254,1);
+                        font-size: 14px;
+                        padding-left: 10px;
+                        // white-space: pre-wrap;
+                        white-space:nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        width: 100%;
+                        height:24px;
+                      }
+                      .position{
+                        color: rgba(172,207,254,1);
+                        font-size: 16px;
+                        padding-left: 10px;
+                        height: 24px;
+                        line-height: 24px;
+                        width: 200px;
+                        background: url('./职位背景.png') no-repeat;
+                        background-size: 100% 100%;
+                        position: absolute;
+                        bottom: 0;
+                      }
+                    }
+                  }
+                  .phonePop{
+                        position: absolute;
+                        top: 10px;
+                        right: -10px;
+                        width: 148px;
+                        height: 200px;
+                        background: url('./电话弹窗.png') no-repeat;
+                        background-size:100% 100%;
+                        text-align: center;
+                        z-index: 1;
+                        >img{
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                        >div:nth-child(2){
+                            color: #C8E0FF;
+                            font-size: 18px;
+                            margin-bottom: 25px;
+                            margin-top: 15px;
+                        }
+                        >div:nth-child(3){
+                            color: #C8E0FF;
+                            font-size: 14px;
+                            margin-bottom: 25px;
+                        }
+                        >div:nth-child(4){
+                            color: #ACCFFE;
+                            font-size: 16px;
+                            font-weight: bold;
+                        }
+                        >div:nth-child(5){
+                            color: #0A2047;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 48px;
+                            height: 48px;
+                            border: 4px solid rgba(255,255,255,0.12);
+                            border-radius: 50%;
+                            background: url('./椭圆形.png') no-repeat;
+                            background-size: 100% 100%;
+                            margin: 0 auto;
+                        }
+                  }
+                }
+              }
+            }
         }
     }
 }
