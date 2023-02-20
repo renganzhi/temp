@@ -5,7 +5,7 @@
 export default {
   data: function () {
     return {
-      mapType: false // 2d,true为3d
+      mapType: true // 2d,true为2d
     }
   },
   props: ['item'],
@@ -24,7 +24,10 @@ export default {
   methods: {
     ShowPot () {
       this.mapType = !this.mapType
-      this.bus.$emit('SwitchMap', this.mapType)
+      this.bus.$emit('SwitchMap', {
+        mapType: this.mapType,
+        animation: this.item.animation
+      })
     }
   }
 }
