@@ -1,6 +1,6 @@
 <template>
     <div class="TextRotation">
-        <el-carousel :autoplay="Number(item.autoPlay)" :interval="item.speed" :direction="item.direction?'vertical':'horizontal'" arrow="never" indicator-position="none">
+        <el-carousel :autoplay="item.autoPlay" :interval="Number(item.speed)" :direction="item.direction?'vertical':'horizontal'" arrow="never" indicator-position="none">
           <el-carousel-item v-for="item in pageNum" :key="item">
             <div class="textContent">
               <div class="rows" v-for="(data, index) in getPageData(item)" :key="index">

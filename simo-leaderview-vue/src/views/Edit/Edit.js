@@ -107,7 +107,8 @@ let config = {
   liquidfill: require('@/components/EditComp/liquidfill/config.js'),
   ppt: require('@/components/EditComp/ppt/config.js'),
   TextRotation: require('@/components/EditComp/TextRotation/config.js'),
-  bubble: require('@/components/EditComp/bubble/config.js')
+  bubble: require('@/components/EditComp/bubble/config.js'),
+  SwitchMapButton: require('@/components/EditComp/SwitchMapButton/config.js')
 }
 
 export default {
@@ -185,7 +186,7 @@ export default {
       selectedIndex: null,
       chartNum: [],
       oldChartNum: '', // chartNum更改之前的历史
-      miniW: 20,
+      miniW: 11,
       minIndex: 501, // 当前最低层级
       maxIndex: 500, // 当前最高层级
       paintInput: {
