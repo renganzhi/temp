@@ -70,7 +70,7 @@
               <img src="./newBack/9.png" alt="">
             </div>
             <div class="Value">
-              <div class="data">下降</div></div>
+              <div class="data">下架</div>
               <div class="name">部门承办态度趋势</div>
             </div>
           </div>
