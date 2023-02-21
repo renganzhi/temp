@@ -456,7 +456,14 @@
                         </div>
                     </div>
                     <div class="row3">
-                        <div>{{GetMSSQ7[0]?GetMSSQ7[0]['街道投诉指数均值']:''}}</div>
+                        <div>
+                          <div>
+                            {{GetMSSQ7[0]?GetMSSQ7[0]['街道投诉指数均值']:''}}
+                          </div>
+                          <div>
+                            {{GetMSSQ7[0]?GetMSSQ7[0]['街道评级']:''}}
+                          </div>
+                        </div>
                         <div>
                             <div class="lunbo" ref="lunbo" @mousewheel="onMouseWheel($event, 'lunbo')">
                                 <div class="col" v-for="(data, index) in GetMSSQ7[0]?GetMSSQ7[0]['街道指数列表'].rows:[]" :key="index">
@@ -464,7 +471,7 @@
                                     <div>{{data['街道']}}</div>
                                     <div>
                                         <div style="display: flex;justify-content: center;align-items: center;">
-                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">{{data['评级']}}</span>
+                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">{{data['街道评级']}}</span>
                                             {{data['指数']}}
                                         </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
@@ -589,6 +596,34 @@
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
                                 <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div>
+                                  <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 0 30px 20px 30px">
+                                    <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="showTjdbDetails = !showTjdbDetails">
+                                      提级督办
+                                    </div>
+                                    <div class="tjdbBox" v-show="showTjdbDetails">
+                                      <div class="titleName">
+                                        <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                        <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails = false" src="./background/关闭.png" alt="">
+                                      </div>
+                                      <div class="bodyChose">
+                                        <div :class="CkeckedBm===item?'checkEdItem':'normalItem'" v-for="(item,index) in 5" :key="index">
+                                          <div class="Nmae">编号{{item}}</div>
+                                          <div class="ChoseBtn dataCenter" @click="CkeckedBm = item">{{CkeckedBm===item?'已选择':'选择'}}</div>
+                                        </div>
+                                      </div>
+                                      <div class="footBox">
+                                        <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm===-1?'请选择部门':CkeckedBm}}</div>
+                                        <div class="SureBtn dataCenter">确定</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="display: flex;justify-content: space-between; margin: 0 30px 20px 30px;font-size: 24px;color: #C5EEF3;">
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">工单号：</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">满意度：</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">返遣情况：</div>
+                                  </div>
+                                </div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                   {{xqValue['描述'] || ''}}
                                 </div>
@@ -708,6 +743,8 @@ export default {
       qztsList: [], // 投诉列表
       xqValue: {},
       showEventDetails: false,
+      showTjdbDetails: false,
+      CkeckedBm: -1,
       IsreadBox: false,
       showotherDetails: false,
       SqTipsName: '',
@@ -931,7 +968,7 @@ export default {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
         'height': 150,
-        'width': 780,
+        'width': 490,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
@@ -1228,6 +1265,7 @@ export default {
     },
     CloseEventDetails () {
       this.showEventDetails = false
+      this.showTjdbDetails = false
       document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
@@ -1539,6 +1577,24 @@ export default {
     }
     }
 }
+.bgck18{
+  background-image: url('./newBack/18.png');
+  background-size: 100% 100%;
+}
+.dataCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dataLeft{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.bgck12{
+  background-image: url('./newBack/12.png');
+  background-size: 100% 100%;
+}
     #Module1{
         width: 680px;
         height: 1512px;
@@ -1570,7 +1626,7 @@ export default {
                         margin-right: 16px;
                         >div:nth-child(1){
                             color:#fff;
-                            font-size: 26px;
+                            font-size: 36px;
                             width: 100%;
                             text-align: center;
                             margin-top:64px;
@@ -1588,11 +1644,12 @@ export default {
                         }
                         >div:nth-child(3){
                             color:#fff;
-                            font-size: 20px;
-                            width: 80px;
-                            height: 32px;
-                            text-align: center;
-                            line-height: 32px;
+                            font-size: 30px;
+                            width: 100px;
+                            height: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                             border:1px solid rgba(255,255,255,0.3);
                             border-radius: 16px;
                             text-align: center;
@@ -1607,7 +1664,7 @@ export default {
                         margin-right: 16px;
                         >div:nth-child(1){
                             color:#fff;
-                            font-size: 26px;
+                            font-size: 36px;
                             width: 100%;
                             text-align: center;
                             margin-top:64px;
@@ -1625,11 +1682,12 @@ export default {
                         }
                         >div:nth-child(3){
                             color:#fff;
-                            font-size: 20px;
-                            width: 80px;
-                            height: 32px;
-                            text-align: center;
-                            line-height: 32px;
+                            font-size: 30px;
+                            width: 100px;
+                            height: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                             border:1px solid rgba(255,255,255,0.3);
                             border-radius: 16px;
                             text-align: center;
@@ -1643,7 +1701,7 @@ export default {
                         background: url('./background/3_1.png');
                         >div:nth-child(1){
                             color:#fff;
-                            font-size: 26px;
+                            font-size: 36px;
                             width: 100%;
                             text-align: center;
                             margin-top:64px;
@@ -1661,11 +1719,12 @@ export default {
                         }
                         >div:nth-child(3){
                             color:#fff;
-                            font-size: 20px;
-                            width: 80px;
-                            height: 32px;
-                            text-align: center;
-                            line-height: 32px;
+                            font-size: 30px;
+                            width: 100px;
+                            height: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                             border:1px solid rgba(255,255,255,0.3);
                             border-radius: 16px;
                             text-align: center;
@@ -1681,15 +1740,16 @@ export default {
                     // margin:0 auto;
                     .rows{
                         width: 100%;
-                        height: 72px;
+                        height: 92px;
                         background: url('./background/编组_7.png');
+                        background-size: 100% 100%;
                         margin-bottom: 12px;
                         display: flex;
                         align-items: center;
                         justify-content: space-around;
                         .col1{
                             color: #5ae8fa;
-                            font-size: 20px;
+                            font-size: 30px;
                             font-weight: bold;
                             display: flex;
                             align-items: center;
@@ -1698,31 +1758,32 @@ export default {
                             >span{
                                 display: inline-block;
                                 background: #fcb83c;
-                                width: 10px;
-                                height: 10px;
+                                width: 20px;
+                                height: 20px;
                                 border-radius: 50%;
                                 margin-right: 10px;
                             }
                         }
                         .col2{
                             color: #c5eef3;
-                            font-size: 22px;
+                            font-size: 32px;
                             width: 30%;
                             text-align: center;
                         }
                         .col3{
                             color: #c5eef3;
-                            font-size: 22px;
+                            font-size: 32px;
                             width: 30%;
                             text-align: center;
                         }
                         .col4{
                             color:#16DFF8;
-                            font-size: 20px;
-                            width: 80px;
-                            height: 32px;
-                            text-align: center;
-                            line-height: 32px;
+                            font-size: 30px;
+                            width: 100px;
+                            height: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                             border:1px solid rgba(22,223,248,0.6);
                             border-radius: 16px;
                             text-align: center;
@@ -1755,6 +1816,7 @@ export default {
                             img{
                                 width: 49px;
                                 height:49px;
+                                cursor: pointer;
                             }
                         }
                     }
@@ -1762,7 +1824,7 @@ export default {
                         width:100%;
                         padding: 0 28px;
                         >div:nth-child(1){
-                            font-size: 26px;
+                            font-size: 36px;
                             color: #C5EEF3;
                         }
                         >div:nth-child(2){
@@ -1771,7 +1833,7 @@ export default {
                                 height:18px;
                                 margin-right: 5px;
                             }
-                            font-size: 22px;
+                            font-size: 32px;
                             font-weight: bold;
                             color: #C5EEF3;
                             vertical-align: middle;
@@ -1783,7 +1845,7 @@ export default {
                                 height:18px;
                                 margin-right: 5px;
                             }
-                            font-size: 20px;
+                            font-size: 30px;
                             color: #C5EEF3;
                             vertical-align: middle;
                             margin-bottom: 32px;
@@ -1796,7 +1858,7 @@ export default {
                             align-items: center;
                             justify-content: space-around;
                             color: #C5EEF3;
-                            font-size: 18px;
+                            font-size: 28px;
                             margin-bottom: 32px;
                             >div{
                                 width: auto;
@@ -1808,7 +1870,7 @@ export default {
                         }
                         >div:nth-child(5){
                             color: #C5EEF3;
-                            font-size: 22px;
+                            font-size: 32px;
                         }
                     }
                 }
@@ -1860,19 +1922,20 @@ export default {
                             height: 524px;
                             overflow-y: scroll;
                             .li{
-                                height: 72px;
+                                height: 92px;
                                 position: relative;
                                 margin-bottom: 8px;
                                 .info1{
                                     width: 100%;
                                     height:100%;
                                     background: url('./background/编组_12.png');
+                                    background-size: 100% 100%;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
                                     >div:nth-child(1){
                                         color: #5ae8fa;
-                                        font-size: 20px;
+                                        font-size: 30px;
                                         font-weight: bold;
                                         display: flex;
                                         align-items: center;
@@ -1881,15 +1944,15 @@ export default {
                                         >span{
                                             display: inline-block;
                                             background: #fcb83c;
-                                            width: 10px;
-                                            height: 10px;
+                                            width: 20px;
+                                            height: 20px;
                                             border-radius: 50%;
                                             margin-right: 10px;
                                         }
                                     }
                                     >div:nth-child(2){
                                         color: #c5eef3;
-                                        font-size: 22px;
+                                        font-size: 32px;
                                         width: 20%;
                                         text-align: center;
                                     }
@@ -1900,22 +1963,23 @@ export default {
                                         text-align: center;
                                         justify-content: center;
                                         >div:first-child{
-                                            font-size: 18px;
+                                            font-size: 28px;
                                             color: rgba(197,238,243,1);
                                             margin-right: 7px;
                                         }
                                         >div:last-child{
-                                            font-size: 22px;
+                                            font-size: 32px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(4){
                                         color:#16DFF8;
-                                        font-size: 20px;
-                                        width: 80px;
-                                        height: 32px;
-                                        text-align: center;
-                                        line-height: 32px;
+                                        font-size: 30px;
+                                        width: 100px;
+                                        height: 40px;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
                                         border:1px solid rgba(22,223,248,0.6);
                                         border-radius: 16px;
                                         text-align: center;
@@ -1940,36 +2004,36 @@ export default {
                                     padding: 0 25px;
                                     >div:nth-child(1) {
                                         >div:first-child {
-                                            font-size: 22px;
+                                            font-size: 32px;
                                             margin-bottom: 4px;
                                             color: rgba(90,232,250,1);
                                         }
                                         >div:last-child {
-                                            font-size: 18px;
+                                            font-size: 28px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(2) {
                                         >div:first-child {
-                                            font-size: 24px;
+                                            font-size: 34px;
                                             color: rgba(252,184,60,1);
                                             margin-bottom: 4px;
                                             font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 18px;
+                                            font-size: 28px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(3) {
                                         >div:first-child {
-                                            font-size: 24px;
+                                            font-size: 34px;
                                             color: rgba(220,97,79,1);
                                             margin-bottom: 4px;
                                             font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 18px;
+                                            font-size: 28px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
@@ -1985,6 +2049,7 @@ export default {
                             >.li:nth-child(1){
                                 .info1{
                                     background: url('./background/1.png');
+                                    background-size: 100% 100%;
                                     >div:nth-child(1){
                                         color: rgba(245,160,29,1);
                                         >span{
@@ -1996,6 +2061,7 @@ export default {
                             >.li:nth-child(2){
                                 .info1{
                                     background: url('./background/2.png');
+                                    background-size: 100% 100%;
                                     >div:nth-child(1){
                                         color: rgba(176,194,198,1);
                                         >span{
@@ -2007,6 +2073,7 @@ export default {
                             >.li:nth-child(3){
                                 .info1{
                                     background: url('./background/3.png');
+                                    background-size: 100% 100%;
                                     >div:nth-child(1){
                                         color: rgba(219,139,85,1);
                                         >span{
@@ -2022,7 +2089,7 @@ export default {
             .ConditionalList{
                 width: 824px;
                 height: 692px;
-                padding: 104px 37px 56px 36px;
+                padding: 104px 37px 0px 36px;
                 background: url('./background/编组20.png');
                 // .ball{
                 //     width: 100%;
@@ -2068,7 +2135,7 @@ export default {
                             align-items: center;
                             justify-content: space-around;
                             color: rgba(22,223,248,1);
-                            font-size: 18px;
+                            font-size: 26px;
                             font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
                             font-weight: 500;
                             text-align: center;
@@ -2088,16 +2155,16 @@ export default {
                         }
                         .lbody{
                             width: 100%;
-                            height: 410px;
+                            height: 480px;
                             overflow-y: scroll;
                             .rows{
                                 width: 100%;
-                                height: 48px;
+                                height: 70px;
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-around;
                                 >div:nth-child(1){
-                                    font-size: 20px;
+                                    font-size: 28px;
                                     font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                                     font-weight: 700;
                                     text-align: center;
@@ -2105,7 +2172,7 @@ export default {
                                     width: 10%;
                                 }
                                 >div:nth-child(2){
-                                    font-size: 20px;
+                                    font-size: 28px;
                                     font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                                     font-weight: 400;
                                     text-align: center;
@@ -2113,7 +2180,7 @@ export default {
                                     width: 30%;
                                 }
                                 >div:nth-child(3){
-                                    font-size: 20px;
+                                    font-size: 28px;
                                     font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                                     font-weight: 700;
                                     text-align: center;
@@ -2122,7 +2189,7 @@ export default {
                                 }
                                 >div:nth-child(4){
                                     width: 10%;
-                                    font-size: 20px;
+                                    font-size: 28px;
                                     font-family: Source Han Sans SC, Source Han Sans SC-Regular;
                                     font-weight: 400;
                                     text-align: center;
@@ -2175,14 +2242,14 @@ export default {
                                     align-items: center;
                                     >div{
                                         margin-bottom: 30px;
-                                        margin-right: 50px;
+                                        margin-right: 12px;
                                         .key{
                                             color: rgba(197,238,243,1);
-                                            font-size: 22px;
+                                            font-size: 26px;
                                         }
                                         .value{
                                             margin-bottom: 10px;
-                                            font-size: 22px;
+                                            font-size: 26px;
                                             font-weight: bold;
                                         }
                                     }
@@ -2363,10 +2430,11 @@ export default {
                                 left: 14px;
                             }
                             >div:nth-child(2) {
-                                font-size: 20px;
+                                font-size: 22px;
                                 font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
                                 font-weight: 400;
                                 text-align: right;
+                                cursor: pointer;
                                 color: rgba(22,223,248,1);
                                 position: absolute;
                                 top: 12px;
@@ -2398,7 +2466,7 @@ export default {
                                             margin-bottom: 7px;
                                         }
                                         >div:last-child{
-                                            font-size: 18px;
+                                            font-size: 22px;
                                             font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
                                             font-weight: 400;
                                             color: #c5eef3;
@@ -2413,7 +2481,7 @@ export default {
                                             margin-bottom: 7px;
                                         }
                                         >div:last-child{
-                                            font-size: 18px;
+                                            font-size: 22px;
                                             font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
                                             font-weight: 400;
                                             color: #c5eef3;
@@ -2504,7 +2572,7 @@ export default {
                         border-radius: 4px;
                         .title2{
                             color: rgba(197,238,243,1);
-                            font-size: 18px;
+                            font-size: 22px;
                         }
                         .return{
                             img{
@@ -2526,18 +2594,18 @@ export default {
                             flex-wrap: wrap;
                             >div:nth-child(1){
                                 height: 100%;
-                                width: 20%;
+                                width: 15%;
                                 overflow-y: scroll;
                                 .field{
                                     margin-bottom: 15px;
                                     >div:first-child{
                                         color: rgba(90,232,250,1);
-                                        font-size: 22px;
+                                        font-size: 24px;
                                         white-space: pre-wrap;
                                     }
                                     >div:last-child{
                                         color: rgba(197,238,243,1);
-                                        font-size: 18px;
+                                        font-size: 22px;
                                     }
                                 }
                             }
@@ -2568,7 +2636,7 @@ export default {
                                     height: 140px;
                                     width:100%;
                                     .li2{
-                                        height: 40px;
+                                        height: 50px;
                                         width: 100%;
                                         display: flex;
                                         align-items: center;
@@ -2580,20 +2648,20 @@ export default {
                                             width: 10%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 22px;
                                             font-weight: bold;
                                         }
                                         >div:nth-child(2){
                                             width: 50%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 22px;
                                         }
                                         >div:nth-child(3){
                                             width: 40%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 22px;
                                             font-weight: bold;
                                         }
                                     }
@@ -2603,13 +2671,13 @@ export default {
                                 }
                             }
                             >div:nth-child(5){
-                                width: 480px;
+                                width: 420px;
                                 .list2{
                                     margin-top: 5px;
                                     height: 140px;
                                     width:100%;
                                     .li2{
-                                        height: 40px;
+                                        height: 50px;
                                         width: 100%;
                                         display: flex;
                                         align-items: center;
@@ -2621,20 +2689,20 @@ export default {
                                             width: 30%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 22px;
                                         }
                                         >div:nth-child(2){
-                                            width: 60%;
+                                            width: 55%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 22px;
                                             font-weight: bold;
                                         }
                                         >div:nth-child(3){
-                                            width: 10%;
+                                            width: 15%;
                                             text-align: center;
                                             color: #16DFF8;
-                                            font-size: 20px;
+                                            font-size: 22px;
                                         }
                                     }
                                     >.li2:nth-child(even){
@@ -2800,7 +2868,7 @@ export default {
                                     height: 100%;
                                     .title2{
                                         margin-bottom: 12px;
-                                        font-size: 18px;
+                                        font-size: 22px;
                                         color: rgba(197,238,243,1);
                                     }
                                 }
@@ -2819,13 +2887,28 @@ export default {
                 font-size: 44px;
                 font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                 font-weight: 700;
-                text-align: center;
+                // text-align: center;
                 color: #c5eef3;
                 width: 300px;
                 height: 346px;
-                line-height: 346px;
                 background: url('./background/编组_18.png');
                 margin-right: 28px;
+                display: flex;
+                flex-wrap: wrap;
+                div:nth-child(1){
+                  width: 100%;
+                  height: 60%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: flex-end;
+                }
+                div:nth-child(2){
+                  width: 100%;
+                  height: 40%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: flex-start;
+                }
             }
             >div:last-child{
                 width: 1780px;
@@ -2878,10 +2961,11 @@ export default {
                             >div:nth-child(2) {
                                 color:#16DFF8;
                                 font-size: 20px;
-                                width: 80px;
-                                height: 32px;
-                                text-align: center;
-                                line-height: 32px;
+                                width: 100px;
+                                height: 40px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
                                 border:1px solid rgba(22,223,248,0.6);
                                 border-radius: 16px;
                                 text-align: center;
@@ -2904,7 +2988,7 @@ export default {
                     padding: 10px 20px;
                     .title2{
                         color: rgba(197,238,243,1);
-                        font-size: 20px;
+                        font-size: 24px;
                     }
                     .return{
                         img{
@@ -2927,7 +3011,7 @@ export default {
                             color: #D8F4F7;
                             margin-top:5px;
                             .li1{
-                                        height: 48px;
+                                        height: 60px;
                                         width: 100%;
                                         display: flex;
                                         align-items: center;
@@ -2939,20 +3023,20 @@ export default {
                                             width: 20%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 24px;
                                             font-weight: bold;
                                         }
                                         >div:nth-child(2){
                                             width: 60%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 24px;
                                         }
                                         >div:nth-child(3){
                                             width: 20%;
                                             text-align: center;
                                             color: rgba(216,244,247,1);
-                                            font-size: 20px;
+                                            font-size: 24px;
                                             font-weight: bold;
                                         }
                                 }
@@ -2967,7 +3051,7 @@ export default {
                         .title2{
                             >span{
                                 color:#FFB83F;
-                                font-size: 20px;
+                                font-size: 24px;
                                 margin-left: 4px;
                                 font-weight: bold;
                             }
@@ -2979,7 +3063,7 @@ export default {
                                 color: #D8F4F7;
                                 margin-top:5px;
                                 .li2{
-                                            height: 48px;
+                                            height: 60px;
                                             width: 100%;
                                             display: flex;
                                             align-items: center;
@@ -2991,20 +3075,20 @@ export default {
                                                 width: 20%;
                                                 text-align: center;
                                                 color: rgba(216,244,247,1);
-                                                font-size: 20px;
+                                                font-size: 22px;
                                             }
                                             >div:nth-child(2){
                                                 width: 60%;
                                                 text-align: center;
                                                 color: rgba(216,244,247,1);
-                                                font-size: 20px;
+                                                font-size: 22px;
                                                 font-weight: bold;
                                             }
                                             >div:nth-child(3){
                                                 width: 20%;
                                                 text-align: center;
                                                 color: #16DFF8;
-                                                font-size: 20px;
+                                                font-size: 22px;
                                                 cursor: pointer;
                                             }
                                     }
@@ -3017,7 +3101,7 @@ export default {
                                 top: 0;
                                 left: 0;
                                 overflow-y:scroll;
-                                font-size: 18px;
+                                font-size: 22px;
                                 font-weight: bold;
                                 background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
                                 border: 2px solid;
@@ -3053,13 +3137,13 @@ export default {
                         .title2{
                             >span:first-child{
                                 color:#FFB83F;
-                                font-size: 20px;
+                                font-size: 24px;
                                 margin:0 4px;
                                 font-weight: bold;
                             }
                             >span:last-child{
                                 color:#16DFF8;
-                                font-size: 20px;
+                                font-size: 24px;
                                 cursor: pointer;
                             }
                         }
@@ -3073,7 +3157,7 @@ export default {
                                 color: #D8F4F7;
                                 margin-top:5px;
                                 .li3{
-                                            height: 48px;
+                                            height: 60px;
                                             width: 100%;
                                             display: flex;
                                             align-items: center;
@@ -3085,13 +3169,13 @@ export default {
                                                 width: 70%;
                                                 text-align: center;
                                                 color: rgba(216,244,247,1);
-                                                font-size: 20px;
+                                                font-size: 24px;
                                             }
                                             >div:nth-child(2){
                                                 width: 30%;
                                                 text-align: center;
                                                 color: rgba(216,244,247,1);
-                                                font-size: 20px;
+                                                font-size: 24px;
                                                 font-weight: bold;
                                             }
                                     }
@@ -3113,7 +3197,7 @@ export default {
                             margin-bottom: 20px;
                         }
                         >div:last-child{
-                            font-size: 18px;
+                            font-size: 22px;
                             color: #C5EEF3;
                             width: 100%;
                             text-align: center;
@@ -3261,10 +3345,11 @@ export default {
                           >div:nth-child(2) {
                               color:#C5EEF3;
                               font-size: 24px;
-                              width: 80px;
-                              height: 32px;
-                              text-align: center;
-                              line-height: 32px;
+                              width: 100px;
+                              height: 40px;
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
                               background: rgba(22,223,248,0.10);
                               border: 1px solid rgba(22,223,248,0.60);
                               border-radius: 17px;
@@ -3343,6 +3428,91 @@ export default {
                     padding: 18px;
                     background-color: transparent;
                     background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                  }
+                }
+                .tjdbBox{
+                  width: 608px;
+                  height: 650px;
+                  position: absolute;
+                  top: 0;
+                  left: 190px;
+                  z-index: 10;
+                  cursor: auto;
+                  background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                  border: 1px solid #1ED5C7;
+                  .titleName{
+                    width: 100%;
+                    height: 75px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                    padding: 0 20px;
+                  }
+                  .bodyChose{
+                    width: 100%;
+                    height: 475px;
+                    overflow: auto;
+                    padding: 20px;
+                    .checkEdItem{
+                      height: 72px;
+                      width: 100%;
+                      background-image: url('./newBack/19.png');
+                      background-size: 100% 100%;
+                      color: #5AE8FA;
+                      font-size: 30px;
+                      margin-bottom: 16px;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      .ChoseBtn{
+                        width: 80px;
+                        height: 36px;
+                        background-image: url('./newBack/21.png');
+                        background-size: 100% 100%;
+                        color:#0A2534;
+                        cursor: pointer;
+                        font-size: 22px;
+                      }
+                    }
+                    .normalItem{
+                      height: 72px;
+                      width: 100%;
+                      background-image: url('./newBack/19.png');
+                      background-size: 100% 100%;
+                      color: #C5EEF3;
+                      font-size: 30px;
+                      margin-bottom: 16px;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      .ChoseBtn{
+                        width: 80px;
+                        height: 36px;
+                        background-image: url('./newBack/20.png');
+                        background-size: 100% 100%;
+                        color:#16DFF8;
+                        cursor: pointer;
+                        font-size: 22px;
+                      }
+                    }
+                  }
+                  .footBox{
+                    width: 100%;
+                    height: 100px;
+                    display: flex;
+                    justify-content: space-between;
+                    background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                    padding: 0 20px;
+                    align-items: center;
+                    .SureBtn{
+                      height: 50px;
+                      width: 120px;
+                      background-image: url('./newBack/22.png');
+                      font-size: 28px;
+                      cursor: pointer;
+                      color: #0B1B2A;
+                    }
                   }
                 }
             }
@@ -3434,10 +3604,11 @@ export default {
                           >div:nth-child(2) {
                               color:#C5EEF3;
                               font-size: 24px;
-                              width: 80px;
-                              height: 32px;
-                              text-align: center;
-                              line-height: 32px;
+                              width: 100px;
+                              height: 40px;
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
                               background: rgba(22,223,248,0.10);
                               border: 1px solid rgba(22,223,248,0.60);
                               border-radius: 17px;
@@ -3543,36 +3714,6 @@ export default {
     // .ivu-tabs .ivu-tabs-content-animated{
     //     overflow-y: hidden;
     // }
-    #Module4{
-        .select{
-            .ivu-select-selection{
-                height: 60px;
-            }
-            .ivu-select-placeholder{
-                font-size: 48px;
-                height: 60px;
-                line-height: 60px;
-            }
-            .ivu-select-selected-value{
-                color: #fff;
-                font-size: 48px;
-                height: 60px;
-                line-height: 60px;
-            }
-            .ivu-select-arrow{
-                font-size: 40px;
-                color: #fff;
-            }
-            .ivu-select-dropdown{
-                top: auto !important;
-                left: auto !important;
-                max-height: 240px !important;
-            }
-            .ivu-select-item{
-                font-size: 40px !important;
-            }
-        }
-    }
     .datepicker{
         .ivu-date-picker-transfer {
             max-height: unset !important;
