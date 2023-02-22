@@ -235,6 +235,40 @@ body {
     }
   }
 }
+.tjdbBox{
+  .ivu-tree-arrow i{
+    font-size: 24px;
+  }
+  .ivu-tree-title{
+    font-size: 28px;
+    color: white;
+  }
+  .ivu-tree-title:hover{
+    background-color: #1addf99a;
+    color: #000000;
+  }
+  input[type='checkbox']:before{
+    width: 28px;
+    height: 28px;
+  }
+  .ivu-tree-arrow{
+    width: 34px;
+    top: 10px;
+    position: relative;
+  }
+  .ivu-checkbox-inner{
+    width: 28px;
+    height: 28px;
+  }
+  .ivu-checkbox-checked .ivu-checkbox-inner:after{
+    width: 14px;
+    height: 18px;
+  }
+  .ivu-tree-title-selected{
+    background-color: #51e8fb;
+    color: black;
+  }
+}
 .NewHistogram{
   .ivu-select{
     .ivu-select-selected-value{
