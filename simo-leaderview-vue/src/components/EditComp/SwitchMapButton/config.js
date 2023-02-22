@@ -6,7 +6,7 @@ export default{
     'width': 870,
     'height': 660,
     'size': 'big',
-    animation: true,
+    animation: false,
     'chartData': {}
   },
   'styles': {
