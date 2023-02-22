@@ -85,22 +85,75 @@
           </div>
         </div>
         <div class="Mydgy">
-          <div class="Gybox">
+          <div class="Gybox" @click="OpenShomydjBox('本日不满意回访数')">
             <div class="Value">55</div>
-            <div class="Name">本周不满意回访数</div>
+            <div class="Name">本日不满意回访数</div>
           </div>
-          <div class="Gybox">
+          <div class="Gybox"  @click="OpenShomydjBox('本日满意回访数')">
             <div class="Value">555</div>
-            <div class="Name">本周满意回访数</div>
+            <div class="Name">本日满意回访数</div>
           </div>
-          <div class="Gybox">
+          <div class="Gybox"  @click="OpenShomydjBox('本日未解决回访数')">
             <div class="Value">555</div>
-            <div class="Name">本周未解决回访数</div>
+            <div class="Name">本日未解决回访数</div>
           </div>
-          <div class="Gybox">
+          <div class="Gybox"  @click="OpenShomydjBox('本日已解决回访数')">
             <div class="Value">55</div>
-            <div class="Name">本周已解决回访数</div>
+            <div class="Name">本日已解决回访数</div>
           </div>
+              <div id="Module66" :style="{left:leftData[ShowmydType]+'px'}" v-if="ShowmydBox">
+                  <div class="title">
+                    {{ShowmydType}}
+                    <img src="./newBack/16.png" alt="" @click="ShowmydBox=false">
+                  </div>
+                  <div class="content">
+                      <div class="cityEvent" ref="cityEvent"
+                          >
+                          <ul class="item" ref="item" style="width:100%">
+                              <li v-for="(val, ind) in qztsList" :key="ind">
+                              <div  class="eventBox" >
+                                  <div>
+                                      <div><span></span>{{val['问题标题']}}</div>
+                                      <div @click="ShowmydDetails(val)">详情</div>
+                                  </div>
+                                  <div>
+                                      {{val['描述']}}
+                                  </div>
+                                  <div>
+                                      {{val['上报时间']}}
+                                  </div>
+                              </div>
+                              </li>
+                          </ul>
+                      </div>
+                      <transition name="moveLeft">
+                          <div id="Module66Pop" v-show="showmydDetails">
+                            <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="ClosemydDetails" src="./background/关闭.png" alt="">
+                            </div>
+                            <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                              <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{mydValue['问题标题'] || ''}}</div>
+                              <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                {{mydValue['描述'] || ''}}
+                              </div>
+                              <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
+                              <div class="block" style="padding: 0 28px;">
+                                  <div class="TimeBox" v-for="(da,index) in mydValue.timeLine" :key="index">
+                                    <div class="line" v-if="index !== mydValue.timeLine.length-1"></div>
+                                    <div class="radio"></div>
+                                    <div class="time">{{da['修改时间']}}</div>
+                                    <div class="data">
+                                      <div>流转状态：{{da['当前节点名称']}}</div>
+                                      <div>流转内容：{{da['流转内容']}}</div>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </transition>
+                  </div>
+              </div>
         </div>
       </div>
       <div id="Module4" v-if="bodyData['街道总览']">
@@ -413,7 +466,11 @@ export default {
     return {
       showStreetInfo: false,
       ShowyjBox: false,
+      ShowmydBox: false,
+      ShowmydType: '',
+      showmydDetails: false,
       SelectType: 'normal',
+      mydValue: {},
       xqValue: {},
       qztsList: [], // 投诉列表
       showotherDetails: false,
@@ -422,6 +479,12 @@ export default {
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
       modelData: {},
       bodyData: {},
+      leftData: {
+        '本日不满意回访数': -550,
+        '本日满意回访数': -100,
+        '本日未解决回访数': 350,
+        '本日已解决回访数': 800
+      },
       getOfficeTrend: {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
@@ -798,6 +861,19 @@ export default {
         })
       }
     },
+    ShowmydDetails (val) {
+      if (val['工单号']) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj) {
+            val.timeLine = res.obj.obj.data[0].items.rows
+            this.mydValue = val
+            this.showmydDetails = true
+          }
+        })
+      }
+    },
     CloseotherDetails () {
       this.showotherDetails = false
     },
@@ -862,6 +938,18 @@ export default {
     },
     OpenShowyjBox () {
       this.ShowyjBox = !this.ShowyjBox
+    },
+    ClosemydDetails () {
+      this.showmydDetails = false
+    },
+    OpenShomydjBox (type) {
+      if (this.ShowmydType === type) {
+        this.ShowmydBox = false
+        this.ShowmydType = ''
+      } else {
+        this.ShowmydBox = true
+        this.ShowmydType = type
+      }
     }
   },
   mounted () {
@@ -1057,6 +1145,7 @@ export default {
     display: flex;
     padding-top: 80px;
     justify-content: space-around;
+    position: relative;
     .Gybox{
       .Value{
         width: 260px;
@@ -1066,6 +1155,7 @@ export default {
         margin-top: 50px;
         font-weight: 900;
         font-size: 44px;
+        cursor: pointer;
         text-align: center;
         color: white;
       }
@@ -1713,6 +1803,172 @@ export default {
         #Module99Pop{
             width: 100%;
             height: 1270px;
+            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+            border: 2px solid;
+            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+            border-radius: 4px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            .TimeBox{
+              position: relative;
+              .line{
+                position: absolute;
+                left: 9px;
+                top: 15px;
+                height: 100%;
+                border-left: 2px solid #FCB83C;
+              }
+              .radio{
+                position: absolute;
+                border: 6px solid #FCB83C;
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+              }
+              .time{
+                font-size: 24px;
+                padding-left: 28px;
+                color: #C5EEF3;
+              }
+              .data{
+                font-size: 24px;
+                color: #C5EEF3;
+                margin: 12px 12px 12px 30px;
+                padding: 18px;
+                background-color: transparent;
+                background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+              }
+            }
+        }
+    }
+}
+#Module66{
+    width: 932px;
+    height: 1032px;
+    margin-top: 200px;
+    margin-right: 32px;
+    background: #0B1B2A;
+    padding: 0;
+    position: absolute;
+    top: 180px;
+    left: -480px;
+    background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+    z-index: 10;
+    .title{
+      color: #5AE8FA;
+      font-size: 30px;
+      height: 76px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      background-image: linear-gradient(45deg, hsla(187, 94%, 53%, 0.1), hsla(187, 94%, 53%, 0.02),);
+      padding: 0 20px;
+      align-items: center;
+      img{
+        width:49px;
+        height:49px;
+      }
+    }
+    .content{
+        position: relative;
+        overflow: hidden;
+        .cityEvent{
+            width: 100%;
+            height: 930px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            overflow: auto;
+            .item{
+              width: 100%;
+            }
+            .warp{
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                ul{
+                    list-style: none;
+                    padding: 0;
+                    margin: 0 auto;
+                    li{
+                    margin-bottom: 28px;
+                    // background: #122f61;
+                    height: 180px;
+                    }
+                }
+            }
+            li{
+              padding: 14px 24px 14px 16px;
+              .eventBox{
+                  width: 100%;
+                  height: 100%;
+                  padding: 14px 14px 5px 28px;
+                  overflow: hidden !important;
+                  // margin-bottom: 10px;
+                  background: url('./newBack/14.png') no-repeat;
+                  background-size: 100% 100%;
+                  overflow-y: scroll;
+                  >div:nth-child(1){
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      >div:nth-child(1) {
+                          color: #C5EEF3;
+                          font-size: 26px;
+                          overflow: hidden;
+                          white-space: nowrap;
+                          text-overflow: ellipsis;
+                          span{
+                              width: 12px;
+                              height: 12px;
+                              display: inline-block;
+                              background: #fcb83c;
+                              border-radius: 50%;
+                              margin-right:12px;
+                          }
+                      }
+                      >div:nth-child(2) {
+                          color:#C5EEF3;
+                          font-size: 24px;
+                          width: 80px;
+                          height: 32px;
+                          text-align: center;
+                          line-height: 32px;
+                          background: rgba(22,223,248,0.10);
+                          border: 1px solid rgba(22,223,248,0.60);
+                          border-radius: 17px;
+                          text-align: center;
+                          cursor: pointer;
+                      }
+                  }
+                  >div:nth-child(2){
+                      width: 100%;
+                      height: 75px;
+                      padding-left: 24px;
+                      color: rgba(197,238,243,0.8);
+                      font-size: 24px;
+                      margin-top:8px;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      -webkit-line-clamp: 2;
+                  }
+                  >div:nth-child(3){
+                      width: 100%;
+                      height: auto;
+                      padding-left: 24px;
+                      color: rgba(197,238,243,0.8);
+                      font-size: 22px;
+                      margin-top:12px;
+                  }
+
+              }
+            }
+        }
+        #Module66Pop{
+            width: 100%;
+            height: 970px;
             background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
             border: 2px solid;
             border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
