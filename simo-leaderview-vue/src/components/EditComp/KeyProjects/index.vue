@@ -6,35 +6,35 @@
     <div class="body">
       <div class="Data">
         <div class="leftData">
-          <div class="data" style="width:260px;height:55px">
+          <div class="data" style="width:260px;height:132px">
             <div class="name" style="font-weight:bold;">项目总数</div>
             <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
-          <div class="BotData" style="width:260px;height:55px">
-            <div class="data" style="width:128px;height:55px">
-              <div class="name" style="font-weight:bold;">总投资</div>
-              <div class="data1">{{modelBodyData['总投资']||0}}万元</div>
+          <div class="BotData" style="width:260px;height:80px">
+            <div class="data" style="width:128px;height:80px">
+              <div class="name" style="font-weight:bold;font-size:14px;">总投资</div>
+              <div class="data1" style="font-size:16px;">{{modelBodyData['总投资']||0}}万元</div>
             </div>
-            <div class="data" style="width:128px;height:55px">
-              <div class="name" style="font-weight:bold;">本年度计划投资</div>
-              <div class="data1">{{modelBodyData['本年度投资计划']||0}}万元</div>
+            <div class="data" style="width:128px;height:80px">
+              <div class="name" style="font-weight:bold;font-size:14px;">本年度计划投资</div>
+              <div class="data1" style="font-size:16px;">{{modelBodyData['本年度投资计划']||0}}万元</div>
             </div>
           </div>
         </div>
         <div class="center">
-          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;font-weight:bold;text-align:center;">重点项目批次组成</div>
+          <div class="centertitle" style="color: rgb(200, 224, 255);font-size: 16px;height: 20px;font-weight:bold;text-align:center;">重点项目批次组成</div>
           <div class="canvas" ref="PeiModel" style="width: 100%;height: calc(100% - 20px);">
 
           </div>
         </div>
         <div class="rightData">
-          <div class="centertitle" style="color: rgb(200, 224, 255);height: 20px;font-weight:bold;text-align:center;">项目进度组成</div>
+          <div class="centertitle" style="color: rgb(200, 224, 255);font-size: 16px;height: 20px;font-weight:bold;text-align:center;">项目进度组成</div>
           <div class="canvas" ref="PeiModel2" style="width: 100%;height: calc(100% - 20px);"></div>
         </div>
       </div>
       <transition name="moveLeft">
         <div class="Table" v-if="isShowModel">
-          <Table border :columns="columns1" :height="125" :data="data1"></Table>
+          <Table border :columns="columns1" :height="246" :data="data1"></Table>
         </div>
     </transition>
     </div>
@@ -152,7 +152,7 @@ export default {
         legend: {
           type: 'scroll',
           orient: 'vertical',
-          left: '60%',
+          left: '62%',
           align: 'left',
           top: 'middle',
           formatter: function (parms) {
@@ -161,7 +161,7 @@ export default {
           },
           textStyle: {
             color: '#dfdfdf',
-            fontSize: 8
+            fontSize: 12
           },
           height: 95
         },
@@ -170,7 +170,7 @@ export default {
             name: '标题',
             type: 'pie',
             center: ['35%', '50%'],
-            radius: ['40%', '65%'],
+            radius: ['40%', '60%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
             itemStyle: {
@@ -223,7 +223,7 @@ export default {
             name: '标题',
             type: 'pie',
             center: ['50%', '50%'],
-            radius: ['0%', '65%'],
+            radius: ['0%', '50%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
             itemStyle: {
@@ -236,12 +236,12 @@ export default {
             label: {
               show: true,
               formatter: '{b}个',
-              fontSize: 8
+              fontSize: 10
             },
             labelLine: {
               normal: {
-                length: 4,
-                length2: 8,
+                length: 3,
+                length2: 6,
                 lineStyle: {
                   width: 1
                 }
@@ -279,7 +279,7 @@ export default {
   }
   .body{
     width: 100%;
-    height: 125px;
+    height: 246px;
     background-color: #122F61;
     position: relative;
     .Data{
@@ -307,7 +307,7 @@ export default {
             height: 45%;
             width: 100%;
             display: flex;
-            font-size: 14px;
+            font-size: 20px;
             background-image: linear-gradient(to top, #32c2d4, #d5efff);
             -webkit-background-clip: text;
             color: transparent;
@@ -317,7 +317,7 @@ export default {
           .data1{
             height: 55%;
             width: 100%;
-            font-size: 16px;
+            font-size: 18px;
             display: flex;
             color: #d4e7ff;
             justify-content: center;
@@ -339,7 +339,7 @@ export default {
   }
   .Table{
     width: 100%;
-    height: 125px;
+    height: 246px;
     position: absolute;
     top: 0;
     left: 0;
