@@ -471,7 +471,8 @@
                                     <div>{{data['街道']}}</div>
                                     <div>
                                         <div style="display: flex;justify-content: center;align-items: center;">
-                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">{{data['街道评级']}}</span>
+                                            <span style="color:#5abf5a;font-size:50px;vertical-align:text-bottom;margin-right: 10px;">优</span>
+                                            <!-- {{data['街道评级']}} -->
                                             {{data['指数']}}
                                         </div>
                                         <div @click="ShowQMSSQ(index)">详情</div>
@@ -598,7 +599,7 @@
                                 <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
                                 <div>
                                   <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 0 30px 20px 30px">
-                                    <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="showTjdbDetails = !showTjdbDetails">
+                                    <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="OpenShowTjdbDetails">
                                       提级督办
                                     </div>
                                     <div class="tjdbBox" v-show="showTjdbDetails">
@@ -607,13 +608,12 @@
                                         <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails = false" src="./background/关闭.png" alt="">
                                       </div>
                                       <div class="bodyChose">
-                                        <div :class="CkeckedBm===item?'checkEdItem':'normalItem'" v-for="(item,index) in 5" :key="index">
-                                          <div class="Nmae">编号{{item}}</div>
-                                          <div class="ChoseBtn dataCenter" @click="CkeckedBm = item">{{CkeckedBm===item?'已选择':'选择'}}</div>
-                                        </div>
+                                        <Tree :data="treeSetList"
+                                          :load-data="loadData"
+                                          @on-select-change='ChangeSelect'></Tree>
                                       </div>
                                       <div class="footBox">
-                                        <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm===-1?'请选择部门':CkeckedBm}}</div>
+                                        <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm===''?'请选择部门':CkeckedBm}}</div>
                                         <div class="SureBtn dataCenter">确定</div>
                                       </div>
                                     </div>
@@ -744,9 +744,12 @@ export default {
       xqValue: {},
       showEventDetails: false,
       showTjdbDetails: false,
-      CkeckedBm: -1,
+      CkeckedBm: '',
+      CkeckedBmId: '',
       IsreadBox: false,
       showotherDetails: false,
+      treeSetList: [],
+      selectTreeId: '',
       SqTipsName: '',
       isVerification: false
     }
@@ -1379,6 +1382,80 @@ export default {
           message: '未授权！',
           position: 'bottom-right',
           customClass: 'toast toast-error'
+        })
+      }
+    },
+    ChangeSelect (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm = item[0].title
+        this.CkeckedBmId = item[0].id
+      } else {
+        this.CkeckedBm = ''
+        this.CkeckedBmId = ''
+      }
+    },
+    loadData (item, callback) {
+      let newtype = ''
+      if (item.type === 'children') {
+        newtype = 'members'
+      }
+      if (item.id) {
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            if (item.type === 'children') {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  id: element['组织ID'],
+                  type: 'members',
+                  disabled: true,
+                  loading: false,
+                  disableCheckbox: true,
+                  children: []
+                })
+              })
+            } else {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  id: element['组织ID'],
+                  type: newtype
+                })
+              })
+            }
+            if (treeData.length === 0) {
+              treeData.push({
+                title: '暂无数据',
+                id: -1,
+                type: '',
+                disabled: true
+              })
+            }
+            callback(treeData)
+          }
+        })
+      }
+    },
+    OpenShowTjdbDetails () {
+      this.showTjdbDetails = !this.showTjdbDetails
+      if (this.showTjdbDetails) {
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList = treeData
+          }
         })
       }
     },
