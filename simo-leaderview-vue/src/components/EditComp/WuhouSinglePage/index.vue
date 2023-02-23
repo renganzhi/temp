@@ -67,10 +67,54 @@
                                         </div>
                                         <div>风险业务情况</div>
                                         <div>
-                                            <IntegratedHistogram :item="getRiskBusiness"></IntegratedHistogram>
+                                            <IntegratedHistogram @onclickFun='clickFunBar' :item="getRiskBusiness"></IntegratedHistogram>
                                         </div>
                                     </div>
                                 </div>
+                            </transition>
+                            <transition name="moveRight">
+                              <div class="xqTableBox" v-if="showTableBox">
+                                  <div class="title">
+                                      <div>高诉求人员</div>
+                                      <div @click="showTableBox = false"><img src="./background/关闭.png" alt=""></div>
+                                  </div>
+                                  <div class="cityEvent" ref="cityEvent">
+                                      <ul class="item" ref="item">
+                                          <li v-for="(val, ind) in grtsxqData" :key="ind">
+                                          <div  class="eventBox" >
+                                              <div>
+                                                  <div><span></span>{{val['工单主题']}}</div>
+                                                  <div @click="ShowXqTableDetails(val)">详情</div>
+                                              </div>
+                                              <div>
+                                                  {{val['工单内容']}}
+                                              </div>
+                                              <div>
+                                                  {{val['诉求时间']}}
+                                              </div>
+                                          </div>
+                                          </li>
+                                      </ul>
+                                  </div>
+                        <transition name="moveLeft">
+                            <div id="Module5Pop" v-show="showTableDetails">
+                              <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">高诉求详情</span>
+                                  <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="showTableDetails=false" src="./background/关闭.png" alt="">
+                              </div>
+                              <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
+                                  <div class="name" style="width:145px">
+                                    {{key}}:
+                                  </div>
+                                  <div class='value' style="width:420px">
+                                    {{data}}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </transition>
+                              </div>
                             </transition>
                         </div>
                     </div>
@@ -714,6 +758,8 @@ export default {
   data: function () {
     return {
       showRYXX: false,
+      showTableBox: false,
+      grtsxqData: [],
       isopenShow: false,
       indexOf7: -1,
       indexOf15: -1,
@@ -749,6 +795,8 @@ export default {
       xqValue: {},
       mzsqxqValue: {},
       showEventDetails: false,
+      XqTableValue: [],
+      showTableDetails: false,
       showTjdbDetails: false,
       CkeckedBm: '',
       CkeckedBmData: {},
@@ -1237,6 +1285,14 @@ export default {
     }
   },
   methods: {
+    clickFunBar (data) {
+      this.showTableBox = true
+      this.grtsxqData = data['个人投诉详情'].rows || []
+    },
+    ShowXqTableDetails (val) {
+      this.XqTableValue = val
+      this.showTableDetails = true
+    },
     openisopenShow () {
       this.isopenShow = true
     },
@@ -2027,6 +2083,149 @@ export default {
                             color: #C5EEF3;
                             font-size: 32px;
                         }
+                    }
+                }
+                .xqTableBox{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                    border: 2px solid;
+                    border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                    border-radius: 4px;
+                    .title{
+                        height: 76px;
+                        background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                        font-size: 30px;
+                        color: #5AE8FA;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 20px 0 28px;
+                        margin-bottom: 32px;
+                        >div:last-child{
+                            img{
+                                width: 49px;
+                                height:49px;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                    .cityEvent{
+                        width: 100%;
+                        height: 1210px;
+                        display: flex;
+                        overflow: hidden;
+                        align-items: center;
+                        flex-direction: column;
+                        .item{
+                          width: 100%;
+                        }
+                      .warp{
+                          overflow: hidden;
+                          width: 100%;
+                          height: 100%;
+                          ul{
+                              list-style: none;
+                              padding: 0;
+                              margin: 0 auto;
+                              li{
+                              margin-bottom: 28px;
+                              // background: #122f61;
+                              height: 180px;
+                              }
+                          }
+                      }
+                      li{
+                        padding: 14px 24px 14px 16px;
+                        .eventBox{
+                            width: 100%;
+                            height: 100%;
+                            overflow: hidden !important;
+                            padding: 14px 14px 5px 28px;
+                            // margin-bottom: 10px;
+                            background: url('./newBack/14.png') no-repeat;
+                            background-size: 100% 100%;
+                            overflow-y: scroll;
+                            >div:nth-child(1){
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                >div:nth-child(1) {
+                                    color: #C5EEF3;
+                                    font-size: 26px;
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    span{
+                                        width: 12px;
+                                        height: 12px;
+                                        display: inline-block;
+                                        background: #fcb83c;
+                                        border-radius: 50%;
+                                        margin-right:12px;
+                                    }
+                                }
+                                >div:nth-child(2) {
+                                    color:#C5EEF3;
+                                    font-size: 24px;
+                                    width: 100px;
+                                    height: 40px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    background: rgba(22,223,248,0.10);
+                                    border: 1px solid rgba(22,223,248,0.60);
+                                    border-radius: 17px;
+                                    text-align: center;
+                                    cursor: pointer;
+                                }
+                            }
+                            >div:nth-child(2){
+                                width: 100%;
+                                height: 75px;
+                                padding-left: 24px;
+                                color: rgba(197,238,243,0.8);
+                                font-size: 24px;
+                                margin-top:8px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                -webkit-line-clamp: 2;
+                            }
+                            >div:nth-child(3){
+                                width: 100%;
+                                height: auto;
+                                padding-left: 24px;
+                                color: rgba(197,238,243,0.8);
+                                font-size: 22px;
+                                margin-top:12px;
+                            }
+                            .state{
+                              width: 100px;
+                              height: 40px;
+                              background-image: url('./newBack/13.png');
+                              background-size: 100% 100%;
+                              display: flex;
+                              justify-content: center;
+                              color: black;
+                              align-items: center;
+                            }
+
+                        }
+                      }
+                    }
+                    #Module5Pop{
+                      width: 100%;
+                      height: 1340px;
+                      background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                      border: 2px solid;
+                      border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                      border-radius: 4px;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
                     }
                 }
             }

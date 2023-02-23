@@ -475,6 +475,7 @@ export default {
       } else {
 
       }
+      this.mychart.setOption(myoption)
     },
     requestInterface () {
       if (this.item.conditionType) {
