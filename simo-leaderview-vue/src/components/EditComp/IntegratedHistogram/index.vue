@@ -1434,6 +1434,7 @@ export default {
         url = _this.item.chartData4.url
         type = _this.item.chartData4.typeName
       }
+      _this.$emit('onclickFun', dataOut)
       console.log('dataOut', dataOut, params)
       if (dataOut.id) {
         _this.bus.$emit('clickBar', dataOut.id)
