@@ -1309,6 +1309,12 @@ export default {
             this.xqValue = val
             this.showEventDetails = true
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1324,6 +1330,12 @@ export default {
             this.mzsqxqValue = val
             this.showotherDetails = true
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1363,6 +1375,12 @@ export default {
           this.gettjdbList()
           this.CloseEventDetails()
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     CloseotherDetails () {
@@ -1545,6 +1563,12 @@ export default {
             }
             callback(treeData)
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1571,6 +1595,12 @@ export default {
             })
             this.treeSetList = treeData
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1583,6 +1613,12 @@ export default {
           this.tjdbList = res.obj.rows
           document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     getqztsList () {
@@ -1597,6 +1633,12 @@ export default {
           this.incomingflownoList = res.obj['满意度列表']
           document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     getHomePageData () {
