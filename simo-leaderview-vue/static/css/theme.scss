@@ -952,15 +952,27 @@ html[data-theme="blueWhite"] {
 }
 .keyprojects{
   .ivu-table{
-    font-size: 12px;
+    font-size: 14px;
     color: rgb(218, 214, 214) !important;
+    .ivu-table-header{
+      tr{
+        height: 24px;
+      }
+    }
     th{
       padding: 0;
       text-align: center;
     }
+    td{
+      height: 38px;
+    }
     .ivu-table-cell{
       padding: 0;
       text-align: center;
+      height: 17px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

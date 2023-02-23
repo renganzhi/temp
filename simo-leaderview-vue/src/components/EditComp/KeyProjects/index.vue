@@ -1,12 +1,15 @@
 <template>
   <div class="keyprojects">
     <div class="title">
-        <div class="openTitle" @click="isShowModel = !isShowModel"></div>
+      <div class="name">
+        重点项目
+      </div>
+      <div class="openTitle" @click="ChangeisShowModel"></div>
     </div>
     <div class="body">
       <div class="Data">
         <div class="leftData">
-          <div class="data" style="width:260px;height:132px">
+          <div class="data" style="width:260px;height:88px">
             <div class="name" style="font-weight:bold;">项目总数</div>
             <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
@@ -34,9 +37,17 @@
       </div>
       <transition name="moveLeft">
         <div class="Table" v-if="isShowModel">
-          <Table border :columns="columns1" :height="246" :data="data1"></Table>
+          <Table border :columns="columns1" :height="175" :data="data1" @on-row-click='clickLine'></Table>
         </div>
-    </transition>
+      </transition>
+      <transition name="moveLeft">
+        <div class="xqData" v-if="isShowXq">
+          <div class="Line" v-for="(value,key,index) in isShowXqData" :key="index">
+            <div class="name">{{key}}:</div>
+            <div class="value">{{value}}</div>
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -95,6 +106,8 @@ export default {
       data1: [],
       modelBodyData: {},
       isShowModel: false,
+      isShowXq: false,
+      isShowXqData: {},
       colorList: [
         '#ffd965',
         '#97d87e',
@@ -120,6 +133,18 @@ export default {
     })
   },
   methods: {
+    ChangeisShowModel () {
+      if (this.isShowXq) {
+        this.isShowXq = !this.isShowXq
+        this.isShowXqData = {}
+      } else {
+        this.isShowModel = !this.isShowModel
+      }
+    },
+    clickLine (data) {
+      this.isShowXq = true
+      this.isShowXqData = data
+    },
     getOption1 () {
       var m2R2Data = []
       this.modelBodyData['重大项目批次组成'].forEach(d => {
@@ -266,6 +291,14 @@ export default {
     background-image: url('./img/02.png');
     background-size: 100%;
     position: relative;
+    .name{
+      color: #d4e7ff;
+      margin-left: 50px;
+      font-size: 22px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
     .openTitle{
       width: 40px;
       height: 22px;
@@ -279,7 +312,7 @@ export default {
   }
   .body{
     width: 100%;
-    height: 246px;
+    height: 175px;
     background-color: #122F61;
     position: relative;
     .Data{
@@ -339,11 +372,28 @@ export default {
   }
   .Table{
     width: 100%;
-    height: 246px;
+    height: 175px;
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #122F61;
+    background-image: url('./img/bg.png');
+    background-size: 100% 100%;
+  }
+  .xqData{
+    width: 100%;
+    height: 175px;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #122f61;
+    padding: 4px 20px;
+    .Line{
+      display: flex;
+      height: 30px;
+      font-size: 16px;
+      align-items: center;
+    }
   }
 }
 
