@@ -1,13 +1,13 @@
 <template>
     <div class="EfficiencyPage">
       <div id="Module55">
-        <div class="Mydyj">
+        <div class="Mydyj" v-if="mydData['态度预警数']">
           <div class="YJbox" @click="OpenShowyjBox">
             <div class="img">
               <img src="./newBack/8.png" alt="">
             </div>
             <div class="Value">
-              <div class="data">{{mydData['态度预警数'].info}} <div class="unit">件</div></div>
+              <div class="data">{{mydData['态度预警数']?mydData['态度预警数'].info:''}} <div class="unit">件</div></div>
               <div class="name">部门承办态度预警</div>
             </div>
           </div>
@@ -40,18 +40,18 @@
                         <transition name="moveLeft">
                             <div id="Module99Pop" v-show="showotherDetails">
                               <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">部门承办态度详情</span>
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseotherDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['标题'] || ''}}</div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                   {{xqValue['描述'] || ''}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
-                                <div class="block" style="padding: 0 28px;">
-                                    <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
-                                      <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
+                                <div class="block" style="padding: 0 28px;" v-if="xqValue['流转详情']">
+                                    <div class="TimeBox" v-for="(da,index) in xqValue['流转详情'].rows" :key="index">
+                                      <div class="line" v-if="index !== xqValue['流转详情'].rows.length-1"></div>
                                       <div class="radio"></div>
                                       <div class="time">{{da['修改时间']}}</div>
                                       <div class="data">
@@ -86,7 +86,7 @@
             </div>
           </div>
         </div>
-        <div class="Mydgy">
+        <div class="Mydgy" v-if="mydData['不满意数']">
           <div class="Gybox" @click="OpenShomydjBox(mydData['不满意数'].name)">
             <div class="Value">{{mydData['不满意数'].info}}</div>
             <div class="Name">本日不满意回访数</div>
@@ -131,7 +131,7 @@
                       <transition name="moveLeft">
                           <div id="Module66Pop" v-if="showmydDetails">
                             <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">回访详情</span>
                                 <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="ClosemydDetails" src="./background/关闭.png" alt="">
                             </div>
                             <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
@@ -859,17 +859,21 @@ export default {
   components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
   methods: {
     ShowOtherDetails (val) {
-      if (val['工单号']) {
-        $('#lead-screen').addClass('disShow')
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
-          $('#lead-screen').removeClass('disShow')
-          if (res.success && res.obj) {
-            val.timeLine = res.obj.obj.data[0].items.rows
-            this.xqValue = val
-            this.showotherDetails = true
-          }
-        })
+      if (val['流转详情'] && val['流转详情'].rows) {
+        this.xqValue = val
+        this.showotherDetails = true
       }
+      // if (val['工单号']) {
+      //   $('#lead-screen').addClass('disShow')
+      //   this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+      //     $('#lead-screen').removeClass('disShow')
+      //     if (res.success && res.obj) {
+      //       val.timeLine = res.obj.obj.data[0].items.rows
+      //       this.xqValue = val
+      //       this.showotherDetails = true
+      //     }
+      //   })
+      // }
     },
     ShowmydDetails (val) {
       if (val['流转详情'] && val['流转详情'].rows) {
@@ -964,9 +968,11 @@ export default {
     OpenShomydjBox (type) {
       if (this.ShowmydType === type) {
         this.ShowmydBox = false
+        this.showmydDetails = false
         this.ShowmydType = ''
       } else {
         this.ShowmydBox = true
+        this.showmydDetails = false
         this.ShowmydType = type
         $('#lead-screen').addClass('disShow')
         this.axios.get('/leaderview/newDistrict/GetMSSQ22?param=' + type).then(res => {
