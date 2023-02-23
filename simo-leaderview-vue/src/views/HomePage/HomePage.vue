@@ -56,8 +56,8 @@
                 <beijing :nowPageName="pageName"></beijing>
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
-                <!-- <CYMap :nowPageName="pageName"></CYMap> -->
-                <MapSwitch :nowPageName="pageName"></MapSwitch>
+                <CYMap :nowPageName="pageName"></CYMap>
+                <!-- <MapSwitch :nowPageName="pageName"></MapSwitch> -->
                 <!-- <iframe  id="BaiDuIframe" style="height:100%;width:100%;position: absolute;z-index:0"
      src="http://172.16.149.41:8181/appli/start?appliId=987084259741138944&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe> -->
                 <!-- <EconomicMap :nowPageName="pageName"></EconomicMap> -->
@@ -170,7 +170,7 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
-                      <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
+                      <div class="Data" style="cursor:pointer;" @click="jumpPDF(data)"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
                     </div>
                   </div>
                   <div v-else-if="showModelBoxtype === 1 && boxData.data.length>0">
@@ -1091,6 +1091,12 @@ export default {
     },
     closeTableTtn () {
       this.showTableBox = false
+    },
+    jumpPDF (data) {
+      if (data.title === '链接' && data.value) {
+        console.log('链接', data.value)
+        window.open(data.value)
+      }
     },
     ShowTanKuangBox (dataArray) {
       if (self !== top) {
