@@ -563,8 +563,8 @@
                     <div class="title"><img src="./newBack/4.png" alt=""></div>
                     <div class="content">
                         <div class="MsgType">
-                          <div :class="IsreadBox==='未办'?'checked':'nochecked'" @click="changeIsreadBox('处置中')">未办事件</div>
-                          <div :class="IsreadBox==='未办'?'nochecked':'checked'"  @click="changeIsreadBox('已结案')">已办事件</div>
+                          <div :class="IsreadBox==='处置中'?'checked':'nochecked'" @click="changeIsreadBox('处置中')">未办事件</div>
+                          <div :class="IsreadBox==='处置中'?'nochecked':'checked'"  @click="changeIsreadBox('已结案')">已办事件</div>
                         </div>
                         <div class="cityEvent" ref="cityEvent">
                             <ul class="item" ref="item">
@@ -581,7 +581,8 @@
                                       <div class="Time">
                                         {{val['上报时间']}}
                                       </div>
-                                      <div class="state">
+                                      {{val['源平台工单号']}}
+                                      <div v-if="incomingflownoList.indexOf(val['源平台工单号']*1)>=0" class="state">
                                         不满意
                                       </div>
                                     </div>
@@ -743,7 +744,8 @@ export default {
       GetMSSQ7: [],
       GetMSSQ16: {},
       qztsList: [], // 投诉列表
-      tjdbList: [], // 投诉列表
+      tjdbList: [],
+      incomingflownoList: [],
       xqValue: {},
       mzsqxqValue: {},
       showEventDetails: false,
@@ -1518,7 +1520,9 @@ export default {
     },
     gettjdbList () {
       this.tjdbList = []
+      $('#lead-screen').addClass('disShow')
       this.axios.get('/leaderview/ChengYun4/GetTJDB1').then(res => {
+        $('#lead-screen').removeClass('disShow')
         if (res.success && res.obj.rows) {
           this.tjdbList = res.obj.rows
           document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
@@ -1527,10 +1531,14 @@ export default {
     },
     getqztsList () {
       // 获取群众投诉数据
+      $('#lead-screen').addClass('disShow')
       this.axios.get('/leaderview/newDistrict/GetMSSQ20?param=' + this.IsreadBox).then(res => {
-        if (res.success && res.obj.rows) {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success && res.obj['群众诉求']) {
+          this.incomingflownoList = []
           this.qztsList = []
-          this.qztsList = res.obj.rows
+          this.qztsList = res.obj['群众诉求'].rows
+          this.incomingflownoList = res.obj['满意度列表']
           document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
       })
