@@ -2142,7 +2142,7 @@ export default {
                         padding: 14px 24px 14px 16px;
                         .eventBox{
                             width: 100%;
-                            height: 100%;
+                            height: 200px;
                             overflow: hidden !important;
                             padding: 14px 14px 5px 28px;
                             // margin-bottom: 10px;
@@ -3670,7 +3670,7 @@ export default {
                   padding: 14px 24px 14px 16px;
                   .eventBox{
                       width: 100%;
-                      height: 100%;
+                      height: 200px;
                       overflow: hidden !important;
                       padding: 14px 14px 5px 28px;
                       // margin-bottom: 10px;
@@ -3929,7 +3929,7 @@ export default {
                   padding: 14px 24px 14px 16px;
                   .eventBox{
                       width: 100%;
-                      height: 100%;
+                      height: 200px;
                       padding: 14px 14px 5px 28px;
                       overflow: hidden !important;
                       // margin-bottom: 10px;
