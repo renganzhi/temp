@@ -330,19 +330,19 @@
           <div class="part" v-if="showStreetInfo && modelData['总办件量']">
               <div class="Btn" @click="showStreetInfo = false"
               style="position: absolute;
-                    right: 9px;
+                    right: 16px;
                     top: 16px;
                     font-size: 30px;
                     cursor: pointer
                     height: 40px;
                     width: 40px;
-              ">x</div>
+              "><img src="./background/关闭.png" alt="" style="width:100%;height:100%"></div>
               <div class="partTitle">
-                <div class="select">
+                <!-- <div class="select">
                   <Select v-model="SelectType">
                     <Option value="normal" name='normal' label="全部事件">全部事件</Option>
                   </Select>
-                </div>
+                </div> -->
                 <div class="state">
                   <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData['总办件量'].info}} <div :class="true?'upBack':'downBack'">66%</div></div>
                   <div>总办件量</div>
@@ -373,54 +373,72 @@
                   <div>人均办件量</div>
                 </div>
               </div>
-              <div class="partBody">
-                <div class="eventType">
-                  <div class="title">
-                    <div class="radioBtn" style="font-size:22px">事件类型统计</div>
-                    <div style="font-size:20px">单位：件</div>
+              <div class='bodyData' style="display: flex;width: 100%;height: 710px;">
+                <div class="partBody">
+                  <div class="eventType">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:28px">事件类型统计</div>
+                      <div style="font-size:28px">单位：件</div>
+                    </div>
+                    <div class="canvas">
+                      <NewPie :item="getSJLX1"></NewPie>
+                    </div>
                   </div>
-                  <div class="canvas">
-                    <NewPie :item="getSJLX1"></NewPie>
-                  </div>
-                </div>
-                <div class="eventwcl">
-                  <div class="title">
-                    <div class="radioBtn" style="font-size:22px">办理完成率</div>
-                  </div>
-                  <div class="canvas"></div>
-                </div>
-                <div class="hotevent">
-                  <div class="title">
-                    <div class="radioBtn" style="font-size:22px">热门事件</div>
-                  </div>
-                  <div class="canvas">
+                  <!-- <div class="eventwcl">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:22px">办理完成率</div>
+                    </div>
+                    <div class="canvas"></div>
+                  </div> -->
+                  <!-- <div class="hotevent">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:22px">热门事件</div>
+                    </div>
+                    <div class="canvas">
 
-                    <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
-                      <div class="name">
-                        {{data['事件小类名称']}}
+                      <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
+                        <div class="name">
+                          {{data['事件小类名称']}}
+                        </div>
+                        <div class="value">
+                          {{data['事件小类办件量']}}
+                        </div>
                       </div>
-                      <div class="value">
-                        {{data['事件小类办件量']}}
+                    </div>
+                  </div> -->
+                </div>
+                <div class="partFoot">
+                  <!-- <div class="eventtj">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:22px">办件量统计</div>
+                      <div style="font-size:20px">单位：件</div>
+                    </div>
+                    <div class="canvas"></div>
+                  </div> -->
+                  <div class="hotevent">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:28px">热门事件</div>
+                    </div>
+                    <div class="canvas">
+
+                      <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
+                        <div class="name">
+                          {{data['事件小类名称']}}
+                        </div>
+                        <div class="value">
+                          {{data['事件小类办件量']}}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="partFoot">
-                <div class="eventtj">
-                  <div class="title">
-                    <div class="radioBtn" style="font-size:22px">办件量统计</div>
-                    <div style="font-size:20px">单位：件</div>
-                  </div>
-                  <div class="canvas"></div>
-                </div>
-                <div class="eventqs">
-                  <div class="title">
-                    <div class="radioBtn" style="font-size:22px">办件量走势</div>
-                    <div style="font-size:20px">单位：件</div>
-                  </div>
-                  <div class="canvas" style="height:210px">
-                      <ELine :item="getBJLZS"></ELine>
+                  <div class="eventqs">
+                    <div class="title">
+                      <div class="radioBtn" style="font-size:28px">办件量走势</div>
+                      <div style="font-size:28px">单位：件</div>
+                    </div>
+                    <div class="canvas" style="height:210px">
+                        <ELine :item="getBJLZS"></ELine>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -581,7 +599,7 @@ export default {
         ], // 区域渐变
         'chartData': {
           'columns': [],
-          'unit': '%',
+          'unit': '',
           'min': 60,
           'max': 80,
           'minIndex': 2,
@@ -714,15 +732,16 @@ export default {
       },
       getSJLX1: {
         'text': '环形图',
-        'width': 700,
-        'height': 250,
+        'width': 1620,
+        'height': 710,
         'imgClass': 'icon-n-ring',
         'chartType': 'NewPie',
         'ifGradual': 'false',
         'pieType': '环形图',
-        'ctLegendSize': '16',
+        'ctLegendSize': '26',
         'ctLegendColor': '#666f8b',
-        'axisLabelSize': '16',
+        'axisLabelSize': '26',
+        'showwordSize': 22,
         'ifEidetColor': false,
         'legendY': 85,
         'radius': 50,
@@ -735,7 +754,7 @@ export default {
         'tooltipShow': true,
         'tooltipBackColor': '#57625d',
         'tooltipTextColor': '#fff',
-        'tooltipfontSize': 14,
+        'tooltipfontSize': 24,
         'LineColorArray': [
           '#2d98f1',
           '#32c5e9',
@@ -763,7 +782,7 @@ export default {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
         'height': 210,
-        'width': 1750,
+        'width': 1580,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
@@ -772,8 +791,8 @@ export default {
         'splitShow': false,
         'ctLegendShow': false,
         'ctLegendColor': '#828bac',
-        'ctLegendSize': '20',
-        'axisLabelSize': '20',
+        'ctLegendSize': '24',
+        'axisLabelSize': '24',
         'legendY': 90,
         'gridTop': 5,
         'gridBotton': 5,
@@ -784,7 +803,7 @@ export default {
         'areaLineType': true,
         'tooltipBackColor': '#57625d',
         'tooltipTextColor': '#e9eaee',
-        'tooltipfontSize': 20,
+        'tooltipfontSize': 24,
         'splitColor': '#d0e0e3',
         'splitSize': 2,
         'minInterval': '',
@@ -792,7 +811,7 @@ export default {
         'boundaryGap': true,
         'legendColor': '#828bac',
         'DanweiColor': '#828bac',
-        'DanweiSize': 20,
+        'DanweiSize': 24,
         'lineArea': true, // 是否为区域图
         'lineColorType': false, // 是否为区域图
         'smooth': false,
@@ -804,7 +823,7 @@ export default {
         'symbolSize': 6,
         'lineWidth': 2,
         'showPoint': true, // 是否标点
-        'PointSize': '14',
+        'PointSize': '20',
         'rotate': 0,
         conditionType: '', // 接口选择
         refrashTime: 30000,
@@ -1506,13 +1525,14 @@ export default {
       background: url('./background/bg.png');
       background-size: 100%;
       .partTitle{
-        height: 100px;
+        height: 140px;
         width: 100%;
         display: flex;
-        padding: 6px;
+        padding: 6px 30px 0 30px;
+        justify-content: space-around;
         margin-top: 24px;
         background: url('./background/矩形01.png');
-        background-size: 100%;
+        background-size: 100% 100%;
         .select{
           height: 100%;
           width: 180px;
@@ -1523,7 +1543,7 @@ export default {
         }
         .state{
           width: 300px;
-          font-size: 22px;
+          font-size: 30px;
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
@@ -1546,7 +1566,7 @@ export default {
           .data1{
             width: 100%;
             height: 24px;
-            font-size: 20px;
+            font-size: 30px;
             display: flex;
             justify-content: space-between;
             div{
@@ -1557,7 +1577,7 @@ export default {
           .data2{
             width: 100%;
             height: 24px;
-            font-size: 24px;
+            font-size: 30px;
             display: flex;
             justify-content: space-between;
             div{
@@ -1567,9 +1587,9 @@ export default {
           }
         }
         .datatime{
-          width: 400px;
+          width: 500px;
           height: 100%;
-          font-size: 22px;
+          font-size: 30px;
           margin-right: 120px;
           display: flex;
           flex-wrap: wrap;
@@ -1582,7 +1602,7 @@ export default {
         .peoplevalue{
           width: 250px;
           height: 100%;
-          font-size: 22px;
+          font-size: 30px;
           margin-right: 120px;
           display: flex;
           flex-wrap: wrap;
@@ -1595,7 +1615,7 @@ export default {
         .peoplename{
           width: 250px;
           height: 100%;
-          font-size: 22px;
+          font-size: 30px;
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
@@ -1605,40 +1625,85 @@ export default {
           }
         }
         .upBack{
-          font-size: 14px;
-          width: 162px !important;
-          padding-left: 115px;
+          font-size: 24px;
+          width: 262px !important;
+          padding-left: 175px;
           display: inline-block;
-          height: 24px;
+          height: 36px;
           margin-left: 10px;
           background: url('./background/编组-16.png');
-          background-size: 100%;
+          background-size: 100% 100%;
         }
         .downBack{
-          font-size: 14px;
-          padding-left: 115px;
-          width: 162px !important;
+          font-size: 24px;
+          width: 262px !important;
+          padding-left: 175px;
           display: inline-block;
           margin-left: 10px;
-          height: 24px;
+          height: 36px;
           background: url('./background/编组-17.png');
-          background-size: 100%;
+          background-size: 100% 100%;
         }
       }
       .partBody{
-        height: 286px;
-        width: 100%;
+        height: 100%;
+        width: 50%;
         margin-top: 28px;
+        padding: 10px;
         display: flex;
         justify-content: space-between;
-        >div{
-          width: 886px;
+        .eventType{
+          width: 100%;
           background: url('./background/矩形02.png');
-          background-size: 100%;
+          background-size: 100% 100%;
           height: 100%;
           padding: 20px;
         }
+        // .hotevent{
+        //   .canvas{
+        //     display: flex;
+        //     justify-content: space-around;
+        //     align-items: center;
+        //     height: 100%;
+        //     width: 100%;
+        //     .events{
+        //       width: 180px;
+        //       .name{
+        //         width: 100%;
+        //         text-align: center;
+        //         color: #16DFF8;
+        //         font-size: 28px;
+        //       }
+        //       .value{
+        //         width: 100%;
+        //         height: 130px;
+        //         color: white;
+        //         font-size: 32px;
+        //         background: url('./background/位图.png');
+        //         background-size: 100% 100%;
+        //         display: flex;
+        //         justify-content: center;
+        //         align-items: center;
+        //         background-size: 100%;
+        //       }
+        //     }
+        //   }
+        // }
+      }
+      .partFoot{
+        height: 100%;
+        width: 50%;
+        padding: 10px;
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         .hotevent{
+          width: 100%;
+          background: url('./background/矩形02.png');
+          background-size: 100%;
+          height: 50%;
+          padding: 20px;
           .canvas{
             display: flex;
             justify-content: space-around;
@@ -1646,18 +1711,18 @@ export default {
             height: 100%;
             width: 100%;
             .events{
-              width: 130px;
+              width: 200px;
               .name{
                 width: 100%;
                 text-align: center;
                 color: #16DFF8;
-                font-size: 20px;
+                font-size: 28px;
               }
               .value{
                 width: 100%;
-                height: 88px;
+                height: 120px;
                 color: white;
-                font-size: 24px;
+                font-size: 32px;
                 background: url('./background/位图.png');
                 display: flex;
                 justify-content: center;
@@ -1667,21 +1732,15 @@ export default {
             }
           }
         }
-      }
-      .partFoot{
-        height: 286px;
-        width: 100%;
-        margin-top: 28px;
-        display: flex;
-        justify-content: space-between;
-        >div:nth-child(1){
-          width: 886px;
-          background: url('./background/矩形02.png');
-          background-size: 100%;
-          padding: 20px;
-        }
-        >div:nth-child(2){
-          width: 1813px;
+        // >div:nth-child(1){
+        //   width: 886px;
+        //   background: url('./background/矩形02.png');
+        //   background-size: 100%;
+        //   padding: 20px;
+        // }
+        .eventqs{
+          width: 100%;
+          height: 50%;
           background: url('./background/矩形02.png');
           background-size: 100%;
           padding: 20px;
