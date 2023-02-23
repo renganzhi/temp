@@ -103,7 +103,7 @@
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="showTableDetails=false" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
+                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
                                   <div class="name" style="width:145px">
                                     {{key}}:
                                   </div>
@@ -2159,7 +2159,7 @@ export default {
                         width: 100%;
                         height: 1210px;
                         display: flex;
-                        overflow: hidden;
+                        overflow: auto;
                         align-items: center;
                         flex-direction: column;
                         .item{
