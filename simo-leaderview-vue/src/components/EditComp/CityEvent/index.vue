@@ -11,8 +11,8 @@
           class="warp"
         >
           <ul class="item">
-            <li :style="liStyle" v-for="(val, ind) in eventData.rows" :key="ind">
-              <div @click="showDetails(val)"  class="eventBox" >
+            <li :style="liStyle" v-for="(val, ind) in eventData.rows" @click="showDetails(val)" :key="ind">
+              <div class="eventBox" >
                   <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
                   <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
                   <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
@@ -103,8 +103,8 @@ export default {
         if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
           if (JSON.stringify(newV) !== JSON.stringify(oldV)) {
             this.currentIndex = 0
+            this.eventData = this.item.chartData.dataArray[0]
           }
-          this.eventData = this.item.chartData.dataArray[0]
         }
       },
       deep: true

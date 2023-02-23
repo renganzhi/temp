@@ -9,7 +9,7 @@
     <div class="body">
       <div class="Data">
         <div class="leftData">
-          <div class="data" style="width:260px;height:132px">
+          <div class="data" style="width:260px;height:100px">
             <div class="name" style="font-weight:bold;">项目总数</div>
             <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
@@ -313,6 +313,7 @@ export default {
   .body{
     width: 100%;
     height: 246px;
+    overflow: hidden;
     background-color: #122F61;
     position: relative;
     .Data{

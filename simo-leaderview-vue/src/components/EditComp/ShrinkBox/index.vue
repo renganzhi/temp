@@ -82,13 +82,15 @@ export default {
     }
   },
   beforeDestroy () {
-    if (document.getElementById('p_compose' + this.item.bdCom)) {
-      document.getElementById('p_compose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-      document.getElementById('p_compose' + this.item.bdCom).style.display = 'block'
-    }
-    if (document.getElementById('p_viewCompose' + this.item.bdCom)) {
-      document.getElementById('p_viewCompose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-      document.getElementById('p_viewCompose' + this.item.bdCom).style.display = 'block'
+    if (this.$route.name === 'edit') {
+      if (document.getElementById('p_compose' + this.item.bdCom)) {
+        document.getElementById('p_compose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+        document.getElementById('p_compose' + this.item.bdCom).style.display = 'block'
+      }
+      if (document.getElementById('p_viewCompose' + this.item.bdCom)) {
+        document.getElementById('p_viewCompose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+        document.getElementById('p_viewCompose' + this.item.bdCom).style.display = 'block'
+      }
     }
   }
 }

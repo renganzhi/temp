@@ -16,73 +16,14 @@ export default{
     menuLeft: 0,
     menuTop: 0,
     buttonMargin: 0,
+    buttonMarginTop: 0,
     buttonPadding: 5,
     menuFontSize: 12,
     'fontFamily': '',
     'normalBackName': '',
     'normalBack': '',
     'chartData': {
-      array: [
-        {
-          name: '民生服务',
-          options: [
-            {
-              name: '房屋中介'
-            },
-            {
-              name: '工资发放'
-            },
-            {
-              name: '水电气'
-            }
-          ]
-        },
-        {
-          name: '居民保障',
-          options: [
-            {
-              name: '物业服务'
-            },
-            {
-              name: '城市服务医疗'
-            },
-            {
-              name: '小区管理'
-            }
-          ]
-        },
-        {
-          name: '城市保障',
-          options: [
-            {
-              name: '占道停车'
-            },
-            {
-              name: '占道经营'
-            },
-            {
-              name: '消防安全'
-            }
-          ]
-        },
-        {
-          name: '市场监管',
-          options: [
-            {
-              name: '匹配消费纠纷'
-            },
-            {
-              name: '食品安全'
-            },
-            {
-              name: '商品质量'
-            },
-            {
-              name: '营业执照'
-            }
-          ]
-        }
-      ]
+      array: ['房屋中介', '工资发放', '水电气', '物业服务', '城市服务医疗', '小区管理', '占道停车', '占道经营', '消防安全', '匹配消费纠纷', '食品安全', '商品质量', '营业执照']
     }
   },
   'styles': {
@@ -91,16 +32,12 @@ export default{
         'name': '菜单设置',
         'tag': 'Hint',
         'childoption': [{
-          'name': '子菜单左边距',
-          'key': 'menuLeft',
-          'tag': 'input'
-        }, {
-          'name': '子菜单上边距',
-          'key': 'menuTop',
-          'tag': 'input'
-        }, {
-          'name': '按钮间距',
+          'name': '按钮左右间距',
           'key': 'buttonMargin',
+          'tag': 'input'
+        },{
+          'name': '按钮上下间距',
+          'key': 'buttonMarginTop',
           'tag': 'input'
         }, {
           'name': '按钮内边距',
@@ -134,10 +71,6 @@ export default{
         {
           'name': '字号',
           'key': 'fontSize',
-          'tag': 'input'
-        }, {
-          'name': '子菜单字号',
-          'key': 'menuFontSize',
           'tag': 'input'
         },
         {

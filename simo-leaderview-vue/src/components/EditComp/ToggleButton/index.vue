@@ -2,12 +2,7 @@
   <div class="ToggleButton" :style="buttonStyle">
     <div class="mainMenu">
         <div class="button" v-for="(value, index) in item.chartData.array" :style="mainStyle(value)" @click="changeSelect(value, 1)" :key="index">
-            {{value.name}}
-        </div>
-    </div>
-    <div class="mainMenu" v-show="subArray.length">
-        <div class="button" v-for="(val, ind) in subArray" @click="changeSelect(val, 2)" :style="subStyle(val)" :key="ind">
-            {{val.name}}
+            {{value}}
         </div>
     </div>
   </div>
@@ -19,9 +14,7 @@ export default {
   props: ['item'],
   data () {
     return {
-      selectMainMenu: '',
-      selectSubMenu: '',
-      subArray: []
+      selectMainMenu: ''
     }
   },
   computed: {
@@ -40,7 +33,7 @@ export default {
         let backgroundImg = this.item.normalBack
           ? 'url(' + gbs.host + this.item.normalBack + ')'
           : 'url(' + require('./normal.png') + ')'
-        if (this.selectMainMenu === value.name) {
+        if (this.selectMainMenu === value) {
           backgroundImg = this.item.checkedBack
             ? 'url(' + gbs.host + this.item.checkedBack + ')'
             : 'url(' + require('./checked.png') + ')'
@@ -48,28 +41,8 @@ export default {
         return {
           padding: this.item.buttonPadding + 'px',
           marginRight: this.item.buttonMargin + 'px',
+          marginBottom: this.item.buttonMarginTop + 'px',
           backgroundImage: backgroundImg
-        }
-      }
-    },
-    subStyle () {
-      return (value) => {
-        let backgroundImg = this.item.normalBack
-          ? 'url(' + gbs.host + this.item.normalBack + ')'
-          : 'url(' + require('./normal.png') + ')'
-        if (this.selectSubMenu === value.name) {
-          backgroundImg = this.item.checkedBack
-            ? 'url(' + gbs.host + this.item.checkedBack + ')'
-            : 'url(' + require('./checked.png') + ')'
-        }
-        return {
-          padding: this.item.buttonPadding + 'px',
-          marginRight: this.item.buttonMargin + 'px',
-          backgroundImage: backgroundImg,
-          position: 'relative',
-          fontSize: this.item.menuFontSize + 'px !important',
-          top: this.item.menuTop + 'px',
-          left: this.item.menuLeft + 'px'
         }
       }
     }
@@ -77,48 +50,25 @@ export default {
   watch: {
     'item.chartData': {
       handler () {
-        this.subArray = []
-        this.selectMainMenu = ''
-        this.selectSubMenu = ''
+        if (this.item.chartData.array) {
+          this.selectMainMenu = this.item.chartData.array[0]
+        }
       },
       deep: true
     },
-    'selectSubMenu': function () {
-      this.bus.$emit('selectType', this.selectSubMenu)
+    'selectMainMenu': function () {
+      this.bus.$emit('selectType', this.selectMainMenu)
     }
   },
   mounted () {
     if (this.item.chartData.array) {
-      this.selectMainMenu = this.item.chartData.array[0].name
-      this.subArray = this.item.chartData.array[0].options
-      this.selectSubMenu = this.item.chartData.array[0].options[0].name
-      this.bus.$emit('selectType', this.selectSubMenu)
+      this.selectMainMenu = this.item.chartData.array[0]
+      this.bus.$emit('selectType', this.selectMainMenu)
     }
   },
   methods: {
-    changeSelect (value, type) {
-      if (type === 1) {
-        if (this.selectMainMenu !== value.name) {
-          this.selectMainMenu = value.name
-          if (value.options) {
-            this.subArray = value.options
-          } else {
-            this.subArray = []
-          }
-          this.selectSubMenu = ''
-        } else {
-          this.subArray = []
-          this.selectMainMenu = ''
-          this.selectSubMenu = ''
-        }
-      } else {
-        if (this.selectSubMenu !== value.name) {
-          this.selectSubMenu = value.name
-        } else {
-          this.selectSubMenu = ''
-        }
-        // this.bus.$emit('selectType', this.selectSubMenu)
-      }
+    changeSelect (value) {
+      this.selectMainMenu = value
     }
   }
 }
@@ -129,12 +79,16 @@ export default {
     height: 100%;
     .mainMenu{
         display: flex;
+        width: 100%;
+        flex-wrap: wrap;
         .button{
             background-repeat: no-repeat;
             background-size: 100% 100%;
+            cursor: pointer;
         }
         .button:last-child{
             margin-right: 0px !important;
+            // margin-bottom: 0px !important;
         }
     }
 }

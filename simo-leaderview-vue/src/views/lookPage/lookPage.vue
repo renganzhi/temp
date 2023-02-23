@@ -2245,7 +2245,6 @@ export default {
       }
       // this.refreshFn(newV)
       this.setScale()
-      console.log('nowPage', newV)
       if (newV.length > 200) {
         window.setTimeout(() => {
           this.refresh() // 整页刷新
