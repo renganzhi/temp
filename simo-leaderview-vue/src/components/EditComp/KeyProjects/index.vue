@@ -37,7 +37,7 @@
       </div>
       <transition name="moveLeft">
         <div class="Table" v-if="isShowModel">
-          <Table border :columns="columns1" :height="246" :data="data1"></Table>
+          <Table border :columns="columns1" :height="226" :data="data1"></Table>
         </div>
       </transition>
       <transition name="moveLeft">
@@ -312,7 +312,7 @@ export default {
   }
   .body{
     width: 100%;
-    height: 246px;
+    height: 226px;
     overflow: hidden;
     background-color: #122F61;
     position: relative;
@@ -373,7 +373,7 @@ export default {
   }
   .Table{
     width: 100%;
-    height: 246px;
+    height: 226px;
     position: absolute;
     top: 0;
     left: 0;
