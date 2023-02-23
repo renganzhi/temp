@@ -1,13 +1,13 @@
 <template>
     <div class="EfficiencyPage">
       <div id="Module55">
-        <div class="Mydyj">
+        <div class="Mydyj" v-if="mydData['态度预警数']">
           <div class="YJbox" @click="OpenShowyjBox">
             <div class="img">
               <img src="./newBack/8.png" alt="">
             </div>
             <div class="Value">
-              <div class="data">98 <div class="unit">件</div></div>
+              <div class="data">{{mydData['态度预警数']?mydData['态度预警数'].info:''}} <div class="unit">件</div></div>
               <div class="name">部门承办态度预警</div>
             </div>
           </div>
@@ -24,8 +24,8 @@
                                 <li v-for="(val, ind) in qztsList" :key="ind">
                                 <div  class="eventBox" >
                                     <div>
-                                        <div><span></span>{{val['问题标题']}}</div>
-                                        <div @click="ShowOtherDetails(val)">详情</div>
+                                      <div><span></span>{{val['标题']}}</div>
+                                      <div v-if="val['流转详情'] && val['流转详情'].rows" @click="ShowOtherDetails(val)">详情</div>
                                     </div>
                                     <div>
                                         {{val['描述']}}
@@ -40,18 +40,18 @@
                         <transition name="moveLeft">
                             <div id="Module99Pop" v-show="showotherDetails">
                               <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">部门承办态度详情</span>
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseotherDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['标题'] || ''}}</div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                   {{xqValue['描述'] || ''}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
-                                <div class="block" style="padding: 0 28px;">
-                                    <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
-                                      <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
+                                <div class="block" style="padding: 0 28px;" v-if="xqValue['流转详情']">
+                                    <div class="TimeBox" v-for="(da,index) in xqValue['流转详情'].rows" :key="index">
+                                      <div class="line" v-if="index !== xqValue['流转详情'].rows.length-1"></div>
                                       <div class="radio"></div>
                                       <div class="time">{{da['修改时间']}}</div>
                                       <div class="data">
@@ -67,54 +67,56 @@
                 </div>
           <div class="YJbox">
             <div class="img">
-              <img src="./newBack/9.png" alt="">
+              <img v-if="mydData['态度预警趋势'].info==='下降'" src="./newBack/9.png" alt="">
+              <img v-if="mydData['态度预警趋势'].info!=='下降'" src="./newBack/10.png" alt="">
             </div>
             <div class="Value">
-              <div class="data">下架</div>
+              <div class="data">{{mydData['态度预警趋势'].info}}</div>
               <div class="name">部门承办态度趋势</div>
             </div>
           </div>
           <div class="YJbox">
             <div class="img">
-              <img src="./newBack/10.png" alt="">
+              <img v-if="mydData['不满意趋势'].info==='下降'" src="./newBack/9.png" alt="">
+              <img v-if="mydData['不满意趋势'].info!=='下降'" src="./newBack/10.png" alt="">
             </div>
             <div class="Value">
-              <div class="data">上升</div>
+              <div class="data">{{mydData['不满意趋势'].info}}</div>
               <div class="name">不满意趋势预警</div>
             </div>
           </div>
         </div>
-        <div class="Mydgy">
-          <div class="Gybox" @click="OpenShomydjBox('本日不满意回访数')">
-            <div class="Value">55</div>
+        <div class="Mydgy" v-if="mydData['不满意数']">
+          <div class="Gybox" @click="OpenShomydjBox(mydData['不满意数'].name)">
+            <div class="Value">{{mydData['不满意数'].info}}</div>
             <div class="Name">本日不满意回访数</div>
           </div>
-          <div class="Gybox"  @click="OpenShomydjBox('本日满意回访数')">
-            <div class="Value">555</div>
+          <div class="Gybox"  @click="OpenShomydjBox(mydData['满意数'].name)">
+            <div class="Value">{{mydData['满意数'].info}}</div>
             <div class="Name">本日满意回访数</div>
           </div>
-          <div class="Gybox"  @click="OpenShomydjBox('本日未解决回访数')">
-            <div class="Value">555</div>
+          <div class="Gybox"  @click="OpenShomydjBox(mydData['未解决数'].name)">
+            <div class="Value">{{mydData['未解决数'].info}}</div>
             <div class="Name">本日未解决回访数</div>
           </div>
-          <div class="Gybox"  @click="OpenShomydjBox('本日已解决回访数')">
-            <div class="Value">55</div>
+          <div class="Gybox"  @click="OpenShomydjBox(mydData['解决数'].name)">
+            <div class="Value">{{mydData['解决数'].info}}</div>
             <div class="Name">本日已解决回访数</div>
           </div>
               <div id="Module66" :style="{left:leftData[ShowmydType]+'px'}" v-if="ShowmydBox">
                   <div class="title">
-                    {{ShowmydType}}
+                    {{dataName[ShowmydType]}}
                     <img src="./newBack/16.png" alt="" @click="ShowmydBox=false">
                   </div>
                   <div class="content">
                       <div class="cityEvent" ref="cityEvent"
                           >
                           <ul class="item" ref="item" style="width:100%">
-                              <li v-for="(val, ind) in qztsList" :key="ind">
+                              <li v-for="(val, ind) in mydgyList" :key="ind">
                               <div  class="eventBox" >
                                   <div>
-                                      <div><span></span>{{val['问题标题']}}</div>
-                                      <div @click="ShowmydDetails(val)">详情</div>
+                                      <div><span></span>{{val['标题']}}</div>
+                                      <div v-if="val['流转详情'] && val['流转详情'].rows" @click="ShowmydDetails(val)">详情</div>
                                   </div>
                                   <div>
                                       {{val['描述']}}
@@ -127,20 +129,20 @@
                           </ul>
                       </div>
                       <transition name="moveLeft">
-                          <div id="Module66Pop" v-show="showmydDetails">
+                          <div id="Module66Pop" v-if="showmydDetails">
                             <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">回访详情</span>
                                 <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="ClosemydDetails" src="./background/关闭.png" alt="">
                             </div>
                             <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                              <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{mydValue['问题标题'] || ''}}</div>
+                              <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{mydValue['标题'] || ''}}</div>
                               <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 {{mydValue['描述'] || ''}}
                               </div>
                               <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                               <div class="block" style="padding: 0 28px;">
-                                  <div class="TimeBox" v-for="(da,index) in mydValue.timeLine" :key="index">
-                                    <div class="line" v-if="index !== mydValue.timeLine.length-1"></div>
+                                  <div class="TimeBox" v-for="(da,index) in mydValue['流转详情'].rows" :key="index">
+                                    <div class="line" v-if="index !== mydValue['流转详情'].rows.length-1"></div>
                                     <div class="radio"></div>
                                     <div class="time">{{da['修改时间']}}</div>
                                     <div class="data">
@@ -473,6 +475,8 @@ export default {
       mydValue: {},
       xqValue: {},
       qztsList: [], // 投诉列表
+      mydgyList: [], // 投诉列表
+      mydData: {}, // 投诉列表
       showotherDetails: false,
       dateValue: [],
       selectType: '',
@@ -480,10 +484,16 @@ export default {
       modelData: {},
       bodyData: {},
       leftData: {
-        '本日不满意回访数': -550,
-        '本日满意回访数': -100,
-        '本日未解决回访数': 350,
-        '本日已解决回访数': 800
+        'unpleased': -550,
+        'pleased': -100,
+        'unsolved': 350,
+        'solved': 800
+      },
+      dataName: {
+        'unpleased': '本日不满意回访数',
+        'pleased': '本日满意回访数',
+        'unsolved': '本日未解决回访数',
+        'solved': '本日已解决回访数'
       },
       getOfficeTrend: {
         'text': '曲线图',
@@ -849,30 +859,36 @@ export default {
   components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
   methods: {
     ShowOtherDetails (val) {
-      if (val['工单号']) {
-        $('#lead-screen').addClass('disShow')
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
-          $('#lead-screen').removeClass('disShow')
-          if (res.success && res.obj) {
-            val.timeLine = res.obj.obj.data[0].items.rows
-            this.xqValue = val
-            this.showotherDetails = true
-          }
-        })
+      if (val['流转详情'] && val['流转详情'].rows) {
+        this.xqValue = val
+        this.showotherDetails = true
       }
+      // if (val['工单号']) {
+      //   $('#lead-screen').addClass('disShow')
+      //   this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+      //     $('#lead-screen').removeClass('disShow')
+      //     if (res.success && res.obj) {
+      //       val.timeLine = res.obj.obj.data[0].items.rows
+      //       this.xqValue = val
+      //       this.showotherDetails = true
+      //     }
+      //   })
+      // }
     },
     ShowmydDetails (val) {
-      if (val['工单号']) {
-        $('#lead-screen').addClass('disShow')
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
-          $('#lead-screen').removeClass('disShow')
-          if (res.success && res.obj) {
-            val.timeLine = res.obj.obj.data[0].items.rows
-            this.mydValue = val
-            this.showmydDetails = true
-          }
-        })
+      if (val['流转详情'] && val['流转详情'].rows) {
+        this.mydValue = val
+        this.showmydDetails = true
       }
+      // if (val['工单号']) {
+      //   $('#lead-screen').addClass('disShow')
+      //   this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+      //     $('#lead-screen').removeClass('disShow')
+      //     if (res.success && res.obj) {
+      //       val.timeLine = res.obj.obj.data[0].items.rows
+      //     }
+      //   })
+      // }
     },
     CloseotherDetails () {
       this.showotherDetails = false
@@ -938,6 +954,13 @@ export default {
     },
     OpenShowyjBox () {
       this.ShowyjBox = !this.ShowyjBox
+      if (this.ShowyjBox) {
+        this.axios.get('/leaderview/newDistrict/GetMSSQ22?param=' + this.mydData['态度预警数'].name).then(res => {
+          if (res.success && res.obj.rows) {
+            this.qztsList = res.obj.rows
+          }
+        })
+      }
     },
     ClosemydDetails () {
       this.showmydDetails = false
@@ -945,19 +968,28 @@ export default {
     OpenShomydjBox (type) {
       if (this.ShowmydType === type) {
         this.ShowmydBox = false
+        this.showmydDetails = false
         this.ShowmydType = ''
       } else {
         this.ShowmydBox = true
+        this.showmydDetails = false
         this.ShowmydType = type
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/newDistrict/GetMSSQ22?param=' + type).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            this.mydgyList = res.obj.rows
+          }
+        })
       }
     }
   },
   mounted () {
     this.getBodyParamData()
     // 获取群众投诉数据
-    this.axios.get('/leaderview/newDistrict/GetMSSQ20').then(res => {
-      if (res.success && res.obj.rows) {
-        this.qztsList = res.obj.rows
+    this.axios.get('/leaderview/newDistrict/GetMSSQ22').then(res => {
+      if (res.success && res.obj) {
+        this.mydData = res.obj
       }
     })
   }
@@ -1868,6 +1900,7 @@ export default {
       img{
         width:49px;
         height:49px;
+        cursor: pointer;
       }
     }
     .content{

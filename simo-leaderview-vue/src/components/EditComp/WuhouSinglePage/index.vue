@@ -563,8 +563,8 @@
                     <div class="title"><img src="./newBack/4.png" alt=""></div>
                     <div class="content">
                         <div class="MsgType">
-                          <div :class="!IsreadBox?'checked':'nochecked'" @click="changeIsreadBox(false)">未办事件</div>
-                          <div :class="!IsreadBox?'nochecked':'checked'"  @click="changeIsreadBox(true)">已办事件</div>
+                          <div :class="IsreadBox==='处置中'?'checked':'nochecked'" @click="changeIsreadBox('处置中')">未办事件</div>
+                          <div :class="IsreadBox==='处置中'?'nochecked':'checked'"  @click="changeIsreadBox('已结案')">已办事件</div>
                         </div>
                         <div class="cityEvent" ref="cityEvent">
                             <ul class="item" ref="item">
@@ -581,7 +581,8 @@
                                       <div class="Time">
                                         {{val['上报时间']}}
                                       </div>
-                                      <div class="state">
+                                      {{val['源平台工单号']}}
+                                      <div v-if="incomingflownoList.indexOf(val['源平台工单号']*1)>=0" class="state">
                                         不满意
                                       </div>
                                     </div>
@@ -592,7 +593,7 @@
                         <transition name="moveLeft">
                             <div id="Module5Pop" v-show="showEventDetails">
                               <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">群众诉求详情</span>
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseEventDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
@@ -614,18 +615,20 @@
                                       </div>
                                       <div class="footBox">
                                         <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm===''?'请选择部门':CkeckedBm}}</div>
-                                        <div class="SureBtn dataCenter">确定</div>
+                                        <div class="SureBtn dataCenter" @click="UpDataOk">确定</div>
                                       </div>
                                     </div>
                                   </div>
                                   <div style="display: flex;justify-content: space-between; margin: 0 30px 20px 30px;font-size: 24px;color: #C5EEF3;">
-                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">工单号：</div>
-                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">满意度：</div>
-                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">返遣情况：</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">工单号：{{xqValue['工单号']}}</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">满意度：{{xqValue.mydValue}}</div>
+                                  </div>
+                                  <div style="display: flex;justify-content: space-between; margin: 0 30px 20px 30px;font-size: 24px;color: #C5EEF3;">
+                                    <div class="bgck18 dataLeft" style="width: 100%;height: 50px;padding: 0 10px;">反馈情况：{{xqValue.fkValue}}</div>
                                   </div>
                                 </div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
-                                  {{xqValue['描述'] || ''}}
+                                  {{xqValue['描述'] || '暂无数据'}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
@@ -650,14 +653,14 @@
                         <div class="cityEvent" ref="cityEvent"
                            >
                             <ul class="item" ref="item">
-                                <li v-for="(val, ind) in qztsList" :key="ind">
+                                <li v-for="(val, ind) in tjdbList" :key="ind">
                                 <div  class="eventBox" >
                                     <div>
                                         <div><span></span>{{val['问题标题']}}</div>
                                         <div @click="ShowOtherDetails(val)">详情</div>
                                     </div>
                                     <div>
-                                        {{val['描述']}}
+                                        {{val['问题描述']}}
                                     </div>
                                     <div>
                                         {{val['上报时间']}}
@@ -669,23 +672,23 @@
                         <transition name="moveLeft">
                             <div id="Module6Pop" v-show="showotherDetails">
                               <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">民众诉求详情</span>
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">提级督办详情</span>
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseotherDetails" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['问题标题'] || ''}}</div>
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{mzsqxqValue['问题标题'] || ''}}</div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
-                                  {{xqValue['描述'] || ''}}
+                                  {{mzsqxqValue['问题描述'] || '暂无数据'}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;">
-                                    <div class="TimeBox" v-for="(da,index) in xqValue.timeLine" :key="index">
-                                      <div class="line" v-if="index !== xqValue.timeLine.length-1"></div>
+                                    <div class="TimeBox" v-for="(da,index) in mzsqxqValue.timeLine" :key="index">
+                                      <div class="line" v-if="index !== mzsqxqValue.timeLine.length-1"></div>
                                       <div class="radio"></div>
-                                      <div class="time">{{da['修改时间']}}</div>
+                                      <div class="time">{{da['处置时间']}}</div>
                                       <div class="data">
-                                        <div>流转状态：{{da['当前节点名称']}}</div>
-                                        <div>流转内容：{{da['流转内容']}}</div>
+                                        <div>流转状态：{{da['节点处置状态名称']}}</div>
+                                        <div>流转内容：{{da['处置回复内容']}}</div>
                                       </div>
                                     </div>
                                 </div>
@@ -741,12 +744,15 @@ export default {
       GetMSSQ7: [],
       GetMSSQ16: {},
       qztsList: [], // 投诉列表
+      tjdbList: [],
+      incomingflownoList: [],
       xqValue: {},
+      mzsqxqValue: {},
       showEventDetails: false,
       showTjdbDetails: false,
       CkeckedBm: '',
-      CkeckedBmId: '',
-      IsreadBox: false,
+      CkeckedBmData: {},
+      IsreadBox: '处置中',
       showotherDetails: false,
       treeSetList: [],
       selectTreeId: '',
@@ -1238,10 +1244,12 @@ export default {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
         document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号'] + '&param2=' + val['源平台工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
-            val.timeLine = res.obj.obj.data[0].items.rows
+            val.timeLine = res.obj['处置信息'].data[0].items.rows
+            val.fkValue = res.obj['反馈信息']
+            val.mydValue = res.obj['满意度']
             this.xqValue = val
             this.showEventDetails = true
           }
@@ -1252,15 +1260,54 @@ export default {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
         document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+        //  + val['工单号']
+        this.axios.get('/leaderview/ChengYun4/GetTJDB2?param=202302070950300670').then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
-            val.timeLine = res.obj.obj.data[0].items.rows
-            this.xqValue = val
+            val.timeLine = res.obj.rows
+            this.mzsqxqValue = val
             this.showotherDetails = true
           }
         })
       }
+    },
+    getData (t1, format = 'YYYY-MM-DD HH:mm:ss') {
+      const config = {
+        YYYY: t1.getFullYear(),
+        MM: t1.getMonth() + 1,
+        DD: t1.getDate(),
+        HH: t1.getHours(),
+        mm: t1.getMinutes(),
+        ss: t1.getSeconds()
+      }
+
+      for (const key in config) {
+        format = format.replace(key, config[key])
+      }
+      return format
+    },
+    UpDataOk () {
+      const formData = new FormData()
+      formData.append('id', new Date().getTime() * 1)
+      formData.append('dept', this.CkeckedBmData.dept)
+      formData.append('flowNo', this.xqValue['工单号'])
+      formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData.append('nickname', this.CkeckedBmData.title)
+      formData.append('nickphone', this.CkeckedBmData.nickphone)
+      formData.append('opttag', 'overCheck')
+      formData.append('dept_keshi', this.CkeckedBmData.deptkeshi)
+      formData.append('opttag_2', 1)
+      formData.append('identifier', 1)
+      formData.append('chuzhiresult', '')
+      formData.append('remark', '')
+      $('#lead-screen').addClass('disShow')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success) {
+          this.gettjdbList()
+          this.CloseEventDetails()
+        }
+      })
     },
     CloseotherDetails () {
       this.showotherDetails = false
@@ -1368,6 +1415,7 @@ export default {
     },
     changeIsreadBox (state) {
       this.IsreadBox = state
+      this.getqztsList()
     },
     CloseGFXRYS () {
       this.showGFXRYS = false
@@ -1387,11 +1435,12 @@ export default {
     },
     ChangeSelect (item, data) {
       if (item.length === 1) {
+        console.log(item)
         this.CkeckedBm = item[0].title
-        this.CkeckedBmId = item[0].id
+        this.CkeckedBmData = item[0]
       } else {
         this.CkeckedBm = ''
-        this.CkeckedBmId = ''
+        this.CkeckedBmData = {}
       }
     },
     loadData (item, callback) {
@@ -1400,7 +1449,9 @@ export default {
         newtype = 'members'
       }
       if (item.id) {
+        $('#lead-screen').addClass('disShow')
         this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj.rows) {
             let treeData = []
             if (item.type === 'children') {
@@ -1408,6 +1459,7 @@ export default {
                 treeData.push({
                   title: element['名称'],
                   id: element['组织ID'],
+                  dept: item.title,
                   type: 'members',
                   disabled: true,
                   loading: false,
@@ -1419,6 +1471,9 @@ export default {
               res.obj.rows.forEach(element => {
                 treeData.push({
                   title: element['名称'],
+                  dept: item.dept,
+                  deptkeshi: item.title,
+                  nickphone: element['电话'],
                   id: element['组织ID'],
                   type: newtype
                 })
@@ -1439,8 +1494,12 @@ export default {
     },
     OpenShowTjdbDetails () {
       this.showTjdbDetails = !this.showTjdbDetails
+      this.CkeckedBm = ''
+      this.CkeckedBmData = {}
       if (this.showTjdbDetails) {
+        $('#lead-screen').addClass('disShow')
         this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj.rows) {
             let treeData = []
             res.obj.rows.forEach(element => {
@@ -1458,6 +1517,31 @@ export default {
           }
         })
       }
+    },
+    gettjdbList () {
+      this.tjdbList = []
+      $('#lead-screen').addClass('disShow')
+      this.axios.get('/leaderview/ChengYun4/GetTJDB1').then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success && res.obj.rows) {
+          this.tjdbList = res.obj.rows
+          document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
+        }
+      })
+    },
+    getqztsList () {
+      // 获取群众投诉数据
+      $('#lead-screen').addClass('disShow')
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20?param=' + this.IsreadBox).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success && res.obj['群众诉求']) {
+          this.incomingflownoList = []
+          this.qztsList = []
+          this.qztsList = res.obj['群众诉求'].rows
+          this.incomingflownoList = res.obj['满意度列表']
+          document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+        }
+      })
     },
     getHomePageData () {
       // 获取module1 高诉求人员排行信息
@@ -1520,14 +1604,8 @@ export default {
           this.GetMSSQ16 = res.obj.rows
         }
       })
-      // 获取群众投诉数据
-      this.axios.get('/leaderview/newDistrict/GetMSSQ20').then(res => {
-        if (res.success && res.obj.rows) {
-          this.qztsList = res.obj.rows
-          document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
-          document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
-        }
-      })
+      this.getqztsList()
+      this.gettjdbList()
     }
   },
   mounted () {
@@ -3469,7 +3547,7 @@ export default {
             }
             #Module5Pop{
                 width: 100%;
-                height: 1448px;
+                height: 1294px;
                 background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
                 border: 2px solid;
                 border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
@@ -3718,7 +3796,7 @@ export default {
             }
             #Module6Pop{
                 width: 100%;
-                height: 1448px;
+                height: 1280px;
                 background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
                 border: 2px solid;
                 border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
