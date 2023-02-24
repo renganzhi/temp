@@ -730,7 +730,7 @@
                                       <div class="radio"></div>
                                       <div class="time">{{da['处置时间']}}</div>
                                       <div class="data">
-                                        <div>流转状态：{{da['节点处置状态名称']}}</div>
+                                        <div>流转状态：{{ztysTable[da['节点处置状态名称']]}}</div>
                                         <div>流转内容：{{da['处置回复内容']}}</div>
                                       </div>
                                     </div>
@@ -793,6 +793,11 @@ export default {
       incomingflownoList: [],
       xqValue: {},
       mzsqxqValue: {},
+      ztysTable: {
+        cFinish: '已完成',
+        overCheck: '已结案'
+        // cFinish:'已完成'
+      },
       showEventDetails: false,
       XqTableValue: [],
       showTableDetails: false,
@@ -1321,8 +1326,7 @@ export default {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
         document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
-        //  + val['工单号']
-        this.axios.get('/leaderview/ChengYun4/GetTJDB2?param=202302070950300670').then(res => {
+        this.axios.get('/leaderview/ChengYun4/GetTJDB2?param=' + val['工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
             val.timeLine = res.obj.rows
