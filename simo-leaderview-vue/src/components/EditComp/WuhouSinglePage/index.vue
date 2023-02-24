@@ -96,24 +96,24 @@
                                           </li>
                                       </ul>
                                   </div>
-                        <transition name="moveLeft">
-                            <div id="Module5Pop" v-show="showTableDetails">
-                              <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
-                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">高诉求详情</span>
-                                  <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="showTableDetails=false" src="./background/关闭.png" alt="">
-                              </div>
-                              <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
-                                  <div class="name" style="width:145px">
-                                    {{key}}:
-                                  </div>
-                                  <div class='value' style="width:420px">
-                                    {{data}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                        </transition>
+                                  <transition name="moveLeft">
+                                      <div id="Module5Pop" v-show="showTableDetails">
+                                        <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                            <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">高诉求详情</span>
+                                            <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="showTableDetails=false" src="./background/关闭.png" alt="">
+                                        </div>
+                                        <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                          <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
+                                            <div class="name" style="width:145px">
+                                              {{key}}:
+                                            </div>
+                                            <div class='value' style="width:420px">
+                                              {{data}}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </transition>
                               </div>
                             </transition>
                         </div>
@@ -152,7 +152,7 @@
                                                         <div>{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>投诉类别TOP1</div>
                                                     </div>
-                                                    <div>
+                                                    <div @click="showSqTable(data)">
                                                         <div>{{data['增长']}}</div>
                                                         <div>环比增长次数</div>
                                                     </div>
@@ -187,7 +187,7 @@
                                                         <div>{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>投诉类别TOP1</div>
                                                     </div>
-                                                    <div>
+                                                    <div @click="showSqTable(data)">
                                                         <div>{{data['环比增长']}}</div>
                                                         <div>环比增长次数</div>
                                                     </div>
@@ -202,6 +202,50 @@
                                     </div>
                                 </div>
                             </div>
+                            <transition name="moveRight">
+                              <div class="sqTableBox" v-if="showsqTableBox">
+                                  <div class="title">
+                                      <div>环比增长次数</div>
+                                      <div @click="showsqTableBox = false"><img src="./background/关闭.png" alt=""></div>
+                                  </div>
+                                  <div class="cityEvent" ref="cityEvent">
+                                      <ul class="item" ref="item">
+                                          <li v-for="(val, ind) in grtxqData" :key="ind">
+                                          <div  class="eventBox" >
+                                              <div>
+                                                  <div><span></span>{{val['工单主题']}}</div>
+                                                  <div @click="ShowzZzqzTableDetails(val)">详情</div>
+                                              </div>
+                                              <div>
+                                                  {{val['工单内容']}}
+                                              </div>
+                                              <div>
+                                                  {{val['诉求时间']}}
+                                              </div>
+                                          </div>
+                                          </li>
+                                      </ul>
+                                  </div>
+                                  <transition name="moveLeft">
+                                      <div id="Module5Pop" v-show="zzqzTableDetails">
+                                        <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                            <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">高诉求详情</span>
+                                            <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="zzqzTableDetails=false" src="./background/关闭.png" alt="">
+                                        </div>
+                                        <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                          <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in ZzqzTableValue" :key="index">
+                                            <div class="name" style="width:145px">
+                                              {{key}}:
+                                            </div>
+                                            <div class='value' style="width:420px">
+                                              {{data}}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </transition>
+                              </div>
+                            </transition>
                         </div>
                         <div class="ConditionalList">
                             <div class="title">
@@ -363,7 +407,7 @@
                                             <div>
                                                 <div class="title2">风险分类排名</div>
                                                 <div class="list2">
-                                                    <div class="li2" v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
+                                                    <div class="li2" @click="showgsqxqTable(data)"  v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
                                                         <div>{{index + 1}}</div>
                                                         <div>{{data['类别']}}</div>
                                                         <div>{{data['数量']}}</div>
@@ -403,9 +447,9 @@
                                             <div>
                                                 <div class="title2">风险分类排名</div>
                                                 <div class="list2">
-                                                    <div class="li2" v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
+                                                    <div @click="showgsqxqTable(data)" class="li2" v-show="gsqxqDetail['全年该小区投诉类别top5']" v-for="(data, index) in gsqxqDetail['全年该小区投诉类别top5']?gsqxqDetail['全年该小区投诉类别top5'].rows:[]" :key="index">
                                                         <div>{{index + 1}}</div>
-                                                        <div>{{data['类别']}}</div>
+                                                        <div>{{data['名称']}}</div>
                                                         <div>{{data['数量']}}</div>
                                                     </div>
                                                 </div>
@@ -451,7 +495,7 @@
                                             <div>
                                                 <div class="title2">风险分类排名</div>
                                                 <div class="list2">
-                                                    <div class="li2" v-for="(data, index) in gsqxqDetail['投诉类别数量']?gsqxqDetail['投诉类别数量'].rows:[]" :key="index">
+                                                    <div class="li2" @click="showgsqxqTable(data)"  v-for="(data, index) in gsqxqDetail['投诉类别数量']?gsqxqDetail['投诉类别数量'].rows:[]" :key="index">
                                                         <div>· {{index + 1}}</div>
                                                         <div>{{data['小区']}}</div>
                                                         <div>{{data['次数']}}</div>
@@ -569,11 +613,11 @@
                                         <div class="title2">
                                             高矛盾值小区数
                                             <span>{{qmssqDetail['高矛盾小区']?qmssqDetail['高矛盾小区']['rows'].length:0}}</span>
-                                            <span @click="showGMDZXQ = !showGMDZXQ">详情</span>
+                                            <!-- <span @click="showGMDZXQ = !showGMDZXQ">详情</span> -->
                                         </div>
                                         <div>
                                             <transition name="moveBottom">
-                                                <div class="list3" v-show="showGMDZXQ">
+                                                <div class="list3">
                                                     <div class="li3" v-for="(data, index) in qmssqDetail['高矛盾小区']?qmssqDetail['高矛盾小区'].rows:[]" :key="index">
                                                         <div class="prop1">{{data['小区']}}</div>
                                                         <div class="prop2">{{data['数量']}}</div>
@@ -596,6 +640,51 @@
                             </transition>
                         </div>
                     </div>
+
+                            <transition name="moveRight">
+                              <div class="gsqxqTableBox" v-if="showgsqxqTableBox">
+                                  <div class="title">
+                                      <div>风险分类</div>
+                                      <div @click="showgsqxqTableBox = false"><img src="./background/关闭.png" alt=""></div>
+                                  </div>
+                                  <div class="cityEvent" ref="cityEvent">
+                                      <ul class="item" ref="item">
+                                          <li v-for="(val, ind) in grtgsqxqData" :key="ind">
+                                          <div  class="eventBox" >
+                                              <div>
+                                                  <div><span></span>{{val['工单主题']}}</div>
+                                                  <div @click="ShowgsqxqTableDetails(val)">详情</div>
+                                              </div>
+                                              <div>
+                                                  {{val['工单内容']}}
+                                              </div>
+                                              <div>
+                                                  {{val['诉求时间']}}
+                                              </div>
+                                          </div>
+                                          </li>
+                                      </ul>
+                                  </div>
+                                  <transition name="moveLeft">
+                                      <div id="Module5Pop" v-show="gsqxqTableDetails">
+                                        <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                            <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">风险分类详情</span>
+                                            <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="gsqxqTableDetails=false" src="./background/关闭.png" alt="">
+                                        </div>
+                                        <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                          <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in GsqxqTableValue" :key="index">
+                                            <div class="name" style="width:145px">
+                                              {{key}}:
+                                            </div>
+                                            <div class='value' style="width:420px">
+                                              {{data}}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </transition>
+                              </div>
+                            </transition>
                 </div>
             </div>
         </transition>
@@ -758,7 +847,13 @@ export default {
     return {
       showRYXX: false,
       showTableBox: false,
+      showsqTableBox: false,
+      showgsqxqTableBox: false,
+      gsqxqTableDetails: false,
+      zzqzTableDetails: false,
       grtsxqData: [],
+      grtxqData: [],
+      grtgsqxqData: [],
       isopenShow: false,
       indexOf7: -1,
       indexOf15: -1,
@@ -800,6 +895,8 @@ export default {
       },
       showEventDetails: false,
       XqTableValue: [],
+      ZzqzTableValue: [],
+      GsqxqTableValue: [],
       showTableDetails: false,
       showTjdbDetails: false,
       CkeckedBm: '',
@@ -1292,6 +1389,22 @@ export default {
     clickFunBar (data) {
       this.showTableBox = true
       this.grtsxqData = data['个人投诉详情'].rows || []
+    },
+    showSqTable (data) {
+      this.showsqTableBox = true
+      this.grtxqData = data
+    },
+    showgsqxqTable (data) {
+      this.showgsqxqTableBox = true
+      this.grtgsqxqData = data
+    },
+    ShowgsqxqTableDetails (val) {
+      this.GsqxqTableValue = val
+      this.gsqxqTableDetails = true
+    },
+    ShowzZzqzTableDetails (val) {
+      this.ZzqzTableValue = val
+      this.zzqzTableDetails = true
     },
     ShowXqTableDetails (val) {
       this.XqTableValue = val
@@ -2484,6 +2597,151 @@ export default {
                         }
                     }
                 }
+
+                .sqTableBox{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    z-index: 10;
+                    left: 0;
+                    background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                    border: 2px solid;
+                    border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                    border-radius: 4px;
+                    .title{
+                        height: 76px;
+                        background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                        font-size: 30px;
+                        color: #5AE8FA;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 20px 0 28px;
+                        margin-bottom: 32px;
+                        >div:last-child{
+                            img{
+                                width: 49px;
+                                height:49px;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                    .cityEvent{
+                        width: 100%;
+                        height: 570px;
+                        display: flex;
+                        overflow: auto;
+                        align-items: center;
+                        flex-direction: column;
+                        .item{
+                          width: 100%;
+                        }
+                      .warp{
+                          overflow: hidden;
+                          width: 100%;
+                          height: 100%;
+                          ul{
+                              list-style: none;
+                              padding: 0;
+                              margin: 0 auto;
+                              li{
+                              margin-bottom: 28px;
+                              // background: #122f61;
+                              height: 180px;
+                              }
+                          }
+                      }
+                      li{
+                        padding: 14px 24px 14px 16px;
+                        .eventBox{
+                            width: 100%;
+                            height: 200px;
+                            overflow: hidden !important;
+                            padding: 14px 14px 5px 28px;
+                            // margin-bottom: 10px;
+                            background: url('./newBack/14.png') no-repeat;
+                            background-size: 100% 100%;
+                            overflow-y: scroll;
+                            >div:nth-child(1){
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                >div:nth-child(1) {
+                                    color: #C5EEF3;
+                                    font-size: 26px;
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    span{
+                                        width: 12px;
+                                        height: 12px;
+                                        display: inline-block;
+                                        background: #fcb83c;
+                                        border-radius: 50%;
+                                        margin-right:12px;
+                                    }
+                                }
+                                >div:nth-child(2) {
+                                    color:#C5EEF3;
+                                    font-size: 24px;
+                                    width: 100px;
+                                    height: 40px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    background: rgba(22,223,248,0.10);
+                                    border: 1px solid rgba(22,223,248,0.60);
+                                    border-radius: 17px;
+                                    text-align: center;
+                                    cursor: pointer;
+                                }
+                            }
+                            >div:nth-child(2){
+                                width: 100%;
+                                height: 75px;
+                                padding-left: 24px;
+                                color: rgba(197,238,243,0.8);
+                                font-size: 24px;
+                                margin-top:8px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                -webkit-line-clamp: 2;
+                            }
+                            >div:nth-child(3){
+                                width: 100%;
+                                height: auto;
+                                padding-left: 24px;
+                                color: rgba(197,238,243,0.8);
+                                font-size: 22px;
+                                margin-top:12px;
+                            }
+                            .state{
+                              width: 100px;
+                              height: 40px;
+                              background-image: url('./newBack/13.png');
+                              background-size: 100% 100%;
+                              display: flex;
+                              justify-content: center;
+                              color: black;
+                              align-items: center;
+                            }
+
+                        }
+                      }
+                    }
+                    #Module5Pop{
+                      width: 100%;
+                      height: 100%;
+                      background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                      border: 2px solid;
+                      border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                      border-radius: 4px;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                    }
+                }
             }
             .ConditionalList{
                 width: 824px;
@@ -3614,6 +3872,151 @@ export default {
                         }
                     }
                 }
+            }
+        }
+
+        .gsqxqTableBox{
+            width: 2140px;
+            height: 650px;
+            position: absolute;
+            top: 940px;
+            z-index: 10;
+            left: 715px;
+            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+            border: 2px solid;
+            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+            border-radius: 4px;
+            .title{
+                height: 76px;
+                background: linear-gradient(315deg,rgba(22,223,248,0.02), rgba(22,223,248,0.10) 98%);
+                font-size: 30px;
+                color: #5AE8FA;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px 0 28px;
+                margin-bottom: 32px;
+                >div:last-child{
+                    img{
+                        width: 49px;
+                        height:49px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .cityEvent{
+                width: 100%;
+                height: 530px;
+                display: flex;
+                overflow: auto;
+                align-items: center;
+                flex-direction: column;
+                .item{
+                  width: 100%;
+                }
+              .warp{
+                  overflow: hidden;
+                  width: 100%;
+                  height: 100%;
+                  ul{
+                      list-style: none;
+                      padding: 0;
+                      margin: 0 auto;
+                      li{
+                      margin-bottom: 28px;
+                      // background: #122f61;
+                      height: 180px;
+                      }
+                  }
+              }
+              li{
+                padding: 14px 24px 14px 16px;
+                .eventBox{
+                    width: 100%;
+                    height: 200px;
+                    overflow: hidden !important;
+                    padding: 14px 14px 5px 28px;
+                    // margin-bottom: 10px;
+                    background: url('./newBack/14.png') no-repeat;
+                    background-size: 100% 100%;
+                    overflow-y: scroll;
+                    >div:nth-child(1){
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        >div:nth-child(1) {
+                            color: #C5EEF3;
+                            font-size: 26px;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            span{
+                                width: 12px;
+                                height: 12px;
+                                display: inline-block;
+                                background: #fcb83c;
+                                border-radius: 50%;
+                                margin-right:12px;
+                            }
+                        }
+                        >div:nth-child(2) {
+                            color:#C5EEF3;
+                            font-size: 24px;
+                            width: 100px;
+                            height: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            background: rgba(22,223,248,0.10);
+                            border: 1px solid rgba(22,223,248,0.60);
+                            border-radius: 17px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
+                    }
+                    >div:nth-child(2){
+                        width: 100%;
+                        height: 75px;
+                        padding-left: 24px;
+                        color: rgba(197,238,243,0.8);
+                        font-size: 24px;
+                        margin-top:8px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 2;
+                    }
+                    >div:nth-child(3){
+                        width: 100%;
+                        height: auto;
+                        padding-left: 24px;
+                        color: rgba(197,238,243,0.8);
+                        font-size: 22px;
+                        margin-top:12px;
+                    }
+                    .state{
+                      width: 100px;
+                      height: 40px;
+                      background-image: url('./newBack/13.png');
+                      background-size: 100% 100%;
+                      display: flex;
+                      justify-content: center;
+                      color: black;
+                      align-items: center;
+                    }
+
+                }
+              }
+            }
+            #Module5Pop{
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+              border: 2px solid;
+              border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+              border-radius: 4px;
+              position: absolute;
+              top: 0;
+              left: 0;
             }
         }
     }
