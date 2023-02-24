@@ -1,11 +1,12 @@
 <template>
   <div class="keyprojects">
-    <div class="title">
+    <!-- <div class="title">
       <div class="name">
         重点项目
       </div>
       <div class="openTitle" @click="ChangeisShowModel"></div>
-    </div>
+    </div> -->
+      <div class="openTitle" @click="ChangeisShowModel"></div>
     <div class="body">
       <div class="Data">
         <div class="leftData">
@@ -37,7 +38,7 @@
       </div>
       <transition name="moveLeft">
         <div class="Table" v-if="isShowModel">
-          <Table border :columns="columns1" :height="175" :data="data1" @on-row-click='clickLine'></Table>
+          <Table border :columns="columns1" :height="220" :data="data1" @on-row-click='clickLine'></Table>
         </div>
       </transition>
       <transition name="moveLeft">
@@ -151,7 +152,7 @@ export default {
         m2R2Data.push({
           value: d['数量'],
           legendname: d['名称'],
-          name: d['名称'] + '    ' + d['数量']
+          name: d['名称'] + ':' + d['数量']
         })
       })
       let option = {
@@ -174,28 +175,25 @@ export default {
             return str
           }
         },
-        legend: {
-          type: 'scroll',
-          orient: 'vertical',
-          left: '62%',
-          align: 'left',
-          top: 'middle',
+        'legend': {
+          'icon': 'circle',
+          'x': 'center',
+          top: '70%',
           formatter: function (parms) {
             var str = parms + '个'
             return str
           },
-          textStyle: {
+          'textStyle': {
             color: '#dfdfdf',
-            fontSize: 12
-          },
-          height: 95
+            fontSize: 14
+          }
         },
         series: [
           {
             name: '标题',
             type: 'pie',
-            center: ['35%', '50%'],
-            radius: ['40%', '60%'],
+            center: ['50%', '40%'],
+            radius: ['30%', '40%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
             itemStyle: {
@@ -243,12 +241,25 @@ export default {
             return str
           }
         },
+        'legend': {
+          'icon': 'circle',
+          'x': 'center',
+          top: '70%',
+          formatter: function (parms) {
+            var str = parms + '个'
+            return str
+          },
+          'textStyle': {
+            color: '#dfdfdf',
+            fontSize: 14
+          }
+        },
         series: [
           {
             name: '标题',
             type: 'pie',
-            center: ['50%', '50%'],
-            radius: ['0%', '50%'],
+            center: ['50%', '40%'],
+            radius: ['0%', '40%'],
             clockwise: false, // 饼图的扇区是否是顺时针排布
             avoidLabelOverlap: false,
             itemStyle: {
@@ -259,19 +270,17 @@ export default {
               }
             },
             label: {
-              show: true,
-              formatter: '{b}个',
-              fontSize: 10
+              show: false
             },
-            labelLine: {
-              normal: {
-                length: 3,
-                length2: 6,
-                lineStyle: {
-                  width: 1
-                }
-              }
-            },
+            // labelLine: {
+            //   normal: {
+            //     length: 3,
+            //     length2: 6,
+            //     lineStyle: {
+            //       width: 2
+            //     }
+            //   }
+            // },
             data: m2R2Data
           }
         ]
@@ -285,34 +294,36 @@ export default {
 .keyprojects{
   height: 170px;
   width: 780px;
-  .title{
-    height: 45px;
-    width: 100%;
-    background-image: url('./img/02.png');
+  position: relative;
+  // .title{
+  //   height: 45px;
+  //   width: 100%;
+  //   background-image: url('./img/02.png');
+  //   background-size: 100%;
+  //   position: relative;
+  //   .name{
+  //     color: #d4e7ff;
+  //     margin-left: 50px;
+  //     font-size: 22px;
+  //     height: 100%;
+  //     display: flex;
+  //     align-items: center;
+  //   }
+  // }
+  .openTitle{
+    width: 40px;
+    height: 22px;
+    position: absolute;
+    right: 11px;
+    top: 10px;
+    z-index: 10;
+    cursor: pointer;
+    background-image: url('./img/00.png');
     background-size: 100%;
-    position: relative;
-    .name{
-      color: #d4e7ff;
-      margin-left: 50px;
-      font-size: 22px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-    .openTitle{
-      width: 40px;
-      height: 22px;
-      position: absolute;
-      right: 11px;
-      top: 10px;
-      cursor: pointer;
-      background-image: url('./img/00.png');
-      background-size: 100%;
-    }
   }
   .body{
     width: 100%;
-    height: 175px;
+    height: 220px;
     background-color: #122F61;
     position: relative;
     .Data{
@@ -341,9 +352,7 @@ export default {
             width: 100%;
             display: flex;
             font-size: 20px;
-            background-image: linear-gradient(to top, #32c2d4, #d5efff);
-            -webkit-background-clip: text;
-            color: transparent;
+            color: rgb(212, 231, 255) !important;
             justify-content: center;
             align-items: flex-end;
           }
@@ -352,7 +361,9 @@ export default {
             width: 100%;
             font-size: 18px;
             display: flex;
-            color: #d4e7ff;
+            background-image: -webkit-linear-gradient(bottom, rgb(221, 151, 59), rgb(255, 238, 215)) !important;
+            color: transparent;
+            -webkit-background-clip: text;
             justify-content: center;
             align-items: flex-start;
           }
@@ -372,7 +383,7 @@ export default {
   }
   .Table{
     width: 100%;
-    height: 175px;
+    height: 220px;
     position: absolute;
     top: 0;
     left: 0;
@@ -381,7 +392,7 @@ export default {
   }
   .xqData{
     width: 100%;
-    height: 175px;
+    height: 220px;
     overflow: auto;
     position: absolute;
     top: 0;

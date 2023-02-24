@@ -625,7 +625,6 @@
                                       <div class="Time">
                                         {{val['上报时间']}}
                                       </div>
-                                      {{val['源平台工单号']}}
                                       <div v-if="incomingflownoList.indexOf(val['源平台工单号']*1)>=0" class="state">
                                         不满意
                                       </div>
@@ -1300,7 +1299,7 @@ export default {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
         document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
-        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号'] + '&param2=' + val['源平台工单号']).then(res => {
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号'] + '&param2=' + val['源平台工单号'] + '&param3=' + val['来源']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
             val.timeLine = res.obj['处置信息'].data[0].items.rows
