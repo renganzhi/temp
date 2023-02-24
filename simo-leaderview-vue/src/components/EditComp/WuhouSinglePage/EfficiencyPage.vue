@@ -950,6 +950,12 @@ export default {
           this.getOfficeTrend.chartData.columns = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].columns : []
           this.getOfficeTrend.chartData.rows = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].rows : []
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     getJieDaoParamData (olddata) {
@@ -966,6 +972,12 @@ export default {
           this.getSJLX1.chartData.columns = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].columns : []
           this.getSJLX1.chartData.rows = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].rows : []
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     CloseStreetInfo () {
@@ -999,6 +1011,12 @@ export default {
           if (res.success && res.obj.rows) {
             this.mydgyList = res.obj.rows
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     }
@@ -1828,7 +1846,7 @@ export default {
               padding: 14px 24px 14px 16px;
               .eventBox{
                   width: 100%;
-                  height: 100%;
+                  height: 200px;
                   padding: 14px 14px 5px 28px;
                   overflow: hidden !important;
                   // margin-bottom: 10px;
@@ -1995,7 +2013,7 @@ export default {
               padding: 14px 24px 14px 16px;
               .eventBox{
                   width: 100%;
-                  height: 100%;
+                  height: 200px;
                   padding: 14px 14px 5px 28px;
                   overflow: hidden !important;
                   // margin-bottom: 10px;

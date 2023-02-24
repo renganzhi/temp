@@ -103,7 +103,7 @@
                                   <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="showTableDetails=false" src="./background/关闭.png" alt="">
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
-                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
+                                <div style="margin: 26px;display: flex;font-size: 28px;color: #C5EEF3;overflow: auto;" v-for="(data,key,index) in XqTableValue" :key="index">
                                   <div class="name" style="width:145px">
                                     {{key}}:
                                   </div>
@@ -1309,6 +1309,12 @@ export default {
             this.xqValue = val
             this.showEventDetails = true
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1324,6 +1330,12 @@ export default {
             this.mzsqxqValue = val
             this.showotherDetails = true
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1363,6 +1375,12 @@ export default {
           this.gettjdbList()
           this.CloseEventDetails()
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     CloseotherDetails () {
@@ -1545,6 +1563,12 @@ export default {
             }
             callback(treeData)
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1571,6 +1595,12 @@ export default {
             })
             this.treeSetList = treeData
           }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
         })
       }
     },
@@ -1583,6 +1613,12 @@ export default {
           this.tjdbList = res.obj.rows
           document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     getqztsList () {
@@ -1597,6 +1633,12 @@ export default {
           this.incomingflownoList = res.obj['满意度列表']
           document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
       })
     },
     getHomePageData () {
@@ -2117,7 +2159,7 @@ export default {
                         width: 100%;
                         height: 1210px;
                         display: flex;
-                        overflow: hidden;
+                        overflow: auto;
                         align-items: center;
                         flex-direction: column;
                         .item{
@@ -2142,7 +2184,7 @@ export default {
                         padding: 14px 24px 14px 16px;
                         .eventBox{
                             width: 100%;
-                            height: 100%;
+                            height: 200px;
                             overflow: hidden !important;
                             padding: 14px 14px 5px 28px;
                             // margin-bottom: 10px;
@@ -3670,7 +3712,7 @@ export default {
                   padding: 14px 24px 14px 16px;
                   .eventBox{
                       width: 100%;
-                      height: 100%;
+                      height: 200px;
                       overflow: hidden !important;
                       padding: 14px 14px 5px 28px;
                       // margin-bottom: 10px;
@@ -3929,7 +3971,7 @@ export default {
                   padding: 14px 24px 14px 16px;
                   .eventBox{
                       width: 100%;
-                      height: 100%;
+                      height: 200px;
                       padding: 14px 14px 5px 28px;
                       overflow: hidden !important;
                       // margin-bottom: 10px;
