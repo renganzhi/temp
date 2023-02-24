@@ -12,16 +12,16 @@
         <div class="leftData">
           <div class="data" style="width:260px;height:88px">
             <div class="name" style="font-weight:bold;">项目总数</div>
-            <div class="data1">{{modelBodyData['项目总数'] || 0}}个</div>
+            <div class="data1" style="font-size: 34px;">{{modelBodyData['项目总数'] || 0}}个</div>
           </div>
           <div class="BotData" style="width:260px;height:80px">
             <div class="data" style="width:128px;height:80px">
               <div class="name" style="font-weight:bold;font-size:14px;">总投资</div>
-              <div class="data1" style="font-size:16px;">{{modelBodyData['总投资']||0}}万元</div>
+              <div class="data1">{{modelBodyData['总投资']||0}}万元</div>
             </div>
             <div class="data" style="width:128px;height:80px">
               <div class="name" style="font-weight:bold;font-size:14px;">本年度计划投资</div>
-              <div class="data1" style="font-size:16px;">{{modelBodyData['本年度投资计划']||0}}万元</div>
+              <div class="data1">{{modelBodyData['本年度投资计划']||0}}万元</div>
             </div>
           </div>
         </div>
@@ -122,8 +122,10 @@ export default {
     }
   },
   mounted () {
-    this.mychart = echarts.init(this.$refs.PeiModel)
-    this.mychart2 = echarts.init(this.$refs.PeiModel2)
+    this.mychart = echarts.init(this.$refs.PeiModel, null, {devicePixelRatio: 2.5})
+    this.mychart2 = echarts.init(this.$refs.PeiModel2, null, {devicePixelRatio: 2.5})
+    // this.mychart = echarts.init(this.$refs.PeiModel)
+    // this.mychart2 = echarts.init(this.$refs.PeiModel2)
     this.axios.get('/leaderview/ChengYun4/GetFGW1').then(res => {
       if (res.success) {
         this.modelBodyData = res.obj.rows[0] || {}
@@ -359,7 +361,8 @@ export default {
           .data1{
             height: 55%;
             width: 100%;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 800;
             display: flex;
             background-image: -webkit-linear-gradient(bottom, rgb(221, 151, 59), rgb(255, 238, 215)) !important;
             color: transparent;
