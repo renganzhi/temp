@@ -1,6 +1,23 @@
 <template>
      <div id="backBox">
-        <div  id="cyMap">
+        <div :style="{visibility: this.mapType ? 'visible' : 'hidden'}"  id="cyMap">
+        </div>
+        <iframe :style="{visibility: !this.mapType ? 'visible' : 'hidden'}"  id="BaiDuIframe" style="height:100%;width:100%;z-index:0"
+     src="http://172.16.149.81:8181/appli/start?appliId=1077906546958008320&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe>
+        <div id="areaPop"  v-show="showPop">
+          <div class="closeButton" @click="ClosePop"><Icon type="md-close" /></div>
+          <div class="mytable" v-if="!showContent">
+              <!-- <div class="head" v-show="focusMarker.dataArr.title">{{focusMarker.dataArr.title}}</div> -->
+              <div class="rows" @click="ShowContent(data)" v-for="(data,index) in focusMarker.dataArr.rows" :key="index">
+                {{data[focusMarker.dataArr.title]}}
+              </div>
+          </div>
+          <div class="content" v-if="showContent">
+            <div class="rows" v-for="(value, key) in tableDetail" :key="value">
+              <div class="key">{{key}}</div>
+              <div class="value">{{value}}</div>
+            </div>
+          </div>
         </div>
      </div>
 </template>
@@ -15,6 +32,7 @@ export default {
     return {
       potData: {},
       llzyList: [],
+      mapType: true, // 2d与3d切换
       keyValue: {
         name: '名称',
         sort: '类型',
@@ -95,6 +113,19 @@ export default {
         qzyt: '权证用途',
         sjsyyt: '实际使用业态'
       },
+      mapView: '',
+      imgOverlay: '',
+      focusMarker: {
+        icon: '',
+        point: '',
+        dataArr: {
+          title: '',
+          rows: []
+        }
+      }, // 弹窗点位
+      showPop: false,
+      showContent: false,
+      tableDetail: {},
       header: process.env.NODE_ENV === 'development' ? './static/' : './'
     }
   },
@@ -205,42 +236,53 @@ export default {
       }
     },
     nowPageName: function () {
-      // if (this.nowPageName.indexOf('32:9') >= 0) {
-      //   let centerPoint = new window.BMapGL.Point(104.049785, 30.644979)
-      //   this.map.centerAndZoom(centerPoint, 18)
-      //   this.map.setTilt(53)
-      // } else {
-      //   let centerPoint = new window.BMapGL.Point(104.049785, 30.644979) // 定义一个中心点坐标
-      //   this.map.centerAndZoom(centerPoint, 18) // 设定地图的中心点和坐标并将地图显示在地图容器中 104.02959, 30.60570
-      //   this.map.setTilt(53)
-      // }
+      if (this.nowPageName && this.nowPageName.indexOf('32:9') >= 0) {
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
+        this.map.centerAndZoom(centerPoint, 14.5) // 13.5(内网)/15(外网)
+      } else {
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
+        this.map.centerAndZoom(centerPoint, 14.5) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+      }
+      this.map.setZoom(14.5)
     }
   },
   methods: {
     initMap () {
       this.map = new window.BMapGL.Map('cyMap')
-      let centerPoint = new window.BMapGL.Point(104.049785, 30.644979)
-      this.map.centerAndZoom(centerPoint, 18)
-      this.map.setTilt(53)
-      // if (this.nowPageName.indexOf('32:9') >= 0) {
-      //   let centerPoint = new window.BMapGL.Point(104.049785, 30.644979) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
-      //   this.map.centerAndZoom(centerPoint, 18) // 13.5(内网)/15(外网)
-      //   this.map.setTilt(53)
-      // } else {
-      //   let centerPoint = new window.BMapGL.Point(104.049785, 30.644979) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
-      //   this.map.centerAndZoom(centerPoint, 18) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
-      //   this.map.setTilt(53)
-      // }
+      if (this.nowPageName && this.nowPageName.indexOf('32:9') >= 0) {
+        let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
+        this.map.centerAndZoom(centerPoint, 14.5) // 13.5(内网)/15(外网)
+      } else {
+        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
+        this.map.centerAndZoom(centerPoint, 14.5) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+      }
+      this.map.setZoom(14.5)
+      this.map.setDisplayOptions({
+        poiText: false,
+        poiIcon: false
+      })
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
-      this.map.setMapStyleV2({styleJson: styleJson})
+      this.map.setMapStyleV2({styleJson: styleJson}) // 公网设置地图样式
+      // 内网设置地图样式
       // this.map.setOptions({
       //   style: {
       //     styleJson: styleJson
       //   },
       //   styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
       // })
-      this.map.setDisplayOptions({
-        // poiText: true
+      this.map.addEventListener('zoomend', (e) => {
+        let zoom = this.map.getZoom()
+        if (zoom < 17) {
+          this.map.setDisplayOptions({
+            poiText: false,
+            poiIcon: false
+          })
+        } else {
+          this.map.setDisplayOptions({
+            poiText: true,
+            poiIcon: true
+          })
+        }
       })
       this.getWHQ()
     },
@@ -273,43 +315,43 @@ export default {
               boundaries.forEach(el => {
                 points = []
                 el.forEach(e => {
-                  points.push(new window.BMapGL.Point(e[0], e[1]))
+                  points.push(new window.BMapGL.Point(e[0] + 0.00888, e[1] + 0.0032))
                 })
                 let polygon = new window.BMapGL.Polygon(points, {
-                  fillColor: '#132041', // 填充色
-                  fillOpacity: 0.8, // 填充色透明度
-                  strokeColor: '#25396A', // 边线颜色
+                  fillColor: '#1e8ec6', // 填充色
+                  fillOpacity: 0.4, // 填充色透明度
+                  strokeColor: '#8feee5', // 边线颜色
                   strokeWeight: 2, // 边线宽度
-                  strokeOpacity: 1, // 边线透明度
+                  strokeOpacity: 0.5, // 边线透明度
                   strokeStyle: '' // 边线类型，solid或dashed
                 })
                 polygon.addEventListener('click', e => {
-                  // this.getMapCenter()
+                  this.getMapCenter()
                 })
                 polygon.disableMassClear()
                 this.map.addOverlay(polygon)
               })
             } else {
               boundaries.forEach(element => {
-                points.push(new window.BMapGL.Point(element[0], element[1]))
+                points.push(new window.BMapGL.Point(element[0] + 0.00888, element[1] + 0.0032))
               })
               let polygon = new window.BMapGL.Polygon(points, {
-                fillColor: '#132041', // 填充色
-                fillOpacity: 0.8, // 填充色透明度
-                strokeColor: '#25396A', // 边线颜色
+                fillColor: '#1e8ec6', // 填充色
+                fillOpacity: 0.4, // 填充色透明度
+                strokeColor: '#8feee5', // 边线颜色
                 strokeWeight: 2, // 边线宽度
-                strokeOpacity: 1, // 边线透明度
+                strokeOpacity: 0.5, // 边线透明度
                 strokeStyle: '' // 边线类型，solid或dashed
               })
               polygon.addEventListener('click', e => {
-                // this.getMapCenter()
+                this.getMapCenter()
               })
               polygon.disableMassClear()
               this.map.addOverlay(polygon)
             }
             let pointer = turf.centerOfMass(data.geometry).geometry.coordinates
             if (data.properties.Name === '金花桥街道') {
-              pointer = [103.97374548683935, 30.591885280709842]
+              pointer = [103.97374548683935 + 0.00888, 30.591885280709842 + 0.0032]
             }
             if (data.properties.Name.length === 4) {
               myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(32, 13))
@@ -324,7 +366,7 @@ export default {
             //   myIcon = new window.BMapGL.Icon(this.header + `img/街道名称/${data.properties.Name}.png`, new window.BMapGL.Size(42, 14.85))
             // }
             // 创建标注对象并添加到地图
-            marker = new window.BMapGL.Marker(new window.BMapGL.Point(pointer[0], pointer[1]), {icon: myIcon})
+            marker = new window.BMapGL.Marker(new window.BMapGL.Point(pointer[0] + 0.00888, pointer[1] + 0.0032), {icon: myIcon})
             marker.disableMassClear()
             this.map.addOverlay(marker)
           }
@@ -333,7 +375,8 @@ export default {
     },
     getMapCenter () {
       var cen = this.map.getCenter() // 获取地图中心点
-      alert('地图中心点: (' + cen.lng.toFixed(5) + ', ' + cen.lat.toFixed(5) + ')' + '层级：' + this.map.getZoom())
+      console.log('地图', this.map.getCenter(), this.map.getZoom())
+      // alert('地图中心点: (' + cen.lng.toFixed(5) + ', ' + cen.lat.toFixed(5) + ')' + '层级：' + this.map.getZoom())
     },
     // 清除覆盖物
     removeOverlay () {
@@ -403,7 +446,18 @@ export default {
         }
         let potIcon = new window.BMapGL.Icon(this.header + `img/打点图/${type}.png`, new window.BMapGL.Size(40, 40))
         let marker = new window.BMapGL.Marker(new window.BMapGL.Point(lng, lat), {icon: potIcon})
+
         marker.addEventListener('click', e => {
+          // let popDom = document.getElementById('areaPop')
+          // this.focusMarker.point = marker
+          // this.focusMarker.dataArr = {
+          //   title: columns[0],
+          //   rows: rows
+          // }
+          // this.showPop = true
+          // popDom.style.left = e.pixel.x + 5 + 'px'
+          // popDom.style.top = e.pixel.y + 5 + 'px'
+
           if (this.$parent.ShowTableBox) {
             this.$parent.ShowTableBox(tableData)
           } else if (this.$parent.$parent.ShowTableBox) {
@@ -413,10 +467,33 @@ export default {
         this.map.addOverlay(marker)
       }
     },
+    // 力量资源打点
     MarkLLZY () {
       this.llzyList.forEach(element => {
         this.dotMap(element['经度'], element['纬度'], '力量资源', element)
       })
+    },
+    ClosePop () {
+      if (this.showContent) {
+        this.showContent = false
+        this.tableDetail = {}
+      } else {
+        this.showContent = false
+        this.tableDetail = {}
+        this.showPop = false
+        this.focusMarker = {
+          icon: '',
+          point: '',
+          dataArr: {
+            title: '',
+            rows: []
+          }
+        }
+      }
+    },
+    ShowContent (data) {
+      this.showContent = true
+      this.tableDetail = data
     }
   },
   mounted () {
@@ -425,6 +502,37 @@ export default {
     })
     this.bus.$on('LLZYDot', res => {
       this.llzyList = res
+    })
+    window.onmessage = (e) => {
+      if (e.data.style === '2d') {
+        this.map.centerAndZoom(new window.BMapGL.Point(e.data.lng, e.data.lat), e.data.zoom)
+        this.map.setZoom(e.data.zoom)
+        this.map.setTilt(e.data.tilt)
+        this.map.setHeading(e.data.head)
+        console.log('2d', e)
+        // alert('2d' + '(' + e.data.lng + ',' + e.data.lat + ')')
+      }
+      if (e.data.style === '3d') {
+        console.log('3d', e)
+        // alert('3d' + '(' + e.data.lng + ',' + e.data.lat + ')')
+      }
+    }
+    this.bus.$on('SwitchMap', res => {
+      this.mapType = res.mapType
+      let mapData = {
+        lng: this.map.getCenter().lng,
+        lat: this.map.getCenter().lat,
+        zoom: this.map.getZoom(),
+        tilt: this.map.getTilt(),
+        head: this.map.getHeading(),
+        animation: res.animation,
+        style: res.mapType ? '2d' : '3d'
+      }
+      if (!res.mapType) {
+        window.parent && window.parent.postMessage(mapData, '*')
+      } else {
+        window.parent && window.parent.postMessage(mapData, '*')
+      }
     })
     this.initMap()
   }
@@ -438,6 +546,81 @@ export default {
     #cyMap{
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    >iframe{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #areaPop{
+      width: 300px;
+      height: 150px;
+      background: rgba(65, 108, 179, 0.9);
+      border: 2px solid #62b2e6;
+      border-radius: 5px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      z-index: 10;
+      padding: 0px 10px 10px 10px;
+      .closeButton{
+          width: 100%;
+          font-size: 16px;
+          color: #c5e0f3;
+          text-align: right;
+          cursor: pointer;
+      }
+      .mytable{
+        width: 100%;
+        height: 85%;
+        overflow-y: scroll;
+        background: transparent;
+        .head{
+          width: 100%;
+          text-align: center;
+          color: #62b2e6;
+          font-size: 18px;
+          padding: 2px;
+        }
+        .rows{
+          width: 100%;
+          text-align: center;
+          color: #fff;
+          font-size: 16px;
+          overflow: hidden;
+          padding: 2px;
+          cursor: pointer;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          border-bottom: 1px solid #62b2e6;
+        }
+      }
+      .content{
+        width: 100%;
+        height: 85%;
+        overflow-y: scroll;
+        background: transparent;
+        .rows{
+          width: 100%;
+          align-items: center;
+          font-size: 16px;
+          padding: 2px;
+          .key{
+            width: 100%;
+            color: #62b2e6;
+          }
+          .value{
+            color: #c5e0f3;
+            width: 100%;
+            white-space: pre-wrap;
+          }
+        }
+      }
     }
 }
 
