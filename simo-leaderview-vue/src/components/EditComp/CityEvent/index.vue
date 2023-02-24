@@ -9,13 +9,14 @@
           :data="eventData.rows"
           :class-option="classOption"
           class="warp"
+          @click.native="ClickBox($event)"
         >
           <ul class="item">
-            <li :style="liStyle" v-for="(val, ind) in eventData.rows" @click="showDetails(val)" :key="ind">
-              <div class="eventBox" >
-                  <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
-                  <div class="date" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
-                  <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
+            <li :style="liStyle" v-for="(val, ind) in eventData.rows" :data-obj="JSON.stringify(val)" :key="ind">
+              <div class="eventBox" :data-obj="JSON.stringify(val)">
+                  <div class="title" :data-obj="JSON.stringify(val)" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
+                  <div class="date" :data-obj="JSON.stringify(val)" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
+                  <div class="content" :data-obj="JSON.stringify(val)" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
               </div>
             </li>
           </ul>
@@ -116,8 +117,12 @@ export default {
     }
   },
   methods: {
+    ClickBox ($event) {
+      console.log('event', $event, $event.target.dataset.obj)
+      let data = JSON.parse($event.target.dataset.obj)
+      this.showDetails(data)
+    },
     showDetails (data) {
-      console.log('data', data)
       let d = {}
       for (let i in data) {
         if (i === 'title') {
