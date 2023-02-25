@@ -187,19 +187,19 @@
                                     <div style="color:#F59B42">{{bodyData['街道总览'].rows[0]['办理中']}}</div>
                                     <div style="color:#3DF8C2">{{bodyData['街道总览'].rows[0]['完成数量']}}</div>
                                   </div>
-                                  <div class="datatime allDatatime">
+                                  <!-- <div class="datatime allDatatime">
                                     <div>平均办件时间</div>
                                     <div style="color:#C5EEF3">0天0小时0分钟</div>
-                                  </div>
+                                  </div> -->
                                 </div>
-                                <div class="peoplevalue">
+                                <!-- <div class="peoplevalue">
                                   <div>----</div>
                                   <div>----</div>
                                 </div>
                                 <div class="peoplename">
                                   <div>处置人员</div>
                                   <div>人均办件量</div>
-                                </div>
+                                </div> -->
                               </div>
                               <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各街道数量统计'].rows" :key="index" @click="ShowStreetInfoFun(data)">
                                 <div class="titleTop">
@@ -224,19 +224,19 @@
                                     <div style="color:#F59B42">{{data['办理中']}}</div>
                                     <div style="color:#3DF8C2">{{data['完成数量']}}</div>
                                   </div>
-                                  <div class="datatime">
+                                  <!-- <div class="datatime">
                                     <div>平均办件时间</div>
                                     <div style="color:#C5EEF3">{{data['平均办件时长'] ? data['平均办件时长']:'0天0小时0分钟'}}</div>
-                                  </div>
+                                  </div> -->
                                 </div>
-                                <div class="peoplevalue">
+                                <!-- <div class="peoplevalue">
                                   <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['办件人员数']:'----'}}</div>
                                   <div>{{(data['单位'] ==='簇桥街道' && bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'])?bodyData['簇桥街道-办件人员数和人均办件量_自定义时段'].rows[0]['人均办件量']:'----'}}</div>
                                 </div>
                                 <div class="peoplename">
                                   <div>处置人员</div>
                                   <div>人均办件量</div>
-                                </div>
+                                </div> -->
                               </div>
                           </div>
                       </TabPane>
@@ -262,19 +262,19 @@
                                     <div style="color:#F59B42">{{bodyData['委办局总览'].rows[0]['总办件量'] - bodyData['委办局总览'].rows[0]['完成数量']}}</div>
                                     <div style="color:#3DF8C2">{{bodyData['委办局总览'].rows[0]['完成数量']}}</div>
                                   </div>
-                                  <div class="datatime allDatatime">
+                                  <!-- <div class="datatime allDatatime">
                                     <div>平均办件时间</div>
                                     <div style="color:#C5EEF3">0天10小时30分钟</div>
-                                  </div>
+                                  </div> -->
                                 </div>
-                                <div class="peoplevalue">
+                                <!-- <div class="peoplevalue">
                                   <div>6736</div>
                                   <div>26</div>
                                 </div>
                                 <div class="peoplename">
                                   <div>处置人员</div>
                                   <div>人均办件量</div>
-                                </div>
+                                </div> -->
                               </div>
                               <div class="streeBox backgroun25" v-for="(data,index) in bodyData['各委办局数量统计'].rows" :key="index">
                                 <div class="titleTop">
@@ -296,19 +296,19 @@
                                     <div style="color:#F59B42">{{data['办理中']}}</div>
                                     <div style="color:#3DF8C2">{{data['完成数量']}}</div>
                                   </div>
-                                  <div class="datatime">
+                                  <!-- <div class="datatime">
                                     <div>平均办件时间</div>
                                     <div style="color:#C5EEF3">0天10小时30分钟</div>
-                                  </div>
+                                  </div> -->
                                 </div>
-                                <div class="peoplevalue">
+                                <!-- <div class="peoplevalue">
                                   <div>6736</div>
                                   <div>26</div>
                                 </div>
                                 <div class="peoplename">
                                   <div>处置人员</div>
                                   <div>人均办件量</div>
-                                </div>
+                                </div> -->
                               </div>
                           </div>
                       </TabPane>
@@ -1270,7 +1270,7 @@ export default {
                   display: inline-block;
                   .titleTop{
                     width: 100%;
-                    height: 140px;
+                    height: 180px;
                     display: flex;
                     justify-content: space-between;
                     .leftOne{
@@ -1281,7 +1281,7 @@ export default {
                         color: #C5EEF3;
                         position: relative;
                         margin-top: -6px;
-                        font-size: 28px;
+                        font-size: 30px;
                       }
                       .streeNum{
                         width: 100%;
@@ -1291,7 +1291,7 @@ export default {
                       span{
                         width: 100%;
                         color: #FFFFFF;
-                        font-size: 20px;
+                        font-size: 24px;
                       }
                     }
                     .rightpic{
@@ -1299,25 +1299,25 @@ export default {
                       justify-content: center;
                       align-items: center;
                       img{
-                        height: 100px;
-                        width: 100px;
+                        height: 110px;
+                        width: 110px;
                       }
                     }
                   }
                   .newprogress{
                     width: 100%;
-                    height: 160px;
+                    height: 200px;
                     display: flex;
                     flex-wrap: wrap;
                     color: white;
                     .canvas{
                       width: 100%;
-                      height: 30px;
+                      height: 40px;
                     }
                     .data1{
                       width: 100%;
-                      height: 24px;
-                      font-size: 20px;
+                      height: 34px;
+                      font-size: 28px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1327,8 +1327,8 @@ export default {
                     }
                     .data2{
                       width: 100%;
-                      height: 24px;
-                      font-size: 24px;
+                      height: 34px;
+                      font-size: 38px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1342,8 +1342,8 @@ export default {
                     }
                     .datatime{
                       width: 100%;
-                      height: 60px;
-                      font-size: 22px;
+                      height: 70px;
+                      font-size: 26px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1385,7 +1385,7 @@ export default {
                   padding: 24px;
                   .titleTop{
                     width: 100%;
-                    height: 140px;
+                    height: 180px;
                     display: flex;
                     justify-content: space-between;
                     .leftOne{
@@ -1396,7 +1396,7 @@ export default {
                         color: #C5EEF3;
                         position: relative;
                         margin-top: -6px;
-                        font-size: 28px;
+                        font-size: 30px;
                       }
                       .streeNum{
                         width: 100%;
@@ -1406,7 +1406,7 @@ export default {
                       span{
                         width: 100%;
                         color: #FFFFFF;
-                        font-size: 20px;
+                        font-size: 24px;
                       }
                     }
                     .rightpic{
@@ -1414,25 +1414,25 @@ export default {
                       justify-content: center;
                       align-items: center;
                       img{
-                        height: 100px;
-                        width: 100px;
+                        height: 110px;
+                        width: 110px;
                       }
                     }
                   }
                   .newprogress{
                     width: 100%;
-                    height: 160px;
+                    height: 200px;
                     display: flex;
                     flex-wrap: wrap;
                     color: white;
                     .canvas{
                       width: 100%;
-                      height: 30px;
+                      height: 40px;
                     }
                     .data1{
                       width: 100%;
-                      height: 24px;
-                      font-size: 20px;
+                      height: 34px;
+                      font-size: 28px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1442,8 +1442,8 @@ export default {
                     }
                     .data2{
                       width: 100%;
-                      height: 24px;
-                      font-size: 24px;
+                      height: 34px;
+                      font-size: 38px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1457,8 +1457,8 @@ export default {
                     }
                     .datatime{
                       width: 100%;
-                      height: 60px;
-                      font-size: 22px;
+                      height: 70px;
+                      font-size: 26px;
                       display: flex;
                       justify-content: space-between;
                       div{
@@ -1467,20 +1467,20 @@ export default {
                       }
                     }
                   }
-                  .peoplevalue{
-                    height: 40px;
-                    font-size: 24px;
-                    color: #5AE8FA;
-                    display: flex;
-                    justify-content: space-between;
-                  }
-                  .peoplename{
-                    height: 40px;
-                    font-size: 20px;
-                    display: flex;
-                    justify-content: space-between;
-                    color: #C5EEF3;
-                  }
+                  // .peoplevalue{
+                  //   height: 40px;
+                  //   font-size: 24px;
+                  //   color: #5AE8FA;
+                  //   display: flex;
+                  //   justify-content: space-between;
+                  // }
+                  // .peoplename{
+                  //   height: 40px;
+                  //   font-size: 20px;
+                  //   display: flex;
+                  //   justify-content: space-between;
+                  //   color: #C5EEF3;
+                  // }
                 }
             }
         }
