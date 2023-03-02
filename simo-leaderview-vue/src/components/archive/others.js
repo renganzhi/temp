@@ -24,9 +24,11 @@ import WuhoPointBox from '@/components/EditComp/WuhoPointBox/config.js'
 import WuhoYXHL from '@/components/EditComp/WuhoYXHL/config.js'
 import CYZBTX from '@/components/EditComp/CYZBTX/config.js'
 import NewCYZBTX from '@/components/EditComp/NewCYZBTX/config.js'
+import BigNewCYZBTX from '@/components/EditComp/BigNewCYZBTX/config.js'
 import WuHolunboTab from '@/components/EditComp/WuHolunboTab/config.js'
 import WoHoNumber from '@/components/EditComp/WoHoNumber/config.js'
 import AppMarket from '@/components/EditComp/AppMarket/config.js'
+import BigAppMarket from '@/components/EditComp/BigAppMarket/config.js'
 import KeyProjects from '@/components/EditComp/KeyProjects/config.js'
 
 const others = {
@@ -75,9 +77,11 @@ const others = {
     WuhoYXHL.item,
     CYZBTX.item,
     NewCYZBTX.item,
+    BigNewCYZBTX.item,
     WuHolunboTab.item,
     WuhoMaoBL.item,
     AppMarket.item,
+    BigAppMarket.item,
     KeyProjects.item
   ]
 }
