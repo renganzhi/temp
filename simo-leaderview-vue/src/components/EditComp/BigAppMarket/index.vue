@@ -1,5 +1,5 @@
 <template>
-  <div class="appmarket">
+  <div class="Bigappmarket">
     <div class='market'>
       <div class="title">
         <div class="openTitle" @click="isShowModel = true"></div>
@@ -76,7 +76,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.appmarket{
+.Bigappmarket{
   height: 100%;
   width: 100%;
   position: relative;
@@ -85,39 +85,41 @@ export default {
     width: 100%;
     position: relative;
     .title{
-      height: 45px;
+      height: 72px;
       width: 100%;
       background-image: url('./img/124.png');
-      background-size: 100%;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       position: relative;
       .openTitle{
         width: 40px;
         height: 22px;
         position: absolute;
         right: 11px;
-        top: 10px;
+        top: 22px;
         cursor: pointer;
         background-image: url('./img/122.png');
-        background-size: 100%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
       }
     }
     .appmodel{
       width: 100%;
-      height: 53px;
-      margin-top: 7px;
+      height: 82px;
+      margin-top: 14px;
       display: flex;
       align-items: center;
       background-image: url('./img/123.png');
       background-size: 100%;
       a{
         color: #C8E0FF;
-        font-size: 16px;
+        font-size: 28px;
       }
     }
     .appmodel::before{
       content: '';
-      height: 8px;
-      width: 8px;
+      height: 16px;
+      width: 16px;
       margin-right: 10px;
       margin-left: 10px;
       display: inline-block;
@@ -126,32 +128,34 @@ export default {
     }
   }
   .showModelBox{
-    width: 780px;
-    height: 545px;
+    width: 1170px;
+    height: 793px;
     position: absolute;
     right: 0;
     bottom: 0;
     .title{
-      height: 45px;
+      height: 73px;
       width: 100%;
       background-image: url('./img/125.png');
-      background-size: 100%;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       position: relative;
       .closeTitle{
-        width: 26px;
-        height: 26px;
+        width: 39px;
+        height: 39px;
         position: absolute;
         right: 11px;
         top: 10px;
         cursor: pointer;
         background-image: url('./img/126.png');
-        background-size: 100%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
       }
     }
     .ModelBody{
       width: 100%;
-      height: 500px;
-      padding: 10px 20px;
+      height: 720px;
+      padding: 20px;
       background-color: #112C5C;
       .selectTitle{
         width: 100%;
@@ -160,45 +164,46 @@ export default {
         align-items: center;
         padding-left: 4px;
         input{
-          height: 32px !important;
+          height: 50px !important;
         }
         .search{
-          height: 32px;
-          width: 32px;
+          height: 50px;
+          width: 50px;
           background-image: url('./img/127.png');
           background-size: 100%;
           display: inline-block;
           cursor: pointer;
-          margin-left: 8px;
+          margin-left: 10px;
         }
       }
       .dataBody{
         width: 100%;
-        height: 430px;
+        height: 566px;
         display: flex;
         align-items: flex-start;
         flex-wrap: wrap;
         justify-content: flex-start;
         overflow: auto;
         .data{
-          height: 85px;
-          width: 140px;
+          height: 131px;
+          width: 260px;
           background-image: url('./img/128.png');
-          background-size: 100%;
-          margin: 3px;
-          padding: 10px 10px 10px 23px;
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          margin: 10px;
+          padding: 20px 20px 20px 25px;
           .name{
             color: #C8E0FF;
-            font-size: 14px;
+            font-size: 24px;
             position: relative;
           }
           .name::before{
             content: '';
-            height: 8px;
+            height: 16px;
             position: absolute;
-            left: -24px;
-            top: 6px;
-            width: 8px;
+            left: -28px;
+            top: 11px;
+            width: 16px;
             margin-right: 10px;
             margin-left: 10px;
             display: inline-block;
@@ -207,7 +212,7 @@ export default {
           }
           .name2{
             color: #52D6E7;
-            font-size: 12px;
+            font-size: 20px;
           }
         }
       }
@@ -215,7 +220,7 @@ export default {
   }
 }
 
-.appmarket{
+.Bigappmarket{
     display: flex;
     flex-wrap: wrap;
     font-family: monospace !important;
@@ -315,5 +320,15 @@ export default {
         transform: translateY(0);
     }
     }
+}
+</style>
+
+<style lang="scss">
+.Bigappmarket{
+  .selectTitle{
+    .ivu-input{
+      height: 50px !important;
+    }
+  }
 }
 </style>

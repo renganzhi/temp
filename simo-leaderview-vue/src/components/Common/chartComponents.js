@@ -55,6 +55,7 @@ import WuhoPointBox from '@/components/EditComp/WuhoPointBox' // 散点图
 import WuhoYXHL from '@/components/EditComp/WuhoYXHL' // 散点图
 import CYZBTX from '@/components/EditComp/CYZBTX' // 散点图
 import NewCYZBTX from '@/components/EditComp/NewCYZBTX'
+import BigNewCYZBTX from '@/components/EditComp/BigNewCYZBTX'
 import WuHolunboTab from '@/components/EditComp/WuHolunboTab' // 散点图
 import WoHoNumber from '@/components/EditComp/WoHoNumber' // 散点图
 import WuhouTable from '@/components/EditComp/WuhouTable' // 散点图
@@ -88,6 +89,7 @@ import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage'
 import AppMarket from '@/components/EditComp/AppMarket'
+import BigAppMarket from '@/components/EditComp/BigAppMarket'
 import KeyProjects from '@/components/EditComp/KeyProjects'
 import EventVenation from '@/components/EditComp/EventVenation'
 import StreetMenu from '@/components/EditComp/StreetMenu'
@@ -155,6 +157,7 @@ export default {
   WuhoYXHL,
   CYZBTX,
   NewCYZBTX,
+  BigNewCYZBTX,
   WuHolunboTab,
   WuhoMaoBL,
   WoHoNumber,
@@ -191,6 +194,7 @@ export default {
   CityEvent,
   WuhouSinglePage,
   AppMarket,
+  BigAppMarket,
   KeyProjects,
   EventVenation,
   StreetMenu,
