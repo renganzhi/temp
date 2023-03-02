@@ -1,6 +1,100 @@
 <template>
     <div class="EfficiencyPage">
       <div id="Module55">
+        <div class="Mywjyj">
+          <div :class="{normalYJbox: !ifWarnning,activeYJbox: ifWarnning}">
+            <div class="img">
+              <img v-if="ifWarnning && showWJYJWarnning" src="./newBack/27.png" alt="">
+              <img v-if="!ifWarnning" src="./newBack/25.png" alt="">
+            </div>
+            <div class="Value" @click.stop="ShowWJYJBox">
+              <div class="data">{{WJYJData.count}}</div>
+              <div class="name">危急预警</div>
+            </div>
+
+                <div id="Module999" v-if="showWJYJBox">
+                    <div class="title">
+                      危急预警
+                      <img src="./newBack/16.png" alt="" @click.stop="CloseWJYJBox">
+                    </div>
+                    <div class="content">
+                        <div class="cityEvent" ref="cityEvent"
+                           >
+                            <ul class="item" ref="item" style="width:100%">
+                                <li v-for="(val, ind) in wjyjList" :key="ind">
+                                <div  class="eventBox" >
+                                    <div>
+                                      <div><span></span>{{val['问题标题']}}</div>
+                                      <div @click.stop="ShowWJYJDetail(val)">详情</div>
+                                    </div>
+                                    <div>
+                                        {{val['描述']}}
+                                    </div>
+                                    <div>
+                                        {{val['上报时间']}}
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <transition name="moveLeft">
+                            <div id="Module999Pop" v-show="showWJYJDetail">
+                              <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                  <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">危急预警详情</span>
+                                  <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click.stop="CloseWJYJDetail" src="./background/关闭.png" alt="">
+                              </div>
+                              <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
+                                <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{wjyjDetail['问题标题'] || ''}}</div>
+                                          <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 30px;">
+                                            <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="OpenShowTjdbDetails3">
+                                              提级督办
+                                            </div>
+                                          </div>
+                                          <div class="tjdbBox" v-show="showTjdbDetails3">
+                                              <div class="titleName">
+                                                <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                                <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails3 = false" src="./background/关闭.png" alt="">
+                                              </div>
+                                              <div class="bodyChose">
+                                                <Tree :data="treeSetList3"
+                                                  :load-data="loadData"
+                                                  @on-select-change='ChangeSelect3'></Tree>
+                                              </div>
+                                              <div class="footBox">
+                                                <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm3===''?'请选择部门':CkeckedBm3}}</div>
+                                                <div class="SureBtn dataCenter" @click="UpDataOk3(wjyjDetail['工单号'])">确定</div>
+                                              </div>
+                                          </div>
+                                  <div style="display: flex;justify-content: space-between; margin: 0 30px 20px 30px;font-size: 24px;color: #C5EEF3;">
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">工单号：{{wjyjDetail['工单号']}}</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">流程处置状态：{{wjyjDetail['流程处置状态']}}</div>
+                                  </div>
+                                  <div style="display: flex;justify-content: space-between; margin: 0 30px 20px 30px;font-size: 24px;color: #C5EEF3;">
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">来源：{{wjyjDetail['来源']}}</div>
+                                    <div class="bgck18 dataLeft" style="width: 400px;height: 50px;padding: 0 10px;">上报时间：{{wjyjDetail['上报时间']}}</div>
+                                  </div>
+                                <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                  {{wjyjDetail['描述'] || ''}}
+                                </div>
+                                <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
+                                <div class="block" style="padding: 0 28px;" v-if="wjyjDetail['流转详情']">
+                                    <div class="TimeBox" v-for="(da,index) in wjyjDetail['流转详情']" :key="index">
+                                      <div class="line" v-if="index !== wjyjDetail['流转详情'].length-1"></div>
+                                      <div class="radio"></div>
+                                      <div class="time">{{da['修改时间']}}</div>
+                                      <div class="data">
+                                        <div>流转状态：{{da['当前节点名称']}}</div>
+                                        <div>流转内容：{{da['流转内容']}}</div>
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+          </div>
+        </div>
         <div class="Mydyj" v-if="mydData['态度预警数']">
           <div class="YJbox" @click="OpenShowyjBox">
             <div class="img">
@@ -364,14 +458,14 @@
                   <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}} <div :class="true?'upBack':'downBack'">66%</div></div>
                   <div>平均办件时间</div>
                 </div>
-                <div class="peoplevalue">
+                <!-- <div class="peoplevalue">
                   <div style="color:#5AE8FA">6736</div>
                   <div>共有处置人员</div>
                 </div>
                 <div class="peoplename">
                   <div style="color:#5AE8FA">26</div>
                   <div>人均办件量</div>
-                </div>
+                </div> -->
               </div>
               <div class='bodyData' style="display: flex;width: 100%;height: 710px;">
                 <div class="partBody">
@@ -486,26 +580,39 @@ export default {
     return {
       showStreetInfo: false,
       ShowyjBox: false,
+      showWJYJBox: false,
+      showWJYJWarnning: true,
+      clock: '',
       ShowmydBox: false,
       ShowmydType: '',
       showmydDetails: false,
+      ifWJYJ: false,
       SelectType: 'normal',
       mydValue: {},
       xqValue: {},
+      wjyjDetail: {},
       qztsList: [], // 投诉列表
+      wjyjList: [],
+      ifWarnning: false,
       mydgyList: [], // 投诉列表
       mydData: {}, // 投诉列表
+      WJYJData: {},
+      showTjdbDetails3: false,
+      CkeckedBm3: '',
+      CkeckedBmData3: {},
+      treeSetList3: [],
       showotherDetails: false,
+      showWJYJDetail: false,
       dateValue: [],
       selectType: '',
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
       modelData: {},
       bodyData: {},
       leftData: {
-        'unpleased': -550,
-        'pleased': -100,
-        'unsolved': 350,
-        'solved': 800
+        'unpleased': -620,
+        'pleased': -255,
+        'unsolved': 85,
+        'solved': 370
       },
       dataName: {
         'unpleased': '本日不满意回访数',
@@ -894,6 +1001,166 @@ export default {
       //   })
       // }
     },
+    ShowWJYJDetail (val) {
+      if (val['工单号']) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号']).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj) {
+            val['流转详情'] = res.obj['处置信息'].data[0].items.rows
+            this.wjyjDetail = val
+            this.showWJYJDetail = true
+          }
+        })
+      }
+    },
+    CloseWJYJDetail () {
+      this.showWJYJDetail = false
+      this.showTjdbDetails3 = false
+      this.CkeckedBm3 = ''
+      this.CkeckedBmData3 = {}
+    },
+    loadData (item, callback) {
+      let newtype = ''
+      if (item.type === 'children') {
+        newtype = 'members'
+      }
+      if (item.id) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            if (item.type === 'children') {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  id: element['组织ID'],
+                  dept: item.title,
+                  type: 'members',
+                  disabled: true,
+                  loading: false,
+                  disableCheckbox: true,
+                  children: []
+                })
+              })
+            } else {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  dept: item.dept,
+                  deptkeshi: item.title,
+                  nickphone: element['电话'],
+                  id: element['组织ID'],
+                  type: newtype
+                })
+              })
+            }
+            if (treeData.length === 0) {
+              treeData.push({
+                title: '暂无数据',
+                id: -1,
+                type: '',
+                disabled: true
+              })
+            }
+            callback(treeData)
+          }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    getData (t1, format = 'YYYY-MM-DD HH:mm:ss') {
+      const config = {
+        YYYY: t1.getFullYear(),
+        MM: t1.getMonth() + 1,
+        DD: t1.getDate(),
+        HH: t1.getHours(),
+        mm: t1.getMinutes(),
+        ss: t1.getSeconds()
+      }
+
+      for (const key in config) {
+        format = format.replace(key, config[key])
+      }
+      return format
+    },
+    UpDataOk3 (flowNo) {
+      const formData = new FormData()
+      formData.append('id', new Date().getTime() * 1)
+      formData.append('dept', this.CkeckedBmData3.dept)
+      formData.append('flowNo', flowNo)
+      formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData.append('nickname', this.CkeckedBmData3.title)
+      formData.append('nickphone', this.CkeckedBmData3.nickphone)
+      formData.append('opttag', 'overCheck')
+      formData.append('dept_keshi', this.CkeckedBmData3.deptkeshi)
+      formData.append('opttag_2', 1)
+      formData.append('identifier', 1)
+      formData.append('chuzhiresult', '')
+      formData.append('remark', '')
+      $('#lead-screen').addClass('disShow')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success) {
+          this.$parent.gettjdbList()
+          this.showTjdbDetails3 = false
+          // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
+        }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
+      })
+    },
+    ChangeSelect3 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm3 = item[0].title
+        this.CkeckedBmData3 = item[0]
+      } else {
+        this.CkeckedBm3 = ''
+        this.CkeckedBmData3 = {}
+      }
+    },
+    OpenShowTjdbDetails3 () {
+      this.showTjdbDetails3 = !this.showTjdbDetails3
+      this.CkeckedBm3 = ''
+      this.CkeckedBmData3 = {}
+      if (this.showTjdbDetails3) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList3 = treeData
+          }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
     ShowmydDetails (val) {
       if (val['流转详情'] && val['流转详情'].rows) {
         this.mydValue = val
@@ -993,6 +1260,27 @@ export default {
         })
       }
     },
+    ShowWJYJBox () {
+      this.showWJYJBox = true
+      // 已读操作
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20_3?param=点击').then(res => {
+        if (res.success && res.obj) {
+          this.axios.get('/leaderview/newDistrict/GetMSSQ20_3?param=刷新').then(res => {
+            if (res.success && res.obj) {
+              if (res.obj.count) {
+                this.ifWarnning = true
+              } else {
+                this.ifWarnning = false
+              }
+            }
+          })
+        }
+      })
+    },
+    CloseWJYJBox () {
+      this.showWJYJBox = false
+      this.showWJYJDetail = false
+    },
     ClosemydDetails () {
       this.showmydDetails = false
     },
@@ -1019,16 +1307,69 @@ export default {
           $('#lead-screen').removeClass('disShow')
         })
       }
+    },
+    startClock () {
+      this.showWJYJWarnning = true
+      if (this.WJYJData.count) {
+        let num = 1
+        if (!this.clock) {
+          this.clock = setInterval(() => {
+            if (num % 2 === 0) {
+              this.showWJYJWarnning = false
+            } else {
+              this.showWJYJWarnning = true
+            }
+            num++
+          }, 1000)
+        }
+      } else {
+        clearInterval(this.clock)
+        this.clock = ''
+      }
+    },
+    getHomeData () {
+      // 获取群众投诉数据
+      this.axios.get('/leaderview/newDistrict/GetMSSQ22').then(res => {
+        if (res.success && res.obj) {
+          this.mydData = res.obj
+        }
+      })
+      // 获取危急预警当日数据
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20_2').then(res => {
+        if (res.success && res.obj) {
+          this.WJYJData = res.obj
+          this.wjyjList = res.obj.rows
+        }
+      })
+      // 获取危急预警最新未读消息
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20_3?param=刷新').then(res => {
+        if (res.success && res.obj) {
+          if (res.obj.count) {
+            this.ifWarnning = true
+          } else {
+            this.ifWarnning = false
+          }
+        }
+      })
+    }
+  },
+  watch: {
+    WJYJData: {
+      handler () {
+        this.startClock()
+      },
+      deep: true
     }
   },
   mounted () {
     this.getBodyParamData()
-    // 获取群众投诉数据
-    this.axios.get('/leaderview/newDistrict/GetMSSQ22').then(res => {
-      if (res.success && res.obj) {
-        this.mydData = res.obj
-      }
-    })
+    this.getHomeData()
+  },
+  beforeDestroy () {
+    if (this.clock) {
+      clearInterval(this.clock)
+      this.clock = ''
+    }
   }
 }
 </script>
@@ -1151,7 +1492,362 @@ export default {
   // width: 2913px;
   height: 370px;
   display: flex;
+  justify-content: right;
   margin-top: 108px;
+  .Mywjyj{
+    width: 440px;
+    height: 370px;
+    margin-right: 32px;
+    background: url('./newBack/23.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding-top: 90px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    .normalYJbox{
+      width: 350px;
+      height: 196px;
+      display: flex;
+      background-image: url('./newBack/24.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      .img{
+        height: 100%;
+        width: 134px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+          width: 88px;
+          height: 97px;
+        }
+      }
+      .Value{
+        padding-left:20px;
+        .data{
+          font-size: 44px;
+          color: #FFFFFF;
+          height: 55%;
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
+          .unit{
+            font-size: 28px;
+          }
+        }
+        .name{
+          font-size: 28px;
+          height: 45%;
+          color: #16DFF8;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+        }
+      }
+    }
+    .activeYJbox{
+      width: 350px;
+      height: 196px;
+      display: flex;
+      background-image: url('./newBack/26.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      .img{
+        height: 100%;
+        width: 134px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+          width: 88px;
+          height: 97px;
+        }
+      }
+      .Value{
+        padding-left: 20px;
+        .data{
+          font-size: 44px;
+          color: #FFFFFF;
+          height: 55%;
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
+          .unit{
+            font-size: 28px;
+          }
+        }
+        .name{
+          font-size: 28px;
+          height: 45%;
+          color: #FF606C;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+        }
+      }
+    }
+    #Module999{
+        width: 932px;
+        height: 1332px;
+        background: #0B1B2A;
+        padding: 0;
+        position: absolute;
+        top: -0;
+        left: 470px;
+        background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+        z-index: 10;
+        .title{
+          color: #5AE8FA;
+          font-size: 30px;
+          height: 76px;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          background-image: linear-gradient(45deg, hsla(187, 94%, 53%, 0.1), hsla(187, 94%, 53%, 0.02),);
+          padding: 0 20px;
+          align-items: center;
+          img{
+            width:49px;
+            height:49px;
+          }
+        }
+        .content{
+            position: relative;
+            overflow: hidden;
+            .cityEvent{
+                width: 100%;
+                height: 1230px;
+                margin: 20px 0;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                overflow: auto;
+                .item{
+                  width: 100%;
+                }
+                .warp{
+                    overflow: hidden;
+                    width: 100%;
+                    height: 100%;
+                    ul{
+                        list-style: none;
+                        padding: 0;
+                        margin: 0 auto;
+                        li{
+                        margin-bottom: 28px;
+                        // background: #122f61;
+                        height: 180px;
+                        }
+                    }
+                }
+                li{
+                  padding: 14px 24px 14px 16px;
+                  .eventBox{
+                      width: 100%;
+                      height: 200px;
+                      padding: 14px 14px 5px 28px;
+                      overflow: hidden !important;
+                      // margin-bottom: 10px;
+                      background: url('./newBack/14.png') no-repeat;
+                      background-size: 100% 100%;
+                      overflow-y: scroll;
+                      >div:nth-child(1){
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-between;
+                          >div:nth-child(1) {
+                              color: #C5EEF3;
+                              font-size: 26px;
+                              overflow: hidden;
+                              white-space: nowrap;
+                              text-overflow: ellipsis;
+                              span{
+                                  width: 12px;
+                                  height: 12px;
+                                  display: inline-block;
+                                  background: #fcb83c;
+                                  border-radius: 50%;
+                                  margin-right:12px;
+                              }
+                          }
+                          >div:nth-child(2) {
+                              color:#C5EEF3;
+                              font-size: 24px;
+                              width: 80px;
+                              height: 32px;
+                              text-align: center;
+                              line-height: 32px;
+                              background: rgba(22,223,248,0.10);
+                              border: 1px solid rgba(22,223,248,0.60);
+                              border-radius: 17px;
+                              text-align: center;
+                              cursor: pointer;
+                          }
+                      }
+                      >div:nth-child(2){
+                          width: 100%;
+                          height: 75px;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 24px;
+                          margin-top:8px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          -webkit-line-clamp: 2;
+                      }
+                      >div:nth-child(3){
+                          width: 100%;
+                          height: auto;
+                          padding-left: 24px;
+                          color: rgba(197,238,243,0.8);
+                          font-size: 22px;
+                          margin-top:12px;
+                      }
+
+                  }
+                }
+            }
+            #Module999Pop{
+                width: 100%;
+                height: 1270px;
+                background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                border: 2px solid;
+                border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                border-radius: 4px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                .dataCenter{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                }
+                .bgck12{
+                  background-image: url('./newBack/12.png');
+                  background-size: 100% 100%;
+                }
+                .tjdbBox{
+                          width: 608px;
+                          height: 560px;
+                          position: absolute;
+                          top: 190px;
+                          left: 224px;
+                          z-index: 10;
+                          cursor: auto;
+                          background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                          border: 1px solid #1ED5C7;
+                          .titleName{
+                            width: 100%;
+                            height: 75px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                            padding: 0 20px;
+                          }
+                          .bodyChose{
+                            width: 100%;
+                            height: 388px;
+                            overflow: auto;
+                            padding: 20px;
+                            .checkEdItem{
+                              height: 72px;
+                              width: 100%;
+                              background-image: url('./newBack/19.png');
+                              background-size: 100% 100%;
+                              color: #5AE8FA;
+                              font-size: 30px;
+                              margin-bottom: 16px;
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                              .ChoseBtn{
+                                width: 80px;
+                                height: 36px;
+                                background-image: url('./newBack/21.png');
+                                background-size: 100% 100%;
+                                color:#0A2534;
+                                cursor: pointer;
+                                font-size: 22px;
+                              }
+                            }
+                            .normalItem{
+                              height: 72px;
+                              width: 100%;
+                              background-image: url('./newBack/19.png');
+                              background-size: 100% 100%;
+                              color: #C5EEF3;
+                              font-size: 30px;
+                              margin-bottom: 16px;
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                              .ChoseBtn{
+                                width: 80px;
+                                height: 36px;
+                                background-image: url('./newBack/20.png');
+                                background-size: 100% 100%;
+                                color:#16DFF8;
+                                cursor: pointer;
+                                font-size: 22px;
+                              }
+                            }
+                          }
+                          .footBox{
+                            width: 100%;
+                            height: 100px;
+                            display: flex;
+                            justify-content: space-between;
+                            background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                            padding: 0 20px;
+                            align-items: center;
+                            .SureBtn{
+                              height: 50px;
+                              width: 120px;
+                              background-image: url('./newBack/22.png');
+                              font-size: 28px;
+                              cursor: pointer;
+                              color: #0B1B2A;
+                            }
+                          }
+                }
+                .TimeBox{
+                  position: relative;
+                  .line{
+                    position: absolute;
+                    left: 9px;
+                    top: 15px;
+                    height: 100%;
+                    border-left: 2px solid #FCB83C;
+                  }
+                  .radio{
+                    position: absolute;
+                    border: 6px solid #FCB83C;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 50%;
+                  }
+                  .time{
+                    font-size: 24px;
+                    padding-left: 28px;
+                    color: #C5EEF3;
+                  }
+                  .data{
+                    font-size: 24px;
+                    color: #C5EEF3;
+                    margin: 12px 12px 12px 30px;
+                    padding: 18px;
+                    background-color: transparent;
+                    background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                  }
+                }
+            }
+        }
+    }
+  }
   .Mydyj{
     width: 1480px;
     height: 370px;
@@ -1205,7 +1901,7 @@ export default {
     }
   }
   .Mydgy{
-    width: 1800px;
+    width: 1357px;
     height: 370px;
     margin-left: 32px;
     background: url('./newBack/3.png');
@@ -2127,6 +2823,15 @@ export default {
     width: 3350px;
     height: 1620px;
     margin-left: 24px;
+    .bgck18{
+      background-image: url('./newBack/18.png');
+      background-size: 100% 100%;
+    }
+    .dataLeft{
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
     .backgroun21{
       background: url('./background/编组21.png');
       background-size: 100%;
