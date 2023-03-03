@@ -346,10 +346,10 @@
                                 </div>
                                 <div class="newprogress">
                                   <div class="canvas">
-                                    <MyProgress :successdata='100 - bodyData["委办局总览"].rows[0]["完成率"]' />
+                                    <MyProgress :successdata='bodyData["委办局总览"].rows[0]["处置中率"] || Number(100 - bodyData["委办局总览"].rows[0]["完成率"]).toFixed(2)' />
                                   </div>
                                   <div class="data1">
-                                    <div>处置中 {{100 - bodyData['委办局总览'].rows[0]['完成率']}}%</div>
+                                    <div>处置中 {{bodyData['委办局总览'].rows[0]['处置中率'] || Number(100 - bodyData["委办局总览"].rows[0]["完成率"]).toFixed(2)}}%</div>
                                     <div>已完成 {{bodyData['委办局总览'].rows[0]['完成率']}}%</div>
                                   </div>
                                   <div class="data2">
