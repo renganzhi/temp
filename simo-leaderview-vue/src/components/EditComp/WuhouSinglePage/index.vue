@@ -1447,8 +1447,9 @@ export default {
     },
     showgsqxqTable (data) {
       console.log('tsdata', data, this.gsqxqDetail)
+      let type = data['小区'] || data['名称']
       $('#lead-screen').addClass('disShow')
-      this.axios.get('/leaderview/newDistrict/GetMSSQ19?community=' + this.gsqxqDetail['小区'] + '&typeName=' + data['小区'] || data['名称']).then(res => {
+      this.axios.get('/leaderview/newDistrict/GetMSSQ19?community=' + this.gsqxqDetail['小区'] + '&typeName=' + type).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success && res.obj) {
           this.grtgsqxqData = res.obj.rows
@@ -1487,7 +1488,7 @@ export default {
     ShowEventDetails (val) {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
-        document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
+        // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号'] + '&param2=' + val['源平台工单号'] + '&param3=' + val['来源']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
@@ -1509,7 +1510,7 @@ export default {
     ShowOtherDetails (val) {
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
-        document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
+        // document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/ChengYun4/GetTJDB2?param=' + val['工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
@@ -1712,12 +1713,12 @@ export default {
     },
     CloseotherDetails () {
       this.showotherDetails = false
-      document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'running'
+      // document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'running'
     },
     CloseEventDetails () {
       this.showEventDetails = false
       this.showTjdbDetails = false
-      document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
+      // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
       let eventDelta = -e.wheelDelta || -e.deltaY * 40
@@ -2036,7 +2037,7 @@ export default {
         $('#lead-screen').removeClass('disShow')
         if (res.success && res.obj.rows) {
           this.tjdbList = res.obj.rows
-          document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
+          // document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
         }
       }, error => {
         console.log(error)
@@ -2056,7 +2057,7 @@ export default {
           this.qztsList = []
           this.qztsList = res.obj['群众诉求'].rows
           this.incomingflownoList = res.obj['预警列表']
-          document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+          // document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
         }
       }, error => {
         console.log(error)
@@ -4092,7 +4093,7 @@ export default {
                                             margin-right: 25px;
                                         }
                                         .value{
-                                            color: #ff8787;
+                                            color: #87e9ff;
                                         }
                                     }
                                 }
@@ -4641,24 +4642,24 @@ export default {
                 width: 100%;
                 height: 1210px;
                 display: flex;
-                overflow: hidden;
+                overflow: scroll;
                 align-items: center;
                 flex-direction: column;
                 .item{
                   width: 100%;
-                  animation:anima 20s linear infinite;
+                  // animation:anima 20s linear infinite;
                 }
-                .item:hover{
-                  animation-play-state: paused !important;
-                }
-                @keyframes anima {
-                  0%{
-                    transform: translateY(0);
-                  }
-                  100%{
-                    transform: translateY(-100%);
-                  }
-                }
+                // .item:hover{
+                //   animation-play-state: paused !important;
+                // }
+                // @keyframes anima {
+                //   0%{
+                //     transform: translateY(0);
+                //   }
+                //   100%{
+                //     transform: translateY(-100%);
+                //   }
+                // }
                 .warp{
                     overflow: hidden;
                     width: 100%;
@@ -4900,24 +4901,25 @@ export default {
             .cityEvent{
                 width: 100%;
                 height: 1270px;
+                overflow: scroll;
                 display: flex;
                 align-items: center;
                 flex-direction: column;
                 .item{
                   width: 100%;
-                  animation:anima 20s linear infinite;
+                  // animation:anima 20s linear infinite;
                 }
-                .item:hover{
-                  animation-play-state: paused !important;
-                }
-                @keyframes anima {
-                  0%{
-                    transform: translateY(0);
-                  }
-                  100%{
-                    transform: translateY(-100%);
-                  }
-                }
+                // .item:hover{
+                //   animation-play-state: paused !important;
+                // }
+                // @keyframes anima {
+                //   0%{
+                //     transform: translateY(0);
+                //   }
+                //   100%{
+                //     transform: translateY(-100%);
+                //   }
+                // }
                 .warp{
                     overflow: hidden;
                     width: 100%;

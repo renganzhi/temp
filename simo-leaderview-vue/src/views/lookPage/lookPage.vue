@@ -3155,16 +3155,19 @@ html[data-theme='blueWhite'] {
   .lineBox {
     display: flex;
     width: 100%;
-    padding: 30px 0px;
+    // padding: 30px 0px;
+    border: 1px solid #d3f2ff;
   }
   .Nmae {
-    padding: 0px 10px;
-    // width: 30%;
+    padding: 10px 10px;
+    border-right: 1px solid #d3f2ff;
+    width: 20%;
     color: #4f9ff5;
-    white-space: nowrap;
+    white-space: pre-wrap;
   }
   .Data {
-    // width: 70%;
+    width: 80%;
+    padding: 10px;
     color: rgba(172,207,254,1);
   }
 }

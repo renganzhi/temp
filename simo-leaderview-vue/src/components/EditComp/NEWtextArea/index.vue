@@ -14,6 +14,7 @@
               :id="!item.ColorType ? 'jianBian':''"
               :class="item.overflow ? 'getTextArea homeText':'getTextArea homeText hiddeLeft'"
               v-model="item.ctName"
+              v-show="ifShow"
               placeholder="无"
               ref="NEWtextArea"
               :disabled="dis"></textarea>
@@ -31,7 +32,9 @@ export default {
       titleHeight: 0,
       barParam: '',
       clock: '',
-      textHeight: 50
+      textHeight: 50,
+      reClock: '',
+      ifShow: true
     }
   },
   methods: {
@@ -82,7 +85,30 @@ export default {
         }
       }
     },
+    startClock () {
+      this.ifShow = true
+      if (Number(this.item.ctName) && this.item.ifwave) {
+        let num = 1
+        if (!this.reClock) {
+          this.reClock = setInterval(() => {
+            if (num % 2 === 0) {
+              this.ifShow = false
+            } else {
+              this.ifShow = true
+            }
+            num++
+          }, 900)
+        }
+      } else {
+        this.ifShow = true
+        clearInterval(this.reClock)
+        this.reClock = ''
+      }
+    },
     ShowXq () {
+      this.ifShow = true
+      clearInterval(this.reClock)
+      this.reClock = ''
       if (this.item.chartData.list) {
         let boxData = {
           title: '数据详情',
@@ -166,6 +192,9 @@ export default {
     if (this.item.placeHolder) {
       this.item.ctName = this.item.placeHolder
     }
+    if (this.item.ifwave) {
+      this.startClock()
+    }
     if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
       this.bus.$on('selectType', res => {
         this.barParam = res
@@ -230,12 +259,24 @@ export default {
       }
     },
     textStyle: function () {
+      let fontsize = this.item.fontSize
+      let fontColor = this.item.clr
+      let Gradientclr = this.item.Gradientclr
+      if (this.item.ifthreshold && Number(this.item.ctName) > this.item.thresholdNum) {
+        fontsize = this.item.thresholdSize
+        fontColor = this.item.thresholdColor
+        Gradientclr = this.item.thresholdGclr
+      } else {
+        fontsize = this.item.fontSize
+        fontColor = this.item.clr
+        Gradientclr = this.item.Gradientclr
+      }
       if (!this.item.ColorType) {
         return {
           width: this.item.width - 20 + 'px !important',
           height: this.textHeight - 20 + 'px !important',
-          backgroundImage: !this.item.ColorType ? '-webkit-linear-gradient(bottom,' + this.item.Gradientclr[0] + ',' + this.item.Gradientclr[1] + ')!important' : '-webkit-linear-gradient(bottom,' + this.item.clr + ',' + this.item.clr + ')!important',
-          fontSize: this.item.fontSize + 'px !important',
+          backgroundImage: !this.item.ColorType ? '-webkit-linear-gradient(bottom,' + Gradientclr[0] + ',' + Gradientclr[1] + ')!important' : '-webkit-linear-gradient(bottom,' + fontColor + ',' + fontColor + ')!important',
+          fontSize: fontsize + 'px !important',
           textAlign: this.item.textAlign,
           lineHeight: this.item.fontLineHeight + 'px',
           fontWeight: this.item.fontWeight + ' !important',
@@ -250,8 +291,8 @@ export default {
         return {
           width: this.item.width - 20 + 'px !important',
           height: this.textHeight - 20 + 'px !important',
-          color: this.item.clr + ' !important',
-          fontSize: this.item.fontSize + 'px !important',
+          color: fontColor + ' !important',
+          fontSize: fontsize + 'px !important',
           textAlign: this.item.textAlign,
           lineHeight: this.item.fontLineHeight + 'px',
           fontWeight: this.item.fontWeight + ' !important',
@@ -285,6 +326,12 @@ export default {
       if (this.item.ctName === null) {
         this.item.ctName = '暂无数据'
       }
+      if (this.item.ifwave) {
+        this.startClock()
+      }
+    },
+    'item.ifwave': function () {
+      this.startClock()
     },
     'item.fontSize': function () {
       this.updateHeight()
@@ -294,6 +341,8 @@ export default {
     }
   },
   destroyed: function () {
+    clearInterval(this.reClock)
+    this.reClock = ''
   }
 }
 </script>
