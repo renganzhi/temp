@@ -101,8 +101,8 @@
                 <div class="row4">
                     <div class="checkBox">
                         <Input v-model="InputCondition1" placeholder="输入搜索内容" style="width:285px;height:33px;" />
-                        <div class="search"><Icon type="md-search" /></div>
-                        <div class="refresh"><Icon @click="refreshZBZSQK" type="md-refresh" /></div>
+                        <!-- <div class="search"><Icon type="md-search" /></div>
+                        <div class="refresh"><Icon @click="refreshZBZSQK" type="md-refresh" /></div> -->
                     </div>
                     <div class="mytable1" v-show="type1 === '工作要求'">
                         <div class="tablehead">
@@ -154,8 +154,8 @@
                         <div>值班值守制度</div>
                         <div class="checkBox">
                             <Input v-model="InputCondition2" placeholder="输入搜索内容" style="width:283px;height:33px;margin-right:2px;" />
-                            <div class="search"><Icon type="md-search" /></div>
-                            <div class="refresh"><Icon @click="refreshZBZSZD" type="md-refresh" /></div>
+                            <!-- <div class="search"><Icon type="md-search" /></div>
+                            <div class="refresh"><Icon @click="refreshZBZSZD" type="md-refresh" /></div> -->
                         </div>
                         <div class="list">
                             <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSZD" :key="index">
@@ -168,8 +168,8 @@
                         <div>应急预案</div>
                         <div class="checkBox">
                             <Input v-model="InputCondition3" placeholder="输入搜索内容" style="width:283px;height:33px;margin-right:2px;" />
-                            <div class="search"><Icon type="md-search" /></div>
-                            <div class="refresh"><Icon @click="refreshYJYA" type="md-refresh" /></div>
+                            <!-- <div class="search"><Icon type="md-search" /></div>
+                            <div class="refresh"><Icon @click="refreshYJYA" type="md-refresh" /></div> -->
                         </div>
                         <div class="list">
                             <div @click="showXQ(data)" class="rows" v-for="(data, index) in getYJYA" :key="index">
@@ -238,7 +238,7 @@
                     <div class="streetInfo">
                       <div class="personnelInfo">
                         <div>
-                          <img v-if="element['照片链接']" :src="element['照片链接']" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
+                          <img v-if="element['照片链接']" :src="element['照片链接']" style="width: 110px !important;height: 160px !important;object-fit: fill !important;" alt="">
                           <img v-else src="./街道矩形.png" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
                         </div>
                         <div>
@@ -1506,6 +1506,7 @@ export default {
               // align-items: center;
               .streetBox{
                 // width: 1324px;
+                height: 250px;
                 margin-bottom: 30px;
                 .streetName{
                   width: 368px;

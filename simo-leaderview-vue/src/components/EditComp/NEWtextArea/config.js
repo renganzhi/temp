@@ -13,6 +13,7 @@ export default{
     'bdClr': '#3d445a',
     'ColorType': true,
     'textAlign': 'left',
+    ifwave: false,
     'ctName': '请输入文本框内容',
     'fontWeight': 'normal',
     'Gradientclr': ['rgba(255, 38, 38, 0.44)', '#dc4908'],
@@ -22,6 +23,11 @@ export default{
     conditionType: '', // 接口选择
     refrashTime: 30000,
     placeHolder: '',
+    ifthreshold: false,
+    thresholdNum: 0,
+    thresholdSize: 16,
+    thresholdClr: '#f00',
+    thresholdGclr: ['rgba(255, 38, 38, 0.44)', '#dc4908'],
     'linkId': '',
     'chartData': {}
   },
@@ -56,6 +62,67 @@ export default{
             'key': 'placeHolder',
             'tag': 'input',
             'type': 'text'
+          },
+          {
+            'name': '是否闪烁',
+            'key': 'ifwave',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '是',
+                'value': true
+              }, {
+                'name': '否',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '设置阈值',
+            'key': 'ifthreshold',
+            'tag': 'select',
+            'options': [
+              {
+                'name': '是',
+                'value': true
+              }, {
+                'name': '否',
+                'value': false
+              }
+            ]
+          },
+          {
+            'name': '阈值',
+            'parentKey': {
+              'ifthreshold': true
+            },
+            'key': 'thresholdNum',
+            'tag': 'input'
+          },
+          {
+            'name': '阈值颜色(单)',
+            'parentKey': {
+              'ifthreshold': true,
+              'ColorType': true
+            },
+            'key': 'thresholdClr',
+            'tag': 'Color'
+          },
+          {
+            'name': '字体颜色(多)',
+            'key': 'thresholdGclr',
+            'parentKey': {
+              'ColorType': false
+            },
+            'tag': 'GradientColor'
+          },
+          {
+            'name': '阈值字体大小',
+            'parentKey': {
+              'ifthreshold': true
+            },
+            'key': 'thresholdSize',
+            'tag': 'input'
           }
         ]
       },
