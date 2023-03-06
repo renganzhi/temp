@@ -322,6 +322,7 @@
                 v-for="(list, index1) in combinList"
                 :index="index1"
                 :key="list.id"
+                :comName="list.comName||''"
                 :list="list"
               ></LookCompose>
             </div>
@@ -347,6 +348,7 @@
               <LookCompose
                 v-for="(list, index1) in combinList2"
                 :index="index1"
+                :comName="list.comName||''"
                 :key="list.id"
                 :list="list"
               ></LookCompose>
@@ -355,7 +357,7 @@
         </div>
       </transition>
       <!-- 下一页 -->
-      <div v-show="loadAll" id="homeTips">
+      <!-- <div v-show="loadAll" id="homeTips">
         <div class="btm-tools" :class="isFullScreen ? 'full' : ''">
           <div class="fl ringparent" v-show="!isNewUser">
             <span
@@ -407,7 +409,7 @@
               :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"
               ><i class="icon-n-prev"></i
             ></span>
-            <!-- <span
+            <span
               @click="togglePlay"
               class="ring-icon"
               data-toggle="tooltip"
@@ -415,7 +417,7 @@
               :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
               v-show="showPagination && isFullScreen"
               ><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i
-            ></span> -->
+            ></span>
             <span
               @click="next"
               class="ring-icon"
@@ -442,7 +444,7 @@
             <div class="el-notification__closeBtn el-icon-close"></div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -1753,11 +1755,11 @@ export default {
               ct.freshInterval = null
             }
             if (xhr.status !== 776 && xhr.statusText !== 'abort') {
-              Notification({
-                message: '连接错误！',
-                position: 'bottom-right',
-                customClass: 'toast toast-error'
-              })
+              // Notification({
+              //   message: '连接错误！',
+              //   position: 'bottom-right',
+              //   customClass: 'toast toast-error'
+              // })
             }
           },
           complete: function (XHR, textStatus) {
@@ -1841,11 +1843,11 @@ export default {
                       ct.freshInterval = null
                     }
                     if (xhr.status !== 776 && xhr.statusText !== 'abort') {
-                      Notification({
-                        message: '连接错误！',
-                        position: 'bottom-right',
-                        customClass: 'toast toast-error'
-                      })
+                      // Notification({
+                      //   message: '连接错误！',
+                      //   position: 'bottom-right',
+                      //   customClass: 'toast toast-error'
+                      // })
                     }
                   },
                   complete: function (XHR, textStatus) {
@@ -1912,11 +1914,11 @@ export default {
                 ct.freshInterval = null
               }
               if (xhr.status !== 776 && xhr.statusText !== 'abort') {
-                Notification({
-                  message: '连接错误！',
-                  position: 'bottom-right',
-                  customClass: 'toast toast-error'
-                })
+                // Notification({
+                //   message: '连接错误！',
+                //   position: 'bottom-right',
+                //   customClass: 'toast toast-error'
+                // })
               }
             },
             complete: function (XHR, textStatus) {

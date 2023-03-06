@@ -112,7 +112,8 @@ export default{
             'name': '字体颜色(多)',
             'key': 'thresholdGclr',
             'parentKey': {
-              'ColorType': false
+              'ColorType': false,
+              'ifthreshold': true
             },
             'tag': 'GradientColor'
           },

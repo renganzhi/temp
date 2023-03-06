@@ -270,6 +270,7 @@
                        :index="index1"
                        :key="list.id"
                        :list="list"
+                       :comName="list.comName || ''"
                        :editable="ceditable"
                        :parentW="paintObj.width"
                        :parentH="paintObj.height"
@@ -1865,21 +1866,21 @@
               <div class="form-group cols2"
                    v-show="['SwitchButton'].includes(selectedItem.chartType)">
                 <label>控制组件</label>
-                <Select multiple v-model="selectedItem.bindCom">
+                <Select filterable multiple v-model="selectedItem.bindCom">
                   <Option v-for="(item,index) in combinList"
                           :key="index"
                           v-show="item.comName"
-                          :value="index.toString()">{{'组合-' +item.comName}}</Option>
+                          :value="item.comName||''">{{'组合-' +item.comName}}</Option>
                 </Select>
               </div>
               <div class="form-group cols2"
                    v-show="['ShrinkBox'].includes(selectedItem.chartType)">
                 <label>控制组件</label>
-                <Select v-model="selectedItem.bdCom">
+                <Select filterable v-model="selectedItem.bdCom">
                   <Option v-for="(item,index) in combinList"
                           :key="index"
                           v-show="item.comName"
-                          :value="index.toString()">{{'组合-' +item.comName}}</Option>
+                          :value="item.comName||''">{{'组合-' +item.comName}}</Option>
                 </Select>
               </div>
               <div v-show="['image','Newimage'].includes(selectedItem.chartType)">

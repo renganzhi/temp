@@ -2780,7 +2780,7 @@ export default {
       if (this.selectedItem.chartType === 'IntegratedHistogram') {
         return this.selectedItem.barType
       }
-      if (type.indexOf('ve-') !== -1) {
+      if (type && type.indexOf('ve-') !== -1) {
         if (type === 've-gauge') {
           return 'progress'
         }
@@ -2838,38 +2838,40 @@ export default {
     getUrlByType (flag) {
       var _this = this
       // $('#lead-screen').addClass('disShow')
-      newAjax({
-        url: gbs.host + '/leaderview/home/getUrl',
-        // url: _this.curDataHost + '/leaderview/home/getUrl',
-        data: { typeStr: this.dealTypeStr() },
-        async: false,
-        success: function (data) {
-          let arr = data.obj || []
-          if (_this.isThird) { // 第三方数据：把host和_token_u_拼接到url上去
-            arr = arr.filter(d => {
-              d.url = _this.curDataHost + (/^\//.test(d.url) ? d.url : '/' + d.url) + (d.url.indexOf('?') !== -1 ? '&' : '?') + '_token_u_=token'
-              return d
+      if (this.dealTypeStr()) {
+        newAjax({
+          url: gbs.host + '/leaderview/home/getUrl',
+          // url: _this.curDataHost + '/leaderview/home/getUrl',
+          data: { typeStr: this.dealTypeStr() },
+          async: false,
+          success: function (data) {
+            let arr = data.obj || []
+            if (_this.isThird) { // 第三方数据：把host和_token_u_拼接到url上去
+              arr = arr.filter(d => {
+                d.url = _this.curDataHost + (/^\//.test(d.url) ? d.url : '/' + d.url) + (d.url.indexOf('?') !== -1 ? '&' : '?') + '_token_u_=token'
+                return d
+              })
+            }
+            _this.$set(_this.syst, 'urlSel', arr)
+            _this.$nextTick(function () {
+              _this.syst.urlSel.length && _this.chgUrl(flag)
             })
-          }
-          _this.$set(_this.syst, 'urlSel', arr)
-          _this.$nextTick(function () {
-            _this.syst.urlSel.length && _this.chgUrl(flag)
-          })
           // $('#lead-screen').removeClass('disShow')
-        },
-        errorCallback: async function (xhr) {
+          },
+          errorCallback: async function (xhr) {
           // if ( _this.isThird && xhr.status === 776 ) { //第三方登录过期->重新登录->重新请求当前接口
           //   await checkLogin(_this.thirdIpPort) && _this.getUrlByType (flag)
           //   return false
           // }
-          Notification({
-            message: '连接错误！',
-            position: 'bottom-right',
-            customClass: 'toast toast-error'
-          })
+            Notification({
+              message: '连接错误！',
+              position: 'bottom-right',
+              customClass: 'toast toast-error'
+            })
           // $('#lead-screen').removeClass('disShow')
-        }
-      })
+          }
+        })
+      }
     },
     // 改变接口下拉框，需要根据index更新当前选中接口数据,及下面的参数
     chgUrl (flag) {

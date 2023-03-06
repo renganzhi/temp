@@ -1,6 +1,6 @@
 <template>
   <div class="newDrag compWrapBox"
-       :id="'p_viewCompose'+index"
+       :id="comName"
        :key="list.id"
        :style="boxStyle">
     <LookItem v-for="(item,_index) in list.child"
@@ -18,7 +18,7 @@ import LookItem from './../Common/LookItem'
 
 export default {
   name: 'compose',
-  props: ['list', 'index', 'editable', 'parentH', 'parentW'],
+  props: ['list', 'index', 'editable', 'parentH', 'parentW', 'comName'],
   components: { DragResize, InsideDrag, LookItem },
   data () {
     return {

@@ -317,6 +317,7 @@
               <LookCompose
                 v-for="(list, index1) in combinList"
                 :index="index1"
+                :comName="list.comName||''"
                 :key="list.id"
                 :list="list"
               ></LookCompose>
@@ -343,6 +344,7 @@
               <LookCompose
                 v-for="(list, index1) in combinList2"
                 :index="index1"
+                :comName="list.comName||''"
                 :key="list.id"
                 :list="list"
               ></LookCompose>
@@ -359,10 +361,10 @@
               class="ring-icon"
               title
               data-original-title="设置"
-              v-show="!isFullScreen && $route.name === 'HomePage'"
+              v-show="!isFullScreen && $route.name === 'popPage'"
               ><i class="icon-n-set"></i
             ></span>
-            <!-- <span
+            <span
               @click="toEditPage()"
               class="ring-icon"
               data-toggle="tooltip"
@@ -389,7 +391,7 @@
               ><i
                 :class="isFullScreen ? 'icon-n-exitFull' : 'icon-n-fullScreen'"
               ></i
-            ></span> -->
+            ></span>
           </div>
           <div class="fr ringparent">
             <span
@@ -401,7 +403,7 @@
               :data-original-title="isFullScreen ? '上一页' : ' 上一页 '"
               ><i class="icon-n-prev"></i
             ></span>
-            <!-- <span
+            <span
               @click="togglePlay"
               class="ring-icon"
               data-toggle="tooltip"
@@ -409,7 +411,7 @@
               :data-original-title="!timer ? '开启轮播' : '暂停轮播'"
               v-show="showPagination && isFullScreen"
               ><i :class="!timer ? 'icon-n-lunbo' : 'icon-n-suspend'"></i
-            ></span> -->
+            ></span>
             <span
               @click="next"
               class="ring-icon"

@@ -88,8 +88,10 @@ export default {
       if (newV.length < oldV.length) {
         oldV.forEach(v => {
           if (newV.indexOf(v) === -1) {
-            document.getElementById('p_compose' + v).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-            document.getElementById('p_compose' + v).style.display = 'block'
+            if (document.getElementById(v)) {
+              document.getElementById(v).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+              document.getElementById(v).style.display = 'block'
+            }
           }
         })
       }
@@ -129,20 +131,18 @@ export default {
     control () {
       let controlDOM = ''
       this.item.bindCom.forEach(element => {
-        if (this.$route.name === 'edit' && !this.$parent.$parent.previewStatus) {
-          controlDOM = document.getElementById('p_compose' + element)
-        } else {
-          controlDOM = document.getElementById('p_viewCompose' + element)
-        }
-        controlDOM.classList.add('animate__animated')
-        if (element === this.item.showCom) {
-          controlDOM.style.display = 'block'
-          if (!controlDOM.classList.contains('animate__fadeInRight')) {
-            controlDOM.classList.add('animate__fadeInRight')
+        controlDOM = document.getElementById(element)
+        if (controlDOM) {
+          controlDOM.classList.add('animate__animated')
+          if (element === this.item.showCom) {
+            controlDOM.style.display = 'block'
+            if (!controlDOM.classList.contains('animate__fadeInRight')) {
+              controlDOM.classList.add('animate__fadeInRight')
+            }
+          } else {
+            controlDOM.classList.remove('animate__fadeInRight')
+            controlDOM.style.display = 'none'
           }
-        } else {
-          controlDOM.classList.remove('animate__fadeInRight')
-          controlDOM.style.display = 'none'
         }
       })
     }
@@ -170,8 +170,8 @@ export default {
     clearInterval(this.clock)
     this.item.bindCom.forEach(element => {
       try {
-        document.getElementById('p_compose' + element).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-        document.getElementById('p_compose' + element).style.display = 'block'
+        document.getElementById(element).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+        document.getElementById(element).style.display = 'block'
       } catch (err) {
 
       }

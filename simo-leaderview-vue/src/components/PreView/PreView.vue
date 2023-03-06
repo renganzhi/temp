@@ -16,6 +16,7 @@
                       :key="index"></LookItem>
             <LookCompose v-for="(list, index1) in combinList"
                           :index="index1"
+                          :comName="list.comName || ''"
                           :key="list.id"
                           :list="list"></LookCompose>
           </div>

@@ -7,7 +7,7 @@
                     <img :src="getZBRY('区领导','照片链接')" alt="">
                     <div>
                         <div>{{getZBRY('区领导','姓名')}}</div>
-                        <div>{{getZBRY('区领导','职务')}}</div>
+                        <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="position">指挥长</div>
                 <div class="information2">
                     <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
-                    <div>{{getZBRY('指挥长','职务')}}</div>
+                    <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 1 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -29,7 +29,7 @@
                 <div class="position">值班长</div>
                 <div class="information2">
                     <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
-                    <div>{{getZBRY('值班长','职务')}}</div>
+                    <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 2 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -58,7 +58,7 @@
                             <img :src="getZBRY('区领导','照片链接')" alt="">
                             <div>
                                 <div>{{getZBRY('区领导','姓名')}}</div>
-                                <div>{{getZBRY('区领导','职务')}}</div>
+                                <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <div class="position">指挥长</div>
                         <div class="information2">
                             <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
-                            <div>{{getZBRY('指挥长','职务')}}</div>
+                            <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 1 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -80,7 +80,7 @@
                         <div class="position">值班长</div>
                         <div class="information2">
                             <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
-                            <div>{{getZBRY('值班长','职务')}}</div>
+                            <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 2 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -685,6 +685,12 @@ export default {
                     >div:last-child{
                         font-size: 14px;
                         color: rgba(172,207,254,1);
+                        overflow: hidden;
+                        width: 115px;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 2;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
                     }
 
                 }
@@ -707,6 +713,11 @@ export default {
                 >div:last-child{
                     font-size: 14px;
                     color: rgba(172,207,254,1);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    -webkit-line-clamp: 2;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
                 }
             }
             .phonePop{
@@ -868,6 +879,12 @@ export default {
                             >div:last-child{
                                 font-size: 14px;
                                 color: rgba(172,207,254,1);
+                                overflow: hidden;
+                                width: 115px;
+                                text-overflow: ellipsis;
+                                -webkit-line-clamp: 2;
+                                display: -webkit-box;
+                                -webkit-box-orient: vertical;
                             }
 
                         }
@@ -890,6 +907,11 @@ export default {
                         >div:last-child{
                             font-size: 14px;
                             color: rgba(172,207,254,1);
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            -webkit-line-clamp: 2;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
                         }
                     }
                     .phonePop{

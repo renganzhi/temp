@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     'ifShow': function (newV) {
-      if (this.item.bdCom || this.item.bdCom === 0) {
+      if (this.item.bdCom) {
         this.control()
       }
     },
@@ -50,12 +50,8 @@ export default {
   methods: {
     control () {
       let controlDOM = ''
-      if (this.item.bdCom || this.item.bdCom === 0) {
-        if (this.$route.name === 'edit' && !this.$parent.$parent.previewStatus) {
-          controlDOM = document.getElementById('p_compose' + this.item.bdCom)
-        } else {
-          controlDOM = document.getElementById('p_viewCompose' + this.item.bdCom)
-        }
+      if (this.item.bdCom && document.getElementById(this.item.bdCom)) {
+        controlDOM = document.getElementById(this.item.bdCom)
         controlDOM.classList.add('animate__animated')
         if (this.ifShow) {
           controlDOM.style.display = 'block'
@@ -83,13 +79,9 @@ export default {
   },
   beforeDestroy () {
     if (this.$route.name === 'edit') {
-      if (document.getElementById('p_compose' + this.item.bdCom)) {
-        document.getElementById('p_compose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-        document.getElementById('p_compose' + this.item.bdCom).style.display = 'block'
-      }
-      if (document.getElementById('p_viewCompose' + this.item.bdCom)) {
-        document.getElementById('p_viewCompose' + this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
-        document.getElementById('p_viewCompose' + this.item.bdCom).style.display = 'block'
+      if (document.getElementById(this.item.bdCom)) {
+        document.getElementById(this.item.bdCom).classList.remove('animate__fadeOutLeft', 'animate__fadeInRight')
+        document.getElementById(this.item.bdCom).style.display = 'block'
       }
     }
   }

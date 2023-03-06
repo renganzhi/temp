@@ -4,7 +4,7 @@
   <!-- :isResizable="!chooseChild" -->
   <DragResize class="newDrag2 newDrag3"
               :isDraggable="editable"
-              :id ="'p_compose' + index"
+              :id ="comName"
               :isResizable="!chooseChild"
               :active="editable && list.slted"
               :isActive="editable && list.slted"
@@ -53,7 +53,7 @@ import InsideDrag from './InsideDrag'
 
 export default {
   name: 'compose',
-  props: ['list', 'index', 'editable', 'parentH', 'parentW'],
+  props: ['list', 'index', 'editable', 'parentH', 'parentW', 'comName'],
   components: { DragResize, InsideDrag },
   data () {
     return {
