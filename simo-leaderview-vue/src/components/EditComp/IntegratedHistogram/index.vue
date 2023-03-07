@@ -1441,7 +1441,7 @@ export default {
       }
       if (chartData) {
         let boxData = {
-          title: dataOut[keys] + '信息详情',
+          title: dataOut[keys] + '数据详情',
           chartUrl: chartData,
           data: dataOut
         }
@@ -1450,7 +1450,7 @@ export default {
         }
       } else if (urls) {
         let boxData = {
-          title: dataOut[keys] + '信息详情',
+          title: dataOut[keys] + '数据详情',
           urls: urls,
           data: dataOut
         }
@@ -1460,7 +1460,7 @@ export default {
       } else if (url) {
         if (type && type === 'table') {
           let boxData = {
-            title: dataOut[keys] + '信息详情',
+            title: dataOut[keys] + '数据详情',
             data: dataOut,
             dataUrl: url
           }
@@ -1469,7 +1469,7 @@ export default {
           }
         } else {
           let boxData = {
-            title: dataOut[keys] + '信息详情',
+            title: dataOut[keys] + '数据详情',
             chartUrl: url,
             data: dataOut
           }

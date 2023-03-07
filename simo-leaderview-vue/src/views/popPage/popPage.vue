@@ -85,17 +85,17 @@
               <div class="Tbaleban" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}"  v-if="pageName&&pageName.indexOf('城运') >= 0&&showTableBox">
                 <div :class="pageName.indexOf('32:9')>=0?'NewCyTableBox':'cyTableBox'">
                     <div class="closeBtn" @click="closeTableTtn()"></div>
-                    <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '信息列表'}}</div>
+                    <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '数据列表'}}</div>
                     <div class="cyTableHead">
                         <tr>
-                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
                             {{ data }}
                           </th>
                         </tr>
                     </div>
                     <div class="cyTableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
-                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}%)`}">
+                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
@@ -350,7 +350,7 @@
         </div>
       </transition>
       <!-- 下一页 -->
-      <div v-show="loadAll" id="homeTips">
+      <!-- <div v-show="loadAll" id="homeTips">
         <div class="btm-tools" :class="isFullScreen ? 'full' : ''">
           <div class="fl ringparent" v-show="!isNewUser">
             <span
@@ -435,7 +435,7 @@
             <div class="el-notification__closeBtn el-icon-close"></div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -2983,11 +2983,12 @@ html[data-theme='blueWhite'] {
     background: url(./城运关闭.png);
   }
   .BoxTitle {
-    font-size: 32px !important;
+    font-size: 36px !important;
     color: #ACCFFE;
     font-weight: bold;
     font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 50px;
+    letter-spacing: 5px;
   }
   .cyTableHead {
       width: 100%;
@@ -2996,10 +2997,11 @@ html[data-theme='blueWhite'] {
       tr {
         width: 100%;
         // height: 60px;
-        min-height: 72px;
-        font-size: 24px !important;
+        min-height: 110px;
+        font-size: 32px !important;
+        letter-spacing: 4px;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         color: rgba(172,207,254,1);
         th {
@@ -3014,11 +3016,14 @@ html[data-theme='blueWhite'] {
       overflow: auto;
       tr {
         width: 100%;
-        height: 72px;
-        line-height: 72px;
+        height: 120px;
+        line-height: 120px;
         // margin: 10px 0;
-        font-size: 24px !important;
+        font-size: 30px !important;
+        letter-spacing: 4px;
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: rgba(172,207,254,1);
         border-bottom: 1px solid rgba(172,207,254,1);
         th {

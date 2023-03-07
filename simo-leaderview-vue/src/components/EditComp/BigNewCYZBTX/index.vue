@@ -7,7 +7,7 @@
                     <img :src="getZBRY('区领导','照片链接')" alt="">
                     <div>
                         <div>{{getZBRY('区领导','姓名')}}</div>
-                        <div>{{getZBRY('区领导','职务')}}</div>
+                        <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="position">指挥长</div>
                 <div class="information2">
                     <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
-                    <div>{{getZBRY('指挥长','职务')}}</div>
+                    <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 1 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -29,7 +29,7 @@
                 <div class="position">值班长</div>
                 <div class="information2">
                     <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
-                    <div>{{getZBRY('值班长','职务')}}</div>
+                    <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 2 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -58,7 +58,7 @@
                             <img :src="getZBRY('区领导','照片链接')" alt="">
                             <div>
                                 <div>{{getZBRY('区领导','姓名')}}</div>
-                                <div>{{getZBRY('区领导','职务')}}</div>
+                                <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <div class="position">指挥长</div>
                         <div class="information2">
                             <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
-                            <div>{{getZBRY('指挥长','职务')}}</div>
+                            <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 1 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -80,7 +80,7 @@
                         <div class="position">值班长</div>
                         <div class="information2">
                             <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
-                            <div>{{getZBRY('值班长','职务')}}</div>
+                            <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 2 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -649,8 +649,8 @@ export default {
         align-items: center;
         justify-content: space-between;
         .personBox{
-            width: 378px;
-            height: 148px;
+            width: 358px;
+            height: 220px;
             background: url('./矩形.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
@@ -665,6 +665,7 @@ export default {
                 font-size: 26px;
                 writing-mode:vertical-rl;
                 text-align: center;
+                font-weight: bold;
                 line-height: 54px;
                 background: url('./小矩形.png');
                 background-size: 100% 100%;
@@ -672,33 +673,40 @@ export default {
             }
             .information1{
                 padding: 20px;
-                width: 324px;
+                width: 364px;
                 height: 100%;
                 display: flex;
+                align-items: center;
                 >img{
-                    width: 69px;
-                    height: 90px;
+                    width: 140px;
+                    height: 160px;
                     margin-right: 18px;
                 }
                 >div:last-child{
                     >div:first-child{
-                        font-size: 28px;
+                        font-size: 30px;
                         color: rgba(200,224,255,1);
                         margin-bottom: 0px;
                     }
                     >div:last-child{
-                        font-size: 22px;
+                        font-size: 26px;
                         color: rgba(172,207,254,1);
+                        overflow: hidden;
+                        height: 120px;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 3;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
                     }
 
                 }
             }
             .information2{
                 padding: 20px;
-                width: 324px;
+                width: 304px;
                 height: 100%;
                 >div:first-child{
-                    font-size: 28px;
+                    font-size: 30px;
                     color: rgba(200,224,255,1);
                     margin-bottom: 0px;
                     >img{
@@ -709,7 +717,13 @@ export default {
                     }
                 }
                 >div:last-child{
-                    font-size: 22px;
+                    font-size: 26px;
+                    overflow: hidden;
+                    height: 120px;
+                    text-overflow: ellipsis;
+                    -webkit-line-clamp: 3;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
                     color: rgba(172,207,254,1);
                 }
             }
@@ -761,6 +775,9 @@ export default {
                     margin: 0 auto
                 }
             }
+        }
+        .personBox:first-child{
+          width: 418px;
         }
     }
     .pop1{
@@ -875,6 +892,12 @@ export default {
                             >div:last-child{
                                 font-size: 22px;
                                 color: rgba(172,207,254,1);
+                                overflow: hidden;
+                                height: 70px;
+                                text-overflow: ellipsis;
+                                -webkit-line-clamp: 2;
+                                display: -webkit-box;
+                                -webkit-box-orient: vertical;
                             }
 
                         }
@@ -897,6 +920,12 @@ export default {
                         >div:last-child{
                             font-size: 22px;
                             color: rgba(172,207,254,1);
+                            overflow: hidden;
+                            height: 70px;
+                            text-overflow: ellipsis;
+                            -webkit-line-clamp: 2;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
                         }
                     }
                     .phonePop{
