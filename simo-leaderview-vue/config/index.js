@@ -13,7 +13,7 @@ module.exports = {
       '/api': {
         // target: 'http://localhost:9999',
         // target: 'http://192.168.2.23:9999',
-        target: 'http://172.16.116.26:9999/',
+        target: 'http://10.29.118.17:9999/',
         // target: 'http://192.100.101.101:9999/',
         // target: 'http://192.168.2.40:9999',
         // target: 'http://192.168.1.188:9999',
@@ -27,7 +27,7 @@ module.exports = {
         }
       },
       '/socket': {
-        target: 'http://172.16.116.26:9999/',
+        target: 'http://10.29.118.17:9999/',
         ws: true,
         pathRewrite: {
           '^/socket': '/socket'
