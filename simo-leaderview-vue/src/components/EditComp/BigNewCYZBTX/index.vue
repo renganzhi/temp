@@ -684,9 +684,9 @@ export default {
                 }
                 >div:last-child{
                     >div:first-child{
-                        font-size: 30px;
+                        font-size: 34px;
                         color: rgba(200,224,255,1);
-                        margin-bottom: 0px;
+                        margin-bottom: 5px;
                     }
                     >div:last-child{
                         font-size: 26px;
@@ -706,9 +706,9 @@ export default {
                 width: 304px;
                 height: 100%;
                 >div:first-child{
-                    font-size: 30px;
+                    font-size: 34px;
                     color: rgba(200,224,255,1);
-                    margin-bottom: 0px;
+                    margin-bottom: 5px;
                     >img{
                         width: 23px;
                         height: 23px;

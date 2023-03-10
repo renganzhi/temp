@@ -421,7 +421,7 @@
                   </div>
               </div> -->
           </div>
-          <div class="part" v-if="showStreetInfo && modelData['总办件量']">
+          <div class="part" v-if="showStreetInfo && modelData">
               <div class="Btn" @click="showStreetInfo = false"
               style="position: absolute;
                     right: 16px;
@@ -438,24 +438,28 @@
                   </Select>
                 </div> -->
                 <div class="state">
-                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData['总办件量'].info}} <div :class="true?'upBack':'downBack'">66%</div></div>
+                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['办件量']: '暂无数据'}}
+                    <!-- <div :class="true?'upBack':'downBack'">66%</div> -->
+                  </div>
                   <div>总办件量</div>
                 </div>
                 <div class="datavalue">
                   <div class="data2">
-                    <div style="color:#F59B42">{{modelData['处置中办件量'].info}}</div>
-                    <div style="color:#3DF8C2">{{modelData['已完成办件量'].info}}</div>
+                    <div style="color:#F59B42">{{modelData.bodyData?modelData.bodyData['办理中']: '暂无数据'}}</div>
+                    <div style="color:#3DF8C2">{{modelData.bodyData?modelData.bodyData['完成数量']: '暂无数据'}}</div>
                   </div>
                   <div class="canvas" style="width:400px">
-                    <MyProgress :successdata='50' />
+                    <MyProgress :successdata="modelData.bodyData?modelData.bodyData['未完成率']:'50'" />
                   </div>
                   <div class="data1">
-                    <div>处置中 {{modelData['处置中办件量占比'].info}}%</div>
-                    <div>已完成 {{modelData['已完成办件量占比'].info}}%</div>
+                    <div>处置中 {{modelData.bodyData?modelData.bodyData['未完成率'] + '%': '暂无数据'}}</div>
+                    <div>已完成 {{modelData.bodyData?modelData.bodyData['完成率'] + '%': '暂无数据'}}</div>
                   </div>
                 </div>
                 <div class="datatime">
-                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}} <div :class="true?'upBack':'downBack'">66%</div></div>
+                  <div style="color: rgb(90, 232, 250);display: flex;align-items: center;">{{modelData.bodyData?modelData.bodyData['平均办件时长']:'0天0小时0分钟'}}
+                     <!-- <div :class="true?'upBack':'downBack'">66%</div> -->
+                  </div>
                   <div>平均办件时间</div>
                 </div>
                 <!-- <div class="peoplevalue">
@@ -517,10 +521,10 @@
 
                       <div class="events" v-for="(data,index) in modelData['热点事件_自定义时段'].rows" :key="index">
                         <div class="name">
-                          {{data['事件小类名称']}}
+                          {{data['事件大类名称']}}
                         </div>
                         <div class="value">
-                          {{data['事件小类办件量']}}
+                          {{data['该事件大类办件总量']}}
                         </div>
                       </div>
                     </div>
@@ -1226,6 +1230,7 @@ export default {
       })
     },
     getJieDaoParamData (olddata) {
+      console.log('olddata', olddata)
       $('#lead-screen').addClass('disShow')
       this.axios.get('/leaderview/newDistrict/GetCQXN?param=' + (olddata['单位'] || '') + '&start_time=' + (this.dateValue[0] || '') + '&end_time=' + (this.dateValue[1] || '')).then(res => {
         $('#lead-screen').removeClass('disShow')
