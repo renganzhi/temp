@@ -351,7 +351,7 @@
                     <div class="row3">
                         <div>
                           <div style="font-size: 60px;">
-                            {{GetMSSQ7[0]?GetMSSQ7[0]['街道评级']:''}}
+                            {{GetMSSQ7[0]?GetMSSQ7[0]['街道评级']||GetMSSQ7[0]['社区评级']:''}}
                           </div>
                           <div>
                             {{GetMSSQ7[0]?GetMSSQ7[0]['街道投诉指数均值']:''}}
