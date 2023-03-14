@@ -40,13 +40,35 @@ export default {
   methods: {
     showPop () {
       if (this.item.popUrl && (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage')) {
-        let popData = {
-          url: this.item.popUrl,
-          width: this.item.popWidth,
-          height: this.item.popHeight
+        if (this.item.popUrl.indexOf('am.glzt.com.cn') >= 0) {
+          const formData = new FormData()
+          formData.append('username', 'wh_admin')
+          formData.append('password', 'd2gxMjM0NTZA')
+          formData.append('mark', '2')
+          formData.append('grant_type', 'password')
+          formData.append('client_id', '024')
+          formData.append('client_secret', 'secret')
+          formData.append('redirect_uri', 'https://t-am.glzt.com.cn/login/redirect')
+          formData.append('inside', '1')
+          this.axios.post('https://pl-soul-h.glzt.com.cn/uaa-service/oauth/token', formData).then(res => {
+            console.log('res', this.item.popUrl + res.access_token)
+            let popData = {
+              url: this.item.popUrl + res.access_token,
+              width: this.item.popWidth,
+              height: this.item.popHeight
+            }
+            // this.showBox = true
+            this.$parent.$parent.ShowIframePop(popData)
+          })
+        } else {
+          let popData = {
+            url: this.item.popUrl,
+            width: this.item.popWidth,
+            height: this.item.popHeight
+          }
+          // this.showBox = true
+          this.$parent.$parent.ShowIframePop(popData)
         }
-        // this.showBox = true
-        this.$parent.$parent.ShowIframePop(popData)
       }
     }
   }

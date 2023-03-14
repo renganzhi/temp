@@ -216,7 +216,7 @@ export default {
     },
     getOption2 () {
       var m2R2Data = []
-      this.modelBodyData['重大项目类别组成'].forEach(d => {
+      this.modelBodyData['项目进度'].forEach(d => {
         m2R2Data.push({
           value: d['数量'],
           legendname: d['名称'],

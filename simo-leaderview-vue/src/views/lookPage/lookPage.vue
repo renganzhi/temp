@@ -2253,7 +2253,9 @@ export default {
           this.refresh() // 整页刷新
         }, 8000)
       } else {
-        this.refresh() // 整页刷新
+        window.setTimeout(() => {
+          this.refresh() // 整页刷新
+        }, 3000)
       }
       // this.initRefreshTimer() 取消整页刷新
     }
@@ -2897,7 +2899,7 @@ html[data-theme='blueWhite'] {
   .BoxTitle {
     font-size: 50px !important;
     color: #bbeefe;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
   }
   .BoxBody {
     padding: 80px 40px;
@@ -2944,7 +2946,7 @@ html[data-theme='blueWhite'] {
   .BoxTitle {
     font-size: 50px !important;
     color: #bbeefe;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
   }
   .BoxBody {
     padding: 80px 40px;
@@ -2994,7 +2996,7 @@ html[data-theme='blueWhite'] {
     font-size: 36px !important;
     color: #ACCFFE;
     font-weight: bold;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 50px;
     letter-spacing: 5px;
   }
@@ -3145,7 +3147,7 @@ html[data-theme='blueWhite'] {
     font-size: 32px !important;
     color: #ACCFFE;
     font-weight: bold;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 50px;
   }
   .BoxBody {
@@ -3261,7 +3263,7 @@ html[data-theme='blueWhite'] {
   .BoxTitle {
     font-size: 50px !important;
     color: #bbeefe;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
   }
   .BoxBody {
     padding: 80px 40px;
@@ -3309,7 +3311,7 @@ html[data-theme='blueWhite'] {
   .BoxTitle {
     font-size: 50px !important;
     color: #bbeefe;
-    font-family: PangmenMainRoadTitleBody !important;
+    // font-family: PangmenMainRoadTitleBody !important;
   }
   .BoxBody {
     padding: 80px 40px;
@@ -3367,7 +3369,7 @@ html[data-theme='blueWhite'] {
       font-size: 32px !important;
       color: #ACCFFE;
       font-weight: bold;
-      font-family: PangmenMainRoadTitleBody !important;
+      // font-family: PangmenMainRoadTitleBody !important;
       margin-bottom: 50px;
     }
     .videoDiv{
@@ -3438,7 +3440,7 @@ html[data-theme='blueWhite'] {
     .BoxTitle {
       font-size: 46px !important;
       color: #bbeefe;
-      font-family: PangmenMainRoadTitleBody !important;
+      // font-family: PangmenMainRoadTitleBody !important;
     }
     .videoDiv{
       height: 90%;
