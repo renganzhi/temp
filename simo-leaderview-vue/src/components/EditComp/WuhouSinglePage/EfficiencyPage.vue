@@ -640,7 +640,7 @@ export default {
         'ctLegendSize': '20',
         'axisLabelSize': '20',
         'legendY': 90,
-        'gridTop': 5,
+        'gridTop': 15,
         'gridBotton': 5,
         'gridLeft': 3,
         'gridRight': 3,
@@ -905,7 +905,7 @@ export default {
         'ctLegendSize': '24',
         'axisLabelSize': '24',
         'legendY': 90,
-        'gridTop': 5,
+        'gridTop': 15,
         'gridBotton': 5,
         'gridLeft': 2,
         'gridRight': 2,
@@ -1950,7 +1950,7 @@ export default {
           position:absolute;
           top: 40px;
           left: 640px;
-          z-index: 1;
+          z-index: 1000;
         }
         .row1{
             height: 580px;
