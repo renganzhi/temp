@@ -88,6 +88,7 @@ import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage'
+import MagicSquare from '@/components/EditComp/MagicSquare'
 import AppMarket from '@/components/EditComp/AppMarket'
 import BigAppMarket from '@/components/EditComp/BigAppMarket'
 import KeyProjects from '@/components/EditComp/KeyProjects'
@@ -193,6 +194,7 @@ export default {
   SmallOrderMenu,
   CityEvent,
   WuhouSinglePage,
+  MagicSquare,
   AppMarket,
   BigAppMarket,
   KeyProjects,

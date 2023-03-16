@@ -32,6 +32,7 @@ import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
 import WuhouSinglePage from '@/components/EditComp/WuhouSinglePage/config.js'
+import MagicSquare from '@/components/EditComp/MagicSquare/config.js'
 import AppMarket from '@/components/EditComp/AppMarket/config.js'
 import BigAppMarket from '@/components/EditComp/BigAppMarket/config.js'
 import KeyProjects from '@/components/EditComp/KeyProjects/config.js'
@@ -728,6 +729,7 @@ OrderMenu.item,
 SmallOrderMenu.item,
 CityEvent.item,
 WuhouSinglePage.item,
+MagicSquare.item,
 AppMarket.item,
 BigAppMarket.item,
 KeyProjects.item,

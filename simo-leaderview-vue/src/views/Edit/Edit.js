@@ -55,6 +55,7 @@ let config = {
   SmallOrderMenu: require('@/components/EditComp/SmallOrderMenu/config.js'),
   CityEvent: require('@/components/EditComp/CityEvent/config.js'),
   WuhouSinglePage: require('@/components/EditComp/WuhouSinglePage/config.js'),
+  MagicSquare: require('@/components/EditComp/MagicSquare/config.js'),
   AppMarket: require('@/components/EditComp/AppMarket/config.js'),
   BigAppMarket: require('@/components/EditComp/BigAppMarket/config.js'),
   KeyProjects: require('@/components/EditComp/KeyProjects/config.js'),
