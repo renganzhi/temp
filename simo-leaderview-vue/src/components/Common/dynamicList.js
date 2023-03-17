@@ -70,6 +70,7 @@ export default [
   'SwitchButton',
   'ShrinkBox',
   'ExternalJump',
+  'StreetExternalJump',
   'LLZYPotButton',
   'SwitchMapButton',
   'ToggleButton',

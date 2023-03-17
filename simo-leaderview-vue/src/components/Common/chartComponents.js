@@ -80,6 +80,7 @@ import Hotspot from '@/components/EditComp/hotspot'
 import SwitchButton from '@/components/EditComp/SwitchButton'
 import ShrinkBox from '@/components/EditComp/ShrinkBox'
 import ExternalJump from '@/components/EditComp/ExternalJump'
+import StreetExternalJump from '@/components/EditComp/StreetExternalJump'
 import LLZYPotButton from '@/components/EditComp/LLZYPotButton'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton'
 import ToggleButton from '@/components/EditComp/ToggleButton'
@@ -186,6 +187,7 @@ export default {
   SwitchButton,
   ShrinkBox,
   ExternalJump,
+  StreetExternalJump,
   LLZYPotButton,
   SwitchMapButton,
   ToggleButton,

@@ -24,6 +24,7 @@ import hotspot from '@/components/EditComp/hotspot/config.js'
 import SwitchButton from '@/components/EditComp/SwitchButton/config.js'
 import ShrinkBox from '@/components/EditComp/ShrinkBox/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
+import StreetExternalJump from '@/components/EditComp/StreetExternalJump/config.js'
 import LLZYPotButton from '@/components/EditComp/LLZYPotButton/config.js'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton/config.js'
 import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
@@ -721,6 +722,7 @@ hotspot.item,
 SwitchButton.item,
 ShrinkBox.item,
 ExternalJump.item,
+StreetExternalJump.item,
 LLZYPotButton.item,
 SwitchMapButton.item,
 ToggleButton.item,
