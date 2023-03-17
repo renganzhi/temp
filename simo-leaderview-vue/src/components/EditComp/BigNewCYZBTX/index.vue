@@ -6,16 +6,58 @@
                 <div class="information1">
                     <img :src="getZBRY('区领导','照片链接')" alt="">
                     <div>
-                        <div>{{getZBRY('区领导','姓名')}}</div>
+                        <div>{{getZBRY('区领导','姓名')}}<img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(0)" alt=""></div>
                         <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                     </div>
+                </div>
+                <div class="textPop" @click.stop="" v-show="textIndex === 0 && !showPop1">
+                  <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                  <div class="textTitle">短信模板</div>
+                  <div class="textList">
+                    <CheckboxGroup v-model="textList" size="large">
+                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                        <label>
+                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                          <Checkbox  :label="item">
+                            .
+                          </Checkbox>
+                        </label>
+                      </div>
+                    </CheckboxGroup>
+                  </div>
+                  <div class="sendButton">
+                    <Button type="primary">发送</Button>
+                  </div>
                 </div>
             </div>
             <div class="personBox" @click="ShowPop1">
                 <div class="position">指挥长</div>
                 <div class="information2">
-                    <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
+                    <div>
+                      {{getZBRY('指挥长','姓名')}}
+                      <img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt="">
+                      <img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(1)" alt="">
+                    </div>
                     <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
+                </div>
+                <div class="textPop" @click.stop="" v-show="textIndex === 1 && !showPop1">
+                  <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                  <div class="textTitle">短信模板</div>
+                  <div class="textList">
+                    <CheckboxGroup v-model="textList" size="large">
+                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                        <label>
+                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                          <Checkbox  :label="item">
+                            .
+                          </Checkbox>
+                        </label>
+                      </div>
+                    </CheckboxGroup>
+                  </div>
+                  <div class="sendButton">
+                    <Button type="primary">发送</Button>
+                  </div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 1 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -28,8 +70,31 @@
             <div class="personBox" @click="ShowPop1">
                 <div class="position">值班长</div>
                 <div class="information2">
-                    <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
+                    <div>
+                      {{getZBRY('值班长','姓名')}}
+                      <img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt="">
+                      <img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(2)" alt="">
+                    </div>
                     <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
+                </div>
+                <div class="textPop" @click.stop="" v-show="textIndex === 2 && !showPop1">
+                  <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                  <div class="textTitle">短信模板</div>
+                  <div class="textList">
+                    <CheckboxGroup v-model="textList" size="large">
+                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                        <label>
+                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                          <Checkbox  :label="item">
+                            .
+                          </Checkbox>
+                        </label>
+                      </div>
+                    </CheckboxGroup>
+                  </div>
+                  <div class="sendButton">
+                    <Button type="primary">发送</Button>
+                  </div>
                 </div>
                 <div class="phonePop" v-show="phoneIndex === 2 && !showPop1">
                     <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -57,16 +122,58 @@
                         <div class="information1">
                             <img :src="getZBRY('区领导','照片链接')" alt="">
                             <div>
-                                <div>{{getZBRY('区领导','姓名')}}</div>
+                                <div>{{getZBRY('区领导','姓名')}}<img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(0)" alt=""></div>
                                 <div :title="getZBRY('区领导','职务')">{{getZBRY('区领导','职务')}}</div>
                             </div>
+                        </div>
+                        <div class="textPop" @click.stop="" v-show="textIndex === 0 && showPop1">
+                          <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                          <div class="textTitle">短信模板</div>
+                          <div class="textList">
+                            <CheckboxGroup v-model="textList" size="large">
+                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                                <label>
+                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                                  <Checkbox  :label="item">
+                                    .
+                                  </Checkbox>
+                                </label>
+                              </div>
+                            </CheckboxGroup>
+                          </div>
+                          <div class="sendButton">
+                            <Button type="primary">发送</Button>
+                          </div>
                         </div>
                     </div>
                     <div class="personBox">
                         <div class="position">指挥长</div>
                         <div class="information2">
-                            <div>{{getZBRY('指挥长','姓名')}}<img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt=""></div>
+                            <div>
+                              {{getZBRY('指挥长','姓名')}}
+                              <img style="cursor:pointer;" src="./电话.png" @click.stop="ShowPhone(1)" alt="">
+                              <img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(1)" alt="">
+                            </div>
                             <div :title="getZBRY('指挥长','职务')">{{getZBRY('指挥长','职务')}}</div>
+                        </div>
+                        <div class="textPop" @click.stop="" v-show="textIndex === 1 && showPop1">
+                          <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                          <div class="textTitle">短信模板</div>
+                          <div class="textList">
+                            <CheckboxGroup v-model="textList" size="large">
+                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                                <label>
+                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                                  <Checkbox  :label="item">
+                                    .
+                                  </Checkbox>
+                                </label>
+                              </div>
+                            </CheckboxGroup>
+                          </div>
+                          <div class="sendButton">
+                            <Button type="primary">发送</Button>
+                          </div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 1 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -79,8 +186,31 @@
                     <div class="personBox">
                         <div class="position">值班长</div>
                         <div class="information2">
-                            <div>{{getZBRY('值班长','姓名')}}<img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt=""></div>
+                            <div>
+                              {{getZBRY('值班长','姓名')}}
+                              <img @click.stop="ShowPhone(2)" style="cursor:pointer;" src="./电话.png" alt="">
+                              <img style="cursor:pointer;width:40px;height:40px;vertical-align:sub;margin-left:5px;" src="./短信.png" @click.stop="ShowText(2)" alt="">
+                            </div>
                             <div :title="getZBRY('值班长','职务')">{{getZBRY('值班长','职务')}}</div>
+                        </div>
+                        <div class="textPop" @click.stop="" v-show="textIndex === 2 && showPop1">
+                          <img class="close" @click.stop="textIndex = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                          <div class="textTitle">短信模板</div>
+                          <div class="textList">
+                            <CheckboxGroup v-model="textList" size="large">
+                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                                <label>
+                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
+                                  <Checkbox  :label="item">
+                                    .
+                                  </Checkbox>
+                                </label>
+                              </div>
+                            </CheckboxGroup>
+                          </div>
+                          <div class="sendButton">
+                            <Button type="primary">发送</Button>
+                          </div>
                         </div>
                         <div class="phonePop" v-show="phoneIndex === 2 && showPop1">
                             <img @click.stop="phoneIndex = 0" style="cursor:pointer;" src="./关闭.png" alt="">
@@ -276,6 +406,8 @@ export default {
       showPop4: false,
       phoneIndex: 0,
       phoneIndex2: -1,
+      textIndex: -1,
+      textList: [],
       type1: '工作要求',
       type2: '区领导',
       ZBpersonInfo: [], // 值班人员信息
@@ -452,6 +584,9 @@ export default {
     },
     type1: function () {
       this.InputCondition1 = ''
+    },
+    textIndex: function () {
+      this.textList = []
     }
   },
   methods: {
@@ -572,6 +707,9 @@ export default {
     ShowPhone (index) {
       this.phoneIndex = index
     },
+    ShowText (index) {
+      this.textIndex = index
+    },
     getData () {
       // 工作要求
       this.axios.get('/leaderview/ChengYun4/GetZBTX1').then(res => {
@@ -644,6 +782,60 @@ export default {
 .BigNewCYZBTX{
     position: relative;
     letter-spacing: 1px;
+    .textPop{
+      position: absolute;
+      top: 70px;
+      right: -200px;
+      width: 400px;
+      height: 400px;
+      z-index: 1;
+      font-family: monospace;
+      background: url('./电话弹窗.png') no-repeat;
+      background-size:100% 100%;
+      .close{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+      }
+      .textTitle{
+        text-align: center;
+        width: 100%;
+        padding: 5px 0;
+        font-size: 26px;
+      }
+      .textList{
+        width: 380px;
+        height: 300px;
+        overflow: scroll;
+        border: 1px solid #a59696;
+        margin: 0 auto;
+        .textBox{
+          width: 100%;
+          border-bottom: 1px solid #fff;
+          label{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .textDetail{
+              width: 85%;
+              padding: 10px;
+              font-size: 24px;
+              border-right: 1px solid #fff;
+            }
+          }
+        }
+        .textBox:last-child{
+          border-bottom: none;
+        }
+      }
+      .sendButton{
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+      }
+    }
     .content{
         display: flex;
         align-items: center;
@@ -710,10 +902,10 @@ export default {
                     color: rgba(200,224,255,1);
                     margin-bottom: 5px;
                     >img{
-                        width: 23px;
-                        height: 23px;
+                        width: 40px;
+                        height: 40px;
                         margin-left: 9px;
-                        vertical-align: baseline;
+                        vertical-align: sub;
                     }
                 }
                 >div:last-child{
@@ -911,10 +1103,10 @@ export default {
                             color: rgba(200,224,255,1);
                             margin-bottom: 0px;
                             >img{
-                                width: 23px;
-                                height: 23px;
+                                width: 40px;
+                                height: 40px;
                                 margin-left: 9px;
-                                vertical-align: baseline;
+                                vertical-align: sub;
                             }
                         }
                         >div:last-child{

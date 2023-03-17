@@ -951,20 +951,14 @@ export default {
       let sum = 0
       if (this.appealType === '全部') {
         this.AllsqxqphList.forEach(element => {
-          if (element['明细'] && this.getBubble.indexOf(element['类别名称']) >= 0) {
-            element['明细'].rows.forEach(row => {
-              sum += row['数量']
-            })
+          if (this.getBubble.indexOf(element['类别名称']) >= 0) {
+            sum = sum + element['数量']
           }
         })
       } else {
         this.AllsqxqphList.forEach(element => {
           if (element['类别名称'] === this.appealType) {
-            if (element['明细']) {
-              element['明细'].rows.forEach(row => {
-                sum += row['数量']
-              })
-            }
+            sum = element['数量']
           }
         })
       }
