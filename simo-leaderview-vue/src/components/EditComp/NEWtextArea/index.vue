@@ -173,6 +173,18 @@ export default {
                 this.$parent.$parent.ShowInformation(boxData)
               }
             })
+        } else if (this.item.chartData.name.indexOf('燃气') >= 0) {
+          let boxData = {
+            title: '数据详情',
+            data: {name: this.item.chartData.name},
+            dataUrl: this.item.chartData.url,
+            czType: this.item.chartData.name
+          }
+          if (this.$parent.$parent.ShowTableBox) {
+            this.$parent.$parent.ShowTableBox(boxData)
+          } else if (this.$parent.$parent.$parent.ShowTableBox) {
+            this.$parent.$parent.$parent.ShowTableBox(boxData)
+          }
         } else {
           let boxData = {
             title: '数据详情',

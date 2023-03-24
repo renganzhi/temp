@@ -139,12 +139,14 @@
                             <div>今日值班长</div>
                             <div>昨日值班长</div>
                             <div>值班长交接内容</div>
+                            <div>日期</div>
                         </div>
                         <div class="tablebody">
                             <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSQK" :key="index">
-                                <div>{{data['今日值班长']}}</div>
-                                <div>{{data['昨日值班长']}}</div>
-                                <div>{{data['值班长交接内容']}}</div>
+                              <div>{{data['今日值班长'] || '暂无数据'}}</div>
+                              <div>{{data['昨日值班长'] || '暂无数据'}}</div>
+                              <div>{{data['值班长交接内容'] || '暂无数据'}}</div>
+                              <div>{{data['日期'] || '暂无数据'}}</div>
                             </div>
                         </div>
                     </div>

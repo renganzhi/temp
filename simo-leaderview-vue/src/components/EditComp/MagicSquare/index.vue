@@ -13,7 +13,7 @@
             </div>
             <div class="timeAxis" ref="timeAxis" @mousewheel="onMouseWheel($event, 'timeAxis')">
                 <div :class="{timeBox: true, checkedBox:checkDate === item?true:false}" v-for="(item, index) in dateList" :key="index" @click="ChangeDate(item)">
-                    <img class="warning" src="./切图/提前告警.png" alt="">
+                    <img class="warning" v-show="earlyWarning.includes(item) || todayWarning.includes(item)"  :src="getStatus(item)" alt="">
                     <div class="yAndm">
                         {{item.split('-')[0]}}.{{item.split('-')[1]}}
                     </div>
@@ -21,17 +21,18 @@
                 </div>
             </div>
             <div class="title2">预警信息</div>
-            <div class="warningBox">
+            <div v-show="checkDataList.length" class="warningBox">
                 <div v-show="!showBoxDetail" class="boxList">
-                    <div class="smallBox" @click="ShowDetail(item)" v-for="(item, index) in 10" :key="index">
-                        <img class="todayHappen" src="./切图/本日发生.png" alt="">
+                    <div class="smallBox" @click="ShowDetail(item)" v-for="(item, index) in checkDataList" :key="index">
+                        <!-- <img class="todayHappen" src="./切图/本日发生.png" alt=""> -->
                         <div class="title">
                             <img src="./切图/图标.png" alt="">
-                            <span>预警类型{{item}}</span>
+                            <span>{{item['名称'] || '暂无数据'}}</span>
                         </div>
                         <div class="content">
-                            <div class="rows" v-for="(val, ind) in 10" :key="val +',' + ind">
-                                {{ind === 0? '潜在风险行为':'风险' + val}} : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                            <div class="rows">日期：{{item['明细'].rows[0]['日期']}}</div>
+                            <div class="rows" v-for="(val, ind) in item['明细'].rows" :key="ind">
+                                风险{{ind + 1}}：{{val['涉及风险']}}
                             </div>
                         </div>
                     </div>
@@ -42,11 +43,12 @@
                         <div class="showButton" @click="showRightPart = !showRightPart">{{showRightPart?'收起<<':'展开>>'}}</div>
                         <div class="title">
                             <img src="./切图/图标.png" alt="">
-                            <span>预警类型一</span>
+                            <span>{{checkData['名称']}}</span>
                         </div>
                         <div class="content">
-                            <div class="rows" v-for="(val, ind) in 10" :key="val +',' + ind">
-                                {{ind === 0? '潜在风险行为':'风险' + val}} : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                            <div class="rows">日期：{{checkData['明细']?checkData['明细'].rows[0]['日期']:'暂无数据'}}</div>
+                            <div class="rows" v-for="(val, ind) in checkData['明细']?checkData['明细'].rows:[]" :key="ind">
+                                风险{{ind + 1}}：{{val['涉及风险']}}
                             </div>
                         </div>
                     </div>
@@ -64,8 +66,8 @@
                                                 <div>情况</div>
                                             </div>
                                             <div class="lbody">
-                                                <div class="li" v-for="(item, index) in 10" :key="index">
-                                                    <div>1.xx区教育局</div>
+                                                <div class="li" v-for="(item, index) in checkData['明细']?checkData['明细'].rows:[]" :key="index">
+                                                    <div>1.{{item['涉及部门']}}</div>
                                                     <div>完成<input type="checkbox"></div>
                                                 </div>
                                             </div>
@@ -91,6 +93,9 @@
                     </div>
                 </div>
             </div>
+            <div v-show="!checkDataList.length" class="NoData">
+                本日无预警
+            </div>
     </div>
 </template>
 <script>
@@ -103,7 +108,11 @@ export default {
       showBoxDetail: false, // 是否展示预警详情
       checkDate: '', // 选中日期
       showRightPart: false, // 是否展示右侧部分
-      showDateCheckbox: false // 是否展示日期选择框
+      showDateCheckbox: false, // 是否展示日期选择框
+      earlyWarning: [],
+      todayWarning: [],
+      checkDataList: [],
+      checkData: {}
     }
   },
   computed: {
@@ -114,11 +123,24 @@ export default {
         let endDate = this.DateToString(this.dateRange[1])
         arr = this.getdiffdate(startDate, endDate)
       } else {
-        let startDate = new Date()
-        let endDate = new Date(startDate.getTime() + 1000 * 60 * 60 * 24 * 14)
-        arr = this.getdiffdate(this.DateToString(startDate), this.DateToString(endDate))
+        let startDate = this.DateToString(new Date())
+        let endDate = this.DateToString(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14))
+        arr = this.getdiffdate(startDate, endDate)
       }
       return arr
+    },
+    getStatus () {
+      return (date) => {
+        if (this.earlyWarning.includes(date) && this.todayWarning.includes(date)) {
+          return require('./切图/本日且提前.png')
+        } else if (this.earlyWarning.includes(date)) {
+          return require('./切图/提前告警.png')
+        } else if (this.todayWarning.includes(date)) {
+          return require('./切图/本日告警.png')
+        } else {
+          return ''
+        }
+      }
     }
   },
   watch: {
@@ -129,14 +151,41 @@ export default {
       if (this.dateList.length) {
         this.checkDate = this.dateList[0]
         this.$refs.timeAxis.scrollLeft = 0
+        this.axios.get('/leaderview/ChengYun4/GetYJMF2?starttime=' + this.dateList[0] + '&endtime=' + this.dateList[this.dateList.length - 1]).then(res => {
+          if (res.obj['提前'].rows) {
+            res.obj['提前'].rows.forEach(element => {
+              this.earlyWarning.push(element['日期'])
+            })
+          }
+          if (res.obj['当日'].rows) {
+            res.obj['当日'].rows.forEach(element => {
+              this.todayWarning.push(element['日期'])
+            })
+          }
+        })
+      } else {
+        this.checkDate = ''
+        this.$refs.timeAxis.scrollLeft = 0
       }
     },
     checkDate: function () {
       this.showRightPart = false
       this.showBoxDetail = false
+      this.checkData = {}
+      if (this.checkDate) {
+        this.axios.get('/leaderview/ChengYun4/GetYJMF1?param=' + this.checkDate).then(res => {
+          if (res.success && res.obj.rows) {
+            this.checkDataList = res.obj.rows
+          } else {
+            this.checkDataList = []
+          }
+        })
+      }
     }
   },
   methods: {
+    getALLData () {
+    },
     // 获取两日期之间日期列表函数
     getdiffdate (stime, etime) {
     // 初始化日期列表，数组
@@ -195,11 +244,13 @@ export default {
       this.checkDate = date
     },
     ShowDetail (data) {
+      this.checkData = data
       this.showBoxDetail = true
     },
     CloseDtail () {
       this.showRightPart = false
       this.showBoxDetail = false
+      this.checkData = {}
     }
   },
   mounted () {
@@ -319,7 +370,6 @@ export default {
                 width: 100%;
                 height: 100%;
                 display: flex;
-                align-items: center;
                 overflow: scroll;
                 flex-wrap: wrap;
                 .smallBox{
@@ -363,6 +413,7 @@ export default {
                         width: 100%;
                         height: 190px;
                         padding-left: 60px;
+                        padding-right: 20px;
                         overflow: scroll;
                         .rows{
                             width: 100%;
@@ -596,6 +647,15 @@ export default {
                     }
                 }
             }
+        }
+        .NoData{
+            width: 100%;
+            height: 730px;
+            font-size: 50px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 730px;
         }
 
 }

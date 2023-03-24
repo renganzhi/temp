@@ -15,10 +15,10 @@
                   <div class="textTitle">短信模板</div>
                   <div class="textList">
                     <CheckboxGroup v-model="textList" size="large">
-                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                      <div class="textBox">
                         <label>
-                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                          <Checkbox  :label="item">
+                          <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                          <Checkbox>
                             .
                           </Checkbox>
                         </label>
@@ -45,10 +45,10 @@
                   <div class="textTitle">短信模板</div>
                   <div class="textList">
                     <CheckboxGroup v-model="textList" size="large">
-                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                      <div class="textBox">
                         <label>
-                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                          <Checkbox  :label="item">
+                          <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                          <Checkbox>
                             .
                           </Checkbox>
                         </label>
@@ -82,10 +82,10 @@
                   <div class="textTitle">短信模板</div>
                   <div class="textList">
                     <CheckboxGroup v-model="textList" size="large">
-                      <div class="textBox" v-for="(item, index) in 15" :key="index">
+                      <div class="textBox">
                         <label>
-                          <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                          <Checkbox  :label="item">
+                          <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                          <Checkbox>
                             .
                           </Checkbox>
                         </label>
@@ -131,10 +131,10 @@
                           <div class="textTitle">短信模板</div>
                           <div class="textList">
                             <CheckboxGroup v-model="textList" size="large">
-                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                              <div class="textBox">
                                 <label>
-                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                                  <Checkbox  :label="item">
+                                  <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                                  <Checkbox>
                                     .
                                   </Checkbox>
                                 </label>
@@ -161,10 +161,10 @@
                           <div class="textTitle">短信模板</div>
                           <div class="textList">
                             <CheckboxGroup v-model="textList" size="large">
-                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                              <div class="textBox">
                                 <label>
-                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                                  <Checkbox  :label="item">
+                                  <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                                  <Checkbox>
                                     .
                                   </Checkbox>
                                 </label>
@@ -198,10 +198,10 @@
                           <div class="textTitle">短信模板</div>
                           <div class="textList">
                             <CheckboxGroup v-model="textList" size="large">
-                              <div class="textBox" v-for="(item, index) in 15" :key="index">
+                              <div class="textBox">
                                 <label>
-                                  <div class="textDetail" :title="item">短信模板短信模板短信模板短信模板短信模板短信模板{{item}}</div>
-                                  <Checkbox  :label="item">
+                                  <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                                  <Checkbox>
                                     .
                                   </Checkbox>
                                 </label>
@@ -269,12 +269,14 @@
                             <div>今日值班长</div>
                             <div>昨日值班长</div>
                             <div>值班长交接内容</div>
+                            <div>日期</div>
                         </div>
                         <div class="tablebody">
                             <div @click="showXQ(data)" class="rows" v-for="(data, index) in getZBZSQK" :key="index">
-                                <div>{{data['今日值班长']}}</div>
-                                <div>{{data['昨日值班长']}}</div>
-                                <div>{{data['值班长交接内容']}}</div>
+                                <div>{{data['今日值班长'] || '暂无数据'}}</div>
+                                <div>{{data['昨日值班长'] || '暂无数据'}}</div>
+                                <div>{{data['值班长交接内容'] || '暂无数据'}}</div>
+                                <div>{{data['日期'] || '暂无数据'}}</div>
                             </div>
                         </div>
                     </div>
@@ -372,12 +374,34 @@
                           <img v-else src="./街道矩形.png" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
                         </div>
                         <div>
-                          <div class="name">{{element['领导姓名']}}<img style="vertical-align: baseline;margin-left: 5px;" @click="phoneIndex2 = index" src="./电话.png" alt=""></div>
+                          <div class="name">{{element['领导姓名']}}
+                            <img style="vertical-align: baseline;width:24px;height:24px;margin-left: 5px;" @click="phoneIndex2 = index" src="./电话.png" alt="">
+                            <img style="cursor:pointer;width:24px;height:24px;vertical-align:baseline;margin-left:5px;" src="./短信.png" @click.stop="textIndex2 = index" alt="">
+                          </div>
                           <!-- <div class="phone" @click="phoneIndex2 = index">{{element['手机号']}}
                             <img src="./电话.png" alt="">
                           </div> -->
                           <div class="post" v-if="element['值班职务'] && element['职务'] !== '值班领导'" :title="element['职务']">{{element['职务']}}</div>
                           <div class="position">{{element['值班职务'] || element['职务']}}</div>
+                        </div>
+                      </div>
+                      <div class="textPop" @click.stop="" v-show="textIndex2 === index && showPop4">
+                        <img class="close" @click.stop="textIndex2 = -1" style="cursor:pointer;" src="./关闭.png" alt="">
+                        <div class="textTitle">短信模板</div>
+                        <div class="textList">
+                          <CheckboxGroup v-model="textList" size="large">
+                            <div class="textBox">
+                              <label>
+                                <div class="textDetail">【温馨提示】尊敬的领导，根据市城运中心值守调度要求，当日带班领导需参与每日16:30值班值守调度会。根据工作安排，现区委区政府总值班室与区城运中心统筹值班，按照区委区政府总值班室2023年3月值班带班安排，今日（3月22日）16:25时，请您到一办大礼堂一楼参与当日值守调度会，若您因故无法出席，请安排一名人员代会，特此提醒。</div>
+                                <Checkbox>
+                                  .
+                                </Checkbox>
+                              </label>
+                            </div>
+                          </CheckboxGroup>
+                        </div>
+                        <div class="sendButton">
+                          <Button type="primary">发送</Button>
                         </div>
                       </div>
                       <div class="phonePop" v-show="phoneIndex2 === index && showPop4">
@@ -406,6 +430,7 @@ export default {
       showPop4: false,
       phoneIndex: 0,
       phoneIndex2: -1,
+      textIndex2: -1,
       textIndex: -1,
       textList: [],
       type1: '工作要求',
@@ -703,6 +728,7 @@ export default {
     ClosePop4 () {
       this.showPop4 = false
       this.phoneIndex2 = -1
+      this.textIndex2 = -1
     },
     ShowPhone (index) {
       this.phoneIndex = index
@@ -1788,8 +1814,8 @@ export default {
                   }
                   .phonePop{
                         position: absolute;
-                        top: 20px;
-                        right: -20px;
+                        top: 26px;
+                        right: 0px;
                         width: 222px;
                         height: 300px;
                         z-index: 1;
@@ -1834,6 +1860,13 @@ export default {
                             margin: 0 auto
                         }
                  }
+                }
+              }
+              .streetBox:nth-child(3n+3){
+                .textPop{
+                  position: absolute;
+                  top: 70px;
+                  right: 0px;
                 }
               }
             }

@@ -14,9 +14,9 @@
           <ul class="item">
             <li :style="liStyle" v-for="(val, ind) in eventData.rows" :data-obj="JSON.stringify(val)" :key="ind">
               <div class="eventBox" :data-obj="JSON.stringify(val)">
-                  <div class="title" :data-obj="JSON.stringify(val)" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title}}</div>
-                  <div class="date" :data-obj="JSON.stringify(val)" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date}}</div>
-                  <div class="content" :data-obj="JSON.stringify(val)" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content}}</div>
+                  <div class="title" :data-obj="JSON.stringify(val)" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title || val['问题标题']}}</div>
+                  <div class="date" :data-obj="JSON.stringify(val)" :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date || val['发起时间'] || val['上报时间']}}</div>
+                  <div class="content" :data-obj="JSON.stringify(val)" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content || val['发生地址'] || val['问题描述']}}</div>
               </div>
             </li>
           </ul>

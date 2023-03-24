@@ -57,6 +57,10 @@
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
                 <CYMap :nowPageName="pageName"></CYMap>
+                <!-- <MapSwitch :nowPageName="pageName"></MapSwitch> -->
+                <!-- <iframe  id="BaiDuIframe" style="height:100%;width:100%;position: absolute;z-index:0"
+     src="http://172.16.149.41:8181/appli/start?appliId=987084259741138944&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe> -->
+                <!-- <EconomicMap :nowPageName="pageName"></EconomicMap> -->
               </div>
             <div class="full-height pagebox">
               <div class="Tbaleban"  v-if="pageName&&pageName.indexOf('城运') < 0&&showTableBox">
@@ -95,7 +99,7 @@
                     </div>
                     <div class="cyTableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
-                        <th v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
+                        <th :title="rowsData[data]" v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
@@ -164,6 +168,10 @@
                   <div class="closeBtn" @click="closeBoxTtn()"></div>
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
+                    <div class="TwoButtons" v-show="boxData.czType">
+                      <div @click="WarningManage(boxData.data)">预警处置</div>
+                      <div @click="ManageSituation()">处置情况</div>
+                    </div>
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
                       <div class="Data" v-if="data.title !== '详情' && data.value !== '详情' && data.title !== '链接'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
@@ -260,6 +268,72 @@
                   </div>
                 </div>
               </div>
+              <div class="NewPopUp" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}"  v-if="showWarningManage">
+                <div :class="pageName.indexOf('32:9')>=0?'smallBox':'bigBox'">
+                  <div class="closeBtn" @click="CloseWarningManage()"></div>
+                  <div class="BoxTitle">预警处置</div>
+                  <div class="BoxBody">
+                    <div class="lineBox">
+                      <div class="nameBox">标题</div>
+                      <div class="inputBox">
+                        <textarea autofocus v-model="yjczDetail['标题']" />
+                      </div>
+                    </div>
+                    <div class="lineBox">
+                      <div class="nameBox">内容</div>
+                      <div class="inputBox">
+                        <textarea rows="5" v-model="yjczDetail['内容']"/>
+                      </div>
+                    </div>
+                    <div class="lineBox">
+                      <div class="nameBox">地点</div>
+                      <div class="inputBox">
+                        <textarea v-model="yjczDetail['地点']"/>
+                      </div>
+                    </div>
+                    <div class="lineBox">
+                      <div class="nameBox">发起时间</div>
+                      <div class="inputBox">
+                        <textarea v-model="yjczDetail['发起时间']" readonly />
+                      </div>
+                    </div>
+                    <div class="lineBox">
+                      <div class="nameBox">领导批示</div>
+                      <div class="inputBox">
+                        <textarea rows="4" v-model="yjczDetail['领导批示']"/>
+                      </div>
+                    </div>
+                    <div class="submit">
+                      <div class="confirm" @click="OpenShowTjdbDetails1">确认</div>
+                      <div class="tjdbBox" v-show="showTjdbDetails1">
+                          <div class="titleName">
+                            <div class="Name" style="color:#5AE8FA;font-size:45px">请选择部门</div>
+                            <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails1 = false" src="./关闭.png" alt="">
+                          </div>
+                          <div class="bodyChose">
+                            <Tree class="treeDom" :data="treeSetList1"
+                              :load-data="loadData"
+                              @on-select-change='ChangeSelect1'></Tree>
+                          </div>
+                          <div class="footBox">
+                            <div class="Name" style="color:#C5EEF3;font-size:45px">{{CkeckedBm1===''?'请选择部门':CkeckedBm1}}</div>
+                            <div class="SureBtn dataCenter" @click="UpDataOk1">确定</div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="NewPopUp" :style="pageName.indexOf('32:9')>=0?{width:'3840px',height: '1080px'}:{}"  v-if="showManageSituation">
+                <div :class="pageName.indexOf('32:9')>=0?'smallBox':'bigBox'">
+                  <div class="closeBtn" @click="CloseManageSituation()"></div>
+                  <div class="BoxTitle">处置情况</div>
+                  <div class="BoxBody" v-show="false">
+                    <EventVenation :style="{left:pageName.indexOf('32:9')>=0?'168px': '356px'}" :item="venationData1"></EventVenation>
+                  </div>
+                  <div class="NoData" v-show="true">暂未配置</div>
+                </div>
+              </div>
               <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
                 <div class="BoxArry">
                   <div class="SmallBox" v-if="OpenBox" @mousemove="OpenBox = false"></div>
@@ -317,8 +391,8 @@
               <LookCompose
                 v-for="(list, index1) in combinList"
                 :index="index1"
-                :comName="list.comName||''"
                 :key="list.id"
+                :comName="list.comName||''"
                 :list="list"
               ></LookCompose>
             </div>
@@ -449,6 +523,8 @@ import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
 import CYMap from '@/components/EditComp/CYMap/CYMap.vue'
+import MapSwitch from '@/components/EditComp/MapSwitch/index.vue'
+import EconomicMap from '@/components/EditComp/EconomicMap/index.vue'
 import ImportPage from './../EditPage/ImportPage'
 import WuhoIfream from '@/components/EditComp/WuhoIfream'
 import EventVenation from '@/components/EditComp/EventVenation'
@@ -469,11 +545,27 @@ export default {
     AddPage,
     ImportPage,
     CYMap,
+    MapSwitch,
+    EconomicMap,
     beijing
   },
   // mixins:[thirdLoginMix],
   data () {
     return {
+      showWarningManage: false,
+      showManageSituation: false,
+      yjczDetail: {
+        '标题': '',
+        '内容': '',
+        '地点': '',
+        '发起时间': '',
+        '领导批示': '',
+        '告警时间': ''
+      },
+      showTjdbDetails1: false,
+      treeSetList1: [],
+      CkeckedBm1: '',
+      CkeckedBmData1: {},
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
@@ -482,9 +574,6 @@ export default {
       showModelBox: false,
       showVenationBox: false,
       vboxData: {},
-      venationChartData: {
-        data: []
-      },
       showTableBox: false,
       ifLoad: false,
       showElineBox: false, // 柱状图弹窗
@@ -539,6 +628,9 @@ export default {
       timer: null, // 轮播定时器
       freshInterval: null, // 定时器
       nowTime: 0, // 当前页面已停留多少秒
+      venationChartData: {
+        data: []
+      },
       // autoPlay:true,
       item: {
         chartType: 've-gauge',
@@ -592,17 +684,6 @@ export default {
     showPagination () {
       return this.pageSize > 1
     },
-    pageName () {
-      if (this.pageList[(this.pageIndex - 1) % this.pageSize]) {
-        let name = this.pageList[(this.pageIndex - 1) % this.pageSize].name
-        // if(name.indexOf('市级') >= 0 ){
-        //   this.IsCityType = true
-        // }else{
-        //   this.IsCityType = false
-        // }
-        return name
-      }
-    },
     venationData () {
       return {
         'text': '事件脉络',
@@ -626,6 +707,40 @@ export default {
         'chartData': this.venationChartData
       }
     },
+    venationData2 () {
+      return {
+        'text': '事件脉络',
+        'imgClass': 'icon-n-text',
+        'chartType': 'EventVenation',
+        'width': this.pageName.indexOf('32:9') >= 0 ? 790 : 1565,
+        'height': 400,
+        'titleFontSize': this.pageName.indexOf('32:9') >= 0 ? 24 : 42,
+        'titleBottm': 10,
+        'iconColor': '#86e2f7',
+        'titleColor': '#86e2f7',
+        'contBorderColor': '#f1e9c2',
+        'contPadding': 15,
+        'contBorderRdius': 5,
+        'contTitleSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
+        'contTitleColor': 'white',
+        'contColor': '#cef1ff',
+        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -175 : -346,
+        'dateTop': 0,
+        'contSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
+        'chartData': this.venationChartData
+      }
+    },
+    pageName () {
+      if (this.pageList[(this.pageIndex - 1) % this.pageSize]) {
+        let name = this.pageList[(this.pageIndex - 1) % this.pageSize].name
+        // if(name.indexOf('市级') >= 0 ){
+        //   this.IsCityType = true
+        // }else{
+        //   this.IsCityType = false
+        // }
+        return name
+      }
+    },
     iframeStyle () {
       return {
         height: this.iframeHeight + 'px',
@@ -645,6 +760,215 @@ export default {
   methods: {
     ...mapActions(['changeAlertInfo', 'initVideoTims', 'changePageVisiable']),
     ...mapMutations(['changeEditId', 'changeNowPage']),
+    WarningManage (data) {
+      this.showWarningManage = true
+      let content1 = ''
+      let content2 = ''
+      data.forEach(element => {
+        if (element.title === '预警名称') {
+          this.yjczDetail['标题'] = element.value
+        } else if (element.title === '预警信息') {
+          content1 = element.value
+        } else if (element.title === '告警时间') {
+          content2 = element.value
+          this.yjczDetail['告警时间'] = element.value
+        } else if (element.title === '设备地址') {
+          this.yjczDetail['地点'] = element.value
+        }
+        this.yjczDetail['内容'] = content1 + content2
+        this.yjczDetail['发起时间'] = this.DateToString()
+      })
+    },
+    ManageSituation () {
+      this.showManageSituation = true
+    },
+    CloseWarningManage () {
+      this.showWarningManage = false
+      this.showTjdbDetails1 = false
+      this.yjczDetail = {
+        '标题': '',
+        '内容': '',
+        '地点': '',
+        '发起时间': '',
+        '领导批示': '',
+        '告警时间': ''
+      }
+    },
+    CloseManageSituation () {
+      this.showManageSituation = false
+    },
+    loadData (item, callback) {
+      let newtype = ''
+      if (item.type === 'children') {
+        newtype = 'members'
+      }
+      if (item.id) {
+        // $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          // $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            if (item.type === 'children') {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  id: element['组织ID'],
+                  dept: item.title,
+                  type: 'members',
+                  disabled: true,
+                  loading: false,
+                  disableCheckbox: true,
+                  children: []
+                })
+              })
+            } else {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  dept: item.dept,
+                  deptkeshi: item.title,
+                  nickphone: element['电话'],
+                  id: element['组织ID'],
+                  type: newtype
+                })
+              })
+            }
+            if (treeData.length === 0) {
+              treeData.push({
+                title: '暂无数据',
+                id: -1,
+                type: '',
+                disabled: true
+              })
+            }
+            callback(treeData)
+          }
+        }, error => {
+          console.log(error)
+          // $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          // $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    ChangeSelect1 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm1 = item[0].title
+        this.CkeckedBmData1 = item[0]
+      } else {
+        this.CkeckedBm1 = ''
+        this.CkeckedBmData1 = {}
+      }
+    },
+    UpDataOk1 () {
+      this.showTjdbDetails1 = false
+      const formData1 = new FormData()
+      const formData2 = new FormData()
+      formData1.append('flowNo', this.DateToString() + '0001')
+      formData1.append('questiontitle', this.yjczDetail['标题'])
+      formData1.append('createDate', this.yjczDetail['告警时间'])
+      formData1.append('address', this.yjczDetail['地点'])
+      formData1.append('reportDate', this.yjczDetail['发起时间'])
+      formData1.append('lingdaopishi', this.yjczDetail['领导批示'])
+
+      formData2.append('flowNo', this.DateToString() + '0001')
+      formData2.append('opttag', 'cFinish')
+      formData2.append('opttag_2', 0)
+      formData2.append('optdate', this.DateToString(new Date()))
+      formData2.append('nickname', this.CkeckedBmData1.title)
+      formData2.append('nickphone', this.CkeckedBmData1.nickphone)
+      formData2.append('dept', this.CkeckedBmData1.dept)
+      formData2.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
+      formData2.append('identifier', 1)
+
+      this.axios.post('/leaderview/newDistrict/getYJCZ1', formData1).then(res => {
+        if (res.success) {
+          this.showTjdbDetails1 = false
+        }
+      }, error => {
+        console.log(error)
+      }).catch(err => {
+        console.log(err)
+      })
+      this.axios.post('/leaderview/newDistrict/getYJCZ2', formData2).then(res => {
+        if (res.success) {
+          this.showTjdbDetails1 = false
+        }
+      }, error => {
+        console.log(error)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    OpenShowTjdbDetails1 () {
+      this.showTjdbDetails1 = !this.showTjdbDetails1
+      this.CkeckedBm1 = ''
+      this.CkeckedBmData1 = {}
+      if (this.showTjdbDetails1) {
+        // $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          // $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList1 = treeData
+          }
+        }, error => {
+          console.log(error)
+          // $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          // $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    DateToString () {
+      let date = new Date()
+      let y = date.getFullYear()
+      let M = ''
+      let d = ''
+
+      let h = ''
+      let m = ''
+      let s = ''
+      if (date.getMonth() < 9) {
+        M = '0' + (date.getMonth() + 1)
+      } else {
+        M = date.getMonth() + 1
+      }
+      if (date.getDate() < 10) {
+        d = '0' + date.getDate()
+      } else {
+        d = date.getDate()
+      }
+      if (date.getHours() < 10) {
+        h = '0' + date.getHours()
+      } else {
+        h = date.getHours()
+      }
+      if (date.getMinutes() < 10) {
+        m = '0' + date.getMinutes()
+      } else {
+        m = date.getMinutes()
+      }
+      if (date.getSeconds() < 10) {
+        s = '0' + date.getSeconds()
+      } else {
+        s = date.getSeconds()
+      }
+      return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
+    },
     toEditPage () {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
       this.changeEditId(id)
@@ -668,7 +992,8 @@ export default {
       } else {
         let boxData = {
           title: '数据详情',
-          data: data
+          data: data,
+          czType: DataTkArry.czType
         }
         this.ShowTanKuangBox(boxData)
       }
@@ -716,6 +1041,7 @@ export default {
             if (data.success) {
               this.DataTkArry = data.obj
               this.DataTkArry.title = dataArray.title
+              this.DataTkArry.czType = dataArray.czType || ''
             }
           })
       } else if (dataArray.data === 'arry') {
@@ -1410,7 +1736,7 @@ export default {
           ifTrueID = true
         }
       })
-      if (this.nowShowPageID >= 0 && !ifTrueID) {
+      if (this.nowShowPageID && !ifTrueID) {
         this.pageIndex = undefined
       }
       this.pageIndex++
@@ -2302,7 +2628,6 @@ export default {
     this.pageVisibInit()
     this.initVideoTims(videoTims) // 进入大屏展示页时都初始化一次视频播放的时间
     titleShowFn('top', $('#homeTips'), '#homeTips')
-
     // // $('#lead-screen').addClass('disShow')
   },
   updated () {
@@ -2343,6 +2668,12 @@ export default {
 ::v-deep .ivu-spin-fix{
   height: 90%;
   top: 10%;
+}
+::v-deep .ivu-tree-title{
+  font-size: 40px !important;
+}
+::v-deep .ivu-tree-arrow{
+  font-size: 40px !important;
 }
     .demo-spin-icon-load{
         animation: ani-demo-spin 1s linear infinite;
@@ -2680,6 +3011,352 @@ html[data-theme='blueWhite'] {
     }
   }
 }
+.NewPopUp{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8640px;
+  height: 1620px;
+  z-index: 5000;
+  background-color: #15192a65;
+  .smallBox{
+    width: 1500px;
+    height: 1000px;
+    position: relative;
+    top: 40px;
+    left: 1170px;
+    z-index: 5000;
+    padding: 8px 30px 30px 30px;
+    background: url(./城运背景.png) no-repeat;
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 30px;
+      width: 30px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      background: url(./城运关闭.png) no-repeat;
+      background-size: 100% 100%;
+    }
+    .BoxTitle {
+      font-size: 40px !important;
+      font-weight: bold;
+      padding-left: 19px;
+      color: #ACCFFE;
+      margin-bottom: 30px;
+    }
+    .BoxBody {
+      padding: 70px 30px;
+      width: 100%;
+      height: 90%;
+      overflow: auto;
+      .lineBox{
+        width: 100%;
+        display: flex;
+        margin-bottom: 20px;
+        border: 1px solid #fff;
+        .nameBox{
+          width: 15%;
+          font-size: 40px;
+          padding: 10px 0 0 10px;
+          border-right: 1px solid #fff;
+        }
+        .inputBox{
+          width: 85%;
+          textarea{
+            font-size: 40px !important;
+            letter-spacing: 2px;
+            color: #fff !important;
+            width: 100% !important;
+            height: fit-content !important;
+            border: none !important;
+          }
+        }
+      }
+      .submit{
+        width: 100%;
+        position: relative;
+        .confirm{
+          background: #4f9ff5;
+          padding: 0 10px;
+          font-size: 40px;
+          width: 160px;
+          height: 70px;
+          text-align: center;
+          line-height: 70px;
+          color:#C8E0FF;
+          margin-right: 10px;
+          background: url('./button.png') no-repeat;
+          background-size: 100% 100%;
+          cursor:pointer;
+        }
+        .tjdbBox{
+          width: 608px;
+          height: 560px;
+          position: absolute;
+          top: 0px;
+          left: 170px;
+          z-index: 10;
+          cursor: auto;
+          background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+          border: 1px solid #1e97d5;
+          .titleName{
+            width: 100%;
+            height: 75px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+            padding: 0 20px;
+          }
+          .bodyChose{
+            width: 100%;
+            height: 388px;
+            overflow: auto;
+            padding: 20px;
+            .checkEdItem{
+              height: 72px;
+              width: 100%;
+              background-image: url('./newBack/19.png');
+              background-size: 100% 100%;
+              color: #5AE8FA;
+              font-size: 40px;
+              margin-bottom: 16px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .ChoseBtn{
+                width: 80px;
+                height: 36px;
+                background-image: url('./newBack/21.png');
+                background-size: 100% 100%;
+                color:#0A2534;
+                cursor: pointer;
+                font-size: 22px;
+              }
+            }
+            .normalItem{
+              height: 72px;
+              width: 100%;
+              background-image: url('./newBack/19.png');
+              background-size: 100% 100%;
+              color: #C5EEF3;
+              font-size: 40px;
+              margin-bottom: 16px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .ChoseBtn{
+                width: 80px;
+                height: 36px;
+                background-image: url('./newBack/20.png');
+                background-size: 100% 100%;
+                color:#16DFF8;
+                cursor: pointer;
+                font-size: 22px;
+              }
+            }
+          }
+          .footBox{
+            width: 100%;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+            padding: 0 20px;
+            align-items: center;
+            .SureBtn{
+              height: 50px;
+              width: 120px;
+              text-align: center;
+              background-image: url('./newBack/22.png');
+              font-size: 28px;
+              cursor: pointer;
+              color: #0B1B2A;
+            }
+          }
+        }
+      }
+    }
+    .NoData{
+      width: 100%;
+      padding: 70px 0;
+      font-size: 40px;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+  .bigBox{
+    width: 3000px;
+    height: 1500px;
+    position: relative;
+    top: 60px;
+    left: 2820px;
+    z-index: 5000;
+    padding: 15px 60px 60px 60px;
+    background: url(./城运背景.png) no-repeat;
+    background-size: 100% 100%;
+    .closeBtn{
+      height: 50px;
+      width: 50px;
+      cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 32px;
+      background: url(./城运关闭.png);
+    }
+    .BoxTitle {
+      font-size: 50px !important;
+      padding-left: 40px;
+      color: #ACCFFE;
+      font-weight: bold;
+      margin-bottom: 50px;
+      margin-top: 6px;
+      letter-spacing: 5px;
+    }
+    .BoxBody {
+      padding: 80px 40px;
+      width: 100%;
+      height: 90%;
+      overflow: auto;
+      .lineBox{
+        width: 100%;
+        display: flex;
+        margin-bottom: 20px;
+        border: 1px solid #fff;
+        .nameBox{
+          width: 15%;
+          font-size: 50px;
+          padding: 10px 0 0 10px;
+          border-right: 1px solid #fff;
+        }
+        .inputBox{
+          width: 85%;
+          textarea{
+            font-size: 50px !important;
+            letter-spacing: 2px;
+            color: #fff !important;
+            width: 100% !important;
+            height: fit-content !important;
+            border: none !important;
+          }
+        }
+      }
+      .submit{
+        width: 100%;
+        position: relative;
+        .confirm{
+          background: #4f9ff5;
+          padding: 0 10px;
+          font-size: 40px;
+          width: 160px;
+          height: 70px;
+          text-align: center;
+          line-height: 70px;
+          color:#C8E0FF;
+          margin-right: 10px;
+          background: url('./button.png') no-repeat;
+          background-size: 100% 100%;
+          cursor:pointer;
+        }
+        .tjdbBox{
+          width: 608px;
+          height: 560px;
+          position: absolute;
+          top: 0px;
+          left: 170px;
+          z-index: 10;
+          cursor: auto;
+          background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+          border: 1px solid #1e97d5;
+          .titleName{
+            width: 100%;
+            height: 75px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+            padding: 0 20px;
+          }
+          .bodyChose{
+            width: 100%;
+            height: 388px;
+            overflow: auto;
+            padding: 20px;
+            .checkEdItem{
+              height: 72px;
+              width: 100%;
+              background-image: url('./newBack/19.png');
+              background-size: 100% 100%;
+              color: #5AE8FA;
+              font-size: 40px;
+              margin-bottom: 16px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .ChoseBtn{
+                width: 80px;
+                height: 36px;
+                background-image: url('./newBack/21.png');
+                background-size: 100% 100%;
+                color:#0A2534;
+                cursor: pointer;
+                font-size: 22px;
+              }
+            }
+            .normalItem{
+              height: 72px;
+              width: 100%;
+              background-image: url('./newBack/19.png');
+              background-size: 100% 100%;
+              color: #C5EEF3;
+              font-size: 40px;
+              margin-bottom: 16px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .ChoseBtn{
+                width: 80px;
+                height: 36px;
+                background-image: url('./newBack/20.png');
+                background-size: 100% 100%;
+                color:#16DFF8;
+                cursor: pointer;
+                font-size: 22px;
+              }
+            }
+          }
+          .footBox{
+            width: 100%;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+            padding: 0 20px;
+            align-items: center;
+            .SureBtn{
+              height: 50px;
+              width: 120px;
+              text-align: center;
+              background-image: url('./newBack/22.png');
+              font-size: 28px;
+              cursor: pointer;
+              color: #0B1B2A;
+            }
+          }
+        }
+      }
+    }
+    .NoData{
+      width: 100%;
+      padding: 70px 0;
+      font-size: 50px;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+}
 // .ParentBox{
 //   position: relative;
 //   .BoxArry{
@@ -2974,11 +3651,11 @@ html[data-theme='blueWhite'] {
   }
 }
 .cyTableBox {
-  width: 2088px;
-  height: 1000px;
+  width: 3000px;
+  height: 1500px;
   position: relative;
-  top: 310px;
-  left: 3276px;
+  top: 60px;
+  left: 2820px;
   z-index: 5000;
   padding: 15px 60px 60px 60px;
   background: url(./城运背景.png) no-repeat;
@@ -2993,11 +3670,12 @@ html[data-theme='blueWhite'] {
     background: url(./城运关闭.png);
   }
   .BoxTitle {
-    font-size: 36px !important;
+    font-size: 50px !important;
+    padding-left: 40px;
     color: #ACCFFE;
     font-weight: bold;
-    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 50px;
+    margin-top: 6px;
     letter-spacing: 5px;
   }
   .cyTableHead {
@@ -3008,7 +3686,7 @@ html[data-theme='blueWhite'] {
         width: 100%;
         // height: 60px;
         min-height: 110px;
-        font-size: 32px !important;
+        font-size: 50px !important;
         letter-spacing: 4px;
         display: flex;
         justify-content: space-between;
@@ -3022,14 +3700,15 @@ html[data-theme='blueWhite'] {
     }
   .cyTableBody {
       width: 100%;
-      height: 720px;
+      height: 1120px;
       overflow: auto;
       tr {
         width: 100%;
         height: 120px;
+        cursor:pointer;
         line-height: 120px;
         // margin: 10px 0;
-        font-size: 30px !important;
+        font-size: 50px !important;
         letter-spacing: 4px;
         display: flex;
         justify-content: space-between;
@@ -3051,32 +3730,31 @@ html[data-theme='blueWhite'] {
   }
 }
 .NewCyTableBox {
-  width: 1044px;
-  height: 500px;
+  width: 1500px;
+  height: 1000px;
   position: relative;
-  top: 290px;
-  left: 1398px;
+  top: 40px;
+  left: 1170px;
   z-index: 5000;
   padding: 8px 30px 30px 30px;
   background: url(./城运背景.png) no-repeat;
   background-size: 100% 100%;
    .closeBtn{
-    height: 25px;
-    width: 25px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     position: absolute;
-    top: 8px;
+    top: 20px;
     right: 16px;
     background: url(./城运关闭.png) no-repeat;
     background-size: 100% 100%;
   }
   .BoxTitle {
-    font-size: 22px !important;
-    padding-left: 10px;
+    font-size: 40px !important;
+    padding-left: 19px;
     color: #ACCFFE;
-    // font-weight: bold;
-    // font-family: PangmenMainRoadTitleBody !important;
-    margin-bottom: 25px;
+    font-weight: bold;
+    margin-bottom: 30px;
   }
   .cyTableHead {
       width: 100%;
@@ -3086,7 +3764,7 @@ html[data-theme='blueWhite'] {
         width: 100%;
         // height: 60px;
         min-height: 36px;
-        font-size: 12px !important;
+        font-size: 40px !important;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -3099,15 +3777,17 @@ html[data-theme='blueWhite'] {
     }
   .cyTableBody {
       width: 100%;
-      height: 360px;
+      height: 770px;
       overflow: auto;
       tr {
         width: 100%;
-        height: 36px;
-        line-height: 36px;
+        height: 80px;
+        cursor:pointer;
+        line-height: 80px;
         // margin: 10px 0;
-        font-size: 12px !important;
+        font-size: 35px !important;
         display: flex;
+        justify-content: center;
         color: rgba(172,207,254,1);
         border-bottom: 1px solid rgba(172,207,254,1);
         th {
@@ -3125,11 +3805,11 @@ html[data-theme='blueWhite'] {
   }
 }
 .cyBox {
-  width: 2088px;
-  height: 1000px;
+  width: 3000px;
+  height: 1500px;
   position: relative;
-  top: 310px;
-  left: 3276px;
+  top: 60px;
+  left: 2820px;
   z-index: 5000;
   padding: 15px 60px 60px 60px;
   background: url(./城运背景.png) no-repeat;
@@ -3144,16 +3824,18 @@ html[data-theme='blueWhite'] {
     background: url(./城运关闭.png);
   }
   .BoxTitle {
-    font-size: 32px !important;
+    font-size: 50px !important;
+    padding-left: 40px;
     color: #ACCFFE;
     font-weight: bold;
-    // font-family: PangmenMainRoadTitleBody !important;
     margin-bottom: 50px;
+    margin-top: 6px;
+    letter-spacing: 5px;
   }
   .BoxBody {
     padding: 80px 40px;
     display: flex;
-    font-size: 42px !important;
+    font-size: 50px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;
@@ -3177,39 +3859,94 @@ html[data-theme='blueWhite'] {
     padding: 10px;
     color: rgba(172,207,254,1);
   }
+  .TwoButtons{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    >div:first-child{
+      font-size: 35px;
+      width: 160px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      color:#C8E0FF;
+      margin-right: 10px;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
+    >div:last-child{
+      font-size: 35px;
+      width: 160px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      color:#C8E0FF;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
+  }
 }
 .NewCyBox {
-  width: 1044px;
-  height: 500px;
+  width: 1500px;
+  height: 1000px;
   position: relative;
-  top: 290px;
-  left: 1398px;
+  top: 40px;
+  left: 1170px;
   z-index: 5000;
   padding: 8px 30px 30px 30px;
   background: url(./城运背景.png) no-repeat;
   background-size: 100% 100%;
    .closeBtn{
-    height: 25px;
-    width: 25px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     position: absolute;
-    top: 8px;
+    top: 20px;
     right: 16px;
     background: url(./城运关闭.png) no-repeat;
     background-size: 100% 100%;
   }
   .BoxTitle {
-    font-size: 22px !important;
-    padding-left: 10px;
+    font-size: 40px !important;
+    padding-left: 19px;
+    font-weight: bold;
     color: #ACCFFE;
-    // font-weight: bold;
-    // font-family: PangmenMainRoadTitleBody !important;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+  }
+  .TwoButtons{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    >div:first-child{
+      font-size: 35px;
+      width: 160px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      color:#C8E0FF;
+      margin-right: 10px;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
+    >div:last-child{
+      font-size: 35px;
+      width: 160px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      color:#C8E0FF;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
   }
   .BoxBody {
     padding: 40px 20px;
     display: flex;
-    font-size: 21px !important;
+    font-size: 40px !important;
     flex-wrap: wrap;
     width: 100%;
     height: 90%;

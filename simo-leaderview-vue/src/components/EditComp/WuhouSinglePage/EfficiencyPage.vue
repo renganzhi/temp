@@ -1950,7 +1950,7 @@ export default {
           position:absolute;
           top: 40px;
           left: 640px;
-          z-index: 1000;
+          z-index: 1;
         }
         .row1{
             height: 580px;
