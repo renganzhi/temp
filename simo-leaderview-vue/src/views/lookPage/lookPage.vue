@@ -317,7 +317,7 @@
                           </div>
                           <div class="footBox">
                             <div class="Name" style="color:#C5EEF3;font-size:45px">{{CkeckedBm1===''?'请选择部门':CkeckedBm1}}</div>
-                            <div class="SureBtn dataCenter" @click="UpDataOk1">确定</div>
+                            <div class="SureBtn dataCenter" @click="UpDataOk1()">确定</div>
                           </div>
                       </div>
                     </div>
@@ -776,7 +776,7 @@ export default {
           this.yjczDetail['地点'] = element.value
         }
         this.yjczDetail['内容'] = content1 + content2
-        this.yjczDetail['发起时间'] = this.DateToString()
+        this.yjczDetail['发起时间'] = this.DateToString(new Date())
       })
     },
     ManageSituation () {
@@ -933,41 +933,78 @@ export default {
         })
       }
     },
-    DateToString () {
-      let date = new Date()
-      let y = date.getFullYear()
-      let M = ''
-      let d = ''
+    DateToString (time) {
+      if (time) {
+        let date = time
+        let y = date.getFullYear()
+        let M = ''
+        let d = ''
 
-      let h = ''
-      let m = ''
-      let s = ''
-      if (date.getMonth() < 9) {
-        M = '0' + (date.getMonth() + 1)
+        let h = ''
+        let m = ''
+        let s = ''
+        if (date.getMonth() < 9) {
+          M = '0' + (date.getMonth() + 1)
+        } else {
+          M = date.getMonth() + 1
+        }
+        if (date.getDate() < 10) {
+          d = '0' + date.getDate()
+        } else {
+          d = date.getDate()
+        }
+        if (date.getHours() < 10) {
+          h = '0' + date.getHours()
+        } else {
+          h = date.getHours()
+        }
+        if (date.getMinutes() < 10) {
+          m = '0' + date.getMinutes()
+        } else {
+          m = date.getMinutes()
+        }
+        if (date.getSeconds() < 10) {
+          s = '0' + date.getSeconds()
+        } else {
+          s = date.getSeconds()
+        }
+        return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
       } else {
-        M = date.getMonth() + 1
+        let date = new Date()
+        let y = date.getFullYear()
+        let M = ''
+        let d = ''
+
+        let h = ''
+        let m = ''
+        let s = ''
+        if (date.getMonth() < 9) {
+          M = '0' + (date.getMonth() + 1)
+        } else {
+          M = date.getMonth() + 1
+        }
+        if (date.getDate() < 10) {
+          d = '0' + date.getDate()
+        } else {
+          d = date.getDate()
+        }
+        if (date.getHours() < 10) {
+          h = '0' + date.getHours()
+        } else {
+          h = date.getHours()
+        }
+        if (date.getMinutes() < 10) {
+          m = '0' + date.getMinutes()
+        } else {
+          m = date.getMinutes()
+        }
+        if (date.getSeconds() < 10) {
+          s = '0' + date.getSeconds()
+        } else {
+          s = date.getSeconds()
+        }
+        return y + M + d + h + m + s
       }
-      if (date.getDate() < 10) {
-        d = '0' + date.getDate()
-      } else {
-        d = date.getDate()
-      }
-      if (date.getHours() < 10) {
-        h = '0' + date.getHours()
-      } else {
-        h = date.getHours()
-      }
-      if (date.getMinutes() < 10) {
-        m = '0' + date.getMinutes()
-      } else {
-        m = date.getMinutes()
-      }
-      if (date.getSeconds() < 10) {
-        s = '0' + date.getSeconds()
-      } else {
-        s = date.getSeconds()
-      }
-      return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
     },
     toEditPage () {
       const id = this.pageList[(this.pageIndex - 1) % this.pageSize].id
