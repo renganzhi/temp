@@ -1554,7 +1554,9 @@ export default {
       this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
-          this.gettjdbList()
+          window.setTimeout(() => {
+            this.gettjdbList()
+          }, 4000)
           this.CloseEventDetails()
         }
       }, error => {
@@ -1605,7 +1607,9 @@ export default {
       this.axios.post('/leaderview/ChengYun4/GetTJDB5', formData).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
-          this.gettjdbList()
+          window.setTimeout(() => {
+            this.gettjdbList()
+          }, 4000)
           this.showTjdbDetails1 = false
           // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
         }
@@ -1693,7 +1697,9 @@ export default {
       this.axios.post('/leaderview/ChengYun4/GetTJDB5', formData).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
-          this.gettjdbList()
+          window.setTimeout(() => {
+            this.gettjdbList()
+          }, 4000)
           this.showTjdbDetails2 = false
           // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
         }
@@ -2618,6 +2624,7 @@ export default {
                                 >div:nth-child(1) {
                                     color: #C5EEF3;
                                     font-size: 26px;
+                                    width: 85%;
                                     overflow: hidden;
                                     white-space: nowrap;
                                     text-overflow: ellipsis;
@@ -3061,6 +3068,7 @@ export default {
                                 >div:nth-child(1) {
                                     color: #C5EEF3;
                                     font-size: 26px;
+                                    width: 85%;
                                     overflow: hidden;
                                     white-space: nowrap;
                                     text-overflow: ellipsis;
@@ -4419,6 +4427,7 @@ export default {
                             font-size: 26px;
                             overflow: hidden;
                             white-space: nowrap;
+                            width: 85%;
                             text-overflow: ellipsis;
                             span{
                                 width: 12px;
@@ -4688,6 +4697,7 @@ export default {
                               color: #C5EEF3;
                               font-size: 26px;
                               overflow: hidden;
+                              width: 85%;
                               white-space: nowrap;
                               text-overflow: ellipsis;
                               span{
@@ -4948,6 +4958,7 @@ export default {
                               color: #C5EEF3;
                               font-size: 26px;
                               overflow: hidden;
+                              width: 85%;
                               white-space: nowrap;
                               text-overflow: ellipsis;
                               span{

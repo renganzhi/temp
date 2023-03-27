@@ -92,14 +92,14 @@
                     <div class="BoxTitle">{{DataTkArry.title?DataTkArry.title: '数据列表'}}</div>
                     <div class="cyTableHead">
                         <tr>
-                          <th v-for="(data, index) in DataTkArry.columns" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
+                          <th v-for="(data, index) in DataTkArry.columns" v-show="data !== '预警ID'" :key="index" :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
                             {{ data }}
                           </th>
                         </tr>
                     </div>
                     <div class="cyTableBody" v-if="DataTkArry.rows&&DataTkArry.rows.length > 0">
                       <tr  v-for="(rowsData, i) in DataTkArry.rows" :key="i"  @click="showXQByUrl(DataTkArry,rowsData)">
-                        <th :title="rowsData[data]" v-for="(data, index) in DataTkArry.columns" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
+                        <th :title="rowsData[data]" v-for="(data, index) in DataTkArry.columns" v-show="data !== '预警ID'" :key="index"  :style="{width:`calc(${100 / DataTkArry.columns.length}% - 10px)`}">
                           {{  rowsData[data] }}
                         </th>
                       </tr>
@@ -560,7 +560,8 @@ export default {
         '地点': '',
         '发起时间': '',
         '领导批示': '',
-        '告警时间': ''
+        '告警时间': '',
+        'id': ''
       },
       showTjdbDetails1: false,
       treeSetList1: [],
@@ -774,6 +775,8 @@ export default {
           this.yjczDetail['告警时间'] = element.value
         } else if (element.title === '设备地址') {
           this.yjczDetail['地点'] = element.value
+        } else if (element.title === '预警ID') {
+          this.yjczDetail['id'] = element.value
         }
         this.yjczDetail['内容'] = content1 + content2
         this.yjczDetail['发起时间'] = this.DateToString(new Date())
@@ -791,7 +794,8 @@ export default {
         '地点': '',
         '发起时间': '',
         '领导批示': '',
-        '告警时间': ''
+        '告警时间': '',
+        'id': ''
       }
     },
     CloseManageSituation () {
@@ -865,14 +869,14 @@ export default {
       this.showTjdbDetails1 = false
       const formData1 = new FormData()
       const formData2 = new FormData()
-      formData1.append('flowNo', this.DateToString() + '0001')
+      formData1.append('flowNo', this.yjczDetail['id'])
       formData1.append('questiontitle', this.yjczDetail['标题'])
       formData1.append('createDate', this.yjczDetail['告警时间'])
       formData1.append('address', this.yjczDetail['地点'])
       formData1.append('reportDate', this.yjczDetail['发起时间'])
       formData1.append('lingdaopishi', this.yjczDetail['领导批示'])
 
-      formData2.append('flowNo', this.DateToString() + '0001')
+      formData2.append('flowNo', this.yjczDetail['id'])
       formData2.append('opttag', 'cFinish')
       formData2.append('opttag_2', 0)
       formData2.append('optdate', this.DateToString(new Date()))

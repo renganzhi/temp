@@ -139,8 +139,31 @@
                               </div>
                               <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
                                 <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{xqValue['标题'] || ''}}</div>
+                                <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 30px;">
+                                  <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="OpenShowTjdbDetails4">
+                                    提级督办
+                                  </div>
+                                </div>
+                                <div class="tjdbBox" v-show="showTjdbDetails4">
+                                    <div class="titleName">
+                                      <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                      <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails4 = false" src="./background/关闭.png" alt="">
+                                    </div>
+                                    <div class="bodyChose">
+                                      <Tree :data="treeSetList4"
+                                        :load-data="loadData"
+                                        @on-select-change='ChangeSelect4'></Tree>
+                                    </div>
+                                    <div class="footBox">
+                                      <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm4===''?'请选择部门':CkeckedBm4}}</div>
+                                      <div class="SureBtn dataCenter" @click="UpDataOk4(xqValue['流转详情']?xqValue['流转详情']['rows'][0]['工单号']:'')">确定</div>
+                                    </div>
+                                </div>
                                 <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                   {{xqValue['描述'] || ''}}
+                                </div>
+                                <div style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                  回复内容：{{xqValue['回复内容'] || '暂无回复'}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;" v-if="xqValue['流转详情']">
@@ -230,8 +253,31 @@
                             </div>
                             <div style="with:100%;overflow: auto;height:calc(100% - 80px)">
                               <div style="margin: 26px;font-size: 28px;color: #C5EEF3;max-height: 600px;overflow: auto;">{{mydValue['标题'] || ''}}</div>
+                              <div v-show="ShowmydType === 'unpleased' || ShowmydType === 'unsolved'"  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 30px;">
+                                <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="OpenShowTjdbDetails5">
+                                  提级督办
+                                </div>
+                              </div>
+                              <div class="tjdbBox" v-show="showTjdbDetails5">
+                                  <div class="titleName">
+                                    <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                    <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails5 = false" src="./background/关闭.png" alt="">
+                                  </div>
+                                  <div class="bodyChose">
+                                    <Tree :data="treeSetList5"
+                                      :load-data="loadData"
+                                      @on-select-change='ChangeSelect5'></Tree>
+                                  </div>
+                                  <div class="footBox">
+                                    <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm5===''?'请选择部门':CkeckedBm5}}</div>
+                                    <div class="SureBtn dataCenter" @click="UpDataOk5(mydValue['流转详情']?mydValue['流转详情']['rows'][0]['工单号']:'')">确定</div>
+                                  </div>
+                              </div>
                               <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 {{mydValue['描述'] || ''}}
+                              </div>
+                              <div style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                回复内容：{{mydValue['回复内容'] || '暂无回复'}}
                               </div>
                               <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                               <div class="block" style="padding: 0 28px;">
@@ -479,7 +525,7 @@
                       <div style="font-size:28px">单位：件</div>
                     </div>
                     <div class="canvas">
-                      <NewPie :item="getSJLX1"></NewPie>
+                      <IntegratedHistogram :item="getSJLX1"></IntegratedHistogram>
                     </div>
                   </div>
                   <!-- <div class="eventwcl">
@@ -605,6 +651,14 @@ export default {
       CkeckedBm3: '',
       CkeckedBmData3: {},
       treeSetList3: [],
+      showTjdbDetails4: false,
+      CkeckedBm4: '',
+      CkeckedBmData4: {},
+      treeSetList4: [],
+      showTjdbDetails5: false,
+      CkeckedBm5: '',
+      CkeckedBmData5: {},
+      treeSetList5: [],
       showotherDetails: false,
       showWJYJDetail: false,
       dateValue: [],
@@ -842,40 +896,53 @@ export default {
         }
       },
       getSJLX1: {
-        'text': '环形图',
-        'width': 1620,
-        'height': 710,
-        'imgClass': 'icon-n-ring',
-        'chartType': 'NewPie',
-        'ifGradual': 'false',
-        'pieType': '环形图',
-        'ctLegendSize': '26',
-        'ctLegendColor': '#666f8b',
-        'axisLabelSize': '26',
-        'showwordSize': 22,
-        'ifEidetColor': false,
-        'legendY': 85,
-        'radius': 50,
-        'showline': true,
-        'showword': true,
-        'isRing': true,
-        'detailwidth': 12,
-        'borderRadius': 0,
-        'ringWidth': 50,
-        'tooltipShow': true,
-        'tooltipBackColor': '#57625d',
-        'tooltipTextColor': '#fff',
-        'tooltipfontSize': 24,
-        'LineColorArray': [
-          '#2d98f1',
-          '#32c5e9',
-          '#67e0e3',
-          '#9fe6b8',
-          '#ffdb5c',
-          '#ffb092'],
-        'DLineColorArray': [
-          ['rgba(213, 153, 17, 0.52)', '#be4d24'],
-          ['rgba(2, 210, 255, 0.49)', '#1bbcae'],
+        'imgClass': 'icon-n-histogram',
+        'chartType': 'IntegratedHistogram',
+        'barType': 'NewBar',
+        'text4': '条形图',
+        width: 1590,
+        height: 640,
+        'barWidth4': 20,
+        'imgClass4': 'icon-n-bar',
+        'chartType4': 'NewBar',
+        'ctLegendShow4': false,
+        'gradientDirection4': '2', // 条形图渐变方向
+        'ifGradual4': 'true',
+        ifGradual: 'true',
+        'colorful4': false,
+        'splitShow4': false,
+        'legendColor4': '#fff',
+        'ctLegendSize4': '16',
+        'ctLegendColor4': '#666f8b',
+        'axisLabelSize4': '20',
+        'legendY4': 90,
+        'gridTop4': 10,
+        'gridBotton4': 15,
+        'gridLeft4': 10,
+        'gridRight4': 10,
+        'tooltipShow4': true,
+        'DanweiColor4': '#828bac',
+        'DanweiSize4': 16,
+        'minInterval4': '',
+        'tooltipBackColor4': '#57625d',
+        'tooltipTextColor4': '#fff',
+        'tooltipfontSize4': 35,
+        'splitColor4': '#333849',
+        'splitSize4': 1,
+        'rotate4': 0,
+        'formatterType4': '1',
+        'cropSize4': 2,
+        'ScatterColor4': [
+          '#3aecbb',
+          '#8feee5',
+          '#fa8d76',
+          '#af8af3',
+          '#f5739c',
+          '#ffdf91',
+          '#5c84e7'],
+        'DScatterColor4': [
+          ['rgba(64, 226, 198, 0.26)', '#40e2c6'],
+          ['#8feee5', '#1bbcae'],
           ['#fa8d76', '#db4222'],
           ['#af8af3', '#874edc'],
           ['#f5739c', '#f31d53'],
@@ -883,9 +950,9 @@ export default {
           ['#5c84e7', '#144fe5'],
           ['#85f8c0', '#62dc26']
         ],
-        'chartData': {
+        'chartData4': {
           'columns': [],
-          'unit': '次',
+          'unit': '',
           'rows': []
         }
       },
@@ -1112,8 +1179,74 @@ export default {
       this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
-          this.$parent.gettjdbList()
+          window.setTimeout(() => {
+            this.$parent.gettjdbList()
+          }, 4000)
           this.showTjdbDetails3 = false
+          // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
+        }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
+      })
+    },
+    UpDataOk4 (flowNo) {
+      const formData = new FormData()
+      formData.append('id', new Date().getTime() * 1)
+      formData.append('dept', this.CkeckedBmData4.dept)
+      formData.append('flowNo', flowNo)
+      formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData.append('nickname', this.CkeckedBmData4.title)
+      formData.append('nickphone', this.CkeckedBmData4.nickphone)
+      formData.append('opttag', 'overCheck')
+      formData.append('dept_keshi', this.CkeckedBmData4.deptkeshi)
+      formData.append('opttag_2', 1)
+      formData.append('identifier', 1)
+      formData.append('chuzhiresult', '')
+      formData.append('remark', '')
+      $('#lead-screen').addClass('disShow')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success) {
+          window.setTimeout(() => {
+            this.$parent.gettjdbList()
+          }, 4000)
+          this.showTjdbDetails4 = false
+          // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
+        }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
+      })
+    },
+    UpDataOk5 (flowNo) {
+      const formData = new FormData()
+      formData.append('id', new Date().getTime() * 1)
+      formData.append('dept', this.CkeckedBmData5.dept)
+      formData.append('flowNo', flowNo)
+      formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData.append('nickname', this.CkeckedBmData5.title)
+      formData.append('nickphone', this.CkeckedBmData5.nickphone)
+      formData.append('opttag', 'overCheck')
+      formData.append('dept_keshi', this.CkeckedBmData5.deptkeshi)
+      formData.append('opttag_2', 1)
+      formData.append('identifier', 1)
+      formData.append('chuzhiresult', '')
+      formData.append('remark', '')
+      $('#lead-screen').addClass('disShow')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success) {
+          window.setTimeout(() => {
+            this.$parent.gettjdbList()
+          }, 4000)
+          this.showTjdbDetails5 = false
           // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
         }
       }, error => {
@@ -1131,6 +1264,24 @@ export default {
       } else {
         this.CkeckedBm3 = ''
         this.CkeckedBmData3 = {}
+      }
+    },
+    ChangeSelect4 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm4 = item[0].title
+        this.CkeckedBmData4 = item[0]
+      } else {
+        this.CkeckedBm4 = ''
+        this.CkeckedBmData4 = {}
+      }
+    },
+    ChangeSelect5 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm5 = item[0].title
+        this.CkeckedBmData5 = item[0]
+      } else {
+        this.CkeckedBm5 = ''
+        this.CkeckedBmData5 = {}
       }
     },
     OpenShowTjdbDetails3 () {
@@ -1165,6 +1316,70 @@ export default {
         })
       }
     },
+    OpenShowTjdbDetails4 () {
+      this.showTjdbDetails4 = !this.showTjdbDetails4
+      this.CkeckedBm4 = ''
+      this.CkeckedBmData4 = {}
+      if (this.showTjdbDetails4) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList4 = treeData
+          }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    OpenShowTjdbDetails5 () {
+      this.showTjdbDetails5 = !this.showTjdbDetails5
+      this.CkeckedBm5 = ''
+      this.CkeckedBmData5 = {}
+      if (this.showTjdbDetails5) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList5 = treeData
+          }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
     ShowmydDetails (val) {
       if (val['流转详情'] && val['流转详情'].rows) {
         this.mydValue = val
@@ -1182,6 +1397,9 @@ export default {
     },
     CloseotherDetails () {
       this.showotherDetails = false
+      this.showTjdbDetails4 = false
+      this.CkeckedBm4 = ''
+      this.CkeckedBmData4 = {}
     },
     ShowStreetInfoFun (stree) {
       this.getJieDaoParamData(stree)
@@ -1241,8 +1459,8 @@ export default {
           this.getBJLZS.chartData.columns = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].columns : []
           this.getBJLZS.chartData.rows = (res.obj && res.obj['办件量走势']) ? res.obj['办件量走势'].rows : []
 
-          this.getSJLX1.chartData.columns = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].columns : []
-          this.getSJLX1.chartData.rows = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].rows : []
+          this.getSJLX1.chartData4.columns = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].columns : []
+          this.getSJLX1.chartData4.rows = (res.obj && res.obj['事件大类_自定义时段']) ? res.obj['事件大类_自定义时段'].rows : []
         }
       }, error => {
         console.log(error)
@@ -1288,6 +1506,9 @@ export default {
     },
     ClosemydDetails () {
       this.showmydDetails = false
+      this.showTjdbDetails5 = false
+      this.CkeckedBm5 = ''
+      this.CkeckedBmData5 = {}
     },
     OpenShomydjBox (type) {
       if (this.ShowmydType === type) {
@@ -1665,6 +1886,7 @@ export default {
                           justify-content: space-between;
                           >div:nth-child(1) {
                               color: #C5EEF3;
+                              width: 85%;
                               font-size: 26px;
                               overflow: hidden;
                               white-space: nowrap;
@@ -2620,6 +2842,100 @@ export default {
             position: absolute;
             top: 0;
             right: 0;
+            .dataCenter{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .bgck12{
+              background-image: url('./newBack/12.png');
+              background-size: 100% 100%;
+            }
+            .tjdbBox{
+                      width: 608px;
+                      height: 560px;
+                      position: absolute;
+                      top: 190px;
+                      left: 224px;
+                      z-index: 10;
+                      cursor: auto;
+                      background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                      border: 1px solid #1ED5C7;
+                      .titleName{
+                        width: 100%;
+                        height: 75px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                        padding: 0 20px;
+                      }
+                      .bodyChose{
+                        width: 100%;
+                        height: 388px;
+                        overflow: auto;
+                        padding: 20px;
+                        .checkEdItem{
+                          height: 72px;
+                          width: 100%;
+                          background-image: url('./newBack/19.png');
+                          background-size: 100% 100%;
+                          color: #5AE8FA;
+                          font-size: 30px;
+                          margin-bottom: 16px;
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          .ChoseBtn{
+                            width: 80px;
+                            height: 36px;
+                            background-image: url('./newBack/21.png');
+                            background-size: 100% 100%;
+                            color:#0A2534;
+                            cursor: pointer;
+                            font-size: 22px;
+                          }
+                        }
+                        .normalItem{
+                          height: 72px;
+                          width: 100%;
+                          background-image: url('./newBack/19.png');
+                          background-size: 100% 100%;
+                          color: #C5EEF3;
+                          font-size: 30px;
+                          margin-bottom: 16px;
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          .ChoseBtn{
+                            width: 80px;
+                            height: 36px;
+                            background-image: url('./newBack/20.png');
+                            background-size: 100% 100%;
+                            color:#16DFF8;
+                            cursor: pointer;
+                            font-size: 22px;
+                          }
+                        }
+                      }
+                      .footBox{
+                        width: 100%;
+                        height: 100px;
+                        display: flex;
+                        justify-content: space-between;
+                        background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                        padding: 0 20px;
+                        align-items: center;
+                        .SureBtn{
+                          height: 50px;
+                          width: 120px;
+                          background-image: url('./newBack/22.png');
+                          font-size: 28px;
+                          cursor: pointer;
+                          color: #0B1B2A;
+                        }
+                      }
+            }
             .TimeBox{
               position: relative;
               .line{
@@ -2787,6 +3103,100 @@ export default {
             position: absolute;
             top: 0;
             right: 0;
+            .dataCenter{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .bgck12{
+              background-image: url('./newBack/12.png');
+              background-size: 100% 100%;
+            }
+            .tjdbBox{
+                      width: 608px;
+                      height: 560px;
+                      position: absolute;
+                      top: 190px;
+                      left: 224px;
+                      z-index: 10;
+                      cursor: auto;
+                      background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                      border: 1px solid #1ED5C7;
+                      .titleName{
+                        width: 100%;
+                        height: 75px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                        padding: 0 20px;
+                      }
+                      .bodyChose{
+                        width: 100%;
+                        height: 388px;
+                        overflow: auto;
+                        padding: 20px;
+                        .checkEdItem{
+                          height: 72px;
+                          width: 100%;
+                          background-image: url('./newBack/19.png');
+                          background-size: 100% 100%;
+                          color: #5AE8FA;
+                          font-size: 30px;
+                          margin-bottom: 16px;
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          .ChoseBtn{
+                            width: 80px;
+                            height: 36px;
+                            background-image: url('./newBack/21.png');
+                            background-size: 100% 100%;
+                            color:#0A2534;
+                            cursor: pointer;
+                            font-size: 22px;
+                          }
+                        }
+                        .normalItem{
+                          height: 72px;
+                          width: 100%;
+                          background-image: url('./newBack/19.png');
+                          background-size: 100% 100%;
+                          color: #C5EEF3;
+                          font-size: 30px;
+                          margin-bottom: 16px;
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          .ChoseBtn{
+                            width: 80px;
+                            height: 36px;
+                            background-image: url('./newBack/20.png');
+                            background-size: 100% 100%;
+                            color:#16DFF8;
+                            cursor: pointer;
+                            font-size: 22px;
+                          }
+                        }
+                      }
+                      .footBox{
+                        width: 100%;
+                        height: 100px;
+                        display: flex;
+                        justify-content: space-between;
+                        background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                        padding: 0 20px;
+                        align-items: center;
+                        .SureBtn{
+                          height: 50px;
+                          width: 120px;
+                          background-image: url('./newBack/22.png');
+                          font-size: 28px;
+                          cursor: pointer;
+                          color: #0B1B2A;
+                        }
+                      }
+            }
             .TimeBox{
               position: relative;
               .line{
