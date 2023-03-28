@@ -12,7 +12,6 @@
           :key="n"
           class="content"
           :style="contentBoxStyle"
-          @click="showDetails(cont)"
         >
           <p :style="contentTitleStyle">{{event.items.columns[0]}}:{{ cont[event.items.columns[0]] }}</p>
           <div :style="contentStyle">

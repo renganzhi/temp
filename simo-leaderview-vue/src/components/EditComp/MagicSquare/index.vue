@@ -48,7 +48,23 @@
                         <div class="content">
                             <div class="rows">日期：{{checkData['明细']?checkData['明细'].rows[0]['日期']:'暂无数据'}}</div>
                             <div class="rows" v-for="(val, ind) in checkData['明细']?checkData['明细'].rows:[]" :key="ind">
-                                风险{{ind + 1}}：{{val['涉及风险']}}
+                                <div class="warningCon">风险{{ind + 1}}：{{val['涉及风险']}}。<span style="color:#9fb1ec;">—— {{val['涉及部门']}}</span></div>
+                                <div class="warningBtn" @click="OpenShowTjdbDetails2(ind)">预警告知</div>
+                                <div class="tjdbBox" v-show="showTjdbDetails2 && tjdbBoxIndex === ind">
+                                    <div class="titleName">
+                                      <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                      <img style="height: 49px;width: 49px;cursor: pointer;" @click="CloseTjdbDetails2" src="./关闭.png" alt="">
+                                    </div>
+                                    <div class="bodyChose">
+                                      <Tree :data="treeSetList2"
+                                        :load-data="loadData"
+                                        @on-select-change='ChangeSelect2'></Tree>
+                                    </div>
+                                    <div class="footBox">
+                                      <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm2===''?'请选择部门':CkeckedBm2}}</div>
+                                      <div class="SureBtn dataCenter" @click="UpDataOk2(val)">确定</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,12 +79,15 @@
                                             <div class="lhead">
                                                 <img src="./切图/小图标.png" alt="">
                                                 <div>处置形式</div>
-                                                <div>情况</div>
+                                                <div>处置情况</div>
                                             </div>
                                             <div class="lbody">
                                                 <div class="li" v-for="(item, index) in checkData['明细']?checkData['明细'].rows:[]" :key="index">
-                                                    <div>1.{{item['涉及部门']}}</div>
-                                                    <div>完成<input type="checkbox"></div>
+                                                    <div>{{index + 1}}.{{item['涉及部门']}}</div>
+                                                    <div>
+                                                        <div class="warningBtn" @click="ShowManageSituation()">处置流程</div>
+                                                        完成
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -87,6 +106,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <transition name="moveLeft">
+                                        <div class="manageBox" v-show="showManageBox">
+                                            <img class="closebtn" @click="CloseManageSituation" src="./关闭.png" alt="">
+                                            <Spin fix v-show="ifLoad">
+                                                <Icon type="ios-loading" size=60 class="demo-spin-icon-load"></Icon>
+                                                <div>加载中...</div>
+                                            </Spin>
+                                            <div v-show="!ifLoad && venationChartData.data.length" class="bodyData">
+                                                <EventVenation :item="venationData"></EventVenation>
+                                            </div>
+                                            <div v-show="!ifLoad && !venationChartData.data.length"  class="noData">暂无数据</div>
+                                        </div>
+                                    </transition>
                                 </div>
                             </div>
                         </transition>
@@ -99,9 +131,11 @@
     </div>
 </template>
 <script>
+import EventVenation from '@/components/EditComp/EventVenation'
 export default {
   name: 'MagicSquare',
   props: ['item'],
+  components: {EventVenation},
   data () {
     return {
       dateRange: [], // 日期范围列表
@@ -112,7 +146,17 @@ export default {
       earlyWarning: [],
       todayWarning: [],
       checkDataList: [],
-      checkData: {}
+      checkData: {},
+      showTjdbDetails2: false,
+      treeSetList2: [],
+      CkeckedBm2: '',
+      CkeckedBmData2: {},
+      tjdbBoxIndex: -1,
+      venationChartData: {
+        data: []
+      },
+      ifLoad: false,
+      showManageBox: false
     }
   },
   computed: {
@@ -140,6 +184,29 @@ export default {
         } else {
           return ''
         }
+      }
+    },
+    venationData () {
+      return {
+        'text': '事件脉络',
+        'imgClass': 'icon-n-text',
+        'chartType': 'EventVenation',
+        'width': 270,
+        'height': 125,
+        'titleFontSize': 32,
+        'titleBottm': 10,
+        'iconColor': '#86e2f7',
+        'titleColor': '#86e2f7',
+        'contBorderColor': '#f1e9c2',
+        'contPadding': 15,
+        'contBorderRdius': 5,
+        'contTitleSize': 30,
+        'contTitleColor': 'white',
+        'contColor': '#cef1ff',
+        'dateLeft': -170,
+        'dateTop': 0,
+        'contSize': 28,
+        'chartData': this.venationChartData
       }
     }
   },
@@ -240,6 +307,79 @@ export default {
         return date
       }
     },
+    DateToString2 (time) {
+      if (time) {
+        let date = time
+        let y = date.getFullYear()
+        let M = ''
+        let d = ''
+
+        let h = ''
+        let m = ''
+        let s = ''
+        if (date.getMonth() < 9) {
+          M = '0' + (date.getMonth() + 1)
+        } else {
+          M = date.getMonth() + 1
+        }
+        if (date.getDate() < 10) {
+          d = '0' + date.getDate()
+        } else {
+          d = date.getDate()
+        }
+        if (date.getHours() < 10) {
+          h = '0' + date.getHours()
+        } else {
+          h = date.getHours()
+        }
+        if (date.getMinutes() < 10) {
+          m = '0' + date.getMinutes()
+        } else {
+          m = date.getMinutes()
+        }
+        if (date.getSeconds() < 10) {
+          s = '0' + date.getSeconds()
+        } else {
+          s = date.getSeconds()
+        }
+        return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
+      } else {
+        let date = new Date()
+        let y = date.getFullYear()
+        let M = ''
+        let d = ''
+
+        let h = ''
+        let m = ''
+        let s = ''
+        if (date.getMonth() < 9) {
+          M = '0' + (date.getMonth() + 1)
+        } else {
+          M = date.getMonth() + 1
+        }
+        if (date.getDate() < 10) {
+          d = '0' + date.getDate()
+        } else {
+          d = date.getDate()
+        }
+        if (date.getHours() < 10) {
+          h = '0' + date.getHours()
+        } else {
+          h = date.getHours()
+        }
+        if (date.getMinutes() < 10) {
+          m = '0' + date.getMinutes()
+        } else {
+          m = date.getMinutes()
+        }
+        if (date.getSeconds() < 10) {
+          s = '0' + date.getSeconds()
+        } else {
+          s = date.getSeconds()
+        }
+        return y + M + d + h + m + s
+      }
+    },
     ChangeDate (date) {
       this.checkDate = date
     },
@@ -251,6 +391,151 @@ export default {
       this.showRightPart = false
       this.showBoxDetail = false
       this.checkData = {}
+    },
+    OpenShowTjdbDetails2 (ind) {
+      this.showTjdbDetails2 = true
+      this.CkeckedBm2 = ''
+      this.CkeckedBmData2 = {}
+      this.tjdbBoxIndex = ind
+      if (this.showTjdbDetails2) {
+        // $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          // $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList2 = treeData
+          }
+        }, error => {
+          console.log(error)
+          // $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          // $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    UpDataOk2 (warningData) {
+      const formData1 = new FormData()
+      const formData2 = new FormData()
+      formData1.append('flowNo', this.DateToString2() + '0001')
+      formData1.append('questiontitle', warningData['名称'])
+      formData1.append('createDate', this.checkDate)
+      formData1.append('address', '')
+      formData1.append('reportDate', this.DateToString2(new Date()))
+      formData1.append('type', '预警魔方')
+      formData1.append('street', '')
+      formData1.append('community', '')
+
+      formData2.append('flowNo', this.DateToString2() + '0001')
+      formData2.append('opttag', 'cFinish')
+      formData2.append('opttag_2', 0)
+      formData2.append('optdate', this.DateToString2(new Date()))
+      formData2.append('nickname', this.CkeckedBmData2.title)
+      formData2.append('nickphone', this.CkeckedBmData2.nickphone)
+      formData2.append('dept', this.CkeckedBmData2.dept)
+      formData2.append('dept_keshi', this.CkeckedBmData2.deptkeshi)
+      formData2.append('identifier', 1)
+
+      this.axios.post('/leaderview/newDistrict/getYJCZ1', formData1).then(res => {
+        if (res.success) {
+          this.showTjdbDetails2 = false
+        }
+      })
+      this.axios.post('/leaderview/newDistrict/getYJCZ2', formData2).then(res => {
+        if (res.success) {
+          this.showTjdbDetails2 = false
+          this.tjdbBoxIndex = -1
+          this.CkeckedBm2 = ''
+          this.CkeckedBmData2 = {}
+        }
+      })
+    },
+    CloseTjdbDetails2 () {
+      this.showTjdbDetails2 = false
+      this.tjdbBoxIndex = -1
+      this.CkeckedBm2 = ''
+      this.CkeckedBmData2 = {}
+    },
+    ChangeSelect2 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm2 = item[0].title
+        this.CkeckedBmData2 = item[0]
+      } else {
+        this.CkeckedBm2 = ''
+        this.CkeckedBmData2 = {}
+      }
+    },
+    loadData (item, callback) {
+      let newtype = ''
+      if (item.type === 'children') {
+        newtype = 'members'
+      }
+      if (item.id) {
+        // $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          // $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            if (item.type === 'children') {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  id: element['组织ID'],
+                  dept: item.title,
+                  type: 'members',
+                  disabled: true,
+                  loading: false,
+                  disableCheckbox: true,
+                  children: []
+                })
+              })
+            } else {
+              res.obj.rows.forEach(element => {
+                treeData.push({
+                  title: element['名称'],
+                  dept: item.dept,
+                  deptkeshi: item.title,
+                  nickphone: element['电话'],
+                  id: element['组织ID'],
+                  type: newtype
+                })
+              })
+            }
+            if (treeData.length === 0) {
+              treeData.push({
+                title: '暂无数据',
+                id: -1,
+                type: '',
+                disabled: true
+              })
+            }
+            callback(treeData)
+          }
+        }, error => {
+          console.log(error)
+          // $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          // $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    ShowManageSituation () {
+      this.showManageBox = true
+    },
+    CloseManageSituation () {
+      this.showManageBox = false
     }
   },
   mounted () {
@@ -495,6 +780,107 @@ export default {
                             text-align: left;
                             color: #d0f7f8;
                             margin-bottom: 25px;
+                            display: flex;
+                            position: relative;
+                            .warningCon{
+                                width: calc(100% - 165px);
+                            }
+                            .warningBtn{
+                                font-size: 30px;
+                                width: 165px;
+                                text-align: center;
+                                height: 60px;
+                                line-height: 60px;
+                                cursor: pointer;
+                                background: url('./切图/button.png') no-repeat;
+                                background-size: 100% 100%;
+                            }
+                            .tjdbBox{
+                                width: 608px;
+                                height: 560px;
+                                position: absolute;
+                                top: 0px;
+                                left: 170px;
+                                z-index: 10;
+                                cursor: auto;
+                                background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                                border: 1px solid #1e97d5;
+                                .titleName{
+                                  width: 100%;
+                                  height: 75px;
+                                  display: flex;
+                                  justify-content: space-between;
+                                  align-items: center;
+                                  background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+                                  padding: 0 20px;
+                                }
+                                .bodyChose{
+                                  width: 100%;
+                                  height: 388px;
+                                  overflow: auto;
+                                  padding: 20px;
+                                  .checkEdItem{
+                                    height: 72px;
+                                    width: 100%;
+                                    background-image: url('./newBack/19.png');
+                                    background-size: 100% 100%;
+                                    color: #5AE8FA;
+                                    font-size: 40px;
+                                    margin-bottom: 16px;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    .ChoseBtn{
+                                      width: 80px;
+                                      height: 36px;
+                                      background-image: url('./newBack/21.png');
+                                      background-size: 100% 100%;
+                                      color:#0A2534;
+                                      cursor: pointer;
+                                      font-size: 22px;
+                                    }
+                                  }
+                                  .normalItem{
+                                    height: 72px;
+                                    width: 100%;
+                                    background-image: url('./newBack/19.png');
+                                    background-size: 100% 100%;
+                                    color: #C5EEF3;
+                                    font-size: 40px;
+                                    margin-bottom: 16px;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    .ChoseBtn{
+                                      width: 80px;
+                                      height: 36px;
+                                      background-image: url('./newBack/20.png');
+                                      background-size: 100% 100%;
+                                      color:#16DFF8;
+                                      cursor: pointer;
+                                      font-size: 22px;
+                                    }
+                                  }
+                                }
+                                .footBox{
+                                  width: 100%;
+                                  height: 100px;
+                                  display: flex;
+                                  justify-content: space-between;
+                                  background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+                                  padding: 0 20px;
+                                  align-items: center;
+                                  .SureBtn{
+                                    height: 50px;
+                                    width: 120px;
+                                    text-align: center;
+                                    background-image: url('./newBack/22.png');
+                                    font-size: 28px;
+                                    cursor: pointer;
+                                    color: #0B1B2A;
+                                  }
+                                }
+                            }
                         }
                     }
                 }
@@ -508,6 +894,7 @@ export default {
                         height: 363px;
                     }
                     >div:last-child{
+                        position: relative;
                         .top{
                             display: flex;
                             align-items: center;
@@ -569,14 +956,21 @@ export default {
                                         display: flex;
                                         align-items: center;
                                         >div:nth-child(1){
-                                            width: 80%
+                                            width: 70%;
                                         }
                                         >div:nth-child(2){
-                                            >input{
-                                                width: 40px;
-                                                height: 40px;
-                                                vertical-align: middle;
-                                                margin-left: 10px;
+                                            display: flex;
+                                            align-items: center;
+                                            .warningBtn{
+                                                font-size: 30px;
+                                                width: 165px;
+                                                text-align: center;
+                                                height: 50px;
+                                                line-height: 50px;
+                                                cursor: pointer;
+                                                margin-right: 16px;
+                                                background: url('./切图/button.png') no-repeat;
+                                                background-size: 100% 100%;
                                             }
                                         }
                                     }
@@ -642,6 +1036,25 @@ export default {
                                     padding-left: 24px;
                                     color: #ffffff;
                                 }
+                            }
+                        }
+                        .manageBox{
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            background: #1e2631;
+                            .closebtn{
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                            }
+                            .noData{
+                                text-align: center;
+                                font-size: 50px;
+                                margin-top: 160px;
+                                font-weight: bold;
                             }
                         }
                     }
@@ -836,5 +1249,25 @@ export default {
             }
         }
     }
+    .ivu-spin-fix{
+        height: 90%;
+        top: 10%;
+      }
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+        from { transform: rotate(0deg);}
+        50%  { transform: rotate(180deg);}
+        to   { transform: rotate(360deg);}
+    }
+    .demo-spin-col{
+        height: 100px;
+        position: relative;
+        border: 1px solid #eee;
+    }
+    .ivu-spin-fix{
+        background: transparent !important;
+      }
 }
 </style>

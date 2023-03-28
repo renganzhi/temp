@@ -150,6 +150,24 @@
                   <div class="closeBtn" @click="closeVenationBox()"></div>
                   <div class="BoxTitle">{{vboxData.title}}</div>
                   <div class="BoxBody" v-if="vboxData.data.length >0">
+                    <div class="submit">
+                      <div class="confirm" @click="OpenShowTjdbDetails2">提级督办</div>
+                      <div class="tjdbBox" v-show="showTjdbDetails2">
+                          <div class="titleName">
+                            <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                            <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails2 = false" src="./关闭.png" alt="">
+                          </div>
+                          <div class="bodyChose">
+                            <Tree :data="treeSetList2"
+                              :load-data="loadData"
+                              @on-select-change='ChangeSelect2'></Tree>
+                          </div>
+                          <div class="footBox">
+                            <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm2===''?'请选择部门':CkeckedBm2}}</div>
+                            <div class="SureBtn dataCenter" @click="UpDataOk2()">确定</div>
+                          </div>
+                      </div>
+                    </div>
                     <div class="lineBox" v-for="(data,index) in vboxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
                       <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
@@ -170,7 +188,7 @@
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="TwoButtons" v-show="boxData.czType">
                       <div @click="WarningManage(boxData.data)">预警处置</div>
-                      <div @click="ManageSituation()">处置情况</div>
+                      <div @click="ManageSituation(boxData.data)">处置情况</div>
                     </div>
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">
                       <div class="Nmae" v-if="data.title !== '详情' && data.value !== '详情'">{{data.title}} : </div>
@@ -328,10 +346,14 @@
                 <div :class="pageName.indexOf('32:9')>=0?'smallBox':'bigBox'">
                   <div class="closeBtn" @click="CloseManageSituation()"></div>
                   <div class="BoxTitle">处置情况</div>
-                  <div class="BoxBody" v-show="false">
+                  <Spin fix v-show="ifLoad">
+                    <Icon type="ios-loading" size=40 class="demo-spin-icon-load"></Icon>
+                    <div>加载中...</div>
+                  </Spin>
+                  <div class="BoxBody" v-show="!ifLoad&&venationChartData1.data.length">
                     <EventVenation :style="{left:pageName.indexOf('32:9')>=0?'168px': '356px'}" :item="venationData1"></EventVenation>
                   </div>
-                  <div class="NoData" v-show="true">暂未配置</div>
+                  <div class="NoData" v-show="!ifLoad&&!venationChartData1.data.length">暂未配置</div>
                 </div>
               </div>
               <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
@@ -567,6 +589,10 @@ export default {
       treeSetList1: [],
       CkeckedBm1: '',
       CkeckedBmData1: {},
+      showTjdbDetails2: false,
+      treeSetList2: [],
+      CkeckedBm2: '',
+      CkeckedBmData2: {},
       moveBox1: 'moveLeft1',
       moveBox2: 'moveLeft2',
       showModelBoxtype: 0,
@@ -630,6 +656,9 @@ export default {
       freshInterval: null, // 定时器
       nowTime: 0, // 当前页面已停留多少秒
       venationChartData: {
+        data: []
+      },
+      venationChartData1: {
         data: []
       },
       // autoPlay:true,
@@ -708,7 +737,7 @@ export default {
         'chartData': this.venationChartData
       }
     },
-    venationData2 () {
+    venationData1 () {
       return {
         'text': '事件脉络',
         'imgClass': 'icon-n-text',
@@ -728,7 +757,7 @@ export default {
         'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -175 : -346,
         'dateTop': 0,
         'contSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
-        'chartData': this.venationChartData
+        'chartData': this.venationChartData1
       }
     },
     pageName () {
@@ -782,8 +811,21 @@ export default {
         this.yjczDetail['发起时间'] = this.DateToString(new Date())
       })
     },
-    ManageSituation () {
+    ManageSituation (data) {
       this.showManageSituation = true
+      let id = ''
+      data.forEach(element => {
+        if (element.title === '预警ID') {
+          id = element.value
+        }
+      })
+      this.ifLoad = true
+      this.axios.get('/leaderview/newDistrict/getYJCZ4?param=' + id).then(res => {
+        this.ifLoad = false
+        if (res.obj) {
+          this.venationChartData1 = JSON.parse(JSON.stringify(res.obj))
+        }
+      })
     },
     CloseWarningManage () {
       this.showWarningManage = false
@@ -800,6 +842,10 @@ export default {
     },
     CloseManageSituation () {
       this.showManageSituation = false
+      this.ifLoad = false
+      this.venationChartData1 = {
+        data: []
+      }
     },
     loadData (item, callback) {
       let newtype = ''
@@ -865,6 +911,15 @@ export default {
         this.CkeckedBmData1 = {}
       }
     },
+    ChangeSelect2 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm2 = item[0].title
+        this.CkeckedBmData2 = item[0]
+      } else {
+        this.CkeckedBm2 = ''
+        this.CkeckedBmData2 = {}
+      }
+    },
     UpDataOk1 () {
       this.showTjdbDetails1 = false
       const formData1 = new FormData()
@@ -905,6 +960,9 @@ export default {
         console.log(err)
       })
     },
+    UpDataOk2 () {
+      this.showTjdbDetails2 = false
+    },
     OpenShowTjdbDetails1 () {
       this.showTjdbDetails1 = !this.showTjdbDetails1
       this.CkeckedBm1 = ''
@@ -927,6 +985,38 @@ export default {
               })
             })
             this.treeSetList1 = treeData
+          }
+        }, error => {
+          console.log(error)
+          // $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          // $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
+    OpenShowTjdbDetails2 () {
+      this.showTjdbDetails2 = !this.showTjdbDetails2
+      this.CkeckedBm2 = ''
+      this.CkeckedBmData2 = {}
+      if (this.showTjdbDetails2) {
+        // $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          // $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList2 = treeData
           }
         }, error => {
           console.log(error)
@@ -1480,6 +1570,7 @@ export default {
     },
     closeBoxTtn () {
       this.showModelBox = false
+      this.showTjdbDetails2 = false
     },
     ShowVenationBox (dataArray) {
       if (self !== top) {
@@ -3855,6 +3946,110 @@ html[data-theme='blueWhite'] {
   padding: 15px 60px 60px 60px;
   background: url(./城运背景.png) no-repeat;
   background-size: 100% 100%;
+  .submit{
+    width: 100%;
+    position: relative;
+    .confirm{
+      background: #4f9ff5;
+      padding: 0 10px;
+      font-size: 40px;
+      width: 210px;
+      height: 70px;
+      text-align: center;
+      line-height: 70px;
+      color:#C8E0FF;
+      margin-right: 10px;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
+    .tjdbBox{
+      width: 608px;
+      height: 560px;
+      position: absolute;
+      top: 0px;
+      left: 220px;
+      z-index: 10;
+      cursor: auto;
+      background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+      border: 1px solid #1e97d5;
+      .titleName{
+        width: 100%;
+        height: 75px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+        padding: 0 20px;
+      }
+      .bodyChose{
+        width: 100%;
+        height: 388px;
+        overflow: auto;
+        padding: 20px;
+        .checkEdItem{
+          height: 72px;
+          width: 100%;
+          background-image: url('./newBack/19.png');
+          background-size: 100% 100%;
+          color: #5AE8FA;
+          font-size: 40px;
+          margin-bottom: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .ChoseBtn{
+            width: 80px;
+            height: 36px;
+            background-image: url('./newBack/21.png');
+            background-size: 100% 100%;
+            color:#0A2534;
+            cursor: pointer;
+            font-size: 22px;
+          }
+        }
+        .normalItem{
+          height: 72px;
+          width: 100%;
+          background-image: url('./newBack/19.png');
+          background-size: 100% 100%;
+          color: #C5EEF3;
+          font-size: 40px;
+          margin-bottom: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .ChoseBtn{
+            width: 80px;
+            height: 36px;
+            background-image: url('./newBack/20.png');
+            background-size: 100% 100%;
+            color:#16DFF8;
+            cursor: pointer;
+            font-size: 22px;
+          }
+        }
+      }
+      .footBox{
+        width: 100%;
+        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+        padding: 0 20px;
+        align-items: center;
+        .SureBtn{
+          height: 50px;
+          width: 120px;
+          text-align: center;
+          background-image: url('./newBack/22.png');
+          font-size: 28px;
+          cursor: pointer;
+          color: #0B1B2A;
+        }
+      }
+    }
+  }
    .closeBtn{
     height: 50px;
     width: 50px;
@@ -3939,6 +4134,110 @@ html[data-theme='blueWhite'] {
   padding: 8px 30px 30px 30px;
   background: url(./城运背景.png) no-repeat;
   background-size: 100% 100%;
+  .submit{
+    width: 100%;
+    position: relative;
+    .confirm{
+      background: #4f9ff5;
+      padding: 0 10px;
+      font-size: 40px;
+      width: 210px;
+      height: 70px;
+      text-align: center;
+      line-height: 70px;
+      color:#C8E0FF;
+      margin-right: 10px;
+      background: url('./button.png') no-repeat;
+      background-size: 100% 100%;
+      cursor:pointer;
+    }
+    .tjdbBox{
+      width: 608px;
+      height: 560px;
+      position: absolute;
+      top: 0px;
+      left: 220px;
+      z-index: 10;
+      cursor: auto;
+      background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+      border: 1px solid #1e97d5;
+      .titleName{
+        width: 100%;
+        height: 75px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+        padding: 0 20px;
+      }
+      .bodyChose{
+        width: 100%;
+        height: 388px;
+        overflow: auto;
+        padding: 20px;
+        .checkEdItem{
+          height: 72px;
+          width: 100%;
+          background-image: url('./newBack/19.png');
+          background-size: 100% 100%;
+          color: #5AE8FA;
+          font-size: 40px;
+          margin-bottom: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .ChoseBtn{
+            width: 80px;
+            height: 36px;
+            background-image: url('./newBack/21.png');
+            background-size: 100% 100%;
+            color:#0A2534;
+            cursor: pointer;
+            font-size: 22px;
+          }
+        }
+        .normalItem{
+          height: 72px;
+          width: 100%;
+          background-image: url('./newBack/19.png');
+          background-size: 100% 100%;
+          color: #C5EEF3;
+          font-size: 40px;
+          margin-bottom: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .ChoseBtn{
+            width: 80px;
+            height: 36px;
+            background-image: url('./newBack/20.png');
+            background-size: 100% 100%;
+            color:#16DFF8;
+            cursor: pointer;
+            font-size: 22px;
+          }
+        }
+      }
+      .footBox{
+        width: 100%;
+        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        background-image: linear-gradient(45deg, rgba(36, 72, 142,0.81), rgba(80, 97, 139,0.1));
+        padding: 0 20px;
+        align-items: center;
+        .SureBtn{
+          height: 50px;
+          width: 120px;
+          text-align: center;
+          background-image: url('./newBack/22.png');
+          font-size: 28px;
+          cursor: pointer;
+          color: #0B1B2A;
+        }
+      }
+    }
+  }
    .closeBtn{
     height: 30px;
     width: 30px;
