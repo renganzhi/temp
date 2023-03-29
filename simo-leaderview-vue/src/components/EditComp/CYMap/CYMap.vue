@@ -239,11 +239,12 @@ export default {
       if (this.nowPageName && this.nowPageName.indexOf('32:9') >= 0) {
         let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
         this.map.centerAndZoom(centerPoint, 14.5) // 13.5(内网)/15(外网)
+        this.map.setZoom(13.5)
       } else {
-        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
-        this.map.centerAndZoom(centerPoint, 14.5) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+        let centerPoint = new window.BMapGL.Point(104.02394863823523, 30.630842978583685) // 104.01869, 30.62840(内网)/104.02394863823523, 30.630842978583685(外网)
+        this.map.centerAndZoom(centerPoint, 13.4) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+        this.map.setZoom(13.44378)
       }
-      this.map.setZoom(14.5)
     }
   },
   methods: {
@@ -252,11 +253,12 @@ export default {
       if (this.nowPageName && this.nowPageName.indexOf('32:9') >= 0) {
         let centerPoint = new window.BMapGL.Point(104.01764, 30.62094) // 104.01035, 30.62367(内网)/104.01764, 30.62094(外网)
         this.map.centerAndZoom(centerPoint, 14.5) // 13.5(内网)/15(外网)
+        this.map.setZoom(13.5)
       } else {
-        let centerPoint = new window.BMapGL.Point(104.01332, 30.62716) // 104.01869, 30.62840(内网)/104.01332, 30.62716(外网)
-        this.map.centerAndZoom(centerPoint, 14.5) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+        let centerPoint = new window.BMapGL.Point(104.02394863823523, 30.630842978583685) // 104.01869, 30.62840(内网)/104.02394863823523, 30.630842978583685(外网)
+        this.map.centerAndZoom(centerPoint, 13.4) // 设定地图的中心点和坐标并将地图显示在地图容器中 13.5(内网)/15(外网)
+        this.map.setZoom(13.44378)
       }
-      this.map.setZoom(14.5)
       this.map.setDisplayOptions({
         poiText: false,
         poiIcon: false

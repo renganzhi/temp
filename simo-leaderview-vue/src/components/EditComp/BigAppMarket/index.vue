@@ -1,6 +1,6 @@
 <template>
   <div class="Bigappmarket">
-    <div class='market'>
+    <!-- <div class='market'>
       <div class="title">
         <div class="openTitle" @click="isShowModel = true"></div>
       </div>
@@ -16,11 +16,11 @@
       <div class="appmodel">
         <a :href="item.chartData.appArry[3].url"  target="_blank">{{item.chartData.appArry[3].xtname}}</a>
       </div>
-    </div>
+    </div> -->
     <transition name="moveLeft">
-      <div class="showModelBox" v-show="isShowModel">
+      <div class="showModelBox">
         <div class="title">
-          <div class="closeTitle" @click="isShowModel = false"></div>
+          <!-- <div class="closeTitle" @click="isShowModel = false"></div> -->
         </div>
         <div class="ModelBody">
           <div class="selectTitle">

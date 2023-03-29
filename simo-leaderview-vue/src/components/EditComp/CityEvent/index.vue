@@ -137,7 +137,7 @@ export default {
       }
       if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
         this.$parent.$parent.ShowVenationBox({
-          title: '事件详情',
+          title: this.eventData.title,
           data: d,
           url: this.eventData.url
         })

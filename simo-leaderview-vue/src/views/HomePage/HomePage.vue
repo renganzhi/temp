@@ -150,7 +150,7 @@
                   <div class="closeBtn" @click="closeVenationBox()"></div>
                   <div class="BoxTitle">{{vboxData.title}}</div>
                   <div class="BoxBody" v-if="vboxData.data.length >0">
-                    <div class="submit">
+                    <div v-show="!['预警处置', '提级督办'].includes(vboxData.title)" class="submit">
                       <div class="confirm" @click="OpenShowTjdbDetails2">提级督办</div>
                       <div class="tjdbBox" v-show="showTjdbDetails2">
                           <div class="titleName">
@@ -164,7 +164,7 @@
                           </div>
                           <div class="footBox">
                             <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm2===''?'请选择部门':CkeckedBm2}}</div>
-                            <div class="SureBtn dataCenter" @click="UpDataOk2()">确定</div>
+                            <div class="SureBtn dataCenter" @click="UpDataOk2(vboxData)">确定</div>
                           </div>
                       </div>
                     </div>
@@ -297,22 +297,40 @@
                         <textarea autofocus v-model="yjczDetail['标题']" />
                       </div>
                     </div>
-                    <div class="lineBox">
+                    <div class="lineBox" v-show="OLDyjczDetail['内容']">
                       <div class="nameBox">内容</div>
                       <div class="inputBox">
                         <textarea rows="5" v-model="yjczDetail['内容']"/>
                       </div>
                     </div>
-                    <div class="lineBox">
-                      <div class="nameBox">地点</div>
+                    <div class="lineBox" v-show="OLDyjczDetail['地址']">
+                      <div class="nameBox">地址</div>
                       <div class="inputBox">
-                        <textarea v-model="yjczDetail['地点']"/>
+                        <textarea v-model="yjczDetail['地址']"/>
                       </div>
                     </div>
-                    <div class="lineBox">
-                      <div class="nameBox">发起时间</div>
+                    <div class="lineBox" v-show="OLDyjczDetail['所属街道']">
+                      <div class="nameBox">所属街道</div>
                       <div class="inputBox">
-                        <textarea v-model="yjczDetail['发起时间']" readonly />
+                        <textarea v-model="yjczDetail['所属街道']"/>
+                      </div>
+                    </div>
+                    <div class="lineBox" v-show="OLDyjczDetail['所属社区']">
+                      <div class="nameBox">所属社区</div>
+                      <div class="inputBox">
+                        <textarea v-model="yjczDetail['所属社区']"/>
+                      </div>
+                    </div>
+                    <div class="lineBox" v-show="OLDyjczDetail['预警时间']">
+                      <div class="nameBox">预警时间</div>
+                      <div class="inputBox">
+                        <textarea v-model="yjczDetail['预警时间']"/>
+                      </div>
+                    </div>
+                    <div class="lineBox" v-show="OLDyjczDetail['通知时间']">
+                      <div class="nameBox">通知时间</div>
+                      <div class="inputBox">
+                        <textarea v-model="yjczDetail['通知时间']" readonly />
                       </div>
                     </div>
                     <div class="lineBox">
@@ -581,10 +599,23 @@ export default {
       yjczDetail: {
         '标题': '',
         '内容': '',
-        '地点': '',
-        '发起时间': '',
+        '地址': '',
+        '所属街道': '',
+        '所属社区': '',
+        '预警时间': '',
+        '通知时间': '',
         '领导批示': '',
-        '告警时间': '',
+        'id': ''
+      },
+      OLDyjczDetail: {
+        '标题': '',
+        '内容': '',
+        '地址': '',
+        '所属街道': '',
+        '所属社区': '',
+        '预警时间': '',
+        '通知时间': '',
+        '领导批示': '',
         'id': ''
       },
       showTjdbDetails1: false,
@@ -794,24 +825,26 @@ export default {
     ...mapMutations(['changeEditId', 'changeNowPage']),
     WarningManage (data) {
       this.showWarningManage = true
-      let content1 = ''
-      let content2 = ''
       data.forEach(element => {
-        if (element.title === '预警名称') {
-          this.yjczDetail['标题'] = element.value
-        } else if (element.title === '预警信息') {
-          content1 = element.value
-        } else if (element.title === '告警时间') {
-          content2 = element.value
-          this.yjczDetail['告警时间'] = element.value
-        } else if (element.title === '设备地址') {
-          this.yjczDetail['地点'] = element.value
-        } else if (element.title === '预警ID') {
-          this.yjczDetail['id'] = element.value
+        if (['预警名称', '事件类型'].includes(element.title)) {
+          this.OLDyjczDetail['标题'] = element.value
+        } else if (['预警信息', '内容', '处置情况'].includes(element.title)) {
+          this.OLDyjczDetail['内容'] = element.value
+        } else if (['设备地址', '出警地址', '地址'].includes(element.title)) {
+          this.OLDyjczDetail['地址'] = element.value
+        } else if (['出警街道'].includes(element.title)) {
+          this.OLDyjczDetail['所属街道'] = element.value
+        } else if (['告警时间', '出警时间', '更新时间'].includes(element.title)) {
+          this.OLDyjczDetail['预警时间'] = element.value
+        } else if (['预警ID'].includes(element.title)) {
+          this.OLDyjczDetail['id'] = element.value
         }
-        this.yjczDetail['内容'] = content1 + content2
-        this.yjczDetail['发起时间'] = this.DateToString(new Date())
+        if (!this.OLDyjczDetail['标题']) {
+          this.OLDyjczDetail['标题'] = this.boxData.czTitle || ''
+        }
       })
+      this.OLDyjczDetail['通知时间'] = this.DateToString(new Date())
+      this.yjczDetail = JSON.parse(JSON.stringify(this.OLDyjczDetail))
     },
     ManageSituation (data) {
       this.showManageSituation = true
@@ -835,10 +868,23 @@ export default {
       this.yjczDetail = {
         '标题': '',
         '内容': '',
-        '地点': '',
-        '发起时间': '',
+        '地址': '',
+        '所属街道': '',
+        '所属社区': '',
+        '预警时间': '',
+        '通知时间': '',
         '领导批示': '',
-        '告警时间': '',
+        'id': ''
+      }
+      this.OLDyjczDetail = {
+        '标题': '',
+        '内容': '',
+        '地址': '',
+        '所属街道': '',
+        '所属社区': '',
+        '预警时间': '',
+        '通知时间': '',
+        '领导批示': '',
         'id': ''
       }
     },
@@ -848,6 +894,21 @@ export default {
       this.venationChartData1 = {
         data: []
       }
+    },
+    getData (t1, format = 'YYYY-MM-DD HH:mm:ss') {
+      const config = {
+        YYYY: t1.getFullYear(),
+        MM: t1.getMonth() + 1,
+        DD: t1.getDate(),
+        HH: t1.getHours(),
+        mm: t1.getMinutes(),
+        ss: t1.getSeconds()
+      }
+
+      for (const key in config) {
+        format = format.replace(key, config[key])
+      }
+      return format
     },
     loadData (item, callback) {
       let newtype = ''
@@ -926,14 +987,18 @@ export default {
       this.showTjdbDetails1 = false
       const formData1 = new FormData()
       const formData2 = new FormData()
-      formData1.append('flowNo', this.yjczDetail['id'])
+      formData1.append('flowNo', this.yjczDetail['id'] || (this.DateToString() + '0001'))
       formData1.append('questiontitle', this.yjczDetail['标题'])
-      formData1.append('createDate', this.yjczDetail['告警时间'])
-      formData1.append('address', this.yjczDetail['地点'])
-      formData1.append('reportDate', this.yjczDetail['发起时间'])
+      formData1.append('desc', this.yjczDetail['内容'])
+      formData1.append('address', this.yjczDetail['地址'])
+      formData1.append('street', this.yjczDetail['所属街道'])
+      formData1.append('community', this.yjczDetail['所属社区'])
+      formData1.append('createDate', this.yjczDetail['预警时间'])
+      formData1.append('reportDate', this.yjczDetail['通知时间'])
       formData1.append('lingdaopishi', this.yjczDetail['领导批示'])
+      formData1.append('classification', this.boxData.czType)
 
-      formData2.append('flowNo', this.yjczDetail['id'])
+      formData2.append('flowNo', this.yjczDetail['id'] || (this.DateToString() + '0001'))
       formData2.append('opttag', 'cFinish')
       formData2.append('opttag_2', 0)
       formData2.append('optdate', this.DateToString(new Date()))
@@ -962,8 +1027,86 @@ export default {
         console.log(err)
       })
     },
-    UpDataOk2 () {
-      this.showTjdbDetails2 = false
+    UpDataOk2 (detail) {
+      const formData = new FormData()
+      let desc = ''
+      let address = ''
+      let originalNo = ''
+      let reportDate = ''
+      let class1 = ''
+      let source = ''
+      let chuzhiyaoqiu = ''
+      let questiontitle = ''
+      let flowNo = this.DateToString() + '0001'
+      detail.data.forEach(element => {
+        if (['标题'].includes(element.title)) {
+          questiontitle = element.value
+        } else if (['内容'].includes(element.title)) {
+          desc = element.value
+        } else if (['时间'].includes(element.title)) {
+          reportDate = element.value
+        } else if (['地址'].includes(element.title)) {
+          address = element.value
+        } else if (['事件编号'].includes(element.title)) {
+          originalNo = element.value
+        } else if (['事件分类'].includes(element.title)) {
+          class1 = element.value
+        }
+      })
+
+      if (detail.title.indexOf('区级下派') >= 0) {
+        source = '区级下派'
+      } else if (detail.title.indexOf('值守事件') >= 0) {
+        source = '值守事件'
+      } else if (detail.title.indexOf('街道城运') >= 0) {
+        source = '街道城运'
+      } else if (detail.title.indexOf('安全隐患') >= 0) {
+        source = '安全隐患'
+      } else if (detail.title.indexOf('水务事件') >= 0) {
+        source = '水务事件'
+      } else if (detail.title.indexOf('市级下派事件') >= 0) {
+        source = '市级下派事件'
+      }
+      formData.append('questiontitle', questiontitle || '')
+      formData.append('desc', desc || '')
+      formData.append('address', address || '')
+      formData.append('originalNo', originalNo || '')
+      formData.append('reportDate', reportDate || '')
+      formData.append('class1', class1 || '')
+      formData.append('source', source || '')
+      formData.append('chuzhiyaoqiu', chuzhiyaoqiu || '')
+
+      formData.append('urgency', '一般')
+      formData.append('$urgency$', '一般')
+      formData.append('flowsource', '12345电话工单')
+      formData.append('flowNo', flowNo)
+      formData.append('opttag', 0)
+      formData.append('forwardEvent', true)
+
+      const formData2 = new FormData()
+      formData2.append('id', new Date().getTime() * 1)
+      formData2.append('dept', this.CkeckedBmData2.dept)
+      formData2.append('flowNo', flowNo)
+      formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData2.append('nickname', this.CkeckedBmData2.title)
+      formData2.append('nickphone', this.CkeckedBmData2.nickphone)
+      formData2.append('opttag', 'overCheck')
+      formData2.append('dept_keshi', this.CkeckedBmData2.deptkeshi)
+      formData2.append('opttag_2', 1)
+      formData2.append('identifier', 1)
+      formData2.append('chuzhiresult', '')
+      formData2.append('remark', '')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB5_2', formData2).then(res => {
+        if (res.success) {
+        }
+      })
+      this.axios.post('/leaderview/ChengYun4/GetTJDB5', formData).then(res => {
+        if (res.success) {
+          this.showTjdbDetails2 = false
+          this.CkeckedBm2 = ''
+          this.CkeckedBmData2 = {}
+        }
+      })
     },
     OpenShowTjdbDetails1 () {
       this.showTjdbDetails1 = !this.showTjdbDetails1
@@ -1126,6 +1269,7 @@ export default {
         let boxData = {
           title: '数据详情',
           data: data,
+          czTitle: DataTkArry.title || '',
           czType: DataTkArry.czType
         }
         this.ShowTanKuangBox(boxData)
@@ -1607,6 +1751,9 @@ export default {
       this.venationChartData = {
         data: []
       }
+      this.showTjdbDetails2 = false
+      this.CkeckedBm2 = ''
+      this.CkeckedBmData2 = {}
     },
     hideImportModal () {
       this.showImport = false
