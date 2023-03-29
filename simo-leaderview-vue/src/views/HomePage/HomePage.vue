@@ -173,7 +173,7 @@
                       <div class="Data"  v-if="data.title !== '详情' && data.value !== '详情'">{{ data.value === ''||data.value === ' ' ? '暂无数据' : data.value? data.value.value? data.value.value:data.value:'暂无数据' }} </div>
                     </div>
                     <template v-if="venationData.chartData.data&&venationData.chartData.data.length">
-                      <EventVenation :style="{left:pageName.indexOf('32:9')>=0?'168px': '356px'}" :item="venationData"></EventVenation>
+                      <EventVenation :style="pageName.indexOf('32:9')>=0?{marginLeft:'420px',marginTop:'60px'}:{margin:'60px auto'}" :item="venationData"></EventVenation>
                     </template>
                   </div>
                   <div class="NoData" v-else-if="vboxData.data.length === 0">
@@ -369,9 +369,9 @@
                     <div>加载中...</div>
                   </Spin>
                   <div class="BoxBody" v-show="!ifLoad&&venationChartData1.data.length">
-                    <EventVenation :style="{left:pageName.indexOf('32:9')>=0?'168px': '356px'}" :item="venationData1"></EventVenation>
+                    <EventVenation :style="pageName.indexOf('32:9')>=0?{marginLeft:'420px'}:{margin:'0 auto'}" :item="venationData1"></EventVenation>
                   </div>
-                  <div class="NoData" v-show="!ifLoad&&!venationChartData1.data.length">暂未配置</div>
+                  <div class="NoData" v-show="!ifLoad&&!venationChartData1.data.length">暂无数据</div>
                 </div>
               </div>
               <!-- <div :class="IsCityType ? 'CityParentBox': 'ParentBox'">
@@ -756,15 +756,15 @@ export default {
         'height': 400,
         'titleFontSize': this.pageName.indexOf('32:9') >= 0 ? 24 : 42,
         'titleBottm': 10,
-        'iconColor': '#86e2f7',
+        'iconColor': '#F2BE77',
         'titleColor': '#86e2f7',
-        'contBorderColor': '#f1e9c2',
-        'contPadding': 15,
+        'contBorderColor': '#25406A',
+        'contPadding': this.pageName.indexOf('32:9') >= 0 ? 10 : 20,
         'contBorderRdius': 5,
         'contTitleSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
-        'contTitleColor': 'white',
+        'contTitleColor': '#F2BE77',
         'contColor': '#cef1ff',
-        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -175 : -346,
+        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -420 : -614,
         'dateTop': 0,
         'contSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
         'chartData': this.venationChartData
@@ -779,15 +779,15 @@ export default {
         'height': 400,
         'titleFontSize': this.pageName.indexOf('32:9') >= 0 ? 24 : 42,
         'titleBottm': 10,
-        'iconColor': '#86e2f7',
+        'iconColor': '#F2BE77',
         'titleColor': '#86e2f7',
-        'contBorderColor': '#f1e9c2',
-        'contPadding': 15,
+        'contBorderColor': '#25406A',
+        'contPadding': this.pageName.indexOf('32:9') >= 0 ? 10 : 20,
         'contBorderRdius': 5,
         'contTitleSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
-        'contTitleColor': 'white',
+        'contTitleColor': '#F2BE77',
         'contColor': '#cef1ff',
-        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -175 : -346,
+        'dateLeft': this.pageName.indexOf('32:9') >= 0 ? -420 : -614,
         'dateTop': 0,
         'contSize': this.pageName.indexOf('32:9') >= 0 ? 20 : 36,
         'chartData': this.venationChartData1
@@ -3528,14 +3528,14 @@ html[data-theme='blueWhite'] {
         .confirm{
           background: #4f9ff5;
           padding: 0 10px;
-          font-size: 40px;
-          width: 160px;
-          height: 70px;
+          font-size: 42px;
+          width: 343px;
+          height: 83px;
           text-align: center;
-          line-height: 70px;
-          color:#C8E0FF;
+          line-height: 83px;
+          color:#c8e0ff;
           margin-right: 10px;
-          background: url('./button.png') no-repeat;
+          background: url('./newBack/button.png') no-repeat;
           background-size: 100% 100%;
           cursor:pointer;
         }
@@ -4096,17 +4096,15 @@ html[data-theme='blueWhite'] {
   .submit{
     width: 100%;
     position: relative;
+    margin-bottom: 10px;
     .confirm{
-      background: #4f9ff5;
-      padding: 0 10px;
-      font-size: 40px;
-      width: 210px;
-      height: 70px;
+      font-size: 42px;
+      width: 343px;
+      height: 82px;
       text-align: center;
-      line-height: 70px;
+      line-height: 82px;
       color:#C8E0FF;
-      margin-right: 10px;
-      background: url('./button.png') no-repeat;
+      background: url('./newBack/button.png') no-repeat;
       background-size: 100% 100%;
       cursor:pointer;
     }
@@ -4217,9 +4215,9 @@ html[data-theme='blueWhite'] {
   }
   .BoxBody {
     padding: 80px 40px;
-    display: flex;
+    // display: flex;
     font-size: 50px !important;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     width: 100%;
     height: 90%;
     overflow: auto;
@@ -4234,38 +4232,40 @@ html[data-theme='blueWhite'] {
     padding: 10px 10px;
     border-right: 1px solid #d3f2ff;
     width: 20%;
+    padding: 30px 10px;
     color: #4f9ff5;
     white-space: pre-wrap;
   }
   .Data {
     width: 80%;
-    padding: 10px;
+    padding: 30px 10px;
     color: rgba(172,207,254,1);
   }
   .TwoButtons{
     display: flex;
     align-items: center;
     width: 100%;
+    margin-bottom: 10px;
     >div:first-child{
-      font-size: 35px;
-      width: 160px;
-      height: 60px;
+      font-size: 42px;
+      width: 343px;
+      height: 82px;
       text-align: center;
-      line-height: 60px;
+      line-height: 82px;
       color:#C8E0FF;
       margin-right: 10px;
-      background: url('./button.png') no-repeat;
+      background: url('./newBack/button.png') no-repeat;
       background-size: 100% 100%;
       cursor:pointer;
     }
     >div:last-child{
-      font-size: 35px;
-      width: 160px;
-      height: 60px;
+      font-size: 42px;
+      width: 343px;
+      height: 82px;
       text-align: center;
-      line-height: 60px;
+      line-height: 82px;
       color:#C8E0FF;
-      background: url('./button.png') no-repeat;
+      background: url('./newBack/button.png') no-repeat;
       background-size: 100% 100%;
       cursor:pointer;
     }

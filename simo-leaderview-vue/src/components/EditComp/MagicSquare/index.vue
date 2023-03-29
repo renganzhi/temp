@@ -85,7 +85,7 @@
                                                 <div class="li" v-for="(item, index) in checkData['明细']?checkData['明细'].rows:[]" :key="index">
                                                     <div>{{index + 1}}.{{item['涉及部门']}}</div>
                                                     <div>
-                                                        <div class="warningBtn" @click="ShowManageSituation()">处置流程</div>
+                                                        <div class="warningBtn" @click="ShowManageSituation(item)">处置流程</div>
                                                         完成
                                                     </div>
                                                 </div>
@@ -114,7 +114,7 @@
                                                 <div>加载中...</div>
                                             </Spin>
                                             <div v-show="!ifLoad && venationChartData.data.length" class="bodyData">
-                                                <EventVenation :item="venationData"></EventVenation>
+                                                <EventVenation style="margin:20px 0 0 500px;" :item="venationData"></EventVenation>
                                             </div>
                                             <div v-show="!ifLoad && !venationChartData.data.length"  class="noData">暂无数据</div>
                                         </div>
@@ -191,19 +191,19 @@ export default {
         'text': '事件脉络',
         'imgClass': 'icon-n-text',
         'chartType': 'EventVenation',
-        'width': 270,
-        'height': 125,
+        'width': 600,
+        'height': 590,
         'titleFontSize': 32,
         'titleBottm': 10,
-        'iconColor': '#86e2f7',
+        'iconColor': '#F2BE77',
         'titleColor': '#86e2f7',
-        'contBorderColor': '#f1e9c2',
+        'contBorderColor': '#25406A',
         'contPadding': 15,
         'contBorderRdius': 5,
         'contTitleSize': 30,
-        'contTitleColor': 'white',
+        'contTitleColor': '#F2BE77',
         'contColor': '#cef1ff',
-        'dateLeft': -170,
+        'dateLeft': -500,
         'dateTop': 0,
         'contSize': 28,
         'chartData': this.venationChartData
@@ -428,7 +428,7 @@ export default {
     UpDataOk2 (warningData) {
       const formData1 = new FormData()
       const formData2 = new FormData()
-      formData1.append('flowNo', this.DateToString2() + '0001')
+      formData1.append('flowNo', warningData['预警ID'])
       formData1.append('questiontitle', warningData['名称'])
       formData1.append('createDate', this.checkDate)
       formData1.append('address', '')
@@ -437,7 +437,7 @@ export default {
       formData1.append('street', '')
       formData1.append('community', '')
 
-      formData2.append('flowNo', this.DateToString2() + '0001')
+      formData2.append('flowNo', warningData['预警ID'])
       formData2.append('opttag', 'cFinish')
       formData2.append('opttag_2', 0)
       formData2.append('optdate', this.DateToString2(new Date()))
@@ -531,11 +531,21 @@ export default {
         })
       }
     },
-    ShowManageSituation () {
+    ShowManageSituation (data) {
       this.showManageBox = true
+      this.ifLoad = true
+      this.axios.get('/leaderview/newDistrict/getYJCZ4?param=' + data['预警ID'] || '').then(res => {
+        this.ifLoad = false
+        if (res.obj) {
+          this.venationChartData = JSON.parse(JSON.stringify(res.obj))
+        }
+      })
     },
     CloseManageSituation () {
       this.showManageBox = false
+      this.venationChartData = {
+        data: []
+      }
     }
   },
   mounted () {
@@ -1044,11 +1054,16 @@ export default {
                             position: absolute;
                             top: 0;
                             right: 0;
-                            background: #1e2631;
+                            background: linear-gradient(180deg,#2a4a68 27%, #1b2e3c);
                             .closebtn{
                                 position: absolute;
                                 top: 5px;
                                 right: 5px;
+                            }
+                            .bodyData{
+                              overflow: scroll;
+                              height: 100%;
+                              padding: 20px 20px;
                             }
                             .noData{
                                 text-align: center;

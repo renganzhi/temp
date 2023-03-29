@@ -6,7 +6,7 @@
         :key="i"
         :color="iconColor"
       >
-        <p class="dateline" :style="titleStyle">{{ event.sj_time }}</p>
+        <p class="dateline" v-show="event.sj_time" :style="titleStyle">{{ event.sj_time }}</p>
         <div
           v-for="(cont, n) in event.items.rows"
           :key="n"
@@ -63,9 +63,7 @@ export default {
       return {
         color: this.item.contTitleColor,
         fontSize: this.item.contTitleSize + 'px',
-        overflow: 'hidden',
-        'white-space': 'nowrap',
-        'text-overflow': 'ellipsis'
+        background: '#2c4973'
       }
     },
     contentStyle () {
@@ -150,6 +148,36 @@ export default {
   .ivu-timeline-item-tail {
     border-left: 2px solid #e8eaec;
     left: 56px;
+  }
+}
+</style>
+<style lang="scss">
+.WuHouEvents{
+  .ivu-timeline{
+    width: 100%;
+  }
+  .dateline{
+    background: url('./bg.png') no-repeat;
+    background-size: 100% 100%;
+    padding: 10px 20px 10px 124px;
+
+  }
+  .ivu-timeline-item-tail{
+    left: 59px;
+    border-style: dashed !important;
+  }
+  .ivu-timeline-item-head{
+    width: 22px !important;
+    height: 22px !important;
+    background: transparent !important;
+    border-width: 5px !important;
+  }
+  .content{
+    border-width: 5px !important;
+    background: #163159;
+  }
+  .ivu-timeline-item-content{
+    letter-spacing: 5px;
   }
 }
 </style>
