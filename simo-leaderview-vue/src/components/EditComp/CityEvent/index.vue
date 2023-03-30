@@ -5,7 +5,7 @@
               {{v.title}}
             </div>
        </div>
-       <vue-seamless-scroll
+       <!-- <vue-seamless-scroll
           :data="eventData.rows"
           :class-option="classOption"
           class="warp"
@@ -20,7 +20,16 @@
               </div>
             </li>
           </ul>
-        </vue-seamless-scroll>
+        </vue-seamless-scroll> -->
+        <div class="boxList">
+          <div class="li" @click="showDetails(val)" :style="liStyle2" v-for="(val, ind) in eventData.rows" :key="ind">
+            <div class="eventBox">
+              <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title || val['问题标题']}}</div>
+              <div class="date"  :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date || val['发起时间'] || val['上报时间']}}</div>
+              <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content || val['发生地址'] || val['问题描述']}}</div>
+            </div>
+          </div>
+        </div>
     </div>
 </template>
 <script>
@@ -58,6 +67,12 @@ export default {
     liStyle: function () {
       return {
         height: (this.item.height - 20) / 3 + 'px'
+      }
+    },
+    liStyle2: function () {
+      return {
+        height: this.item.pageHeight + 'px',
+        marginBottom: this.item.pageMarginBottom + 'px'
       }
     },
     buttonStyle: function () {
@@ -186,6 +201,16 @@ export default {
       }
       .normalBtn:last-child{
         margin-right: 0px !important;
+      }
+    }
+    .boxList{
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+      .li{
+        margin-bottom: 10px;
+        background: #122f61;
+        padding: 10px;
       }
     }
     .eventBox{

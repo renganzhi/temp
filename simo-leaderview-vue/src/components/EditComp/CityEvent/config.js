@@ -12,6 +12,8 @@ export default{
     'contentColor': '#6689f8',
     'contentSize': 12,
     'size': 'big',
+    pageHeight: 200,
+    pageMarginBottom: 10,
     paddingTop: -90,
     paddingLeft: 0,
     boxFontSize: 16,
@@ -125,6 +127,16 @@ export default{
             'name': '标题颜色',
             'key': 'titleColor',
             'tag': 'GradientColor'
+          },
+          {
+            'name': '模块高度',
+            'key': 'pageHeight',
+            'tag': 'input'
+          },
+          {
+            'name': '模块下边距',
+            'key': 'pageMarginBottom',
+            'tag': 'input'
           },
           {
             'name': '标题字体大小',

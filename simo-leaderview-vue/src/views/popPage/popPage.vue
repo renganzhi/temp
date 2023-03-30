@@ -1082,6 +1082,7 @@ export default {
       formData.append('flowNo', flowNo)
       formData.append('opttag', 0)
       formData.append('forwardEvent', true)
+      formData.append('forwardDate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
 
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
