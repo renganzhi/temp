@@ -1735,7 +1735,16 @@ export default {
         }
       }
       if (dataArray.url) {
-        this.axios.get(dataArray.url + dataArray.data['事件编号']).then(res => {
+        let id = dataArray.data['事件编号'] || ''
+        if (dataArray.title === '预警处置') {
+          dataArray.url = '/leaderview/newDistrict/getYJCZ4?param='
+          id = dataArray.data['工单号']
+        }
+        if (dataArray.title === '提级督办') {
+          dataArray.url = '/leaderview/ChengYun4/GetTJDB2_2?param='
+          id = dataArray.data['工单号']
+        }
+        this.axios.get(dataArray.url + id).then(res => {
           if (res.success) {
             // dataArray.chartData = JSON.parse(JSON.stringify(res.obj))
             this.venationChartData = JSON.parse(JSON.stringify(res.obj))
