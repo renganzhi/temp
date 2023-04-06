@@ -87,6 +87,7 @@
                                                     <div>
                                                         <div class="warningBtn" @click="ShowManageSituation(item)">处置流程</div>
                                                         完成
+                                                        <input type="checkbox" class="check">
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,9 +101,9 @@
                                                 紧急预案
                                             </div>
                                             <div class="lbody">
-                                                1.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                                <!-- 1.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                                                 2.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                                                3.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                                3.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
                                             </div>
                                         </div>
                                     </div>
@@ -981,6 +982,14 @@ export default {
                                                 margin-right: 16px;
                                                 background: url('./切图/button.png') no-repeat;
                                                 background-size: 100% 100%;
+                                            }
+                                            .check{
+                                              width: 30px!important;
+                                              height: 30px!important;
+                                            }
+                                            .check::before{
+                                              width: 0!important;
+                                              height: 0!important;
                                             }
                                         }
                                     }
