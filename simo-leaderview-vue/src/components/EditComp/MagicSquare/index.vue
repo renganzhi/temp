@@ -436,7 +436,8 @@ export default {
       formData1.append('reportDate', this.DateToString2(new Date()))
       formData1.append('type', '预警魔方')
       formData1.append('street', '')
-      formData1.append('community', '')
+      formData1.append('village', '')
+      formData1.append('state', '处置中')
 
       formData2.append('flowNo', warningData['预警ID'])
       formData2.append('opttag', 'cFinish')

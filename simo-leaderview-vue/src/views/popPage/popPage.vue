@@ -992,7 +992,7 @@ export default {
       formData1.append('desc', this.yjczDetail['内容'])
       formData1.append('address', this.yjczDetail['地址'])
       formData1.append('street', this.yjczDetail['所属街道'])
-      formData1.append('community', this.yjczDetail['所属社区'])
+      formData1.append('village', this.yjczDetail['所属社区'])
       formData1.append('createDate', this.yjczDetail['预警时间'])
       formData1.append('reportDate', this.yjczDetail['通知时间'])
       formData1.append('lingdaopishi', this.yjczDetail['领导批示'])
@@ -1007,6 +1007,7 @@ export default {
       formData2.append('dept', this.CkeckedBmData1.dept)
       formData2.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
       formData2.append('identifier', 1)
+      formData1.append('state', '处置中')
 
       this.axios.post('/leaderview/newDistrict/getYJCZ1', formData1).then(res => {
         if (res.success) {
