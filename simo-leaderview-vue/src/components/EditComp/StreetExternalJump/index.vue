@@ -18,6 +18,11 @@ export default {
   },
   methods: {
     jump () {
+      if (this.item.chartData.linkURL) {
+        if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
+          window.open(this.item.chartData.linkURL)
+        }
+      }
       if (this.item.chartData.streetName) {
         if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
           this.axios.get('/leaderview/ChengYun4/GetStreetUrl?param=' + this.item.chartData.streetName).then(res => {
