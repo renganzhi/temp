@@ -689,6 +689,9 @@ export default {
       this.getData()
       this.showPop1 = true
       this.phoneIndex = 0
+      this.phoneIndex2 = -1
+      this.textIndex2 = -1
+      this.textIndex = -1
     },
     ClosePop1 () {
       this.getData()
@@ -699,6 +702,9 @@ export default {
       this.type2 = '区领导'
       this.type1 = '工作要求'
       this.phoneIndex = 0
+      this.phoneIndex2 = -1
+      this.textIndex2 = -1
+      this.textIndex = -1
     },
     ShowPop2 () {
       this.showPop2 = true
