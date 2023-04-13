@@ -177,7 +177,7 @@
                                             <transition name="moveRight">
                                                 <div class="info2" v-show="indexOf7 === index">
                                                     <div>
-                                                        <div>{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div :title="data['个人投诉类别最多类']['rows'][0]['类别']">{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>TOP1</div>
                                                     </div>
                                                     <div>
@@ -212,7 +212,7 @@
                                             <transition name="moveRight">
                                                 <div class="info2" v-show="indexOf15 === index">
                                                     <div>
-                                                        <div>{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div :title="data['个人投诉类别top3']['rows'][0]['类别']">{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>TOP1</div>
                                                     </div>
                                                     <div>
@@ -2939,36 +2939,40 @@ export default {
                                     padding: 0 25px;
                                     >div:nth-child(1) {
                                         >div:first-child {
-                                            font-size: 32px;
+                                            font-size: 25px;
+                                            white-space: nowrap;
+                                            max-width: 200px;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
                                             margin-bottom: 4px;
                                             color: rgba(90,232,250,1);
                                         }
                                         >div:last-child {
-                                            font-size: 28px;
+                                            font-size: 23px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(2) {
                                         >div:first-child {
-                                            font-size: 34px;
+                                            font-size: 30px;
                                             color: rgba(252,184,60,1);
                                             margin-bottom: 4px;
                                             font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 28px;
+                                            font-size: 23px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }
                                     >div:nth-child(3) {
                                         >div:first-child {
-                                            font-size: 34px;
+                                            font-size: 30px;
                                             color: rgba(220,97,79,1);
                                             margin-bottom: 4px;
                                             font-weight: bold;
                                         }
                                         >div:last-child {
-                                            font-size: 28px;
+                                            font-size: 23px;
                                             color: rgba(197,238,243,1);
                                         }
                                     }

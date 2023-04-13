@@ -79,6 +79,7 @@ export default [
   'SmallOrderMenu',
   'CityEvent',
   'WuhouSinglePage',
+  'StreetSafety',
   'MagicSquare',
   'AppMarket',
   'BigAppMarket',
