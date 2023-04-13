@@ -371,7 +371,7 @@
                       <div class="personnelInfo">
                         <div>
                           <img v-if="element['照片链接']" :src="element['照片链接']" style="width: 110px !important;height: 160px !important;object-fit: fill !important;" alt="">
-                          <img v-else src="./街道矩形.png" style="width: 80px !important;height: 100px !important;object-fit: fill !important;" alt="">
+                          <img v-else src="./街道矩形.png" style="width: 110px !important;height: 160px !important;object-fit: fill !important;" alt="">
                         </div>
                         <div>
                           <div class="name">{{element['领导姓名']}}
