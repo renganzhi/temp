@@ -255,7 +255,7 @@ export default {
         label: {
           show: this.item.showPoint,
           fontSize: this.item.PointSize || '14',
-          color: '#828bac' // 标点的文字颜色
+          color: '#e4e7f1' // 标点的文字颜色
         },
         legend: {
           x: 'center',

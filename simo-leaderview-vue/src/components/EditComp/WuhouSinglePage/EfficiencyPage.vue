@@ -163,7 +163,10 @@
                                   {{xqValue['描述'] || ''}}
                                 </div>
                                 <div style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
-                                  回复内容：{{xqValue['回复内容'] || '暂无回复'}}
+                                  反馈意见：{{xqValue['回复内容'] || '暂无回复'}}
+                                </div>
+                                <div style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                  部门回复：{{xqValue['部门回复'] || '暂无回复'}}
                                 </div>
                                 <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                                 <div class="block" style="padding: 0 28px;" v-if="xqValue['流转详情']">
@@ -276,8 +279,11 @@
                               <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 {{mydValue['描述'] || ''}}
                               </div>
-                              <div style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                              <div v-show="ShowmydType !== 'pleased'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 回复内容：{{mydValue['回复内容'] || '暂无回复'}}
+                              </div>
+                              <div v-show="ShowmydType === 'pleased' || ShowmydType === 'unsolved'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                部门回复：{{mydValue['部门回复'] || '暂无回复'}}
                               </div>
                               <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                               <div class="block" style="padding: 0 28px;">
@@ -467,6 +473,126 @@
                   </div>
               </div> -->
           </div>
+          <div class="SpecialGroupVisits">
+            <div class="groupBox" @click="ShowTSRQZFBox('今日走访数')">
+              <div class="num">{{allTSRQZFList.length?allTSRQZFList[0]['数量']:'暂无数据'}}</div>
+              <div class="desc">今日走访数</div>
+            </div>
+            <div class="groupBox" @click="ShowTSRQZFBox('本月走访数')">
+              <div class="num">{{allTSRQZFList.length?allTSRQZFList[1]['数量']:'暂无数据'}}</div>
+              <div class="desc">本月走访数</div>
+            </div>
+            <div class="groupBox" @click="ShowTSRQZFBox('逾期未走访数')">
+              <div class="num">{{allTSRQZFList.length?allTSRQZFList[2]['数量']:'暂无数据'}}</div>
+              <div class="desc">逾期未走访</div>
+            </div>
+            <div class="groupBox" @click="ShowTSRQZFBox('累计走访数')">
+              <div class="num">{{allTSRQZFList.length?allTSRQZFList[3]['数量']:'暂无数据'}}</div>
+              <div class="desc">累计走访人次</div>
+            </div>
+            <div id="Module77" v-if="showTSRQZFBox">
+                  <div class="title">
+                    {{TSRQZFType}}
+                    <img src="./newBack/16.png" alt="" @click="CloseTSRQZFBox()">
+                  </div>
+                  <div class="content">
+                      <div class="filterBox">
+                        <input v-model="streetSearch" type="text" placeholder="街道检索">
+                        <input v-model="communitySearch" type="text" placeholder="社区检索">
+                        <input v-model="gridSearch" type="text" placeholder="微网格检索">
+                        <input v-model="personnelSearch" type="text" placeholder="人员类别检索">
+                      </div>
+                      <div class="cityEvent" ref="cityEvent">
+                          <ul class="item" ref="item" style="width:100%">
+                              <li v-for="(val, ind) in tsrqzfList" :key="ind">
+                              <div  class="eventBox" >
+                                  <div>
+                                      <div><span></span>责任网格员：{{val['责任楼栋长'] || '暂无数据'}}</div>
+                                      <div @click="ShowTSRQZFDetail(val)">详情</div>
+                                  </div>
+                                  <div>
+                                      走访对象类别：{{val['走访对象类别'] || '暂无数据'}}
+                                  </div>
+                                  <div>
+                                      走访时间：{{val['走访时间'] || '暂无数据'}}
+                                  </div>
+                              </div>
+                              </li>
+                          </ul>
+                      </div>
+                      <transition name="moveLeft">
+                          <div id="Module77Pop" v-if="showTSRQZFDetail">
+                            <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">详情</span>
+                                <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseTSRQZFDetail()" src="./background/关闭.png" alt="">
+                            </div>
+                            <div style="with:100%;overflow: auto;height:calc(100% - 80px);position: relative;">
+                              <div style="margin: 26px 26px 20px 26px;font-size: 36px;font-weight:bold;color: #C5EEF3;max-height: 700px;overflow: auto;">{{tsrqzfDetail['走访对象'] || ''}}</div>
+                              <div style="margin: 0 26px 26px 26px;font-size: 24px;color: #c5eef3;max-height: 700px;overflow: auto;">
+                                <img src="./background/地址图标.png" alt="">
+                                <span style="vertical-align: middle;" >{{tsrqzfDetail['走访地址'] || '暂无数据'}}</span>
+                              </div>
+                              <div class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 0 30px 30px 30px;">
+                                <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="OpenShowTjdbDetails6">
+                                  走访提醒
+                                </div>
+                              </div>
+                              <div class="tjdbBox" v-show="showTjdbDetails6">
+                                  <div class="titleName">
+                                    <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
+                                    <img style="height: 49px;width: 49px;cursor: pointer;" @click="showTjdbDetails6 = false" src="./background/关闭.png" alt="">
+                                  </div>
+                                  <div class="bodyChose">
+                                    <Tree :data="treeSetList6"
+                                      :load-data="loadData"
+                                      @on-select-change='ChangeSelect6'></Tree>
+                                  </div>
+                                  <div class="footBox">
+                                    <div class="Name" style="color:#C5EEF3;font-size:30px">{{CkeckedBm6===''?'请选择部门':CkeckedBm6}}</div>
+                                    <div class="SureBtn dataCenter" @click="UpDataOk6(tsrqzfDetail)">确定</div>
+                                  </div>
+                              </div>
+                              <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;display: flex;align-items: center;flex-wrap: wrap;">
+                                <div v-show="tsrqzfDetail['类别']" style="padding:7px 14px;margin:0 20px 15px 0;font-size: 24px;color: #60eeff;font-weight:bold;opacity: 0.8;background: rgba(29,214,202,0.20);border: 2px solid #1ED6CB;border-radius: 4px;">
+                                  {{tsrqzfDetail['类别'] || '暂无数据'}}
+                                </div>
+                              </div>
+                              <div class="gridmanBox">
+                                <div class="littleBox">
+                                  <div class="detail" style="color:#fcb83c;">{{tsrqzfDetail['责任楼栋长'] || '暂无数据'}}</div>
+                                  <div class="tag">责任网格员</div>
+                                </div>
+                                <div class="littleBox">
+                                  <div class="detail">{{tsrqzfDetail['走访街道'] || '暂无数据'}}</div>
+                                  <div class="tag">所属街道</div>
+                                </div>
+                                <div class="littleBox">
+                                  <div class="detail">{{tsrqzfDetail['走访社区'] || '暂无数据'}}</div>
+                                  <div class="tag">所属社区</div>
+                                </div>
+                                <div class="littleBox">
+                                  <div class="detail">{{tsrqzfDetail['走访小区'] || '暂无数据'}}</div>
+                                  <div class="tag">所属微网格</div>
+                                </div>
+                              </div>
+                              <div style="margin: 28px;font-size: 24px;color: #C5EEF3;font-weight: bold;">走访历史</div>
+                              <div class="block" style="padding: 0 28px;">
+                                  <div class="TimeBox" v-for="(da,index) in tsrqzfDetail['走访历史']?tsrqzfDetail['走访历史']:[]" :key="index">
+                                    <div class="line" v-if="index !== tsrqzfDetail['走访历史'].length-1"></div>
+                                    <div class="radio"></div>
+                                    <div class="time">{{da['走访时间']}}</div>
+                                    <div class="data">
+                                      <div>走访人：{{da['走访人']}}</div>
+                                      <div>走访记录内容：{{da['走访记录内容']}}</div>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </transition>
+                  </div>
+            </div>
+          </div>
           <div class="part" v-if="showStreetInfo && modelData">
               <div class="Btn" @click="showStreetInfo = false"
               style="position: absolute;
@@ -593,10 +719,10 @@
               <div class="percentage backgroun21">
                 <div class="percentChild backgroun35" v-for="(data,index) in bodyData['事件分布总览'].rows" :key="index">
                   <div :class="selectType===data['平台']?'name checked':'name'" @click="selectTypeData(data['平台'])">
-                    {{data['平台']}}
+                    {{data['平台'] === '小武生活'?data['平台'] + '随手拍': data['平台']}}
                   </div>
                   <div class="value">
-                    <MyProgress :successdata="data['百分比']" :progressType='2' :color='colorArry[index]'/>
+                    <MyProgress :successdata="data['百分比']" :specificvalues="data['数量']" :progressType='2' :color='colorArry[index]'/>
                   </div>
                 </div>
               </div>
@@ -625,6 +751,7 @@ import NewProgress from '../NewProgress/index.vue'
 import MyProgress from './newprogress.vue'
 import CityEvent from '../CityEvent/index.vue'
 import NewPie from '../NewPie/index.vue'
+import element from '@/element'
 export default {
   data () {
     return {
@@ -636,6 +763,22 @@ export default {
       ShowmydBox: false,
       ShowmydType: '',
       showmydDetails: false,
+      // 特殊人群走访数据
+      showTSRQZFBox: false,
+      TSRQZFType: '',
+      showTSRQZFDetail: false,
+      allTSRQZFList: [], // 特殊人群走访所有
+      currentTSRQZFList: [],
+      streetSearch: '', // 街道检索
+      communitySearch: '', // 社区检索
+      gridSearch: '', // 微网格检索
+      personnelSearch: '', // 人员类别检索
+      tsrqzfDetail: {}, // 详情
+      showTjdbDetails6: false,
+      CkeckedBm6: '',
+      CkeckedBmData6: {},
+      treeSetList6: [],
+      //
       ifWJYJ: false,
       SelectType: 'normal',
       mydValue: {},
@@ -661,7 +804,7 @@ export default {
       treeSetList5: [],
       showotherDetails: false,
       showWJYJDetail: false,
-      dateValue: [],
+      dateValue: [this.DateToString(), this.DateToString()],
       selectType: '',
       colorArry: [['#61BEF5', '#61bef533'], ['#F8DE52', '#F8DE5233'], ['#F59B42', '#F59B4233'], ['#DC614F', '#DC614F33']],
       modelData: {},
@@ -681,8 +824,8 @@ export default {
       getOfficeTrend: {
         'text': '曲线图',
         'imgClass': 'icon-n-line',
-        'height': 320,
-        'width': 1600,
+        'height': 340,
+        'width': 1800,
         'chartType': 'ELine',
         'ifEidetColor': true, // 曲线是否配色
         'ifEidetColor2': true,
@@ -692,26 +835,26 @@ export default {
         'ctLegendShow': false,
         'ctLegendColor': '#828bac',
         'ctLegendSize': '20',
-        'axisLabelSize': '20',
+        'axisLabelSize': '26',
         'legendY': 90,
         'gridTop': 15,
         'gridBotton': 5,
         'gridLeft': 3,
-        'gridRight': 3,
+        'gridRight': 10,
         'tooltipShow': true,
         'subsectionType': true,
         'areaLineType': true,
         'tooltipBackColor': '#57625d',
         'tooltipTextColor': '#e9eaee',
-        'tooltipfontSize': 20,
+        'tooltipfontSize': 30,
         'splitColor': '#d0e0e3',
         'splitSize': 2,
         'minInterval': '',
         'Linesubsection': false,
         'boundaryGap': true,
-        'legendColor': '#828bac',
-        'DanweiColor': '#828bac',
-        'DanweiSize': 20,
+        'legendColor': '#e4e7f1',
+        'DanweiColor': '#e4e7f1',
+        'DanweiSize': 24,
         'lineArea': true, // 是否为区域图
         'lineColorType': false, // 是否为区域图
         'smooth': false,
@@ -723,8 +866,8 @@ export default {
         'symbolSize': 6,
         'lineWidth': 2,
         'showPoint': true, // 是否标点
-        'PointSize': '14',
-        'rotate': 0,
+        'PointSize': '22',
+        'rotate': 20,
         conditionType: '', // 接口选择
         refrashTime: 30000,
         interval: 0,
@@ -974,8 +1117,8 @@ export default {
         'legendY': 90,
         'gridTop': 15,
         'gridBotton': 5,
-        'gridLeft': 2,
-        'gridRight': 2,
+        'gridLeft': 5,
+        'gridRight': 5,
         'tooltipShow': true,
         'subsectionType': true,
         'areaLineType': true,
@@ -1055,6 +1198,78 @@ export default {
   },
   components: {IntegratedHistogram, ELine, NewGauge, NewProgress, MyProgress, CityEvent, NewPie},
   methods: {
+    DateToString () {
+      let date = new Date()
+      let y = date.getFullYear()
+      let M = ''
+      let d = ''
+
+      let h = ''
+      let m = ''
+      let s = ''
+      if (date.getMonth() < 9) {
+        M = '0' + (date.getMonth() + 1)
+      } else {
+        M = date.getMonth() + 1
+      }
+      if (date.getDate() < 10) {
+        d = '0' + date.getDate()
+      } else {
+        d = date.getDate()
+      }
+      if (date.getHours() < 10) {
+        h = '0' + date.getHours()
+      } else {
+        h = date.getHours()
+      }
+      if (date.getMinutes() < 10) {
+        m = '0' + date.getMinutes()
+      } else {
+        m = date.getMinutes()
+      }
+      if (date.getSeconds() < 10) {
+        s = '0' + date.getSeconds()
+      } else {
+        s = date.getSeconds()
+      }
+      return y + '-' + M + '-' + d
+    },
+    DateToString2 () {
+      let date = new Date()
+      let y = date.getFullYear()
+      let M = ''
+      let d = ''
+
+      let h = ''
+      let m = ''
+      let s = ''
+      if (date.getMonth() < 9) {
+        M = '0' + (date.getMonth() + 1)
+      } else {
+        M = date.getMonth() + 1
+      }
+      if (date.getDate() < 10) {
+        d = '0' + date.getDate()
+      } else {
+        d = date.getDate()
+      }
+      if (date.getHours() < 10) {
+        h = '0' + date.getHours()
+      } else {
+        h = date.getHours()
+      }
+      if (date.getMinutes() < 10) {
+        m = '0' + date.getMinutes()
+      } else {
+        m = date.getMinutes()
+      }
+      if (date.getSeconds() < 10) {
+        s = '0' + date.getSeconds()
+      } else {
+        s = date.getSeconds()
+      }
+      return y + M + d + h + m + s
+    },
     ShowOtherDetails (val) {
       if (val['流转详情'] && val['流转详情'].rows) {
         this.xqValue = val
@@ -1257,6 +1472,55 @@ export default {
         $('#lead-screen').removeClass('disShow')
       })
     },
+    UpDataOk6 (detail) {
+      const formData = new FormData()
+      console.log('detail', detail)
+      formData.append('questionTitle', '走访服务提醒')
+      formData.append('questiontitle', '走访服务提醒')
+      formData.append('flowNo', this.DateToString2() + '0001')
+      formData.append('hadress', detail['走访地址'] || '')
+      formData.append('street', detail['走访街道'] || '')
+      formData.append('village', detail['走访社区'] || '')
+      formData.append('reportDate', this.DateToString2())
+      formData.append('unit', detail['走访小区'] || '')
+      formData.append('desc', ('走访对象：' + detail['走访对象'] + '，走访人员类别：' + detail['类别'] + '，走访时间：' + detail['走访时间'] + '，走访记录内容：' + detail['走访记录内容'] + '，责任楼栋长：' + detail['责任楼栋长'] + '，楼栋长联系方式：' + detail['楼栋长联系方式']) || '')
+      formData.append('forwardEvent', true)
+
+      const formData2 = new FormData()
+      formData2.append('id', new Date().getTime() * 1)
+      formData2.append('dept', this.CkeckedBmData6.dept)
+      formData2.append('flowNo', this.DateToString2() + '0001')
+      formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+      formData2.append('nickname', this.CkeckedBmData6.title)
+      formData2.append('nickphone', this.CkeckedBmData6.nickphone)
+      formData2.append('opttag', 'cFinish')
+      formData2.append('dept_keshi', this.CkeckedBmData6.deptkeshi)
+      formData2.append('opttag_2', 0)
+      formData2.append('identifier', 1)
+      formData2.append('chuzhiresult', '')
+      formData2.append('remark', '')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB5_2', formData2).then(res => {
+        if (res.success) {
+        }
+      })
+      $('#lead-screen').addClass('disShow')
+      this.axios.post('/leaderview/ChengYun4/GetTJDB5', formData).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success) {
+          window.setTimeout(() => {
+            this.$parent.gettjdbList()
+          }, 4000)
+          this.showTjdbDetails6 = false
+          // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
+        }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
+      })
+    },
     ChangeSelect3 (item, data) {
       if (item.length === 1) {
         this.CkeckedBm3 = item[0].title
@@ -1282,6 +1546,15 @@ export default {
       } else {
         this.CkeckedBm5 = ''
         this.CkeckedBmData5 = {}
+      }
+    },
+    ChangeSelect6 (item, data) {
+      if (item.length === 1) {
+        this.CkeckedBm6 = item[0].title
+        this.CkeckedBmData6 = item[0]
+      } else {
+        this.CkeckedBm6 = ''
+        this.CkeckedBmData6 = {}
       }
     },
     OpenShowTjdbDetails3 () {
@@ -1380,6 +1653,38 @@ export default {
         })
       }
     },
+    OpenShowTjdbDetails6 () {
+      this.showTjdbDetails6 = !this.showTjdbDetails6
+      this.CkeckedBm6 = ''
+      this.CkeckedBmData6 = {}
+      if (this.showTjdbDetails6) {
+        $('#lead-screen').addClass('disShow')
+        this.axios.get('/leaderview/ChengYun4/GetTJDB3').then(res => {
+          $('#lead-screen').removeClass('disShow')
+          if (res.success && res.obj.rows) {
+            let treeData = []
+            res.obj.rows.forEach(element => {
+              treeData.push({
+                title: element['名称'],
+                id: element['组织ID'],
+                type: 'children',
+                disabled: true,
+                disableCheckbox: true,
+                loading: false,
+                children: []
+              })
+            })
+            this.treeSetList6 = treeData
+          }
+        }, error => {
+          console.log(error)
+          $('#lead-screen').removeClass('disShow')
+        }).catch(err => {
+          console.log(err)
+          $('#lead-screen').removeClass('disShow')
+        })
+      }
+    },
     ShowmydDetails (val) {
       if (val['流转详情'] && val['流转详情'].rows) {
         this.mydValue = val
@@ -1441,6 +1746,7 @@ export default {
         }
       }, error => {
         console.log(error)
+        this.$parent.openisopenShow()
         $('#lead-screen').removeClass('disShow')
       }).catch(err => {
         console.log(err)
@@ -1534,6 +1840,53 @@ export default {
         })
       }
     },
+    ShowTSRQZFBox (type) {
+      if (type === this.TSRQZFType) {
+        this.CloseTSRQZFBox()
+      } else {
+        this.showTSRQZFBox = true
+        this.TSRQZFType = type
+        this.allTSRQZFList.forEach(element => {
+          if (element['类别'] === type && element['明细']) {
+            this.currentTSRQZFList = element['明细']['rows']
+          }
+        })
+      }
+    },
+    CloseTSRQZFBox () {
+      this.showTSRQZFBox = false
+      this.TSRQZFType = ''
+      this.showTSRQZFDetail = false
+      this.currentTSRQZFList = []
+      this.streetSearch = ''
+      this.communitySearch = ''
+      this.gridSearch = ''
+      this.personnelSearch = ''
+      this.CloseTSRQZFDetail()
+    },
+    ShowTSRQZFDetail (data) {
+      $('#lead-screen').addClass('disShow')
+      this.axios.get('/leaderview/newDistrict/GetMSSQ23?name=' + data['走访对象']).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        this.tsrqzfDetail = data
+        this.showTSRQZFDetail = true
+        if (res.obj.rows) {
+          res.obj.rows.forEach(element => {
+            if (element['类别'] === '累计走访数') {
+              this.tsrqzfDetail['走访历史'] = element['明细'].rows || []
+            }
+          })
+        }
+      })
+    },
+    CloseTSRQZFDetail () {
+      this.showTSRQZFDetail = false
+      this.tsrqzfDetail = {}
+      this.showTjdbDetails6 = false
+      this.CkeckedBm6 = ''
+      this.CkeckedBmData6 = {}
+      this.treeSetList6 = []
+    },
     startClock () {
       this.showWJYJWarnning = true
       if (this.WJYJData.count) {
@@ -1577,6 +1930,25 @@ export default {
           }
         }
       })
+      // 获取特殊人群走访数据
+      this.axios.get('/leaderview/newDistrict/GetMSSQ23').then(res => {
+        if (res.success && res.obj) {
+          this.allTSRQZFList = res.obj.rows
+        }
+      })
+    }
+  },
+  computed: {
+    tsrqzfList: function () {
+      let arr = []
+      this.currentTSRQZFList.forEach(element => {
+        if ((this.streetSearch && element['走访街道'].indexOf(this.streetSearch) < 0) || (this.communitySearch && element['走访社区'].indexOf(this.communitySearch) < 0) || (this.gridSearch && element['走访小区'].indexOf(this.gridSearch) < 0) || (this.personnelSearch && element['走访对象类别'].indexOf(this.personnelSearch) < 0)) {
+
+        } else {
+          arr.push(element)
+        }
+      })
+      return arr
     }
   },
   watch: {
@@ -1718,7 +2090,6 @@ export default {
   // width: 2913px;
   height: 370px;
   display: flex;
-  justify-content: right;
   margin-top: 108px;
   .Mywjyj{
     width: 440px;
@@ -2128,7 +2499,7 @@ export default {
     }
   }
   .Mydgy{
-    width: 1357px;
+    width: 1340px;
     height: 370px;
     margin-left: 32px;
     background: url('./newBack/3.png');
@@ -2166,18 +2537,22 @@ export default {
     // width: 2913px;
     height: 590px;
     position: relative;
+    display: flex;
     .whole{
-        padding: 32px 32px 0 0px;
+        padding: 10px 32px 0 0px;
+        height: 100%;
+        width: 1990px;
         .datepicker{
           position:absolute;
-          top: 40px;
+          top: 25px;
           left: 640px;
           z-index: 1;
         }
         .row1{
             height: 580px;
             .tabContent1{
-                width:100%;
+                width:98%;
+                margin:0 auto;
                 height: 480px;
                 margin-top: 30px;
                 display: flex;
@@ -2292,7 +2667,8 @@ export default {
                 }
             }
             .tabContent2{
-                width:100%;
+                width:98%;
+                margin:0 auto;
                 height: 480px;
                 margin-top: 30px;
                 display: flex;
@@ -2450,21 +2826,353 @@ export default {
             }
         }
     }
+    .SpecialGroupVisits{
+      width: 1340px;
+      height: 580px;
+      margin-top: 10px;
+      background: url('./background/编组50.png') no-repeat;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      position: relative;
+      .groupBox{
+        .num{
+          width: 260px;
+          background: url('./background/资源6.png') no-repeat;
+          background-size: 100% 100%;
+          height: 160px;
+          margin-top: 50px;
+          font-weight: 900;
+          font-size: 44px;
+          cursor: pointer;
+          text-align: center;
+          color: white;
+        }
+        .desc{
+          width: 260px;
+          height: 60px;
+          font-size: 28px;
+          text-align: center;
+          color: #16DFF8;
+        }
+      }
+      #Module77{
+          width: 100%;
+          height: 1000px;
+          background: #0B1B2A;
+          padding: 0;
+          position: absolute;
+          top: 60px;
+          left: 0px;
+          background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+          z-index: 10;
+          .title{
+            color: #5AE8FA;
+            font-size: 30px;
+            height: 76px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            background-image: linear-gradient(45deg, hsla(187, 94%, 53%, 0.1), hsla(187, 94%, 53%, 0.02),);
+            padding: 0 20px;
+            align-items: center;
+            img{
+              width:49px;
+              height:49px;
+              cursor: pointer;
+            }
+          }
+          .content{
+              position: relative;
+              overflow: hidden;
+              .filterBox{
+                width: 100%;
+                margin-top: 10px;
+                padding: 0 24px 0 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                input{
+                  width: 300px;
+                  height: 52px;
+                  opacity: 0.8;
+                  border: 2px solid;
+                  border-image: linear-gradient(270deg, rgba(30,214,203,0.70) 5%, rgba(30,214,203,0.70) 99%) 2 2;
+                  border-radius: 4px;
+                  font-size: 25px !important;
+                  color: #c5eef3 !important;
+                }
+              }
+              .cityEvent{
+                  width: 100%;
+                  height: 846px;
+                  margin: 10px 0;
+                  display: flex;
+                  align-items: center;
+                  flex-direction: column;
+                  overflow: auto;
+                  .item{
+                    width: 100%;
+                  }
+                  .warp{
+                      overflow: hidden;
+                      width: 100%;
+                      height: 100%;
+                      ul{
+                          list-style: none;
+                          padding: 0;
+                          margin: 0 auto;
+                          li{
+                          margin-bottom: 28px;
+                          // background: #122f61;
+                          height: 180px;
+                          }
+                      }
+                  }
+                  li{
+                    padding: 14px 24px 14px 16px;
+                    .eventBox{
+                        width: 100%;
+                        height: 200px;
+                        padding: 14px 14px 5px 28px;
+                        overflow: hidden !important;
+                        // margin-bottom: 10px;
+                        background: url('./newBack/14.png') no-repeat;
+                        background-size: 100% 100%;
+                        overflow-y: scroll;
+                        >div:nth-child(1){
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            >div:nth-child(1) {
+                                color: #e1f2f4;
+                                font-size: 26px;
+                                overflow: hidden;
+                                width: 85%;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                span{
+                                    width: 12px;
+                                    height: 12px;
+                                    display: inline-block;
+                                    background: #fcb83c;
+                                    border-radius: 50%;
+                                    margin-right:12px;
+                                }
+                            }
+                            >div:nth-child(2) {
+                                color:#C5EEF3;
+                                font-size: 24px;
+                                width: 80px;
+                                height: 32px;
+                                text-align: center;
+                                line-height: 32px;
+                                background: rgba(22,223,248,0.10);
+                                border: 1px solid rgba(22,223,248,0.60);
+                                border-radius: 17px;
+                                text-align: center;
+                                cursor: pointer;
+                            }
+                        }
+                        >div:nth-child(2){
+                            width: 100%;
+                            height: 75px;
+                            padding-left: 24px;
+                            color: rgba(197,238,243,0.8);
+                            font-size: 24px;
+                            margin-top:8px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            -webkit-line-clamp: 2;
+                        }
+                        >div:nth-child(3){
+                            width: 100%;
+                            height: auto;
+                            padding-left: 24px;
+                            color: rgba(197,238,243,0.8);
+                            font-size: 22px;
+                            margin-top:12px;
+                        }
+
+                    }
+                  }
+              }
+              #Module77Pop{
+                  width: 100%;
+                  height: 925px;
+                  background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                  border: 2px solid;
+                  border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                  border-radius: 4px;
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  .dataCenter{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  }
+                  .bgck12{
+                    background-image: url('./newBack/12.png');
+                    background-size: 100% 100%;
+                  }
+                  .tjdbBox{
+                            width: 608px;
+                            height: 560px;
+                            position: absolute;
+                            top: 190px;
+                            left: 224px;
+                            z-index: 10;
+                            cursor: auto;
+                            background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                            border: 1px solid #1ED5C7;
+                            .titleName{
+                              width: 100%;
+                              height: 75px;
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                              background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                              padding: 0 20px;
+                            }
+                            .bodyChose{
+                              width: 100%;
+                              height: 388px;
+                              overflow: auto;
+                              padding: 20px;
+                              .checkEdItem{
+                                height: 72px;
+                                width: 100%;
+                                background-image: url('./newBack/19.png');
+                                background-size: 100% 100%;
+                                color: #5AE8FA;
+                                font-size: 30px;
+                                margin-bottom: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                .ChoseBtn{
+                                  width: 80px;
+                                  height: 36px;
+                                  background-image: url('./newBack/21.png');
+                                  background-size: 100% 100%;
+                                  color:#0A2534;
+                                  cursor: pointer;
+                                  font-size: 22px;
+                                }
+                              }
+                              .normalItem{
+                                height: 72px;
+                                width: 100%;
+                                background-image: url('./newBack/19.png');
+                                background-size: 100% 100%;
+                                color: #C5EEF3;
+                                font-size: 30px;
+                                margin-bottom: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                .ChoseBtn{
+                                  width: 80px;
+                                  height: 36px;
+                                  background-image: url('./newBack/20.png');
+                                  background-size: 100% 100%;
+                                  color:#16DFF8;
+                                  cursor: pointer;
+                                  font-size: 22px;
+                                }
+                              }
+                            }
+                            .footBox{
+                              width: 100%;
+                              height: 100px;
+                              display: flex;
+                              justify-content: space-between;
+                              background-image: linear-gradient(45deg, rgba(23, 221, 247, 0.02), rgba(23, 221, 247, 0.1));
+                              padding: 0 20px;
+                              align-items: center;
+                              .SureBtn{
+                                height: 50px;
+                                width: 120px;
+                                background-image: url('./newBack/22.png');
+                                font-size: 28px;
+                                cursor: pointer;
+                                color: #0B1B2A;
+                              }
+                            }
+                  }
+                  .TimeBox{
+                    position: relative;
+                    .line{
+                      position: absolute;
+                      left: 9px;
+                      top: 15px;
+                      height: 100%;
+                      border-left: 2px solid #FCB83C;
+                    }
+                    .radio{
+                      position: absolute;
+                      border: 6px solid #FCB83C;
+                      height: 20px;
+                      width: 20px;
+                      border-radius: 50%;
+                    }
+                    .time{
+                      font-size: 24px;
+                      padding-left: 28px;
+                      color: #C5EEF3;
+                    }
+                    .data{
+                      font-size: 24px;
+                      color: #C5EEF3;
+                      margin: 12px 12px 12px 30px;
+                      padding: 18px;
+                      background-color: transparent;
+                      background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                    }
+                  }
+                  .gridmanBox{
+                    width: 1284px;
+                    height: 116px;
+                    background: url('./background/矩形背景.png') no-repeat;
+                    background-size: 100% 100%;
+                    margin: 15px 0 20px 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                    .littleBox{
+                      .detail{
+                        font-size: 28px;
+                        font-weight: bold;
+                        color: #5AE8FA;
+                        margin-bottom: 4px;
+                      }
+                      .tag{
+                        font-size: 24px;
+                        color: #c5eef3;
+                      }
+                    }
+                  }
+              }
+          }
+      }
+    }
     .part{
       // width: 2830px;
-      width: 3280px;
-      height: 970px;
+      width: 3330px;
+      height: 1065px;
       padding: 72px 32px 32px 0px;
       position: absolute;
       z-index: 10;
-      top: 124px;
-      left: 10px;
+      top: 0px;
+      left: 0px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      background: url('./background/bg.png');
-      background-size: 100%;
+      background: url('./background/bg.png') no-repeat;
+      background-size: 100% 100%;
       .partTitle{
         height: 140px;
         width: 100%;
@@ -2783,6 +3491,7 @@ export default {
                       >div:nth-child(1) {
                           color: #C5EEF3;
                           font-size: 26px;
+                          width: 85%;
                           overflow: hidden;
                           white-space: nowrap;
                           text-overflow: ellipsis;
@@ -3045,6 +3754,7 @@ export default {
                           color: #C5EEF3;
                           font-size: 26px;
                           overflow: hidden;
+                          width: 85%;
                           white-space: nowrap;
                           text-overflow: ellipsis;
                           span{
@@ -3232,6 +3942,23 @@ export default {
 }
 </style>
 <style lang="scss">
+.filterBox{
+  input::-webkit-input-placeholder{ // WebKit, Blink, Edge浏览器，带input，双冒号
+    color:#e1f2f4;
+  }
+  input::-moz-placeholder{ // 火狐浏览器高版本（19+），不用带input，双冒号
+    color:#e1f2f4;
+  }
+  input:-moz-placeholder{ // 火狐浏览器底版本（4 to 18），不用带input，单冒号
+    color:#e1f2f4;
+  }
+  input:-ms-input-placeholder{  // IE浏览器底版本（10-11），带input，单冒号
+    color:#e1f2f4;
+  }
+  input::placeholder {
+    color: #e1f2f4;
+  }
+}
 .EfficiencyPage{
     display: flex;
     flex-wrap: wrap;

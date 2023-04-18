@@ -151,7 +151,10 @@
                   <div class="BoxTitle">{{vboxData.title}}</div>
                   <div class="BoxBody" v-if="vboxData.data.length >0">
                     <div v-show="!['预警处置', '提级督办'].includes(vboxData.title)" class="submit">
-                      <div class="confirm" @click="OpenShowTjdbDetails2">提级督办</div>
+                      <div style="display: flex;">
+                        <div class="confirm" @click="OpenShowTjdbDetails2">提级督办</div>
+                        <div class="confirm" style="margin-left:20px;" @click="jumpTOjd(vboxData.data)">应急指挥</div>
+                      </div>
                       <div class="tjdbBox" v-show="showTjdbDetails2">
                           <div class="titleName">
                             <div class="Name" style="color:#5AE8FA;font-size:30px">请选择部门</div>
@@ -340,7 +343,7 @@
                       </div>
                     </div>
                     <div class="submit">
-                      <div class="confirm" @click="OpenShowTjdbDetails1">确认</div>
+                      <div class="confirm" @click="OpenShowTjdbDetails1">派发</div>
                       <div class="tjdbBox" v-show="showTjdbDetails1">
                           <div class="titleName">
                             <div class="Name" style="color:#5AE8FA;font-size:45px">请选择部门</div>
@@ -823,6 +826,15 @@ export default {
   methods: {
     ...mapActions(['changeAlertInfo', 'initVideoTims', 'changePageVisiable']),
     ...mapMutations(['changeEditId', 'changeNowPage']),
+    jumpTOjd (val) {
+      let id = ''
+      val.forEach(element => {
+        if (element.title === '事件编号') {
+          id = element.value
+        }
+      })
+      window.open('http://10.29.119.56:8990/edss/#/DecLayoutHome?TOKENSJ=SklBTkdfUlVJMDEvYTEyMzQ1Ng%3D%3D&id=' + id)
+    },
     WarningManage (data) {
       this.showWarningManage = true
       data.forEach(element => {

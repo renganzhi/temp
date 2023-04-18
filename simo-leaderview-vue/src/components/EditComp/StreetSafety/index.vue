@@ -3,8 +3,8 @@
         <div class="bigTitle">城运平安</div>
         <div class="bigBody">
             <div class="DateSwitch">
-                <div class="normalBtn">昨日</div>
-                <div class="normalBtn">今日</div>
+                <div :class="{'normalBtn':true,'active':dateSwitch === 1?true:false}" @click="dateSwitch = 1">昨日</div>
+                <div :class="{'normalBtn':true,'active':dateSwitch === 2?true:false}" @click="dateSwitch = 2">今日</div>
             </div>
             <div class="StateSwitch">
                 <div class="regularBtn">已报</div>
@@ -37,6 +37,7 @@ export default {
   components: {EventVenation},
   data () {
     return {
+      dateSwitch: 0
     }
   },
   computed: {
@@ -60,12 +61,11 @@ export default {
     background-size: 100% 100%;
     padding: 18px 80px 0px 80px;
     .bigTitle{
-        background: linear-gradient(180deg,#ffffff 18%, #90deff 84%);
+        background-image: -webkit-linear-gradient(bottom, #90DEFF, #FFFFFF) !important;
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
         font-size: 56px;
-        font-family: Alibaba PuHuiTi 2.0;
         font-weight: 700;
-        color: #3f3f3f;
-        line-height: 78px;
         letter-spacing: 10px;
         text-shadow: 0px 2px 4px 0px rgba(10,30,52,0.48);
         margin-bottom: 80px;
@@ -74,6 +74,27 @@ export default {
     }
     .bigBody{
         width: 100%;
+        .DateSwitch{
+            display: flex;
+            .normalBtn{
+                width: 200px;
+                height: 92px;
+                background: url('./切图/12.png') no-repeat;
+                background-size: 100% 100%;
+                margin-right: 40px;
+                color: #fff;
+                font-size: 48px;
+                font-weight: 400;
+                text-align: center;
+                line-height: 92px;
+                cursor: pointer;
+            }
+            .active{
+                background: url('./切图/11.png') no-repeat !important;
+                background-size: 100% 100%;
+                color: #00FFF7 !important;
+            }
+        }
     }
 
 }

@@ -25,6 +25,7 @@
 <script>
 import * as turf from '@turf/turf'
 import styleJson from './custom_map_config.json'
+import WH from './武侯边界.json'
 import element from '@/element'
 import { ColorPicker } from 'element-ui'
 export default {
@@ -260,11 +261,14 @@ export default {
         this.map.setZoom(13.44378)
       }
       this.map.setDisplayOptions({
-        poiText: false,
-        poiIcon: false
+        poiText: true,
+        poiIcon: true
       })
       this.map.enableScrollWheelZoom(true) // 开启鼠标滚轮缩放
       this.map.setMapStyleV2({styleJson: styleJson}) // 公网设置地图样式
+      this.mapView = new window.mapvgl.View({
+        map: this.map
+      })
       // 内网设置地图样式
       // this.map.setOptions({
       //   style: {
@@ -272,20 +276,20 @@ export default {
       //   },
       //   styleUrl: 'http://172.16.152.196:8219/baidumap/bmapgl/mapstyle/new_mapStyle.json'
       // })
-      this.map.addEventListener('zoomend', (e) => {
-        let zoom = this.map.getZoom()
-        if (zoom < 17) {
-          this.map.setDisplayOptions({
-            poiText: false,
-            poiIcon: false
-          })
-        } else {
-          this.map.setDisplayOptions({
-            poiText: true,
-            poiIcon: true
-          })
-        }
-      })
+      // this.map.addEventListener('zoomend', (e) => {
+      //   let zoom = this.map.getZoom()
+      //   if (zoom < 17) {
+      //     this.map.setDisplayOptions({
+      //       poiText: false,
+      //       poiIcon: false
+      //     })
+      //   } else {
+      //     this.map.setDisplayOptions({
+      //       poiText: true,
+      //       poiIcon: true
+      //     })
+      //   }
+      // })
       this.getWHQ()
     },
     // 绘制武侯区
@@ -321,7 +325,7 @@ export default {
                 })
                 let polygon = new window.BMapGL.Polygon(points, {
                   fillColor: '#1e8ec6', // 填充色
-                  fillOpacity: 0.4, // 填充色透明度
+                  fillOpacity: 0.15, // 填充色透明度
                   strokeColor: '#8feee5', // 边线颜色
                   strokeWeight: 2, // 边线宽度
                   strokeOpacity: 0.5, // 边线透明度
@@ -339,7 +343,7 @@ export default {
               })
               let polygon = new window.BMapGL.Polygon(points, {
                 fillColor: '#1e8ec6', // 填充色
-                fillOpacity: 0.4, // 填充色透明度
+                fillOpacity: 0.15, // 填充色透明度
                 strokeColor: '#8feee5', // 边线颜色
                 strokeWeight: 2, // 边线宽度
                 strokeOpacity: 0.5, // 边线透明度
@@ -374,6 +378,19 @@ export default {
           }
         })
       }) // 绘制武侯区
+      var polygon = [{
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            WH
+          ]
+        }
+      }]
+      var maskLayer = new window.mapvgl.MaskLayer({
+        color: 'rgba(19, 14, 7, 0.95)'
+      })
+      this.mapView.addLayer(maskLayer)
+      maskLayer.setData(polygon)
     },
     getMapCenter () {
       var cen = this.map.getCenter() // 获取地图中心点

@@ -56,7 +56,7 @@
     "featureType": "district",
     "elementType": "labels",
     "stylers": {
-        "visibility": "off"
+        "visibility": "on"
     }
 }, {
     "featureType": "country",
@@ -480,7 +480,7 @@
     "featureType": "highway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
@@ -493,7 +493,7 @@
     "featureType": "highway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#ffffffff",
         "visibility": "on"
     }
 }, {
@@ -506,7 +506,7 @@
     "featureType": "nationalway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
@@ -519,7 +519,7 @@
     "featureType": "nationalway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#ffffffff",
         "visibility": "on"
     }
 }, {
@@ -541,42 +541,42 @@
     "featureType": "provincialway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
     "featureType": "cityhighway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
     "featureType": "arterial",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
     "featureType": "tertiaryway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#cedf6fff",
         "visibility": "on"
     }
 }, {
     "featureType": "fourlevelway",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#9e7d60ff",
         "visibility": "on"
     }
 }, {
     "featureType": "local",
     "elementType": "geometry.fill",
     "stylers": {
-        "color": "#1f2f57ff",
+        "color": "#9e7d60ff",
         "visibility": "on"
     }
 }, {
@@ -625,7 +625,7 @@
     "featureType": "local",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#a09089ff",
         "visibility": "on"
     }
 }, {
@@ -641,35 +641,35 @@
     "featureType": "fourlevelway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#a09089ff",
         "visibility": "on"
     }
 }, {
     "featureType": "tertiaryway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#f1f3eeff",
         "visibility": "on"
     }
 }, {
     "featureType": "arterial",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#ffffffff",
         "visibility": "on"
     }
 }, {
     "featureType": "cityhighway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#ffffffff",
         "visibility": "on"
     }
 }, {
     "featureType": "provincialway",
     "elementType": "labels.text.fill",
     "stylers": {
-        "color": "#2d75c4ff",
+        "color": "#ffffffff",
         "visibility": "on"
     }
 }, {
@@ -1101,31 +1101,6 @@
         "visibility": "off",
         "curZoomRegionId": "0",
         "curZoomRegion": "6,9",
-        "level": "9"
-    }
-}, {
-    "featureType": "arterial",
-    "stylers": {
-        "curZoomRegionId": "0",
-        "curZoomRegion": "9,9",
-        "level": "9"
-    }
-}, {
-    "featureType": "arterial",
-    "elementType": "geometry",
-    "stylers": {
-        "visibility": "off",
-        "curZoomRegionId": "0",
-        "curZoomRegion": "9,9",
-        "level": "9"
-    }
-}, {
-    "featureType": "arterial",
-    "elementType": "labels",
-    "stylers": {
-        "visibility": "off",
-        "curZoomRegionId": "0",
-        "curZoomRegion": "9,9",
         "level": "9"
     }
 }, {
@@ -1205,5 +1180,58 @@
     "elementType": "labels.text.fill",
     "stylers": {
         "color": "#c0e8f1ff"
+    }
+}, {
+    "featureType": "restaurantlabel",
+    "stylers": {
+        "curZoomRegionId": "0",
+        "curZoomRegion": "18,21",
+        "level": "18"
+    }
+}, {
+    "featureType": "restaurantlabel",
+    "stylers": {
+        "curZoomRegionId": "0",
+        "curZoomRegion": "18,21",
+        "level": "19"
+    }
+}, {
+    "featureType": "restaurantlabel",
+    "stylers": {
+        "curZoomRegionId": "0",
+        "curZoomRegion": "18,21",
+        "level": "20"
+    }
+}, {
+    "featureType": "restaurantlabel",
+    "stylers": {
+        "curZoomRegionId": "0",
+        "curZoomRegion": "18,21",
+        "level": "21"
+    }
+}, {
+    "featureType": "arterial",
+    "stylers": {
+        "curZoomRegionId": "0",
+        "curZoomRegion": "9,9",
+        "level": "9"
+    }
+}, {
+    "featureType": "arterial",
+    "elementType": "geometry",
+    "stylers": {
+        "visibility": "off",
+        "curZoomRegionId": "0",
+        "curZoomRegion": "9,9",
+        "level": "9"
+    }
+}, {
+    "featureType": "arterial",
+    "elementType": "labels",
+    "stylers": {
+        "visibility": "off",
+        "curZoomRegionId": "0",
+        "curZoomRegion": "9,9",
+        "level": "9"
     }
 }]

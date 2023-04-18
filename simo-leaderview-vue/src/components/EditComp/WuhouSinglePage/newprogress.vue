@@ -4,7 +4,7 @@
 <script>
 export default {
   name: 'newprogress',
-  props: ['successdata', 'progressType', 'color'],
+  props: ['successdata', 'progressType', 'color', 'specificvalues'],
   data () {
     return {
       mychart: null,
@@ -13,6 +13,13 @@ export default {
   },
   watch: {
     'successdata': function () {
+      if (this.progressType === 2) {
+        this.setOption2()
+      } else {
+        this.setOption()
+      }
+    },
+    'specificvalues': function () {
       if (this.progressType === 2) {
         this.setOption2()
       } else {
@@ -161,7 +168,9 @@ export default {
             label: {
               show: true,
               position: 'right',
-              formatter: '{@score}%',
+              formatter: (val) => {
+                return this.specificvalues || this.specificvalues === 0 ? this.specificvalues : (val.data + '%')
+              },
               textStyle: {
                 color: '#C5EEF3',
                 fontSize: '24'
