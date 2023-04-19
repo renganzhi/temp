@@ -332,7 +332,7 @@
                               <div class="content1">
                                   <div class="cityEvent">
                                       <ul class="item" style="width:100%">
-                                          <li v-for="(val, ind) in gsqyjList" :key="ind">
+                                          <li v-for="(val, ind) in qzyjList" :key="ind">
                                           <div  class="eventBox" >
                                               <div>
                                                   <div><span></span>推送部门:{{val['推送部门'] || '暂无数据'}}</div>
@@ -550,6 +550,15 @@
                                               <div class="con1">
                                                 <div class="info">
                                                   <div>
+                                                      <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 30px;">
+                                                          <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="ShowXQYJList(gsqxqDetail['小区'], gsqxq)">
+                                                            预警情况
+                                                          </div>
+                                                      </div>
+                                                      <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
+                                                      <div class="title2">本月投诉环比变动情况</div>
+                                                  </div>
+                                                  <div>
                                                       <div class="field">
                                                           <div>{{gsqxqDetail['街道']}}</div>
                                                           <div>所属街道</div>
@@ -558,10 +567,6 @@
                                                           <div>{{gsqxqDetail['地址']?(isVerification?gsqxqDetail['地址']:(gsqxqDetail['地址'].slice(0,5)+'**********')):''}}</div>
                                                           <div>小区地址</div>
                                                       </div>
-                                                  </div>
-                                                  <div>
-                                                      <div>{{gsqxqDetail['本月投诉环比上月增长率']}}%</div>
-                                                      <div class="title2">本月投诉环比变动情况</div>
                                                   </div>
                                                 </div>
                                                 <div>
@@ -594,6 +599,15 @@
                                               <div class="con1">
                                                 <div class="info">
                                                   <div>
+                                                      <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 30px;">
+                                                          <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="ShowXQYJList(gsqxqDetail['小区'], gsqxq)">
+                                                            预警情况
+                                                          </div>
+                                                      </div>
+                                                      <div>{{gsqxqDetail['本月人数环比上月增长率']}}%</div>
+                                                      <div class="title2">本月投诉环比变动情况</div>
+                                                  </div>
+                                                  <div>
                                                       <div class="field">
                                                           <div>{{gsqxqDetail['街道']}}</div>
                                                           <div>所属街道</div>
@@ -602,10 +616,6 @@
                                                           <div>{{gsqxqDetail['地址']?(isVerification?gsqxqDetail['地址']:(gsqxqDetail['地址'].slice(0,5)+'**********')):''}}</div>
                                                           <div>小区地址</div>
                                                       </div>
-                                                  </div>
-                                                  <div>
-                                                      <div>{{gsqxqDetail['本月人数环比上月增长率']}}%</div>
-                                                      <div class="title2">本月投诉环比变动情况</div>
                                                   </div>
                                                 </div>
                                                 <div>
@@ -636,6 +646,11 @@
                                           </div>
                                           <div class="content2" v-show="gsqxq === '诉求快速增长小区'">
                                               <div>
+                                                  <div  class="bgck12 dataCenter"  style="position: relative;width: 180px;height: 50px;margin: 20px 0;">
+                                                            <div class="dataCenter" style="width:100%;cursor: pointer;height:100%;font-size: 28px;color: #0B1B2A;" @click="ShowXQYJList(gsqxqDetail['小区'], gsqxq)">
+                                                              预警情况
+                                                            </div>
+                                                  </div>
                                                   <div class="field">
                                                       <div class="key">所属街道</div>
                                                       <div class="value">{{gsqxqDetail['街道']}}</div>
@@ -867,6 +882,61 @@
                               </div>
                             </transition>
                 </div>
+                <div id="Module100" v-if="showXQYJList">
+                              <div class="title1">
+                                预警列表
+                                <img src="./newBack/16.png" alt="" @click="CloseXQYJList()">
+                              </div>
+                              <div class="content1">
+                                  <div class="cityEvent">
+                                      <ul class="item" style="width:100%">
+                                          <li v-for="(val, ind) in xqyjList" :key="ind">
+                                          <div  class="eventBox" >
+                                              <div>
+                                                  <div><span></span>推送部门:{{val['推送部门'] || '暂无数据'}}</div>
+                                                  <div @click="ShowXQYJDetail(val)">详情</div>
+                                              </div>
+                                              <div>
+                                                  推送时间:{{val['推送时间']||'暂无数据'}}
+                                              </div>
+                                          </div>
+                                          </li>
+                                      </ul>
+                                  </div>
+                                  <transition name="moveLeft">
+                                      <div id="Module100Pop" v-if="showXQYJDetail">
+                                        <div style="height: 76px; display: flex;justify-content: space-between; align-items: center;background-image: linear-gradient(45deg, hsl(187deg 94% 53% / 10%), rgb(22 223 248 / 2%))">
+                                            <span style="font-size: 30px;margin-left: 24px;display: flex;align-items: center;color: #5AE8FA;font-weight: 600;">详情</span>
+                                            <img style="height: 49px;width: 49px;margin-right: 20px;cursor: pointer;" @click="CloseXQYJDetail()" src="./background/关闭.png" alt="">
+                                        </div>
+                                        <div style="with:100%;overflow: auto;height:calc(100% - 80px);position: relative;">
+                                          <div style="margin: 26px 26px 20px 26px;font-size: 36px;font-weight:bold;color: #C5EEF3;max-height: 700px;overflow: auto;">{{xqyjDetail['事件标题'] || '暂无数据'}}</div>
+                                          <div style="margin: 20px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                            事件内容：{{xqyjDetail['事件内容'] || '暂无数据'}}
+                                          </div>
+                                          <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                            反馈情况：{{xqyjDetail['反馈情况'] || '暂无数据'}}
+                                          </div>
+                                          <div style="margin: 28px;font-size: 24px;color: #C5EEF3;font-weight: bold;">处置时间线</div>
+                                          <div class="block" style="padding: 0 28px;">
+                                              <div class="TimeBox" v-for="(da,index) in xqyjDetail['流转详情']?xqyjDetail['流转详情'].rows:[]" :key="index">
+                                                <div class="line" v-if="index !== xqyjDetail['流转详情'].rows.length-1"></div>
+                                                <div class="radio"></div>
+                                                <div class="time">{{da['修改时间'] || da['处置时间']}}</div>
+                                                <div class="data">
+                                                  <div>节点处置状态：{{da['当前节点名称'] || da['节点处置状态'] || '暂无数据'}}</div>
+                                                  <div v-show="da['处置人']">处置人：{{da['处置人']}}</div>
+                                                  <div v-show="da['处置人单位名']">处置人单位名：{{da['处置人单位名']}}</div>
+                                                  <div v-show="da['处置人电话']">处置人电话：{{da['处置人电话']}}</div>
+                                                  <div v-show="da['处置回复内容']">处置回复内容：{{da['处置回复内容']}}</div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </transition>
+                              </div>
+                </div>
             </div>
         </transition>
         <!-- 模块三、四 -->
@@ -1061,6 +1131,10 @@ export default {
       showQZYJDetail: false,
       qzyjDetail: {}, // 诉求快速增长群众模块中预警情况详情
       qzyjList: [], // 诉求快速增长群众模块中预警情况列表
+      showXQYJList: false,
+      showXQYJDetail: false,
+      xqyjDetail: {}, // 高诉求小区模块中预警情况详情
+      xqyjList: [], // 高诉求小区模块中预警情况列表
       kszzry7List: [], // module2 近7日快速增长人员列表
       kszzry15List: [], // module2 近15日快速增长人员列表
       AllsqxqphList: [], // module2 所有诉求小区排行列表
@@ -1759,7 +1833,7 @@ export default {
         $('#lead-screen').removeClass('disShow')
         this.showQZYJList = true
         if (res.obj.rows) {
-          this.gsqyjList = res.obj.rows
+          this.qzyjList = res.obj.rows
         }
       })
     },
@@ -1790,6 +1864,44 @@ export default {
     CloseQZYJDetail () {
       this.showQZYJDetail = false
       this.qzyjDetail = {}
+    },
+    ShowXQYJList (val, title) {
+      $('#lead-screen').addClass('disShow')
+      this.axios.get('/leaderview/ChengYun4/GetTJDB1_3?questiontitle=' + title + '&desc=' + val).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        this.showXQYJList = true
+        if (res.obj.rows) {
+          this.xqyjList = res.obj.rows
+        }
+      })
+    },
+    CloseXQYJList () {
+      this.showXQYJList = false
+      this.xqyjList = []
+      this.CloseXQYJDetail()
+    },
+    ShowXQYJDetail (val) {
+      this.xqyjDetail['事件标题'] = val['问题标题']
+      this.xqyjDetail['事件内容'] = val['问题描述']
+      this.xqyjDetail['流转详情'] = {columns: [], rows: []}
+      $('#lead-screen').addClass('disShow')
+      this.axios.get('/leaderview/ChengYun4/GetTJDB2_2?param=' + val['工单号']).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        this.showXQYJDetail = true
+        if (res.obj.data) {
+          let rows = []
+          res.obj.data.forEach(element => {
+            this.xqyjDetail['流转详情'].columns = JSON.parse(JSON.stringify(element.items.columns))
+            rows = rows.concat(element.items.rows)
+          })
+          this.xqyjDetail['流转详情'].rows = JSON.parse(JSON.stringify(rows))
+          this.xqyjDetail['反馈情况'] = this.xqyjDetail['流转详情'].rows[0]['处置回复内容']
+        }
+      })
+    },
+    CloseXQYJDetail () {
+      this.showXQYJDetail = false
+      this.xqyjDetail = {}
     },
     clickFunBar (data) {
       this.showTableBox = true
@@ -4786,7 +4898,7 @@ export default {
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-between;
-                                >div:first-child{
+                                >div:last-child{
                                   width: 48%;
                                   height:100%;
                                   overflow-y: scroll;
@@ -4805,11 +4917,11 @@ export default {
                                       }
                                   }
                                 }
-                                >div:last-child{
+                                >div:first-child{
                                   width: 48%;
                                   height:100%;
                                   background: linear-gradient(270deg,rgba(22,223,248,0.04), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.04));
-                                  >div:first-child{
+                                  >div:nth-child(2){
                                       color: rgba(255,184,63,1);
                                       font-size: 40px;
                                       font-weight: bold;
@@ -6020,6 +6132,179 @@ export default {
                 }
             }
         }
+    }
+    #Module100{
+                    width: 700px;
+                    height: 860px;
+                    background: #0B1B2A;
+                    padding: 0;
+                    position: absolute;
+                    bottom: 27px;
+                    left: 5px;
+                    background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);
+                    z-index: 10;
+                    .title1{
+                      color: #5AE8FA;
+                      font-size: 30px;
+                      height: 76px;
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      background-image: linear-gradient(45deg, hsla(187, 94%, 53%, 0.1), hsla(187, 94%, 53%, 0.02),);
+                      padding: 0 20px;
+                      align-items: center;
+                      img{
+                        width:49px;
+                        height:49px;
+                        cursor: pointer;
+                      }
+                    }
+                    .content1{
+                        position: relative;
+                        overflow: hidden;
+                        height: 86%;
+                        .cityEvent{
+                            width: 100%;
+                            height: 100%;
+                            margin: 10px 0;
+                            display: flex;
+                            align-items: center;
+                            flex-direction: column;
+                            overflow: auto;
+                            .item{
+                              width: 100%;
+                            }
+                            .warp{
+                                overflow: hidden;
+                                width: 100%;
+                                height: 100%;
+                                ul{
+                                    list-style: none;
+                                    padding: 0;
+                                    margin: 0 auto;
+                                    li{
+                                    margin-bottom: 28px;
+                                    // background: #122f61;
+                                    height: 180px;
+                                    }
+                                }
+                            }
+                            li{
+                              padding: 14px 24px 14px 16px;
+                              .eventBox{
+                                  width: 100%;
+                                  height: 120px;
+                                  padding: 14px 14px 5px 28px;
+                                  overflow: hidden !important;
+                                  // margin-bottom: 10px;
+                                  background: url('./newBack/14.png') no-repeat;
+                                  background-size: 100% 100%;
+                                  overflow-y: scroll;
+                                  >div:nth-child(1){
+                                      display: flex;
+                                      align-items: center;
+                                      justify-content: space-between;
+                                      >div:nth-child(1) {
+                                          color: #C5EEF3;
+                                          font-size: 26px;
+                                          overflow: hidden;
+                                          width: 85%;
+                                          white-space: nowrap;
+                                          text-overflow: ellipsis;
+                                          span{
+                                              width: 12px;
+                                              height: 12px;
+                                              display: inline-block;
+                                              background: #fcb83c;
+                                              border-radius: 50%;
+                                              margin-right:12px;
+                                          }
+                                      }
+                                      >div:nth-child(2) {
+                                          color:#C5EEF3;
+                                          font-size: 24px;
+                                          width: 80px;
+                                          height: 32px;
+                                          text-align: center;
+                                          line-height: 32px;
+                                          background: rgba(22,223,248,0.10);
+                                          border: 1px solid rgba(22,223,248,0.60);
+                                          border-radius: 17px;
+                                          text-align: center;
+                                          cursor: pointer;
+                                      }
+                                  }
+                                  // >div:nth-child(2){
+                                  //     width: 100%;
+                                  //     height: 75px;
+                                  //     padding-left: 24px;
+                                  //     color: rgba(197,238,243,0.8);
+                                  //     font-size: 24px;
+                                  //     margin-top:8px;
+                                  //     overflow: hidden;
+                                  //     text-overflow: ellipsis;
+                                  //     -webkit-line-clamp: 2;
+                                  // }
+                                  >div:nth-child(2){
+                                      width: 100%;
+                                      height: auto;
+                                      padding-left: 24px;
+                                      color: rgba(197,238,243,0.8);
+                                      font-size: 22px;
+                                      margin-top:12px;
+                                  }
+
+                              }
+                            }
+                        }
+                        #Module100Pop{
+                            width: 100%;
+                            height: 100%;
+                            background: linear-gradient(180deg,#0a2b3a, #0b1b2a);
+                            border: 2px solid;
+                            border-image: linear-gradient(0deg, rgba(13,171,149,0.20), #1ed5c7) 2 2;
+                            border-radius: 4px;
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            .TimeBox{
+                              position: relative;
+                              .line{
+                                position: absolute;
+                                left: 9px;
+                                top: 15px;
+                                height: 100%;
+                                border-left: 2px solid #FCB83C;
+                              }
+                              .radio{
+                                position: absolute;
+                                border: 6px solid #FCB83C;
+                                height: 20px;
+                                width: 20px;
+                                border-radius: 50%;
+                              }
+                              .time{
+                                font-size: 24px;
+                                padding-left: 28px;
+                                color: #C5EEF3;
+                              }
+                              .data{
+                                font-size: 24px;
+                                color: #C5EEF3;
+                                margin: 12px 12px 12px 30px;
+                                padding: 18px;
+                                background-color: transparent;
+                                background-image: linear-gradient(45deg, rgba(22, 223, 248, 0.04), rgba(22, 223, 248, 0.1), rgba(22, 223, 248, 0.04));
+                              }
+                            }
+                            .gridmanBox{
+                              width: calc(100% - 26px);
+                              background: url('./background/矩形背景.png') no-repeat;
+                              background-size: 100% 100%;
+                              margin: 15px 0 20px 26px;
+                            }
+                        }
+                    }
     }
 ::deep .el-timeline-item__timestamp{
   color: #C5EEF3;
