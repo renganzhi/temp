@@ -209,19 +209,19 @@
         <div class="Mydgy" v-if="mydData['不满意数']">
           <div class="Gybox" @click="OpenShomydjBox(mydData['不满意数'].name)">
             <div class="Value">{{mydData['不满意数'].info}}</div>
-            <div class="Name">本日不满意回访数</div>
+            <div class="Name">不满意件</div>
           </div>
           <div class="Gybox"  @click="OpenShomydjBox(mydData['满意数'].name)">
             <div class="Value">{{mydData['满意数'].info}}</div>
-            <div class="Name">本日满意回访数</div>
+            <div class="Name">满意件</div>
           </div>
           <div class="Gybox"  @click="OpenShomydjBox(mydData['未解决数'].name)">
             <div class="Value">{{mydData['未解决数'].info}}</div>
-            <div class="Name">本日未解决回访数</div>
+            <div class="Name">未解决件</div>
           </div>
           <div class="Gybox"  @click="OpenShomydjBox(mydData['解决数'].name)">
             <div class="Value">{{mydData['解决数'].info}}</div>
-            <div class="Name">本日已解决回访数</div>
+            <div class="Name">已解决件</div>
           </div>
               <div id="Module66" :style="{left:leftData[ShowmydType]+'px'}" v-if="ShowmydBox">
                   <div class="title">

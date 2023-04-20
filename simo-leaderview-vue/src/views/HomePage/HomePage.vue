@@ -837,19 +837,25 @@ export default {
     },
     WarningManage (data) {
       this.showWarningManage = true
+      let content = ''
       data.forEach(element => {
-        if (['预警名称', '事件类型'].includes(element.title)) {
+        if (['预警名称', '事件类型', '烟火描述'].includes(element.title)) {
           this.OLDyjczDetail['标题'] = element.value
         } else if (['预警信息', '内容', '处置情况'].includes(element.title)) {
           this.OLDyjczDetail['内容'] = element.value
-        } else if (['设备地址', '出警地址', '地址'].includes(element.title)) {
+        } else if (['设备地址', '出警地址', '地址', '灾害发生详细地点'].includes(element.title)) {
           this.OLDyjczDetail['地址'] = element.value
         } else if (['出警街道'].includes(element.title)) {
           this.OLDyjczDetail['所属街道'] = element.value
-        } else if (['告警时间', '出警时间', '更新时间'].includes(element.title)) {
+        } else if (['告警时间', '出警时间', '更新时间', '报警呼入时间'].includes(element.title)) {
           this.OLDyjczDetail['预警时间'] = element.value
-        } else if (['预警ID'].includes(element.title)) {
+        } else if (['预警ID', '警情ID'].includes(element.title)) {
           this.OLDyjczDetail['id'] = element.value
+        } else if (['灾害详细类型', '报警人', '报警电话', '警情判定'].includes(element.title)) {
+          content = content + element.title + ':' + element.value + '\n'
+        }
+        if (this.boxData.czType === '119警情') {
+          this.OLDyjczDetail['内容'] = content
         }
         if (!this.OLDyjczDetail['标题']) {
           this.OLDyjczDetail['标题'] = this.boxData.czTitle || ''
@@ -862,7 +868,7 @@ export default {
       this.showManageSituation = true
       let id = ''
       data.forEach(element => {
-        if (element.title === '预警ID') {
+        if (element.title === '预警ID' || element.title === '警情ID') {
           id = element.value
         }
       })
@@ -3567,7 +3573,7 @@ html[data-theme='blueWhite'] {
           height: 560px;
           position: absolute;
           top: 0px;
-          left: 170px;
+          left: 360px;
           z-index: 10;
           cursor: auto;
           background-image: linear-gradient(45deg, #0A2B3A, #0B1B2A);

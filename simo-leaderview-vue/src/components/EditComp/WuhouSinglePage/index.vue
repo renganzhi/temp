@@ -4567,13 +4567,14 @@ export default {
         }
         .row2{
             width: 100%;
-            height: 346px;
-            background: url('./background/编组17.png');
+            height: 400px;
+            background: url('./background/编组17.png') no-repeat;
+            background-size: 100% 100%;
             padding: 100px 32px 32px 36px;
             display: flex;
-            margin-top: 30px;
+            margin-top: 20px;
             .tabButton{
-                width: 200px;
+                width: 250px;
                 height: 100%;
                 display: flex;
                 flex-direction: column;
@@ -4581,19 +4582,21 @@ export default {
                 justify-content: space-around;
                 margin-right: 36px;
                 .normal2{
-                    width: 200px;
-                    height: 52px;
+                    width: 100%;
+                    height: 70px;
                     border-radius: 4px;
                     cursor: pointer;
+                    font-weight: bold;
                     color: rgba(22,223,248,1);
-                    font-size: 22px;
+                    font-size: 27px;
                     text-align: center;
-                    line-height: 52px;
-                    margin-bottom: 20px;
-                    background: url('./background/矩形_3.png');
+                    line-height: 70px;
+                    background: url('./background/矩形_3.png') no-repeat;
+                    background-size: 100% 100%;
                 }
                 .active2{
-                    background: url('./background/矩形_2.png') !important;
+                    background: url('./background/矩形_2.png') no-repeat !important;
+                    background-size: 100% 100% !important;
                     color: rgba(255,244,223,1) !important;
                 }
             }
@@ -4603,8 +4606,8 @@ export default {
                 overflow: hidden;
                 position: relative;
                 .lunbo1{
-                        width: 1840px;
-                        height: 214px;
+                        width: 1790px;
+                        height: 280px;
                         overflow-x: scroll;
                         overflow-y: hidden;
                         white-space: nowrap;
@@ -4612,7 +4615,8 @@ export default {
                             display:inline-flex;
                             width: 280px;
                             height: 100%;
-                            background: url('./background/编组_13.png');
+                            background: url('./background/编组_13.png') no-repeat;
+                            background-size: 100% 100%;
                             margin-right: 28px;
                             text-align: center;
                             flex-wrap: wrap;
@@ -4640,30 +4644,34 @@ export default {
                             >div:nth-child(3) {
                                 width: 100%;
                                 height: auto;
-                                font-size: 24px;
+                                font-size: 26px;
                                 font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
                                 font-weight: 500;
                                 text-align: center;
                                 color: #C5EEF3;
-                                margin-top:53px;
-                                margin-bottom: 30px;
+                                position: absolute;
+                                left:0px;
+                                top: 52px;
+                                white-space: pre-wrap;
                             }
                             >div:nth-child(4) {
-                                width: 280px;
                                 height: 100px;
                                 display: flex;
                                 justify-content: space-around;
                                 width: 100%;
+                                position: absolute;
+                                left:0px;
+                                bottom: 6px;
                                 >div:first-child{
                                         >div:first-child{
-                                            font-size: 24px;
+                                            font-size: 26px;
                                             font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                                             font-weight: 700;
                                             color: #ff644d;
                                             margin-bottom: 7px;
                                         }
                                         >div:last-child{
-                                            font-size: 22px;
+                                            font-size: 24px;
                                             font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
                                             font-weight: 400;
                                             color: #c5eef3;
@@ -4671,14 +4679,14 @@ export default {
                                 }
                                 >div:last-child{
                                         >div:first-child{
-                                            font-size: 24px;
+                                            font-size: 26px;
                                             font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
                                             font-weight: 700;
                                             color: #5AE8FA;
                                             margin-bottom: 7px;
                                         }
                                         >div:last-child{
-                                            font-size: 22px;
+                                            font-size: 24px;
                                             font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
                                             font-weight: 400;
                                             color: #c5eef3;
@@ -4688,8 +4696,8 @@ export default {
                         }
                 }
                 .lunbo2,.lunbo3{
-                        width: 2487px;
-                        height: 214px;
+                        width: 1790px;
+                        height: 280px;
                         overflow-x: scroll;
                         overflow-y: hidden;
                         white-space: nowrap;
@@ -4697,7 +4705,8 @@ export default {
                             display:inline-flex;
                             width: 280px;
                             height: 100%;
-                            background: url('./background/编组_13.png');
+                            background: url('./background/编组_13.png') no-repeat;
+                            background-size: 100% 100%;
                             margin-right: 28px;
                             text-align: center;
                             position: relative;
@@ -4720,25 +4729,30 @@ export default {
                                 position: absolute;
                                 top: 12px;
                                 right: 16px;
+                                cursor: pointer;
                             }
                             >div:nth-child(3) {
                                 width: 100%;
-                                font-size: 24px;
+                                font-size: 26px;
                                 font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Medium;
                                 font-weight: 500;
                                 text-align: center;
                                 color: #C5EEF3;
-                                margin-top:53px;
-                                margin-bottom: 30px;
+                                position: absolute;
+                                left:0px;
+                                top: 52px;
+                                white-space: pre-wrap;
                             }
                             >div:nth-child(4) {
-                                width: 280px;
                                 height: 100px;
-                                background: linear-gradient(270deg,rgba(22,223,248,0.00), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.00));
+                                // background: linear-gradient(270deg,rgba(22,223,248,0.00), rgba(22,223,248,0.10) 50%, rgba(22,223,248,0.00));
                                 border: 2px solid rgba(90,232,250,0.04);
                                 width: 100%;
+                                position: absolute;
+                                left:0px;
+                                bottom: 6px;
                                 >div:first-child{
-                                    font-size: 24px;
+                                    font-size: 26px;
                                     width: 100%;
                                     text-align: center;
                                     font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
@@ -4747,7 +4761,7 @@ export default {
                                     margin-bottom: 7px;
                                 }
                                 >div:last-child{
-                                    font-size: 18px;
+                                    font-size: 24px;
                                     width: 100%;
                                     text-align: center;
                                     font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 2.0-Regular;
@@ -4761,11 +4775,12 @@ export default {
         }
         .row3{
             width: 100%;
-            height: 346px;
+            height: 326px;
             display: flex;
-            margin-top: 30px;
+            margin-top: 20px;
             align-items: center;
-            background: url('./background/矩形备份11.png');
+            background: url('./background/矩形备份11.png') no-repeat;
+            background-size: 100% 100%;
             >div:first-child{
                 font-size: 44px;
                 font-family: TeX Gyre Adventor, TeX Gyre Adventor-Bold;
@@ -4773,8 +4788,9 @@ export default {
                 // text-align: center;
                 color: #c5eef3;
                 width: 300px;
-                height: 346px;
-                background: url('./background/编组_18.png');
+                height: 326px;
+                background: url('./background/编组_18.png') no-repeat;
+                background-size: 100% 100%;
                 margin-right: 28px;
                 display: flex;
                 flex-wrap: wrap;
