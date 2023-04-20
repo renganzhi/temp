@@ -1026,6 +1026,7 @@ export default {
       formData2.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
       formData2.append('identifier', 1)
       formData1.append('state', '处置中')
+      formData2.append('id', Date.now() * 1000 + 1)
 
       this.axios.post('/leaderview/newDistrict/getYJCZ1', formData1).then(res => {
         if (res.success) {
