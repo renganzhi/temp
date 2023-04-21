@@ -19,7 +19,7 @@
                         <img style="margin-left:20px;" :src="getImg1(item1.flag)" alt="">
                     </div>
                     <div class="communityList">
-                        <div class="communityBox" v-show="stateSwitch === -1?true:stateSwitch === item2.flag" v-for="(item2, index2) in item1.communityList" :key="index2" @click="ShowDetail(item1.flowNo)">
+                        <div class="communityBox" v-show="stateSwitch === -1?true:stateSwitch === item2.flag" v-for="(item2, index2) in item1.communityList" :key="index2" @click="ShowDetail(item2.flowNo)">
                             {{item2.name}}
                             <img :src="getImg2(item2.flag)" alt="">
                         </div>
