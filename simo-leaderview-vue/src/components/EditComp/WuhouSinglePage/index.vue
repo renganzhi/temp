@@ -1099,6 +1099,7 @@ import vueSeamlessScroll from 'vue-seamless-scroll'
 export default {
   data: function () {
     return {
+      newClock: '',
       showRYXX: false,
       showTableBox: false,
       showsqTableBox: false,
@@ -1925,7 +1926,7 @@ export default {
       console.log('tsdata', data, this.gsqxqDetail)
       let type = data['小区'] || data['名称']
       $('#lead-screen').addClass('disShow')
-      this.axios.get('/leaderview/newDistrict/GetMSSQ19?community=' + this.gsqxqDetail['小区'] + '&typeName=' + type).then(res => {
+      this.axios.get('/leaderview/newDistrict/GetMSSQ19?peroid=year&community=' + this.gsqxqDetail['小区'] + '&typeName=' + type).then(res => {
         $('#lead-screen').removeClass('disShow')
         if (res.success && res.obj) {
           this.grtgsqxqData = res.obj.rows
@@ -2338,14 +2339,14 @@ export default {
       // this.sqxqphDetail['小区排名'] = index + 1
       $('#lead-screen').addClass('disShow')
       if (this.appealType === '全部') {
-        this.axios.get('/leaderview/newDistrict/GetMSSQ19').then(res => {
+        this.axios.get('/leaderview/newDistrict/GetMSSQ19?peroid=day').then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
             this.showSqTable(res.obj.rows)
           }
         })
       } else {
-        this.axios.get('/leaderview/newDistrict/GetMSSQ19?typeName=' + this.appealType).then(res => {
+        this.axios.get('/leaderview/newDistrict/GetMSSQ19?peroid=day&typeName=' + this.appealType).then(res => {
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj) {
             this.showSqTable(res.obj.rows)
@@ -2762,6 +2763,27 @@ export default {
   mounted () {
     this.getHomePageData()
     this.openisopenShow()
+    this.newClock = window.setInterval(() => {
+      this.axios.get('/leaderview/newDistrict/GetMSSQ20?param=' + this.IsreadBox).then(res => {
+        $('#lead-screen').removeClass('disShow')
+        if (res.success && res.obj['群众诉求']) {
+          this.incomingflownoList = []
+          this.qztsList = []
+          this.qztsList = res.obj['群众诉求'].rows
+          this.incomingflownoList = res.obj['预警列表']
+          // document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+        }
+      }, error => {
+        console.log(error)
+        $('#lead-screen').removeClass('disShow')
+      }).catch(err => {
+        console.log(err)
+        $('#lead-screen').removeClass('disShow')
+      })
+    }, 60000)
+  },
+  beforeDestroy () {
+    window.clearInterval(this.newClock)
   }
 }
 </script>

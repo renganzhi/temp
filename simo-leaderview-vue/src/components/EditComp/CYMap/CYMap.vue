@@ -387,7 +387,7 @@ export default {
         }
       }]
       var maskLayer = new window.mapvgl.MaskLayer({
-        color: 'rgba(19, 14, 7, 0.95)'
+        color: 'rgba(19, 14, 7, 0.6)'
       })
       this.mapView.addLayer(maskLayer)
       maskLayer.setData(polygon)

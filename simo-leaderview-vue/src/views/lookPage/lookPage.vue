@@ -153,7 +153,7 @@
                     <div v-show="!['预警处置', '提级督办'].includes(vboxData.title)" class="submit">
                       <div style="display: flex;">
                         <div class="confirm" @click="OpenShowTjdbDetails2">提级督办</div>
-                        <div class="confirm" style="margin-left:20px;" @click="jumpTOjd(vboxData.data)">应急指挥</div>
+                        <div class="confirm" style="margin-left:20px;" @click="jumpTOjd(vboxData.data)">融合指挥</div>
                       </div>
                       <div class="tjdbBox" v-show="showTjdbDetails2">
                           <div class="titleName">
