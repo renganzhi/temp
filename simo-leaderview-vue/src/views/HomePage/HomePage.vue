@@ -1027,6 +1027,7 @@ export default {
       formData2.append('identifier', 1)
       formData1.append('state', '处置中')
       formData2.append('id', Date.now() * 1000 + 1)
+      formData2.append('remark', this.yjczDetail['领导批示'])
 
       this.axios.post('/leaderview/newDistrict/getYJCZ1', formData1).then(res => {
         if (res.success) {
@@ -1769,6 +1770,15 @@ export default {
           if (res.success) {
             // dataArray.chartData = JSON.parse(JSON.stringify(res.obj))
             this.venationChartData = JSON.parse(JSON.stringify(res.obj))
+            if (dataArray.url.indexOf('GetTJDB2_2') >= 0) {
+              this.venationChartData.data.forEach(element => {
+                element.items.columns.forEach((el, ind) => {
+                  if (el === '节点编号') {
+                    element.items.columns.splice(ind, 1)
+                  }
+                })
+              })
+            }
           }
         })
       }
