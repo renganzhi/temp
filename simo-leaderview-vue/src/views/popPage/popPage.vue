@@ -190,7 +190,7 @@
                   <div class="BoxTitle">{{boxData.title}}</div>
                   <div class="BoxBody" v-if="showModelBoxtype === 0 && boxData.data.length >0">
                     <div class="TwoButtons" v-show="boxData.czType">
-                      <div @click="WarningManage(boxData.data)">预警处置</div>
+                      <div v-show="boxData.czType !== '水质检测'" @click="WarningManage(boxData.data)">预警处置</div>
                       <div @click="ManageSituation(boxData.data)">处置情况</div>
                     </div>
                     <div class="lineBox" v-for="(data,index) in boxData.data" :key="index">

@@ -950,8 +950,8 @@
                           <div :class="IsreadBox==='处置中'?'checked':'nochecked'" @click="changeIsreadBox('处置中')">未办事件</div>
                           <div :class="IsreadBox==='处置中'?'nochecked':'checked'"  @click="changeIsreadBox('已结案')">已办事件</div>
                         </div>
-                        <div class="cityEvent" ref="cityEvent">
-                            <ul class="item" ref="item">
+                        <div class="cityEvent" ref="outBox">
+                            <ul class="item"  ref="innerBox" @mouseenter="mouseenterEvent()" @mouseleave="mouseleaveEvent()">
                                 <li v-for="(val, ind) in qztsList" :key="ind">
                                 <div  class="eventBox" >
                                     <div>
@@ -1036,9 +1036,9 @@
                 <div id="Module6">
                     <div class="title"><img src="./newBack/1.png" alt=""></div>
                     <div class="content">
-                        <div class="cityEvent" ref="cityEvent"
+                        <div class="cityEvent" ref="outBox2"
                            >
-                            <ul class="item" ref="item">
+                            <ul class="item" ref="innerBox2" @mouseenter="mouseenterEvent2()" @mouseleave="mouseleaveEvent2()">
                                 <li v-for="(val, ind) in tjdbList" :key="ind">
                                 <div  class="eventBox" >
                                     <div>
@@ -1099,6 +1099,8 @@ import vueSeamlessScroll from 'vue-seamless-scroll'
 export default {
   data: function () {
     return {
+      timer: null, // 时间器
+      timer2: null,
       newClock: '',
       showRYXX: false,
       showTableBox: false,
@@ -1788,6 +1790,76 @@ export default {
     }
   },
   methods: {
+    initTimerInterval () {
+      this.clearEvent()
+      this.timer = setInterval(() => {
+        window.requestAnimationFrame(this.scroll)
+      }, 20)
+    },
+    scroll: function () {
+      const that = this
+      const DOM = this.$refs.outBox
+      if (DOM) {
+        // 如果滚动到头则重新滚动
+        if (DOM.scrollHeight - DOM.scrollTop - 1 <= DOM.clientHeight) {
+          DOM.scrollTop = 0
+          setTimeout(() => {
+            window.requestAnimationFrame(that.scroll)
+          }, 20)
+          return
+        }
+        DOM.scrollTop++
+      }
+    },
+    clearEvent () {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+    },
+    // 鼠标移入关闭定时器
+    mouseenterEvent () {
+      this.clearEvent()
+    },
+    // 鼠标移出重新调用定时器
+    mouseleaveEvent () {
+      this.initTimerInterval()
+    },
+    initTimerInterval2 () {
+      this.clearEvent2()
+      this.timer2 = setInterval(() => {
+        window.requestAnimationFrame(this.scroll2)
+      }, 20)
+    },
+    scroll2: function () {
+      const that = this
+      const DOM = this.$refs.outBox2
+      if (DOM) {
+        // 如果滚动到头则重新滚动
+        if (DOM.scrollHeight - DOM.scrollTop - 1 <= DOM.clientHeight) {
+          DOM.scrollTop = 0
+          setTimeout(() => {
+            window.requestAnimationFrame(that.scroll2)
+          }, 20)
+          return
+        }
+        DOM.scrollTop++
+      }
+    },
+    clearEvent2 () {
+      if (this.timer2) {
+        clearInterval(this.timer2)
+        this.timer2 = null
+      }
+    },
+    // 鼠标移入关闭定时器
+    mouseenterEvent2 () {
+      this.clearEvent2()
+    },
+    // 鼠标移出重新调用定时器
+    mouseleaveEvent2 () {
+      this.initTimerInterval2()
+    },
     // 高诉求人员
     ShowGSQYJList (val) {
       $('#lead-screen').addClass('disShow')
@@ -2664,6 +2736,10 @@ export default {
           this.tjdbList = res.obj.rows
           // document.querySelector('#Module6 .cityEvent .item').style.animationDuration = this.tjdbList.length * 3 + 's'
         }
+        if (this.$refs.outBox2) {
+          this.$refs.outBox2.scrollTop = 0
+          this.initTimerInterval2()
+        }
       }, error => {
         console.log(error)
         $('#lead-screen').removeClass('disShow')
@@ -2683,6 +2759,10 @@ export default {
           this.qztsList = res.obj['群众诉求'].rows
           this.incomingflownoList = res.obj['预警列表']
           // document.querySelector('#Module5 .cityEvent .item').style.animationDuration = this.qztsList.length * 3 + 's'
+        }
+        if (this.$refs.outBox) {
+          this.$refs.outBox.scrollTop = 0
+          this.initTimerInterval()
         }
       }, error => {
         console.log(error)
@@ -5765,11 +5845,15 @@ export default {
                 width: 100%;
                 height: 1210px;
                 display: flex;
-                overflow: scroll;
                 align-items: center;
                 flex-direction: column;
+                overflow: hidden;
+                &:hover {
+                  overflow-y: scroll;
+                }
                 .item{
-                  width: 100%;
+                  width: calc(100% - 3px);
+                  overflow: visible;
                   // animation:anima 20s linear infinite;
                 }
                 // .item:hover{

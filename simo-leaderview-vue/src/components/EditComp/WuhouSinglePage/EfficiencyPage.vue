@@ -282,7 +282,7 @@
                               <div v-show="ShowmydType !== 'pleased'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 回复内容：{{mydValue['回复内容'] || '暂无回复'}}
                               </div>
-                              <div v-show="ShowmydType === 'pleased' || ShowmydType === 'unsolved'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                              <div v-show="ShowmydType === 'unpleased' || ShowmydType === 'pleased' || ShowmydType === 'unsolved'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 部门回复：{{mydValue['部门回复'] || '暂无回复'}}
                               </div>
                               <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>

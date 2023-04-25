@@ -21,12 +21,14 @@
             </li>
           </ul>
         </vue-seamless-scroll> -->
-        <div class="boxList">
-          <div class="li" @click="showDetails(val)" :style="liStyle2" v-for="(val, ind) in eventData.rows" :key="ind">
-            <div class="eventBox">
-              <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title || val['问题标题']}}</div>
-              <div class="date"  :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date || val['发起时间'] || val['上报时间']}}</div>
-              <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content || val['发生地址'] || val['问题描述']}}</div>
+        <div class="outBox" ref="outBox">
+          <div class="boxList" ref="innerBox" @mouseenter="mouseenterEvent()" @mouseleave="mouseleaveEvent()">
+            <div class="li" @click="showDetails(val)" :style="liStyle2" v-for="(val, ind) in eventData.rows" :key="ind">
+              <div class="eventBox">
+                <div class="title" :style="{backgroundImage: 'linear-gradient(' + item.titleColor[0] + ',' + item.titleColor[1] + ')',fontSize:item.titleSize + 'px'}">标题：{{val.title || val['问题标题']}}</div>
+                <div class="date"  :style="{color:item.dateColor,fontSize:item.dateSize + 'px'}">时间：{{val.date || val['发起时间'] || val['上报时间']}}</div>
+                <div class="content" :style="{color:item.contentColor,fontSize:item.contentSize + 'px'}">内容：{{val.content || val['发生地址'] || val['问题描述']}}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -44,6 +46,7 @@ export default {
     return {
       pageIndex: 0,
       pageSize: 3,
+      timer: null, // 时间器
       currentIndex: 0,
       eventData: {
         rows: [],
@@ -129,6 +132,15 @@ export default {
       if (newV !== oldV) {
         this.eventData = this.item.chartData.dataArray[this.currentIndex]
       }
+    },
+    'eventData': {
+      handler: function () {
+        if (this.$refs.outBox) {
+          this.$refs.outBox.scrollTop = 0
+          this.initTimerInterval()
+        }
+      },
+      deep: true
     }
   },
   methods: {
@@ -160,12 +172,53 @@ export default {
     },
     changeData (index) {
       this.currentIndex = index
+    },
+    initTimerInterval () {
+      if (this.$route.name === 'HomePage' || this.$route.name === 'lookPage' || this.$route.name === 'popPage') {
+        this.clearEvent()
+        this.timer = setInterval(() => {
+          window.requestAnimationFrame(this.scroll)
+        }, this.item.dvtime || 20)
+      }
+    },
+    scroll: function () {
+      const that = this
+      const DOM = this.$refs.outBox
+      // 如果滚动到头则重新滚动
+      if (DOM) {
+        if (DOM.scrollHeight - DOM.scrollTop - 1 <= DOM.clientHeight) {
+          DOM.scrollTop = 0
+          setTimeout(() => {
+            window.requestAnimationFrame(that.scroll)
+          }, that.item.dvtime || 20)
+          return
+        }
+        DOM.scrollTop++
+      }
+    },
+    clearEvent () {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+    },
+    // 鼠标移入关闭定时器
+    mouseenterEvent () {
+      this.clearEvent()
+    },
+    // 鼠标移出重新调用定时器
+    mouseleaveEvent () {
+      this.initTimerInterval()
     }
   },
   mounted () {
     if (this.item.chartData.dataArray && this.item.chartData.dataArray.length) {
       this.eventData = this.item.chartData.dataArray[this.currentIndex]
+      this.initTimerInterval()
     }
+  },
+  beforeDestroy () {
+    this.clearEvent()
   }
 }
 </script>
@@ -203,10 +256,19 @@ export default {
         margin-right: 0px !important;
       }
     }
-    .boxList{
+    .outBox{
       width: 100%;
       height: 100%;
-      overflow: scroll;
+      overflow: hidden;
+      &:hover {
+        overflow-y: scroll;
+      }
+    }
+    .boxList{
+      width: calc(100% - 2px);
+      height: 100%;
+      overflow: visible;
+      // transition:all 0.5s linear;
       .li{
         margin-bottom: 10px;
         background: #122f61;

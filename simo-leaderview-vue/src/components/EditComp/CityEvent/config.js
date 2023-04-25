@@ -18,6 +18,7 @@ export default{
     paddingLeft: 0,
     boxFontSize: 16,
     buttonPadding: 20,
+    dvtime: 20,
     buttonMargin: 20,
     boxDirection: false,
     normalButton: '',
@@ -114,7 +115,7 @@ export default{
           // },
           {
             'name': '轮播速度',
-            'key': 'loopSpeed',
+            'key': 'dvtime',
             'tag': 'input'
           }
         ]

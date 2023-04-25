@@ -385,7 +385,7 @@ export default {
     }
   }
   .Table{
-    width: 100%;
+    width: calc(100% - 53px);
     height: 220px;
     position: absolute;
     top: 0;
