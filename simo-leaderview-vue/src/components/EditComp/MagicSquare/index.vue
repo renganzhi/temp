@@ -392,6 +392,7 @@ export default {
       this.showRightPart = false
       this.showBoxDetail = false
       this.checkData = {}
+      this.CloseManageSituation()
     },
     OpenShowTjdbDetails2 (ind) {
       this.showTjdbDetails2 = true
@@ -537,7 +538,7 @@ export default {
     ShowManageSituation (data) {
       this.showManageBox = true
       this.ifLoad = true
-      this.axios.get('/leaderview/newDistrict/getYJCZ4?param=' + data['预警ID'] || '').then(res => {
+      this.axios.get('/leaderview/ChengYun4/GetYJMF4?param=' + data['预警ID'] || '').then(res => {
         this.ifLoad = false
         if (res.obj) {
           this.venationChartData = JSON.parse(JSON.stringify(res.obj))

@@ -85,6 +85,14 @@ export default {
               {
                 'name': '5000ms',
                 'value': 5000
+              },
+              {
+                'name': '6000ms',
+                'value': 6000
+              },
+              {
+                'name': '7000ms',
+                'value': 7000
               }
             ]
           },

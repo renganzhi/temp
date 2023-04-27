@@ -474,19 +474,19 @@
               </div> -->
           </div>
           <div class="SpecialGroupVisits">
-            <div class="groupBox" @click="ShowTSRQZFBox('今日走访数')">
+            <div class="groupBox" @click="allTSRQZFList[0]['数量']?ShowTSRQZFBox('今日走访数'):null">
               <div class="num">{{allTSRQZFList.length?allTSRQZFList[0]['数量']:'暂无数据'}}</div>
               <div class="desc">今日走访数</div>
             </div>
-            <div class="groupBox" @click="ShowTSRQZFBox('本月走访数')">
+            <div class="groupBox" @click="allTSRQZFList[1]['数量']?ShowTSRQZFBox('本月走访数'):null">
               <div class="num">{{allTSRQZFList.length?allTSRQZFList[1]['数量']:'暂无数据'}}</div>
               <div class="desc">本月走访数</div>
             </div>
-            <div class="groupBox" @click="ShowTSRQZFBox('逾期未走访数')">
+            <div class="groupBox" @click="allTSRQZFList[2]['数量']?ShowTSRQZFBox('逾期未走访数'):null">
               <div class="num">{{allTSRQZFList.length?allTSRQZFList[2]['数量']:'暂无数据'}}</div>
               <div class="desc">逾期未走访</div>
             </div>
-            <div class="groupBox" @click="ShowTSRQZFBox('累计走访数')">
+            <div class="groupBox" @click="allTSRQZFList[3]['数量']?ShowTSRQZFBox('累计走访数'):null">
               <div class="num">{{allTSRQZFList.length?allTSRQZFList[3]['数量']:'暂无数据'}}</div>
               <div class="desc">累计走访人次</div>
             </div>

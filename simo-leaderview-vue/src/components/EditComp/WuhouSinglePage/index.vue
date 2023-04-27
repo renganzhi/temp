@@ -2044,17 +2044,19 @@ export default {
       this.isopenShow = true
     },
     ShowEventDetails (val) {
+      this.clearEvent()
+      this.xqValue = JSON.parse(JSON.stringify(val))
       if (val['工单号']) {
         $('#lead-screen').addClass('disShow')
         // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/newDistrict/GetMSSQ21?param=' + val['工单号'] + '&param2=' + val['源平台工单号'] + '&param3=' + val['来源']).then(res => {
           $('#lead-screen').removeClass('disShow')
+          this.showEventDetails = true
           if (res.success && res.obj) {
             val.timeLine = res.obj['处置信息'].data[0].items.rows
             val.fkValue = res.obj['反馈信息']
             val.mydValue = res.obj['满意度']
             this.xqValue = val
-            this.showEventDetails = true
           }
         }, error => {
           console.log(error)
@@ -2369,6 +2371,7 @@ export default {
     CloseEventDetails () {
       this.showEventDetails = false
       this.showTjdbDetails = false
+      this.xqValue = {}
       // document.querySelector('#Module5 .cityEvent .item').style.animationPlayState = 'running'
     },
     onMouseWheel (e, refName) {
