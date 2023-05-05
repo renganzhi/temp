@@ -282,13 +282,13 @@ export default {
     //   }
     // },
     showDetails (data) {
-      if (this.$parent.$parent.ShowTanKuangBox && !this.item.chartData.url) {
-        let dataArray = {
-          title: '数据详情',
-          data: data
-        }
-        this.$parent.$parent.ShowTanKuangBox(dataArray)
-      }
+      // if (this.$parent.$parent.ShowTanKuangBox && !this.item.chartData.url) {
+      //   let dataArray = {
+      //     title: '数据详情',
+      //     data: data
+      //   }
+      //   this.$parent.$parent.ShowTanKuangBox(dataArray)
+      // }
     },
     getNewChartData () {
       var _this = this

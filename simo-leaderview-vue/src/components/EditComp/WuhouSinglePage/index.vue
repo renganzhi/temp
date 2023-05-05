@@ -263,7 +263,7 @@
                                                   </div>
                                                   <div>
                                                     <div>
-                                                        <div :title="data['个人投诉类别最多类']['rows'][0]['类别']">{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div :title="data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:''">{{data['个人投诉类别最多类']?data['个人投诉类别最多类']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>TOP1</div>
                                                     </div>
                                                     <div>
@@ -305,7 +305,7 @@
                                                   </div>
                                                   <div>
                                                     <div>
-                                                        <div :title="data['个人投诉类别top3']['rows'][0]['类别']">{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
+                                                        <div :title="data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:''">{{data['个人投诉类别top3']?data['个人投诉类别top3']['rows'][0]['类别']:'暂无数据'}}</div>
                                                         <div>TOP1</div>
                                                     </div>
                                                     <div>
