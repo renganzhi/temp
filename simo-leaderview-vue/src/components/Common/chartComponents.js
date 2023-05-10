@@ -85,6 +85,7 @@ import LLZYPotButton from '@/components/EditComp/LLZYPotButton'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton'
 import ToggleButton from '@/components/EditComp/ToggleButton'
 import IframePop from '@/components/EditComp/IframePop'
+import CYMap from '@/components/EditComp/CYMap'
 import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
@@ -193,6 +194,7 @@ export default {
   SwitchMapButton,
   ToggleButton,
   IframePop,
+  CYMap,
   OrderMenu,
   SmallOrderMenu,
   CityEvent,

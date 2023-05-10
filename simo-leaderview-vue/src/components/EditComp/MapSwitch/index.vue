@@ -6,7 +6,7 @@
     </div>
 </template>
 <script>
-import CYMap from '../CYMap/CYMap.vue'
+import CYMap from '../CYMap/index.vue'
 export default {
   components: {CYMap},
   props: ['nowPageName'],

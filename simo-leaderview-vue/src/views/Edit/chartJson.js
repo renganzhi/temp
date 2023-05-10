@@ -29,6 +29,7 @@ import LLZYPotButton from '@/components/EditComp/LLZYPotButton/config.js'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton/config.js'
 import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
+import CYMap from '@/components/EditComp/CYMap/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
@@ -728,6 +729,7 @@ LLZYPotButton.item,
 SwitchMapButton.item,
 ToggleButton.item,
 IframePop.item,
+CYMap.item,
 OrderMenu.item,
 SmallOrderMenu.item,
 CityEvent.item,

@@ -28,6 +28,7 @@ module.exports = {
       },
       '/socket': {
         target: 'http://10.29.118.17:9999/',
+        // target: 'http://192.168.1.188:9999/',
         ws: true,
         pathRewrite: {
           '^/socket': '/socket'

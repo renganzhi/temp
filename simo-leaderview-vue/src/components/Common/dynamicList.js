@@ -75,6 +75,7 @@ export default [
   'SwitchMapButton',
   'ToggleButton',
   'IframePop',
+  'CYMap',
   'OrderMenu',
   'SmallOrderMenu',
   'CityEvent',

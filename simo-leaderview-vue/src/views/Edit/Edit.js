@@ -51,6 +51,7 @@ let config = {
   NewCYZBTX: require('@/components/EditComp/NewCYZBTX/config.js'),
   BigNewCYZBTX: require('@/components/EditComp/BigNewCYZBTX/config.js'),
   IframePop: require('@/components/EditComp/IframePop/config.js'),
+  CYMap: require('@/components/EditComp/CYMap/config.js'),
   OrderMenu: require('@/components/EditComp/OrderMenu/config.js'),
   SmallOrderMenu: require('@/components/EditComp/SmallOrderMenu/config.js'),
   CityEvent: require('@/components/EditComp/CityEvent/config.js'),
