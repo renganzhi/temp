@@ -1073,8 +1073,9 @@
                                       <div class="radio"></div>
                                       <div class="time">{{da['处置时间']}}</div>
                                       <div class="data">
-                                        <div>流转状态：{{ztysTable[da['节点处置状态名称']]}}</div>
-                                        <div>流转内容：{{da['处置回复内容']}}</div>
+                                        <div v-for="(value, key) in da" :key="key">
+                                          {{ key }}:{{ value }}
+                                        </div>
                                       </div>
                                     </div>
                                 </div>
@@ -2073,8 +2074,14 @@ export default {
         // document.querySelector('#Module6 .cityEvent .item').style.animationPlayState = 'paused'
         this.axios.get('/leaderview/ChengYun4/GetTJDB2?param=' + val['工单号']).then(res => {
           $('#lead-screen').removeClass('disShow')
+          let timeLine = []
           if (res.success && res.obj) {
-            val.timeLine = res.obj.rows
+            res.obj.data.forEach(element => {
+              element.items.rows.forEach(el => {
+                timeLine.push(el)
+              })
+            })
+            val.timeLine = timeLine
             this.mzsqxqValue = val
             this.showotherDetails = true
           }
