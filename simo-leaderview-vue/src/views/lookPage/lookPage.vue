@@ -56,7 +56,7 @@
                 <beijing :nowPageName="pageName"></beijing>
               </div> -->
               <div v-if="pageName&&pageName.indexOf('城运') >= 0&&pageName.indexOf('弹窗') < 0" class="back" style="width:100%;height:100%;position: absolute;">
-                <CYMap :nowPageName="pageName"></CYMap>
+                <SMMap :nowPageName="pageName"></SMMap>
                 <!-- <MapSwitch :nowPageName="pageName"></MapSwitch> -->
                 <!-- <iframe  id="BaiDuIframe" style="height:100%;width:100%;position: absolute;z-index:0"
      src="http://172.16.149.41:8181/appli/start?appliId=987084259741138944&amp;codeRate=8000&amp;frameRate=60" frameborder="0"></iframe> -->
@@ -568,6 +568,7 @@ import LookItem from '@/components/Common/LookItem'
 import LookCompose from '@/components/Common/LookCompose'
 import beijing from '@/components/EditComp/beijing'
 import CYMap from '@/components/EditComp/CYMap/index.vue'
+import SMMap from '@/components/EditComp/SMMap/index.vue'
 import MapSwitch from '@/components/EditComp/MapSwitch/index.vue'
 import EconomicMap from '@/components/EditComp/EconomicMap/index.vue'
 import ImportPage from './../EditPage/ImportPage'
@@ -590,6 +591,7 @@ export default {
     AddPage,
     ImportPage,
     CYMap,
+    SMMap,
     MapSwitch,
     EconomicMap,
     beijing
@@ -944,20 +946,21 @@ export default {
                 treeData.push({
                   title: element['名称'],
                   id: element['组织ID'],
-                  dept: item.title,
-                  type: 'members',
-                  disabled: true,
+                  topOrgName: item.title,
+                  // type: 'members',
+                  type: newtype,
+                  disabled: false,
                   loading: false,
-                  disableCheckbox: true,
-                  children: []
+                  disableCheckbox: false,
+                  // children: []
                 })
               })
             } else {
               res.obj.rows.forEach(element => {
                 treeData.push({
                   title: element['名称'],
-                  dept: item.dept,
-                  deptkeshi: item.title,
+                  topOrgName: item.topOrgName,
+                  subOrgName: item.title,
                   nickphone: element['电话'],
                   id: element['组织ID'],
                   type: newtype
@@ -1022,8 +1025,8 @@ export default {
       formData2.append('optdate', this.DateToString(new Date()))
       formData2.append('nickname', this.CkeckedBmData1.title)
       formData2.append('nickphone', this.CkeckedBmData1.nickphone)
-      formData2.append('dept', this.CkeckedBmData1.dept)
-      formData2.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
+      formData2.append('topOrgName', this.CkeckedBmData1.topOrgName)
+      formData2.append('subOrgName', this.CkeckedBmData1.title)
       formData2.append('identifier', 1)
       formData1.append('state', '处置中')
       formData2.append('id', Date.now() * 1000 + 1)
@@ -1105,15 +1108,20 @@ export default {
       formData.append('forwardEvent', true)
       formData.append('forwardDate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
 
+      formData.append('topOrgName', this.CkeckedBmData2.topOrgName)
+      formData.append('subOrgName', this.CkeckedBmData2.title)
+      formData.append('orgName', this.CkeckedBmData2.id)
+
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
-      formData2.append('dept', this.CkeckedBmData2.dept)
+      formData2.append('topOrgName', this.CkeckedBmData2.topOrgName)
       formData2.append('flowNo', flowNo)
       formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData2.append('nickname', this.CkeckedBmData2.title)
       formData2.append('nickphone', this.CkeckedBmData2.nickphone)
       formData2.append('opttag', 'cFinish')
-      formData2.append('dept_keshi', this.CkeckedBmData2.deptkeshi)
+      formData2.append('subOrgName', this.CkeckedBmData2.title)
+      formData2.append('orgId', this.CkeckedBmData2.id)
       formData2.append('opttag_2', 0)
       formData2.append('identifier', 1)
       formData2.append('chuzhiresult', '')

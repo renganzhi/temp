@@ -14,6 +14,7 @@
     "build:report": "npm_config_report=true node build_vue_script/build.js"
   },
   "dependencies": {
+    "@supermap/iclient-leaflet": "^11.1.0-beta",
     "@turf/turf": "^6.5.0",
     "@tweenjs/tween.js": "^18.6.4",
     "animate.css": "^4.1.1",
@@ -30,6 +31,8 @@
     "echarts-liquidfill": "^2.0.5",
     "element-ui": "^2.14.1",
     "jsencrypt": "3.0.0-rc.1",
+    "leaflet": "^1.9.3",
+    "leaflet-draw": "^1.0.4",
     "lodash": "^4.17.15",
     "mockjs": "^1.1.0",
     "moment": "^2.24.0",

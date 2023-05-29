@@ -26,10 +26,12 @@ import ShrinkBox from '@/components/EditComp/ShrinkBox/config.js'
 import ExternalJump from '@/components/EditComp/ExternalJump/config.js'
 import StreetExternalJump from '@/components/EditComp/StreetExternalJump/config.js'
 import LLZYPotButton from '@/components/EditComp/LLZYPotButton/config.js'
+import WGYPot from '@/components/EditComp/WGYPot/config.js'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton/config.js'
 import ToggleButton from '@/components/EditComp/ToggleButton/config.js'
 import IframePop from '@/components/EditComp/IframePop/config.js'
 import CYMap from '@/components/EditComp/CYMap/config.js'
+import SMMap from '@/components/EditComp/SMMap/config.js'
 import OrderMenu from '@/components/EditComp/OrderMenu/config.js'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu/config.js'
 import CityEvent from '@/components/EditComp/CityEvent/config.js'
@@ -726,10 +728,12 @@ ShrinkBox.item,
 ExternalJump.item,
 StreetExternalJump.item,
 LLZYPotButton.item,
+WGYPot.item,
 SwitchMapButton.item,
 ToggleButton.item,
 IframePop.item,
 CYMap.item,
+SMMap.item,
 OrderMenu.item,
 SmallOrderMenu.item,
 CityEvent.item,

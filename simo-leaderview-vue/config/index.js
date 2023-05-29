@@ -13,10 +13,12 @@ module.exports = {
       '/api': {
         // target: 'http://localhost:9999',
         // target: 'http://192.168.2.23:9999',
+        // target: 'http://172.16.116.47:9999/',
         target: 'http://10.29.118.17:9999/',
         // target: 'http://192.100.101.101:9999/',
         // target: 'http://192.168.2.40:9999',
         // target: 'http://192.168.1.188:9999',
+        // target: 'http://192.100.100.46:9999',
         // target: 'http://192.168.1.135:9999',
         // target: 'http://192.168.1.160:9999',
         changeOrigin: true, // 是否允许跨越, 开发环境中使用
@@ -27,8 +29,9 @@ module.exports = {
         }
       },
       '/socket': {
+        // target: 'http://172.16.116.47:9999/',
         target: 'http://10.29.118.17:9999/',
-        // target: 'http://192.168.1.188:9999/',
+        // target: 'http://192.100.100.46:9999/',
         ws: true,
         pathRewrite: {
           '^/socket': '/socket'
@@ -74,13 +77,15 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'leaderviewWeb',
+    // assetsSubDirectory: process.env.NODE_ENV === 'production' ? '' : 'leaderviewWeb',
     assetsPublicPath: '../',
 
     /**
      * Source Maps
      */
 
-    productionSourceMap: true, // 打包时不生成.map文件
+    // productionSourceMap: true, // 打包时不生成.map文件
+    productionSourceMap: process.env.NODE_ENV === 'production' ? false :true , // 打包时不生成.map文件
     // productionSourceMap: false, // 打包时不生成.map文件
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',

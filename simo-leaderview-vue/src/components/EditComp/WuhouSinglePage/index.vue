@@ -537,7 +537,8 @@
                                             <!-- {{data['街道评级']}} -->
                                             {{data['指数']}}
                                         </div>
-                                        <div @click="ShowQMSSQ(index)">详情</div>
+                                        <div @click="ShowQMSSQ(data['街道'])">详情</div>
+                                        <!-- <div @click="ShowQMSSQ(index)">详情</div> -->
                                     </div>
                                 </div>
                             </div>
@@ -964,6 +965,9 @@
                                     <div style="display: flex;justify-content: space-between;">
                                       <div class="Time">
                                         {{val['上报时间']}}
+                                      </div>
+                                      <div class="source">
+                                        {{val['来源']}}
                                       </div>
                                       <div v-if="incomingflownoList.indexOf(val['工单号']*1)>=0" class="state">
                                         预警
@@ -2110,15 +2114,17 @@ export default {
       return format
     },
     UpDataOk () {
+      debugger
       const formData = new FormData()
       formData.append('id', new Date().getTime() * 1)
-      formData.append('dept', this.CkeckedBmData.dept)
+      formData.append('topOrgName', this.CkeckedBmData.topOrgName)
       formData.append('flowNo', this.xqValue['工单号'])
       formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData.append('nickname', this.CkeckedBmData.title)
       formData.append('nickphone', this.CkeckedBmData.nickphone)
       formData.append('opttag', 'cFinish')
-      formData.append('dept_keshi', this.CkeckedBmData.deptkeshi)
+      formData.append('subOrgName', this.CkeckedBmData.title)//社区级需确认subOrgName是否存在
+      formData.append('orgId', this.CkeckedBmData.id)//社区级添加组织id
       formData.append('opttag_2', 0)
       formData.append('identifier', 1)
       formData.append('chuzhiresult', '')
@@ -2166,15 +2172,20 @@ export default {
       formData.append('forwardEvent', true)
       formData.append('forwardDate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
 
+      formData.append('topOrgName', this.CkeckedBmData1.topOrgName)
+      formData.append('subOrgName', this.CkeckedBmData1.title)
+      formData.append('orgId', this.CkeckedBmData1.id)
+        debugger
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
-      formData2.append('dept', this.CkeckedBmData1.dept)
+      formData2.append('topOrgName', this.CkeckedBmData1.topOrgName)
       formData2.append('flowNo', this.DateToString() + '0001')
       formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData2.append('nickname', this.CkeckedBmData1.title)
       formData2.append('nickphone', this.CkeckedBmData1.nickphone)
       formData2.append('opttag', 'cFinish')
-      formData2.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
+      formData2.append('subOrgName', this.CkeckedBmData1.title)
+      formData2.append('orgId', this.CkeckedBmData1.id)
       formData2.append('opttag_2', 0)
       formData2.append('identifier', 1)
       formData2.append('chuzhiresult', '')
@@ -2262,27 +2273,32 @@ export default {
       formData.append('opttag', 0)
       formData.append('forwardEvent', true)
       formData.append('forwardDate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
+
+      formData.append('topOrgName', this.CkeckedBmData2.topOrgName)
+      formData.append('subOrgName', this.CkeckedBmData2.title)
+      formData.append('orgId', this.CkeckedBmData2.id)
       // formData.append('id', new Date().getTime() * 1)
-      // formData.append('dept', this.CkeckedBmData1.dept)
+      // formData.append('topOrgName', this.CkeckedBmData1.topOrgName)
       // formData.append('flowNo', detail[''])
       // formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       // formData.append('nickname', this.CkeckedBmData1.title)
       // formData.append('nickphone', this.CkeckedBmData1.nickphone)
       // formData.append('opttag', 'overCheck')
-      // formData.append('dept_keshi', this.CkeckedBmData1.deptkeshi)
+      // formData.append('subOrgName', this.CkeckedBmData1.subOrgName)
       // formData.append('opttag_2', 1)
       // formData.append('identifier', 1)
       // formData.append('chuzhiresult', '')
       // formData.append('remark', '')
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
-      formData2.append('dept', this.CkeckedBmData2.dept)
+      formData2.append('topOrgName', this.CkeckedBmData2.topOrgName)
       formData2.append('flowNo', this.DateToString() + '0001')
       formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData2.append('nickname', this.CkeckedBmData2.title)
       formData2.append('nickphone', this.CkeckedBmData2.nickphone)
       formData2.append('opttag', 'cFinish')
-      formData2.append('dept_keshi', this.CkeckedBmData2.deptkeshi)
+      formData2.append('subOrgName', this.CkeckedBmData2.title)
+      formData2.append('orgId', this.CkeckedBmData2.id)
       formData2.append('opttag_2', 0)
       formData2.append('identifier', 1)
       formData2.append('chuzhiresult', '')
@@ -2310,6 +2326,7 @@ export default {
       })
     },
     UpDataOk7 (detail) {
+      debugger
       console.log('detail', detail)
       const formData = new FormData()
       formData.append('desc', detail['desc'] || '')
@@ -2336,15 +2353,20 @@ export default {
       formData.append('forwardEvent', true)
       formData.append('forwardDate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
 
+      formData.append('topOrgName', this.CkeckedBmData7.topOrgName)
+      formData.append('subOrgName', this.CkeckedBmData7.title)
+      formData.append('orgId', this.CkeckedBmData7.id)
+
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
-      formData2.append('dept', this.CkeckedBmData7.dept)
+      formData2.append('topOrgName', this.CkeckedBmData7.topOrgName)
       formData2.append('flowNo', this.DateToString() + '0001')
       formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData2.append('nickname', this.CkeckedBmData7.title)
       formData2.append('nickphone', this.CkeckedBmData7.nickphone)
       formData2.append('opttag', 'cFinish')
-      formData2.append('dept_keshi', this.CkeckedBmData7.deptkeshi)
+      formData2.append('subOrgName', this.CkeckedBmData7.title)
+      formData2.append('orgId', this.CkeckedBmData7.id)
       formData2.append('opttag_2', 0)
       formData2.append('identifier', 1)
       formData2.append('chuzhiresult', '')
@@ -2481,7 +2503,7 @@ export default {
     },
     ShowQMSSQ (index) {
       this.showQMSSQ = true
-      this.qmssqDetail = this.qmssqList[index]
+      this.qmssqDetail = this.qmssqList.filter(item => item.街道 === index)[0]; 
     },
     CloseQMSSQ () {
       this.showQMSSQ = false
@@ -2518,8 +2540,8 @@ export default {
       }
     },
     ChangeSelect (item, data) {
+      debugger
       if (item.length === 1) {
-        console.log(item)
         this.CkeckedBm = item[0].title
         this.CkeckedBmData = item[0]
       } else {
@@ -2554,6 +2576,7 @@ export default {
         this.CkeckedBmData7 = {}
       }
     },
+    //提及督办街道树-调取街道子树列表数据
     loadData (item, callback) {
       let newtype = ''
       if (item.type === 'children') {
@@ -2562,6 +2585,7 @@ export default {
       if (item.id) {
         $('#lead-screen').addClass('disShow')
         this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          debugger
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj.rows) {
             let treeData = []
@@ -2570,25 +2594,26 @@ export default {
                 treeData.push({
                   title: element['名称'],
                   id: element['组织ID'],
-                  dept: item.title,
-                  type: 'members',
-                  disabled: true,
+                  topOrgName: item.title,
+                  // type: 'members',
+                  type: newtype,
+                  disabled: false,
                   loading: false,
-                  disableCheckbox: true,
-                  children: []
+                  disableCheckbox: false,
+                  // children: []
                 })
               })
-            } else {
-              res.obj.rows.forEach(element => {
-                treeData.push({
-                  title: element['名称'],
-                  dept: item.dept,
-                  deptkeshi: item.title,
-                  nickphone: element['电话'],
-                  id: element['组织ID'],
-                  type: newtype
-                })
-              })
+            // } else {
+            //   res.obj.rows.forEach(element => {
+            //     treeData.push({
+            //       title: element['名称'],
+            //       topOrgName: item.topOrgName,
+            //       subOrgName: item.title,
+            //       nickphone: element['电话'],
+            //       id: element['组织ID'],
+            //       type: newtype
+            //     })
+            //   })
             }
             if (treeData.length === 0) {
               treeData.push({
@@ -2609,6 +2634,7 @@ export default {
         })
       }
     },
+    //群众诉求详情-显示街道列表
     OpenShowTjdbDetails () {
       this.showTjdbDetails = !this.showTjdbDetails
       this.CkeckedBm = ''
@@ -2630,6 +2656,7 @@ export default {
                 children: []
               })
             })
+            console.log(treeData)
             this.treeSetList = treeData
           }
         }, error => {
@@ -5956,6 +5983,16 @@ export default {
                           color: rgba(197,238,243,0.8);
                           font-size: 22px;
                           margin-top:12px;
+                          .source{
+                              width: 120px;
+                              height: 48px;
+                              color:#0B1B2A;
+                              text-align: center;
+                              line-height: 48px;
+                              background-image: url('./newBack/28.png');
+                              background-size: 100% 100%;
+                              border-radius: 5px;
+                              }
                       }
                       .state{
                         width: 100px;

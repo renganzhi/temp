@@ -102,13 +102,13 @@
             </div>
             <div class="Value">
               <div class="data">{{mydData['态度预警数']?mydData['态度预警数'].info:''}} <div class="unit">件</div></div>
-              <div class="name">部门承办态度预警</div>
+              <div class="name">部门承办态度差案件</div>
             </div>
           </div>
 
                 <div id="Module99" v-if="ShowyjBox">
                     <div class="title">
-                      部门承办态度预警
+                      部门承办态度差案件
                       <img src="./newBack/16.png" alt="" @click="ShowyjBox=false">
                     </div>
                     <div class="content">
@@ -202,7 +202,7 @@
             </div>
             <div class="Value">
               <div class="data">{{mydData['不满意趋势'].info}}</div>
-              <div class="name">不满意趋势预警</div>
+              <div class="name">满意度趋势</div>
             </div>
           </div>
         </div>
@@ -279,11 +279,11 @@
                               <div style="margin: 0 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 {{mydValue['描述'] || ''}}
                               </div>
-                              <div v-show="ShowmydType !== 'pleased'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
-                                回复内容：{{mydValue['回复内容'] || '暂无回复'}}
-                              </div>
                               <div v-show="ShowmydType === 'unpleased' || ShowmydType === 'pleased' || ShowmydType === 'unsolved'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
                                 部门回复：{{mydValue['部门回复'] || '暂无回复'}}
+                              </div>
+                              <div v-show="ShowmydType !== 'pleased'" style="margin: 10px 28px; color: #C5EEF3;font-size: 24px;max-height:600px;overflow: auto;padding: 16px;background-image: linear-gradient(45deg, rgb(22 223 248 / 4%), rgb(22 223 248 / 10%),rgb(22 223 248 / 4%));">
+                                回访反馈：{{mydValue['回复内容'] || '暂无回复'}}
                               </div>
                               <div style="margin: 28px;font-size: 24px;color: #C5EEF3;">处置时间线</div>
                               <div class="block" style="padding: 0 28px;">
@@ -1307,13 +1307,16 @@ export default {
       this.CkeckedBmData3 = {}
     },
     loadData (item, callback) {
+      debugger
       let newtype = ''
       if (item.type === 'children') {
         newtype = 'members'
       }
       if (item.id) {
+        
         $('#lead-screen').addClass('disShow')
         this.axios.get('/leaderview/ChengYun4/GetTJDB3?param=' + item.type + '&id=' + item.id).then(res => {
+          debugger
           $('#lead-screen').removeClass('disShow')
           if (res.success && res.obj.rows) {
             let treeData = []
@@ -1322,25 +1325,26 @@ export default {
                 treeData.push({
                   title: element['名称'],
                   id: element['组织ID'],
-                  dept: item.title,
-                  type: 'members',
-                  disabled: true,
+                  topOrgName: item.title,
+                  // type: 'members',
+                  type: newtype,
+                  disabled: false,
                   loading: false,
-                  disableCheckbox: true,
-                  children: []
+                  disableCheckbox: false,
+                  // children: []
                 })
               })
-            } else {
-              res.obj.rows.forEach(element => {
-                treeData.push({
-                  title: element['名称'],
-                  dept: item.dept,
-                  deptkeshi: item.title,
-                  nickphone: element['电话'],
-                  id: element['组织ID'],
-                  type: newtype
-                })
-              })
+            // } else {
+            //   res.obj.rows.forEach(element => {
+            //     treeData.push({
+            //       title: element['名称'],
+            //       topOrgName: item.topOrgName,
+            //       subOrgNam: item.title,
+            //       nickphone: element['电话'],
+            //       id: element['组织ID'],
+            //       type: newtype
+            //     })
+            //   })
             }
             if (treeData.length === 0) {
               treeData.push({
@@ -1379,19 +1383,21 @@ export default {
     UpDataOk3 (flowNo) {
       const formData = new FormData()
       formData.append('id', new Date().getTime() * 1)
-      formData.append('dept', this.CkeckedBmData3.dept)
+      formData.append('topOrgName', this.CkeckedBmData3.topOrgName)
       formData.append('flowNo', flowNo)
       formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData.append('nickname', this.CkeckedBmData3.title)
       formData.append('nickphone', this.CkeckedBmData3.nickphone)
       formData.append('opttag', 'cFinish')
-      formData.append('dept_keshi', this.CkeckedBmData3.deptkeshi)
+      formData.append('subOrgNam', this.CkeckedBmData3.title)
+      formData.append('orgId', this.CkeckedBmData3.id)
       formData.append('opttag_2', 0)
       formData.append('identifier', 1)
       formData.append('chuzhiresult', '')
       formData.append('remark', '')
       $('#lead-screen').addClass('disShow')
       this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        debugger
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
           window.setTimeout(() => {
@@ -1411,19 +1417,21 @@ export default {
     UpDataOk4 (flowNo) {
       const formData = new FormData()
       formData.append('id', new Date().getTime() * 1)
-      formData.append('dept', this.CkeckedBmData4.dept)
+      formData.append('topOrgName', this.CkeckedBmData4.topOrgName)
       formData.append('flowNo', flowNo)
       formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData.append('nickname', this.CkeckedBmData4.title)
       formData.append('nickphone', this.CkeckedBmData4.nickphone)
       formData.append('opttag', 'cFinish')
-      formData.append('dept_keshi', this.CkeckedBmData4.deptkeshi)
+      formData.append('subOrgNam', this.CkeckedBmData4.title)
+      formData.append('orgId', this.CkeckedBmData4.id)
       formData.append('opttag_2', 0)
       formData.append('identifier', 1)
       formData.append('chuzhiresult', '')
       formData.append('remark', '')
       $('#lead-screen').addClass('disShow')
       this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        debugger
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
           window.setTimeout(() => {
@@ -1443,19 +1451,21 @@ export default {
     UpDataOk5 (flowNo) {
       const formData = new FormData()
       formData.append('id', new Date().getTime() * 1)
-      formData.append('dept', this.CkeckedBmData5.dept)
+      formData.append('topOrgName', this.CkeckedBmData5.topOrgName)
       formData.append('flowNo', flowNo)
       formData.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData.append('nickname', this.CkeckedBmData5.title)
       formData.append('nickphone', this.CkeckedBmData5.nickphone)
       formData.append('opttag', 'cFinish')
-      formData.append('dept_keshi', this.CkeckedBmData5.deptkeshi)
+      formData.append('subOrgNam', this.CkeckedBmData5.title)
+      formData.append('orgId', this.CkeckedBmData5.id)
       formData.append('opttag_2', 0)
       formData.append('identifier', 1)
       formData.append('chuzhiresult', '')
       formData.append('remark', '')
       $('#lead-screen').addClass('disShow')
       this.axios.post('/leaderview/ChengYun4/GetTJDB4', formData).then(res => {
+        debugger
         $('#lead-screen').removeClass('disShow')
         if (res.success) {
           window.setTimeout(() => {
@@ -1486,15 +1496,20 @@ export default {
       formData.append('desc', ('走访对象：' + detail['走访对象'] + '，走访人员类别：' + detail['类别'] + '，走访时间：' + detail['走访时间'] + '，走访记录内容：' + detail['走访记录内容'] + '，责任楼栋长：' + detail['责任楼栋长'] + '，楼栋长联系方式：' + detail['楼栋长联系方式']) || '')
       formData.append('forwardEvent', true)
 
+      formData.append('topOrgName', this.CkeckedBmData6.topOrgName)
+      formData.append('subOrgNam', this.CkeckedBmData6.title)
+      formData.append('orgId', this.CkeckedBmData6.id)
+
       const formData2 = new FormData()
       formData2.append('id', new Date().getTime() * 1)
-      formData2.append('dept', this.CkeckedBmData6.dept)
+      formData2.append('topOrgName', this.CkeckedBmData6.topOrgName)
       formData2.append('flowNo', this.DateToString2() + '0001')
       formData2.append('optdate', this.getData(new Date(), 'YYYY-MM-DD HH:mm:ss'))
       formData2.append('nickname', this.CkeckedBmData6.title)
       formData2.append('nickphone', this.CkeckedBmData6.nickphone)
       formData2.append('opttag', 'cFinish')
-      formData2.append('dept_keshi', this.CkeckedBmData6.deptkeshi)
+      formData2.append('subOrgNam', this.CkeckedBmData6.title)
+      formData2.append('orgId', this.CkeckedBmData6.id)
       formData2.append('opttag_2', 0)
       formData2.append('identifier', 1)
       formData2.append('chuzhiresult', '')
@@ -2494,6 +2509,9 @@ export default {
           display: flex;
           justify-content: center;
           align-items: flex-start;
+          text-align: center;
+          width: 200px;
+          line-height: 32px;
         }
       }
     }

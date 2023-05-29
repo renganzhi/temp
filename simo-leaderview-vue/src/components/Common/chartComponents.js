@@ -82,10 +82,12 @@ import ShrinkBox from '@/components/EditComp/ShrinkBox'
 import ExternalJump from '@/components/EditComp/ExternalJump'
 import StreetExternalJump from '@/components/EditComp/StreetExternalJump'
 import LLZYPotButton from '@/components/EditComp/LLZYPotButton'
+import WGYPot from '@/components/EditComp/WGYPot'
 import SwitchMapButton from '@/components/EditComp/SwitchMapButton'
 import ToggleButton from '@/components/EditComp/ToggleButton'
 import IframePop from '@/components/EditComp/IframePop'
 import CYMap from '@/components/EditComp/CYMap'
+import SMMap from '@/components/EditComp/SMMap'
 import OrderMenu from '@/components/EditComp/OrderMenu'
 import SmallOrderMenu from '@/components/EditComp/SmallOrderMenu'
 import CityEvent from '@/components/EditComp/CityEvent'
@@ -191,10 +193,12 @@ export default {
   ExternalJump,
   StreetExternalJump,
   LLZYPotButton,
+  WGYPot,
   SwitchMapButton,
   ToggleButton,
   IframePop,
   CYMap,
+  SMMap,
   OrderMenu,
   SmallOrderMenu,
   CityEvent,

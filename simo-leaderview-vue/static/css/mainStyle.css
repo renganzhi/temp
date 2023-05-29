@@ -66,9 +66,16 @@ li {
 .fl {
     float: left;
 }
-
+.fl.ringparent{
+    float: left;
+    margin-top: -90px;
+}
 .fr {
     float: right;
+}
+.fr.ringparent{
+    float: right;
+    margin-top: -90px;
 }
 
 .clear {
