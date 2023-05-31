@@ -1,15 +1,20 @@
 <template>
   <div>
-    <button @click="toggleSearchBar">按钮</button>
+    <div @click="toggleSearchBar" class="togglebar">
+        <img class="ren" src="./wgyimg/ren.png" >
+        <img class="qiu" src="./wgyimg/qiu.png" >
+        <img class="dizuo" src="./wgyimg/dizuo.png" >
+    </div>
     <transition name="slide">
       <div v-show="isSearchBarVisible" class="search-bar">
-        <input v-model="street" placeholder="街道" />
-        <input v-model="community" placeholder="社区" />
-        <input v-model="microGrid" placeholder="微网格" />
-        <button @click="searchPot">查询</button>
-        <button @click="reset">重置</button>
-        <button @click="toggleSelection">{{ boxSelectEnabled ? '结束框选' : '开始框选' }}</button>
-        <div class="closeBtn" @click="onClose">'◀'</div>
+        <input v-model="street" placeholder="请输入街道" />
+        <input v-model="community" placeholder="请输入社区" />
+        <input v-model="microGrid" placeholder="请输入微网格" />
+        <button @click="searchPot" class="search">查询</button>
+        <button @click="reset" class="reset">重置</button>
+        <img class="grep" src="./wgyimg/fenge.png" >
+        <div @click="toggleSelection" class="kuangx">{{ boxSelectEnabled ? '结束' : '开始' }}</div>
+        <div class="closeBtn" @click="onClose">◀</div>
       </div>
     </transition>
   </div>
@@ -96,19 +101,130 @@ export default {
 
 .slide-enter-to,
 .slide-leave {
-  width: 1000px;
+  width: 1212px;
   opacity: 1;
 }
+.togglebar {
+  position: relative;
+  width: 102px;
+  height: 92px;
+  margin-right: 15px;
+  float: left;
+  margin-top: -38px;
+}
+
+/* .togglebar img {
+  position: absolute;
+} */
+.ren{
+  width: 42px;
+  height: 46px;
+  position: absolute;
+  top: 67%;
+  left: 51%;
+  transform: translate(-50%, -50%);
+}
+.qiu{
+  width: 76px;
+  height: 76px;
+  position: absolute;
+  top: 28%;
+  left: 14%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  animation: spin 10s linear infinite;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.dizuo{
+  position: absolute;
+  width: 92px;
+  height: 71px;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .search-bar {
+  background: url('./wgyimg/bar.png') no-repeat;
   display: flex;
-  background: #082546;
   position: relative;
   overflow: hidden;
+  height: 80px;
+  padding:8px;
 }
+.search-bar input{
+  background: url('./wgyimg/shuruk.png') no-repeat;
+  width: 282px;
+  height: 50px;
+  font-size: 22px !important;
+  border-radius: 3px;
+  color:#8FABBF;
+  line-height: 20px;
+  margin:8px;
+  }
+.search-bar .search{
+  background: url('./wgyimg/chaxun.png') no-repeat;
+  width:80px;
+  height:48px;
+  font-size: 20px !important;
+  border-radius: 2px;
+  line-height: 20px;
+  color:#ACD2F6;
+  margin:8px;
+  }
+.search-bar .reset{
+  background: url('./wgyimg/chongzhi.png') no-repeat;
+  width: 76px;
+  height: 48px;
+  font-size: 20px !important;
+  border-radius: 2px;
+  line-height: 20px;
+  color:#91C2F2;
+  margin:8px;
+  }
+.search-bar .search:hover{
+  background: url('./wgyimg/chaxunac.png') no-repeat;
+  color:#DCEEFF;
+  }
+.search-bar .reset:hover{
+  background: url('./wgyimg/resetac.png') no-repeat;
+  color:#DCEEFF;
+  }
+  .grep{
+  width:2px;
+  height:50px;
+  margin:8px 20px;
+  }
+.search-bar .kuangx{
+  background: url('./wgyimg/kuangxuan.png') no-repeat;
+  width: 34px;
+  height: 34px;
+  padding-left: 5px;
+  border-radius: 2px;
+  line-height: 30px;
+  color: #DCEEFF;
+  margin: 16px 8px 16px 1px;
+  }
+/* .search-bar .kuangx:hover{
+  background: #324f6b93;
+  } */
 .closeBtn{
-  color:#777;
-  width: 30px;
-  height: 30px;
-  background: #082546;
+  color: #777;
+  width: 31px;
+  padding: 10px;
+  height: 37px;
+  margin-left: 3px;
+  margin-top: 13px;
+  background: #11293f;
+}
+.closeBtn:hover{
+  background: #324f6b93;
+  border-radius: 3px;
 }
 </style>
